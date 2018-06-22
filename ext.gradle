@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+ext {
+    // The version of the Spine Base module to be used in the project.
+    spineBaseVersion = '0.10.40-SNAPSHOT'
 
-sourceCompatibility = 1.8
+    // Publish artifacts of this project with the same version number as Base.
+    versionToPublish = spineBaseVersion
+}
