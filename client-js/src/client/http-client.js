@@ -58,9 +58,9 @@ export class HttpClient {
             method: "POST",
             body: messageString,
             headers: {
-                'Content-Type': 'application/x-protobuf'
+                "Content-Type": "application/x-protobuf"
             },
-            mode: 'cors'
+            mode: "cors"
         };
         let result = fetch(url, request);
         return result;

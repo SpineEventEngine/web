@@ -93,7 +93,7 @@ export class BackendClient {
                 if (status.hasOwnProperty("ok")) {
                     successListener();
                 } else if (status.hasOwnProperty("error")) {
-                    errorCallback(status.error)
+                    errorCallback(status.error);
                 } else if (status.hasOwnProperty("rejection")) {
                     console.log("Command rejected.");
                     rejectionCallback(status.rejection);
