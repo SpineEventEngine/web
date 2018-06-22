@@ -29,8 +29,9 @@ import io.spine.core.TenantId;
 import io.spine.core.UserId;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.regex.Pattern;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * A path in a Firebase Realtime Database.
@@ -69,7 +70,7 @@ final class FirebaseDatabasePath {
         final String tenantId = tenantIdAsString(query);
         final String actor = actorAsString(query);
         final String queryId = queryIdAsString(query);
-        final Collection<String> pathElements = new LinkedList<>();
+        final Collection<String> pathElements = newArrayList();
         if (!tenantId.isEmpty()) {
             pathElements.add(escaped(tenantId));
         }
