@@ -71,6 +71,26 @@ allprojects {
 subprojects {
     buildscript {
         apply from: "$rootDir/ext.gradle"
+
+        repositories {
+            jcenter()
+            google()
+            mavenCentral()
+            mavenLocal()
+            maven { url = repos.gradlePlugins }
+            maven { url = repos.spine }
+            maven { url = repos.spineSnapshots }
+        }
+
+        dependencies {
+            classpath deps.build.guava
+        }
+
+        configurations.all({
+            resolutionStrategy {
+                force deps.build.guava
+            }
+        })
     }
 
     ext {

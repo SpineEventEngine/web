@@ -18,13 +18,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+apply plugin: 'com.google.protobuf'
+apply from: "$rootDir/scripts/js.gradle"
 
-include 'web'
-include 'firebase-web'
+dependencies {
+    testProtobuf project(":web-tests")
+}
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+task linkProto {
+    doLast {
+        npm 'link', 'spine-js-client-proto'
+    }
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    dependsOn ':client-js-proto:link'
+}
+
+installDependencies.dependsOn linkProto
+
+idea.module {
+    sourceDirs += file("${projectDir}/proto")
+    sourceDirs += file("$projectDir/src")
+    testSourceDirs += file("$projectDir/test")
+    excludeDirs += file("$projectDir/node_modules")
+    excludeDirs += file("$projectDir/.nyc_output")
+
+    iml {
+        beforeMerged { module ->
+            module.dependencies.clear()
+        }
+        whenMerged { module ->
+            module.dependencies*.exported = true
+        }
+    }
+}
+
+clean {
+    delete "$projectDir/proto"
+}
+
+// Suppress building the JS project as a Java module.
+project.compileJava.enabled = false
+project.compileTestJava.enabled = false

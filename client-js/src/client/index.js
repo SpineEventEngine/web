@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,13 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
-
-include 'web'
-include 'firebase-web'
-
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
-
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * The object which represents the public API of the `client-js` module.
+ *
+ * This object is exported from the artifact built by webpack.
+ *
+ * @type {{BackendClient: BackendClient, HttpClient: HttpClient, FirebaseClient: FirebaseClient, ActorRequestFactory: ActorRequestFactory}}
+ */
+export const client = {
+    BackendClient: require("./backend-client").BackendClient,
+    HttpClient: require("./http-client").HttpClient,
+    FirebaseClient: require("./firebase-client").FirebaseClient,
+    ActorRequestFactory: require("./actor-request-factory").ActorRequestFactory,
+    TypeUrl: require("./typed-message").TypeUrl,
+    TypedMessage: require("./typed-message").TypedMessage
+};

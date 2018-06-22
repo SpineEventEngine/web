@@ -18,13 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.test;
 
-include 'web'
-include 'firebase-web'
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+/**
+ * An aggregate with the state of type {@code spine.web.test.Task}.
+ *
+ * @author Dmytro Dashenkov
+ */
+public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    public TaskAggregate(TaskId id) {
+        super(id);
+    }
+
+    @Assign
+    TaskCreated handle(CreateTask command) {
+        return TaskCreated.newBuilder()
+                          .setId(command.getId())
+                          .setName(command.getName())
+                          .setDescription(command.getDescription())
+                          .build();
+    }
+
+    @Apply
+    private void on(TaskCreated event) {
+        getBuilder().setId(event.getId())
+                    .setName(event.getName())
+                    .setDescription(event.getDescription());
+    }
+}
