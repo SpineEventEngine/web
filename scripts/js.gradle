@@ -250,8 +250,7 @@ task coverageJs {
     dependsOn buildJs
 }
 
-// TODO:2018-06-22:dmytro.dashenkov: Plug into the Gradle report task.
-//rootProject.codeCoverageReport.dependsOn coverageJs
+rootProject.check.dependsOn coverageJs
 
 build.dependsOn buildJs
 publish.dependsOn publishJs
