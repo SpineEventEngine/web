@@ -77,6 +77,7 @@ public final class FirebaseQueryMediatorTestEnv {
         private final Collection<Any> response;
 
         public TestQueryService(Message... messages) {
+            super();
             this.response = copyOf(messages).stream()
                                             .map(AnyPacker::pack)
                                             .collect(toSet());
