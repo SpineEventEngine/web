@@ -18,18 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.40-SNAPSHOT'
+/**
+ * This package contains the {@link io.spine.web.queryservice.AsyncQueryService
+ * AsyncQueryService} interface and its implementations.
+ */
 
-ext {
-    spineVersion = SPINE_VERSION
+@ParametersAreNonnullByDefault
+package io.spine.web.queryservice;
 
-    // The version of the Spine Base module to be used in the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
-
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = spineBaseVersion
-
-    firebaseVersion = '5.9.0'
-
-    servletApiVersion = '4.0.0'
-}
+import javax.annotation.ParametersAreNonnullByDefault;

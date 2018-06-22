@@ -18,6 +18,189 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+buildscript {
+    apply from: "$rootDir/config/gradle/dependencies.gradle"
+    apply from: "$rootDir/ext.gradle"
 
-sourceCompatibility = 1.8
+    repositories {
+        jcenter()
+        google()
+        mavenCentral()
+        mavenLocal()
+        maven { url = repos.gradlePlugins }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
+    }
+
+    dependencies {
+        classpath deps.build.guava
+        classpath deps.build.gradlePlugins.protobuf
+        classpath deps.build.gradlePlugins.errorProne
+    }
+
+    configurations.all({
+        resolutionStrategy {
+            force deps.build.guava
+            force deps.test.guavaTestlib
+        }
+    })
+}
+
+apply from: 'ext.gradle'
+
+ext {
+    credentialsPropertyFile = 'credentials.properties'
+
+    projectsToPublish = [
+            'web',
+            'firebase-web'
+    ]
+}
+
+allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'jacoco'
+    apply plugin: 'idea'
+    apply plugin: 'project-report'
+
+
+    // Use the same version numbering for the Spine Base library.
+    version = versionToPublish
+}
+
+subprojects {
+    buildscript {
+        apply from: "$rootDir/ext.gradle"
+    }
+
+    ext {
+        spineProtobufPluginId = 'io.spine.tools.spine-model-compiler'
+
+        sourcesRootDir = "$projectDir/src"
+        generatedRootDir = "$projectDir/generated"
+
+        generatedJavaDir = "$generatedRootDir/main/java"
+        generatedTestJavaDir = "$generatedRootDir/test/java"
+
+        generatedGrpcDir = "$generatedRootDir/main/grpc"
+        generatedTestGrpcDir = "$generatedRootDir/test/grpc"
+
+        generatedSpineDir = "$generatedRootDir/main/spine"
+        generatedTestSpineDir = "$generatedRootDir/test/spine"
+    }
+
+    apply plugin: 'java-library'
+    apply plugin: 'com.google.protobuf'
+    apply plugin: 'net.ltgt.errorprone'
+
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        jcenter()
+
+        google()
+        mavenCentral()
+        mavenLocal()
+        maven { url = repos.gradlePlugins }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
+    }
+
+    dependencies {
+        implementation deps.build.guava
+        implementation deps.build.slf4j
+        implementation deps.build.checkerAnnotations
+        implementation deps.build.errorProneAnnotations
+
+        testImplementation deps.test.slf4j
+        testImplementation deps.test.guavaTestlib
+        testImplementation deps.test.junit5Api
+        testImplementation deps.test.junit5Runner
+        testImplementation deps.test.mockito
+        testImplementation deps.test.hamcrest
+        testImplementation "io.spine:spine-testutil-client:$spineVersion"
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir
+            resources.srcDirs "$sourcesRootDir/main/resources", "$generatedRootDir/main/resources"
+        }
+        test {
+            java.srcDirs generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir
+            resources.srcDirs "$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        // Exclude generated sources from being analyzed by Error Prone.
+        options.compilerArgs += [
+                '-XepExcludedPaths:.*/generated/.*'
+        ]
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier "sources"
+    }
+
+    task testOutputJar(type: Jar) {
+        from sourceSets.test.output
+        classifier "test"
+    }
+
+    task javadocJar(type: Jar, dependsOn: 'javadoc') {
+        from "$projectDir/build/docs/javadoc"
+        classifier "javadoc"
+    }
+
+    test {
+        useJUnitPlatform {
+            includeEngines 'junit-jupiter'
+        }
+        testLogging.showStandardStreams = true
+        include 'io/spine/**'
+
+        afterSuite { final desc, final result ->
+            if (!desc.parent) {
+                logger.lifecycle(
+"""
+Test summary:
+>> ${result.testCount} tests,
+>> ${result.successfulTestCount} succeeded,
+>> ${result.failedTestCount} failed, 
+>> ${result.skippedTestCount} skipped.
+"""
+                )
+            }
+        }
+    }
+
+    // Apply the same IDEA module configuration for each of sub-projects.
+    idea {
+        module {
+            generatedSourceDirs += file(generatedJavaDir)
+            testSourceDirs += file(generatedTestJavaDir)
+            downloadJavadoc = true
+            downloadSources = true
+
+            iml {
+                beforeMerged { final module ->
+                    module.dependencies.clear()
+                }
+                whenMerged { final module ->
+                    module.dependencies*.exported = true
+                }
+            }
+        }
+    }
+}
+
+
+apply from: deps.scripts.jacoco
+apply from: deps.scripts.publish
+
+

@@ -18,18 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.40-SNAPSHOT'
+package io.spine.web.parser;
 
-ext {
-    spineVersion = SPINE_VERSION
+import com.google.protobuf.Message;
 
-    // The version of the Spine Base module to be used in the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
+import java.util.Optional;
 
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = spineBaseVersion
+/**
+ * A string to message parser.
+ *
+ * <p>The string format is implementation specific.
+ *
+ * @param <M> the type of messages to parse
+ * @author Dmytro Dashenkov
+ */
+interface MessageParser<M extends Message> {
 
-    firebaseVersion = '5.9.0'
-
-    servletApiVersion = '4.0.0'
+    /**
+     * Parses the given string into a message.
+     *
+     * @param raw the string to parse
+     * @return parsed message or {@code Optional.empty()} if the string cannot be parsed into
+     *         a message of type {@code M}
+     */
+    Optional<M> parse(String raw);
 }

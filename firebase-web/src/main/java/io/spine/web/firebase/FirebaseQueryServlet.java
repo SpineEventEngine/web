@@ -18,18 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.40-SNAPSHOT'
+package io.spine.web.firebase;
 
-ext {
-    spineVersion = SPINE_VERSION
+import io.spine.web.QueryServlet;
 
-    // The version of the Spine Base module to be used in the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
+/**
+ * A {@link QueryServlet} which uses the {@link FirebaseQueryBridge}.
+ *
+ * @author Dmytro Dashenkov
+ * @see QueryServlet
+ */
+@SuppressWarnings("serial") // Java serialization is not supported.
+public abstract class FirebaseQueryServlet extends QueryServlet {
 
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = spineBaseVersion
-
-    firebaseVersion = '5.9.0'
-
-    servletApiVersion = '4.0.0'
+    /**
+     * @see QueryServlet#QueryServlet
+     */
+    protected FirebaseQueryServlet(FirebaseQueryBridge bridge) {
+        super(bridge);
+    }
 }

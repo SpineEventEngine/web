@@ -18,18 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.40-SNAPSHOT'
+package io.spine.web;
 
-ext {
-    spineVersion = SPINE_VERSION
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
-    // The version of the Spine Base module to be used in the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
+/**
+ * A result of a query processing.
+ *
+ * <p>The structure of this object is not defined in the general case. It may, for example,
+ * be an error message, the data matching the associated query, or a token which identifies that
+ * data in the delivery channel.
+ *
+ * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
+ * a {@link ServletResponse} in order to be sent to a client.
+ *
+ * @author Dmytro Dashenkov
+ */
+public interface QueryProcessingResult {
 
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = spineBaseVersion
-
-    firebaseVersion = '5.9.0'
-
-    servletApiVersion = '4.0.0'
+    /**
+     * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.
+     *
+     * @param response the response to write the result into
+     * @throws IOException in case of a failure
+     */
+    void writeTo(ServletResponse response) throws IOException;
 }

@@ -18,18 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.40-SNAPSHOT'
+/**
+ * This package contains components responsible for parsing messages sent over HTTP.
+ */
+@ParametersAreNonnullByDefault
+package io.spine.web.parser;
 
-ext {
-    spineVersion = SPINE_VERSION
-
-    // The version of the Spine Base module to be used in the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
-
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = spineBaseVersion
-
-    firebaseVersion = '5.9.0'
-
-    servletApiVersion = '4.0.0'
-}
+import javax.annotation.ParametersAreNonnullByDefault;

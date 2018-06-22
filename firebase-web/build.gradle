@@ -18,18 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.40-SNAPSHOT'
+dependencies {
+    api project(':web')
+    api ("com.google.firebase:firebase-admin:$firebaseVersion") {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
 
-ext {
-    spineVersion = SPINE_VERSION
-
-    // The version of the Spine Base module to be used in the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
-
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = spineBaseVersion
-
-    firebaseVersion = '5.9.0'
-
-    servletApiVersion = '4.0.0'
+    implementation "io.spine:spine-client:$spineVersion"
 }
