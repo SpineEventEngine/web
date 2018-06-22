@@ -43,7 +43,6 @@ import java.util.concurrent.TimeoutException;
 import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;

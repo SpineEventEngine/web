@@ -25,15 +25,10 @@ import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.client.TestActorRequestFactory;
-import io.spine.core.Ack;
-import io.spine.core.Command;
 import io.spine.json.Json;
-import io.spine.protobuf.AnyPacker;
-import io.spine.web.given.QueryServletTestEnv;
 import io.spine.web.given.QueryServletTestEnv.TestQueryServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +36,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
-import static io.spine.core.Status.StatusCase.OK;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
 import static org.junit.jupiter.api.Assertions.assertEquals;
