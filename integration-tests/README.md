@@ -1,7 +1,5 @@
 # Integration tests
 
-This directory contains integration test environment used by multiple modules of `gcloud-java`.
-
 ## `web-tests`
 
 The `web-tests` module contains a simplistic Spine application.
