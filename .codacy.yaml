@@ -1,4 +1,3 @@
 ---
 exclude_paths:
-  - "web/src/test/**/*.*"
-  - "firebase-web/src/test/**/*.*"
+  - "**/src/test/**/*.*"

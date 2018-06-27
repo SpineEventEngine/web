@@ -10,7 +10,6 @@ coverage:
   - generated/*
   - examples/*
   - test/*
-  - integration-tests/*
   status:
     patch: false
 
