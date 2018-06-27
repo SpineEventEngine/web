@@ -115,6 +115,8 @@ subprojects {
     apply plugin: 'net.ltgt.errorprone'
     apply plugin: 'maven-publish'
 
+    apply from: deps.scripts.testOutput
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
@@ -180,22 +182,6 @@ subprojects {
     test {
         useJUnitPlatform {
             includeEngines 'junit-jupiter'
-        }
-        testLogging.showStandardStreams = true
-        include 'io/spine/**'
-
-        afterSuite { final desc, final result ->
-            if (!desc.parent) {
-                logger.lifecycle(
-"""
-Test summary:
->> ${result.testCount} tests,
->> ${result.successfulTestCount} succeeded,
->> ${result.failedTestCount} failed, 
->> ${result.skippedTestCount} skipped.
-"""
-                )
-            }
         }
     }
 
