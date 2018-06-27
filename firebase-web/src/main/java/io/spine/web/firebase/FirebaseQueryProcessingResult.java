@@ -18,13 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.firebase;
 
-include 'web'
-include 'firebase-web'
+import io.spine.web.QueryProcessingResult;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * A result of a query processed by a {@link FirebaseQueryBridge}.
+ *
+ * <p>This result represents a database path to the requested data.
+ * See {@link FirebaseQueryBridge} for more details.
+ *
+ * @author Dmytro Dashenkov
+ */
+final class FirebaseQueryProcessingResult implements QueryProcessingResult {
+
+    private static final String MIME_TYPE = "text/plain";
+
+    private final FirebaseDatabasePath path;
+
+    FirebaseQueryProcessingResult(FirebaseDatabasePath path) {
+        this.path = path;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeTo(ServletResponse response) throws IOException {
+        final String databaseUrl = path.toString();
+        response.getWriter().append(databaseUrl);
+        response.setContentType(MIME_TYPE);
+    }
+
+    @Override
+    public String toString() {
+        return path.toString();
+    }
+}

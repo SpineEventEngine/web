@@ -18,13 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.test;
 
-include 'web'
-include 'firebase-web'
+import io.spine.web.firebase.FirebaseQueryBridge;
+import io.spine.web.firebase.FirebaseQueryServlet;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+import javax.servlet.annotation.WebServlet;
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * The query side endpoint of the application.
+ *
+ * @author Dmytro Dashenkov
+ */
+@WebServlet("/query")
+@SuppressWarnings("serial")
+public class TestQueryServlet extends FirebaseQueryServlet {
+
+    public TestQueryServlet() {
+        super(FirebaseQueryBridge.newBuilder()
+                                 .serQueryService(Server.application().getQueryService())
+                                 .setDatabase(FirebaseClient.database())
+                                 .build());
+    }
+}

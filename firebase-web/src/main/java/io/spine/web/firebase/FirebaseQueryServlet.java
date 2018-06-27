@@ -18,13 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.firebase;
 
-include 'web'
-include 'firebase-web'
+import io.spine.web.QueryServlet;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+/**
+ * A {@link QueryServlet} which uses the {@link FirebaseQueryBridge}.
+ *
+ * @author Dmytro Dashenkov
+ * @see QueryServlet
+ */
+@SuppressWarnings("serial") // Java serialization is not supported.
+public abstract class FirebaseQueryServlet extends QueryServlet {
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    /**
+     * @see QueryServlet#QueryServlet
+     */
+    protected FirebaseQueryServlet(FirebaseQueryBridge bridge) {
+        super(bridge);
+    }
+}

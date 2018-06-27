@@ -18,13 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+dependencies {
+    api "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-include 'web'
-include 'firebase-web'
+    implementation "io.spine:spine-server:$spineVersion"
+}
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File

@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.test;
 
-include 'web'
-include 'firebase-web'
+import io.spine.server.aggregate.AggregateRepository;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
-
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * A repository for the task aggregates.
+ *
+ * @author Dmytro Dashenkov
+ */
+class TaskRepository extends AggregateRepository<TaskId, TaskAggregate> {
+}

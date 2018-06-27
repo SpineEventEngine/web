@@ -18,13 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+final def SPINE_VERSION = '0.10.41-SNAPSHOT'
 
-include 'web'
-include 'firebase-web'
+ext {
+    spineVersion = SPINE_VERSION
+    spineBaseVersion = '0.10.40-SNAPSHOT'
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+    // Publish artifacts of this project with the same version number as Base.
+    versionToPublish = spineBaseVersion
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    firebaseVersion = '5.9.0'
+    servletApiVersion = '4.0.0'
+}

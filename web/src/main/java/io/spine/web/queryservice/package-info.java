@@ -18,13 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+/**
+ * This package contains the {@link io.spine.web.queryservice.AsyncQueryService
+ * AsyncQueryService} interface and its implementations.
+ */
 
-include 'web'
-include 'firebase-web'
+@ParametersAreNonnullByDefault
+package io.spine.web.queryservice;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
-
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+import javax.annotation.ParametersAreNonnullByDefault;

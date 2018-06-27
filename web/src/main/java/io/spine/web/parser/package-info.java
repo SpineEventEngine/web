@@ -18,13 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+/**
+ * This package contains components responsible for parsing messages sent over HTTP.
+ */
+@ParametersAreNonnullByDefault
+package io.spine.web.parser;
 
-include 'web'
-include 'firebase-web'
-
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
-
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+import javax.annotation.ParametersAreNonnullByDefault;

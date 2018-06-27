@@ -1,0 +1,62 @@
+/*
+ * Copyright 2018, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+/**
+ * Copies the AppEngine deployment descriptor into the location recognized by the AppEngine Gradle
+ * plugin.
+ *
+ * <p>It is expected that the project contains the file named {@code appengine-web.xml.template}.
+ * This file is written into the {@code src/main/webapp/WEB-INF/} directory as
+ * {@code appengine-web.xml}.
+ *
+ * <p>The template file may contain replacement tags in the following format: {@code $tagname$}.
+ * Currently, only the {@code version} tag is supported. It is replaced with the current version of
+ * the Spine web library.
+ */
+void copyDescriptor() {
+    final def VERSION_PATTERN = Pattern.compile('\\$version\\$')
+    final def DESCRIPTOR_FILE_NAME = "appengine-web.xml"
+
+    final def version = project.spineVersion
+
+    final File template = file("$projectDir/${DESCRIPTOR_FILE_NAME}.template")
+    final File destinationDir = new File("$projectDir/src/main/webapp/WEB-INF")
+
+    copy {
+        from template
+        into destinationDir
+
+        rename { DESCRIPTOR_FILE_NAME }
+
+        filter { final line ->
+            final Matcher matcher = VERSION_PATTERN.matcher(line)
+            if (matcher.find()) {
+                return matcher.replaceAll(version)
+            } else {
+                return line
+            }
+        }
+    }
+}
+
+copyDescriptor()

@@ -18,13 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+"use strict";
 
-include 'web'
-include 'firebase-web'
+/**
+ * The client of a Firebase Realtime database.
+ */
+export class FirebaseClient {
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+    /**
+     * Creates a new FirebaseClient.
+     *
+     * @param firebaseApp an initialized Firebase app
+     */
+    constructor(firebaseApp) {
+        this._firebaseApp = firebaseApp;
+    }
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    /**
+     * Subscribes to the child_added events of of the node under the given path.
+     *
+     * Each child's value is parsed as a JSON and dispatched to the given callback
+     *
+     * @param path         the path to the watched node
+     * @param dataCallback the child value callback
+     */
+    subscribeTo(path, dataCallback) {
+        let dbRef = this._firebaseApp.database().ref(path);
+        dbRef.on("child_added", data => {
+            let msgJson = data.val();
+            let message = JSON.parse(msgJson);
+            dataCallback(message);
+        });
+    }
+}

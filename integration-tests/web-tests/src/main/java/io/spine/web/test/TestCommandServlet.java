@@ -18,13 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.test;
 
-include 'web'
-include 'firebase-web'
+import io.spine.web.CommandServlet;
 
-include 'client-js'
-include 'client-js-proto'
-include 'web-tests'
+import javax.servlet.annotation.WebServlet;
 
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * The command side endpoint of the application.
+ *
+ * @author Dmytro Dashenkov
+ */
+@WebServlet("/command")
+@SuppressWarnings("serial")
+public final class TestCommandServlet extends CommandServlet {
+
+    public TestCommandServlet() {
+        super(Server.application().getCommandService());
+    }
+}
