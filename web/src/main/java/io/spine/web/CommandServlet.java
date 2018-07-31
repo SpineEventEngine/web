@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
- * An {@link HttpServlet} representing the License Server command endpoint.
+ * An {@link HttpServlet} representing a command endpoint.
  *
  * <p>Handles {@code POST} requests with {@linkplain Command commands} in their bodies.
  *
