@@ -100,8 +100,8 @@ protobuf {
 String filterPackageDescriptor(final String line) {
     final Map<String, String> replacements = [
             '\\$PACKAGE_VERSION'         : ext.spineVersion,
-            '\\$PACKAGE_PROTOBUF_VERSION': '^3.5.0',
-            '\\$PACKAGE_TEST'            : 'mocha --require babel-polyfill --require babel-register --recursive \\$NODE_DEBUG_OPTION --exit --full-trace ./test'
+            '\\$PACKAGE_PROTOBUF_VERSION': '^3.6.0',
+            '\\$PACKAGE_TEST'            : 'mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test'
     ]
 
     def result = line
