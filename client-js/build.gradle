@@ -19,21 +19,10 @@
  */
 
 apply plugin: 'com.google.protobuf'
-apply from: "$rootDir/scripts/js.gradle"
 
 dependencies {
     testProtobuf project(":web-tests")
 }
-
-task linkProto {
-    doLast {
-        npm 'link', 'spine-js-client-proto'
-    }
-
-    dependsOn ':client-js-proto:link'
-}
-
-installDependencies.dependsOn linkProto
 
 idea.module {
     sourceDirs += file("${projectDir}/proto")
@@ -59,3 +48,15 @@ clean {
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
+
+apply from: "$rootDir/scripts/js.gradle"
+
+task linkClientProto {
+    doLast {
+        npm 'link', 'spine-js-client-proto'
+    }
+
+    dependsOn ':client-js-proto:link'
+}
+
+installDependencies.dependsOn linkClientProto

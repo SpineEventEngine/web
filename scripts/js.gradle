@@ -104,7 +104,7 @@ String filterPackageDescriptor(final String line) {
             '\\$PACKAGE_TEST'            : 'mocha --require babel-polyfill --require babel-register --recursive \\$NODE_DEBUG_OPTION --exit --full-trace ./test'
     ]
 
-    def result  = line
+    def result = line
     replacements.each {
         result = result.replaceAll(it.key, it.value)
     }
