@@ -158,7 +158,7 @@ task buildJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = "Assembles the JavaScript source files."
 
-    dependsOn installDependencies, compileProtoToJs
+    dependsOn installDependencies
 }
 
 /**
