@@ -28,7 +28,7 @@
 let fetch = require("isomorphic-fetch");
 
 /**
- * The HTTP client which performs the connection to the License Server.
+ * The HTTP client which performs the connection to the application server.
  */
 export class HttpClient {
 

@@ -67,7 +67,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
     }
 
     /**
-     * Sends the given {@link Query} to the {@link io.spine.server.QueryService QueryService} and
+     * Sends the given {@link Query} to the {@code QueryService} and
      * stores the query response into the database.
      *
      * <p>Returns the path in the database, under which the query response is stored.
