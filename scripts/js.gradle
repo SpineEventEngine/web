@@ -49,9 +49,6 @@ ext {
     workDirectory = "$buildDir/node-module/"
     publicationDirectory = "$buildDir/npm-publication/"
 
-    assemblyComponents = ['package.json', 'proto', 'src', 'test', '.babelrc']
-    publicationComponents = ['package.json', 'proto/main/js', 'src', '.npmrc']
-
     npm = { final String... command ->
         ext.executeNpm(workDirectory as File, command)
     }
@@ -100,11 +97,11 @@ protobuf {
 String filterPackageDescriptor(final String line) {
     final Map<String, String> replacements = [
             '\\$PACKAGE_VERSION'         : ext.spineVersion,
-            '\\$PACKAGE_PROTOBUF_VERSION': '^3.5.0',
-            '\\$PACKAGE_TEST'            : 'mocha --require babel-polyfill --require babel-register --recursive \\$NODE_DEBUG_OPTION --exit --full-trace ./test'
+            '\\$PACKAGE_PROTOBUF_VERSION': '^3.6.0',
+            '\\$PACKAGE_TEST'            : 'mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test'
     ]
 
-    def result  = line
+    def result = line
     replacements.each {
         result = result.replaceAll(it.key, it.value)
     }
@@ -116,16 +113,15 @@ String filterPackageDescriptor(final String line) {
  * the module is built and tested.
  */
 task copyModuleSources(type: Copy) {
-    from fileTree(projectDir).include {
-        final def path = it.path
-        for (final def branch in assemblyComponents) {
-            if (path.startsWith(branch)) {
-                return true
-            }
-        }
-        return false
-    }
     into workDirectory
+    
+    from projectDir
+    
+    include 'package.json'
+    include 'proto/**'
+    include 'src/**'
+    include 'test/**'
+    include '.babelrc'
 
     filter { filterPackageDescriptor(it) }
 
@@ -162,7 +158,7 @@ task buildJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = "Assembles the JavaScript source files."
 
-    dependsOn installDependencies, compileProtoToJs
+    dependsOn installDependencies
 }
 
 /**
@@ -172,14 +168,19 @@ task prepareJsPublication(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Prepares the NPM package for publish.'
 
-    from publicationComponents.collect {
-        final def file = "$projectDir/$it" as File
-        if (!file.exists()) {
-            return null
-        } else {
-            return file
-        }
-    }.findAll { it != null }
+    from projectDir, {
+        include 'package.json'
+        include '.npmrc'
+    }
+    
+    from "$projectDir/src", {
+        include '**'
+    }
+    
+    from "$projectDir/proto/main/js", {
+        include '**'
+    }
+    
     into publicationDirectory
     exclude "test"
 

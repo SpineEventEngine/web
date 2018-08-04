@@ -64,7 +64,6 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'project-report'
 
-
     // Use the same version numbering for the Spine Base library.
     version = versionToPublish
 }
@@ -204,7 +203,6 @@ subprojects {
         }
     }
 }
-
 
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
