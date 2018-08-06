@@ -28,7 +28,7 @@ import io.spine.server.CommandService;
 import io.spine.web.CommandServlet;
 
 import static io.spine.core.Responses.statusOk;
-import static io.spine.test.Tests.nullRef;
+import static io.spine.testing.Tests.nullRef;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;

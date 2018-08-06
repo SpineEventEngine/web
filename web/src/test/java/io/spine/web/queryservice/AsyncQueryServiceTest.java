@@ -38,7 +38,7 @@ import java.io.IOException;
 
 import static io.grpc.ManagedChannelBuilder.forAddress;
 import static io.spine.client.ConnectionConstants.DEFAULT_CLIENT_SERVICE_PORT;
-import static io.spine.test.Tests.nullRef;
+import static io.spine.testing.Tests.nullRef;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
