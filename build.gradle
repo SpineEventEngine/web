@@ -132,7 +132,7 @@ subprojects {
 
     dependencies {
         implementation deps.build.guava
-        implementation "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
+        implementation deps.build.slf4j
         implementation deps.build.checkerAnnotations
         implementation deps.build.errorProneAnnotations
 
