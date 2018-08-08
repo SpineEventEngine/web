@@ -27,10 +27,10 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
-import io.spine.client.TestActorRequestFactory;
 import io.spine.core.TenantId;
 import io.spine.net.EmailAddress;
 import io.spine.net.InternetDomain;
+import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.time.ZoneOffsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static io.spine.time.ZoneIds.systemDefault;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -107,7 +108,7 @@ class FirebaseDatabasePathTest {
     @DisplayName("construct into a valid path")
     void testEscaped() {
         final TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault());
+                TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault(), systemDefault());
         final Query query = requestFactory.query().all(Any.class);
         final String path = FirebaseDatabasePath.allocateForQuery(query).toString();
         assertFalse(path.contains("#"));

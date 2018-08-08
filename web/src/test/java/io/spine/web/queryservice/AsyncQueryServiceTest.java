@@ -35,10 +35,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import static io.grpc.ManagedChannelBuilder.forAddress;
 import static io.spine.client.ConnectionConstants.DEFAULT_CLIENT_SERVICE_PORT;
-import static io.spine.test.Tests.nullRef;
+import static io.spine.testing.Tests.nullRef;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.verify;
  * @author Dmytro Dashenkov
  */
 @DisplayName("AsyncQueryService should")
-@SuppressWarnings({"InnerClassMayBeStatic", "UtilityClassWithoutPrivateConstructor"})
+@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic", "UtilityClassWithoutPrivateConstructor"})
 class AsyncQueryServiceTest {
 
     private static final String EXIST_TEST_NAME = "exist";
@@ -71,7 +72,8 @@ class AsyncQueryServiceTest {
             assertNotNull(proxy);
 
             final Query query = Query.getDefaultInstance();
-            proxy.execute(query);
+            CompletableFuture<QueryResponse> future = proxy.execute(query);
+            assertNotNull(future);
 
             verify(queryService).read(eq(query), any());
         }

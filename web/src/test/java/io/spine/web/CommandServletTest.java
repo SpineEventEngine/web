@@ -22,11 +22,11 @@ package io.spine.web;
 
 import io.spine.base.Time;
 import io.spine.client.CommandFactory;
-import io.spine.client.TestActorRequestFactory;
 import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
+import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.given.CommandServletTestEnv.TestCommandServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

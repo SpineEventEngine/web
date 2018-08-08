@@ -29,7 +29,7 @@ let entities = require("spine-js-client-proto/spine/client/entities_pb.js");
 let actorContext = require("spine-js-client-proto/spine/core/actor_context_pb");
 let command = require("spine-js-client-proto/spine/core/command_pb.js");
 let userId = require("spine-js-client-proto/spine/core/user_id_pb");
-let timeZone = require("spine-js-client-proto/spine/time/zone_pb");
+let time = require("spine-js-client-proto/spine/time/time_pb");
 
 let {TypeUrl, TypedMessage} = require("./typed-message");
 
@@ -153,14 +153,13 @@ export class ActorRequestFactory {
 
     static _zoneOffset() {
         let timeOptions = Intl.DateTimeFormat().resolvedOptions();
-        let zoneId = new timeZone.ZoneId();
+        let zoneId = new time.ZoneId();
         zoneId.setValue(timeOptions.timeZone);
 
         let zoneOffset = ActorRequestFactory._zoneOffsetSeconds();
 
-        let result = new timeZone.ZoneOffset();
+        let result = new time.ZoneOffset();
         result.setAmountSeconds(zoneOffset);
-        result.setId(zoneId);
         return result;
     }
 

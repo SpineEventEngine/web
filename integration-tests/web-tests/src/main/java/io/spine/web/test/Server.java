@@ -23,7 +23,7 @@ package io.spine.web.test;
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 
-import static io.spine.server.BoundedContext.newName;
+import static io.spine.core.BoundedContextNames.newName;
 import static io.spine.server.storage.memory.InMemoryStorageFactory.newInstance;
 
 /**

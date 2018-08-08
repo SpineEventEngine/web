@@ -23,7 +23,7 @@ package io.spine.web.firebase;
 import com.google.protobuf.Any;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
-import io.spine.client.TestActorRequestFactory;
+import io.spine.testing.client.TestActorRequestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
