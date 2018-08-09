@@ -135,4 +135,4 @@ function newRequestFactory() {
   return new ActorRequestFactory("web-test-actor");
 }
 
-const fail = () => assert.notOk(true);
+const fail = () => assert.ok(false);
