@@ -20,6 +20,8 @@
 
 "use strict";
 
+import {Observable} from "./observable";
+
 /**
  * The client of the application backend.
  *
@@ -45,16 +47,34 @@ export class BackendClient {
     }
 
     /**
-     * Fetches all the entities of the given type.
-     *
-     * @param type          the target {@link TypeUrl}
-     * @param dataCallback  the callback which receives the data, one-by-one, in
-     *                      a form of a JS object
-     * @param errorCallback the callback which receives the errors
+     * Defines a fetch query of all objects of specified type.
+     * 
+     * @param ofType {TypeUrl} a type of the entities to be queried
+     * @returns an object allowing two fetch strategies: one-by-one or all-at-once.
+     * @example 
+     * // Fetch items one-by-one using an Observable.
+     * // Suitable for big collections.
+     * fetchAll({ofType: taskType}).oneByOne().subscribe({
+     *   next(value) { ... },
+     *   error(error) { ... },
+     *   complete() { ... }
+     * })
+     * @example 
+     * // Fetch all items at once using a Promise.
+     * fetchAll({ofType: taskType}).atOnce().then(data => { ... })
      */
-    fetchAll(type, dataCallback, errorCallback = null) {
-        let query = this._actorRequestFactory.queryAll(type);
-        this._fetch(query, dataCallback, errorCallback);
+    fetchAll({ofType: typeUrl}) {
+        let query = this._actorRequestFactory.queryAll(typeUrl);
+        return {
+            /**
+             * @returns {Observable} an Observable retrieving values one at a time. 
+             */
+            oneByOne: () => this._fetchOneByOne(query),
+            /**
+             * @returns {Promise} a Promise resolving an array of items matching query.
+             */
+            atOnce: () => this._fetchAtOnce(query)
+        }
     }
 
     /**
@@ -101,10 +121,27 @@ export class BackendClient {
             }, errorCallback);
     }
 
-  _fetch(query, dataCallback, errorCallback=null) {
-    let onError = errorCallback || function (e) {};
-    this._httpClient.postMessage("/query", query)
-        .then(response => response.text())
-        .then(path => this._firebase.subscribeTo(path, dataCallback), onError);
-  }
+    _fetch(query, dataCallback, errorCallback = null) {
+        let onError = errorCallback || function (e) {
+        };
+        this._httpClient.postMessage("/query", query)
+            .then(response => response.text())
+            .then(path => this._firebase.onChildAdded(path, dataCallback), onError);
+    }
+
+    _fetchOneByOne(query) {
+        return new Observable(observer => {
+            this._httpClient.postMessage("/query", query)
+                .then(response => response.text(), observer.error)
+                .then(path => this._firebase.onChildAdded(path, observer.next), observer.error);
+        });
+    }
+
+    _fetchAtOnce(query) {
+        return new Promise((resolve, reject) => {
+            this._httpClient.postMessage("/query?transactional=true", query)
+                .then(response => response.text())
+                .then(path => this._firebase.getValue(path, resolve), reject)
+        });
+    }
 }

@@ -18,23 +18,88 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-let assert = require("assert");
+// noinspection NodeJsCodingAssistanceForCoreModules
+import assert from "assert";
 
-let ActorRequestFactory = require("../../src/client/actor-request-factory").ActorRequestFactory;
-let BackendClient = require("../../src/client/backend-client").BackendClient;
-let FirebaseClient = require("../../src/client/firebase-client").FirebaseClient;
-let HttpClient = require("../../src/client/http-client").HttpClient;
-let firebase = require("./test-firebase-app").devFirebaseApp;
+import {ActorRequestFactory} from "../../src/client/actor-request-factory";
+import {FirebaseClient} from "../../src/client/firebase-client";
+import {devFirebaseApp as firebase} from "./test-firebase-app";
+import {TypedMessage, TypeUrl} from "../../src/client/typed-message";
 
-let commands = require("../../proto/test/js/spine/web/test/commands_pb");
-let task = require("../../proto/test/js/spine/web/test/task_pb");
+import commands from "../../proto/test/js/spine/web/test/commands_pb";
+import task from "../../proto/test/js/spine/web/test/task_pb";
+import {HttpClient} from "../../src/client/http-client";
+import {BackendClient} from "../../src/client/backend-client";
 
-let { TypeUrl, TypedMessage} = require("../../src/client/typed-message");
-let httpClient = new HttpClient("https://spine-dev.appspot.com");
-let requestFactory = new ActorRequestFactory("web-test-actor");
-let backendClient = new BackendClient(httpClient,
-                                      new FirebaseClient(firebase),
-                                      requestFactory);
+const backendClient = newBackendClient();
+
+describe("Client should", function () {
+
+  // Big timeout due to remote calls during tests.
+  this.timeout(2 * MINUTES);
+
+  it("send commands successfully", done => {
+    const productId = randomId("spine-web-test-1-");
+    const command = creteTaskCommand(productId, "Write tests", "client-js needs tests; write'em");
+
+    backendClient.sendCommand(command, function () {
+
+      const type = new TypeUrl("type.spine.io/spine.web.test.Task");
+      const idType = new TypeUrl("type.spine.io/spine.web.test.TaskId");
+      const typedId = new TypedMessage(productId, idType);
+
+      backendClient.fetchById(type, typedId, data => {
+        assert.equal(data.name, command.message.getName());
+        assert.equal(data.description, command.message.getDescription());
+        done();
+      }, done);
+
+    }, fail, fail);
+  });
+
+  it("fetch all the existing entities of given type one by one", done => {
+    const productId = randomId("spine-web-test-2-");
+    const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
+
+    backendClient.sendCommand(command, function () {
+
+      const type = new TypeUrl("type.spine.io/spine.web.test.Task");
+      backendClient.fetchAll({ofType: type}).oneByOne().subscribe({
+        next(data) {
+          // Ordering is not guaranteed by fetch and 
+          // the list of entities cannot be cleaned for tests,
+          // thus at least one of entities should match the target one.
+          if (data.id.value === productId.getValue()) {
+            done();
+          }
+        }
+      });
+
+    }, fail, fail);
+  });
+
+  it("fetch all the existing entities of given type at once", done => {
+    const productId = randomId("spine-web-test-2-");
+    const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
+
+    backendClient.sendCommand(command, function () {
+
+      const type = new TypeUrl("type.spine.io/spine.web.test.Task");
+      backendClient.fetchAll({ofType: type}).atOnce()
+        .then(data => {
+          const targetObject = data.find(item => item.id.value === productId.getValue());
+          assert.ok(targetObject);
+          done();
+        });
+
+    }, fail, fail);
+  });
+});
+
+
+const MILLISECONDS = 1;
+const SECONDS = 1000 * MILLISECONDS;
+const MINUTES = 60 * SECONDS;
 
 function creteTaskCommand(id, name, description) {
   let command = new commands.CreateTask();
@@ -43,9 +108,8 @@ function creteTaskCommand(id, name, description) {
   command.setDescription(description);
 
   let commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
-  let typedCommand = new TypedMessage(command, commandType);
 
-  return typedCommand;
+  return new TypedMessage(command, commandType);
 }
 
 function randomId(prefix) {
@@ -55,34 +119,20 @@ function randomId(prefix) {
   return productId;
 }
 
-describe("Client should", function () {
-  this.timeout(120/*seconds*/ * 1000);
+function newBackendClient() {
+  return new BackendClient(newHttpClient(), newFirebaseClient(), newRequestFactory());
+}
 
-  it("send commands successfully", function (done) {
-    let productId = randomId("spine-web-test-1-");
-    let command = creteTaskCommand(productId, "Write tests", "client-js needs tests; write'em");
-    backendClient.sendCommand(command, function() {
-      let type = new TypeUrl("type.spine.io/spine.web.test.Task");
-      let idType = new TypeUrl("type.spine.io/spine.web.test.TaskId");
-      let typedId = new TypedMessage(productId, idType);
-      backendClient.fetchById(type, typedId, data => {
-        assert.equal(data.name, command.message.getName());
-        assert.equal(data.description, command.message.getDescription());
-        done();
-      }, done);
-    }, done, done);
-  });
+function newHttpClient() {
+  return new HttpClient("https://spine-dev.appspot.com");
+}
 
-  it("fetch all the existing entities of given type", function (done) {
-    let productId = randomId("spine-web-test-2-");
-    let command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
-    backendClient.sendCommand(command, function () {
-      let type = new TypeUrl("type.spine.io/spine.web.test.Task");
-      backendClient.fetchAll(type, function (data) {
-        if (data.id.value === productId.getValue()) {
-          done();
-        }
-      });
-    }, done, done);
-  });
-});
+function newFirebaseClient() {
+  return new FirebaseClient(firebase);
+}
+
+function newRequestFactory() {
+  return new ActorRequestFactory("web-test-actor");
+}
+
+const fail = () => assert.notOk(true);
