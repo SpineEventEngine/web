@@ -130,16 +130,18 @@ export class BackendClient {
 
     _fetchOneByOne(query) {
         return new Observable(observer => {
+
             let receivedCount = 0;
             let promisedCount = null;
             let dbSubscription = null;
+
             this._httpClient.postMessage("/query", query)
-                .then(response => response.text(), observer.error)
+                .then(response => response.text())
                 .then(text => {
                     const data = JSON.parse(text);
                     promisedCount = data.count;
                     return data.path;
-                }, observer.error)
+                })
                 .then(path => {
                     dbSubscription = this._firebase.onChildAdded(path, value => {
                         observer.next(value);
@@ -149,12 +151,15 @@ export class BackendClient {
                             dbSubscription.unsubscribe();
                         }
                     });
-                }, error => {
-                    if (dbSubscription) {
-                        dbSubscription.unsubscribe();
-                    }
-                    observer.error(error);
-                });
+                })
+                .catch(observer.error);
+            
+            // Returning tear down.
+            return () => {
+                if (dbSubscription) {
+                    dbSubscription.unsubscribe();
+                }
+            }
         });
     }
 
@@ -163,7 +168,8 @@ export class BackendClient {
             this._httpClient.postMessage("/query?transactional=true", query)
                 .then(response => response.text())
                 .then(text => JSON.parse(text).path)
-                .then(path => this._firebase.getValue(path, resolve), reject);
+                .then(path => this._firebase.getValue(path, resolve))
+                .catch(error => reject(error));
         });
     }
 }

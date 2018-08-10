@@ -92,13 +92,23 @@ export class Subscription {
 
   constructor(unsubscribe) {
     this._unsubscribe = unsubscribe;
+    this._tearDownCallbacks = [];
   }
 
   /**
    * Unsubscribes the Observer from Observable stopping it from receiving new values.
    */
   unsubscribe() {
+    this._tearDownCallbacks.forEach(callback => callback());
     this._unsubscribe();
+  }
+
+  /**
+   * Adds tear down logic to this Subscription. 
+   * @param tearDown
+   */
+  add(tearDown) {
+    this._tearDownCallbacks.push(tearDown);
   }
 }
 
@@ -244,8 +254,9 @@ export class Observable {
 
     this._subscriber = Subscriber.fromObservable(next, error, complete);
 
+    let tearDown;
     try {
-      this._subscribe({
+      tearDown = this._subscribe({
         next: data => this._subscriber.next(data),
         error: err => this._subscriber.error(err),
         complete: () => this._subscriber.complete(),
@@ -254,8 +265,14 @@ export class Observable {
       this._subscriber.error(err);
     }
 
-    return new Subscription(() => {
+    const subscription = new Subscription(() => {
       this._subscriber.unsubscribe();
     });
+    
+    if (tearDown) {
+      subscription.add(tearDown);
+    }
+
+    return subscription;
   }
 }
