@@ -36,7 +36,7 @@ public class TestQueryServlet extends FirebaseQueryServlet {
 
     public TestQueryServlet() {
         super(FirebaseQueryBridge.newBuilder()
-                                 .serQueryService(Server.application().getQueryService())
+                                 .setQueryService(Server.application().getQueryService())
                                  .setDatabase(FirebaseClient.database())
                                  .build());
     }

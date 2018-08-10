@@ -81,7 +81,7 @@ class FirebaseQueryBridgeTest {
     void testMediate() {
         final TestQueryService queryService = new TestQueryService();
         final FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                              .serQueryService(queryService)
+                                                              .setQueryService(queryService)
                                                               .setDatabase(firebaseDatabase)
                                                               .build();
         final Query query = queryFactory.all(Empty.class);
@@ -98,7 +98,7 @@ class FirebaseQueryBridgeTest {
         final Message dataElement = Time.getCurrentTime();
         final TestQueryService queryService = new TestQueryService(dataElement);
         final FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                              .serQueryService(queryService)
+                                                              .setQueryService(queryService)
                                                               .setDatabase(firebaseDatabase)
                                                               .build();
         final Query query = queryFactory.all(Timestamp.class);
@@ -121,7 +121,7 @@ class FirebaseQueryBridgeTest {
         final long awaitSeconds = 1L;
         final FirebaseQueryBridge bridge =
                 FirebaseQueryBridge.newBuilder()
-                                   .serQueryService(queryService)
+                                   .setQueryService(queryService)
                                    .setDatabase(firebaseDatabase)
                                    .setWriteAwaitSeconds(awaitSeconds)
                                    .build();
@@ -135,7 +135,7 @@ class FirebaseQueryBridgeTest {
     void testTransactionalQuery() {
         TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                        .serQueryService(queryService)
+                                                        .setQueryService(queryService)
                                                         .setDatabase(firebaseDatabase)
                                                         .build();
         bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
@@ -150,7 +150,7 @@ class FirebaseQueryBridgeTest {
     void testNonTransactionalQuery() {
         TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                        .serQueryService(queryService)
+                                                        .setQueryService(queryService)
                                                         .setDatabase(firebaseDatabase)
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));

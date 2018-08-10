@@ -127,7 +127,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
             return this;
         }
 
-        public Builder serQueryService(QueryServiceImplBase service) {
+        public Builder setQueryService(QueryServiceImplBase service) {
             checkNotNull(service);
             this.queryService = AsyncQueryService.local(service);
             return this;
