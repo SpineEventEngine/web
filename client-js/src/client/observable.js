@@ -37,6 +37,10 @@
  */
 
 /**
+ * @callback tearDownCallback
+ */
+
+/**
  * An abstract Observer class.
  *
  * It is passed new values from the Observable to its {@code #next(value)} method,
@@ -96,7 +100,7 @@ export class Subscription {
   }
 
   /**
-   * Unsubscribes the Observer from Observable stopping it from receiving new values.
+   * Unsubscribes the subscription target from Observable stopping it from receiving new values.
    */
   unsubscribe() {
     this._tearDownCallbacks.forEach(callback => callback());
@@ -105,7 +109,7 @@ export class Subscription {
 
   /**
    * Adds tear down logic to this Subscription. 
-   * @param tearDown
+   * @param tearDown {tearDownCallback} a callback invoked before unsubscribing. 
    */
   add(tearDown) {
     this._tearDownCallbacks.push(tearDown);
