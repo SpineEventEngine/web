@@ -97,7 +97,7 @@ final class FirebaseRecord {
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
     private void flushTo(DatabaseReference reference) {
-        queryResponse.thenAccept(
+        queryResponse.thenAcceptAsync(
                 response -> mapMessagesToJson(response).map(json -> addTo(reference, json))
                                                        .forEach(this::mute)
         );
