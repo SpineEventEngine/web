@@ -101,6 +101,9 @@ final class FirebaseRecord {
         return countConsumer.getValue();
     }
 
+    /**
+     * A consumer that counts the number of messages in {@link QueryResponse Query Response}.
+     */
     private static class CountConsumer implements Consumer<QueryResponse> {
 
         private int value;
@@ -110,6 +113,9 @@ final class FirebaseRecord {
             this.value = response.getMessagesCount();
         }
 
+        /**
+         * @return the count of messages in the consumed response
+         */
         public int getValue() {
             return value;
         }
