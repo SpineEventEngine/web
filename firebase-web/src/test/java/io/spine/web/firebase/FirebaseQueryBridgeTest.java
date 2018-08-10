@@ -64,6 +64,7 @@ class FirebaseQueryBridgeTest {
     private static final QueryFactory queryFactory =
             TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class).query();
     private static final int ONE_SECOND = 1000 /* ms */;
+    private static final int SECONDS = ONE_SECOND;
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference pathReference;
@@ -107,8 +108,8 @@ class FirebaseQueryBridgeTest {
         //noinspection ResultOfMethodCallIgnored
         bridge.send(nonTransactionalQuery(query));
 
-        verify(pathReference, timeout(ONE_SECOND)).push();
-        verify(childReference, timeout(ONE_SECOND)).setValueAsync(eq(Json.toCompactJson(dataElement)));
+        verify(pathReference, timeout(5 * SECONDS)).push();
+        verify(childReference, timeout(5 * SECONDS)).setValueAsync(eq(Json.toCompactJson(dataElement)));
     }
 
     @Test
