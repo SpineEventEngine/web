@@ -59,4 +59,19 @@ task linkClientProto {
     dependsOn ':client-js-proto:link'
 }
 
+/**
+ * Creates a node_modules symlink in the root of projectDir 
+ * resolving all of the dependencies in code. 
+ */
+task createNodeModulesLink {
+    doLast {
+        ant.symlink(
+                resource: "${projectDir}/build/node-module/node_modules",
+                link: "${projectDir}/node_modules"
+        )
+    }
+}
+
+tasks.getByPath(':ideaModule').dependsOn createNodeModulesLink
+
 installDependencies.dependsOn linkClientProto
