@@ -108,7 +108,7 @@ class FirebaseQueryBridgeTest {
         bridge.send(nonTransactionalQuery(query));
 
         verify(pathReference, timeout(ONE_SECOND)).push();
-        verify(childReference).setValueAsync(eq(Json.toCompactJson(dataElement)));
+        verify(childReference, timeout(ONE_SECOND)).setValueAsync(eq(Json.toCompactJson(dataElement)));
     }
 
     @Test
