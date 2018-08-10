@@ -58,9 +58,4 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
                                            databaseUrl, count));
         response.setContentType(MIME_TYPE);
     }
-
-    @Override
-    public String toString() {
-        return path.toString();
-    }
 }

@@ -74,16 +74,6 @@ class FirebaseQueryProcessingResultTest {
         assertEquals(expected, stringWriter.toString());
     }
 
-    @Test
-    @DisplayName("provide a comprehensible string representation")
-    void test_toString() {
-        int count = 0;
-        final FirebaseQueryProcessingResult queryResult = 
-                new FirebaseQueryProcessingResult(databasePath, count);
-        String expected = queryProcessingResult(databasePath, count);
-        assertEquals(expected, queryResult.toString());
-    }
-
     private static String queryProcessingResult(FirebaseDatabasePath databasePath, int count) {
         return format("{\"path\": \"%s\", \"count\": %s}", databasePath.toString(), count);
     }
