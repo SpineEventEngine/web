@@ -20,6 +20,8 @@
 
 "use strict";
 
+import {Subscription} from "./observable";
+
 /**
  * The client of a Firebase Realtime database.
  */
@@ -44,10 +46,13 @@ export class FirebaseClient {
    */
   onChildAdded(path, dataCallback) {
     const dbRef = this._firebaseApp.database().ref(path);
-    dbRef.on("child_added", response => {
+    const callback = dbRef.on("child_added", response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
       dataCallback(message);
+    });
+    return Subscription(() => {
+      dbRef.off("child_added", callback);
     });
   }
 

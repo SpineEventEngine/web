@@ -127,30 +127,38 @@ export class BackendClient {
         this._httpClient.postMessage("/query", query)
             .then(response => response.text())
             .then(text => JSON.parse(text).path)
-            .then(path => this._firebase.onChildAdded(path, dataCallback), onError);
+            .then(path => this._firebase.onChildAdded(path, () => {
+              dataCallback
+            }), onError);
     }
 
     _fetchOneByOne(query) {
         return new Observable(observer => {
             let receivedCount = 0;
             let promisedCount = null;
+            let dbSubscription = null;
             this._httpClient.postMessage("/query", query)
-                .then(response => response.text())
+                .then(response => response.text(), observer.error)
                 .then(text => {
-                    console.log(text);
                     const data = JSON.parse(text);
                     promisedCount = data.count;
                     return data.path;
                 }, observer.error)
                 .then(path => {
-                    return this._firebase.onChildAdded(path, value => {
+                    dbSubscription = this._firebase.onChildAdded(path, value => {
                         observer.next(value);
                         receivedCount++;
                         if (receivedCount === promisedCount) {
                             observer.complete();
+                            dbSubscription.unsubscribe();
                         }
-                    })
-                }, observer.error);
+                    });
+                }, error => {
+                    if (dbSubscription) {
+                        dbSubscription.unsubscribe();
+                    }
+                    observer.error(error);
+                });
         });
     }
 
