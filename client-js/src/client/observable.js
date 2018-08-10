@@ -167,26 +167,42 @@ class Subscriber {
    */
   static fromObservable(next, error, complete) {
     let _next = next;
-    if (isUndefined(_next)) {
-      _next = _noop;
+    if (this.isUndefined(_next)) {
+      _next = this._noop;
     }
     let _error = error;
-    if (isUndefined(_error)) {
-      _error = _consoleErrorHandler;
+    if (this.isUndefined(_error)) {
+      _error = this._consoleErrorHandler;
     }
     let _complete = complete;
-    if (isUndefined(_complete)) {
-      _complete = _noop;
+    if (this.isUndefined(_complete)) {
+      _complete = this._noop;
     }
 
     const observer = {next: _next, error: _error, complete: _complete};
 
     return new Subscriber(observer);
   }
-}
 
-function isUndefined(value) {
-  return typeof value === "undefined";
+  /**
+   * A no-operation function that accepts any arguments, return undefined and does nothing.
+   * @private
+   */
+  static _noop() {
+    // Does nothing.
+  }
+
+  /**
+   * A default error handler used by Observable, logging the error to console.
+   * @private
+   */
+  static _consoleErrorHandler(error) {
+    console.error(error);
+  }
+
+  static isUndefined(value) {
+    return typeof value === "undefined";
+  }
 }
 
 /**
@@ -242,20 +258,4 @@ export class Observable {
       this._subscriber.unsubscribe();
     });
   }
-}
-
-/**
- * A no-operation function that accepts any arguments, return undefined and does nothing.
- * @private
- */
-function _noop() {
-  // Does nothing.
-}
-
-/**
- * A default error handler used by Observable, logging the error to console.
- * @private
- */
-function _consoleErrorHandler(error) {
-  console.error(error);
 }

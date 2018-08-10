@@ -52,7 +52,7 @@ describe("Observable should", function () {
         assert.equal(retrievedValues[2], 3);
         done();
       }
-    })
+    });
   });
 
   it("send an error to the observer", done => {

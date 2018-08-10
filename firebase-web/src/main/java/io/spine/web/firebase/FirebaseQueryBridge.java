@@ -23,7 +23,6 @@ package io.spine.web.firebase;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceBlockingStub;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.QueryBridge;
 import io.spine.web.QueryProcessingResult;

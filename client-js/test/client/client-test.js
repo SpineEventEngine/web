@@ -53,10 +53,6 @@ function randomId(prefix) {
   return productId;
 }
 
-function newBackendClient() {
-  return new BackendClient(newHttpClient(), newFirebaseClient(), newRequestFactory());
-}
-
 function newHttpClient() {
   return new HttpClient("https://spine-dev.appspot.com");
 }
@@ -67,6 +63,10 @@ function newFirebaseClient() {
 
 function newRequestFactory() {
   return new ActorRequestFactory("web-test-actor");
+}
+
+function newBackendClient() {
+  return new BackendClient(newHttpClient(), newFirebaseClient(), newRequestFactory());
 }
 
 function fail(done) {
