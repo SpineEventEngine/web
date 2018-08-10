@@ -21,30 +21,32 @@
 package io.spine.web;
 
 import io.spine.client.Query;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.web.WebQuery.nonTransactionalQuery;
+import static io.spine.web.WebQuery.transactionalQuery;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * An {@linkplain io.spine.client.Query entity query} bridge.
- *
- * <p>Connects the {@link io.spine.server.QueryService QueryService} with a query response
- * processor. Typically, the query response processor is the channel which sends the query response
- * to the client.
- *
- * <p>No constrains are applied to the contents of the query. Neither any guaranties are made for
- * the query result. Refer to the concrete implementations to find out the details of their
- * behaviour.
- *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-public interface QueryBridge {
+@DisplayName("WebQuery should")
+class WebQueryTest {
 
-    /**
-     * Sends the given {@link Query} to the {@link io.spine.server.QueryService QueryService} and
-     * dispatches the query response to the query response processor.
-     *
-     * <p>Returns the result of query processing.
-     *
-     * @param query the query to send
-     * @return the query result
-     */
-    QueryProcessingResult send(WebQuery query);
+    @Test
+    @DisplayName("contain false transactional delivery value using nonTransactionalQuery static factory method")
+    void testNonTransactionalFactory() {
+        WebQuery query = nonTransactionalQuery(Query.getDefaultInstance());
+        assertFalse(query.isDeliveredTransactionally());
+    }
+
+    @Test
+    @DisplayName("contain true transactional delivery value using transactionalQuery static factory method ")
+    void testTransactionalFactory() {
+        WebQuery query = transactionalQuery(Query.getDefaultInstance());
+        assertTrue(query.isDeliveredTransactionally());
+    }
+
 }

@@ -30,6 +30,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+import static io.spine.web.WebQuery.nonTransactionalQuery;
+import static io.spine.web.WebQuery.transactionalQuery;
+import static java.lang.Boolean.parseBoolean;
+
 /**
  * An {@link HttpServlet} which receives {@linkplain Query query requests}, passes them
  * into a {@link QueryBridge} and writes the {@linkplain QueryProcessingResult sending result} into
@@ -56,10 +60,17 @@ import java.util.Optional;
  * a servlet container. When trying to serialize an instance of {@code QueryServlet}, an
  * {@link UnsupportedOperationException} is thrown.
  *
+ * <p>An additional {@link #TRANSACTIONAL_QUERY_PARAMETER} can be passed to this servlet specifying
+ * if the client want to receive the results in a single transaction.
+ *
  * @author Dmytro Dashenkov
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class QueryServlet extends NonSerializableServlet {
+
+    // Finds a test duplicate.
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static final String TRANSACTIONAL_QUERY_PARAMETER = "transactional";
 
     private final QueryBridge bridge;
 
@@ -82,13 +93,34 @@ public abstract class QueryServlet extends NonSerializableServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        final Optional<Query> query = HttpMessages.parse(req, Query.class);
-        if (!query.isPresent()) {
+        Optional<Query> optionalQuery = HttpMessages.parse(req, Query.class);
+        if (!optionalQuery.isPresent()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            final Query queryParser = query.get();
-            final QueryProcessingResult result = bridge.send(queryParser);
+            Query query = optionalQuery.get();
+            QueryProcessingResult result;
+
+            WebQuery webQuery = buildQuery(query, isQueryTransactional(req));
+            result = bridge.send(webQuery);
             result.writeTo(resp);
         }
+    }
+
+    private static WebQuery buildQuery(Query query, boolean transactional) {
+        return transactional ? transactionalQuery(query) : nonTransactionalQuery(query);
+    }
+
+    /**
+     * Checks if the client requests the query result to be pushed transactionally.
+     *
+     * <p>The check is performed by treating the {@link #TRANSACTIONAL_QUERY_PARAMETER
+     * "transactional" request parameter} of the request as boolean value.
+     *
+     * @param req the client request to check
+     * @return {@code true} if the parameter is "true", {@code false} otherwise
+     */
+    private static boolean isQueryTransactional(HttpServletRequest req) {
+        String isTransactional = req.getParameter(TRANSACTIONAL_QUERY_PARAMETER);
+        return parseBoolean(isTransactional);
     }
 }
