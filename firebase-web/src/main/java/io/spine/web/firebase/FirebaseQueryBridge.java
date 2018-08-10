@@ -21,13 +21,14 @@
 package io.spine.web.firebase;
 
 import com.google.firebase.database.FirebaseDatabase;
-import io.spine.web.QueryBridge;
-import io.spine.web.QueryProcessingResult;
-import io.spine.web.queryservice.AsyncQueryService;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceBlockingStub;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+import io.spine.web.QueryBridge;
+import io.spine.web.QueryProcessingResult;
+import io.spine.web.WebQuery;
+import io.spine.web.queryservice.AsyncQueryService;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -49,7 +50,7 @@ import static com.google.common.base.Preconditions.checkState;
  * to read the data from the database.
  *
  * <p>Note that the database writes are non-blocking. This means that when
- * the {@link #send(Query)} method exits, the records may or may not be in
+ * the {@link #send(WebQuery)} method exits, the records may or may not be in
  * the database yet.
  *
  * @author Dmytro Dashenkov
@@ -72,14 +73,21 @@ public final class FirebaseQueryBridge implements QueryBridge {
      *
      * <p>Returns the path in the database, under which the query response is stored.
      *
-     * @param query the query to send
+     * @param webQuery the query to send
      * @return a path in the database
      */
     @Override
-    public QueryProcessingResult send(Query query) {
-        final CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        final FirebaseRecord record = new FirebaseRecord(query, queryResponse, writeAwaitSeconds);
-        record.storeTo(database);
+    public QueryProcessingResult send(WebQuery webQuery) {
+        Query query = webQuery.getQuery();
+        CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
+        FirebaseRecord record = new FirebaseRecord(query, queryResponse, writeAwaitSeconds);
+
+        if (webQuery.isDeliveredTransactionally()) {
+            record.storeTransactionallyTo(database);
+        } else {
+            record.storeTo(database);
+        }
+
         final QueryProcessingResult result = new FirebaseQueryProcessingResult(record.path());
         return result;
     }

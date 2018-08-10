@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase;
 
+import com.google.api.core.ApiFuture;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
@@ -30,12 +31,15 @@ import io.spine.protobuf.AnyPacker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A record which can be stored into a {@link FirebaseDatabase}.
@@ -71,19 +75,71 @@ final class FirebaseRecord {
      * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
      */
     void storeTo(FirebaseDatabase database) {
-        final DatabaseReference reference = path().reference(database);
+        DatabaseReference reference = path().reference(database);
         flushTo(reference);
     }
 
+    /**
+     * Writes this record to the given {@link FirebaseDatabase} in a single transaction 
+     * (i.e. in a single batch).
+     *
+     * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
+     */
+    void storeTransactionallyTo(FirebaseDatabase database) {
+        DatabaseReference reference = path().reference(database);
+        flushTransactionallyTo(reference);
+    }
+
+    /**
+     * Flushes the array response of the query to the Firebase asynchronously,
+     * adding array items to storage one by one.
+     *
+     * <p>Suitable for big queries, spanning thousands and millions of items.
+     */
     private void flushTo(DatabaseReference reference) {
-        queryResponse.thenAccept(response -> response.getMessagesList()
-                                                     .parallelStream()
-                                                     .unordered()
-                                                     .map(AnyPacker::<Message>unpack)
-                                                     .map(Json::toCompactJson)
-                                                     .map(value -> reference.push()
-                                                                            .setValueAsync(value))
-                                                     .forEach(this::mute));
+        queryResponse.thenAccept(
+                response -> mapMessagesToJson(response).map(json -> addTo(reference, json))
+                                                       .forEach(this::mute)
+        );
+    }
+
+    /**
+     * Adds the value to the referenced Firebase array path.
+     *
+     * @param reference a Firebase array reference which can be appended an object.
+     * @param item      a String value to add to an Array inside of Firebase
+     * @return a {@code Future} of an item being added
+     */
+    private static ApiFuture<Void> addTo(DatabaseReference reference, String item) {
+        return reference.push()
+                        .setValueAsync(item);
+    }
+
+    /**
+     * Flushes the array response of the query to the Firebase asynchronously but in one go.
+     */
+    private void flushTransactionallyTo(DatabaseReference reference) {
+        queryResponse.thenAccept(
+                response -> {
+                    List<String> jsonItems = mapMessagesToJson(response).collect(toList());
+                    mute(reference.setValueAsync(jsonItems));
+                }
+        );
+    }
+
+    /**
+     * Creates a stream of response messages, mapping each each response message to JSON.
+     *
+     * @param response Spines response to a query
+     * @return a stream of messages represented by JSON strings
+     */
+    @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
+    private static Stream<String> mapMessagesToJson(QueryResponse response) {
+        return response.getMessagesList()
+                       .parallelStream()
+                       .unordered()
+                       .map(AnyPacker::<Message>unpack)
+                       .map(Json::toCompactJson);
     }
 
     /**

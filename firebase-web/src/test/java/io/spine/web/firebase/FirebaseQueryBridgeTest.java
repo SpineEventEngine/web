@@ -40,12 +40,17 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import static io.spine.web.WebQuery.nonTransactionalQuery;
+import static io.spine.web.WebQuery.transactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,11 +81,11 @@ class FirebaseQueryBridgeTest {
     void testMediate() {
         final TestQueryService queryService = new TestQueryService();
         final FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                                .serQueryService(queryService)
-                                                                .setDatabase(firebaseDatabase)
-                                                                .build();
+                                                              .serQueryService(queryService)
+                                                              .setDatabase(firebaseDatabase)
+                                                              .build();
         final Query query = queryFactory.all(Empty.class);
-        final QueryProcessingResult result = bridge.send(query);
+        final QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
 
         assertThat(result, instanceOf(FirebaseQueryProcessingResult.class));
     }
@@ -88,16 +93,16 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("write query results to the database")
     void testWriteData() {
-        futureWillCome();
+        futureWillComeFromChild();
 
         final Message dataElement = Time.getCurrentTime();
         final TestQueryService queryService = new TestQueryService(dataElement);
         final FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                                .serQueryService(queryService)
-                                                                .setDatabase(firebaseDatabase)
-                                                                .build();
+                                                              .serQueryService(queryService)
+                                                              .setDatabase(firebaseDatabase)
+                                                              .build();
         final Query query = queryFactory.all(Timestamp.class);
-        final QueryProcessingResult result = bridge.send(query);
+        final QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
 
         final String dbPath = result.toString();
         verify(firebaseDatabase).getReference(eq(dbPath));
@@ -107,8 +112,9 @@ class FirebaseQueryBridgeTest {
 
     @Test
     @DisplayName("ignore execution timeouts")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     void testIgnoreErrors() throws InterruptedException, ExecutionException, TimeoutException {
-        futureWillNotCome();
+        futureWillNotComeFromChild();
 
         final Message dataElement = Time.getCurrentTime();
         final TestQueryService queryService = new TestQueryService(dataElement);
@@ -120,18 +126,47 @@ class FirebaseQueryBridgeTest {
                                    .setWriteAwaitSeconds(awaitSeconds)
                                    .build();
         final Query query = queryFactory.all(Timestamp.class);
-        bridge.send(query);
+        bridge.send(nonTransactionalQuery(query));
     }
 
-    private void futureWillCome() {
-        @SuppressWarnings("unchecked")
-        final ApiFuture<Void> future = mock(ApiFuture.class);
+    @Test
+    @DisplayName("use transactional store call")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    void testTransactionalQuery() {
+        TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
+        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
+                                                        .serQueryService(queryService)
+                                                        .setDatabase(firebaseDatabase)
+                                                        .build();
+        bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
+
+        verify(pathReference).setValueAsync(eq(singletonList("{}")));
+        verify(childReference, never()).setValueAsync(any(Object.class));
+    }
+
+    @Test
+    @DisplayName("use non-transactional store call")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    void testNonTransactionalQuery() {
+        TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
+        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
+                                                        .serQueryService(queryService)
+                                                        .setDatabase(firebaseDatabase)
+                                                        .build();
+        bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
+
+        verify(childReference).setValueAsync(eq("{}"));
+        verify(pathReference, never()).setValueAsync(any(Object.class));
+    }
+
+    private void futureWillComeFromChild() {
+        @SuppressWarnings("unchecked") ApiFuture<Void> future = mock(ApiFuture.class);
         when(childReference.setValueAsync(anyString())).thenReturn(future);
     }
 
-    private void futureWillNotCome()
+    private void futureWillNotComeFromChild()
             throws InterruptedException, ExecutionException, TimeoutException {
-        final ApiFuture<Void> future = timeoutFuture();
+        ApiFuture<Void> future = timeoutFuture();
         when(childReference.setValueAsync(anyString())).thenReturn(future);
     }
 }
