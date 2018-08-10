@@ -85,69 +85,6 @@ class Observer {
 }
 
 /**
- * An implementation of Observable pattern.
- *
- * An Observable represents a set of values over some period of time.
- *
- * An Observable accepts a single subscriber, supplying each new observed value to its
- * {@code next(item)} method.
- *
- * When all of the possible values are observed an Observable call Observers
- * {@code complete()} method.
- *
- * If an error occurres while processing any Observable value it calls the Observers
- * {@code error(err)} method.
- */
-export class Observable {
-
-  /**
-   * @param subscribe {observableInput}
-   */
-  constructor(subscribe) {
-    this._subscribe = subscribe;
-    this._subscriber = null;
-  }
-
-  /**
-   * Subscribes a provided Observable to observe new values.
-   *
-   * @param next {nextCallback}
-   * @param error? {errorCallback}
-   * @param complete? {completeCallback}
-   * @return {Subscription}
-   */
-  subscribe({next = undefined, error = undefined, complete = undefined}) {
-    if (this._subscriber) {
-      throw new Error("This observable already has a subscriber.")
-    }
-
-    this._subscriber = Subscriber.fromObservable(next, error, complete);
-
-    try {
-      this._subscribe({
-        next: data => this._subscriber.next(data),
-        error: err => this._subscriber.error(err),
-        complete: () => this._subscriber.complete(),
-      });
-    } catch (err) {
-      this._subscriber.error(err);
-    }
-
-    return new Subscription(() => {
-      this._subscriber.unsubscribe();
-    });
-  }
-}
-
-/**
- * A no-operation function that accepts any arguments, return undefined and does nothing.
- * @private
- */
-function _noop() {
-  // Does nothing.
-}
-
-/**
  * A subscription returned by the Observable allowing to unsubscribe the Observer from receiving
  * new values.
  */
@@ -230,15 +167,15 @@ class Subscriber {
    */
   static fromObservable(next, error, complete) {
     let _next = next;
-    if (_next === undefined) {
+    if (isUndefined(_next)) {
       _next = _noop;
     }
     let _error = error;
-    if (_error === undefined) {
+    if (isUndefined(_error)) {
       _error = _consoleErrorHandler;
     }
     let _complete = complete;
-    if (_complete === undefined) {
+    if (isUndefined(_complete)) {
       _complete = _noop;
     }
 
@@ -246,6 +183,73 @@ class Subscriber {
 
     return new Subscriber(observer);
   }
+}
+
+function isUndefined(value) {
+  return typeof value === "undefined";
+}
+
+/**
+ * An implementation of Observable pattern.
+ *
+ * An Observable represents a set of values over some period of time.
+ *
+ * An Observable accepts a single subscriber, supplying each new observed value to its
+ * {@code next(item)} method.
+ *
+ * When all of the possible values are observed an Observable call Observers
+ * {@code complete()} method.
+ *
+ * If an error occurres while processing any Observable value it calls the Observers
+ * {@code error(err)} method.
+ */
+export class Observable {
+
+  /**
+   * @param subscribe {observableInput}
+   */
+  constructor(subscribe) {
+    this._subscribe = subscribe;
+    this._subscriber = null;
+  }
+
+  /**
+   * Subscribes a provided Observable to observe new values.
+   *
+   * @param next {nextCallback}
+   * @param error? {errorCallback}
+   * @param complete? {completeCallback}
+   * @return {Subscription}
+   */
+  subscribe({next, error, complete}) {
+    if (this._subscriber) {
+      throw new Error("This observable already has a subscriber.");
+    }
+
+    this._subscriber = Subscriber.fromObservable(next, error, complete);
+
+    try {
+      this._subscribe({
+        next: data => this._subscriber.next(data),
+        error: err => this._subscriber.error(err),
+        complete: () => this._subscriber.complete(),
+      });
+    } catch (err) {
+      this._subscriber.error(err);
+    }
+
+    return new Subscription(() => {
+      this._subscriber.unsubscribe();
+    });
+  }
+}
+
+/**
+ * A no-operation function that accepts any arguments, return undefined and does nothing.
+ * @private
+ */
+function _noop() {
+  // Does nothing.
 }
 
 /**

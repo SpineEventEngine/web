@@ -50,7 +50,7 @@ export class BackendClient {
      * Defines a fetch query of all objects of specified type.
      * 
      * @param ofType {TypeUrl} a type of the entities to be queried
-     * @returns an object allowing two fetch strategies: one-by-one or all-at-once.
+     * @returns {{oneByOne, atOnce}} an object allowing two fetch strategies: one-by-one or all-at-once.
      * @example 
      * // Fetch items one-by-one using an Observable.
      * // Suitable for big collections.
@@ -74,7 +74,7 @@ export class BackendClient {
              * @returns {Promise} a Promise resolving an array of items matching query.
              */
             atOnce: () => this._fetchAtOnce(query)
-        }
+        };
     }
 
     /**
@@ -115,21 +115,17 @@ export class BackendClient {
                 } else if (status.hasOwnProperty("error")) {
                     errorCallback(status.error);
                 } else if (status.hasOwnProperty("rejection")) {
-                    console.log("Command rejected.");
                     rejectionCallback(status.rejection);
                 }
             }, errorCallback);
     }
 
     _fetch(query, dataCallback, errorCallback = null) {
-        let onError = errorCallback || function (e) {
-        };
+        let onError = errorCallback || function (e) {};
         this._httpClient.postMessage("/query", query)
             .then(response => response.text())
             .then(text => JSON.parse(text).path)
-            .then(path => this._firebase.onChildAdded(path, () => {
-              dataCallback
-            }), onError);
+            .then(path => this._firebase.onChildAdded(path, dataCallback), onError);
     }
 
     _fetchOneByOne(query) {
@@ -167,7 +163,7 @@ export class BackendClient {
             this._httpClient.postMessage("/query?transactional=true", query)
                 .then(response => response.text())
                 .then(text => JSON.parse(text).path)
-                .then(path => this._firebase.getValue(path, resolve), reject)
+                .then(path => this._firebase.getValue(path, resolve), reject);
         });
     }
 }

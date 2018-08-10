@@ -76,6 +76,6 @@ describe("Observable should", function () {
         assert.ok(error === expectedError);
         done();
       }
-    })
+    });
   });
 });

@@ -51,7 +51,7 @@ export class FirebaseClient {
       const message = JSON.parse(msgJson);
       dataCallback(message);
     });
-    return Subscription(() => {
+    return new Subscription(() => {
       dbRef.off("child_added", callback);
     });
   }

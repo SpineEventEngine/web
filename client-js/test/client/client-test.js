@@ -31,6 +31,52 @@ import task from "../../proto/test/js/spine/web/test/task_pb";
 import {HttpClient} from "../../src/client/http-client";
 import {BackendClient} from "../../src/client/backend-client";
 
+const MILLISECONDS = 1;
+const SECONDS = 1000 * MILLISECONDS;
+const MINUTES = 60 * SECONDS;
+
+function creteTaskCommand(id, name, description) {
+  let command = new commands.CreateTask();
+  command.setId(id);
+  command.setName(name);
+  command.setDescription(description);
+
+  let commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
+
+  return new TypedMessage(command, commandType);
+}
+
+function randomId(prefix) {
+  let id = prefix + Math.round(Math.random() * 1000);
+  let productId = new task.TaskId();
+  productId.setValue(id);
+  return productId;
+}
+
+function newBackendClient() {
+  return new BackendClient(newHttpClient(), newFirebaseClient(), newRequestFactory());
+}
+
+function newHttpClient() {
+  return new HttpClient("https://spine-dev.appspot.com");
+}
+
+function newFirebaseClient() {
+  return new FirebaseClient(firebase);
+}
+
+function newRequestFactory() {
+  return new ActorRequestFactory("web-test-actor");
+}
+
+function fail(done) {
+  return error => {
+    console.error(error);
+    assert.ok(false);
+    done();
+  };
+}
+
 const backendClient = newBackendClient();
 
 describe("Client should", function () {
@@ -99,50 +145,3 @@ describe("Client should", function () {
     }, fail(done), fail(done));
   });
 });
-
-
-const MILLISECONDS = 1;
-const SECONDS = 1000 * MILLISECONDS;
-const MINUTES = 60 * SECONDS;
-
-function creteTaskCommand(id, name, description) {
-  let command = new commands.CreateTask();
-  command.setId(id);
-  command.setName(name);
-  command.setDescription(description);
-
-  let commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
-
-  return new TypedMessage(command, commandType);
-}
-
-function randomId(prefix) {
-  let id = prefix + Math.round(Math.random() * 1000);
-  let productId = new task.TaskId();
-  productId.setValue(id);
-  return productId;
-}
-
-function newBackendClient() {
-  return new BackendClient(newHttpClient(), newFirebaseClient(), newRequestFactory());
-}
-
-function newHttpClient() {
-  return new HttpClient("https://spine-dev.appspot.com");
-}
-
-function newFirebaseClient() {
-  return new FirebaseClient(firebase);
-}
-
-function newRequestFactory() {
-  return new ActorRequestFactory("web-test-actor");
-}
-
-function fail(done) {
-  return error => {
-    console.error(error);
-    assert.ok(false);
-    done();
-  };
-}
