@@ -25,6 +25,7 @@ import io.spine.web.QueryProcessingResult;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.lang.String.format;
 
 /**
@@ -37,8 +38,7 @@ import static java.lang.String.format;
  */
 final class FirebaseQueryProcessingResult implements QueryProcessingResult {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // The duplication is a coincidence.
-    private static final String MIME_TYPE = "application/json";
+    private static final String JSON_MIME_TYPE = JSON_UTF_8.toString();
 
     private final FirebaseDatabasePath path;
     private final long count;
@@ -56,6 +56,6 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
         final String databaseUrl = path.toString();
         response.getWriter().append(format("{\"path\": \"%s\", \"count\": %s}",
                                            databaseUrl, count));
-        response.setContentType(MIME_TYPE);
+        response.setContentType(JSON_MIME_TYPE);
     }
 }
