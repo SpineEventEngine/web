@@ -20,7 +20,6 @@
 
 package io.spine.web;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Query;
@@ -30,7 +29,6 @@ import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.given.QueryServletTestEnv.TestQueryServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,18 +37,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
-import static io.spine.web.given.QueryServletTestEnv.TRANSACTIONAL_PARAMETER;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Dmytro Dashenkov
@@ -59,7 +50,8 @@ import static org.mockito.Mockito.when;
 class QueryServletTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(QueryServletTest.class).query();
+            TestActorRequestFactory.newInstance(QueryServletTest.class)
+                                   .query();
 
     @Test
     @DisplayName("throw UnsupportedOperationException when trying to serialize")
@@ -77,66 +69,17 @@ class QueryServletTest {
         final QueryServlet servlet = new TestQueryServlet(expectedData);
         final StringWriter response = new StringWriter();
         final Query query = queryFactory.all(Timestamp.class);
-        servlet.doPost(request(query), response(response));
+        HttpServletRequest request = request(newTransactionalQuery(query));
+        servlet.doPost(request, response(response));
         final Timestamp actualData = Json.fromJson(response.toString(), Timestamp.class);
         assertEquals(expectedData, actualData);
     }
 
-    @Test
-    @DisplayName("mark query as transactional if query parameter is true")
-    void testTransactionalParameterTrue() throws IOException {
-        QueryBridge bridge = mock(QueryBridge.class);
-
-        QueryServlet servlet = new TestQueryServlet(bridge);
-
-        HttpServletRequest request = request(queryFactory.all(Empty.class));
-        when(request.getParameter(TRANSACTIONAL_PARAMETER)).thenReturn("true");
-
-        when(bridge.send(any(WebQuery.class))).thenReturn(mock(QueryProcessingResult.class));
-        servlet.doPost(request, response(new StringWriter()));
-
-        ArgumentCaptor<WebQuery> captor = forClass(WebQuery.class);
-        verify(bridge).send(captor.capture());
-        assertTrue(captor.getValue()
-                         .isDeliveredTransactionally());
-    }
-
-    @Test
-    @DisplayName("mark query as non-transactional if query parameter is false")
-    void testTransactionalParameterFalse() throws IOException {
-        QueryBridge bridge = mock(QueryBridge.class);
-
-        QueryServlet servlet = new TestQueryServlet(bridge);
-
-        HttpServletRequest request = request(queryFactory.all(Empty.class));
-        when(request.getParameter(TRANSACTIONAL_PARAMETER)).thenReturn("false");
-
-        when(bridge.send(any(WebQuery.class))).thenReturn(mock(QueryProcessingResult.class));
-        servlet.doPost(request, response(new StringWriter()));
-
-        ArgumentCaptor<WebQuery> captor = forClass(WebQuery.class);
-        verify(bridge).send(captor.capture());
-        assertFalse(captor.getValue()
-                          .isDeliveredTransactionally());
-    }
-
-    @Test
-    @DisplayName("mark query as non-transactional by default")
-    void testTransactionalParameterFalseByDefault() throws IOException {
-        QueryBridge bridge = mock(QueryBridge.class);
-
-        QueryServlet servlet = new TestQueryServlet(bridge);
-
-        HttpServletRequest request = request(queryFactory.all(Empty.class));
-        when(request.getParameter(TRANSACTIONAL_PARAMETER)).thenReturn(null);
-
-        when(bridge.send(any(WebQuery.class))).thenReturn(mock(QueryProcessingResult.class));
-        servlet.doPost(request, response(new StringWriter()));
-
-        ArgumentCaptor<WebQuery> captor = forClass(WebQuery.class);
-        verify(bridge).send(captor.capture());
-        assertFalse(captor.getValue()
-                          .isDeliveredTransactionally());
+    private static WebQuery newTransactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(false)
+                       .build();
     }
 
     @Test

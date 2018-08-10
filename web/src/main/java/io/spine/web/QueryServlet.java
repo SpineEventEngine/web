@@ -20,7 +20,6 @@
 
 package io.spine.web;
 
-import io.spine.client.Query;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -30,12 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-import static io.spine.web.WebQuery.nonTransactionalQuery;
-import static io.spine.web.WebQuery.transactionalQuery;
-import static java.lang.Boolean.parseBoolean;
-
 /**
- * An {@link HttpServlet} which receives {@linkplain Query query requests}, passes them
+ * An {@link HttpServlet} which receives {@linkplain WebQuery web query requests}, passes them
  * into a {@link QueryBridge} and writes the {@linkplain QueryProcessingResult sending result} into
  * the response.
  *
@@ -43,13 +38,17 @@ import static java.lang.Boolean.parseBoolean;
  * {@code DELETE}, {@code OPTIONS}, and {@code TRACE} methods are not supported by default.
  *
  * <p>In order to perform a {@linkplain io.spine.client.Query query}, a client should send an HTTP
- * {@code POST} request to this servlet. The request body should contain
- * a {@linkplain io.spine.json.Json JSON} representation of an
- * {@link io.spine.client.Query io.spine.client.Query}.
+ * {@code POST} request to this servlet. The request body should be a {@linkplain io.spine.json.Json
+ * JSON} representation of a {@link WebQuery io.spine.web.WebQuery}.
+ * 
+ * <p>{@link io.spine.client.Query Query to Spine} is wrapped into a {@link WebQuery WebQuery} 
+ * specifying additional parameters handled by the web server. For example, 
+ * {@link WebQuery#getDeliveredTransactionally()} specifies if the client should retrieve 
+ * the response in a single transaction, or the collection contents should be sent one-by-one.
  *
- * <p>If the request is valid (i.e. the request body contains a valid
- * {@link io.spine.client.Query Query}), the response will contain the {@linkplain QueryProcessingResult
- * query sending result}. Otherwise, the response will be empty with the response code
+ * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query 
+ * Query}), the response will contain the {@linkplain QueryProcessingResult query sending result}. 
+ * Otherwise, the response will be empty with the response code 
  * {@link HttpServletResponse#SC_BAD_REQUEST 400}.
  *
  * <p>A typical implementation would extend this class and provide a {@link QueryBridge} in
@@ -60,9 +59,6 @@ import static java.lang.Boolean.parseBoolean;
  * a servlet container. When trying to serialize an instance of {@code QueryServlet}, an
  * {@link UnsupportedOperationException} is thrown.
  *
- * <p>An additional {@link #TRANSACTIONAL_QUERY_PARAMETER} can be passed to this servlet specifying
- * if the client want to receive the results in a single transaction.
- *
  * @author Dmytro Dashenkov
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
@@ -70,8 +66,6 @@ public abstract class QueryServlet extends NonSerializableServlet {
 
     // Finds a test duplicate.
     @SuppressWarnings("DuplicateStringLiteralInspection")
-    private static final String TRANSACTIONAL_QUERY_PARAMETER = "transactional";
-
     private final QueryBridge bridge;
 
     /**
@@ -93,34 +87,14 @@ public abstract class QueryServlet extends NonSerializableServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        Optional<Query> optionalQuery = HttpMessages.parse(req, Query.class);
+        Optional<WebQuery> optionalQuery = HttpMessages.parse(req, WebQuery.class);
         if (!optionalQuery.isPresent()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            Query query = optionalQuery.get();
+            WebQuery query = optionalQuery.get();
             QueryProcessingResult result;
-
-            WebQuery webQuery = buildQuery(query, isQueryTransactional(req));
-            result = bridge.send(webQuery);
+            result = bridge.send(query);
             result.writeTo(resp);
         }
-    }
-
-    private static WebQuery buildQuery(Query query, boolean transactional) {
-        return transactional ? transactionalQuery(query) : nonTransactionalQuery(query);
-    }
-
-    /**
-     * Checks if the client requests the query result to be pushed transactionally.
-     *
-     * <p>The check is performed by treating the {@link #TRANSACTIONAL_QUERY_PARAMETER
-     * "transactional" request parameter} of the request as boolean value.
-     *
-     * @param req the client request to check
-     * @return {@code true} if the parameter is "true", {@code false} otherwise
-     */
-    private static boolean isQueryTransactional(HttpServletRequest req) {
-        String isTransactional = req.getParameter(TRANSACTIONAL_QUERY_PARAMETER);
-        return parseBoolean(isTransactional);
     }
 }

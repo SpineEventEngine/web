@@ -29,7 +29,6 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
-import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.QueryProcessingResult;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
@@ -40,8 +39,9 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import static io.spine.web.WebQuery.nonTransactionalQuery;
-import static io.spine.web.WebQuery.transactionalQuery;
+import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -109,7 +109,8 @@ class FirebaseQueryBridgeTest {
         bridge.send(nonTransactionalQuery(query));
 
         verify(pathReference, timeout(5 * SECONDS)).push();
-        verify(childReference, timeout(5 * SECONDS)).setValueAsync(eq(Json.toCompactJson(dataElement)));
+        verify(childReference, timeout(5 * SECONDS))
+                .setValueAsync(eq(toCompactJson(dataElement)));
     }
 
     @Test

@@ -81,7 +81,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         FirebaseRecord record = new FirebaseRecord(query, queryResponse, writeAwaitSeconds);
 
-        if (webQuery.isDeliveredTransactionally()) {
+        if (webQuery.getDeliveredTransactionally()) {
             record.storeTransactionallyTo(database);
         } else {
             record.storeTo(database);

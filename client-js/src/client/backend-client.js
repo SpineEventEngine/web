@@ -20,7 +20,9 @@
 
 "use strict";
 
+import web from "spine-js-client-proto/spine/web/web_query_pb"
 import {Observable} from "./observable";
+import {TypedMessage, TypeUrl} from "./typed-message";
 
 /**
  * The client of the application backend.
@@ -64,16 +66,16 @@ export class BackendClient {
      * fetchAll({ofType: taskType}).atOnce().then(data => { ... })
      */
     fetchAll({ofType: typeUrl}) {
-        let query = this._actorRequestFactory.queryAll(typeUrl);
+        const query = this._actorRequestFactory.newQueryForAll(typeUrl);
         return {
             /**
              * @returns {Observable} an Observable retrieving values one at a time. 
              */
-            oneByOne: () => this._fetchOneByOne(query),
+            oneByOne: () => this._fetchManyOneByOne(query),
             /**
              * @returns {Promise} a Promise resolving an array of items matching query.
              */
-            atOnce: () => this._fetchAtOnce(query)
+            atOnce: () => this._fetchManyAtOnce(query)
         };
     }
 
@@ -87,7 +89,7 @@ export class BackendClient {
      * @param errorCallback the callback which receives the errors
      */
     fetchById(type, id, dataCallback, errorCallback = null) {
-        let query = this._actorRequestFactory.queryById(type.value, id);
+        const query = this._actorRequestFactory.queryById(type.value, id);
         this._fetch(query, dataCallback, errorCallback);
     }
 
@@ -121,21 +123,28 @@ export class BackendClient {
     }
 
     _fetch(query, dataCallback, errorCallback = null) {
-        let onError = errorCallback || function (e) {};
-        this._httpClient.postMessage("/query", query)
+        const onError = errorCallback || function (e) {};
+        
+        const webQuery = _newWebQuery({of: query, delivered: STRATEGY.oneByOne});
+        const typedQuery = _newTypedWebQuery(webQuery);
+        
+        this._httpClient.postMessage("/query", typedQuery)
             .then(response => response.text())
             .then(text => JSON.parse(text).path)
             .then(path => this._firebase.onChildAdded(path, dataCallback), onError);
     }
 
-    _fetchOneByOne(query) {
+    _fetchManyOneByOne(query) {
+        const webQuery = _newWebQuery({of: query, delivered: STRATEGY.oneByOne});
+        const typedQuery = _newTypedWebQuery(webQuery);
+        
         return new Observable(observer => {
 
             let receivedCount = 0;
             let promisedCount = null;
             let dbSubscription = null;
 
-            this._httpClient.postMessage("/query", query)
+            this._httpClient.postMessage("/query", typedQuery)
                 .then(response => response.text())
                 .then(text => {
                     const data = JSON.parse(text);
@@ -163,9 +172,12 @@ export class BackendClient {
         });
     }
 
-    _fetchAtOnce(query) {
+    _fetchManyAtOnce(query) {
+        const webQuery = _newWebQuery({of: query, delivered: STRATEGY.allAtOnce});
+        const typedQuery = _newTypedWebQuery(webQuery);
+        
         return new Promise((resolve, reject) => {
-            this._httpClient.postMessage("/query?transactional=true", query)
+            this._httpClient.postMessage("/query", typedQuery)
                 .then(response => response.text())
                 .then(text => JSON.parse(text).path)
                 .then(path => this._firebase.getValue(path, resolve))
@@ -173,3 +185,39 @@ export class BackendClient {
         });
     }
 }
+
+/**
+ * Builds a new WebQuery from Query and client delivery strategy.
+ *
+ * @param of {Query} a Query to be executed by Spine
+ * @param delivered {STRATEGY}
+ * @private
+ */
+function _newWebQuery({of: query, delivered: transactionally}) {
+  const webQuery = new web.WebQuery();
+  webQuery.setQuery(query);
+  webQuery.setDeliveredTransactionally(transactionally);
+  return webQuery;
+}
+
+function _newTypedWebQuery(webQuery) {
+  return new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
+}
+
+/**
+ * The type URL representing the spine.client.Query.
+ *
+ * @type {TypeUrl}
+ */
+const WEB_QUERY_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.web.WebQuery");
+
+/**
+ * Enum of WebQuery transactional delivery attribute values.
+ *
+ * @readonly
+ * @enum boolean
+ */
+const STRATEGY = Object.freeze({
+  allAtOnce: true,
+  oneByOne: false
+});

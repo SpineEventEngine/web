@@ -18,35 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
+package io.spine.web.firebase.given;
 
 import io.spine.client.Query;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static io.spine.web.WebQuery.nonTransactionalQuery;
-import static io.spine.web.WebQuery.transactionalQuery;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import io.spine.web.WebQuery;
 
 /**
  * @author Mykhailo Drachuk
  */
-@DisplayName("WebQuery should")
-class WebQueryTest {
+public class FirebaseQueryBridgeTestEnv {
 
-    @Test
-    @DisplayName("contain false transactional delivery value using nonTransactionalQuery static factory method")
-    void testNonTransactionalFactory() {
-        WebQuery query = nonTransactionalQuery(Query.getDefaultInstance());
-        assertFalse(query.isDeliveredTransactionally());
+    /**
+     * Prevents instantiation of this test environment.
+     */
+    private FirebaseQueryBridgeTestEnv() {
+        
     }
 
-    @Test
-    @DisplayName("contain true transactional delivery value using transactionalQuery static factory method ")
-    void testTransactionalFactory() {
-        WebQuery query = transactionalQuery(Query.getDefaultInstance());
-        assertTrue(query.isDeliveredTransactionally());
+    public static WebQuery transactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(true)
+                       .build();
     }
 
+    public static WebQuery nonTransactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(false)
+                       .build();
+    }
 }

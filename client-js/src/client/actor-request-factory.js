@@ -20,18 +20,17 @@
 
 "use strict";
 
-let uuid = require("uuid");
+import uuid from "uuid";
 
-let timestamp = require("spine-js-client-proto/google/protobuf/timestamp_pb.js");
+import timestamp from "spine-js-client-proto/google/protobuf/timestamp_pb";
+import query from "spine-js-client-proto/spine/client/query_pb";
+import entities from "spine-js-client-proto/spine/client/entities_pb";
+import actorContext from "spine-js-client-proto/spine/core/actor_context_pb";
+import command from "spine-js-client-proto/spine/core/command_pb";
+import userId from "spine-js-client-proto/spine/core/user_id_pb";
+import time from "spine-js-client-proto/spine/time/time_pb";
+import {TypedMessage, TypeUrl} from "./typed-message";
 
-let query = require("spine-js-client-proto/spine/client/query_pb.js");
-let entities = require("spine-js-client-proto/spine/client/entities_pb.js");
-let actorContext = require("spine-js-client-proto/spine/core/actor_context_pb");
-let command = require("spine-js-client-proto/spine/core/command_pb.js");
-let userId = require("spine-js-client-proto/spine/core/user_id_pb");
-let time = require("spine-js-client-proto/spine/time/time_pb");
-
-let {TypeUrl, TypedMessage} = require("./typed-message");
 
 /**
  * The type URL representing the spine.core.Command.
@@ -39,13 +38,6 @@ let {TypeUrl, TypedMessage} = require("./typed-message");
  * @type {TypeUrl}
  */
 const COMMAND_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.core.Command");
-
-/**
- * The type URL representing the spine.client.Query.
- *
- * @type {TypeUrl}
- */
-const QUERY_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.client.Query");
 
 /**
  * A factory for the various requests fired from the client-side by an actor.
@@ -68,12 +60,11 @@ export class ActorRequestFactory {
      * @param typeUrl the type URL of the target type; represented as a string
      * @return a {@link TypedMessage} of the built query
      */
-    queryAll(typeUrl) {
+    newQueryForAll(typeUrl) {
         let target = new entities.Target();
         target.setType(typeUrl.value);
         target.setIncludeAll(true);
-        let result = this._query(target);
-        return result;
+        return this._newQuery(target);
     }
 
     /**
@@ -85,19 +76,20 @@ export class ActorRequestFactory {
      * @return a {@link TypedMessage} of the built query
      */
     queryById(typeUrl, id) {
-        let target = new entities.Target();
-        target.setType(typeUrl);
-
-        let entityId = new entities.EntityId();
+        const entityId = new entities.EntityId();
         entityId.setId(id.toAny());
-        let idFilter = new entities.EntityIdFilter();
+
+        const idFilter = new entities.EntityIdFilter();
         idFilter.addIds(entityId);
-        let filters = new entities.EntityFilters();
+
+        const filters = new entities.EntityFilters();
         filters.setIdFilter(idFilter);
+
+        const target = new entities.Target();
+        target.setType(typeUrl);
         target.setFilters(filters);
 
-        let result = this._query(target);
-        return result;
+        return this._newQuery(target);
     }
 
     /**
@@ -120,7 +112,7 @@ export class ActorRequestFactory {
         return typedResult;
     }
 
-    _query(target) {
+    _newQuery(target) {
         let id = ActorRequestFactory._newQueryId();
         let actorContext = this._actorContext();
 
@@ -129,8 +121,7 @@ export class ActorRequestFactory {
         result.setTarget(target);
         result.setContext(actorContext);
 
-        let typedResult = new TypedMessage(result, QUERY_MESSAGE_TYPE);
-        return typedResult;
+        return result;
     }
 
     _actorContext() {
