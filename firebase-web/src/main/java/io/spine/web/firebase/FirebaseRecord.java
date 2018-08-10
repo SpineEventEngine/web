@@ -93,6 +93,7 @@ final class FirebaseRecord {
 
     /**
      * Synchronously retrieves a count of records that will be supplied to the client.
+     *
      * @return an integer number of records
      */
     int getCount() {
