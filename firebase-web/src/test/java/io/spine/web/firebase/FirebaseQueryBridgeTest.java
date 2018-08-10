@@ -51,6 +51,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,6 +63,7 @@ class FirebaseQueryBridgeTest {
 
     private static final QueryFactory queryFactory =
             TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class).query();
+    private static final int ONE_SECOND = 1000 /* ms */;
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference pathReference;
@@ -106,7 +108,7 @@ class FirebaseQueryBridgeTest {
 
         final String dbPath = result.toString();
         verify(firebaseDatabase).getReference(eq(dbPath));
-        verify(pathReference).push();
+        verify(pathReference, timeout(ONE_SECOND)).push();
         verify(childReference).setValueAsync(eq(Json.toCompactJson(dataElement)));
     }
 
@@ -155,7 +157,7 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(childReference).setValueAsync(eq("{}"));
+        verify(childReference, timeout(ONE_SECOND)).setValueAsync(eq("{}"));
         verify(pathReference, never()).setValueAsync(any(Object.class));
     }
 

@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -63,17 +64,27 @@ class FirebaseQueryProcessingResultTest {
         final PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        final FirebaseQueryProcessingResult queryResult = new FirebaseQueryProcessingResult(databasePath);
+        int count = 2;
+        final FirebaseQueryProcessingResult queryResult = 
+                new FirebaseQueryProcessingResult(databasePath, count);
         queryResult.writeTo(response);
         verify(response).getWriter();
 
-        assertEquals(databasePath.toString(), stringWriter.toString());
+        String expected = queryProcessingResult(databasePath, count);
+        assertEquals(expected, stringWriter.toString());
     }
 
     @Test
     @DisplayName("provide a comprehensible string representation")
     void test_toString() {
-        final FirebaseQueryProcessingResult queryResult = new FirebaseQueryProcessingResult(databasePath);
-        assertEquals(databasePath.toString(), queryResult.toString());
+        int count = 0;
+        final FirebaseQueryProcessingResult queryResult = 
+                new FirebaseQueryProcessingResult(databasePath, count);
+        String expected = queryProcessingResult(databasePath, count);
+        assertEquals(expected, queryResult.toString());
+    }
+
+    private static String queryProcessingResult(FirebaseDatabasePath databasePath, int count) {
+        return format("{\"path\": \"%s\", \"count\": %s}", databasePath.toString(), count);
     }
 }

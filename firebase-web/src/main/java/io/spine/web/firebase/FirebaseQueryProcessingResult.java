@@ -25,6 +25,8 @@ import io.spine.web.QueryProcessingResult;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
+import static java.lang.String.format;
+
 /**
  * A result of a query processed by a {@link FirebaseQueryBridge}.
  *
@@ -35,12 +37,15 @@ import java.io.IOException;
  */
 final class FirebaseQueryProcessingResult implements QueryProcessingResult {
 
-    private static final String MIME_TYPE = "text/plain";
+    @SuppressWarnings("DuplicateStringLiteralInspection") // The duplication is a coincidence.
+    private static final String MIME_TYPE = "application/json";
 
     private final FirebaseDatabasePath path;
+    private final long count;
 
-    FirebaseQueryProcessingResult(FirebaseDatabasePath path) {
+    FirebaseQueryProcessingResult(FirebaseDatabasePath path, long count) {
         this.path = path;
+        this.count = count;
     }
 
     /**
@@ -49,7 +54,8 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         final String databaseUrl = path.toString();
-        response.getWriter().append(databaseUrl);
+        response.getWriter().append(format("{\"path\": \"%s\", \"count\": %s}",
+                                           databaseUrl, count));
         response.setContentType(MIME_TYPE);
     }
 

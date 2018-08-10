@@ -52,9 +52,9 @@ describe("Client should", function () {
         assert.equal(data.name, command.message.getName());
         assert.equal(data.description, command.message.getDescription());
         done();
-      }, done);
+      }, fail(done));
 
-    }, fail, fail);
+    }, fail(done), fail(done));
   });
 
   it("fetch all the existing entities of given type one by one", done => {
@@ -63,19 +63,23 @@ describe("Client should", function () {
 
     backendClient.sendCommand(command, function () {
 
+      let itemFound = false;
       const type = new TypeUrl("type.spine.io/spine.web.test.Task");
+
       backendClient.fetchAll({ofType: type}).oneByOne().subscribe({
         next(data) {
           // Ordering is not guaranteed by fetch and 
           // the list of entities cannot be cleaned for tests,
           // thus at least one of entities should match the target one.
-          if (data.id.value === productId.getValue()) {
-            done();
-          }
+          itemFound = data.id.value === productId.getValue() || itemFound;
+        },
+        error: fail(done),
+        complete() {
+          done();
         }
       });
 
-    }, fail, fail);
+    }, fail(done), fail(done));
   });
 
   it("fetch all the existing entities of given type at once", done => {
@@ -90,9 +94,9 @@ describe("Client should", function () {
           const targetObject = data.find(item => item.id.value === productId.getValue());
           assert.ok(targetObject);
           done();
-        });
+        }, fail(done));
 
-    }, fail, fail);
+    }, fail(done), fail(done));
   });
 });
 
@@ -135,4 +139,10 @@ function newRequestFactory() {
   return new ActorRequestFactory("web-test-actor");
 }
 
-const fail = () => assert.ok(false);
+function fail(done) {
+  return error => {
+    console.error(error);
+    assert.ok(false);
+    done();
+  };
+}

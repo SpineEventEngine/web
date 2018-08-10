@@ -36,6 +36,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -80,7 +81,7 @@ final class FirebaseRecord {
     }
 
     /**
-     * Writes this record to the given {@link FirebaseDatabase} in a single transaction 
+     * Writes this record to the given {@link FirebaseDatabase} in a single transaction
      * (i.e. in a single batch).
      *
      * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
@@ -88,6 +89,30 @@ final class FirebaseRecord {
     void storeTransactionallyTo(FirebaseDatabase database) {
         DatabaseReference reference = path().reference(database);
         flushTransactionallyTo(reference);
+    }
+
+    /**
+     * Synchronously retrieves a count of records that will be supplied to the client.
+     * @return an integer number of records
+     */
+    int getCount() {
+        CountConsumer countConsumer = new CountConsumer();
+        queryResponse.thenAccept(countConsumer);
+        return countConsumer.getValue();
+    }
+
+    private static class CountConsumer implements Consumer<QueryResponse> {
+
+        private int value;
+
+        @Override
+        public void accept(QueryResponse response) {
+            this.value = response.getMessagesCount();
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     /**
