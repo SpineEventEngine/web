@@ -104,10 +104,9 @@ class FirebaseQueryBridgeTest {
                                                               .setDatabase(firebaseDatabase)
                                                               .build();
         final Query query = queryFactory.all(Timestamp.class);
-        final QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
+        //noinspection ResultOfMethodCallIgnored
+        bridge.send(nonTransactionalQuery(query));
 
-        final String dbPath = result.toString();
-        verify(firebaseDatabase).getReference(eq(dbPath));
         verify(pathReference, timeout(ONE_SECOND)).push();
         verify(childReference).setValueAsync(eq(Json.toCompactJson(dataElement)));
     }
