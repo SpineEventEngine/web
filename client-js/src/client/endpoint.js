@@ -43,7 +43,7 @@ export class Endpoint {
   /**
    * Sends off a command to the endpoint.
    *
-   * @param command {Message} a domain command
+   * @param command {TypedMessage<Command>} a Command send to Spine
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
    */
@@ -56,7 +56,7 @@ export class Endpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param query {Query} a Query to Spine to retrieve some domain entities
+   * @param query {TypedMessage<Query>} a Query to Spine to retrieve some domain entities
    * @param strategy {QUERY_STRATEGY} a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx

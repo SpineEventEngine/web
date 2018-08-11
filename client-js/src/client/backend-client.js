@@ -93,13 +93,14 @@ export class BackendClient {
   /**
    * Sends the given command to the server.
    *
-   * @param command the {@link TypedMessage} representing the command message
+   * @param commandMessage    the {@link TypedMessage} representing the command message
    * @param successListener   the no-argument callback invoked if the command
    *                          is acknowledged
    * @param errorCallback     the callback which receives the errors
    * @param rejectionCallback the callback which receives the command rejections
    */
-  sendCommand(command, successListener, errorCallback, rejectionCallback) {
+  sendCommand(commandMessage, successListener, errorCallback, rejectionCallback) {
+    const command = this._actorRequestFactory.command(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
         const status = ack.status;

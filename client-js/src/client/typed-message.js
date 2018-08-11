@@ -29,6 +29,8 @@ let base64 = require("base64-js");
  * Consists of the two parts separated with a slash. The first part is
  * the type URL prefix (for example, {@code "type.googleapis.com"}).
  * The second part is a fully-qualified Protobuf type name.
+ * 
+ * @template T
  */
 export class TypeUrl {
 
@@ -52,6 +54,8 @@ export class TypeUrl {
  * A Protobuf message with a {@link TypeUrl}.
  *
  * The type URL specifies the type of the associated message.
+ * 
+ * @template T
  */
 export class TypedMessage {
 
@@ -60,7 +64,7 @@ export class TypedMessage {
      * type URL.
      *
      * @param message the Protobuf message
-     * @param typeUrl the {@link TypeUrl} representing the type of the message
+     * @param typeUrl the {@link TypeUrl<T>} representing the type of the message
      */
     constructor(message, typeUrl) {
         this.message = message;

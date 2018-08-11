@@ -58,7 +58,7 @@ export class ActorRequestFactory {
      * Creates a Query targeting all the instances of the given type.
      *
      * @param typeUrl the type URL of the target type; represented as a string
-     * @return a {@link TypedMessage} of the built query
+     * @return a {@link TypedMessage<Query>} of the built query
      */
     newQueryForAll(typeUrl) {
         let target = new entities.Target();
@@ -73,7 +73,7 @@ export class ActorRequestFactory {
      * @param typeUrl the type URL of the target type; represented as a string
      * @param id      the ID of the instance targeted by this query, represented
      *                as a {@link TypedMessage}
-     * @return a {@link TypedMessage} of the built query
+     * @return a {@link TypedMessage<Query>} of the built query
      */
     queryById(typeUrl, id) {
         const entityId = new entities.EntityId();
@@ -96,7 +96,7 @@ export class ActorRequestFactory {
      * Creates a Command from the given command message.
      *
      * @param message the command message, represented as a {@link TypedMessage}
-     * @returns a {@link TypedMessage} of the built command
+     * @returns a {@link TypedMessage<Command>} of the built command
      */
     command(message) {
         let id = ActorRequestFactory._newCommandId();
