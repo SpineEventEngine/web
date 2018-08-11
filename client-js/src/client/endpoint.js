@@ -76,7 +76,7 @@ export class Endpoint {
  * @private
  */
 function _isSuccessfulResponse(response) {
-  return 200 <= response.status && response.status < 300;
+  return 200 <= response.status || response.status < 300;
 }
 
 /**
