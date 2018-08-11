@@ -30,6 +30,7 @@ import commands from "../../proto/test/js/spine/web/test/commands_pb";
 import task from "../../proto/test/js/spine/web/test/task_pb";
 import {HttpClient} from "../../src/client/http-client";
 import {BackendClient} from "../../src/client/backend-client";
+import {Endpoint} from "../../src/client/endpoint";
 
 const MILLISECONDS = 1;
 const SECONDS = 1000 * MILLISECONDS;
@@ -53,8 +54,9 @@ function randomId(prefix) {
   return productId;
 }
 
-function newHttpClient() {
-  return new HttpClient("https://spine-dev.appspot.com");
+function testEndpoint() {
+  const httpClient = new HttpClient("https://spine-dev.appspot.com");
+  return new Endpoint(httpClient);
 }
 
 function newFirebaseClient() {
@@ -66,7 +68,7 @@ function newRequestFactory() {
 }
 
 function newBackendClient() {
-  return new BackendClient(newHttpClient(), newFirebaseClient(), newRequestFactory());
+  return new BackendClient(testEndpoint(), newFirebaseClient(), newRequestFactory());
 }
 
 function fail(done) {
