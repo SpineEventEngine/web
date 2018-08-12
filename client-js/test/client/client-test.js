@@ -29,8 +29,8 @@ import {TypedMessage, TypeUrl} from "../../src/client/typed-message";
 import {CreateTask} from "../../proto/test/js/spine/web/test/commands_pb";
 import {TaskId} from "../../proto/test/js/spine/web/test/task_pb";
 import {HttpClient} from "../../src/client/http-client";
+import {HttpEndpoint} from "../../src/client/http-endpoint";
 import {BackendClient} from "../../src/client/backend-client";
-import {Endpoint} from "../../src/client/endpoint";
 
 const MILLISECONDS = 1;
 const SECONDS = 1000 * MILLISECONDS;
@@ -56,7 +56,7 @@ function randomId(prefix) {
 
 function testEndpoint() {
   const httpClient = new HttpClient("https://spine-dev.appspot.com");
-  return new Endpoint(httpClient);
+  return new HttpEndpoint(httpClient);
 }
 
 function newFirebaseClient() {

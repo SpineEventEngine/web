@@ -29,9 +29,10 @@ import {WebQuery} from "spine-js-client-proto/spine/web/web_query_pb";
 const WEB_QUERY_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.web.WebQuery");
 
 /**
- * An endpoint to send Commands and Queries to.
+ * Spine HTTP endpoint which is used to send off Commands and Queries using 
+ * the provided HTTP client.
  */
-export class Endpoint {
+export class HttpEndpoint {
 
   /**
    * @param {!HttpClient} httpClient a client sending requests to server
@@ -50,7 +51,7 @@ export class Endpoint {
   command(command) {
     return this._httpClient
       .postMessage("/command", command)
-      .then(Endpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection);
   }
 
   /**
@@ -62,11 +63,11 @@ export class Endpoint {
    *                           the client response is not 2xx
    */
   query(query, strategy) {
-    const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
+    const webQuery = HttpEndpoint._newWebQuery({of: query, delivered: strategy});
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
     return this._httpClient
       .postMessage("/query", typedQuery)
-      .then(Endpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection);
   }
 
   /**
@@ -91,7 +92,7 @@ export class Endpoint {
    * @private
    */
   static _jsonOrRejection(response) {
-    if (Endpoint._isSuccessfulResponse(response)) {
+    if (HttpEndpoint._isSuccessfulResponse(response)) {
       return response.json();
     } else {
       return Promise.reject(new EndpointError(response));

@@ -117,7 +117,7 @@ class Fetch {
 export class BackendClient {
 
   /**
-   * @param {!Endpoint} endpoint the server endpoint to execute queries and commands
+   * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
    * @param {!FirebaseClient} firebaseClient the client to read the query results from
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
    */
