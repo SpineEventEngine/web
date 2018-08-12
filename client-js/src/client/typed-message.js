@@ -27,7 +27,7 @@ let base64 = require("base64-js");
  * A URL of a Protobuf type.
  *
  * Consists of the two parts separated with a slash. The first part is
- * the type URL prefix (for example, {@code "type.googleapis.com"}).
+ * the type URL prefix (for example, `type.googleapis.com`).
  * The second part is a fully-qualified Protobuf type name.
  * 
  * @template T

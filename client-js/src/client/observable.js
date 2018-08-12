@@ -43,9 +43,9 @@
 /**
  * An abstract Observer class.
  *
- * It is passed new values from the Observable to its {@code #next(value)} method,
- * errors to {@code #error(err)} method and a notification about Observable completion to its
- * {@code complete()} method.
+ * It is passed new values from the Observable to its `#next(value)` method,
+ * errors to `#error(err)` method and a notification about Observable completion to its
+ * `complete()` method.
  *
  * This class defines an interface for documentation and code completion. In real code use
  * a Javascript Object instead:
@@ -171,7 +171,7 @@ class Subscriber {
    * Creates a new Subscriber from a provided Observer, supplying it with default next, error
    * and complete method implementations.
    *
-   * {@code next} and {@code complete} use no-op as a default, while the {@code error} is logging
+   * `next` and `complete` use no-op as a default, while the `error` is logging
    * the values to the console.
    *
    * @param next
@@ -225,13 +225,13 @@ class Subscriber {
  * An Observable represents a set of values over some period of time.
  *
  * An Observable accepts a single subscriber, supplying each new observed value to its
- * {@code next(item)} method.
+ * `next(item)` method.
  *
  * When all of the possible values are observed an Observable call Observers
- * {@code complete()} method.
+ * `complete()` method.
  *
  * If an error occurres while processing any Observable value it calls the Observers
- * {@code error(err)} method.
+ * `error(err)` method.
  * 
  * @template <N> a type of the next observed value
  */

@@ -118,13 +118,18 @@ export class BackendClient {
  * Fetch is a static member of the `BackendClient`.
  */
 class Fetch {
+  
+  /**
+   * @param {Query} query a query to be performed by Spine
+   * @param {BackendClient} backend the backend which is used to fetch the query results
+   */
   constructor({of: query, using: backend}) {
     this._query = query;
     this._backend = backend;
   }
 
   /**
-   * Fetche items one-by-one using an Observable.
+   * Fetches items one-by-one using an Observable.
    * Suitable for big collections.
    * 
    * @returns {Observable<Object>} an Observable retrieving values one at a time.
@@ -140,6 +145,8 @@ class Fetch {
   }
 
   /**
+   * Fetches all query results at once resolving a promise with an array of entities.
+   *
    * @returns {Promise<Object[]>} a Promise resolving an array of items matching query.
    */
   atOnce() {
