@@ -22,13 +22,18 @@
 
 import uuid from "uuid";
 
-import timestamp from "spine-js-client-proto/google/protobuf/timestamp_pb";
-import query from "spine-js-client-proto/spine/client/query_pb";
-import entities from "spine-js-client-proto/spine/client/entities_pb";
-import actorContext from "spine-js-client-proto/spine/core/actor_context_pb";
-import command from "spine-js-client-proto/spine/core/command_pb";
-import userId from "spine-js-client-proto/spine/core/user_id_pb";
-import time from "spine-js-client-proto/spine/time/time_pb";
+import {Timestamp} from "spine-js-client-proto/google/protobuf/timestamp_pb";
+import {Query, QueryId} from "spine-js-client-proto/spine/client/query_pb";
+import {
+  EntityFilters,
+  EntityId,
+  EntityIdFilter,
+  Target
+} from "spine-js-client-proto/spine/client/entities_pb";
+import {ActorContext} from "spine-js-client-proto/spine/core/actor_context_pb";
+import {Command, CommandContext, CommandId} from "spine-js-client-proto/spine/core/command_pb";
+import {UserId} from "spine-js-client-proto/spine/core/user_id_pb";
+import {ZoneId, ZoneOffset} from "spine-js-client-proto/spine/time/time_pb";
 import {TypedMessage, TypeUrl} from "./typed-message";
 
 
@@ -44,129 +49,127 @@ const COMMAND_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.core.Command");
  */
 export class ActorRequestFactory {
 
-    /**
-     * Creates a new instance of ActorRequestFactory for the given actor.
-     *
-     * @param actor a string identifier of an actor
-     */
-    constructor(actor) {
-        this._actor = new userId.UserId();
-        this._actor.setValue(actor);
-    }
+  /**
+   * Creates a new instance of ActorRequestFactory for the given actor.
+   *
+   * @param {!string} actor a string identifier of an actor
+   */
+  constructor(actor) {
+    this._actor = new UserId();
+    this._actor.setValue(actor);
+  }
 
-    /**
-     * Creates a Query targeting all the instances of the given type.
-     *
-     * @param typeUrl the type URL of the target type; represented as a string
-     * @return a {@link TypedMessage<Query>} of the built query
-     */
-    newQueryForAll(typeUrl) {
-        let target = new entities.Target();
-        target.setType(typeUrl.value);
-        target.setIncludeAll(true);
-        return this._newQuery(target);
-    }
+  /**
+   * Creates a Query targeting all the instances of the given type.
+   *
+   * @param {!TypeUrl} typeUrl a type URL of the target type
+   * @return {TypedMessage<Query>} a typed message of the Spine Query
+   */
+  newQueryForAll(typeUrl) {
+    const target = new Target();
+    target.setType(typeUrl.value);
+    target.setIncludeAll(true);
+    return this._newQuery(target);
+  }
 
-    /**
-     * Creates a Query targeting a specific instance of the given type.
-     *
-     * @param typeUrl the type URL of the target type; represented as a string
-     * @param id      the ID of the instance targeted by this query, represented
-     *                as a {@link TypedMessage}
-     * @return a {@link TypedMessage<Query>} of the built query
-     */
-    queryById(typeUrl, id) {
-        const entityId = new entities.EntityId();
-        entityId.setId(id.toAny());
+  /**
+   * Creates a Query targeting a specific instance of the given type.
+   *
+   * @param {!TypeUrl} typeUrl a type URL of the target type
+   * @param {!TypedMessage} id an ID of the instance targeted by this query
+   * @return {TypedMessage<Query>} a typed message of the Spine Query
+   */
+  queryById(typeUrl, id) {
+    const entityId = new EntityId();
+    entityId.setId(id.toAny());
 
-        const idFilter = new entities.EntityIdFilter();
-        idFilter.addIds(entityId);
+    const idFilter = new EntityIdFilter();
+    idFilter.addIds(entityId);
 
-        const filters = new entities.EntityFilters();
-        filters.setIdFilter(idFilter);
+    const filters = new EntityFilters();
+    filters.setIdFilter(idFilter);
 
-        const target = new entities.Target();
-        target.setType(typeUrl);
-        target.setFilters(filters);
+    const target = new Target();
+    target.setType(typeUrl);
+    target.setFilters(filters);
 
-        return this._newQuery(target);
-    }
+    return this._newQuery(target);
+  }
 
-    /**
-     * Creates a Command from the given command message.
-     *
-     * @param message the command message, represented as a {@link TypedMessage}
-     * @returns {TypedMessage<Command>} a typed representation of the Spine command
-     */
-    command(message) {
-        let id = ActorRequestFactory._newCommandId();
-        let messageAny = message.toAny();
-        let context = this._commandContext();
+  /**
+   * Creates a Command from the given command message.
+   *
+   * @param {!TypedMessage} message a typed command message
+   * @returns {TypedMessage<Command>} a typed representation of the Spine Command
+   */
+  command(message) {
+    const id = _newCommandId();
+    const messageAny = message.toAny();
+    const context = this._commandContext();
 
-        let result = new command.Command();
-        result.setId(id);
-        result.setMessage(messageAny);
-        result.setContext(context);
+    const result = new Command();
+    result.setId(id);
+    result.setMessage(messageAny);
+    result.setContext(context);
 
-        let typedResult = new TypedMessage(result, COMMAND_MESSAGE_TYPE);
-        return typedResult;
-    }
+    return new TypedMessage(result, COMMAND_MESSAGE_TYPE);
+  }
 
-    _newQuery(target) {
-        let id = ActorRequestFactory._newQueryId();
-        let actorContext = this._actorContext();
+  _newQuery(target) {
+    const id = _newQueryId();
+    const actorContext = this._actorContext();
 
-        let result = new query.Query();
-        result.setId(id);
-        result.setTarget(target);
-        result.setContext(actorContext);
+    const result = new Query();
+    result.setId(id);
+    result.setTarget(target);
+    result.setContext(actorContext);
 
-        return result;
-    }
+    return result;
+  }
 
-    _actorContext() {
-        let result = new actorContext.ActorContext();
-        result.setActor(this._actor);
-        let seconds = new Date().getUTCSeconds();
-        let time = new timestamp.Timestamp();
-        time.setSeconds(seconds);
-        result.setTimestamp(time);
-        result.setZoneOffset(ActorRequestFactory._zoneOffset());
-        return result;
-    }
+  _commandContext() {
+    const result = new CommandContext();
 
-    _commandContext() {
-        let result = new command.CommandContext();
-        let actorContext = this._actorContext();
-        result.setActorContext(actorContext);
-        return result;
-    }
+    const actorContext = this._actorContext();
+    result.setActorContext(actorContext);
 
-    static _zoneOffset() {
-        let timeOptions = Intl.DateTimeFormat().resolvedOptions();
-        let zoneId = new time.ZoneId();
-        zoneId.setValue(timeOptions.timeZone);
+    return result;
+  }
 
-        let zoneOffset = ActorRequestFactory._zoneOffsetSeconds();
+  _actorContext() {
+    const result = new ActorContext();
+    result.setActor(this._actor);
+    const seconds = new Date().getUTCSeconds();
+    const time = new Timestamp();
+    time.setSeconds(seconds);
+    result.setTimestamp(time);
+    result.setZoneOffset(_zoneOffset());
+    return result;
+  }
+}
 
-        let result = new time.ZoneOffset();
-        result.setAmountSeconds(zoneOffset);
-        return result;
-    }
+function _zoneOffset() {
+  const timeOptions = Intl.DateTimeFormat().resolvedOptions();
+  const zoneId = new ZoneId();
+  zoneId.setValue(timeOptions.timeZone);
+  const zoneOffset = _zoneOffsetSeconds();
+  const result = new ZoneOffset();
+  result.setAmountSeconds(zoneOffset);
+  return result;
+}
 
-    static _zoneOffsetSeconds() {
-        return new Date().getTimezoneOffset() * 60;
-    }
+function _zoneOffsetSeconds() {
+  return new Date().getTimezoneOffset() * 60;
+}
 
-    static _newQueryId() {
-        let result = new query.QueryId();
-        result.setValue("q-" + uuid.v4());
-        return result;
-    }
+function _newQueryId() {
+  const result = new QueryId();
+  result.setValue("q-" + uuid.v4());
+  return result;
+}
 
-    static _newCommandId() {
-        let result = new command.CommandId();
-        result.setUuid(uuid.v4());
-        return result;
-    }
+function _newCommandId() {
+  const result = new CommandId();
+  result.setUuid(uuid.v4());
+  return result;
 }

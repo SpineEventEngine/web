@@ -25,6 +25,20 @@ import {TypedMessage, TypeUrl} from "./typed-message";
 import {QUERY_STRATEGY} from "./endpoint";
 
 /**
+ * @callback successfulCommandCallback a callback without any arguments,
+ */
+
+/**
+ * @callback commandErrorCallback a callback receiving Spine Error message as parameter
+ * @param {spine.base.Error} error a Spine Error message
+ */
+
+/**
+ * @callback commandRejectionCallback a callback receiving Spine Rejection message as parameter
+ * @param {spine.core.Rejection} error a Spine Rejection message
+ */
+
+/**
  * The client of the application backend.
  *
  * Orchestrates the work of the HTTP and Firebase clients and
@@ -33,9 +47,9 @@ import {QUERY_STRATEGY} from "./endpoint";
 export class BackendClient {
 
   /**
-   * @param endpoint {Endpoint} the server endpoint to execute queries and commands
-   * @param firebaseClient {FirebaseClient} the client to read the query results from
-   * @param actorRequestFactory {ActorRequestFactory} a factory to instantiate the actor requests with
+   * @param {!Endpoint} endpoint the server endpoint to execute queries and commands
+   * @param {!FirebaseClient} firebaseClient the client to read the query results from
+   * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
    */
   constructor(endpoint, firebaseClient, actorRequestFactory) {
     this._endpoint = endpoint;
@@ -46,8 +60,8 @@ export class BackendClient {
   /**
    * Defines a fetch query of all entities of the specified type.
    *
-   * @param ofType {TypeUrl} a type of the entities to be queried
-   * @returns {BackendClient.Fetch} a fetch object allowing to specify additional remote 
+   * @param {!TypeUrl} ofType a type of the entities to be queried
+   * @returns {BackendClient.Fetch} a fetch object allowing to specify additional remote
    *                                call parameters and executed the query.
    * @example
    * // Fetch items one-by-one using an Observable.
@@ -70,16 +84,15 @@ export class BackendClient {
   /**
    * Fetches a single entity of the given type.
    *
-   * @param type          the target {@link TypeUrl}
-   * @param id            the target entity ID, as a {@link TypedMessage}
-   * @param dataCallback  the callback which receives the single data item, in
-   *                      a form of a JS object
-   * @param errorCallback the callback which receives the errors
+   * @param {!TypeUrl} type a type URL of the target entity
+   * @param {!TypedMessage} id an ID of the target entity
+   * @param {!nextCallback} dataCallback a callback receiving a single data item as a JS object
+   * @param {?errorCallback} errorCallback a callback receiving an error
    */
   fetchById(type, id, dataCallback, errorCallback = null) {
     const query = this._actorRequestFactory.queryById(type.value, id);
     const fetch = new Fetch({of: query, using: this});
-    
+
     const observer = {next: dataCallback};
     if (errorCallback) {
       observer.error = errorCallback;
@@ -88,21 +101,23 @@ export class BackendClient {
   }
 
   /**
-   * Sends the given command to the server.
+   * Sends the provided command to the server.
    *
-   * @param commandMessage    the {@link TypedMessage} representing the command message
-   * @param successListener   the no-argument callback invoked if the command
-   *                          is acknowledged
-   * @param errorCallback     the callback which receives the errors
-   * @param rejectionCallback the callback which receives the command rejections
+   * @param {!TypedMessage} commandMessage a typed command message
+   * @param {!successfulCommandCallback} successCallback a no-argument callback invoked if
+   *                                                     the command is acknowledged
+   * @param {?commandErrorCallback} errorCallback a callback which receives the errors executed if 
+   *                                              an error occcured when processing command  
+   * @param {?commandRejectionCallback} rejectionCallback a callback executed if the command was
+   *                                                      rejected by Spine
    */
-  sendCommand(commandMessage, successListener, errorCallback, rejectionCallback) {
+  sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
     const command = this._actorRequestFactory.command(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
         const status = ack.status;
         if (status.hasOwnProperty("ok")) {
-          successListener();
+          successCallback();
         } else if (status.hasOwnProperty("error")) {
           errorCallback(status.error);
         } else if (status.hasOwnProperty("rejection")) {
@@ -118,10 +133,10 @@ export class BackendClient {
  * Fetch is a static member of the `BackendClient`.
  */
 class Fetch {
-  
+
   /**
-   * @param {Query} query a query to be performed by Spine
-   * @param {BackendClient} backend the backend which is used to fetch the query results
+   * @param {!Query} query a query to be performed by Spine
+   * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
     this._query = query;
@@ -131,7 +146,7 @@ class Fetch {
   /**
    * Fetches items one-by-one using an Observable.
    * Suitable for big collections.
-   * 
+   *
    * @returns {Observable<Object>} an Observable retrieving values one at a time.
    * @example
    * fetchAll({ofType: taskType}).oneByOne().subscribe({
@@ -182,7 +197,7 @@ class Fetch {
         if (dbSubscription) {
           dbSubscription.unsubscribe();
         }
-      }
+      };
     });
   }
 
@@ -203,7 +218,7 @@ class Fetch {
  * Fetches the results of the query from the server using the provided backend.
  *
  * Fetch is a static member of the `BackendClient`.
- * 
+ *
  * @type FetchClass
  */
 BackendClient.Fetch = Fetch;

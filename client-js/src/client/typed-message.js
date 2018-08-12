@@ -20,8 +20,8 @@
 
 "use strict";
 
-let Any = require("spine-js-client-proto/google/protobuf/any_pb").Any;
-let base64 = require("base64-js");
+import base64 from "base64-js";
+import {Any} from "spine-js-client-proto/google/protobuf/any_pb";
 
 /**
  * A URL of a Protobuf type.
@@ -29,78 +29,76 @@ let base64 = require("base64-js");
  * Consists of the two parts separated with a slash. The first part is
  * the type URL prefix (for example, `type.googleapis.com`).
  * The second part is a fully-qualified Protobuf type name.
- * 
- * @template T
+ *
+ * @template <T>
  */
 export class TypeUrl {
 
-    /**
-     * Creates a new instance of TypeUrl from the given string value.
-     *
-     * The value should be a valid type URL of format:
-     * (typeUrlPrefix)/(typeName)
-     *
-     * @param value the type URL value
-     */
-    constructor(value) {
-        let urlParts = value.split("/");
-        this.typeUrlPrefix = urlParts[0];
-        this.typeName = urlParts[1];
-        this.value = value;
-    }
+  /**
+   * Creates a new instance of TypeUrl from the given string value.
+   *
+   * The value should be a valid type URL of format:
+   * (typeUrlPrefix)/(typeName)
+   *
+   * @param {!string} value the type URL value
+   */
+  constructor(value) {
+    const urlParts = value.split("/");
+    this.typeUrlPrefix = urlParts[0];
+    this.typeName = urlParts[1];
+    this.value = value;
+  }
 }
 
 /**
  * A Protobuf message with a {@link TypeUrl}.
  *
  * The type URL specifies the type of the associated message.
- * 
- * @template T
+ *
+ * @template <T>
  */
 export class TypedMessage {
 
-    /**
-     * Creates a new instance of TypedMessage from the given Protobuf message and
-     * type URL.
-     *
-     * @param message the Protobuf message
-     * @param typeUrl the {@link TypeUrl<T>} representing the type of the message
-     */
-    constructor(message, typeUrl) {
-        this.message = message;
-        this.type = typeUrl;
-    }
+  /**
+   * Creates a new instance of TypedMessage from the given Protobuf message and
+   * type URL.
+   *
+   * @param {!Message} message a Protobuf message
+   * @param {!TypeUrl<T>} typeUrl a Protobuf type of the message
+   */
+  constructor(message, typeUrl) {
+    this.message = message;
+    this.type = typeUrl;
+  }
 
-    /**
-     * Converts this message into a byte array.
-     *
-     * @returns an array of bytes representing the message
-     */
-    toBytes() {
-        let result = this.message.serializeBinary();
-        return result;
-    }
+  /**
+   * Converts this message into a byte array.
+   *
+   * @returns an array of bytes representing the message
+   */
+  toBytes() {
+    return this.message.serializeBinary();
+  }
 
-    /**
-     * Converts this message into an {@link Any}.
-     *
-     * @returns this message packed into an instance of Any
-     */
-    toAny() {
-        let result = new Any();
-        let bytes = this.toBytes();
-        result.pack(bytes, this.type.typeName, this.type.typeUrlPrefix);
-        return result;
-    }
+  /**
+   * Converts this message into an {@link Any}.
+   *
+   * @returns this message packed into an instance of Any
+   */
+  toAny() {
+    const result = new Any();
+    const bytes = this.toBytes();
+    result.pack(bytes, this.type.typeName, this.type.typeUrlPrefix);
+    return result;
+  }
 
-    /**
-     * Converts this message into a Base64-encoded byte string.
-     *
-     * @returns the string representing this message
-     */
-    toBase64() {
-        let bytes = this.toBytes();
-        let result = base64.fromByteArray(bytes);
-        return result;
-    }
+  /**
+   * Converts this message into a Base64-encoded byte string.
+   *
+   * @returns the string representing this message
+   */
+  toBase64() {
+    const bytes = this.toBytes();
+    return base64.fromByteArray(bytes);
+  }
 }

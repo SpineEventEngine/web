@@ -32,10 +32,10 @@ import {BackendClient} from "./backend-client";
  * @type {{BackendClient: BackendClient, HttpClient: HttpClient, FirebaseClient: FirebaseClient, ActorRequestFactory: ActorRequestFactory}}
  */
 export const client = {
-  BackendClient: BackendClient,
-  HttpClient: HttpClient,
-  FirebaseClient: FirebaseClient,
-  ActorRequestFactory: ActorRequestFactory,
-  TypeUrl: TypeUrl,
-  TypedMessage: TypedMessage
+  BackendClient,
+  HttpClient,
+  FirebaseClient,
+  ActorRequestFactory,
+  TypeUrl,
+  TypedMessage
 };

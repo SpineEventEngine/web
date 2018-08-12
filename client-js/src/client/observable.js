@@ -19,7 +19,8 @@
  */
 /**
  * @callback nextCallback
- * @param {*} data
+ * @param {N} data
+ * @template <N>
  */
 
 /**
@@ -32,12 +33,14 @@
  */
 
 /**
- * @callback observableInput
- * @param {Observer} observer
+ * @callback tearDownCallback
  */
 
 /**
- * @callback tearDownCallback
+ * @callback observableFunction
+ * @param {Observer<V>} observer
+ * @returns {tearDownCallback}
+ * @template <V>
  */
 
 /**
@@ -57,13 +60,14 @@
  *   })
  * </code>
  *
+ * @template <V> the value observed by this Observer
  */
 class Observer {
   // noinspection JSMethodCanBeStatic
   /**
    * Invoked by the Observable when it retrieves a new value.
    *
-   * @param value {*}
+   * @param {V} value next value observed in a Observable
    */
   next(value) {
     throw new Error("Unimplemented by an abstract Observer");
@@ -71,9 +75,9 @@ class Observer {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * Invoked by the Observable an error occures while processing its values.
+   * Invoked by the Observable an error occurres while processing its values.
    *
-   * @param err {Error}
+   * @param {Error} err an error which occurred observing the value
    */
   error(err) {
     throw new Error("Unimplemented by an abstract Observer");
@@ -108,8 +112,8 @@ export class Subscription {
   }
 
   /**
-   * Adds tear down logic to this Subscription. 
-   * @param tearDown {tearDownCallback} a callback invoked before unsubscribing. 
+   * Adds tear down logic to this Subscription.
+   * @param {!tearDownCallback} tearDown a callback invoked before unsubscribing.
    */
   add(tearDown) {
     this._tearDownCallbacks.push(tearDown);
@@ -119,9 +123,14 @@ export class Subscription {
 /**
  * An Observable Subscriber sending off received values, errors and complete notifications to the
  * observer.
+ *
+ * @template <N>
  */
 class Subscriber {
 
+  /**
+   * @param destination
+   */
   constructor(destination) {
     this.destination = destination;
   }
@@ -129,7 +138,8 @@ class Subscriber {
   /**
    * Sends off the next Observable value to the Observer, skipping it if the Observable was
    * unsubscribed or the Observer was complete.
-   * @param value {*} a next value for the Observer
+   *
+   * @param {N} value a next value for the Observer
    */
   next(value) {
     if (!this.isStopped) {
@@ -139,7 +149,8 @@ class Subscriber {
 
   /**
    * Sends off an error to the Observer, stopping it from receiving further values.
-   * @param err {Error} an error to be passed to the Observer
+   *
+   * @param {Error} err an error to be passed to the Observer
    */
   error(err) {
     if (!this.isStopped) {
@@ -174,26 +185,18 @@ class Subscriber {
    * `next` and `complete` use no-op as a default, while the `error` is logging
    * the values to the console.
    *
-   * @param next
-   * @param error
-   * @param complete
-   * @return {Subscriber}
+   * @param {!nextCallback<N>} next
+   * @param {?errorCallback} error
+   * @param {?completeCallback} complete
+   * @return {Subscriber<N>}
    */
   static fromObservable(next, error, complete) {
-    let _next = next;
-    if (this.isUndefined(_next)) {
-      _next = this._noop;
-    }
-    let _error = error;
-    if (this.isUndefined(_error)) {
-      _error = this._consoleErrorHandler;
-    }
-    let _complete = complete;
-    if (this.isUndefined(_complete)) {
-      _complete = this._noop;
-    }
 
-    const observer = {next: _next, error: _error, complete: _complete};
+    const observer = {
+      next,
+      error: error || this._consoleErrorHandler,
+      complete: complete || this._noop
+    };
 
     return new Subscriber(observer);
   }
@@ -213,10 +216,6 @@ class Subscriber {
   static _consoleErrorHandler(error) {
     console.error(error);
   }
-
-  static isUndefined(value) {
-    return typeof value === "undefined";
-  }
 }
 
 /**
@@ -232,13 +231,13 @@ class Subscriber {
  *
  * If an error occurres while processing any Observable value it calls the Observers
  * `error(err)` method.
- * 
+ *
  * @template <N> a type of the next observed value
  */
 export class Observable {
 
   /**
-   * @param subscribe {observableInput}
+   * @param {!observableFunction<N>} subscribe
    */
   constructor(subscribe) {
     this._subscribe = subscribe;
@@ -248,9 +247,9 @@ export class Observable {
   /**
    * Subscribes a provided Observable to observe new values.
    *
-   * @param next {nextCallback}
-   * @param error? {errorCallback}
-   * @param complete? {completeCallback}
+   * @param {!nextCallback<N>} next
+   * @param {?errorCallback} error
+   * @param {?completeCallback} complete
    * @return {Subscription}
    */
   subscribe({next, error, complete}) {
@@ -258,6 +257,7 @@ export class Observable {
       throw new Error("This observable already has a subscriber.");
     }
 
+    /** @type Subscriber<N> */
     this._subscriber = Subscriber.fromObservable(next, error, complete);
 
     let tearDown;
@@ -274,7 +274,7 @@ export class Observable {
     const subscription = new Subscription(() => {
       this._subscriber.unsubscribe();
     });
-    
+
     if (tearDown) {
       subscription.add(tearDown);
     }

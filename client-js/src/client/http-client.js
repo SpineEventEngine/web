@@ -25,44 +25,43 @@
  *
  * This way of performing HTTP requests works both in the browser JavaScript and in the Node.js.
  */
-let fetch = require("isomorphic-fetch");
+import fetch from "isomorphic-fetch";
 
 /**
  * The HTTP client which performs the connection to the application server.
  */
 export class HttpClient {
 
-    /**
-     * Creates a new instance of HttpClient.
-     *
-     * @param appBaseUrl the application base URL (the protocol and the domain name) represented as
-     *                   a string
-     */
-    constructor(appBaseUrl) {
-        this._appBaseUrl = appBaseUrl;
-    }
+  /**
+   * Creates a new instance of HttpClient.
+   *
+   * @param {!string} appBaseUrl an application base URL (the protocol and the domain name) represented as
+   *                            a string
+   */
+  constructor(appBaseUrl) {
+    this._appBaseUrl = appBaseUrl;
+  }
 
-    /**
-     * Sends the given message to the given endpoint.
-     *
-     * The message is sent as in form of a Base64-encoded byte string.
-     *
-     * @param endpoint the endpoint to send the message to
-     * @param message  the message to send, as a {@link TypedMessage}
-     */
-    postMessage(endpoint, message) {
-        let messageString = message.toBase64();
-        let path = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
-        let url = this._appBaseUrl + path;
-        let request = {
-            method: "POST",
-            body: messageString,
-            headers: {
-                "Content-Type": "application/x-protobuf"
-            },
-            mode: "cors"
-        };
-        let result = fetch(url, request);
-        return result;
-    }
+  /**
+   * Sends the given message to the given endpoint.
+   *
+   * The message is sent as in form of a Base64-encoded byte string.
+   *
+   * @param {!string} endpoint a endpoint to send the message to
+   * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
+   */
+  postMessage(endpoint, message) {
+    const messageString = message.toBase64();
+    const path = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+    const url = this._appBaseUrl + path;
+    const request = {
+      method: "POST",
+      body: messageString,
+      headers: {
+        "Content-Type": "application/x-protobuf"
+      },
+      mode: "cors"
+    };
+    return fetch(url, request);
+  }
 }

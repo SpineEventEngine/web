@@ -26,8 +26,8 @@ import {FirebaseClient} from "../../src/client/firebase-client";
 import {devFirebaseApp as firebase} from "./test-firebase-app";
 import {TypedMessage, TypeUrl} from "../../src/client/typed-message";
 
-import commands from "../../proto/test/js/spine/web/test/commands_pb";
-import task from "../../proto/test/js/spine/web/test/task_pb";
+import {CreateTask} from "../../proto/test/js/spine/web/test/commands_pb";
+import {TaskId} from "../../proto/test/js/spine/web/test/task_pb";
 import {HttpClient} from "../../src/client/http-client";
 import {BackendClient} from "../../src/client/backend-client";
 import {Endpoint} from "../../src/client/endpoint";
@@ -37,19 +37,19 @@ const SECONDS = 1000 * MILLISECONDS;
 const MINUTES = 60 * SECONDS;
 
 function creteTaskCommand(id, name, description) {
-  let command = new commands.CreateTask();
+  const command = new CreateTask();
   command.setId(id);
   command.setName(name);
   command.setDescription(description);
 
-  let commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
+  const commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
 
   return new TypedMessage(command, commandType);
 }
 
 function randomId(prefix) {
-  let id = prefix + Math.round(Math.random() * 1000);
-  let productId = new task.TaskId();
+  const id = prefix + Math.round(Math.random() * 1000);
+  const productId = new TaskId();
   productId.setValue(id);
   return productId;
 }

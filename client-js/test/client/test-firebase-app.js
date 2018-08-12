@@ -20,7 +20,7 @@
 
 import firebase from "firebase";
 
-let config = {
+const config = {
     apiKey: "AIzaSyD8Nr2zrW9QFLbNS5Kg-Ank-QIZP_jo5pU",
     authDomain: "spine-dev.firebaseapp.com",
     databaseURL: "https://spine-dev.firebaseio.com",
@@ -28,4 +28,5 @@ let config = {
     storageBucket: "",
     messagingSenderId: "165066236051"
 };
-export let devFirebaseApp = firebase.initializeApp(config, "spine-dev");
+
+export const devFirebaseApp = firebase.initializeApp(config, "spine-dev");

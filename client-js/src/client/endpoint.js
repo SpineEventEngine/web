@@ -19,7 +19,7 @@
  */
 
 import {TypedMessage, TypeUrl} from "./typed-message";
-import web from "spine-js-client-proto/spine/web/web_query_pb"
+import {WebQuery} from "spine-js-client-proto/spine/web/web_query_pb";
 
 /**
  * The type URL representing the spine.client.Query.
@@ -34,7 +34,7 @@ const WEB_QUERY_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.web.WebQuery");
 export class Endpoint {
 
   /**
-   * @param httpClient {HttpClient} a client sending requests to server
+   * @param {!HttpClient} httpClient a client sending requests to server
    */
   constructor(httpClient) {
     this._httpClient = httpClient;
@@ -43,7 +43,7 @@ export class Endpoint {
   /**
    * Sends off a command to the endpoint.
    *
-   * @param command {TypedMessage<Command>} a Command send to Spine
+   * @param {!TypedMessage<Command>} command a Command send to Spine
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
    */
@@ -56,8 +56,8 @@ export class Endpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param query {TypedMessage<Query>} a Query to Spine to retrieve some domain entities
-   * @param strategy {QUERY_STRATEGY} a strategy for query results delivery
+   * @param {!TypedMessage<Query>} query a Query to Spine to retrieve some domain entities
+   * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
    */
@@ -71,8 +71,8 @@ export class Endpoint {
 }
 
 /**
- * @param response {Response} an HTTP request response
- * @return {boolean} true if the response status code is from 200 to 299, false otherwise
+ * @param {!Response} response an HTTP request response
+ * @return {boolean} `true` if the response status code is from 200 to 299, `false` otherwise
  * @private
  */
 function _isSuccessfulResponse(response) {
@@ -82,7 +82,7 @@ function _isSuccessfulResponse(response) {
 /**
  * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
  *
- * @param response {Response} an HTTP request response
+ * @param {!Response} response an HTTP request response
  * @return {Object|Promise} response JSON or rejected promise
  * @private
  */
@@ -97,12 +97,12 @@ function _jsonOrRejection(response) {
 /**
  * Builds a new WebQuery from Query and client delivery strategy.
  *
- * @param of {Query} a Query to be executed by Spine
- * @param delivered {QUERY_STRATEGY}
+ * @param {!Query} of a Query to be executed by Spine
+ * @param {!QUERY_STRATEGY} delivered
  * @private
  */
 function _newWebQuery({of: query, delivered: transactionally}) {
-  const webQuery = new web.WebQuery();
+  const webQuery = new WebQuery();
   webQuery.setQuery(query);
   webQuery.setDeliveredTransactionally(transactionally);
   return webQuery;
