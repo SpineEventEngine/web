@@ -152,7 +152,8 @@ export class ActorRequestFactory {
    * @private
    */
   static _zoneOffset() {
-    const timeOptions = Intl.DateTimeFormat().resolvedOptions();
+    const format = new Intl.DateTimeFormat();
+    const timeOptions = format.resolvedOptions();
     const zoneId = new ZoneId();
     zoneId.setValue(timeOptions.timeZone);
     const zoneOffset = ActorRequestFactory._zoneOffsetSeconds();
