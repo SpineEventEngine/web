@@ -46,7 +46,7 @@ import {QUERY_STRATEGY} from "./endpoint";
 class Fetch {
 
   /**
-   * @param {!Query} query a query to be performed by Spine
+   * @param {!TypedMessage<Query>} query a query to be performed by Spine
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
@@ -141,7 +141,8 @@ export class BackendClient {
   }
 
   /**
-   * Defines a fetch query of all entities of the specified type.
+   * Defines a fetch query of all entities matching the filters provided as arguments.
+   * This fetch is executed later upon calling 
    *
    * @param {!TypeUrl} ofType a type of the entities to be queried
    * @returns {BackendClient.Fetch} a fetch object allowing to specify additional remote
@@ -167,20 +168,22 @@ export class BackendClient {
   /**
    * Fetches a single entity of the given type.
    *
-   * @param {!TypeUrl} type a type URL of the target entity
+   * @param {!TypeUrl<T>} type a type URL of the target entity
    * @param {!TypedMessage} id an ID of the target entity
-   * @param {!nextCallback} dataCallback a callback receiving a single data item as a JS object
+   * @param {!nextCallback<T>} dataCallback a callback receiving a single data item as a JS object
    * @param {?errorCallback} errorCallback a callback receiving an error
+   * 
+   * @template <T>
    */
-  fetchById(type, id, dataCallback, errorCallback = null) {
+  fetchById(type, id, dataCallback, errorCallback) {
     const query = this._actorRequestFactory.queryById(type.value, id);
     const fetch = new Fetch({of: query, using: this});
 
-    const observer = {next: dataCallback};
-    if (errorCallback) {
-      observer.error = errorCallback;
-    }
-    return fetch.oneByOne().subscribe(observer);
+    // noinspection JSCheckFunctionSignatures
+    return fetch.oneByOne().subscribe({
+      next: dataCallback,
+      error: errorCallback || undefined
+    });
   }
 
   /**
