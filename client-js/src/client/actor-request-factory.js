@@ -103,7 +103,7 @@ export class ActorRequestFactory {
    * @returns {TypedMessage<Command>} a typed representation of the Spine Command
    */
   command(message) {
-    const id = _newCommandId();
+    const id = ActorRequestFactory._newCommandId();
     const messageAny = message.toAny();
     const context = this._commandContext();
 
@@ -116,7 +116,7 @@ export class ActorRequestFactory {
   }
 
   _newQuery(target) {
-    const id = _newQueryId();
+    const id = ActorRequestFactory._newQueryId();
     const actorContext = this._actorContext();
 
     const result = new Query();
@@ -143,33 +143,50 @@ export class ActorRequestFactory {
     const time = new Timestamp();
     time.setSeconds(seconds);
     result.setTimestamp(time);
-    result.setZoneOffset(_zoneOffset());
+    result.setZoneOffset(ActorRequestFactory._zoneOffset());
     return result;
   }
-}
 
-function _zoneOffset() {
-  const timeOptions = Intl.DateTimeFormat().resolvedOptions();
-  const zoneId = new ZoneId();
-  zoneId.setValue(timeOptions.timeZone);
-  const zoneOffset = _zoneOffsetSeconds();
-  const result = new ZoneOffset();
-  result.setAmountSeconds(zoneOffset);
-  return result;
-}
+  /**
+   * @returns {ZoneOffset}
+   * @private
+   */
+  static _zoneOffset() {
+    const timeOptions = Intl.DateTimeFormat().resolvedOptions();
+    const zoneId = new ZoneId();
+    zoneId.setValue(timeOptions.timeZone);
+    const zoneOffset = ActorRequestFactory._zoneOffsetSeconds();
+    const result = new ZoneOffset();
+    result.setAmountSeconds(zoneOffset);
+    return result;
+  }
 
-function _zoneOffsetSeconds() {
-  return new Date().getTimezoneOffset() * 60;
-}
+  /**
+   * @returns {number}
+   * @private
+   */
+  static _zoneOffsetSeconds() {
+    return new Date().getTimezoneOffset() * 60;
+  }
 
-function _newQueryId() {
-  const result = new QueryId();
-  result.setValue("q-" + uuid.v4());
-  return result;
-}
+  /**
+   * 
+   * @returns {QueryId}
+   * @private
+   */
+  static _newQueryId() {
+    const result = new QueryId();
+    result.setValue("q-" + uuid.v4());
+    return result;
+  }
 
-function _newCommandId() {
-  const result = new CommandId();
-  result.setUuid(uuid.v4());
-  return result;
+  /**
+   * @returns {CommandId}
+   * @private
+   */
+  static _newCommandId() {
+    const result = new CommandId();
+    result.setUuid(uuid.v4());
+    return result;
+  }
 }

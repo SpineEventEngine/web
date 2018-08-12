@@ -39,6 +39,89 @@ import {QUERY_STRATEGY} from "./endpoint";
  */
 
 /**
+ * Fetches the results of the query from the server using the provided backend.
+ *
+ * Fetch is a static member of the `BackendClient`.
+ */
+class Fetch {
+
+  /**
+   * @param {!Query} query a query to be performed by Spine
+   * @param {!BackendClient} backend the backend which is used to fetch the query results
+   */
+  constructor({of: query, using: backend}) {
+    this._query = query;
+    this._backend = backend;
+  }
+
+  /**
+   * Fetches items one-by-one using an Observable.
+   * Suitable for big collections.
+   *
+   * @returns {Observable<Object>} an Observable retrieving values one at a time.
+   * @example
+   * fetchAll({ofType: taskType}).oneByOne().subscribe({
+   *   next(value) { ... },
+   *   error(error) { ... },
+   *   complete() { ... }
+   * })
+   */
+  oneByOne() {
+    return this._fetchManyOneByOne();
+  }
+
+  /**
+   * Fetches all query results at once resolving a promise with an array of entities.
+   *
+   * @returns {Promise<Object[]>} a Promise resolving an array of items matching query.
+   */
+  atOnce() {
+    return this._fetchManyAtOnce();
+  }
+
+  _fetchManyOneByOne() {
+    return new Observable(observer => {
+
+      let receivedCount = 0;
+      let promisedCount = null;
+      let dbSubscription = null;
+
+      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
+        .then(({path, count}) => {
+          promisedCount = count;
+          return path;
+        })
+        .then(path => {
+          dbSubscription = this._backend._firebase.onChildAdded(path, value => {
+            observer.next(value);
+            receivedCount++;
+            if (receivedCount === promisedCount) {
+              observer.complete();
+              dbSubscription.unsubscribe();
+            }
+          });
+        })
+        .catch(observer.error);
+
+      // Returning tear down logic.
+      return () => {
+        if (dbSubscription) {
+          dbSubscription.unsubscribe();
+        }
+      };
+    });
+  }
+
+  _fetchManyAtOnce() {
+    return new Promise((resolve, reject) => {
+      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
+        .then(({path}) => this._backend._firebase.getValue(path, resolve))
+        .catch(error => reject(error));
+    });
+  }
+}
+
+/**
  * The client of the application backend.
  *
  * Orchestrates the work of the HTTP and Firebase clients and
@@ -124,89 +207,6 @@ export class BackendClient {
           rejectionCallback(status.rejection);
         }
       }, errorCallback);
-  }
-}
-
-/**
- * Fetches the results of the query from the server using the provided backend.
- *
- * Fetch is a static member of the `BackendClient`.
- */
-class Fetch {
-
-  /**
-   * @param {!Query} query a query to be performed by Spine
-   * @param {!BackendClient} backend the backend which is used to fetch the query results
-   */
-  constructor({of: query, using: backend}) {
-    this._query = query;
-    this._backend = backend;
-  }
-
-  /**
-   * Fetches items one-by-one using an Observable.
-   * Suitable for big collections.
-   *
-   * @returns {Observable<Object>} an Observable retrieving values one at a time.
-   * @example
-   * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(value) { ... },
-   *   error(error) { ... },
-   *   complete() { ... }
-   * })
-   */
-  oneByOne() {
-    return this._fetchManyOneByOne();
-  }
-
-  /**
-   * Fetches all query results at once resolving a promise with an array of entities.
-   *
-   * @returns {Promise<Object[]>} a Promise resolving an array of items matching query.
-   */
-  atOnce() {
-    return this._fetchManyAtOnce();
-  }
-
-  _fetchManyOneByOne() {
-    return new Observable(observer => {
-
-      let receivedCount = 0;
-      let promisedCount = null;
-      let dbSubscription = null;
-
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
-        .then(({path, count}) => {
-          promisedCount = count;
-          return path;
-        })
-        .then(path => {
-          dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            observer.next(value);
-            receivedCount++;
-            if (receivedCount === promisedCount) {
-              observer.complete();
-              dbSubscription.unsubscribe();
-            }
-          });
-        })
-        .catch(observer.error);
-
-      // Returning tear down logic.
-      return () => {
-        if (dbSubscription) {
-          dbSubscription.unsubscribe();
-        }
-      };
-    });
-  }
-
-  _fetchManyAtOnce() {
-    return new Promise((resolve, reject) => {
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._backend._firebase.getValue(path, resolve))
-        .catch(error => reject(error));
-    });
   }
 }
 

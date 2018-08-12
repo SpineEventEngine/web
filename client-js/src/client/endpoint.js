@@ -50,7 +50,7 @@ export class Endpoint {
   command(command) {
     return this._httpClient
       .postMessage("/command", command)
-      .then(response => _jsonOrRejection(response));
+      .then(Endpoint._jsonOrRejection);
   }
 
   /**
@@ -62,50 +62,50 @@ export class Endpoint {
    *                           the client response is not 2xx
    */
   query(query, strategy) {
-    const webQuery = _newWebQuery({of: query, delivered: strategy});
+    const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
     return this._httpClient
       .postMessage("/query", typedQuery)
-      .then(response => _jsonOrRejection(response));
+      .then(Endpoint._jsonOrRejection);
   }
-}
 
-/**
- * @param {!Response} response an HTTP request response
- * @return {boolean} `true` if the response status code is from 200 to 299, `false` otherwise
- * @private
- */
-function _isSuccessfulResponse(response) {
-  return 200 <= response.status || response.status < 300;
-}
-
-/**
- * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
- *
- * @param {!Response} response an HTTP request response
- * @return {Object|Promise} response JSON or rejected promise
- * @private
- */
-function _jsonOrRejection(response) {
-  if (_isSuccessfulResponse(response)) {
-    return response.json()
-  } else {
-    return Promise.reject("HTTP Request failed");
+  /**
+   * Builds a new WebQuery from Query and client delivery strategy.
+   *
+   * @param {!Query} of a Query to be executed by Spine
+   * @param {!QUERY_STRATEGY} delivered the strategy for query results delivery
+   * @private
+   */
+  static _newWebQuery({of: query, delivered: transactionally}) {
+    const webQuery = new WebQuery();
+    webQuery.setQuery(query);
+    webQuery.setDeliveredTransactionally(transactionally);
+    return webQuery;
   }
-}
+  
+  /**
+   * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
+   *
+   * @param {!Response} response an HTTP request response
+   * @return {Object|Promise} response JSON or rejected promise
+   * @private
+   */
+  static _jsonOrRejection(response) {
+    if (Endpoint._isSuccessfulResponse(response)) {
+      return response.json();
+    } else {
+      return Promise.reject("HTTP Request failed");
+    }
+  }
 
-/**
- * Builds a new WebQuery from Query and client delivery strategy.
- *
- * @param {!Query} of a Query to be executed by Spine
- * @param {!QUERY_STRATEGY} delivered
- * @private
- */
-function _newWebQuery({of: query, delivered: transactionally}) {
-  const webQuery = new WebQuery();
-  webQuery.setQuery(query);
-  webQuery.setDeliveredTransactionally(transactionally);
-  return webQuery;
+  /**
+   * @param {!Response} response an HTTP request response
+   * @return {boolean} `true` if the response status code is from 200 to 299, `false` otherwise
+   * @private
+   */
+  static _isSuccessfulResponse(response) {
+    return 200 <= response.status || response.status < 300;
+  }
 }
 
 /**
