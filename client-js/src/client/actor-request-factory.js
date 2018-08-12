@@ -96,7 +96,7 @@ export class ActorRequestFactory {
      * Creates a Command from the given command message.
      *
      * @param message the command message, represented as a {@link TypedMessage}
-     * @returns a {@link TypedMessage<Command>} of the built command
+     * @returns {TypedMessage<Command>} a typed representation of the Spine command
      */
     command(message) {
         let id = ActorRequestFactory._newCommandId();

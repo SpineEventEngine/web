@@ -232,6 +232,8 @@ class Subscriber {
  *
  * If an error occurres while processing any Observable value it calls the Observers
  * {@code error(err)} method.
+ * 
+ * @template <N> a type of the next observed value
  */
 export class Observable {
 

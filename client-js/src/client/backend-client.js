@@ -33,9 +33,7 @@ import {QUERY_STRATEGY} from "./endpoint";
 export class BackendClient {
 
   /**
-   * Creates a new `BackendClient`.
-   *
-   * @param endpoint {Endpoint} the server endpoint to execute queries and commands 
+   * @param endpoint {Endpoint} the server endpoint to execute queries and commands
    * @param firebaseClient {FirebaseClient} the client to read the query results from
    * @param actorRequestFactory {ActorRequestFactory} a factory to instantiate the actor requests with
    */
@@ -46,10 +44,11 @@ export class BackendClient {
   }
 
   /**
-   * Defines a fetch query of all objects of specified type.
+   * Defines a fetch query of all entities of the specified type.
    *
    * @param ofType {TypeUrl} a type of the entities to be queried
-   * @returns {{oneByOne, atOnce}} an object allowing two fetch strategies: one-by-one or all-at-once.
+   * @returns {BackendClient.Fetch} a fetch object allowing to specify additional remote 
+   *                                call parameters and executed the query.
    * @example
    * // Fetch items one-by-one using an Observable.
    * // Suitable for big collections.
@@ -64,16 +63,8 @@ export class BackendClient {
    */
   fetchAll({ofType: typeUrl}) {
     const query = this._actorRequestFactory.newQueryForAll(typeUrl);
-    return {
-      /**
-       * @returns {Observable} an Observable retrieving values one at a time.
-       */
-      oneByOne: () => this._fetchManyOneByOne(query),
-      /**
-       * @returns {Promise} a Promise resolving an array of items matching query.
-       */
-      atOnce: () => this._fetchManyAtOnce(query)
-    };
+    // noinspection JSValidateTypes A static member class type is not resolved properly.
+    return new BackendClient.Fetch({of: query, using: this});
   }
 
   /**
@@ -87,7 +78,13 @@ export class BackendClient {
    */
   fetchById(type, id, dataCallback, errorCallback = null) {
     const query = this._actorRequestFactory.queryById(type.value, id);
-    this._fetch(query, dataCallback, errorCallback);
+    const fetch = new Fetch({of: query, using: this});
+    
+    const observer = {next: dataCallback};
+    if (errorCallback) {
+      observer.error = errorCallback;
+    }
+    return fetch.oneByOne().subscribe(observer);
   }
 
   /**
@@ -113,28 +110,56 @@ export class BackendClient {
         }
       }, errorCallback);
   }
+}
 
-  _fetch(query, dataCallback, errorCallback = null) {
-    const onError = errorCallback || (() => {});
-
-    this._endpoint.query(query, QUERY_STRATEGY.oneByOne)
-      .then(({path}) => this._firebase.onChildAdded(path, dataCallback), onError);
+/**
+ * Fetches the results of the query from the server using the provided backend.
+ *
+ * Fetch is a static member of the `BackendClient`.
+ */
+class Fetch {
+  constructor({of: query, using: backend}) {
+    this._query = query;
+    this._backend = backend;
   }
 
-  _fetchManyOneByOne(query) {
+  /**
+   * Fetche items one-by-one using an Observable.
+   * Suitable for big collections.
+   * 
+   * @returns {Observable<Object>} an Observable retrieving values one at a time.
+   * @example
+   * fetchAll({ofType: taskType}).oneByOne().subscribe({
+   *   next(value) { ... },
+   *   error(error) { ... },
+   *   complete() { ... }
+   * })
+   */
+  oneByOne() {
+    return this._fetchManyOneByOne();
+  }
+
+  /**
+   * @returns {Promise<Object[]>} a Promise resolving an array of items matching query.
+   */
+  atOnce() {
+    return this._fetchManyAtOnce();
+  }
+
+  _fetchManyOneByOne() {
     return new Observable(observer => {
 
       let receivedCount = 0;
       let promisedCount = null;
       let dbSubscription = null;
 
-      this._endpoint.query(query, QUERY_STRATEGY.oneByOne)
+      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
           promisedCount = count;
           return path;
         })
         .then(path => {
-          dbSubscription = this._firebase.onChildAdded(path, value => {
+          dbSubscription = this._backend._firebase.onChildAdded(path, value => {
             observer.next(value);
             receivedCount++;
             if (receivedCount === promisedCount) {
@@ -145,7 +170,7 @@ export class BackendClient {
         })
         .catch(observer.error);
 
-      // Returning tear down.
+      // Returning tear down logic.
       return () => {
         if (dbSubscription) {
           dbSubscription.unsubscribe();
@@ -154,11 +179,25 @@ export class BackendClient {
     });
   }
 
-  _fetchManyAtOnce(query) {
+  _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
-      this._endpoint.query(query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._firebase.getValue(path, resolve))
+      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
+        .then(({path}) => this._backend._firebase.getValue(path, resolve))
         .catch(error => reject(error));
     });
   }
 }
+
+/**
+ * @typedef {Fetch} FetchClass
+ */
+
+/**
+ * Fetches the results of the query from the server using the provided backend.
+ *
+ * Fetch is a static member of the `BackendClient`.
+ * 
+ * @type FetchClass
+ */
+BackendClient.Fetch = Fetch;
+
