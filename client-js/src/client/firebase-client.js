@@ -42,7 +42,7 @@ export class FirebaseClient {
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
    * @param {!string} path the path to the watched node
-   * @param {!nextCallback<Object>} dataCallback the child value callback
+   * @param {!consumerCallback<Object>} dataCallback the child value callback
    * 
    * @return {Subscription} a Subscription that can be unsubscribed
    */
@@ -62,8 +62,8 @@ export class FirebaseClient {
    * Gets the value from Firebase at the provided path. 
    *
    * @param {!string} path the path to the node to get value from
-   * @param {!nextCallback<Object[]>} dataCallback a callback which is provided a collection of 
-   *                                              items at path
+   * @param {!consumerCallback<Object[]>} dataCallback a callback which is provided a collection of 
+   *                                               items at path
    */
   getValue(path, dataCallback) {
     const dbRef = this._firebaseApp.database().ref(path);

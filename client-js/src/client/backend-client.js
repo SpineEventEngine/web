@@ -25,20 +25,6 @@ import {TypedMessage, TypeUrl} from "./typed-message";
 import {QUERY_STRATEGY} from "./endpoint";
 
 /**
- * @callback successfulCommandCallback a callback without any arguments,
- */
-
-/**
- * @callback commandErrorCallback a callback receiving Spine Error message as parameter
- * @param {spine.base.Error} error a Spine Error message
- */
-
-/**
- * @callback commandRejectionCallback a callback receiving Spine Rejection message as parameter
- * @param {spine.core.Rejection} error a Spine Rejection message
- */
-
-/**
  * Fetches the results of the query from the server using the provided backend.
  *
  * Fetch is a static member of the `BackendClient`.
@@ -58,7 +44,7 @@ class Fetch {
    * Fetches items one-by-one using an Observable.
    * Suitable for big collections.
    *
-   * @returns {Observable<Object>} an Observable retrieving values one at a time.
+   * @returns {Observable<Object, EndpointError>} an Observable retrieving values one at a time.
    * @example
    * fetchAll({ofType: taskType}).oneByOne().subscribe({
    *   next(value) { ... },
@@ -73,7 +59,8 @@ class Fetch {
   /**
    * Fetches all query results at once resolving a promise with an array of entities.
    *
-   * @returns {Promise<Object[]>} a Promise resolving an array of items matching query.
+   * @returns {Promise<Object[]>} a Promise resolving an array of items matching query, 
+   *                              that can catch an `EndpointError` 
    */
   atOnce() {
     return this._fetchManyAtOnce();
@@ -170,8 +157,10 @@ export class BackendClient {
    *
    * @param {!TypeUrl<T>} type a type URL of the target entity
    * @param {!TypedMessage} id an ID of the target entity
-   * @param {!nextCallback<T>} dataCallback a callback receiving a single data item as a JS object
-   * @param {?errorCallback} errorCallback a callback receiving an error
+   * @param {!consumerCallback<Object>} dataCallback 
+   *        a callback receiving a single data item as a JS object
+   * @param {?consumerCallback<EndpointError>} errorCallback 
+   *        a callback receiving an error
    * 
    * @template <T>
    */
@@ -190,12 +179,12 @@ export class BackendClient {
    * Sends the provided command to the server.
    *
    * @param {!TypedMessage} commandMessage a typed command message
-   * @param {!successfulCommandCallback} successCallback a no-argument callback invoked if
-   *                                                     the command is acknowledged
-   * @param {?commandErrorCallback} errorCallback a callback which receives the errors executed if 
-   *                                              an error occcured when processing command  
-   * @param {?commandRejectionCallback} rejectionCallback a callback executed if the command was
-   *                                                      rejected by Spine
+   * @param {!voidCallback} successCallback 
+   *        a no-argument callback invoked if the command is acknowledged
+   * @param {?consumerCallback<spine.base.Error>} errorCallback 
+   *        a callback receiving the errors executed if an error occcured when processing command  
+   * @param {?consumerCallback<Rejection>} rejectionCallback 
+   *        a callback executed if the command was rejected by Spine
    */
   sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
     const command = this._actorRequestFactory.command(commandMessage);

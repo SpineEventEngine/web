@@ -94,7 +94,7 @@ export class Endpoint {
     if (Endpoint._isSuccessfulResponse(response)) {
       return response.json();
     } else {
-      return Promise.reject("HTTP Request failed");
+      return Promise.reject(new EndpointError(response));
     }
   }
 
@@ -104,7 +104,7 @@ export class Endpoint {
    * @private
    */
   static _isSuccessfulResponse(response) {
-    return 200 <= response.status || response.status < 300;
+    return 200 <= response.status && response.status < 300;
   }
 }
 
@@ -122,3 +122,28 @@ export const QUERY_STRATEGY = Object.freeze({
   oneByOne: false
 });
 
+/**
+ * An error which occurred when sending off a request to Spine endpoint.
+ */
+class EndpointError {
+  /**
+   * @param {Response} response an HTTP response that caused an error
+   */
+  constructor(response) {
+    this._response = response;
+  }
+
+  /**
+   * @returns {boolean} `true` if the error was caused by an invalid client behaviour
+   */
+  isClient() {
+    return 400 <= this._response.status && this._response.status < 500;
+  }
+
+  /**
+   * @returns {boolean} `true` in case of the server error
+   */
+  isServer() {
+    return this._response.status >= 500;
+  }
+}

@@ -18,29 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @callback nextCallback
- * @param {N} data
- * @template <N>
+ * @callback consumerCallback
+ * @param {V} param
+ * @template <V>
  */
 
 /**
- * @callback errorCallback
- * @param {Object} error
- */
-
-/**
- * @callback completeCallback
- */
-
-/**
- * @callback tearDownCallback
+ * @callback voidCallback
  */
 
 /**
  * @callback observableFunction
  * @param {Observer<V>} observer
- * @returns {tearDownCallback}
- * @template <V>
+ * @returns {voidCallback}
+ * @template <V, B>
  */
 
 /**
@@ -60,7 +51,8 @@
  *   })
  * </code>
  *
- * @template <V> the value observed by this Observer
+ * @template <V> a type of the value observed by this Observer
+ * @template <E> a type of the accepted error 
  */
 class Observer {
   // noinspection JSMethodCanBeStatic
@@ -77,7 +69,7 @@ class Observer {
   /**
    * Invoked by the Observable an error occurres while processing its values.
    *
-   * @param {Error} err an error which occurred observing the value
+   * @param {E} err an error which occurred observing the value
    */
   error(err) {
     throw new Error("Unimplemented by an abstract Observer");
@@ -113,7 +105,7 @@ export class Subscription {
 
   /**
    * Adds tear down logic to this Subscription.
-   * @param {!tearDownCallback} tearDown a callback invoked before unsubscribing.
+   * @param {!voidCallback} tearDown a callback invoked before unsubscribing.
    */
   add(tearDown) {
     this._tearDownCallbacks.push(tearDown);
@@ -124,7 +116,8 @@ export class Subscription {
  * An Observable Subscriber sending off received values, errors and complete notifications to the
  * observer.
  *
- * @template <N>
+ * @template <N> a type of the value observed by this Observer
+ * @template <E> a type of the accepted error
  */
 class Subscriber {
 
@@ -150,7 +143,7 @@ class Subscriber {
   /**
    * Sends off an error to the Observer, stopping it from receiving further values.
    *
-   * @param {Error} err an error to be passed to the Observer
+   * @param {E} err an error to be passed to the Observer
    */
   error(err) {
     if (!this.isStopped) {
@@ -185,9 +178,9 @@ class Subscriber {
    * `next` and `complete` use no-op as a default, while the `error` is logging
    * the values to the console.
    *
-   * @param {!nextCallback<N>} next
-   * @param {?errorCallback} error
-   * @param {?completeCallback} complete
+   * @param {!consumerCallback<N>} next
+   * @param {?consumerCallback} error
+   * @param {?voidCallback} complete
    * @return {Subscriber<N>}
    */
   static fromObservable(next, error, complete) {
@@ -233,6 +226,7 @@ class Subscriber {
  * `error(err)` method.
  *
  * @template <N> a type of the next observed value
+ * @template <E> a type of error that can occur in observer
  */
 export class Observable {
 
@@ -247,9 +241,9 @@ export class Observable {
   /**
    * Subscribes a provided Observable to observe new values.
    *
-   * @param {!nextCallback<N>} next
-   * @param {?errorCallback} error
-   * @param {?completeCallback} complete
+   * @param {!consumerCallback<N>} next
+   * @param {?consumerCallback<E>} error
+   * @param {?voidCallback} complete
    * @return {Subscription}
    */
   subscribe({next, error, complete}) {

@@ -90,7 +90,7 @@ describe("Client should", function () {
     const productId = randomId("spine-web-test-1-");
     const command = creteTaskCommand(productId, "Write tests", "client-js needs tests; write'em");
 
-    backendClient.sendCommand(command, function () {
+    backendClient.sendCommand(command, () => {
 
       const type = new TypeUrl("type.spine.io/spine.web.test.Task");
       const idType = new TypeUrl("type.spine.io/spine.web.test.TaskId");
@@ -109,7 +109,7 @@ describe("Client should", function () {
     const productId = randomId("spine-web-test-2-");
     const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
 
-    backendClient.sendCommand(command, function () {
+    backendClient.sendCommand(command, () => {
 
       let itemFound = false;
       const type = new TypeUrl("type.spine.io/spine.web.test.Task");
@@ -134,7 +134,7 @@ describe("Client should", function () {
     const productId = randomId("spine-web-test-2-");
     const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
 
-    backendClient.sendCommand(command, function () {
+    backendClient.sendCommand(command, () => {
 
       const type = new TypeUrl("type.spine.io/spine.web.test.Task");
       backendClient.fetchAll({ofType: type}).atOnce()
@@ -145,5 +145,34 @@ describe("Client should", function () {
         }, fail(done));
 
     }, fail(done), fail(done));
+  });
+
+  it("fails a malformed query", done => {
+    const productId = randomId("spine-web-test-2-");
+    const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
+
+    backendClient.sendCommand(command, () => {
+
+      const malformedType = new TypeUrl("/");
+      backendClient.fetchAll({ofType: malformedType}).atOnce()
+        .then(fail(done), error => {
+          assert.ok(!error.isClient());
+          assert.ok(error.isServer());
+          done();
+        });
+
+    }, fail(done), fail(done));
+  });
+
+  it("fails a malformed command", done => {
+    const malformedId = randomId(null);
+    const command = creteTaskCommand(malformedId, "Run tests", "client-js has tests; run'em");
+
+    backendClient.sendCommand(command, fail(done), error => {
+      assert.equal(error.code, 2);
+      assert.equal(error.type, "spine.core.CommandValidationError");
+      assert.ok(error.validationError);
+      done();
+    }, fail(done));
   });
 });
