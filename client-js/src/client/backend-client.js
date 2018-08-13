@@ -93,7 +93,7 @@ export class BackendClient {
    * @param {!voidCallback} successCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<spine.base.Error>} errorCallback
-   *        a callback receiving the errors executed if an error occcured when processing command
+   *        a callback receiving the errors executed if an error occured when processing command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
    */
