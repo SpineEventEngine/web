@@ -168,8 +168,8 @@ class Fetch {
    * // To query all entities of developer-defined Task type at once:
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
-   * @returns {Promise<Object[]>} a promise resolving an array of items matching query,
-   *                              that can catch an `EndpointError`
+   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   *                              that be rejected with an `EndpointError`
    */
   atOnce() {
     return this._fetchManyAtOnce();
