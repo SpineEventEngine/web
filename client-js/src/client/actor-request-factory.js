@@ -171,7 +171,6 @@ export class ActorRequestFactory {
   }
 
   /**
-   * 
    * @returns {QueryId}
    * @private
    */
