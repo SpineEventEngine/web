@@ -50,16 +50,15 @@ export class BackendClient {
    * with an array of objects.
    *
    * @example
-   * // Fetch entities one-by-one using an Observable.
-   * // Suitable for big collections when the order does not matter.
+   * // Fetch all entities of a developer-defined Task type one-by-one using an Observable.
    * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(entity) { ... },
+   *   next(task) { ... },
    *   error(error) { ... },
    *   complete() { ... }
    * })
    * @example
-   * // Fetch all entities at once using a Promise.
-   * fetchAll({ofType: taskType}).atOnce().then(entities => { ... })
+   * // Fetch all entities of a developer-defined Task type at once using a Promise.
+   * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
    * @param {!TypeUrl<T>} ofType a type of the entities to be queried
    * @returns {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
@@ -143,12 +142,15 @@ class Fetch {
   }
 
   /**
-   * Fetches items one-by-one using an Observable.
-   * Suitable for big collections.
+   * Fetches entities one-by-one using an Observable. Provides each entity as a new value for 
+   * the observer.
+   * 
+   * This method is suitable for big collections of data where ordering is not essential.
    *
    * @example
+   * // To query all entities of developer-defined Task type one-by-one:
    * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(entity) { ... },
+   *   next(task) { ... },
    *   error(error) { ... },
    *   complete() { ... }
    * })
@@ -160,10 +162,11 @@ class Fetch {
   }
 
   /**
-   * Fetches all query results at once resolving a promise with an array of entities.
+   * Fetches all query results at once fulfilling a promise with an array of entities.
    * 
    * @example
-   * fetchAll({ofType: taskType}).atOnce().then(entities => { ... })
+   * // To query all entities of developer-defined Task type at once:
+   * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
    * @returns {Promise<Object[]>} a Promise resolving an array of items matching query,
    *                              that can catch an `EndpointError`
