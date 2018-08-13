@@ -67,7 +67,7 @@ class Observer {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * Invoked by the Observable an error occurres while processing its values.
+   * Invoked by the Observable an error occurs while processing its values.
    *
    * @param {E} err an error which occurred observing the value
    */
@@ -222,7 +222,7 @@ class Subscriber {
  * When all of the possible values are observed an Observable call Observers
  * `complete()` method.
  *
- * If an error occurres while processing any Observable value it calls the Observers
+ * If an error occurs while processing any Observable value it calls the Observers
  * `error(err)` method.
  *
  * @template <N> a type of the next observed value
