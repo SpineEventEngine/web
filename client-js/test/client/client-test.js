@@ -107,7 +107,7 @@ describe('Client should', function () {
 
   it('fetch all the existing entities of given type one by one', done => {
     const productId = randomId('spine-web-test-2-');
-    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run'em');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -132,7 +132,7 @@ describe('Client should', function () {
 
   it('fetch all the existing entities of given type at once', done => {
     const productId = randomId('spine-web-test-2-');
-    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run'em');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -149,7 +149,7 @@ describe('Client should', function () {
 
   it('fails a malformed query', done => {
     const productId = randomId('spine-web-test-2-');
-    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run'em');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -166,7 +166,7 @@ describe('Client should', function () {
 
   it('fails a malformed command', done => {
     const malformedId = randomId(null);
-    const command = creteTaskCommand(malformedId, 'Run tests', 'client-js has tests; run'em');
+    const command = creteTaskCommand(malformedId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, fail(done), error => {
       assert.equal(error.code, 2);
