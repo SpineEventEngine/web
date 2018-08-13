@@ -88,7 +88,7 @@ describe('Client should', function () {
 
   it('send commands successfully', done => {
     const productId = randomId('spine-web-test-1-');
-    const command = creteTaskCommand(productId, 'Write tests', 'client-js needs tests; write'em');
+    const command = creteTaskCommand(productId, 'Write tests', 'client-js needs tests; write\'em');
 
     backendClient.sendCommand(command, () => {
 
