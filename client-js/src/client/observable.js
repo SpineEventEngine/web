@@ -122,10 +122,10 @@ export class Subscription {
 class Subscriber {
 
   /**
-   * @param destination
+   * @param {Observer<N, E>} destination
    */
   constructor(destination) {
-    this.destination = destination;
+    this._destination = destination;
   }
 
   /**
@@ -136,7 +136,7 @@ class Subscriber {
    */
   next(value) {
     if (!this.isStopped) {
-      this.destination.next(value);
+      this._destination.next(value);
     }
   }
 
@@ -148,7 +148,7 @@ class Subscriber {
   error(err) {
     if (!this.isStopped) {
       this.isStopped = true;
-      this.destination.error(err);
+      this._destination.error(err);
       this.unsubscribe();
     }
   }
@@ -159,7 +159,7 @@ class Subscriber {
   complete() {
     if (!this.isStopped) {
       this.isStopped = true;
-      this.destination.complete();
+      this._destination.complete();
       this.unsubscribe();
     }
   }
