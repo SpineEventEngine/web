@@ -22,7 +22,7 @@
 
 import {Observable} from './observable';
 import {TypedMessage, TypeUrl} from './typed-message';
-import {QUERY_STRATEGY} from './endpoint';
+import {QUERY_STRATEGY} from './http-endpoint';
 
 /**
  * Fetches the results of the query from the server using the provided backend.
