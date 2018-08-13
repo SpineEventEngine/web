@@ -29,7 +29,7 @@ import {WebQuery} from 'spine-js-client-proto/spine/web/web_query_pb';
 const WEB_QUERY_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.WebQuery');
 
 /**
- * An error which occurred when sending off a request to Spine endpoint.
+ * An error which occurred when sending off a request to Spine server endpoint.
  */
 class EndpointError {
   /**
@@ -70,7 +70,7 @@ export class HttpEndpoint {
   /**
    * Sends off a command to the endpoint.
    *
-   * @param {!TypedMessage<Command>} command a Command send to Spine
+   * @param {!TypedMessage<Command>} command a Command send to Spine server
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
    */
@@ -83,7 +83,7 @@ export class HttpEndpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param {!TypedMessage<Query>} query a Query to Spine to retrieve some domain entities
+   * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
    * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
@@ -99,7 +99,7 @@ export class HttpEndpoint {
   /**
    * Builds a new WebQuery from Query and client delivery strategy.
    *
-   * @param {!Query} of a Query to be executed by Spine
+   * @param {!Query} of a Query to be executed by Spine server
    * @param {!QUERY_STRATEGY} delivered the strategy for query results delivery
    * @private
    */

@@ -32,7 +32,7 @@ import {QUERY_STRATEGY} from './http-endpoint';
 class Fetch {
 
   /**
-   * @param {!TypedMessage<Query>} query a query to be performed by Spine
+   * @param {!TypedMessage<Query>} query a query to be performed by Spine server
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
@@ -185,7 +185,7 @@ export class BackendClient {
    * @param {?consumerCallback<spine.base.Error>} errorCallback 
    *        a callback receiving the errors executed if an error occcured when processing command  
    * @param {?consumerCallback<Rejection>} rejectionCallback 
-   *        a callback executed if the command was rejected by Spine
+   *        a callback executed if the command was rejected by Spine server
    */
   sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
     const command = this._actorRequestFactory.command(commandMessage);
