@@ -29,6 +29,32 @@ import {WebQuery} from "spine-js-client-proto/spine/web/web_query_pb";
 const WEB_QUERY_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.web.WebQuery");
 
 /**
+ * An error which occurred when sending off a request to Spine endpoint.
+ */
+class EndpointError {
+  /**
+   * @param {Response} response an HTTP response that caused an error
+   */
+  constructor(response) {
+    this._response = response;
+  }
+
+  /**
+   * @returns {boolean} `true` if the error was caused by an invalid client behaviour
+   */
+  isClient() {
+    return 400 <= this._response.status && this._response.status < 500;
+  }
+
+  /**
+   * @returns {boolean} `true` in case of the server error
+   */
+  isServer() {
+    return this._response.status >= 500;
+  }
+}
+
+/**
  * Spine HTTP endpoint which is used to send off Commands and Queries using 
  * the provided HTTP client.
  */
@@ -122,29 +148,3 @@ export const QUERY_STRATEGY = Object.freeze({
   allAtOnce: true,
   oneByOne: false
 });
-
-/**
- * An error which occurred when sending off a request to Spine endpoint.
- */
-class EndpointError {
-  /**
-   * @param {Response} response an HTTP response that caused an error
-   */
-  constructor(response) {
-    this._response = response;
-  }
-
-  /**
-   * @returns {boolean} `true` if the error was caused by an invalid client behaviour
-   */
-  isClient() {
-    return 400 <= this._response.status && this._response.status < 500;
-  }
-
-  /**
-   * @returns {boolean} `true` in case of the server error
-   */
-  isServer() {
-    return this._response.status >= 500;
-  }
-}
