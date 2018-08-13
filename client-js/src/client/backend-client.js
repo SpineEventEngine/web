@@ -43,14 +43,14 @@ export class BackendClient {
    * `.atOnce()` methods.
    *
    * `fetchAll(...).oneByOne()` queries the entities returning them in asynchronous manner using
-   * an Observable. A subscriber is added to an Observable to process each next entity or handle
+   * an observable. A subscriber is added to an observable to process each next entity or handle
    * the error during the operation.
    *
    * `fetchAll(...).atOnce()` queries all the entities at once fulfilling a returned promise
    * with an array of objects.
    *
    * @example
-   * // Fetch all entities of a developer-defined Task type one-by-one using an Observable.
+   * // Fetch all entities of a developer-defined Task type one-by-one using an observable.
    * fetchAll({ofType: taskType}).oneByOne().subscribe({
    *   next(task) { ... },
    *   error(error) { ... },
@@ -102,7 +102,7 @@ export class BackendClient {
   }
 
   /**
-   * A static factory method that creates a new Backend Client instance using Firebase as
+   * A static factory method that creates a new `BackendClient` instance using Firebase as
    * underlying implementation.
    *
    * @param {!string} atEndpoint a Spine web backend endpoint URL
@@ -142,8 +142,8 @@ class Fetch {
   }
 
   /**
-   * Fetches entities one-by-one using an Observable. Provides each entity as a new value for 
-   * the observer.
+   * Fetches entities one-by-one using an observable. Provides each entity as a new value for 
+   * the subscribed Observer.
    * 
    * This method is suitable for big collections of data where ordering is not essential.
    *
@@ -155,7 +155,7 @@ class Fetch {
    *   complete() { ... }
    * })
    *
-   * @returns {Observable<Object, EndpointError>} an Observable retrieving values one at a time.
+   * @returns {Observable<Object, EndpointError>} an observable retrieving values one at a time.
    */
   oneByOne() {
     return this._fetchManyOneByOne();
@@ -168,7 +168,7 @@ class Fetch {
    * // To query all entities of developer-defined Task type at once:
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
-   * @returns {Promise<Object[]>} a Promise resolving an array of items matching query,
+   * @returns {Promise<Object[]>} a promise resolving an array of items matching query,
    *                              that can catch an `EndpointError`
    */
   atOnce() {

@@ -37,7 +37,7 @@
 /**
  * An abstract Observer class.
  *
- * It is passed new values from the Observable to its `#next(value)` method,
+ * It is passed new values from the observable to its `#next(value)` method,
  * errors to `#error(err)` method and a notification about Observable completion to its
  * `complete()` method.
  *
@@ -57,9 +57,9 @@
 class Observer {
   // noinspection JSMethodCanBeStatic
   /**
-   * Invoked by the Observable when it retrieves a new value.
+   * Invoked by the observable when it retrieves a new value.
    *
-   * @param {V} value next value observed in a Observable
+   * @param {V} value next value observed in a `Observable`
    */
   next(value) {
     throw new Error('Unimplemented by an abstract Observer');
@@ -67,7 +67,7 @@ class Observer {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * Invoked by the Observable an error occurs while processing its values.
+   * Invoked by the observable an error occurs while processing its values.
    *
    * @param {E} err an error which occurred observing the value
    */
@@ -77,7 +77,7 @@ class Observer {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * Invoked by the Observable when its complete.
+   * Invoked by the observable when its complete.
    */
   complete() {
     throw new Error('Unimplemented by an abstract Observer');
@@ -85,7 +85,7 @@ class Observer {
 }
 
 /**
- * A subscription returned by the Observable allowing to unsubscribe the Observer from receiving
+ * A subscription returned by the observable allowing to unsubscribe the Observer from receiving
  * new values.
  */
 export class Subscription {
@@ -96,7 +96,7 @@ export class Subscription {
   }
 
   /**
-   * Unsubscribes the subscription target from Observable stopping it from receiving new values.
+   * Unsubscribes the subscription target stopping it from receiving new values.
    */
   unsubscribe() {
     this._tearDownCallbacks.forEach(callback => callback());
@@ -113,7 +113,7 @@ export class Subscription {
 }
 
 /**
- * An Observable Subscriber sending off received values, errors and complete notifications to the
+ * An observable subscriber sending off received values, errors and complete notifications to the
  * observer.
  *
  * @template <N> a type of the value observed by this Observer
@@ -129,7 +129,7 @@ class Subscriber {
   }
 
   /**
-   * Sends off the next Observable value to the Observer, skipping it if the Observable was
+   * Sends off the next observable value to the Observer, skipping it if the observable was
    * unsubscribed or the Observer was complete.
    *
    * @param {N} value a next value for the Observer
@@ -203,7 +203,7 @@ class Subscriber {
   }
 
   /**
-   * A default error handler used by Observable, logging the error to console.
+   * A default error handler used by the `Observable`, logging the error to console.
    * @private
    */
   static _consoleErrorHandler(error) {
@@ -219,7 +219,7 @@ class Subscriber {
  * An Observable accepts a single subscriber, supplying each new observed value to its
  * `next(item)` method.
  *
- * When all of the possible values are observed an Observable call Observers
+ * When all of the possible values are observed an observable call Observers
  * `complete()` method.
  *
  * If an error occurs while processing any Observable value it calls the Observers
@@ -239,11 +239,12 @@ export class Observable {
   }
 
   /**
-   * Subscribes a provided Observable to observe new values.
+   * Subscribe the Observable to observe new values.
    *
-   * @param {!consumerCallback<N>} next
-   * @param {?consumerCallback<E>} error
-   * @param {?voidCallback} complete
+   * @param {!consumerCallback<N>} next receives next observed value
+   * @param {?consumerCallback<E>} error receives error which occured while observing values 
+   *                                     stopping an observer from receiving any new values 
+   * @param {?voidCallback} complete a callback invoked when observable values came to an end 
    * @return {Subscription}
    */
   subscribe({next, error, complete}) {
