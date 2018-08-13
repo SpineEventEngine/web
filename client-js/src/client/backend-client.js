@@ -30,9 +30,9 @@ import {ActorRequestFactory} from './actor-request-factory';
 /**
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
- * 
- * Backend Client defines an operations that client is able to perform (`.fetchAll(...)`, 
- * `.sendCommand(...)`, etc.), also providing factory methods for creating Backend Client 
+ *
+ * Backend Client defines an operations that client is able to perform (`.fetchAll(...)`,
+ * `.sendCommand(...)`, etc.), also providing factory methods for creating Backend Client
  * instances (`.usingFirebase(...)`).
  */
 export class BackendClient {
@@ -46,12 +46,9 @@ export class BackendClient {
    * an Observable. A subscriber is added to an Observable to process each next entity or handle
    * the error during the operation.
    *
-   * * `fetchAll(...).atOnce()` queries all the entities at once fulfilling a returned promise
+   * `fetchAll(...).atOnce()` queries all the entities at once fulfilling a returned promise
    * with an array of objects.
    *
-   * @param {!TypeUrl<T>} ofType a type of the entities to be queried
-   * @returns {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
-   *                                call parameters and executed the query.
    * @example
    * // Fetch entities one-by-one using an Observable.
    * // Suitable for big collections when the order does not matter.
@@ -63,6 +60,10 @@ export class BackendClient {
    * @example
    * // Fetch all entities at once using a Promise.
    * fetchAll({ofType: taskType}).atOnce().then(entities => { ... })
+   *
+   * @param {!TypeUrl<T>} ofType a type of the entities to be queried
+   * @returns {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
+   *                                call parameters and executed the query.
    *
    * @template <T>
    */
@@ -127,7 +128,7 @@ export class BackendClient {
  * Fetches the results of the query from the server using the provided backend.
  *
  * Fetch is a static member of the `BackendClient`.
- * 
+ *
  * @template <T>
  */
 class Fetch {
@@ -145,13 +146,14 @@ class Fetch {
    * Fetches items one-by-one using an Observable.
    * Suitable for big collections.
    *
-   * @returns {Observable<Object, EndpointError>} an Observable retrieving values one at a time.
    * @example
    * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(value) { ... },
+   *   next(entity) { ... },
    *   error(error) { ... },
    *   complete() { ... }
    * })
+   *
+   * @returns {Observable<Object, EndpointError>} an Observable retrieving values one at a time.
    */
   oneByOne() {
     return this._fetchManyOneByOne();
@@ -159,6 +161,9 @@ class Fetch {
 
   /**
    * Fetches all query results at once resolving a promise with an array of entities.
+   * 
+   * @example
+   * fetchAll({ofType: taskType}).atOnce().then(entities => { ... })
    *
    * @returns {Promise<Object[]>} a Promise resolving an array of items matching query,
    *                              that can catch an `EndpointError`
