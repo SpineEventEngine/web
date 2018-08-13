@@ -167,12 +167,13 @@ export class BackendClient {
   fetchById(type, id, dataCallback, errorCallback) {
     const query = this._actorRequestFactory.queryById(type.value, id);
     const fetch = new Fetch({of: query, using: this});
-
+    
+    const observer = {next: dataCallback};
+    if (errorCallback) {
+      observer.error = errorCallback;
+    }
     // noinspection JSCheckFunctionSignatures
-    return fetch.oneByOne().subscribe({
-      next: dataCallback,
-      error: errorCallback || undefined
-    });
+    return fetch.oneByOne().subscribe(observer);
   }
 
   /**
