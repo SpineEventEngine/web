@@ -18,15 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {TypedMessage, TypeUrl} from "./typed-message";
-import {WebQuery} from "spine-js-client-proto/spine/web/web_query_pb";
+import {TypedMessage, TypeUrl} from './typed-message';
+import {WebQuery} from 'spine-js-client-proto/spine/web/web_query_pb';
 
 /**
  * The type URL representing the spine.client.Query.
  *
  * @type {TypeUrl}
  */
-const WEB_QUERY_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.web.WebQuery");
+const WEB_QUERY_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.WebQuery');
 
 /**
  * An error which occurred when sending off a request to Spine endpoint.
@@ -76,7 +76,7 @@ export class HttpEndpoint {
    */
   command(command) {
     return this._httpClient
-      .postMessage("/command", command)
+      .postMessage('/command', command)
       .then(HttpEndpoint._jsonOrRejection);
   }
 
@@ -92,7 +92,7 @@ export class HttpEndpoint {
     const webQuery = HttpEndpoint._newWebQuery({of: query, delivered: strategy});
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
     return this._httpClient
-      .postMessage("/query", typedQuery)
+      .postMessage('/query', typedQuery)
       .then(HttpEndpoint._jsonOrRejection);
   }
 

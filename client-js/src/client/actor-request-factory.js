@@ -20,21 +20,21 @@
 
 "use strict";
 
-import uuid from "uuid";
+import uuid from 'uuid';
 
-import {Timestamp} from "spine-js-client-proto/google/protobuf/timestamp_pb";
-import {Query, QueryId} from "spine-js-client-proto/spine/client/query_pb";
+import {Timestamp} from 'spine-js-client-proto/google/protobuf/timestamp_pb';
+import {Query, QueryId} from 'spine-js-client-proto/spine/client/query_pb';
 import {
   EntityFilters,
   EntityId,
   EntityIdFilter,
   Target
-} from "spine-js-client-proto/spine/client/entities_pb";
-import {ActorContext} from "spine-js-client-proto/spine/core/actor_context_pb";
-import {Command, CommandContext, CommandId} from "spine-js-client-proto/spine/core/command_pb";
-import {UserId} from "spine-js-client-proto/spine/core/user_id_pb";
-import {ZoneId, ZoneOffset} from "spine-js-client-proto/spine/time/time_pb";
-import {TypedMessage, TypeUrl} from "./typed-message";
+} from 'spine-js-client-proto/spine/client/entities_pb';
+import {ActorContext} from 'spine-js-client-proto/spine/core/actor_context_pb';
+import {Command, CommandContext, CommandId} from 'spine-js-client-proto/spine/core/command_pb';
+import {UserId} from 'spine-js-client-proto/spine/core/user_id_pb';
+import {ZoneId, ZoneOffset} from 'spine-js-client-proto/spine/time/time_pb';
+import {TypedMessage, TypeUrl} from './typed-message';
 
 
 /**
@@ -42,7 +42,7 @@ import {TypedMessage, TypeUrl} from "./typed-message";
  *
  * @type {TypeUrl}
  */
-const COMMAND_MESSAGE_TYPE = new TypeUrl("type.spine.io/spine.core.Command");
+const COMMAND_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.core.Command');
 
 /**
  * A factory for the various requests fired from the client-side by an actor.
@@ -177,7 +177,7 @@ export class ActorRequestFactory {
    */
   static _newQueryId() {
     const result = new QueryId();
-    result.setValue("q-" + uuid.v4());
+    result.setValue('q-' + uuid.v4());
     return result;
   }
 

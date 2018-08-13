@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {Subscription} from "./observable";
+import {Subscription} from './observable';
 
 /**
  * The client of a Firebase Realtime database.
@@ -48,13 +48,13 @@ export class FirebaseClient {
    */
   onChildAdded(path, dataCallback) {
     const dbRef = this._firebaseApp.database().ref(path);
-    const callback = dbRef.on("child_added", response => {
+    const callback = dbRef.on('child_added', response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
       dataCallback(message);
     });
     return new Subscription(() => {
-      dbRef.off("child_added", callback);
+      dbRef.off('child_added', callback);
     });
   }
 
@@ -67,7 +67,7 @@ export class FirebaseClient {
    */
   getValue(path, dataCallback) {
     const dbRef = this._firebaseApp.database().ref(path);
-    dbRef.once("value", response => {
+    dbRef.once('value', response => {
       const data = response.val(); // an Object mapping Firebase ids to objects is returned
       const objectStrings = Object.values(data);
       const items = objectStrings.map(item => JSON.parse(item));

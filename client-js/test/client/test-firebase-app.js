@@ -18,15 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import firebase from "firebase";
+import firebase from 'firebase';
 
 const config = {
-    apiKey: "AIzaSyD8Nr2zrW9QFLbNS5Kg-Ank-QIZP_jo5pU",
-    authDomain: "spine-dev.firebaseapp.com",
-    databaseURL: "https://spine-dev.firebaseio.com",
-    projectId: "spine-dev",
-    storageBucket: "",
-    messagingSenderId: "165066236051"
+    apiKey: 'AIzaSyD8Nr2zrW9QFLbNS5Kg-Ank-QIZP_jo5pU',
+    authDomain: 'spine-dev.firebaseapp.com',
+    databaseURL: 'https://spine-dev.firebaseio.com',
+    projectId: 'spine-dev',
+    storageBucket: '',
+    messagingSenderId: '165066236051'
 };
 
-export const devFirebaseApp = firebase.initializeApp(config, "spine-dev");
+export const devFirebaseApp = firebase.initializeApp(config, 'spine-dev');

@@ -19,18 +19,18 @@
  */
 
 // noinspection NodeJsCodingAssistanceForCoreModules
-import assert from "assert";
+import assert from 'assert';
 
-import {ActorRequestFactory} from "../../src/client/actor-request-factory";
-import {FirebaseClient} from "../../src/client/firebase-client";
-import {devFirebaseApp as firebase} from "./test-firebase-app";
-import {TypedMessage, TypeUrl} from "../../src/client/typed-message";
+import {ActorRequestFactory} from '../../src/client/actor-request-factory';
+import {FirebaseClient} from '../../src/client/firebase-client';
+import {devFirebaseApp as firebase} from './test-firebase-app';
+import {TypedMessage, TypeUrl} from '../../src/client/typed-message';
 
-import {CreateTask} from "../../proto/test/js/spine/web/test/commands_pb";
-import {TaskId} from "../../proto/test/js/spine/web/test/task_pb";
-import {HttpClient} from "../../src/client/http-client";
-import {HttpEndpoint} from "../../src/client/http-endpoint";
-import {BackendClient} from "../../src/client/backend-client";
+import {CreateTask} from '../../proto/test/js/spine/web/test/commands_pb';
+import {TaskId} from '../../proto/test/js/spine/web/test/task_pb';
+import {HttpClient} from '../../src/client/http-client';
+import {HttpEndpoint} from '../../src/client/http-endpoint';
+import {BackendClient} from '../../src/client/backend-client';
 
 const MILLISECONDS = 1;
 const SECONDS = 1000 * MILLISECONDS;
@@ -42,7 +42,7 @@ function creteTaskCommand(id, name, description) {
   command.setName(name);
   command.setDescription(description);
 
-  const commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
+  const commandType = new TypeUrl('type.spine.io/spine.web.test.CreateTask');
 
   return new TypedMessage(command, commandType);
 }
@@ -55,7 +55,7 @@ function randomId(prefix) {
 }
 
 function testEndpoint() {
-  const httpClient = new HttpClient("https://spine-dev.appspot.com");
+  const httpClient = new HttpClient('https://spine-dev.appspot.com');
   return new HttpEndpoint(httpClient);
 }
 
@@ -64,7 +64,7 @@ function newFirebaseClient() {
 }
 
 function newRequestFactory() {
-  return new ActorRequestFactory("web-test-actor");
+  return new ActorRequestFactory('web-test-actor');
 }
 
 function newBackendClient() {
@@ -81,19 +81,19 @@ function fail(done) {
 
 const backendClient = newBackendClient();
 
-describe("Client should", function () {
+describe('Client should', function () {
 
   // Big timeout due to remote calls during tests.
   this.timeout(2 * MINUTES);
 
-  it("send commands successfully", done => {
-    const productId = randomId("spine-web-test-1-");
-    const command = creteTaskCommand(productId, "Write tests", "client-js needs tests; write'em");
+  it('send commands successfully', done => {
+    const productId = randomId('spine-web-test-1-');
+    const command = creteTaskCommand(productId, 'Write tests', 'client-js needs tests; write'em');
 
     backendClient.sendCommand(command, () => {
 
-      const type = new TypeUrl("type.spine.io/spine.web.test.Task");
-      const idType = new TypeUrl("type.spine.io/spine.web.test.TaskId");
+      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
+      const idType = new TypeUrl('type.spine.io/spine.web.test.TaskId');
       const typedId = new TypedMessage(productId, idType);
 
       backendClient.fetchById(type, typedId, data => {
@@ -105,14 +105,14 @@ describe("Client should", function () {
     }, fail(done), fail(done));
   });
 
-  it("fetch all the existing entities of given type one by one", done => {
-    const productId = randomId("spine-web-test-2-");
-    const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
+  it('fetch all the existing entities of given type one by one', done => {
+    const productId = randomId('spine-web-test-2-');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run'em');
 
     backendClient.sendCommand(command, () => {
 
       let itemFound = false;
-      const type = new TypeUrl("type.spine.io/spine.web.test.Task");
+      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
 
       backendClient.fetchAll({ofType: type}).oneByOne().subscribe({
         next(data) {
@@ -130,13 +130,13 @@ describe("Client should", function () {
     }, fail(done), fail(done));
   });
 
-  it("fetch all the existing entities of given type at once", done => {
-    const productId = randomId("spine-web-test-2-");
-    const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
+  it('fetch all the existing entities of given type at once', done => {
+    const productId = randomId('spine-web-test-2-');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run'em');
 
     backendClient.sendCommand(command, () => {
 
-      const type = new TypeUrl("type.spine.io/spine.web.test.Task");
+      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
       backendClient.fetchAll({ofType: type}).atOnce()
         .then(data => {
           const targetObject = data.find(item => item.id.value === productId.getValue());
@@ -147,13 +147,13 @@ describe("Client should", function () {
     }, fail(done), fail(done));
   });
 
-  it("fails a malformed query", done => {
-    const productId = randomId("spine-web-test-2-");
-    const command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
+  it('fails a malformed query', done => {
+    const productId = randomId('spine-web-test-2-');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run'em');
 
     backendClient.sendCommand(command, () => {
 
-      const malformedType = new TypeUrl("/");
+      const malformedType = new TypeUrl('/');
       backendClient.fetchAll({ofType: malformedType}).atOnce()
         .then(fail(done), error => {
           assert.ok(!error.isClient());
@@ -164,13 +164,13 @@ describe("Client should", function () {
     }, fail(done), fail(done));
   });
 
-  it("fails a malformed command", done => {
+  it('fails a malformed command', done => {
     const malformedId = randomId(null);
-    const command = creteTaskCommand(malformedId, "Run tests", "client-js has tests; run'em");
+    const command = creteTaskCommand(malformedId, 'Run tests', 'client-js has tests; run'em');
 
     backendClient.sendCommand(command, fail(done), error => {
       assert.equal(error.code, 2);
-      assert.equal(error.type, "spine.core.CommandValidationError");
+      assert.equal(error.type, 'spine.core.CommandValidationError');
       assert.ok(error.validationError);
       done();
     }, fail(done));

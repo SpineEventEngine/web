@@ -20,8 +20,8 @@
 
 "use strict";
 
-import base64 from "base64-js";
-import {Any} from "spine-js-client-proto/google/protobuf/any_pb";
+import base64 from 'base64-js';
+import {Any} from 'spine-js-client-proto/google/protobuf/any_pb';
 
 /**
  * A URL of a Protobuf type.
@@ -43,7 +43,7 @@ export class TypeUrl {
    * @param {!string} value the type URL value
    */
   constructor(value) {
-    const urlParts = value.split("/");
+    const urlParts = value.split('/');
     this.typeUrlPrefix = urlParts[0];
     this.typeName = urlParts[1];
     this.value = value;

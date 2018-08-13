@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {TypedMessage, TypeUrl} from "./typed-message";
-import {ActorRequestFactory} from "./actor-request-factory";
-import {FirebaseClient} from "./firebase-client";
-import {HttpClient} from "./http-client";
-import {BackendClient} from "./backend-client";
+import {TypedMessage, TypeUrl} from './typed-message';
+import {ActorRequestFactory} from './actor-request-factory';
+import {FirebaseClient} from './firebase-client';
+import {HttpClient} from './http-client';
+import {BackendClient} from './backend-client';
 
 /**
  * The object which represents the public API of the `client-js` module.

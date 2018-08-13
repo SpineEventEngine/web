@@ -19,18 +19,18 @@
  */
 
 // noinspection NodeJsCodingAssistanceForCoreModules
-import assert from "assert";
+import assert from 'assert';
 
-import {Observable} from "../../src/client/observable";
+import {Observable} from '../../src/client/observable';
 
 const MILLISECONDS = 1;
 const SECONDS = 1000 * MILLISECONDS;
 
-describe("Observable should", function () {
+describe('Observable should', function () {
 
   this.timeout(5 * SECONDS);
 
-  it("send next values to the observer", done => {
+  it('send next values to the observer', done => {
     const observable = new Observable(observer => {
       observer.next(1);
       observer.next(2);
@@ -55,8 +55,8 @@ describe("Observable should", function () {
     });
   });
 
-  it("send an error to the observer", done => {
-    const expectedError = new Error("An observable error.");
+  it('send an error to the observer', done => {
+    const expectedError = new Error('An observable error.');
     const observable = new Observable(observer => {
       observer.next(1);
       setTimeout(() => {

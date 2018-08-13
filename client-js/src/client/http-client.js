@@ -25,7 +25,7 @@
  *
  * This way of performing HTTP requests works both in the browser JavaScript and in the Node.js.
  */
-import fetch from "isomorphic-fetch";
+import fetch from 'isomorphic-fetch';
 
 /**
  * The HTTP client which performs the connection to the application server.
@@ -53,15 +53,15 @@ export class HttpClient {
    */
   postMessage(endpoint, message) {
     const messageString = message.toBase64();
-    const path = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+    const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
     const url = this._appBaseUrl + path;
     const request = {
-      method: "POST",
+      method: 'POST',
       body: messageString,
       headers: {
-        "Content-Type": "application/x-protobuf"
+        'Content-Type': 'application/x-protobuf'
       },
-      mode: "cors"
+      mode: 'cors'
     };
     return fetch(url, request);
   }

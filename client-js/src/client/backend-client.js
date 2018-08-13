@@ -20,9 +20,9 @@
 
 "use strict";
 
-import {Observable} from "./observable";
-import {TypedMessage, TypeUrl} from "./typed-message";
-import {QUERY_STRATEGY} from "./endpoint";
+import {Observable} from './observable';
+import {TypedMessage, TypeUrl} from './typed-message';
+import {QUERY_STRATEGY} from './endpoint';
 
 /**
  * Fetches the results of the query from the server using the provided backend.
@@ -192,11 +192,11 @@ export class BackendClient {
     this._endpoint.command(command)
       .then(ack => {
         const status = ack.status;
-        if (status.hasOwnProperty("ok")) {
+        if (status.hasOwnProperty('ok')) {
           successCallback();
-        } else if (status.hasOwnProperty("error")) {
+        } else if (status.hasOwnProperty('error')) {
           errorCallback(status.error);
-        } else if (status.hasOwnProperty("rejection")) {
+        } else if (status.hasOwnProperty('rejection')) {
           rejectionCallback(status.rejection);
         }
       }, errorCallback);

@@ -62,7 +62,7 @@ class Observer {
    * @param {V} value next value observed in a Observable
    */
   next(value) {
-    throw new Error("Unimplemented by an abstract Observer");
+    throw new Error('Unimplemented by an abstract Observer');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -72,7 +72,7 @@ class Observer {
    * @param {E} err an error which occurred observing the value
    */
   error(err) {
-    throw new Error("Unimplemented by an abstract Observer");
+    throw new Error('Unimplemented by an abstract Observer');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -80,7 +80,7 @@ class Observer {
    * Invoked by the Observable when its complete.
    */
   complete() {
-    throw new Error("Unimplemented by an abstract Observer");
+    throw new Error('Unimplemented by an abstract Observer');
   }
 }
 
@@ -248,7 +248,7 @@ export class Observable {
    */
   subscribe({next, error, complete}) {
     if (this._subscriber) {
-      throw new Error("This observable already has a subscriber.");
+      throw new Error('This observable already has a subscriber.');
     }
 
     /** @type Subscriber<N> */
