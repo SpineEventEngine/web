@@ -30,7 +30,7 @@ import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.QueryProcessingResult;
+import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

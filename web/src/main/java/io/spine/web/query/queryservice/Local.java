@@ -18,33 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
+package io.spine.web.query.queryservice;
 
+import io.spine.web.command.FutureObserver;
 import io.spine.client.Query;
+import io.spine.client.QueryResponse;
+import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
- * An {@linkplain io.spine.client.Query entity query} bridge.
- *
- * <p>Connects the {@link io.spine.server.QueryService QueryService} with a query response
- * processor. Typically, the query response processor is the channel which sends the query response
- * to the client.
- *
- * <p>No constrains are applied to the contents of the query. Neither any guaranties are made for
- * the query result. Refer to the concrete implementations to find out the details of their
- * behaviour.
+ * An {@link AsyncQueryService} which dispatches calls to a local
+ * {@link QueryServiceImplBase QueryService}.
  *
  * @author Dmytro Dashenkov
+ * @see AsyncQueryService#local(QueryServiceImplBase) AsyncQueryService.local(...)
  */
-public interface QueryBridge {
+final class Local implements AsyncQueryService {
 
-    /**
-     * Sends the given {@link Query} to the {@link io.spine.server.QueryService QueryService} and
-     * dispatches the query response to the query response processor.
-     *
-     * <p>Returns the result of query processing.
-     *
-     * @param query the query to send
-     * @return the query result
-     */
-    QueryProcessingResult send(WebQuery query);
+    private final QueryServiceImplBase service;
+
+    Local(QueryServiceImplBase service) {
+        this.service = service;
+    }
+
+    @Override
+    public CompletableFuture<QueryResponse> execute(Query query) {
+        final FutureObserver<QueryResponse> observer =
+                FutureObserver.withDefault(QueryResponse.getDefaultInstance());
+        service.read(query, observer);
+        return observer.toFuture();
+    }
+
+    @Override
+    public String toString() {
+        return "AsyncQueryService.local(...)";
+    }
 }

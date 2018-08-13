@@ -33,7 +33,7 @@ import static io.spine.util.Exceptions.unsupported;
  * @author Dmytro Dashenkov
  */
 @SuppressWarnings("serial")
-abstract class NonSerializableServlet extends HttpServlet {
+public abstract class NonSerializableServlet extends HttpServlet {
 
     // Disabled serialization.
     // ---------------------

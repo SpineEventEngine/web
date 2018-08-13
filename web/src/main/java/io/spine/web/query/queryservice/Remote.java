@@ -18,30 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
+package io.spine.web.query.queryservice;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
+import io.spine.client.Query;
+import io.spine.client.QueryResponse;
+import io.spine.client.grpc.QueryServiceGrpc.QueryServiceBlockingStub;
+
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A result of a query processing.
- *
- * <p>The structure of this object is not defined in the general case. It may, for example,
- * be an error message, the data matching the associated query, or a token which identifies that
- * data in the delivery channel.
- *
- * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
- * a {@link ServletResponse} in order to be sent to a client.
+ * A {@link AsyncQueryService} which dispatches calls to a remote
+ * {@link QueryServiceBlockingStub QueryService} via gRPC.
  *
  * @author Dmytro Dashenkov
+ * @see AsyncQueryService#remote(QueryServiceBlockingStub) AsyncQueryService.remote(...)
  */
-public interface QueryProcessingResult {
+final class Remote implements AsyncQueryService {
 
-    /**
-     * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.
-     *
-     * @param response the response to write the result into
-     * @throws IOException in case of a failure
-     */
-    void writeTo(ServletResponse response) throws IOException;
+    private final QueryServiceBlockingStub service;
+
+    Remote(QueryServiceBlockingStub service) {
+        this.service = service;
+    }
+
+    @Override
+    public CompletableFuture<QueryResponse> execute(Query query) {
+        final CompletableFuture<QueryResponse> result = supplyAsync(() -> service.read(query));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AsyncQueryService.remote(...)";
+    }
 }

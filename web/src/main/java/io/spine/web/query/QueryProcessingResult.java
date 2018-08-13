@@ -18,40 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.queryservice;
+package io.spine.web.query;
 
-import io.spine.web.FutureObserver;
-import io.spine.client.Query;
-import io.spine.client.QueryResponse;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-
-import java.util.concurrent.CompletableFuture;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
 /**
- * An {@link AsyncQueryService} which dispatches calls to a local
- * {@link QueryServiceImplBase QueryService}.
+ * A result of a query processing.
+ *
+ * <p>The structure of this object is not defined in the general case. It may, for example,
+ * be an error message, the data matching the associated query, or a token which identifies that
+ * data in the delivery channel.
+ *
+ * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
+ * a {@link ServletResponse} in order to be sent to a client.
  *
  * @author Dmytro Dashenkov
- * @see AsyncQueryService#local(QueryServiceImplBase) AsyncQueryService.local(...)
  */
-final class Local implements AsyncQueryService {
+public interface QueryProcessingResult {
 
-    private final QueryServiceImplBase service;
-
-    Local(QueryServiceImplBase service) {
-        this.service = service;
-    }
-
-    @Override
-    public CompletableFuture<QueryResponse> execute(Query query) {
-        final FutureObserver<QueryResponse> observer =
-                FutureObserver.withDefault(QueryResponse.getDefaultInstance());
-        service.read(query, observer);
-        return observer.toFuture();
-    }
-
-    @Override
-    public String toString() {
-        return "AsyncQueryService.local(...)";
-    }
+    /**
+     * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.
+     *
+     * @param response the response to write the result into
+     * @throws IOException in case of a failure
+     */
+    void writeTo(ServletResponse response) throws IOException;
 }

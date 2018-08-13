@@ -24,10 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-import io.spine.web.QueryBridge;
-import io.spine.web.QueryProcessingResult;
+import io.spine.web.query.QueryBridge;
+import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.WebQuery;
-import io.spine.web.queryservice.AsyncQueryService;
+import io.spine.web.query.queryservice.AsyncQueryService;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -19,11 +19,11 @@
  */
 
 /**
- * This package contains the {@link io.spine.web.queryservice.AsyncQueryService
+ * This package contains the {@link io.spine.web.query.queryservice.AsyncQueryService
  * AsyncQueryService} interface and its implementations.
  */
 
 @ParametersAreNonnullByDefault
-package io.spine.web.queryservice;
+package io.spine.web.query.queryservice;
 
 import javax.annotation.ParametersAreNonnullByDefault;

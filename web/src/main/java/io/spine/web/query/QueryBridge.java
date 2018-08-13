@@ -18,39 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.queryservice;
+package io.spine.web.query;
 
 import io.spine.client.Query;
-import io.spine.client.QueryResponse;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceBlockingStub;
-
-import java.util.concurrent.CompletableFuture;
-
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+import io.spine.web.WebQuery;
 
 /**
- * A {@link AsyncQueryService} which dispatches calls to a remote
- * {@link QueryServiceBlockingStub QueryService} via gRPC.
+ * An {@linkplain io.spine.client.Query entity query} bridge.
+ *
+ * <p>Connects the {@link io.spine.server.QueryService QueryService} with a query response
+ * processor. Typically, the query response processor is the channel which sends the query response
+ * to the client.
+ *
+ * <p>No constrains are applied to the contents of the query. Neither any guaranties are made for
+ * the query result. Refer to the concrete implementations to find out the details of their
+ * behaviour.
  *
  * @author Dmytro Dashenkov
- * @see AsyncQueryService#remote(QueryServiceBlockingStub) AsyncQueryService.remote(...)
  */
-final class Remote implements AsyncQueryService {
+public interface QueryBridge {
 
-    private final QueryServiceBlockingStub service;
-
-    Remote(QueryServiceBlockingStub service) {
-        this.service = service;
-    }
-
-    @Override
-    public CompletableFuture<QueryResponse> execute(Query query) {
-        final CompletableFuture<QueryResponse> result = supplyAsync(() -> service.read(query));
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AsyncQueryService.remote(...)";
-    }
+    /**
+     * Sends the given {@link Query} to the {@link io.spine.server.QueryService QueryService} and
+     * dispatches the query response to the query response processor.
+     *
+     * <p>Returns the result of query processing.
+     *
+     * @param query the query to send
+     * @return the query result
+     */
+    QueryProcessingResult send(WebQuery query);
 }

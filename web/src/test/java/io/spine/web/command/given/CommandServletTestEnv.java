@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.given;
+package io.spine.web.command.given;
 
 import io.grpc.stub.StreamObserver;
 import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.protobuf.AnyPacker;
 import io.spine.server.CommandService;
-import io.spine.web.CommandServlet;
+import io.spine.web.command.CommandServlet;
 
 import static io.spine.core.Responses.statusOk;
 import static io.spine.testing.Tests.nullRef;

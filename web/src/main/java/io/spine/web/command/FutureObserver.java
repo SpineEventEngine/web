@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
+package io.spine.web.command;
 
 import io.grpc.stub.StreamObserver;
 

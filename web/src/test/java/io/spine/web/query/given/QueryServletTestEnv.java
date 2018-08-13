@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.given;
+package io.spine.web.query.given;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.json.Json;
-import io.spine.web.QueryBridge;
-import io.spine.web.QueryProcessingResult;
-import io.spine.web.QueryServlet;
+import io.spine.web.query.QueryBridge;
+import io.spine.web.query.QueryProcessingResult;
+import io.spine.web.query.QueryServlet;
 import io.spine.web.WebQuery;
 
 import javax.annotation.Nonnull;

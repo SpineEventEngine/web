@@ -18,12 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
+package io.spine.web.command;
 
 import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.json.Json;
 import io.spine.server.CommandService;
+import io.spine.web.NonSerializableServlet;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;

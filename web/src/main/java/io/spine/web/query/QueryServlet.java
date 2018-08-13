@@ -18,8 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
+package io.spine.web.query;
 
+import io.spine.web.NonSerializableServlet;
+import io.spine.web.WebQuery;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -64,8 +66,6 @@ import java.util.Optional;
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class QueryServlet extends NonSerializableServlet {
 
-    // Finds a test duplicate.
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     private final QueryBridge bridge;
 
     /**
@@ -92,8 +92,7 @@ public abstract class QueryServlet extends NonSerializableServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             WebQuery query = optionalQuery.get();
-            QueryProcessingResult result;
-            result = bridge.send(query);
+            QueryProcessingResult result = bridge.send(query);
             result.writeTo(resp);
         }
     }

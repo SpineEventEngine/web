@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.QueryProcessingResult;
+import io.spine.web.query.QueryProcessingResult;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
