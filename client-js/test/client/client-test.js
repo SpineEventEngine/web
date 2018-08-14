@@ -21,15 +21,11 @@
 // noinspection NodeJsCodingAssistanceForCoreModules
 import assert from 'assert';
 
-import {ActorRequestFactory} from '../../src/client/actor-request-factory';
-import {FirebaseClient} from '../../src/client/firebase-client';
-import {devFirebaseApp as firebase} from './test-firebase-app';
+import {devFirebaseApp} from './test-firebase-app';
 import {TypedMessage, TypeUrl} from '../../src/client/typed-message';
 
 import {CreateTask} from '../../proto/test/js/spine/web/test/commands_pb';
 import {TaskId} from '../../proto/test/js/spine/web/test/task_pb';
-import {HttpClient} from '../../src/client/http-client';
-import {HttpEndpoint} from '../../src/client/http-endpoint';
 import {BackendClient} from '../../src/client/backend-client';
 
 const MILLISECONDS = 1;
@@ -54,21 +50,12 @@ function randomId(prefix) {
   return productId;
 }
 
-function testEndpoint() {
-  const httpClient = new HttpClient('https://spine-dev.appspot.com');
-  return new HttpEndpoint(httpClient);
-}
-
-function newFirebaseClient() {
-  return new FirebaseClient(firebase);
-}
-
-function newRequestFactory() {
-  return new ActorRequestFactory('web-test-actor');
-}
-
 function newBackendClient() {
-  return new BackendClient(testEndpoint(), newFirebaseClient(), newRequestFactory());
+  return BackendClient.usingFirebase({
+    atEndpoint: 'https://spine-dev.appspot.com',
+    withFirebaseStorage: devFirebaseApp,
+    forActor: 'web-test-actor'
+  });
 }
 
 function fail(done) {
