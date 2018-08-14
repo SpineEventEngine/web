@@ -27,7 +27,7 @@ import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.WebQuery;
-import io.spine.web.query.queryservice.AsyncQueryService;
+import io.spine.web.query.service.AsyncQueryService;
 
 import java.util.concurrent.CompletableFuture;
 

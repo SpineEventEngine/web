@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.query.queryservice;
+package io.spine.web.query.service;
 
 import io.spine.web.command.FutureObserver;
 import io.spine.client.Query;
