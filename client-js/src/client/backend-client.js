@@ -31,7 +31,7 @@ import {ActorRequestFactory} from './actor-request-factory';
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
  *
- * Backend Client defines an operations that client is able to perform (`.fetchAll(...)`,
+ * Backend client defines operations that client is able to perform (`.fetchAll(...)`,
  * `.sendCommand(...)`, etc.), also providing factory methods for creating Backend Client
  * instances (`.usingFirebase(...)`).
  */
