@@ -83,8 +83,8 @@ final class FirebaseRecord {
     /**
      * Writes this record to the given {@link FirebaseDatabase} in a single transaction
      * (i.e. in a single batch).
-     *
-     * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
+     * 
+     * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
      */
     void storeTransactionallyTo(FirebaseDatabase database) {
         DatabaseReference reference = path().reference(database);
