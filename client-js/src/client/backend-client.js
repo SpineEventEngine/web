@@ -290,7 +290,7 @@ class FirebaseBackendClient extends BackendClient {
   fetchAll({ofType: typeUrl}) {
     const query = this._actorRequestFactory.newQueryForAll(typeUrl);
     // noinspection JSValidateTypes A static member class type is not resolved properly.
-    return new BackendClient.Fetch({of: query, using: this});
+    return new FirebaseBackendClient.Fetch({of: query, using: this});
   }
 
   /**
