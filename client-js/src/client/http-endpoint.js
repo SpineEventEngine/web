@@ -54,30 +54,17 @@ class EndpointError {
   }
 }
 
-/**
- * Spine HTTP endpoint which is used to send off Commands and Queries using 
- * the provided HTTP client.
- */
-export class HttpEndpoint {
-
-  /**
-   * @param {!HttpClient} httpClient a client sending requests to server
-   */
-  constructor(httpClient) {
-    this._httpClient = httpClient;
-  }
+class Endpoint {
 
   /**
    * Sends off a command to the endpoint.
    *
    * @param {!TypedMessage<Command>} command a Command send to Spine server
-   * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
-   *                           the client response is not 2xx
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
    */
   command(command) {
-    return this._httpClient
-      .postMessage('/command', command)
-      .then(HttpEndpoint._jsonOrRejection);
+    return this._executeCommand(command);
   }
 
   /**
@@ -85,16 +72,16 @@ export class HttpEndpoint {
    *
    * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
    * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
-   * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
-   *                           the client response is not 2xx
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
    */
   query(query, strategy) {
-    const webQuery = HttpEndpoint._newWebQuery({of: query, delivered: strategy});
+    const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
-    return this._httpClient
-      .postMessage('/query', typedQuery)
-      .then(HttpEndpoint._jsonOrRejection);
+    return this._performQuery(typedQuery);
   }
+  
+  
 
   /**
    * Builds a new WebQuery from Query and client delivery strategy.
@@ -108,6 +95,70 @@ export class HttpEndpoint {
     webQuery.setQuery(query);
     webQuery.setDeliveredTransactionally(transactionally);
     return webQuery;
+  }
+
+  /**
+   *
+   * @param {!TypedMessage<Command>} command a Command send to Spine server
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @private
+   */
+  _executeCommand(command) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   *
+   * @param {!TypedMessage<WebQuery>} query a Query to Spine server to retrieve some domain entities
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @private
+   */
+  _performQuery(query) {
+    throw 'Not implemented in abstract base.';
+  }
+}
+
+/**
+ * Spine HTTP endpoint which is used to send off Commands and Queries using 
+ * the provided HTTP client.
+ */
+export class HttpEndpoint extends Endpoint{
+
+  /**
+   * @param {!HttpClient} httpClient a client sending requests to server
+   */
+  constructor(httpClient) {
+    super();
+    this._httpClient = httpClient;
+  }
+
+  /**
+   * Sends off a command to the endpoint.
+   *
+   * @param {!TypedMessage<Command>} command a Command send to Spine server
+   * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
+   *                           the client response is not 2xx
+   */
+  _executeCommand(command) {
+    return this._httpClient
+      .postMessage('/command', command)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
+  /**
+   * Sends off a query to the endpoint.
+   *
+   * @param {!TypedMessage<WebQuery>} webQuery a Query to Spine server to retrieve some domain entities
+   * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
+   * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
+   *                           the client response is not 2xx
+   */
+  _performQuery(webQuery) {
+    return this._httpClient
+      .postMessage('/query', webQuery)
+      .then(HttpEndpoint._jsonOrRejection);
   }
   
   /**

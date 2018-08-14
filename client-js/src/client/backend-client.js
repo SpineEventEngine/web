@@ -29,10 +29,10 @@ import {ActorRequestFactory} from './actor-request-factory';
 
 
 /**
- * An abstract Fetch that can fetch the data of a provided query in one of two ways 
+ * An abstract Fetch that can fetch the data of a provided query in one of two ways
  * (one-by-one or all-at-once) using the provided backend.
  *
- *  Fetch is a static member of the `BackendClient`.
+ * Fetch is a static member of the `BackendClient`.
  *
  * @template <T>
  */
@@ -93,6 +93,16 @@ class Fetch {
 export class BackendClient {
 
   /**
+   * @param {!Endpoint} endpoint an endpoint to send requests to
+   * @param {!ActorRequestFactory} actorRequestFactory 
+   *        a request factory to build requests to Spine server 
+   */
+  constructor(endpoint, actorRequestFactory) {
+    this._endpoint = endpoint;
+    this._requestFactory = actorRequestFactory;
+  }
+
+  /**
    * Defines a fetch query of all entities matching the filters provided as arguments.
    * This fetch is executed later upon calling the corresponding `.oneByOne()` and
    * `.atOnce()` methods.
@@ -122,7 +132,8 @@ export class BackendClient {
    * @template <T>
    */
   fetchAll({ofType: typeUrl}) {
-    throw 'Not implemented in abstract base.';
+    const query = this._requestFactory.newQueryForAll(typeUrl);
+    return this._fetchOf(query);
   }
 
   /**
@@ -138,7 +149,14 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    throw 'Not implemented in abstract base.';
+    const query = this._requestFactory.queryById(type.value, id);
+
+    const observer = {next: dataCallback};
+    if (errorCallback) {
+      observer.error = errorCallback;
+    }
+    // noinspection JSCheckFunctionSignatures
+    this._fetchOf(query).oneByOne().subscribe(observer);
   }
 
   /**
@@ -153,7 +171,18 @@ export class BackendClient {
    *        a callback executed if the command was rejected by Spine server
    */
   sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
-    throw 'Not implemented in abstract base.';
+    const command = this._requestFactory.command(commandMessage);
+    this._endpoint.command(command)
+      .then(ack => {
+        const status = ack.status;
+        if (status.hasOwnProperty('ok')) {
+          successCallback();
+        } else if (status.hasOwnProperty('error')) {
+          errorCallback(status.error);
+        } else if (status.hasOwnProperty('rejection')) {
+          rejectionCallback(status.rejection);
+        }
+      }, errorCallback);
   }
 
   /**
@@ -175,6 +204,18 @@ export class BackendClient {
     const requestFactory = new ActorRequestFactory(actor);
 
     return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory)
+  }
+
+  /**
+   * Creates a new Fetch object specifying the target of fetch and its parameters.
+   *
+   * @param {!TypedMessage<Query>} query a query processed by Spine
+   * @returns BackendClient.Fetch<T> an object that performs the fetch
+   * @template <T> type of Fetch results
+   * @private
+   */
+  _fetchOf(query) {
+    throw 'Not implemented in abstract base.';
   }
 }
 
@@ -278,52 +319,16 @@ class FirebaseBackendClient extends BackendClient {
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
    */
   constructor(endpoint, firebaseClient, actorRequestFactory) {
-    super();
-    this._endpoint = endpoint;
+    super(endpoint, actorRequestFactory);
     this._firebase = firebaseClient;
-    this._actorRequestFactory = actorRequestFactory;
   }
 
   /**
    * @inheritDoc
    */
-  fetchAll({ofType: typeUrl}) {
-    const query = this._actorRequestFactory.newQueryForAll(typeUrl);
+  _fetchOf(query) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.
     return new FirebaseBackendClient.Fetch({of: query, using: this});
-  }
-
-  /**
-   * @inheritDoc
-   */
-  fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._actorRequestFactory.queryById(type.value, id);
-    const fetch = new FirebaseFetch({of: query, using: this});
-
-    const observer = {next: dataCallback};
-    if (errorCallback) {
-      observer.error = errorCallback;
-    }
-    // noinspection JSCheckFunctionSignatures
-    fetch.oneByOne().subscribe(observer);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
-    const command = this._actorRequestFactory.command(commandMessage);
-    this._endpoint.command(command)
-      .then(ack => {
-        const status = ack.status;
-        if (status.hasOwnProperty('ok')) {
-          successCallback();
-        } else if (status.hasOwnProperty('error')) {
-          errorCallback(status.error);
-        } else if (status.hasOwnProperty('rejection')) {
-          rejectionCallback(status.rejection);
-        }
-      }, errorCallback);
   }
 }
 
