@@ -27,6 +27,61 @@ import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
 
+
+/**
+ * An abstract Fetch that can fetch the data of a provided query in one of two ways 
+ * (one-by-one or all-at-once) using the provided backend.
+ *
+ *  Fetch is a static member of the `BackendClient`.
+ *
+ * @template <T>
+ */
+class Fetch {
+
+  /**
+   * @param {!TypedMessage<Query>} query a query to be performed by Spine server
+   * @param {!BackendClient} backend the backend which is used to fetch the query results
+   */
+  constructor({of: query, using: backend}) {
+    this._query = query;
+    this._backend = backend;
+  }
+
+  /**
+   * Fetches entities one-by-one using an observable. Provides each entity as a new value for
+   * the subscribed Observer.
+   *
+   * This method is suitable for big collections of data where ordering is not essential.
+   *
+   * @example
+   * // To query all entities of developer-defined Task type one-by-one:
+   * fetchAll({ofType: taskType}).oneByOne().subscribe({
+   *   next(task) { ... },
+   *   error(error) { ... },
+   *   complete() { ... }
+   * })
+   *
+   * @returns {Observable<Object, EndpointError>} an observable retrieving values one at a time.
+   */
+  oneByOne() {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   * Fetches all query results at once fulfilling a promise with an array of entities.
+   *
+   * @example
+   * // To query all entities of developer-defined Task type at once:
+   * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
+   *
+   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   *                              that be rejected with an `EndpointError`
+   */
+  atOnce() {
+    throw 'Not implemented in abstract base.';
+  }
+}
+
 /**
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
@@ -124,52 +179,43 @@ export class BackendClient {
 }
 
 /**
+ * @typedef {Fetch} FetchClass
+ */
+
+/**
  * Fetches the results of the query from the server using the provided backend.
  *
  * Fetch is a static member of the `BackendClient`.
  *
- * @template <T>
+ * @type FetchClass
  */
-class Fetch {
+BackendClient.Fetch = Fetch;
+
+/**
+ * Fetch implementation using `FirebaseBackendClient` as value storage.
+ *
+ * @see Fetch
+ * @see BackendClient#fetchAll()
+ */
+class FirebaseFetch extends Fetch {
 
   /**
    * @param {!TypedMessage<Query>} query a query to be performed by Spine server
-   * @param {!BackendClient} backend the backend which is used to fetch the query results
+   * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, using: backend}) {
-    this._query = query;
-    this._backend = backend;
+    super({of: query, using: backend});
   }
 
   /**
-   * Fetches entities one-by-one using an observable. Provides each entity as a new value for 
-   * the subscribed Observer.
-   * 
-   * This method is suitable for big collections of data where ordering is not essential.
-   *
-   * @example
-   * // To query all entities of developer-defined Task type one-by-one:
-   * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(task) { ... },
-   *   error(error) { ... },
-   *   complete() { ... }
-   * })
-   *
-   * @returns {Observable<Object, EndpointError>} an observable retrieving values one at a time.
+   * @inheritDoc
    */
   oneByOne() {
     return this._fetchManyOneByOne();
   }
 
   /**
-   * Fetches all query results at once fulfilling a promise with an array of entities.
-   * 
-   * @example
-   * // To query all entities of developer-defined Task type at once:
-   * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
-   *
-   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                              that be rejected with an `EndpointError`
+   * @inheritDoc
    */
   atOnce() {
     return this._fetchManyAtOnce();
@@ -218,7 +264,9 @@ class Fetch {
 }
 
 /**
- * The client of the application backend.
+ *
+ * An implementation of a client connecting to the application backend retrieving data
+ * through Firebase.
  *
  * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
  */
@@ -250,7 +298,7 @@ class FirebaseBackendClient extends BackendClient {
    */
   fetchById(type, id, dataCallback, errorCallback) {
     const query = this._actorRequestFactory.queryById(type.value, id);
-    const fetch = new Fetch({of: query, using: this});
+    const fetch = new FirebaseFetch({of: query, using: this});
 
     const observer = {next: dataCallback};
     if (errorCallback) {
@@ -280,15 +328,8 @@ class FirebaseBackendClient extends BackendClient {
 }
 
 /**
- * @typedef {Fetch} FetchClass
- */
-
-/**
- * Fetches the results of the query from the server using the provided backend.
- *
- * Fetch is a static member of the `BackendClient`.
- *
+ * @inheritDoc
  * @type FetchClass
  */
-BackendClient.Fetch = Fetch;
+FirebaseBackendClient.Fetch = FirebaseFetch;
 
