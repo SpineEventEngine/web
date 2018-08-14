@@ -23,7 +23,10 @@
  * Database.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.web.firebase;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

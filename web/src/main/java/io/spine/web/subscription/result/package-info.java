@@ -19,13 +19,13 @@
  */
 
 /**
- * This package contains the {@link io.spine.web.query.queryservice.AsyncQueryService
- * AsyncQueryService} interface and its implementations.
+ * This package contains the interfaces for results of client requests to subscribe, keep up 
+ * or cancel an entity subscription.
  */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.web.query.queryservice;
+package io.spine.web.subscription.result;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

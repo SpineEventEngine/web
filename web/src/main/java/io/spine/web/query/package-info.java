@@ -19,13 +19,13 @@
  */
 
 /**
- * This package contains the {@link io.spine.web.query.queryservice.AsyncQueryService
- * AsyncQueryService} interface and its implementations.
+ * This package contains the interfaces and abstract definitions for querying Spine application 
+ * for data on a web request and returning a response to a client. 
  */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.web.query.queryservice;
+package io.spine.web.query;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

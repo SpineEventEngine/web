@@ -21,7 +21,11 @@
 /**
  * This package contains components responsible for parsing messages sent over HTTP.
  */
+
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.web.parser;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

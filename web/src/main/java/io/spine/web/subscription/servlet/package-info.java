@@ -19,13 +19,13 @@
  */
 
 /**
- * This package contains the {@link io.spine.web.query.queryservice.AsyncQueryService
- * AsyncQueryService} interface and its implementations.
+ * This package contains the servlets for handling web requests related to
+ * entity state subscriptions.
  */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.web.query.queryservice;
+package io.spine.web.subscription.servlet;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
