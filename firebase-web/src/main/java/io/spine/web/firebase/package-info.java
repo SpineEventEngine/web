@@ -19,8 +19,8 @@
  */
 
 /**
- * This package contains the implementation of the Spine web API based on the Firebase Realtime
- * Database.
+ * This package contains the implementation of the Spine web API using the Firebase Realtime
+ * Database to deliver data to web clients.
  */
 
 @CheckReturnValue

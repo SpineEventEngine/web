@@ -18,34 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.given;
-
-import io.spine.client.Query;
-import io.spine.web.WebQuery;
-
 /**
- * @author Mykhailo Drachuk
+ * This package contains the implementation of the Spine web query API using the Firebase Realtime
+ * Database to deliver query results to web clients.
  */
-public class FirebaseQueryBridgeTestEnv {
 
-    /**
-     * Prevents instantiation of this test environment.
-     */
-    private FirebaseQueryBridgeTestEnv() {
-        
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.firebase.query;
 
-    public static WebQuery transactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(true)
-                       .build();
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    public static WebQuery nonTransactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(false)
-                       .build();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

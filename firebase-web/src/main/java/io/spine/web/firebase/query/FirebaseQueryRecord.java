@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.firebase.query;
 
 import com.google.api.core.ApiFuture;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +28,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
+import io.spine.web.firebase.FirebaseDatabasePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,15 +50,15 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Dmytro Dashenkov
  */
-final class FirebaseRecord {
+final class FirebaseQueryRecord {
 
     private final FirebaseDatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
     private final long writeAwaitSeconds;
 
-    FirebaseRecord(Query query,
-                   CompletionStage<QueryResponse> queryResponse,
-                   long writeAwaitSeconds) {
+    FirebaseQueryRecord(Query query,
+                        CompletionStage<QueryResponse> queryResponse,
+                        long writeAwaitSeconds) {
         this.path = FirebaseDatabasePath.allocateForQuery(query);
         this.queryResponse = queryResponse;
         this.writeAwaitSeconds = writeAwaitSeconds;
@@ -194,6 +195,6 @@ final class FirebaseRecord {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FirebaseRecord.class);
+        private final Logger value = LoggerFactory.getLogger(FirebaseQueryRecord.class);
     }
 }

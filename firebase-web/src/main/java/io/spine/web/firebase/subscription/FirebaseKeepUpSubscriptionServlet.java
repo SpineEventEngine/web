@@ -18,26 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.firebase.subscription;
 
-import io.spine.web.firebase.query.FirebaseQueryBridge;
-import io.spine.web.firebase.query.FirebaseQueryServlet;
+import io.spine.web.subscription.SubscriptionBridge;
+import io.spine.web.subscription.servlet.KeepUpSubscriptionServlet;
 
-import javax.servlet.annotation.WebServlet;
+public class FirebaseKeepUpSubscriptionServlet extends KeepUpSubscriptionServlet {
 
-/**
- * The query side endpoint of the application.
- *
- * @author Dmytro Dashenkov
- */
-@WebServlet("/query")
-@SuppressWarnings("serial")
-public class TestQueryServlet extends FirebaseQueryServlet {
-
-    public TestQueryServlet() {
-        super(FirebaseQueryBridge.newBuilder()
-                                 .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
-                                 .build());
+    protected FirebaseKeepUpSubscriptionServlet(SubscriptionBridge bridge) {
+        super(bridge);
     }
 }

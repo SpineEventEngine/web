@@ -18,26 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.firebase.subscription;
 
-import io.spine.web.firebase.query.FirebaseQueryBridge;
-import io.spine.web.firebase.query.FirebaseQueryServlet;
+import io.spine.client.Subscription;
+import io.spine.client.Topic;
+import io.spine.web.subscription.SubscriptionBridge;
+import io.spine.web.subscription.result.CancelSubscriptionResult;
+import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
-import javax.servlet.annotation.WebServlet;
+public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
-/**
- * The query side endpoint of the application.
- *
- * @author Dmytro Dashenkov
- */
-@WebServlet("/query")
-@SuppressWarnings("serial")
-public class TestQueryServlet extends FirebaseQueryServlet {
+    @Override
+    public SubscribeResult subscribe(Topic query) {
+        return null;
+    }
 
-    public TestQueryServlet() {
-        super(FirebaseQueryBridge.newBuilder()
-                                 .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
-                                 .build());
+    @Override
+    public SubscriptionKeepUpResult keepUp(Subscription subscription) {
+        return null;
+    }
+
+    @Override
+    public CancelSubscriptionResult cancel(Subscription subscription) {
+        return null;
     }
 }

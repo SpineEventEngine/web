@@ -18,30 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.firebase.subscription;
 
-import io.spine.client.Subscription;
-import io.spine.client.Topic;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.CancelSubscriptionResult;
-import io.spine.web.subscription.result.SubscribeResult;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
+import io.spine.web.subscription.servlet.CancelSubscriptionServlet;
 
-public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
+public class FirebaseCancelSubscriptionServlet extends CancelSubscriptionServlet {
 
-    @Override
-    public SubscribeResult subscribe(Topic query) {
-//        SubscriptionService.newBuilder()
-        return null;
-    }
-
-    @Override
-    public SubscriptionKeepUpResult keepUp(Subscription subscription) {
-        return null;
-    }
-
-    @Override
-    public CancelSubscriptionResult cancel(Subscription subscription) {
-        return null;
+    protected FirebaseCancelSubscriptionServlet(SubscriptionBridge bridge) {
+        super(bridge);
     }
 }

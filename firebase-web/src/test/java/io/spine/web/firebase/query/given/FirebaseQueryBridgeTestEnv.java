@@ -18,26 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.firebase.query.given;
 
-import io.spine.web.firebase.query.FirebaseQueryBridge;
-import io.spine.web.firebase.query.FirebaseQueryServlet;
-
-import javax.servlet.annotation.WebServlet;
+import io.spine.client.Query;
+import io.spine.web.WebQuery;
 
 /**
- * The query side endpoint of the application.
- *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-@WebServlet("/query")
-@SuppressWarnings("serial")
-public class TestQueryServlet extends FirebaseQueryServlet {
+public class FirebaseQueryBridgeTestEnv {
 
-    public TestQueryServlet() {
-        super(FirebaseQueryBridge.newBuilder()
-                                 .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
-                                 .build());
+    /**
+     * Prevents instantiation of this test environment.
+     */
+    private FirebaseQueryBridgeTestEnv() {
+        
+    }
+
+    public static WebQuery transactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(true)
+                       .build();
+    }
+
+    public static WebQuery nonTransactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(false)
+                       .build();
     }
 }

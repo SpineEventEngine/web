@@ -18,15 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.firebase.query;
 
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+import io.spine.web.WebQuery;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.query.QueryProcessingResult;
-import io.spine.web.WebQuery;
 import io.spine.web.query.service.AsyncQueryService;
 
 import java.util.concurrent.CompletableFuture;
@@ -79,7 +79,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
     public QueryProcessingResult send(WebQuery webQuery) {
         Query query = webQuery.getQuery();
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseRecord record = new FirebaseRecord(query, queryResponse, writeAwaitSeconds);
+        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse,
+                                                             writeAwaitSeconds);
 
         if (webQuery.getDeliveredTransactionally()) {
             record.storeTransactionallyTo(database);
@@ -87,7 +88,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
             record.storeTo(database);
         }
 
-        final QueryProcessingResult result = 
+        final QueryProcessingResult result =
                 new FirebaseQueryProcessingResult(record.path(), record.getCount());
         return result;
     }

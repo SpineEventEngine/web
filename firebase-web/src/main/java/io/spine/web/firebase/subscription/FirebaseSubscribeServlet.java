@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.firebase.subscription;
 
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.servlet.SubscribeServlet;

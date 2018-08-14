@@ -41,7 +41,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Dmytro Dashenkov
  */
-final class FirebaseDatabasePath {
+public final class FirebaseDatabasePath {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
@@ -61,7 +61,7 @@ final class FirebaseDatabasePath {
      * @param query the query to host the response of
      * @return new {@code FirebaseDatabasePath}
      */
-    static FirebaseDatabasePath allocateForQuery(Query query) {
+    public static FirebaseDatabasePath allocateForQuery(Query query) {
         final String path = constructPath(query);
         return new FirebaseDatabasePath(path);
     }
@@ -122,7 +122,7 @@ final class FirebaseDatabasePath {
      * Retrieves a {@link DatabaseReference} to the location denoted by this path in the given
      * {@linkplain FirebaseDatabase database}.
      */
-    DatabaseReference reference(FirebaseDatabase firebaseDatabase) {
+    public DatabaseReference reference(FirebaseDatabase firebaseDatabase) {
         return firebaseDatabase.getReference(path);
     }
 
