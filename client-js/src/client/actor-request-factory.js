@@ -111,6 +111,8 @@ class QueryFactory {
       const filters = new EntityFilters();
       filters.setIdFilter(idFilter);
       target.setFilters(filters);
+    } else {
+      target.setIncludeAll(true);
     }
 
     return this._newQuery(target);
