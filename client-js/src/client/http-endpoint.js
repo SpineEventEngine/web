@@ -109,7 +109,6 @@ class Endpoint {
   }
 
   /**
-   *
    * @param {!TypedMessage<WebQuery>} query a Query to Spine server to retrieve some domain entities
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
