@@ -70,7 +70,7 @@ class Endpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
+   * @param {!Query} query a Query to Spine server to retrieve some domain entities
    * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
@@ -80,8 +80,6 @@ class Endpoint {
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
     return this._performQuery(typedQuery);
   }
-  
-  
 
   /**
    * Builds a new WebQuery from Query and client delivery strategy.
