@@ -212,7 +212,7 @@ export class BackendClient {
    * @param {!TypedMessage<Query>} query a query processed by Spine
    * @returns BackendClient.Fetch<T> an object that performs the fetch
    * @template <T> type of Fetch results
-   * @private
+   * @protected
    */
   _fetchOf(query) {
     throw 'Not implemented in abstract base.';
