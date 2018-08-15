@@ -103,6 +103,7 @@ class Endpoint {
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    * @protected
+   * @abstract
    */
   _executeCommand(command) {
     throw 'Not implemented in abstract base.';
@@ -113,6 +114,7 @@ class Endpoint {
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    * @protected
+   * @abstract
    */
   _performQuery(query) {
     throw 'Not implemented in abstract base.';

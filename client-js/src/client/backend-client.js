@@ -62,6 +62,7 @@ class Fetch {
    * })
    *
    * @returns {Observable<Object, EndpointError>} an observable retrieving values one at a time.
+   * @abstract
    */
   oneByOne() {
     throw 'Not implemented in abstract base.';
@@ -76,6 +77,7 @@ class Fetch {
    *
    * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
    *                              that be rejected with an `EndpointError`
+   * @abstract
    */
   atOnce() {
     throw 'Not implemented in abstract base.';
@@ -94,8 +96,8 @@ export class BackendClient {
 
   /**
    * @param {!Endpoint} endpoint an endpoint to send requests to
-   * @param {!ActorRequestFactory} actorRequestFactory 
-   *        a request factory to build requests to Spine server 
+   * @param {!ActorRequestFactory} actorRequestFactory
+   *        a request factory to build requests to Spine server
    */
   constructor(endpoint, actorRequestFactory) {
     this._endpoint = endpoint;
@@ -213,6 +215,7 @@ export class BackendClient {
    * @returns BackendClient.Fetch<T> an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected
+   * @abstract
    */
   _fetchOf(query) {
     throw 'Not implemented in abstract base.';
