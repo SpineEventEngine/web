@@ -96,7 +96,6 @@ class Endpoint {
   }
 
   /**
-   *
    * @param {!TypedMessage<Command>} command a Command send to Spine server
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
