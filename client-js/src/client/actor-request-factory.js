@@ -44,7 +44,12 @@ import {TypedMessage, TypeUrl} from './typed-message';
  */
 const COMMAND_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.core.Command');
 
+/**
+ * A builder for creating `Query` instances. A more flexible approach to query creation
+ * than using a `QueryFactory`.
+ */
 class QueryBuilder {
+
   constructor(typeUrl, queryFactory) {
     this._typeUrl = typeUrl;
     this._factory = queryFactory;
@@ -52,8 +57,11 @@ class QueryBuilder {
   }
 
   /**
-   * @param id
-   * @return {QueryBuilder}
+   * Makes the query to return only the object defined by the provided identifiers.
+   *
+   * @param {Message|Message[]} id an entity ID or an array of entity IDs to query
+   * @return {QueryBuilder} the current builder instance
+   * @throws if this method is executed more than once
    */
   byId(id) {
     if (this._ids !== null) {
@@ -69,13 +77,18 @@ class QueryBuilder {
   }
 
   /**
-   * @return {Query}
+   * Creates the Query instance based on all set parameters.
+   *
+   * @return {Query} a new query
    */
   build() {
     return this._factory.byIds(this._typeUrl, this._ids);
   }
 }
 
+/**
+ * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
+ */
 class QueryFactory {
 
   /**
@@ -94,13 +107,19 @@ class QueryFactory {
   }
 
   /**
-   * @return {Query}
+   * Creates a new query which returns entities of a matching type with specified IDs.
+   *
+   * If no identifiers are provided queries for all objects of the provided type.
+   *
+   * @param {TypeUrl} typeUrl
+   * @param {Message[]} ids a list of entity identifier messages; an empty list is acceptable
+   * @return {Query} a new query
    */
   byIds(typeUrl, ids) {
     const target = new Target();
     target.setType(typeUrl.value);
-    
-    if (ids !== null) {
+
+    if (ids !== null && !ids.length) {
       const idFilter = new EntityIdFilter();
       ids.forEach(id => {
         const entityId = new EntityId();
@@ -118,6 +137,11 @@ class QueryFactory {
     return this._newQuery(target);
   }
 
+  /**
+   * @param {Target} target a target of the query
+   * @return {Query} a new query instance
+   * @private
+   */
   _newQuery(target) {
     const id = QueryFactory._newQueryId();
     const actorContext = this._requestFactory._actorContext();
@@ -156,6 +180,12 @@ export class ActorRequestFactory {
     this._actor.setValue(actor);
   }
 
+  /**
+   * Creates a new query factory for building various queries based on configuration of this
+   * `ActorRequestFactory` instance.
+   *
+   * @return {QueryFactory}
+   */
   query() {
     return new QueryFactory(this);
   }
