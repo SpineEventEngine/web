@@ -39,7 +39,7 @@ import {ActorRequestFactory} from './actor-request-factory';
 class Fetch {
 
   /**
-   * @param {!TypedMessage<Query>} query a query to be performed by Spine server
+   * @param {!Query} query a query to be performed by Spine server
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
@@ -62,6 +62,7 @@ class Fetch {
    * })
    *
    * @returns {Observable<Object, EndpointError>} an observable retrieving values one at a time.
+   * @abstract
    */
   oneByOne() {
     throw 'Not implemented in abstract base.';
@@ -76,6 +77,7 @@ class Fetch {
    *
    * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
    *                              that be rejected with an `EndpointError`
+   * @abstract
    */
   atOnce() {
     throw 'Not implemented in abstract base.';
@@ -94,8 +96,8 @@ export class BackendClient {
 
   /**
    * @param {!Endpoint} endpoint an endpoint to send requests to
-   * @param {!ActorRequestFactory} actorRequestFactory 
-   *        a request factory to build requests to Spine server 
+   * @param {!ActorRequestFactory} actorRequestFactory
+   *        a request factory to build requests to Spine server
    */
   constructor(endpoint, actorRequestFactory) {
     this._endpoint = endpoint;
@@ -132,7 +134,7 @@ export class BackendClient {
    * @template <T>
    */
   fetchAll({ofType: typeUrl}) {
-    const query = this._requestFactory.newQueryForAll(typeUrl);
+    const query = this._requestFactory.query().select(typeUrl).build();
     return this._fetchOf(query);
   }
 
@@ -149,7 +151,7 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._requestFactory.queryById(type.value, id);
+    const query = this._requestFactory.query().select(type).byId(id).build();
 
     const observer = {next: dataCallback};
     if (errorCallback) {
@@ -209,10 +211,11 @@ export class BackendClient {
   /**
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
-   * @param {!TypedMessage<Query>} query a query processed by Spine
-   * @returns BackendClient.Fetch<T> an object that performs the fetch
+   * @param {!Query} query a query processed by Spine
+   * @returns {BackendClient.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
-   * @private
+   * @protected
+   * @abstract
    */
   _fetchOf(query) {
     throw 'Not implemented in abstract base.';
@@ -241,7 +244,7 @@ BackendClient.Fetch = Fetch;
 class FirebaseFetch extends Fetch {
 
   /**
-   * @param {!TypedMessage<Query>} query a query to be performed by Spine server
+   * @param {!Query} query a query to be performed by Spine server
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, using: backend}) {
@@ -325,6 +328,8 @@ class FirebaseBackendClient extends BackendClient {
 
   /**
    * @inheritDoc
+   * @return {BackendClient.Fetch<T>}
+   * @template <T>
    */
   _fetchOf(query) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.

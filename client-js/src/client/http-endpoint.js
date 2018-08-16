@@ -70,7 +70,7 @@ class Endpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
+   * @param {!Query} query a Query to Spine server to retrieve some domain entities
    * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
@@ -80,8 +80,6 @@ class Endpoint {
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
     return this._performQuery(typedQuery);
   }
-  
-  
 
   /**
    * Builds a new WebQuery from Query and client delivery strategy.
@@ -98,22 +96,22 @@ class Endpoint {
   }
 
   /**
-   *
    * @param {!TypedMessage<Command>} command a Command send to Spine server
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
-   * @private
+   * @protected
+   * @abstract
    */
   _executeCommand(command) {
     throw 'Not implemented in abstract base.';
   }
 
   /**
-   *
    * @param {!TypedMessage<WebQuery>} query a Query to Spine server to retrieve some domain entities
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
-   * @private
+   * @protected
+   * @abstract
    */
   _performQuery(query) {
     throw 'Not implemented in abstract base.';
@@ -140,6 +138,7 @@ export class HttpEndpoint extends Endpoint{
    * @param {!TypedMessage<Command>} command a Command send to Spine server
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
+   * @protected
    */
   _executeCommand(command) {
     return this._httpClient
@@ -154,6 +153,7 @@ export class HttpEndpoint extends Endpoint{
    * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
    *                           the client response is not 2xx
+   * @protected
    */
   _performQuery(webQuery) {
     return this._httpClient

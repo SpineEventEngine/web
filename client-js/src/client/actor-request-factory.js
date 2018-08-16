@@ -45,6 +45,127 @@ import {TypedMessage, TypeUrl} from './typed-message';
 const COMMAND_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.core.Command');
 
 /**
+ * A builder for creating `Query` instances. A more flexible approach to query creation
+ * than using a `QueryFactory`.
+ */
+class QueryBuilder {
+
+  constructor(typeUrl, queryFactory) {
+    this._typeUrl = typeUrl;
+    this._factory = queryFactory;
+    this._ids = null;
+  }
+
+  /**
+   * Makes the query to return only the object defined by the provided identifiers.
+   *
+   * @param {Message|Message[]} id an entity ID or an array of entity IDs to query
+   * @return {QueryBuilder} the current builder instance
+   * @throws if this method is executed more than once
+   */
+  byId(id) {
+    if (this._ids !== null) {
+      throw "Can not set query id more than once.";
+    }
+    if (id instanceof Array) {
+      this._ids = id.map(each => each);
+    } else {
+      this._ids = [id];
+    }
+
+    return this;
+  }
+
+  /**
+   * Creates the Query instance based on all set parameters.
+   *
+   * @return {Query} a new query
+   */
+  build() {
+    return this._factory.byIds(this._typeUrl, this._ids);
+  }
+}
+
+/**
+ * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
+ */
+class QueryFactory {
+
+  /**
+   * @param {ActorRequestFactory} requestFactory
+   */
+  constructor(requestFactory) {
+    this._requestFactory = requestFactory;
+  }
+
+  /**
+   * @param {!TypeUrl} typeUrl a type URL of the target type
+   * @return {QueryBuilder}
+   */
+  select(typeUrl) {
+    return new QueryBuilder(typeUrl, this);
+  }
+
+  /**
+   * Creates a new query which returns entities of a matching type with specified IDs.
+   *
+   * If no identifiers are provided queries for all objects of the provided type.
+   *
+   * @param {TypeUrl} typeUrl
+   * @param {Message[]} ids a list of entity identifier messages; an empty list is acceptable
+   * @return {Query} a new query
+   */
+  byIds(typeUrl, ids) {
+    const target = new Target();
+    target.setType(typeUrl.value);
+
+    if (ids !== null && ids.length) {
+      const idFilter = new EntityIdFilter();
+      ids.forEach(id => {
+        const entityId = new EntityId();
+        entityId.setId(id.toAny());
+
+        idFilter.addIds(entityId);
+      });
+      const filters = new EntityFilters();
+      filters.setIdFilter(idFilter);
+      target.setFilters(filters);
+    } else {
+      target.setIncludeAll(true);
+    }
+
+    return this._newQuery(target);
+  }
+
+  /**
+   * @param {Target} target a target of the query
+   * @return {Query} a new query instance
+   * @private
+   */
+  _newQuery(target) {
+    const id = QueryFactory._newQueryId();
+    const actorContext = this._requestFactory._actorContext();
+
+    const result = new Query();
+    result.setId(id);
+    result.setTarget(target);
+    result.setContext(actorContext);
+
+    return result;
+  }
+
+  /**
+   * @return {QueryId}
+   * @private
+   */
+  static _newQueryId() {
+    const result = new QueryId();
+    result.setValue('q-' + uuid.v4());
+    return result;
+  }
+}
+
+/**
  * A factory for the various requests fired from the client-side by an actor.
  */
 export class ActorRequestFactory {
@@ -60,47 +181,20 @@ export class ActorRequestFactory {
   }
 
   /**
-   * Creates a Query targeting all the instances of the given type.
+   * Creates a new query factory for building various queries based on configuration of this
+   * `ActorRequestFactory` instance.
    *
-   * @param {!TypeUrl} typeUrl a type URL of the target type
-   * @return {TypedMessage<Query>} a typed message of the Spine Query
+   * @return {QueryFactory}
    */
-  newQueryForAll(typeUrl) {
-    const target = new Target();
-    target.setType(typeUrl.value);
-    target.setIncludeAll(true);
-    return this._newQuery(target);
-  }
-
-  /**
-   * Creates a Query targeting a specific instance of the given type.
-   *
-   * @param {!TypeUrl} typeUrl a type URL of the target type
-   * @param {!TypedMessage} id an ID of the instance targeted by this query
-   * @return {TypedMessage<Query>} a typed message of the Spine Query
-   */
-  queryById(typeUrl, id) {
-    const entityId = new EntityId();
-    entityId.setId(id.toAny());
-
-    const idFilter = new EntityIdFilter();
-    idFilter.addIds(entityId);
-
-    const filters = new EntityFilters();
-    filters.setIdFilter(idFilter);
-
-    const target = new Target();
-    target.setType(typeUrl);
-    target.setFilters(filters);
-
-    return this._newQuery(target);
+  query() {
+    return new QueryFactory(this);
   }
 
   /**
    * Creates a Command from the given command message.
    *
    * @param {!TypedMessage} message a typed command message
-   * @returns {TypedMessage<Command>} a typed representation of the Spine Command
+   * @return {TypedMessage<Command>} a typed representation of the Spine Command
    */
   command(message) {
     const id = ActorRequestFactory._newCommandId();
@@ -113,18 +207,6 @@ export class ActorRequestFactory {
     result.setContext(context);
 
     return new TypedMessage(result, COMMAND_MESSAGE_TYPE);
-  }
-
-  _newQuery(target) {
-    const id = ActorRequestFactory._newQueryId();
-    const actorContext = this._actorContext();
-
-    const result = new Query();
-    result.setId(id);
-    result.setTarget(target);
-    result.setContext(actorContext);
-
-    return result;
   }
 
   _commandContext() {
@@ -148,8 +230,8 @@ export class ActorRequestFactory {
   }
 
   /**
-   * @returns {ZoneOffset}
-   * @private
+   * @return {ZoneOffset}
+   * @protected
    */
   static _zoneOffset() {
     const format = new Intl.DateTimeFormat();
@@ -163,7 +245,7 @@ export class ActorRequestFactory {
   }
 
   /**
-   * @returns {number}
+   * @return {number}
    * @private
    */
   static _zoneOffsetSeconds() {
@@ -171,17 +253,7 @@ export class ActorRequestFactory {
   }
 
   /**
-   * @returns {QueryId}
-   * @private
-   */
-  static _newQueryId() {
-    const result = new QueryId();
-    result.setValue('q-' + uuid.v4());
-    return result;
-  }
-
-  /**
-   * @returns {CommandId}
+   * @return {CommandId}
    * @private
    */
   static _newCommandId() {
