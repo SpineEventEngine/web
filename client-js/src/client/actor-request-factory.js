@@ -119,7 +119,7 @@ class QueryFactory {
     const target = new Target();
     target.setType(typeUrl.value);
 
-    if (ids !== null && !ids.length) {
+    if (ids !== null && ids.length) {
       const idFilter = new EntityIdFilter();
       ids.forEach(id => {
         const entityId = new EntityId();
