@@ -30,6 +30,7 @@ import io.spine.web.given.QueryServletTestEnv.TestQueryServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,7 +50,8 @@ import static org.mockito.Mockito.verify;
 class QueryServletTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(QueryServletTest.class).query();
+            TestActorRequestFactory.newInstance(QueryServletTest.class)
+                                   .query();
 
     @Test
     @DisplayName("throw UnsupportedOperationException when trying to serialize")
@@ -67,9 +69,17 @@ class QueryServletTest {
         final QueryServlet servlet = new TestQueryServlet(expectedData);
         final StringWriter response = new StringWriter();
         final Query query = queryFactory.all(Timestamp.class);
-        servlet.doPost(request(query), response(response));
+        HttpServletRequest request = request(newTransactionalQuery(query));
+        servlet.doPost(request, response(response));
         final Timestamp actualData = Json.fromJson(response.toString(), Timestamp.class);
         assertEquals(expectedData, actualData);
+    }
+
+    private static WebQuery newTransactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(false)
+                       .build();
     }
 
     @Test

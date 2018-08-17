@@ -22,11 +22,11 @@ package io.spine.web.given;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.spine.client.Query;
 import io.spine.json.Json;
 import io.spine.web.QueryBridge;
 import io.spine.web.QueryProcessingResult;
 import io.spine.web.QueryServlet;
+import io.spine.web.WebQuery;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletResponse;
@@ -37,6 +37,16 @@ import java.io.IOException;
  */
 public final class QueryServletTestEnv {
 
+    // This duplication verifies that the parameter was not changed in production code by accident.
+    @SuppressWarnings("DuplicateStringLiteralInspection") 
+    public static final String TRANSACTIONAL_PARAMETER = "transactional";
+
+    /**
+     * A private constructor stopping this utility class from instantiation.
+     */
+    private QueryServletTestEnv() {
+    }
+
     @SuppressWarnings("serial")
     public static final class TestQueryServlet extends QueryServlet {
 
@@ -45,7 +55,11 @@ public final class QueryServletTestEnv {
         }
 
         public TestQueryServlet(Message expectedMessage) {
-            super(new TestQueryBridge(expectedMessage));
+            this(new TestQueryBridge(expectedMessage));
+        }
+
+        public TestQueryServlet(QueryBridge bridge) {
+            super(bridge);
         }
     }
 
@@ -58,7 +72,7 @@ public final class QueryServletTestEnv {
         }
 
         @Override
-        public QueryProcessingResult send(@Nonnull Query query) {
+        public QueryProcessingResult send(@Nonnull WebQuery query) {
             return new TestQueryProcessingResult(response);
         }
     }
@@ -73,7 +87,8 @@ public final class QueryServletTestEnv {
 
         @Override
         public void writeTo(@Nonnull ServletResponse response) throws IOException {
-            response.getWriter().append(Json.toJson(message));
+            response.getWriter()
+                    .append(Json.toJson(message));
         }
     }
 }

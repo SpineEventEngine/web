@@ -21,7 +21,9 @@
 apply plugin: 'com.google.protobuf'
 
 dependencies {
+    protobuf project(':web')
     protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
+
     testProtobuf project(':web-tests')
 }
 
@@ -53,3 +55,5 @@ apply from: "$rootDir/scripts/js.gradle"
 
 testJs.enabled = false
 coverageJs.enabled = false
+
+link.dependsOn ':web:compileProtoToJs'

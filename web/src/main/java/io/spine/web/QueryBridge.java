@@ -46,5 +46,5 @@ public interface QueryBridge {
      * @param query the query to send
      * @return the query result
      */
-    QueryProcessingResult send(Query query);
+    QueryProcessingResult send(WebQuery query);
 }

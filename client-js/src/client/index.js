@@ -18,6 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {TypedMessage, TypeUrl} from './typed-message';
+import {ActorRequestFactory} from './actor-request-factory';
+import {FirebaseClient} from './firebase-client';
+import {HttpClient} from './http-client';
+import {BackendClient} from './backend-client';
+
 /**
  * The object which represents the public API of the `client-js` module.
  *
@@ -26,10 +32,10 @@
  * @type {{BackendClient: BackendClient, HttpClient: HttpClient, FirebaseClient: FirebaseClient, ActorRequestFactory: ActorRequestFactory}}
  */
 export const client = {
-    BackendClient: require("./backend-client").BackendClient,
-    HttpClient: require("./http-client").HttpClient,
-    FirebaseClient: require("./firebase-client").FirebaseClient,
-    ActorRequestFactory: require("./actor-request-factory").ActorRequestFactory,
-    TypeUrl: require("./typed-message").TypeUrl,
-    TypedMessage: require("./typed-message").TypedMessage
+  BackendClient,
+  HttpClient,
+  FirebaseClient,
+  ActorRequestFactory,
+  TypeUrl,
+  TypedMessage
 };

@@ -18,71 +18,148 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-let assert = require("assert");
+// noinspection NodeJsCodingAssistanceForCoreModules
+import assert from 'assert';
 
-let ActorRequestFactory = require("../../src/client/actor-request-factory").ActorRequestFactory;
-let BackendClient = require("../../src/client/backend-client").BackendClient;
-let FirebaseClient = require("../../src/client/firebase-client").FirebaseClient;
-let HttpClient = require("../../src/client/http-client").HttpClient;
-let firebase = require("./test-firebase-app").devFirebaseApp;
+import {devFirebaseApp} from './test-firebase-app';
+import {TypedMessage, TypeUrl} from '../../src/client/typed-message';
 
-let commands = require("../../proto/test/js/spine/web/test/commands_pb");
-let task = require("../../proto/test/js/spine/web/test/task_pb");
+import {CreateTask} from '../../proto/test/js/spine/web/test/commands_pb';
+import {TaskId} from '../../proto/test/js/spine/web/test/task_pb';
+import {BackendClient} from '../../src/client/backend-client';
 
-let { TypeUrl, TypedMessage} = require("../../src/client/typed-message");
-let httpClient = new HttpClient("https://spine-dev.appspot.com");
-let requestFactory = new ActorRequestFactory("web-test-actor");
-let backendClient = new BackendClient(httpClient,
-                                      new FirebaseClient(firebase),
-                                      requestFactory);
+const MILLISECONDS = 1;
+const SECONDS = 1000 * MILLISECONDS;
+const MINUTES = 60 * SECONDS;
 
 function creteTaskCommand(id, name, description) {
-  let command = new commands.CreateTask();
+  const command = new CreateTask();
   command.setId(id);
   command.setName(name);
   command.setDescription(description);
 
-  let commandType = new TypeUrl("type.spine.io/spine.web.test.CreateTask");
-  let typedCommand = new TypedMessage(command, commandType);
+  const commandType = new TypeUrl('type.spine.io/spine.web.test.CreateTask');
 
-  return typedCommand;
+  return new TypedMessage(command, commandType);
 }
 
 function randomId(prefix) {
-  let id = prefix + Math.round(Math.random() * 1000);
-  let productId = new task.TaskId();
+  const id = prefix + Math.round(Math.random() * 1000);
+  const productId = new TaskId();
   productId.setValue(id);
   return productId;
 }
 
-describe("Client should", function () {
-  this.timeout(120/*seconds*/ * 1000);
+function newBackendClient() {
+  return BackendClient.usingFirebase({
+    atEndpoint: 'https://spine-dev.appspot.com',
+    withFirebaseStorage: devFirebaseApp,
+    forActor: 'web-test-actor'
+  });
+}
 
-  it("send commands successfully", function (done) {
-    let productId = randomId("spine-web-test-1-");
-    let command = creteTaskCommand(productId, "Write tests", "client-js needs tests; write'em");
-    backendClient.sendCommand(command, function() {
-      let type = new TypeUrl("type.spine.io/spine.web.test.Task");
-      let idType = new TypeUrl("type.spine.io/spine.web.test.TaskId");
-      let typedId = new TypedMessage(productId, idType);
+function fail(done) {
+  return error => {
+    console.error(error);
+    assert.ok(false);
+    done();
+  };
+}
+
+const backendClient = newBackendClient();
+
+describe('Client should', function () {
+
+  // Big timeout due to remote calls during tests.
+  this.timeout(2 * MINUTES);
+
+  it('send commands successfully', done => {
+    const productId = randomId('spine-web-test-1-');
+    const command = creteTaskCommand(productId, 'Write tests', 'client-js needs tests; write\'em');
+
+    backendClient.sendCommand(command, () => {
+
+      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
+      const idType = new TypeUrl('type.spine.io/spine.web.test.TaskId');
+      const typedId = new TypedMessage(productId, idType);
+
       backendClient.fetchById(type, typedId, data => {
         assert.equal(data.name, command.message.getName());
         assert.equal(data.description, command.message.getDescription());
         done();
-      }, done);
-    }, done, done);
+      }, fail(done));
+
+    }, fail(done), fail(done));
   });
 
-  it("fetch all the existing entities of given type", function (done) {
-    let productId = randomId("spine-web-test-2-");
-    let command = creteTaskCommand(productId, "Run tests", "client-js has tests; run'em");
-    backendClient.sendCommand(command, function () {
-      let type = new TypeUrl("type.spine.io/spine.web.test.Task");
-      backendClient.fetchAll(type, function (data) {
-        if (data.id.value === productId.getValue()) {
+  it('fetch all the existing entities of given type one by one', done => {
+    const productId = randomId('spine-web-test-2-');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
+
+    backendClient.sendCommand(command, () => {
+
+      let itemFound = false;
+      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
+
+      backendClient.fetchAll({ofType: type}).oneByOne().subscribe({
+        next(data) {
+          // Ordering is not guaranteed by fetch and 
+          // the list of entities cannot be cleaned for tests,
+          // thus at least one of entities should match the target one.
+          itemFound = data.id.value === productId.getValue() || itemFound;
+        },
+        error: fail(done),
+        complete() {
           done();
         }
       });
-    }, done, done);
+
+    }, fail(done), fail(done));
+  });
+
+  it('fetch all the existing entities of given type at once', done => {
+    const productId = randomId('spine-web-test-2-');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
+
+    backendClient.sendCommand(command, () => {
+
+      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
+      backendClient.fetchAll({ofType: type}).atOnce()
+        .then(data => {
+          const targetObject = data.find(item => item.id.value === productId.getValue());
+          assert.ok(targetObject);
+          done();
+        }, fail(done));
+
+    }, fail(done), fail(done));
+  });
+
+  it('fails a malformed query', done => {
+    const productId = randomId('spine-web-test-2-');
+    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
+
+    backendClient.sendCommand(command, () => {
+
+      const malformedType = new TypeUrl('/');
+      backendClient.fetchAll({ofType: malformedType}).atOnce()
+        .then(fail(done), error => {
+          assert.ok(!error.isClient());
+          assert.ok(error.isServer());
+          done();
+        });
+
+    }, fail(done), fail(done));
+  });
+
+  it('fails a malformed command', done => {
+    const malformedId = randomId(null);
+    const command = creteTaskCommand(malformedId, 'Run tests', 'client-js has tests; run\'em');
+
+    backendClient.sendCommand(command, fail(done), error => {
+      assert.equal(error.code, 2);
+      assert.equal(error.type, 'spine.core.CommandValidationError');
+      assert.ok(error.validationError);
+      done();
+    }, fail(done));
   });
 });

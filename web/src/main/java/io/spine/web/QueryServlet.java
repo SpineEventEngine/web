@@ -20,7 +20,6 @@
 
 package io.spine.web;
 
-import io.spine.client.Query;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -31,7 +30,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * An {@link HttpServlet} which receives {@linkplain Query query requests}, passes them
+ * An {@link HttpServlet} which receives {@linkplain WebQuery web query requests}, passes them
  * into a {@link QueryBridge} and writes the {@linkplain QueryProcessingResult sending result} into
  * the response.
  *
@@ -39,13 +38,17 @@ import java.util.Optional;
  * {@code DELETE}, {@code OPTIONS}, and {@code TRACE} methods are not supported by default.
  *
  * <p>In order to perform a {@linkplain io.spine.client.Query query}, a client should send an HTTP
- * {@code POST} request to this servlet. The request body should contain
- * a {@linkplain io.spine.json.Json JSON} representation of an
- * {@link io.spine.client.Query io.spine.client.Query}.
+ * {@code POST} request to this servlet. The request body should be a {@linkplain io.spine.json.Json
+ * JSON} representation of a {@link WebQuery io.spine.web.WebQuery}.
+ * 
+ * <p>{@link io.spine.client.Query Query to Spine} is wrapped into a {@link WebQuery WebQuery} 
+ * specifying additional parameters handled by the web server. For example, 
+ * {@link WebQuery#getDeliveredTransactionally()} specifies if the client should retrieve 
+ * the response in a single transaction, or the collection contents should be sent one-by-one.
  *
- * <p>If the request is valid (i.e. the request body contains a valid
- * {@link io.spine.client.Query Query}), the response will contain the {@linkplain QueryProcessingResult
- * query sending result}. Otherwise, the response will be empty with the response code
+ * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query 
+ * Query}), the response will contain the {@linkplain QueryProcessingResult query sending result}. 
+ * Otherwise, the response will be empty with the response code 
  * {@link HttpServletResponse#SC_BAD_REQUEST 400}.
  *
  * <p>A typical implementation would extend this class and provide a {@link QueryBridge} in
@@ -61,6 +64,8 @@ import java.util.Optional;
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class QueryServlet extends NonSerializableServlet {
 
+    // Finds a test duplicate.
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private final QueryBridge bridge;
 
     /**
@@ -82,12 +87,13 @@ public abstract class QueryServlet extends NonSerializableServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        final Optional<Query> query = HttpMessages.parse(req, Query.class);
-        if (!query.isPresent()) {
+        Optional<WebQuery> optionalQuery = HttpMessages.parse(req, WebQuery.class);
+        if (!optionalQuery.isPresent()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            final Query queryParser = query.get();
-            final QueryProcessingResult result = bridge.send(queryParser);
+            WebQuery query = optionalQuery.get();
+            QueryProcessingResult result;
+            result = bridge.send(query);
             result.writeTo(resp);
         }
     }

@@ -20,34 +20,58 @@
 
 "use strict";
 
+import {Subscription} from './observable';
+
 /**
  * The client of a Firebase Realtime database.
  */
 export class FirebaseClient {
 
-    /**
-     * Creates a new FirebaseClient.
-     *
-     * @param firebaseApp an initialized Firebase app
-     */
-    constructor(firebaseApp) {
-        this._firebaseApp = firebaseApp;
-    }
+  /**
+   * Creates a new FirebaseClient.
+   *
+   * @param {!firebase.app.App} firebaseApp an initialized Firebase app
+   */
+  constructor(firebaseApp) {
+    this._firebaseApp = firebaseApp;
+  }
 
-    /**
-     * Subscribes to the child_added events of of the node under the given path.
-     *
-     * Each child's value is parsed as a JSON and dispatched to the given callback
-     *
-     * @param path         the path to the watched node
-     * @param dataCallback the child value callback
-     */
-    subscribeTo(path, dataCallback) {
-        let dbRef = this._firebaseApp.database().ref(path);
-        dbRef.on("child_added", data => {
-            let msgJson = data.val();
-            let message = JSON.parse(msgJson);
-            dataCallback(message);
-        });
-    }
+  /**
+   * Subscribes to the child_added events of of the node under the given path.
+   *
+   * Each child's value is parsed as a JSON and dispatched to the given callback
+   *
+   * @param {!string} path the path to the watched node
+   * @param {!consumerCallback<Object>} dataCallback the child value callback
+   * 
+   * @return {Subscription} a Subscription that can be unsubscribed
+   */
+  onChildAdded(path, dataCallback) {
+    const dbRef = this._firebaseApp.database().ref(path);
+    const callback = dbRef.on('child_added', response => {
+      const msgJson = response.val();
+      const message = JSON.parse(msgJson);
+      dataCallback(message);
+    });
+    return new Subscription(() => {
+      dbRef.off('child_added', callback);
+    });
+  }
+
+  /**
+   * Gets the value from Firebase at the provided path. 
+   *
+   * @param {!string} path the path to the node to get value from
+   * @param {!consumerCallback<Object[]>} dataCallback a callback which is invoked with an array of 
+   *                                                   entities at path
+   */
+  getValue(path, dataCallback) {
+    const dbRef = this._firebaseApp.database().ref(path);
+    dbRef.once('value', response => {
+      const data = response.val(); // an Object mapping Firebase ids to objects is returned
+      const objectStrings = Object.values(data);
+      const items = objectStrings.map(item => JSON.parse(item));
+      dataCallback(items);
+    });
+  }
 }
