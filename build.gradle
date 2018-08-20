@@ -66,6 +66,7 @@ allprojects {
 
     // Use the same version numbering for the Spine Base library.
     version = versionToPublish
+    group = 'io.spine'
 }
 
 subprojects {
