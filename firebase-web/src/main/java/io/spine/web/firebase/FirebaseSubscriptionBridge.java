@@ -18,79 +18,94 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query;
+package io.spine.web.firebase;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.protobuf.Empty;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-import io.spine.web.WebQuery;
-import io.spine.web.query.QueryBridge;
-import io.spine.web.query.QueryProcessingResult;
+import io.spine.client.Subscription;
+import io.spine.client.SubscriptionId;
+import io.spine.client.Topic;
+import io.spine.client.grpc.QueryServiceGrpc;
+import io.spine.core.Status;
 import io.spine.web.query.service.AsyncQueryService;
+import io.spine.web.subscription.SubscriptionBridge;
+import io.spine.web.subscription.result.CancelSubscriptionResult;
+import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.client.Queries.generateId;
 
 /**
- * An implementation of {@link QueryBridge} based on the Firebase Realtime Database.
- *
- * <p>This bridge stores the {@link QueryResponse} data to a location in a given
- * {@link FirebaseDatabase} and retrieves the database path to that response as the result.
- *
- * <p>More formally, for each encountered {@link Query}, the bridge performs a call to
- * the {@code QueryService} and stores the resulting entity states into the given database. The data
- * is stored as a list of strings. Each entry is
- * a {@linkplain io.spine.json.Json JSON representation} of an entity state. The path produced by
- * the bridge as a result is the path to the database node containing all those records.
- * The absolute position of such a node is not specified, thus the result path is the only way
- * to read the data from the database.
- *
- * <p>Note that the database writes are non-blocking. This means that when
- * the {@link #send(WebQuery)} method exits, the records may or may not be in
- * the database yet.
- *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-public final class FirebaseQueryBridge implements QueryBridge {
+final class FirebaseSubscriptionBridge implements SubscriptionBridge {
+
+    private final Status OK_STATUS = okStatus();
 
     private final AsyncQueryService queryService;
-    private final FirebaseDatabase database;
     private final long writeAwaitSeconds;
+    private final FirebaseDatabase database;
 
-    private FirebaseQueryBridge(Builder builder) {
+    private FirebaseSubscriptionBridge(FirebaseSubscriptionBridge.Builder builder) {
         this.queryService = builder.queryService;
-        this.database = builder.database;
         this.writeAwaitSeconds = builder.writeAwaitSeconds;
+        this.database = builder.database;
     }
 
-    /**
-     * Sends the given {@link Query} to the {@code QueryService} and
-     * stores the query response into the database.
-     *
-     * <p>Returns the path in the database, under which the query response is stored.
-     *
-     * @param webQuery the query to send
-     * @return a path in the database
-     */
     @Override
-    public QueryProcessingResult send(WebQuery webQuery) {
-        Query query = webQuery.getQuery();
+    public SubscribeResult subscribe(Topic topic) {
+        Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse,
                                                              writeAwaitSeconds);
+        record.storeTo(database);
+        Subscription subscription = newSubscription(topic, record.path());
+        return new FirebaseSubscribeResult(subscription);
+    }
 
-        if (webQuery.getDeliveredTransactionally()) {
-            record.storeTransactionallyTo(database);
-        } else {
-            record.storeTo(database);
-        }
+    private static Query newQueryForTopic(Topic topic) {
+        return Query.newBuilder()
+                    .setId(generateId())
+                    .setTarget(topic.getTarget())
+                    .setContext(topic.getContext())
+                    .build();
+    }
 
-        final QueryProcessingResult result =
-                new FirebaseQueryProcessingResult(record.path(), record.getCount());
-        return result;
+    private static Subscription newSubscription(Topic topic, FirebaseDatabasePath path) {
+        SubscriptionId subscriptionId = newSubscriptionId(path);
+        return Subscription.newBuilder()
+                           .setTopic(topic)
+                           .setId(subscriptionId)
+                           .build();
+    }
+
+    private static SubscriptionId newSubscriptionId(FirebaseDatabasePath path) {
+        return SubscriptionId.newBuilder()
+                             .setValue(path.toString())
+                             .build();
+    }
+
+    @Override
+    public SubscriptionKeepUpResult keepUp(Subscription subscription) {
+        Query query = newQueryForTopic(subscription.getTopic());
+        CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
+        SubscriptionId id = subscription.getId();
+        FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
+        FirebaseQueryRecord record = new FirebaseQueryRecord(path, queryResponse,
+                                                             writeAwaitSeconds);
+        record.storeTo(database);
+        return new FirebaseSubscriptionKeepUpResult(OK_STATUS);
+    }
+
+    @Override
+    public CancelSubscriptionResult cancel(Subscription subscription) {
+        return new FirebaseSubscriptionCancelResult(OK_STATUS);
     }
 
     /**
@@ -100,6 +115,12 @@ public final class FirebaseQueryBridge implements QueryBridge {
      */
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    private static Status okStatus() {
+        return Status.newBuilder()
+                     .setOk(Empty.getDefaultInstance())
+                     .build();
     }
 
     /**
@@ -122,7 +143,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
         private Builder() {
         }
 
-        public Builder setQueryService(QueryServiceImplBase service) {
+        public Builder setQueryService(
+                QueryServiceGrpc.QueryServiceImplBase service) {
             checkNotNull(service);
             this.queryService = AsyncQueryService.local(service);
             return this;
@@ -150,10 +172,12 @@ public final class FirebaseQueryBridge implements QueryBridge {
          *
          * @return new instance of {@code FirebaseQueryBridge}
          */
-        public FirebaseQueryBridge build() {
-            checkState(queryService != null, "Query Service is not set.");
-            checkState(database != null, "FirebaseDatabase is not set.");
-            return new FirebaseQueryBridge(this);
+        public FirebaseSubscriptionBridge build() {
+            checkState(queryService != null,
+                       "Query Service is not set to FirebaseSubscriptionBridge.");
+            checkState(database != null,
+                       "FirebaseDatabase is not set to to FirebaseSubscriptionBridge.");
+            return new FirebaseSubscriptionBridge(this);
         }
     }
 }

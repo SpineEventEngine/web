@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query;
+package io.spine.web.firebase;
 
 import com.google.api.core.ApiFuture;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +28,6 @@ import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import io.spine.web.firebase.FirebaseDatabasePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +59,14 @@ final class FirebaseQueryRecord {
                         CompletionStage<QueryResponse> queryResponse,
                         long writeAwaitSeconds) {
         this.path = FirebaseDatabasePath.allocateForQuery(query);
+        this.queryResponse = queryResponse;
+        this.writeAwaitSeconds = writeAwaitSeconds;
+    }
+
+    FirebaseQueryRecord(FirebaseDatabasePath path,
+                        CompletionStage<QueryResponse> queryResponse,
+                        long writeAwaitSeconds) {
+        this.path = path;
         this.queryResponse = queryResponse;
         this.writeAwaitSeconds = writeAwaitSeconds;
     }

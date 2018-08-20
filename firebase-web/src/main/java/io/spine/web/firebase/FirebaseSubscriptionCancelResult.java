@@ -18,26 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.firebase;
 
-import io.spine.web.firebase.FirebaseQueryBridge;
-import io.spine.web.firebase.FirebaseQueryServlet;
+import io.spine.core.Response;
+import io.spine.core.ResponseVBuilder;
+import io.spine.core.Status;
+import io.spine.web.subscription.result.CancelSubscriptionResult;
 
-import javax.servlet.annotation.WebServlet;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
+
+import static io.spine.json.Json.toCompactJson;
 
 /**
- * The query side endpoint of the application.
- *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-@WebServlet("/query")
-@SuppressWarnings("serial")
-public class TestQueryServlet extends FirebaseQueryServlet {
+class FirebaseSubscriptionCancelResult implements CancelSubscriptionResult {
 
-    public TestQueryServlet() {
-        super(FirebaseQueryBridge.newBuilder()
-                                 .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
-                                 .build());
+    private final Response response;
+
+    FirebaseSubscriptionCancelResult(Status status) {
+        this.response = newResponseWithStatus(status);
+    }
+
+    private static Response newResponseWithStatus(Status status) {
+        return ResponseVBuilder.newBuilder()
+                               .setStatus(status)
+                               .build();
+    }
+
+    @Override
+    public void writeTo(ServletResponse response) throws IOException {
+        response.getWriter()
+                .write(toCompactJson(this.response));
     }
 }

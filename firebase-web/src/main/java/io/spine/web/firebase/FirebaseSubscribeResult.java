@@ -18,29 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase;
 
 import io.spine.client.Subscription;
-import io.spine.client.Topic;
-import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.CancelSubscriptionResult;
 import io.spine.web.subscription.result.SubscribeResult;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
-public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
-    @Override
-    public SubscribeResult subscribe(Topic query) {
-        return null;
+import static io.spine.json.Json.toCompactJson;
+
+/**
+ * @author Mykhailo Drachuk
+ */
+class FirebaseSubscribeResult implements SubscribeResult {
+
+    private final Subscription subscription;
+
+    FirebaseSubscribeResult(Subscription subscription) {
+        this.subscription = subscription;
     }
 
     @Override
-    public SubscriptionKeepUpResult keepUp(Subscription subscription) {
-        return null;
-    }
-
-    @Override
-    public CancelSubscriptionResult cancel(Subscription subscription) {
-        return null;
+    public void writeTo(ServletResponse response) throws IOException {
+        response.getWriter()
+                .write(toCompactJson(subscription));
     }
 }

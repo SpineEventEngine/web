@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query.given;
+package io.spine.web.firebase.given;
 
 import com.google.api.core.ApiFuture;
 import com.google.protobuf.Any;

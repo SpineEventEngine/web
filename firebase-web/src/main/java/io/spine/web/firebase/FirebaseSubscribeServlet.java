@@ -18,14 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase;
 
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.servlet.CancelSubscriptionServlet;
+import io.spine.web.subscription.servlet.SubscribeServlet;
 
-public class FirebaseCancelSubscriptionServlet extends CancelSubscriptionServlet {
+/**
+ * @author Mykhailo Drachuk
+ */
+public class FirebaseSubscribeServlet extends SubscribeServlet {
 
-    protected FirebaseCancelSubscriptionServlet(SubscriptionBridge bridge) {
+    protected FirebaseSubscribeServlet(SubscriptionBridge bridge) {
         super(bridge);
     }
 }

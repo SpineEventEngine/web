@@ -18,13 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query;
+package io.spine.web.firebase;
 
 import com.google.protobuf.Any;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.FirebaseDatabasePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,8 @@ import static org.mockito.Mockito.when;
 class FirebaseQueryProcessingResultTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseQueryProcessingResultTest.class).query();
+            TestActorRequestFactory.newInstance(FirebaseQueryProcessingResultTest.class)
+                                   .query();
 
     private FirebaseDatabasePath databasePath;
 
@@ -66,7 +66,7 @@ class FirebaseQueryProcessingResultTest {
         when(response.getWriter()).thenReturn(writer);
 
         int count = 2;
-        final FirebaseQueryProcessingResult queryResult = 
+        final FirebaseQueryProcessingResult queryResult =
                 new FirebaseQueryProcessingResult(databasePath, count);
         queryResult.writeTo(response);
         verify(response).getWriter();

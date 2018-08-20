@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query;
+package io.spine.web.firebase;
 
 import io.spine.web.query.QueryServlet;
 

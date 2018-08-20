@@ -18,14 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase;
 
-import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.servlet.KeepUpSubscriptionServlet;
+import io.spine.core.Response;
+import io.spine.core.ResponseVBuilder;
+import io.spine.core.Status;
+import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
-public class FirebaseKeepUpSubscriptionServlet extends KeepUpSubscriptionServlet {
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
-    protected FirebaseKeepUpSubscriptionServlet(SubscriptionBridge bridge) {
-        super(bridge);
+import static io.spine.json.Json.toCompactJson;
+
+/**
+ * @author Mykhailo Drachuk
+ */
+class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResult {
+
+    private final Response response;
+
+    FirebaseSubscriptionKeepUpResult(Status status) {
+        this.response = newResponseWithStatus(status);
+    }
+
+    private static Response newResponseWithStatus(Status status) {
+        return ResponseVBuilder.newBuilder()
+                               .setStatus(status)
+                               .build();
+    }
+
+    @Override
+    public void writeTo(ServletResponse response) throws IOException {
+        response.getWriter()
+                .write(toCompactJson(this.response));
     }
 }

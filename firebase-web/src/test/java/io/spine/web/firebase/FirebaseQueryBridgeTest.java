@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query;
+package io.spine.web.firebase;
 
 import com.google.api.core.ApiFuture;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +30,7 @@ import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.query.given.FirebaseQueryMediatorTestEnv.TestQueryService;
+import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import io.spine.web.query.QueryProcessingResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,9 +40,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static io.spine.json.Json.toCompactJson;
-import static io.spine.web.firebase.query.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
-import static io.spine.web.firebase.query.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
-import static io.spine.web.firebase.query.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
+import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.any;
@@ -107,8 +107,8 @@ class FirebaseQueryBridgeTest {
                                                               .setDatabase(firebaseDatabase)
                                                               .build();
         final Query query = queryFactory.all(Timestamp.class);
-        //noinspection ResultOfMethodCallIgnored
-        bridge.send(nonTransactionalQuery(query));
+        @SuppressWarnings("unused")
+        QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
         verify(pathReference, timeout(5 * SECONDS)).push();
         verify(childReference, timeout(5 * SECONDS))

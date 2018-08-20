@@ -18,14 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.given;
 
-import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.servlet.SubscribeServlet;
+import io.spine.client.Query;
+import io.spine.web.WebQuery;
 
-public class FirebaseSubscribeServlet extends SubscribeServlet {
+/**
+ * @author Mykhailo Drachuk
+ */
+public final class FirebaseQueryBridgeTestEnv {
 
-    protected FirebaseSubscribeServlet(SubscriptionBridge bridge) {
-        super(bridge);
+    /**
+     * Prevents instantiation of this test environment.
+     */
+    private FirebaseQueryBridgeTestEnv() {
+    }
+
+    public static WebQuery transactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(true)
+                       .build();
+    }
+
+    public static WebQuery nonTransactionalQuery(Query query) {
+        return WebQuery.newBuilder()
+                       .setQuery(query)
+                       .setDeliveredTransactionally(false)
+                       .build();
     }
 }

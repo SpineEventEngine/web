@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query;
+package io.spine.web.firebase;
 
-import io.spine.web.firebase.FirebaseDatabasePath;
 import io.spine.web.query.QueryProcessingResult;
 
 import javax.servlet.ServletResponse;
@@ -55,8 +54,9 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         final String databaseUrl = path.toString();
-        response.getWriter().append(format("{\"path\": \"%s\", \"count\": %s}",
-                                           databaseUrl, count));
+        response.getWriter()
+                .append(format("{\"path\": \"%s\", \"count\": %s}",
+                               databaseUrl, count));
         response.setContentType(JSON_MIME_TYPE);
     }
 }

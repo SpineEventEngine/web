@@ -18,34 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.query.given;
+package io.spine.web.firebase;
 
-import io.spine.client.Query;
-import io.spine.web.WebQuery;
+import io.spine.web.subscription.SubscriptionBridge;
+import io.spine.web.subscription.servlet.CancelSubscriptionServlet;
 
 /**
  * @author Mykhailo Drachuk
  */
-public class FirebaseQueryBridgeTestEnv {
+public class FirebaseCancelSubscriptionServlet extends CancelSubscriptionServlet {
 
-    /**
-     * Prevents instantiation of this test environment.
-     */
-    private FirebaseQueryBridgeTestEnv() {
-        
-    }
-
-    public static WebQuery transactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(true)
-                       .build();
-    }
-
-    public static WebQuery nonTransactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(false)
-                       .build();
+    protected FirebaseCancelSubscriptionServlet(SubscriptionBridge bridge) {
+        super(bridge);
     }
 }

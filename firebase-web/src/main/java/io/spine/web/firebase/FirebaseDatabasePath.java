@@ -41,7 +41,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Dmytro Dashenkov
  */
-public final class FirebaseDatabasePath {
+final class FirebaseDatabasePath {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
@@ -61,9 +61,13 @@ public final class FirebaseDatabasePath {
      * @param query the query to host the response of
      * @return new {@code FirebaseDatabasePath}
      */
-    public static FirebaseDatabasePath allocateForQuery(Query query) {
+    static FirebaseDatabasePath allocateForQuery(Query query) {
         final String path = constructPath(query);
         return new FirebaseDatabasePath(path);
+    }
+
+    static FirebaseDatabasePath fromString(String string) {
+        return new FirebaseDatabasePath(string);
     }
 
     private static String constructPath(Query query) {
@@ -87,13 +91,16 @@ public final class FirebaseDatabasePath {
 
     @SuppressWarnings("UnnecessaryDefault")
     private static String tenantIdAsString(Query query) {
-        final TenantId tenantId = query.getContext().getTenantId();
+        final TenantId tenantId = query.getContext()
+                                       .getTenantId();
         final TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
-                return tenantId.getEmail().getValue();
+                return tenantId.getEmail()
+                               .getValue();
             case DOMAIN:
-                return tenantId.getDomain().getValue();
+                return tenantId.getDomain()
+                               .getValue();
             case VALUE:
                 return tenantId.getValue();
             case KIND_NOT_SET: // Fallthrough intended.
@@ -103,7 +110,8 @@ public final class FirebaseDatabasePath {
     }
 
     private static String actorAsString(Query query) {
-        final UserId actor = query.getContext().getActor();
+        final UserId actor = query.getContext()
+                                  .getActor();
         final String result = actor.getValue();
         return result;
     }
@@ -115,14 +123,15 @@ public final class FirebaseDatabasePath {
     }
 
     private static String escaped(String dirty) {
-        return ILLEGAL_DATABASE_PATH_SYMBOL.matcher(dirty).replaceAll(SUBSTITUTION_SYMBOL);
+        return ILLEGAL_DATABASE_PATH_SYMBOL.matcher(dirty)
+                                           .replaceAll(SUBSTITUTION_SYMBOL);
     }
 
     /**
      * Retrieves a {@link DatabaseReference} to the location denoted by this path in the given
      * {@linkplain FirebaseDatabase database}.
      */
-    public DatabaseReference reference(FirebaseDatabase firebaseDatabase) {
+    DatabaseReference reference(FirebaseDatabase firebaseDatabase) {
         return firebaseDatabase.getReference(path);
     }
 

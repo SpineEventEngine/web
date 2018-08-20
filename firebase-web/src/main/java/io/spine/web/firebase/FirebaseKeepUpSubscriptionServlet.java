@@ -18,15 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.web.firebase;
+
+import io.spine.web.subscription.SubscriptionBridge;
+import io.spine.web.subscription.servlet.KeepUpSubscriptionServlet;
+
 /**
- * This package contains the implementation of the Spine web query API using the Firebase Realtime
- * Database to deliver query results to web clients.
+ * @author Mykhailo Drachuk
  */
+public class FirebaseKeepUpSubscriptionServlet extends KeepUpSubscriptionServlet {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.web.firebase.query;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    protected FirebaseKeepUpSubscriptionServlet(SubscriptionBridge bridge) {
+        super(bridge);
+    }
+}
