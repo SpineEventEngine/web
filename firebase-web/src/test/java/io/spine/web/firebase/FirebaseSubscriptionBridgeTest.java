@@ -26,7 +26,6 @@ import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
-import io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv;
 import io.spine.web.subscription.result.CancelSubscriptionResult;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
@@ -38,7 +37,6 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.assertSubscriptionPointsToFirebase;
@@ -49,25 +47,21 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newS
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newTarget;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.topicFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
  * @author Dmytro Dashenkov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
 @DisplayName("FirebaseSubscriptionBridge should")
 class FirebaseSubscriptionBridgeTest {
 
-    private FirebaseDatabase firebaseDatabase;
-    private QueryServiceImplBase queryService;
     private FirebaseSubscriptionBridge bridge;
     private TopicFactory topicFactory;
 
     @BeforeEach
     void setUp() {
-        firebaseDatabase = mock(FirebaseDatabase.class);
-        queryService = mock(QueryServiceImplBase.class);
+        FirebaseDatabase firebaseDatabase = mock(FirebaseDatabase.class);
+        QueryServiceImplBase queryService = mock(QueryServiceImplBase.class);
         bridge = newBridge(firebaseDatabase, queryService);
         topicFactory = topicFactory();
     }
@@ -119,5 +113,4 @@ class FirebaseSubscriptionBridgeTest {
         assertEquals(topic, subscription.getTopic());
         assertSubscriptionPointsToFirebase(subscription.getId(), topic);
     }
-
 }

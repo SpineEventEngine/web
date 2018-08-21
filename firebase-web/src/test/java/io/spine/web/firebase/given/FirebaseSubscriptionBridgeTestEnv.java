@@ -33,7 +33,6 @@ import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
-import io.spine.core.TenantId;
 import io.spine.core.UserId;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseSubscriptionBridge;
@@ -53,12 +52,14 @@ import static org.mockito.Mockito.when;
 /**
  * @author Mykhailo Drachuk
  */
+@SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
 public final class FirebaseSubscriptionBridgeTestEnv {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
     private static final String PATH_DELIMITER = "/";
     private static final String DEFAULT_TENANT = "common";
+    private static final Joiner PATH_JOINER = Joiner.on(PATH_DELIMITER);
 
     /**
      * Prevents instantiation of this test environment.
@@ -67,46 +68,17 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static void assertSubscriptionPointsToFirebase(SubscriptionId id, Topic topic) {
-        String tenantId = tenantIdAsString(topic);
         String actor = actorAsString(topic);
-        Collection<String> pathElements = newArrayList();
-        if (!tenantId.isEmpty()) {
-            pathElements.add(escaped(tenantId));
-        }
-        if (!actor.isEmpty()) {
-            pathElements.add(escaped(actor));
-        }
-        String expectedPath = Joiner.on(PATH_DELIMITER)
-                                    .join(pathElements) + PATH_DELIMITER;
+        Collection<String> pathElements = newArrayList(DEFAULT_TENANT, escaped(actor), "");
+        String expectedPath = PATH_JOINER.join(pathElements);
         String path = id.getValue();
         assertTrue(path.startsWith(expectedPath));
-    }
-
-    @SuppressWarnings("UnnecessaryDefault")
-    private static String tenantIdAsString(Topic topic) {
-        TenantId tenantId = topic.getContext()
-                                 .getTenantId();
-        TenantId.KindCase kind = tenantId.getKindCase();
-        switch (kind) {
-            case EMAIL:
-                return tenantId.getEmail()
-                               .getValue();
-            case DOMAIN:
-                return tenantId.getDomain()
-                               .getValue();
-            case VALUE:
-                return tenantId.getValue();
-            case KIND_NOT_SET: // Fallthrough intended.
-            default:
-                return DEFAULT_TENANT;
-        }
     }
 
     private static String actorAsString(Topic topic) {
         UserId actor = topic.getContext()
                             .getActor();
-        String result = actor.getValue();
-        return result;
+        return actor.getValue();
     }
 
     private static String escaped(String dirty) {
