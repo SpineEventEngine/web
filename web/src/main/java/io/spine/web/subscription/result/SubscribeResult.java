@@ -20,6 +20,13 @@
 
 package io.spine.web.subscription.result;
 
-public interface SubscribeResult extends Result {
+import io.spine.web.RequestsResult;
+
+/**
+ * An interface for a result of a request to subscribe to some topic and receive its updates.
+ *
+ * @author Mykhailo Drachuk
+ */
+public interface SubscribeResult extends RequestsResult {
 
 }

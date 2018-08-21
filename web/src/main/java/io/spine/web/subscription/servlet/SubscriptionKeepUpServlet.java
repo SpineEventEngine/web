@@ -25,7 +25,8 @@ import io.spine.web.NonSerializableServlet;
 import io.spine.web.parser.HttpMessages;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.CancelSubscriptionResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
+import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.servlet.http.HttpServletRequest;
@@ -35,17 +36,26 @@ import java.util.Optional;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
+/**
+ * An abstract servlet for a client request to keep up an existing {@link Subscription}.
+ *
+ * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
+ * to process. After, {@link SubscriptionKeepUpResult the processing result} is written to 
+ * the servlet response.
+ *
+ * @author Mykhailo Drachuk
+ */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class CancelSubscriptionServlet extends NonSerializableServlet {
+public abstract class SubscriptionKeepUpServlet extends NonSerializableServlet {
 
     private final SubscriptionBridge bridge;
 
     /**
-     * Creates a new instance of {@link CancelSubscriptionServlet} with the given {@link QueryBridge}.
+     * Creates a new instance of {@link SubscriptionKeepUpServlet} with the given {@link QueryBridge}.
      *
      * @param bridge the query bridge to be used in this query servlet
      */
-    protected CancelSubscriptionServlet(SubscriptionBridge bridge) {
+    protected SubscriptionKeepUpServlet(SubscriptionBridge bridge) {
         super();
         this.bridge = bridge;
     }
@@ -64,7 +74,7 @@ public abstract class CancelSubscriptionServlet extends NonSerializableServlet {
             resp.sendError(SC_BAD_REQUEST);
         } else {
             Subscription subscription = optionalSubscription.get();
-            CancelSubscriptionResult result = bridge.cancel(subscription);
+            SubscriptionKeepUpResult result = bridge.keepUp(subscription);
             result.writeTo(resp);
         }
     }

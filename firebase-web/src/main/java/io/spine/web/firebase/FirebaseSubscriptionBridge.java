@@ -29,7 +29,7 @@ import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.web.query.service.AsyncQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.CancelSubscriptionResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
@@ -41,6 +41,12 @@ import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
 
 /**
+ * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
+ *
+ * <p>The bridge allows to {@link #subscribe(Topic) subscribe} to some {@link Topic topic},
+ * {@link #keepUp(Subscription) keep up} the created {@link Subscription subscription},
+ * and {@link #cancel(Subscription) cancel} the created subscription.
+ *
  * @author Mykhailo Drachuk
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
@@ -101,7 +107,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     }
 
     @Override
-    public CancelSubscriptionResult cancel(Subscription subscription) {
+    public SubscriptionCancelResult cancel(Subscription subscription) {
         return new FirebaseSubscriptionCancelResult(statusOk());
     }
 

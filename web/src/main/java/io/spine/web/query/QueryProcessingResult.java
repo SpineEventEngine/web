@@ -20,6 +20,8 @@
 
 package io.spine.web.query;
 
+import io.spine.web.RequestsResult;
+
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
@@ -35,13 +37,5 @@ import java.io.IOException;
  *
  * @author Dmytro Dashenkov
  */
-public interface QueryProcessingResult {
-
-    /**
-     * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.
-     *
-     * @param response the response to write the result into
-     * @throws IOException in case of a failure
-     */
-    void writeTo(ServletResponse response) throws IOException;
+public interface QueryProcessingResult extends RequestsResult {
 }

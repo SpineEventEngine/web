@@ -23,7 +23,7 @@ package io.spine.web.firebase;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
 import io.spine.core.Status;
-import io.spine.web.subscription.result.CancelSubscriptionResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -31,9 +31,13 @@ import java.io.IOException;
 import static io.spine.json.Json.toCompactJson;
 
 /**
+ * A result of a request to cancel a subscription to be written to the {@link ServletResponse}.
+ * 
+ * <p>The result is a JSON formatted {@link Response Spine Response} message.
+ *
  * @author Mykhailo Drachuk
  */
-class FirebaseSubscriptionCancelResult implements CancelSubscriptionResult {
+class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
 
     private final Response response;
 
@@ -41,12 +45,19 @@ class FirebaseSubscriptionCancelResult implements CancelSubscriptionResult {
         this.response = newResponseWithStatus(status);
     }
 
+    /**
+     * @param status the status of a response to be created 
+     * @return a new {@link Response}
+     */
     private static Response newResponseWithStatus(Status status) {
         return ResponseVBuilder.newBuilder()
                                .setStatus(status)
                                .build();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         response.getWriter()

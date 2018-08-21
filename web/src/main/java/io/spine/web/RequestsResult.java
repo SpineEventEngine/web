@@ -18,12 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.subscription.result;
+package io.spine.web;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
-public interface Result {
+/**
+ * A result of a request to Spine Web that can be written to a 
+ * {@link ServletResponse servlet response}.
+ */
+public interface RequestsResult {
 
     /**
      * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.

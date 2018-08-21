@@ -23,7 +23,6 @@ package io.spine.web.subscription.servlet;
 import io.spine.client.Topic;
 import io.spine.web.NonSerializableServlet;
 import io.spine.web.parser.HttpMessages;
-import io.spine.web.query.QueryBridge;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscribeResult;
 
@@ -35,6 +34,16 @@ import java.util.Optional;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
+/**
+ * An abstract servlet for a client request to create a new  {@code Subscription} for the requested
+ * {@link Topic Topic}.
+ *
+ * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
+ * to process. After, {@link SubscribeResult the processing result} is written to
+ * the servlet response.
+ *
+ * @author Mykhailo Drachuk
+ */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscribeServlet extends NonSerializableServlet {
 

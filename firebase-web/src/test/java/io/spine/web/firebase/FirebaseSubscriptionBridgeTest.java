@@ -26,7 +26,7 @@ import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
-import io.spine.web.subscription.result.CancelSubscriptionResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +88,7 @@ class FirebaseSubscriptionBridgeTest {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
 
-        CancelSubscriptionResult result = bridge.cancel(subscription);
+        SubscriptionCancelResult result = bridge.cancel(subscription);
 
         ServletResponse response = mock(ServletResponse.class);
         StringWriter writer = mockWriter(response);

@@ -20,15 +20,21 @@
 
 package io.spine.web.firebase;
 
+import io.spine.client.Subscription;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.servlet.CancelSubscriptionServlet;
+import io.spine.web.subscription.servlet.SubscriptionKeepUpServlet;
 
 /**
+ * A {@link SubscriptionKeepUpServlet} which uses a {@link FirebaseSubscriptionBridge} to send off
+ * the requests to keep up a subscription.
+ *
  * @author Mykhailo Drachuk
+ * @see FirebaseSubscriptionBridge#keepUp(Subscription)  
  */
-public class FirebaseCancelSubscriptionServlet extends CancelSubscriptionServlet {
+@SuppressWarnings("serial") // Java serialization is not supported.
+public class FirebaseSubscriptionKeepUpServlet extends SubscriptionKeepUpServlet {
 
-    protected FirebaseCancelSubscriptionServlet(SubscriptionBridge bridge) {
+    protected FirebaseSubscriptionKeepUpServlet(SubscriptionBridge bridge) {
         super(bridge);
     }
 }
