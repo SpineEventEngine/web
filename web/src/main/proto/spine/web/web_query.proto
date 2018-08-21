@@ -44,5 +44,5 @@ message WebQuery {
     spine.client.Query query = 1 [(required) = true];
 
     // Specifies if the client wants the result to be pushed in a single transaction.
-    bool delivered_transactionally = 2 [(required) = true];
+    bool delivered_transactionally = 2;
 }
