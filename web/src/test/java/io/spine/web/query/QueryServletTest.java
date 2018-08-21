@@ -27,6 +27,7 @@ import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.WebQuery;
+import io.spine.web.WebQueryVBuilder;
 import io.spine.web.query.given.QueryServletTestEnv.TestQueryServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
