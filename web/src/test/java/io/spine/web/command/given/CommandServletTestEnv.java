@@ -22,12 +22,13 @@ package io.spine.web.command.given;
 
 import io.grpc.stub.StreamObserver;
 import io.spine.core.Ack;
+import io.spine.core.AckVBuilder;
 import io.spine.core.Command;
-import io.spine.protobuf.AnyPacker;
 import io.spine.server.CommandService;
 import io.spine.web.command.CommandServlet;
 
 import static io.spine.core.Responses.statusOk;
+import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.testing.Tests.nullRef;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -46,14 +47,14 @@ public final class CommandServletTestEnv {
 
     @SuppressWarnings("unchecked") // Mocking generics.
     public static CommandService positiveCommandService() {
-        final CommandService commandService = mock(CommandService.class);
+        CommandService commandService = mock(CommandService.class);
         doAnswer(invocation -> {
-            final StreamObserver<Ack> observer = invocation.getArgument(1);
-            final Command command = invocation.getArgument(0);
-            observer.onNext(Ack.newBuilder()
-                               .setMessageId(AnyPacker.pack(command.getId()))
-                               .setStatus(statusOk())
-                               .build());
+            StreamObserver<Ack> observer = invocation.getArgument(1);
+            Command command = invocation.getArgument(0);
+            observer.onNext(AckVBuilder.newBuilder()
+                                       .setMessageId(pack(command.getId()))
+                                       .setStatus(statusOk())
+                                       .build());
             observer.onCompleted();
             return nullRef();
         }).when(commandService).post(any(Command.class), any(StreamObserver.class));

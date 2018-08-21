@@ -22,6 +22,7 @@ apply plugin: 'com.google.protobuf'
 
 dependencies {
     protobuf project(':web')
+    protobuf project(':firebase-web')
     protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
 
     testProtobuf project(':web-tests')

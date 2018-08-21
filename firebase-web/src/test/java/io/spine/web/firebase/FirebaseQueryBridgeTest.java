@@ -83,14 +83,13 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("produce a database path for the given query results")
     void testMediate() {
-        final TestQueryService queryService = new TestQueryService();
-        final FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                              .setQueryService(queryService)
-                                                              .setDatabase(firebaseDatabase)
-                                                              .build();
-        final Query query = queryFactory.all(Empty.class);
-        final QueryProcessingResult result = bridge.send(
-                nonTransactionalQuery(query));
+        TestQueryService queryService = new TestQueryService();
+        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
+                                                        .setQueryService(queryService)
+                                                        .setDatabase(firebaseDatabase)
+                                                        .build();
+        Query query = queryFactory.all(Empty.class);
+        QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
 
         assertThat(result, instanceOf(FirebaseQueryProcessingResult.class));
     }
@@ -100,15 +99,15 @@ class FirebaseQueryBridgeTest {
     void testWriteData() {
         futureWillComeFromChild();
 
-        final Message dataElement = Time.getCurrentTime();
-        final TestQueryService queryService = new TestQueryService(dataElement);
-        final FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                              .setQueryService(queryService)
-                                                              .setDatabase(firebaseDatabase)
-                                                              .build();
-        final Query query = queryFactory.all(Timestamp.class);
-        @SuppressWarnings("unused")
-        QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
+        Message dataElement = Time.getCurrentTime();
+        TestQueryService queryService = new TestQueryService(dataElement);
+        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
+                                                        .setQueryService(queryService)
+                                                        .setDatabase(firebaseDatabase)
+                                                        .build();
+        Query query = queryFactory.all(Timestamp.class);
+        //noinspection ResultOfMethodCallIgnored
+        bridge.send(nonTransactionalQuery(query));
 
         verify(pathReference, timeout(5 * SECONDS)).push();
         verify(childReference, timeout(5 * SECONDS))
@@ -121,16 +120,16 @@ class FirebaseQueryBridgeTest {
     void testIgnoreErrors() throws InterruptedException, ExecutionException, TimeoutException {
         futureWillNotComeFromChild();
 
-        final Message dataElement = Time.getCurrentTime();
-        final TestQueryService queryService = new TestQueryService(dataElement);
-        final long awaitSeconds = 1L;
-        final FirebaseQueryBridge bridge =
+        Message dataElement = Time.getCurrentTime();
+        TestQueryService queryService = new TestQueryService(dataElement);
+        long awaitSeconds = 1L;
+        FirebaseQueryBridge bridge =
                 FirebaseQueryBridge.newBuilder()
                                    .setQueryService(queryService)
                                    .setDatabase(firebaseDatabase)
                                    .setWriteAwaitSeconds(awaitSeconds)
                                    .build();
-        final Query query = queryFactory.all(Timestamp.class);
+        Query query = queryFactory.all(Timestamp.class);
         bridge.send(nonTransactionalQuery(query));
     }
 

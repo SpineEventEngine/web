@@ -86,8 +86,8 @@ enum MessageFormat {
      *         the request does not justify the described format
      */
     static Optional<MessageFormat> formatOf(HttpServletRequest request) {
-        final String formatHeader = request.getHeader(CONTENT_TYPE);
-        final Optional<MessageFormat> matchedFormat =
+        String formatHeader = request.getHeader(CONTENT_TYPE);
+        Optional<MessageFormat> matchedFormat =
                 Stream.of(values())
                       .filter(format -> format.matches(formatHeader))
                       .findFirst();
@@ -95,7 +95,7 @@ enum MessageFormat {
     }
 
     protected boolean matches(@Nullable String requestContentType) {
-        final boolean result = contentType.equalsIgnoreCase(requestContentType);
+        boolean result = contentType.equalsIgnoreCase(requestContentType);
         return result;
     }
 

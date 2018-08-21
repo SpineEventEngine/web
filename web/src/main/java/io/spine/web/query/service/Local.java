@@ -44,7 +44,7 @@ final class Local implements AsyncQueryService {
 
     @Override
     public CompletableFuture<QueryResponse> execute(Query query) {
-        final FutureObserver<QueryResponse> observer =
+        FutureObserver<QueryResponse> observer =
                 FutureObserver.withDefault(QueryResponse.getDefaultInstance());
         service.read(query, observer);
         return observer.toFuture();

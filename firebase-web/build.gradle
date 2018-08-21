@@ -18,6 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+configurations {
+    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
+    runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+    testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+}
+
+apply plugin: spineProtobufPluginId
+
 dependencies {
     api project(':web')
     api ("com.google.firebase:firebase-admin:$firebaseVersion") {
@@ -25,4 +33,30 @@ dependencies {
     }
 
     implementation "io.spine:spine-client:$spineVersion"
+}
+
+modelCompiler {
+    generateValidatingBuilders = true
+}
+
+task compileProtoToJs {
+    description = "Compiles Protobuf sources into JavaScript."
+}
+
+protobuf {
+    protoc {
+        artifact = deps.build.protoc
+    }
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                // For information on JavaScript code generation please see
+                // https://github.com/google/protobuf/blob/master/js/README.md
+                js {
+                    option "import_style=commonjs"
+                }
+            }
+            compileProtoToJs.dependsOn task
+        }
+    }
 }

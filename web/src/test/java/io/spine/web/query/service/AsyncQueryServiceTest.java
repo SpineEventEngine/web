@@ -67,11 +67,11 @@ class AsyncQueryServiceTest {
         @Test
         @DisplayName(EXIST_TEST_NAME)
         void testLocal() {
-            final QueryService queryService = mockQueryService();
-            final AsyncQueryService proxy = AsyncQueryService.local(queryService);
+            QueryService queryService = mockQueryService();
+            AsyncQueryService proxy = AsyncQueryService.local(queryService);
             assertNotNull(proxy);
 
-            final Query query = Query.getDefaultInstance();
+            Query query = Query.getDefaultInstance();
             CompletableFuture<QueryResponse> future = proxy.execute(query);
             assertNotNull(future);
 
@@ -81,7 +81,7 @@ class AsyncQueryServiceTest {
         @Test
         @DisplayName(TO_STRING_TEST_NAME)
         void testToString() {
-            final String representation = AsyncQueryService.local(mockQueryService())
+            String representation = AsyncQueryService.local(mockQueryService())
                                                            .toString();
             assertTrue(representation.contains(AsyncQueryService.class.getSimpleName()));
             // Same each time.
@@ -90,7 +90,7 @@ class AsyncQueryServiceTest {
         }
 
         private QueryService mockQueryService() {
-            final QueryService queryService = mock(QueryService.class);
+            QueryService queryService = mock(QueryService.class);
             return queryService;
         }
     }
@@ -106,7 +106,7 @@ class AsyncQueryServiceTest {
         void setUp() throws IOException {
             queryService = mock(QueryService.class);
             doAnswer(invocation -> {
-                final StreamObserver<QueryResponse> observer = invocation.getArgument(1);
+                StreamObserver<QueryResponse> observer = invocation.getArgument(1);
                 observer.onNext(QueryResponse.getDefaultInstance());
                 observer.onCompleted();
                 return nullRef();
@@ -126,10 +126,10 @@ class AsyncQueryServiceTest {
         @Test
         @DisplayName(EXIST_TEST_NAME)
         void testRemote() {
-            final AsyncQueryService proxy = AsyncQueryService.remote(remoteQueryService());
+            AsyncQueryService proxy = AsyncQueryService.remote(remoteQueryService());
             assertNotNull(proxy);
 
-            final Query query = Query.getDefaultInstance();
+            Query query = Query.getDefaultInstance();
             proxy.execute(query).join();
 
             verify(queryService).read(eq(query), any());
@@ -138,7 +138,7 @@ class AsyncQueryServiceTest {
         @Test
         @DisplayName(TO_STRING_TEST_NAME)
         void testToString() {
-            final String representation = AsyncQueryService.remote(remoteQueryService())
+            String representation = AsyncQueryService.remote(remoteQueryService())
                                                            .toString();
             assertTrue(representation.contains(AsyncQueryService.class.getSimpleName()));
             // Same each time.
@@ -147,11 +147,11 @@ class AsyncQueryServiceTest {
         }
 
         private QueryServiceBlockingStub remoteQueryService() {
-            final Channel channel = forAddress("127.0.0.1", TEST_GRPC_PORT)
+            Channel channel = forAddress("127.0.0.1", TEST_GRPC_PORT)
                     .usePlaintext(true)
                     .directExecutor()
                     .build();
-            final QueryServiceBlockingStub result = QueryServiceGrpc.newBlockingStub(channel);
+            QueryServiceBlockingStub result = QueryServiceGrpc.newBlockingStub(channel);
             return result;
         }
     }

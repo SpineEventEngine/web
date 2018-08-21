@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static java.lang.String.format;
+import static io.spine.json.Json.fromJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -53,29 +53,37 @@ class FirebaseQueryProcessingResultTest {
 
     @BeforeEach
     void setUp() {
-        final Query query = queryFactory.all(Any.class);
+        Query query = queryFactory.all(Any.class);
         databasePath = FirebaseDatabasePath.allocateForQuery(query);
     }
 
     @Test
     @DisplayName("write DB path to servlet response")
     void testWritePath() throws IOException {
-        final ServletResponse response = mock(ServletResponse.class);
-        final StringWriter stringWriter = new StringWriter();
-        final PrintWriter writer = new PrintWriter(stringWriter);
+        ServletResponse response = mock(ServletResponse.class);
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
         int count = 2;
-        final FirebaseQueryProcessingResult queryResult =
+        FirebaseQueryProcessingResult queryResult =
                 new FirebaseQueryProcessingResult(databasePath, count);
         queryResult.writeTo(response);
         verify(response).getWriter();
 
-        String expected = queryProcessingResult(databasePath, count);
-        assertEquals(expected, stringWriter.toString());
+        FirebaseQueryResponse expected = toQueryResponse(databasePath, count);
+        FirebaseQueryResponse actual = fromJson(stringWriter.toString(),
+                                                FirebaseQueryResponse.class);
+
+        assertEquals(expected, actual);
     }
 
-    private static String queryProcessingResult(FirebaseDatabasePath databasePath, int count) {
-        return format("{\"path\": \"%s\", \"count\": %s}", databasePath.toString(), count);
+    private static FirebaseQueryResponse toQueryResponse(FirebaseDatabasePath path, long count) {
+        FirebaseQueryResponse response =
+                FirebaseQueryResponseVBuilder.newBuilder()
+                                             .setPath(path.toString())
+                                             .setCount(count)
+                                             .build();
+        return response;
     }
 }

@@ -26,7 +26,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.lang.String.format;
+import static io.spine.json.Json.toCompactJson;
 
 /**
  * A result of a query processed by a {@link FirebaseQueryBridge}.
@@ -53,10 +53,12 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
      */
     @Override
     public void writeTo(ServletResponse response) throws IOException {
-        final String databaseUrl = path.toString();
-        response.getWriter()
-                .append(format("{\"path\": \"%s\", \"count\": %s}",
-                               databaseUrl, count));
+        FirebaseQueryResponse queryResponse =
+                FirebaseQueryResponseVBuilder.newBuilder()
+                                             .setPath(path.toString())
+                                             .setCount(count)
+                                             .build();
+        response.getWriter().append(toCompactJson(queryResponse));
         response.setContentType(JSON_MIME_TYPE);
     }
 }

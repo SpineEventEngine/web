@@ -31,26 +31,57 @@ const WEB_QUERY_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.WebQuery');
 /**
  * An error which occurred when sending off a request to Spine server endpoint.
  */
-class EndpointError {
+export class EndpointError {
   /**
-   * @param {Response} response an HTTP response that caused an error
+   * @param {boolean} causedByClient `true` if the error was caused by the client, `false` otherwise
+   * @param {Object} reason the reason why this error occurred
    */
-  constructor(response) {
-    this._response = response;
+  constructor(causedByClient, reason) {
+    this._causedByClient = causedByClient;
+    this._reason = reason;
   }
 
   /**
    * @returns {boolean} `true` if the error was caused by an invalid client behaviour
    */
   isClient() {
-    return 400 <= this._response.status && this._response.status < 500;
+    return this._causedByClient;
   }
 
   /**
    * @returns {boolean} `true` in case of the server error
    */
   isServer() {
-    return this._response.status >= 500;
+    return !this._causedByClient;
+  }
+
+  /**
+   * @returns {Object} the reason of the error
+   */
+  reason() {
+    return this._reason;
+  }
+
+  /**
+   * Returns new `EndpointError` caused by the client.
+   *
+   * @param reason the reason why the error occurred
+   * @returns {EndpointError} new error instance
+   */
+  static clientError(reason) {
+    const CAUSED_BY_CLIENT = true;
+    return new EndpointError(CAUSED_BY_CLIENT, reason);
+  }
+
+  /**
+   * Returns new `EndpointError` caused by the server.
+   *
+   * @param reason the reason why the error occurred
+   * @returns {EndpointError} new error instance
+   */
+  static serverError(reason) {
+    const CAUSED_BY_SERVER = false;
+    return new EndpointError(CAUSED_BY_SERVER, reason);
   }
 }
 
@@ -172,7 +203,11 @@ export class HttpEndpoint extends Endpoint{
     if (HttpEndpoint._isSuccessfulResponse(response)) {
       return response.json();
     } else {
-      return Promise.reject(new EndpointError(response));
+      if (400 <= response.status && response.status < 500) {
+        return Promise.reject(EndpointError.clientError(response));
+      } else {
+        return Promise.reject(EndpointError.serverError(response));
+      }
     }
   }
 

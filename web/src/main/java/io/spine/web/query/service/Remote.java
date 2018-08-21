@@ -45,7 +45,7 @@ final class Remote implements AsyncQueryService {
 
     @Override
     public CompletableFuture<QueryResponse> execute(Query query) {
-        final CompletableFuture<QueryResponse> result = supplyAsync(() -> service.read(query));
+        CompletableFuture<QueryResponse> result = supplyAsync(() -> service.read(query));
         return result;
     }
 

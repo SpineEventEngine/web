@@ -22,6 +22,7 @@ package io.spine.web.firebase.given;
 
 import io.spine.client.Query;
 import io.spine.web.WebQuery;
+import io.spine.web.WebQueryVBuilder;
 
 /**
  * @author Mykhailo Drachuk
@@ -35,16 +36,16 @@ public final class FirebaseQueryBridgeTestEnv {
     }
 
     public static WebQuery transactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(true)
-                       .build();
+        return WebQueryVBuilder.newBuilder()
+                               .setQuery(query)
+                               .setDeliveredTransactionally(true)
+                               .build();
     }
 
     public static WebQuery nonTransactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(false)
-                       .build();
+        return WebQueryVBuilder.newBuilder()
+                               .setQuery(query)
+                               .setDeliveredTransactionally(false)
+                               .build();
     }
 }

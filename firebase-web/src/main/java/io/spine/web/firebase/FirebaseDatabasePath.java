@@ -62,7 +62,7 @@ final class FirebaseDatabasePath {
      * @return new {@code FirebaseDatabasePath}
      */
     static FirebaseDatabasePath allocateForQuery(Query query) {
-        final String path = constructPath(query);
+        String path = constructPath(query);
         return new FirebaseDatabasePath(path);
     }
 
@@ -71,10 +71,10 @@ final class FirebaseDatabasePath {
     }
 
     private static String constructPath(Query query) {
-        final String tenantId = tenantIdAsString(query);
-        final String actor = actorAsString(query);
-        final String queryId = queryIdAsString(query);
-        final Collection<String> pathElements = newArrayList();
+        String tenantId = tenantIdAsString(query);
+        String actor = actorAsString(query);
+        String queryId = queryIdAsString(query);
+        Collection<String> pathElements = newArrayList();
         if (!tenantId.isEmpty()) {
             pathElements.add(escaped(tenantId));
         }
@@ -84,16 +84,15 @@ final class FirebaseDatabasePath {
         if (!queryId.isEmpty()) {
             pathElements.add(escaped(queryId));
         }
-        final String path = Joiner.on(PATH_DELIMITER)
-                                  .join(pathElements);
+        String path = Joiner.on(PATH_DELIMITER)
+                            .join(pathElements);
         return path;
     }
 
     @SuppressWarnings("UnnecessaryDefault")
     private static String tenantIdAsString(Query query) {
-        final TenantId tenantId = query.getContext()
-                                       .getTenantId();
-        final TenantId.KindCase kind = tenantId.getKindCase();
+        TenantId tenantId = query.getContext().getTenantId();
+        TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
                 return tenantId.getEmail()
@@ -110,15 +109,14 @@ final class FirebaseDatabasePath {
     }
 
     private static String actorAsString(Query query) {
-        final UserId actor = query.getContext()
-                                  .getActor();
-        final String result = actor.getValue();
+        UserId actor = query.getContext().getActor();
+        String result = actor.getValue();
         return result;
     }
 
     private static String queryIdAsString(Query query) {
-        final QueryId queryId = query.getId();
-        final String result = queryId.getValue();
+        QueryId queryId = query.getId();
+        String result = queryId.getValue();
         return result;
     }
 
