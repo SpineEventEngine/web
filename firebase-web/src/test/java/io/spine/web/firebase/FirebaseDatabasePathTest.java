@@ -28,8 +28,11 @@ import com.google.protobuf.Timestamp;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.core.TenantId;
+import io.spine.core.TenantIdVBuilder;
 import io.spine.net.EmailAddress;
+import io.spine.net.EmailAddressVBuilder;
 import io.spine.net.InternetDomain;
+import io.spine.net.InternetDomainVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.time.ZoneOffsets;
 import org.junit.jupiter.api.DisplayName;
@@ -60,11 +63,11 @@ class FirebaseDatabasePathTest {
     @Test
     @DisplayName("construct self for a Query")
     void testConstruct() {
-        final Query firstQuery = queryFactory.all(Empty.class);
-        final Query secondQuery = queryFactory.all(Timestamp.class);
+        Query firstQuery = queryFactory.all(Empty.class);
+        Query secondQuery = queryFactory.all(Timestamp.class);
 
-        final FirebaseDatabasePath firstPath = FirebaseDatabasePath.allocateForQuery(firstQuery);
-        final FirebaseDatabasePath secondPath = FirebaseDatabasePath.allocateForQuery(secondQuery);
+        FirebaseDatabasePath firstPath = FirebaseDatabasePath.allocateForQuery(firstQuery);
+        FirebaseDatabasePath secondPath = FirebaseDatabasePath.allocateForQuery(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -74,28 +77,32 @@ class FirebaseDatabasePathTest {
     @Test
     @DisplayName("be tenant-aware")
     void testTenantAware() {
-        final TenantId domainTenant = TenantId.newBuilder()
-                                              .setDomain(InternetDomain.newBuilder()
-                                                                       .setValue("spine.io"))
-                                              .build();
-        final TenantId emailTenant = TenantId.newBuilder()
-                                             .setEmail(EmailAddress.newBuilder()
-                                                                   .setValue("john@doe.org"))
-                                             .build();
-        final TenantId firstValueTenant = TenantId.newBuilder()
-                                                  .setValue("first tenant")
-                                                  .build();
-        final TenantId secondValueTenant = TenantId.newBuilder()
-                                                   .setValue("second tenant")
-                                                   .build();
-        final List<String> paths = Stream.of(domainTenant,
-                                             emailTenant,
-                                             firstValueTenant,
-                                             secondValueTenant)
-                                         .map(FirebaseDatabasePathTest::tenantAwareQuery)
-                                         .map(FirebaseDatabasePath::allocateForQuery)
-                                         .map(FirebaseDatabasePath::toString)
-                                         .collect(toList());
+        InternetDomain domain = InternetDomainVBuilder.newBuilder()
+                                                      .setValue("spine.io")
+                                                      .build();
+        TenantId domainTenant = TenantIdVBuilder.newBuilder()
+                                                .setDomain(domain)
+                                                .build();
+        EmailAddress email = EmailAddressVBuilder.newBuilder()
+                                                 .setValue("john@doe.org")
+                                                 .build();
+        TenantId emailTenant = TenantIdVBuilder.newBuilder()
+                                               .setEmail(email)
+                                               .build();
+        TenantId firstValueTenant = TenantIdVBuilder.newBuilder()
+                                                    .setValue("first tenant")
+                                                    .build();
+        TenantId secondValueTenant = TenantIdVBuilder.newBuilder()
+                                                     .setValue("second tenant")
+                                                     .build();
+        List<String> paths = Stream.of(domainTenant,
+                                       emailTenant,
+                                       firstValueTenant,
+                                       secondValueTenant)
+                                   .map(FirebaseDatabasePathTest::tenantAwareQuery)
+                                   .map(FirebaseDatabasePath::allocateForQuery)
+                                   .map(FirebaseDatabasePath::toString)
+                                   .collect(toList());
         new EqualsTester()
                 .addEqualityGroup(paths.get(0))
                 .addEqualityGroup(paths.get(1))
@@ -107,10 +114,12 @@ class FirebaseDatabasePathTest {
     @Test
     @DisplayName("construct into a valid path")
     void testEscaped() {
-        final TestActorRequestFactory requestFactory =
+        TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault(), systemDefault());
-        final Query query = requestFactory.query().all(Any.class);
-        final String path = FirebaseDatabasePath.allocateForQuery(query).toString();
+        Query query = requestFactory.query()
+                                    .all(Any.class);
+        String path = FirebaseDatabasePath.allocateForQuery(query)
+                                          .toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -124,18 +133,19 @@ class FirebaseDatabasePathTest {
     @Test
     @DisplayName("generate a database reference")
     void testReference() {
-        final Query query = queryFactory.all(Empty.class);
-        final FirebaseDatabase database = mock(FirebaseDatabase.class);
+        Query query = queryFactory.all(Empty.class);
+        FirebaseDatabase database = mock(FirebaseDatabase.class);
 
-        final FirebaseDatabasePath path = FirebaseDatabasePath.allocateForQuery(query);
+        FirebaseDatabasePath path = FirebaseDatabasePath.allocateForQuery(query);
         path.reference(database);
         verify(database).getReference(eq(path.toString()));
     }
 
     private static Query tenantAwareQuery(TenantId tenantId) {
-        final TestActorRequestFactory requestFactory =
+        TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance(FirebaseDatabasePathTest.class, tenantId);
-        final Query query = requestFactory.query().all(Any.class);
+        Query query = requestFactory.query()
+                                    .all(Any.class);
         return query;
     }
 }

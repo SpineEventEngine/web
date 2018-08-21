@@ -43,12 +43,12 @@ final class Application {
 
     static Application create(BoundedContext boundedContext) {
         checkNotNull(boundedContext);
-        final CommandService commandService = CommandService.newBuilder()
-                                                            .add(boundedContext)
-                                                            .build();
-        final QueryService queryService = QueryService.newBuilder()
+        CommandService commandService = CommandService.newBuilder()
                                                       .add(boundedContext)
                                                       .build();
+        QueryService queryService = QueryService.newBuilder()
+                                                .add(boundedContext)
+                                                .build();
         return new Application(commandService, queryService);
     }
 

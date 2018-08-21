@@ -19,30 +19,23 @@
 //
 syntax = "proto3";
 
-package spine.web;
+package spine.web.firebase;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.web";
+option java_package = "io.spine.web.firebase";
 option java_multiple_files = true;
-option java_outer_classname = "WebProto";
+option java_outer_classname = "FirebaseQueryResponseProto";
 
-import "spine/client/query.proto";
-
-// A query received from HTTP client.
-// 
-// Complements the `Query` sent to Spine specifying one of two query strategies:
-// <ol>
-//    <li>A non-transactional supplying items to the destination one at a time.
-//    <li>A transactional strategy supplying items to the destination in one batch.  
-// </ol>
+// A response to the Spine `Query` that contains a path to the actual results
+// in Firebase Realtime Database.
 //
-message WebQuery {
+message FirebaseQueryResponse {
 
-    // A Query to be executed by Spine.
-    spine.client.Query query = 1 [(required) = true];
+    // A datapase path to the requested data.
+    string path = 1 [(required) = true];
 
-    // Specifies if the client wants the result to be pushed in a single transaction.
-    bool delivered_transactionally = 2;
+    // A number of records.
+    uint64 count = 2;
 }

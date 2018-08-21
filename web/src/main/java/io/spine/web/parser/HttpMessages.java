@@ -74,17 +74,17 @@ public final class HttpMessages {
     public static <M extends Message> Optional<M> parse(HttpServletRequest request, Class<M> type)
             throws IOException {
         checkNotNull(request, type);
-        final Optional<MessageFormat> format = MessageFormat.formatOf(request);
-        final String requestBody = body(request);
-        final Optional<M> message = format.map(messageFormat -> messageFormat.parserFor(type))
-                                          .flatMap(parser -> parser.parse(requestBody));
+        Optional<MessageFormat> format = MessageFormat.formatOf(request);
+        String requestBody = body(request);
+        Optional<M> message = format.map(messageFormat -> messageFormat.parserFor(type))
+                                    .flatMap(parser -> parser.parse(requestBody));
         return message;
     }
 
     private static String body(ServletRequest request) throws IOException {
-        final String result = request.getReader()
-                                     .lines()
-                                     .collect(joining(" "));
+        String result = request.getReader()
+                               .lines()
+                               .collect(joining(" "));
         return result;
     }
 }

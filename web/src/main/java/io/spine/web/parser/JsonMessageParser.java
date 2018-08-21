@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Throwables.getRootCause;
+import static io.spine.json.Json.fromJson;
 import static java.util.regex.Pattern.LITERAL;
 import static java.util.regex.Pattern.compile;
 
@@ -56,9 +57,9 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
      */
     @Override
     public Optional<M> parse(String raw) {
-        final String json = cleanUp(raw);
+        String json = cleanUp(raw);
         try {
-            final M message = Json.fromJson(json, type);
+            M message = fromJson(json, type);
             return Optional.of(message);
         } catch (IllegalArgumentException e) {
             log().error("Unable to parse message of type {} from JSON: `{}`",
@@ -68,8 +69,8 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
     }
 
     private static String cleanUp(String jsonFromRequest) {
-        final String json = EscapeSymbol.unEscapeAll(jsonFromRequest);
-        final String unQuoted = unQuote(json);
+        String json = EscapeSymbol.unEscapeAll(jsonFromRequest);
+        String unQuoted = unQuote(json);
         return unQuoted;
     }
 
@@ -82,7 +83,7 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
         if (json.endsWith("\"")) {
             endIndex = json.length() - 1;
         }
-        final String result = json.substring(beginIndex, endIndex);
+        String result = json.substring(beginIndex, endIndex);
         return result;
     }
 
@@ -108,8 +109,8 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
         }
 
         private String unEscape(String escaped) {
-            final Matcher matcher = escapedPattern.matcher(escaped);
-            final String unescaped = matcher.replaceAll(raw);
+            Matcher matcher = escapedPattern.matcher(escaped);
+            String unescaped = matcher.replaceAll(raw);
             return unescaped;
         }
 

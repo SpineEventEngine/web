@@ -56,8 +56,8 @@ class QueryServletTest {
     @Test
     @DisplayName("throw UnsupportedOperationException when trying to serialize")
     void testFailToSerialize() throws IOException {
-        final QueryServlet servlet = new TestQueryServlet();
-        final ObjectOutputStream stream = new ObjectOutputStream(new ByteArrayOutputStream());
+        QueryServlet servlet = new TestQueryServlet();
+        ObjectOutputStream stream = new ObjectOutputStream(new ByteArrayOutputStream());
         assertThrows(UnsupportedOperationException.class, () -> stream.writeObject(servlet));
         stream.close();
     }
@@ -65,28 +65,28 @@ class QueryServletTest {
     @Test
     @DisplayName("handle query POST requests")
     void testHandle() throws IOException {
-        final Timestamp expectedData = Time.getCurrentTime();
-        final QueryServlet servlet = new TestQueryServlet(expectedData);
-        final StringWriter response = new StringWriter();
-        final Query query = queryFactory.all(Timestamp.class);
+        Timestamp expectedData = Time.getCurrentTime();
+        QueryServlet servlet = new TestQueryServlet(expectedData);
+        StringWriter response = new StringWriter();
+        Query query = queryFactory.all(Timestamp.class);
         HttpServletRequest request = request(newTransactionalQuery(query));
         servlet.doPost(request, response(response));
-        final Timestamp actualData = Json.fromJson(response.toString(), Timestamp.class);
+        Timestamp actualData = Json.fromJson(response.toString(), Timestamp.class);
         assertEquals(expectedData, actualData);
     }
 
     private static WebQuery newTransactionalQuery(Query query) {
-        return WebQuery.newBuilder()
-                       .setQuery(query)
-                       .setDeliveredTransactionally(false)
-                       .build();
+        return WebQueryVBuilder.newBuilder()
+                               .setQuery(query)
+                               .setDeliveredTransactionally(false)
+                               .build();
     }
 
     @Test
     @DisplayName("respond 400 to an invalid query")
     void testInvalidCommand() throws IOException {
-        final QueryServlet servlet = new TestQueryServlet();
-        final HttpServletResponse response = response(new StringWriter());
+        QueryServlet servlet = new TestQueryServlet();
+        HttpServletResponse response = response(new StringWriter());
         servlet.doPost(request(Time.getCurrentTime()), response);
         verify(response).sendError(400);
     }

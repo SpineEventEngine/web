@@ -49,14 +49,14 @@ public final class Servlets {
     }
 
     public static HttpServletRequest request(Message contents) throws IOException {
-        final HttpServletRequest request = mock(HttpServletRequest.class);
-        final String content = Json.toJson(contents);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        String content = Json.toJson(contents);
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(content)));
         return request;
     }
 
     public static HttpServletResponse response(StringWriter writer) throws IOException {
-        final HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
         return response;
     }

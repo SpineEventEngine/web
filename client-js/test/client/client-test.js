@@ -110,6 +110,7 @@ describe('Client should', function () {
         },
         error: fail(done),
         complete() {
+          assert.ok(itemFound);
           done();
         }
       });

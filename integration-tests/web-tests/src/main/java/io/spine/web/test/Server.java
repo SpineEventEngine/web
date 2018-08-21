@@ -49,15 +49,15 @@ final class Server {
     }
 
     private static Application createApplication() {
-        final String name = "Test Bounded Context";
-        final StorageFactory storageFactory = newInstance(newName(name), false);
-        final BoundedContext boundedContext =
+        String name = "Test Bounded Context";
+        StorageFactory storageFactory = newInstance(newName(name), false);
+        BoundedContext boundedContext =
                 BoundedContext.newBuilder()
                               .setName(name)
                               .setStorageFactorySupplier(() -> storageFactory)
                               .build();
         boundedContext.register(new TaskRepository());
-        final Application app = Application.create(boundedContext);
+        Application app = Application.create(boundedContext);
         return app;
     }
 }

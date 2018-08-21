@@ -41,8 +41,8 @@ class FutureObserverTest {
     @Test
     @DisplayName("instantiate self")
     void testCreateDefault() {
-        final FutureObserver<String> observer = FutureObserver.create();
-        final String value = "hello";
+        FutureObserver<String> observer = FutureObserver.create();
+        String value = "hello";
         observer.onNext(value);
         assertEquals(value, observer.toFuture().join());
         observer.onCompleted();
@@ -52,7 +52,7 @@ class FutureObserverTest {
     @Test
     @DisplayName("complete with null by default")
     void testDefaultNull() {
-        final FutureObserver<String> observer = FutureObserver.create();
+        FutureObserver<String> observer = FutureObserver.create();
         observer.onCompleted();
         assertNull(observer.toFuture().join());
     }
@@ -60,8 +60,8 @@ class FutureObserverTest {
     @Test
     @DisplayName("complete with given default value")
     void testDefaultValue() {
-        final String defaultValue = "Aquaman";
-        final FutureObserver<String> observer = FutureObserver.withDefault(defaultValue);
+        String defaultValue = "Aquaman";
+        FutureObserver<String> observer = FutureObserver.withDefault(defaultValue);
         observer.onCompleted();
         assertEquals(defaultValue, observer.toFuture().join());
     }
@@ -69,7 +69,7 @@ class FutureObserverTest {
     @Test
     @DisplayName("fail to override value")
     void testFailToOverride() {
-        final FutureObserver<String> observer = FutureObserver.create();
+        FutureObserver<String> observer = FutureObserver.create();
         observer.onNext("first");
         assertThrows(IllegalStateException.class, () -> observer.onNext("second"));
     }
@@ -77,14 +77,15 @@ class FutureObserverTest {
     @Test
     @DisplayName("override value with error if onError() called")
     void testOverrideWithError() {
-        final FutureObserver<String> observer = FutureObserver.create();
-        final String value = "Titanic";
+        FutureObserver<String> observer = FutureObserver.create();
+        String value = "Titanic";
         observer.onNext(value);
         assertEquals(value, observer.toFuture().join());
         observer.onError(new IcebergCollisionException());
-        final Throwable thrown = assertThrows(CompletionException.class,
-                                              () -> observer.toFuture().join());
-        final Throwable rootCause = getRootCause(thrown);
+        Throwable thrown = assertThrows(CompletionException.class,
+                                        () -> observer.toFuture()
+                                                      .join());
+        Throwable rootCause = getRootCause(thrown);
         assertThat(rootCause, instanceOf(IcebergCollisionException.class));
     }
 

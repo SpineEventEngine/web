@@ -37,11 +37,11 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
     @Assign
     TaskCreated handle(CreateTask command) {
-        return TaskCreated.newBuilder()
-                          .setId(command.getId())
-                          .setName(command.getName())
-                          .setDescription(command.getDescription())
-                          .build();
+        return TaskCreatedVBuilder.newBuilder()
+                                  .setId(command.getId())
+                                  .setName(command.getName())
+                                  .setDescription(command.getDescription())
+                                  .build();
     }
 
     @Apply
