@@ -45,14 +45,14 @@ export class EndpointError {
    * @returns {boolean} `true` if the error was caused by an invalid client behaviour
    */
   isClient() {
-    return this._causedByClient; // 400 <= this._response.status && this._response.status < 500;
+    return this._causedByClient;
   }
 
   /**
    * @returns {boolean} `true` in case of the server error
    */
   isServer() {
-    return !this._causedByClient;// this._response.status >= 500;
+    return !this._causedByClient;
   }
 
   /**
