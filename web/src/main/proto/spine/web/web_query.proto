@@ -30,9 +30,9 @@ option java_outer_classname = "WebProto";
 
 import "spine/client/query.proto";
 
-// A query received from Spines JS client.
+// A query received from HTTP client.
 // 
-// Complements the Query sent to Spine specifying one of two query strategies:
+// Complements the `Query` sent to Spine specifying one of two query strategies:
 // <ol>
 //    <li>A non-transactional supplying items to the destination one at a time.
 //    <li>A transactional strategy supplying items to the destination in one batch.  

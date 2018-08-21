@@ -39,12 +39,12 @@ final class FirebaseClient {
 
     static {
         try {
-            final InputStream in = FirebaseClient.class.getClassLoader()
+            InputStream in = FirebaseClient.class.getClassLoader()
                                                        .getResourceAsStream("spine-dev.json");
-            final GoogleCredentials credentials;
+            GoogleCredentials credentials;
 
             credentials = GoogleCredentials.fromStream(in);
-            final FirebaseOptions options = new FirebaseOptions.Builder()
+            FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(credentials)
                     .setDatabaseUrl("https://spine-dev.firebaseio.com/")
                     .build();

@@ -53,11 +53,11 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M> {
      */
     @Override
     public Optional<M> parse(String raw) {
-        final byte[] bytes = Base64.getDecoder().decode(raw);
-        final Message.Builder builder = Messages.builderFor(type);
+        byte[] bytes = Base64.getDecoder().decode(raw);
+        Message.Builder builder = Messages.builderFor(type);
         try {
             @SuppressWarnings("unchecked") // Logically checked.
-            final M message = (M) builder.mergeFrom(bytes)
+            M message = (M) builder.mergeFrom(bytes)
                                          .build();
             return Optional.of(message);
         } catch (InvalidProtocolBufferException | ClassCastException e) {

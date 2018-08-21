@@ -60,21 +60,21 @@ public abstract class CommandServlet extends NonSerializableServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        final Optional<Command> parsed = HttpMessages.parse(req, Command.class);
+        Optional<Command> parsed = HttpMessages.parse(req, Command.class);
         if (!parsed.isPresent()) {
             resp.sendError(SC_BAD_REQUEST);
         } else {
-            final Command command = parsed.get();
-            final FutureObserver<Ack> ack = FutureObserver.withDefault(Ack.getDefaultInstance());
+            Command command = parsed.get();
+            FutureObserver<Ack> ack = FutureObserver.withDefault(Ack.getDefaultInstance());
             commandService.post(command, ack);
-            final Ack result = ack.toFuture().join();
+            Ack result = ack.toFuture().join();
             writeToResponse(result, resp);
         }
     }
 
     private static void writeToResponse(Ack ack, HttpServletResponse response)
             throws IOException {
-        final String json = Json.toCompactJson(ack);
+        String json = Json.toCompactJson(ack);
         response.getWriter().append(json);
         response.setContentType(MIME_TYPE);
     }

@@ -26,9 +26,11 @@ import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
+import io.spine.client.QueryResponseVBuilder;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.protobuf.AnyPacker;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -64,8 +66,7 @@ public final class FirebaseQueryMediatorTestEnv {
      */
     public static <T> ApiFuture<T> timeoutFuture()
             throws InterruptedException, ExecutionException, TimeoutException {
-        @SuppressWarnings("unchecked")
-        final ApiFuture<T> future = mock(ApiFuture.class);
+        @SuppressWarnings("unchecked") ApiFuture<T> future = mock(ApiFuture.class);
 
         when(future.get(anyLong(), any(TimeUnit.class)))
                 .thenThrow(new TimeoutException("FirebaseQueryMediatorTestEnv.timeoutFuture()"));
@@ -85,10 +86,11 @@ public final class FirebaseQueryMediatorTestEnv {
 
         @Override
         public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
-            final QueryResponse queryResponse = QueryResponse.newBuilder()
-                                                             .setResponse(ok())
-                                                             .addAllMessages(response)
-                                                             .build();
+            QueryResponse queryResponse =
+                    QueryResponseVBuilder.newBuilder()
+                                         .setResponse(ok())
+                                         .addAllMessages(new ArrayList<>(response))
+                                         .build();
             responseObserver.onNext(queryResponse);
             responseObserver.onCompleted();
         }

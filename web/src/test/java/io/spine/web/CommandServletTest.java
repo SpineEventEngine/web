@@ -57,19 +57,19 @@ class CommandServletTest {
     @Test
     @DisplayName("fail to serialize")
     void testSerialize() throws IOException {
-        final CommandServlet servlet = new TestCommandServlet();
-        final ObjectOutputStream stream = new ObjectOutputStream(new ByteArrayOutputStream());
+        CommandServlet servlet = new TestCommandServlet();
+        ObjectOutputStream stream = new ObjectOutputStream(new ByteArrayOutputStream());
         assertThrows(UnsupportedOperationException.class, () -> stream.writeObject(servlet));
     }
 
     @Test
     @DisplayName("handle command POST requests")
     void testHandle() throws IOException {
-        final CommandServlet servlet = new TestCommandServlet();
-        final StringWriter response = new StringWriter();
-        final Command command = commandFactory.create(Time.getCurrentTime());
+        CommandServlet servlet = new TestCommandServlet();
+        StringWriter response = new StringWriter();
+        Command command = commandFactory.create(Time.getCurrentTime());
         servlet.doPost(request(command), response(response));
-        final Ack ack = Json.fromJson(response.toString(), Ack.class);
+        Ack ack = Json.fromJson(response.toString(), Ack.class);
         assertEquals(OK, ack.getStatus().getStatusCase());
         assertEquals(command.getId(), AnyPacker.unpack(ack.getMessageId()));
     }
@@ -77,8 +77,8 @@ class CommandServletTest {
     @Test
     @DisplayName("respond 400 to an invalid command")
     void testInvalidCommand() throws IOException {
-        final CommandServlet servlet = new TestCommandServlet();
-        final HttpServletResponse response = response(new StringWriter());
+        CommandServlet servlet = new TestCommandServlet();
+        HttpServletResponse response = response(new StringWriter());
         servlet.doPost(request(Time.getCurrentTime()), response);
         verify(response).sendError(400);
     }
