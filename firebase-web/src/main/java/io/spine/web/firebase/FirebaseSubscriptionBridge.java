@@ -44,7 +44,7 @@ import static io.spine.client.Queries.generateId;
 /**
  * @author Mykhailo Drachuk
  */
-final class FirebaseSubscriptionBridge implements SubscriptionBridge {
+public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     private final Status OK_STATUS = okStatus();
 
