@@ -101,9 +101,9 @@ class FirebaseQueryBridgeTest {
         Message dataElement = Time.getCurrentTime();
         TestQueryService queryService = new TestQueryService(dataElement);
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                              .setQueryService(queryService)
-                                                              .setDatabase(firebaseDatabase)
-                                                              .build();
+                                                        .setQueryService(queryService)
+                                                        .setDatabase(firebaseDatabase)
+                                                        .build();
         Query query = queryFactory.all(Timestamp.class);
         //noinspection ResultOfMethodCallIgnored
         bridge.send(nonTransactionalQuery(query));

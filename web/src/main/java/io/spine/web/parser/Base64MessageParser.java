@@ -58,7 +58,7 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M> {
         try {
             @SuppressWarnings("unchecked") // Logically checked.
             M message = (M) builder.mergeFrom(bytes)
-                                         .build();
+                                   .build();
             return Optional.of(message);
         } catch (InvalidProtocolBufferException | ClassCastException e) {
             log().error("Unable to parse message of type {} from a Base64 string: `{}`",

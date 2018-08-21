@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Throwables.getRootCause;
+import static io.spine.json.Json.fromJson;
 import static java.util.regex.Pattern.LITERAL;
 import static java.util.regex.Pattern.compile;
 
@@ -58,7 +59,7 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
     public Optional<M> parse(String raw) {
         String json = cleanUp(raw);
         try {
-            M message = Json.fromJson(json, type);
+            M message = fromJson(json, type);
             return Optional.of(message);
         } catch (IllegalArgumentException e) {
             log().error("Unable to parse message of type {} from JSON: `{}`",

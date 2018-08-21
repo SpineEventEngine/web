@@ -40,7 +40,7 @@ final class FirebaseClient {
     static {
         try {
             InputStream in = FirebaseClient.class.getClassLoader()
-                                                       .getResourceAsStream("spine-dev.json");
+                                                 .getResourceAsStream("spine-dev.json");
             GoogleCredentials credentials;
 
             credentials = GoogleCredentials.fromStream(in);

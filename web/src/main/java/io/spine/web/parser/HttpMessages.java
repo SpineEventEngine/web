@@ -77,7 +77,7 @@ public final class HttpMessages {
         Optional<MessageFormat> format = MessageFormat.formatOf(request);
         String requestBody = body(request);
         Optional<M> message = format.map(messageFormat -> messageFormat.parserFor(type))
-                                          .flatMap(parser -> parser.parse(requestBody));
+                                    .flatMap(parser -> parser.parse(requestBody));
         return message;
     }
 

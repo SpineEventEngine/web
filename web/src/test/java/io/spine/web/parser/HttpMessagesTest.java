@@ -30,7 +30,6 @@ import io.spine.base.Time;
 import io.spine.core.Ack;
 import io.spine.core.AckVBuilder;
 import io.spine.core.Responses;
-import io.spine.json.Json;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -100,7 +99,7 @@ class HttpMessagesTest {
     void testNotSupportUnknownFormat() throws IOException {
         String content = "whatever";
         Optional<?> result = HttpMessages.parse(requestInFormat(content, "invalid-format"),
-                                                      Message.class);
+                                                Message.class);
         assertFalse(result.isPresent());
     }
 
@@ -109,7 +108,7 @@ class HttpMessagesTest {
     void testParseExplicitJson() throws IOException {
         String content = "{}";
         Optional<Empty> parsed = HttpMessages.parse(requestInFormat(content, JSON_TYPE),
-                                                          Empty.class);
+                                                    Empty.class);
         assertTrue(parsed.isPresent());
         assertEquals(Empty.getDefaultInstance(), parsed.get());
     }

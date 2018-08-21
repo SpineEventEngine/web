@@ -81,7 +81,7 @@ final class FirebaseDatabasePath {
             pathElements.add(escaped(queryId));
         }
         String path = Joiner.on(PATH_DELIMITER)
-                                  .join(pathElements);
+                            .join(pathElements);
         return path;
     }
 

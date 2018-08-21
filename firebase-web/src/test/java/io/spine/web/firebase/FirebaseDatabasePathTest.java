@@ -114,8 +114,10 @@ class FirebaseDatabasePathTest {
     void testEscaped() {
         TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault(), systemDefault());
-        Query query = requestFactory.query().all(Any.class);
-        String path = FirebaseDatabasePath.allocateForQuery(query).toString();
+        Query query = requestFactory.query()
+                                    .all(Any.class);
+        String path = FirebaseDatabasePath.allocateForQuery(query)
+                                          .toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -140,7 +142,8 @@ class FirebaseDatabasePathTest {
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance(FirebaseDatabasePathTest.class, tenantId);
-        Query query = requestFactory.query().all(Any.class);
+        Query query = requestFactory.query()
+                                    .all(Any.class);
         return query;
     }
 }

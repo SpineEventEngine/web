@@ -83,7 +83,8 @@ class FutureObserverTest {
         assertEquals(value, observer.toFuture().join());
         observer.onError(new IcebergCollisionException());
         Throwable thrown = assertThrows(CompletionException.class,
-                                              () -> observer.toFuture().join());
+                                        () -> observer.toFuture()
+                                                      .join());
         Throwable rootCause = getRootCause(thrown);
         assertThat(rootCause, instanceOf(IcebergCollisionException.class));
     }

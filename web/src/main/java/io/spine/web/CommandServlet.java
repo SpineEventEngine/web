@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.json.Json.toCompactJson;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
@@ -67,14 +68,15 @@ public abstract class CommandServlet extends NonSerializableServlet {
             Command command = parsed.get();
             FutureObserver<Ack> ack = FutureObserver.withDefault(Ack.getDefaultInstance());
             commandService.post(command, ack);
-            Ack result = ack.toFuture().join();
+            Ack result = ack.toFuture()
+                            .join();
             writeToResponse(result, resp);
         }
     }
 
     private static void writeToResponse(Ack ack, HttpServletResponse response)
             throws IOException {
-        String json = Json.toCompactJson(ack);
+        String json = toCompactJson(ack);
         response.getWriter().append(json);
         response.setContentType(MIME_TYPE);
     }
