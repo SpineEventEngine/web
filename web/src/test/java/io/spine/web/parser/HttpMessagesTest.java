@@ -29,7 +29,6 @@ import com.google.protobuf.UnknownFieldSet;
 import io.spine.base.Time;
 import io.spine.core.Ack;
 import io.spine.core.AckVBuilder;
-import io.spine.core.Responses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

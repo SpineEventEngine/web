@@ -24,7 +24,6 @@ import io.grpc.stub.StreamObserver;
 import io.spine.core.Ack;
 import io.spine.core.AckVBuilder;
 import io.spine.core.Command;
-import io.spine.protobuf.AnyPacker;
 import io.spine.server.CommandService;
 import io.spine.web.CommandServlet;
 

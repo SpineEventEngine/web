@@ -22,7 +22,6 @@ package io.spine.web;
 
 import io.spine.core.Ack;
 import io.spine.core.Command;
-import io.spine.json.Json;
 import io.spine.server.CommandService;
 import io.spine.web.parser.HttpMessages;
 
