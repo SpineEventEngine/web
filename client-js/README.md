@@ -9,6 +9,7 @@ The latest published version can be found on [NPM](https://www.npmjs.com/package
 To publish a new version to NPM:
 1. Login to NPM and generate a new access token.
 2. Set the generated token to your `NPM_TOKEN` environment variable.
-3. Execute Gradle `publishJS` task from project root:
-    
-        ./gradlew publishJs 
+3. Execute Gradle `publishJs` task from project root:
+ ```bash
+    ./gradlew publishJs
+ ``` 
