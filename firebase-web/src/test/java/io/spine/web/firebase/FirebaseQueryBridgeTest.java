@@ -106,8 +106,8 @@ class FirebaseQueryBridgeTest {
                                                         .setDatabase(firebaseDatabase)
                                                         .build();
         Query query = queryFactory.all(Timestamp.class);
-        //noinspection ResultOfMethodCallIgnored
-        bridge.send(nonTransactionalQuery(query));
+        @SuppressWarnings("unused")
+        QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
         verify(pathReference, timeout(5 * SECONDS)).push();
         verify(childReference, timeout(5 * SECONDS))

@@ -137,7 +137,8 @@ class FirebaseDatabasePathTest {
         FirebaseDatabase database = mock(FirebaseDatabase.class);
 
         FirebaseDatabasePath path = FirebaseDatabasePath.allocateForQuery(query);
-        path.reference(database);
+        @SuppressWarnings("unused")
+        DatabaseReference reference = path.reference(database);
         verify(database).getReference(eq(path.toString()));
     }
 
