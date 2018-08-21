@@ -28,7 +28,8 @@ option java_package = "io.spine.web.firebase";
 option java_multiple_files = true;
 option java_outer_classname = "FirebaseQueryResponseProto";
 
-// A response to the query with results being posted to Firebase.
+// A response to the Spine `Query` that contains a path to the actual results
+// in Firebase Realtime Database.
 //
 message FirebaseQueryResponse {
 
@@ -36,5 +37,5 @@ message FirebaseQueryResponse {
     string path = 1 [(required) = true];
 
     // A number of records.
-    int64 count = 2;
+    uint64 count = 2;
 }
