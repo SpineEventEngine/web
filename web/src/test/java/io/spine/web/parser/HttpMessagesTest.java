@@ -40,6 +40,7 @@ import java.io.StringReader;
 import java.util.Base64;
 import java.util.Optional;
 
+import static io.spine.core.Responses.statusOk;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
@@ -73,7 +74,7 @@ class HttpMessagesTest {
     void testParseEscaped() throws IOException {
         Ack expectedAck = AckVBuilder.newBuilder()
                                      .setMessageId(pack(Int32Value.of(5)))
-                                     .setStatus(Responses.statusOk())
+                                     .setStatus(statusOk())
                                      .build();
         String content = toCompactJson(expectedAck);
         Optional<Ack> actual = HttpMessages.parse(requestWithJson(content), Ack.class);

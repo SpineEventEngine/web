@@ -95,7 +95,9 @@ class FirebaseDatabasePathTest {
         TenantId secondValueTenant = TenantIdVBuilder.newBuilder()
                                                      .setValue("second tenant")
                                                      .build();
-        List<String> paths = Stream.of(domainTenant, emailTenant, firstValueTenant,
+        List<String> paths = Stream.of(domainTenant,
+                                       emailTenant,
+                                       firstValueTenant,
                                        secondValueTenant)
                                    .map(FirebaseDatabasePathTest::tenantAwareQuery)
                                    .map(FirebaseDatabasePath::allocateForQuery)
