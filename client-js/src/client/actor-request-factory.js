@@ -166,6 +166,56 @@ class QueryFactory {
 }
 
 /**
+ * A factory of `Command` instances.
+ *
+ * Uses the given `ActorRequestFactory` as the source of the command meta information,
+ * such as the actor, the tenant, etc.
+ *
+ * @see ActorRequestFactory#command()
+ */
+class CommandFactory {
+
+  constructor(actorRequestFactory) {
+    this._requestFactory = actorRequestFactory;
+  }
+
+  /**
+   * Creates a Command from the given command message.
+   *
+   * @param {!TypedMessage} message a typed command message
+   * @return {TypedMessage<Command>} a typed representation of the Spine Command
+   */
+  create(message) {
+    const id = CommandFactory._newCommandId();
+    const messageAny = message.toAny();
+    const context = this._commandContext();
+
+    const result = new Command();
+    result.setId(id);
+    result.setMessage(messageAny);
+    result.setContext(context);
+    return new TypedMessage(result, COMMAND_MESSAGE_TYPE);
+  }
+
+  _commandContext() {
+    const result = new CommandContext();
+    const actorContext = this._requestFactory._actorContext();
+    result.setActorContext(actorContext);
+    return result;
+  }
+
+  /**
+   * @return {CommandId}
+   * @private
+   */
+  static _newCommandId() {
+    const result = new CommandId();
+    result.setUuid(uuid.v4());
+    return result;
+  }
+}
+
+/**
  * A factory for the various requests fired from the client-side by an actor.
  */
 export class ActorRequestFactory {
@@ -191,31 +241,13 @@ export class ActorRequestFactory {
   }
 
   /**
-   * Creates a Command from the given command message.
+   * Creates a new command factory for building various commands based on configuration of this
+   * `ActorRequestFactory` instance.
    *
-   * @param {!TypedMessage} message a typed command message
-   * @return {TypedMessage<Command>} a typed representation of the Spine Command
+   * @return {CommandFactory}
    */
-  command(message) {
-    const id = ActorRequestFactory._newCommandId();
-    const messageAny = message.toAny();
-    const context = this._commandContext();
-
-    const result = new Command();
-    result.setId(id);
-    result.setMessage(messageAny);
-    result.setContext(context);
-
-    return new TypedMessage(result, COMMAND_MESSAGE_TYPE);
-  }
-
-  _commandContext() {
-    const result = new CommandContext();
-
-    const actorContext = this._actorContext();
-    result.setActorContext(actorContext);
-
-    return result;
+  command() {
+    return new CommandFactory(this);
   }
 
   _actorContext() {
@@ -250,15 +282,5 @@ export class ActorRequestFactory {
    */
   static _zoneOffsetSeconds() {
     return new Date().getTimezoneOffset() * 60;
-  }
-
-  /**
-   * @return {CommandId}
-   * @private
-   */
-  static _newCommandId() {
-    const result = new CommandId();
-    result.setUuid(uuid.v4());
-    return result;
   }
 }

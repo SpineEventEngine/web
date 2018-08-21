@@ -160,7 +160,7 @@ export class BackendClient {
     // noinspection JSCheckFunctionSignatures
     this._fetchOf(query).oneByOne().subscribe(observer);
   }
-
+  
   /**
    * Sends the provided command to the server.
    *
@@ -173,7 +173,7 @@ export class BackendClient {
    *        a callback executed if the command was rejected by Spine server
    */
   sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
-    const command = this._requestFactory.command(commandMessage);
+    const command = this._requestFactory.command().create(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
         const status = ack.status;
