@@ -21,14 +21,12 @@
 package io.spine.web.firebase;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.protobuf.Empty;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
-import io.spine.core.Status;
 import io.spine.web.query.service.AsyncQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.CancelSubscriptionResult;
@@ -40,13 +38,12 @@ import java.util.concurrent.CompletableFuture;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.client.Queries.generateId;
+import static io.spine.core.Responses.statusOk;
 
 /**
  * @author Mykhailo Drachuk
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
-
-    private final Status OK_STATUS = okStatus();
 
     private final AsyncQueryService queryService;
     private final long writeAwaitSeconds;
@@ -100,12 +97,12 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         FirebaseQueryRecord record = new FirebaseQueryRecord(path, queryResponse,
                                                              writeAwaitSeconds);
         record.storeTo(database);
-        return new FirebaseSubscriptionKeepUpResult(OK_STATUS);
+        return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 
     @Override
     public CancelSubscriptionResult cancel(Subscription subscription) {
-        return new FirebaseSubscriptionCancelResult(OK_STATUS);
+        return new FirebaseSubscriptionCancelResult(statusOk());
     }
 
     /**
@@ -115,12 +112,6 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
      */
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    private static Status okStatus() {
-        return Status.newBuilder()
-                     .setOk(Empty.getDefaultInstance())
-                     .build();
     }
 
     /**

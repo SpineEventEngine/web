@@ -22,7 +22,6 @@ package io.spine.web.firebase.given;
 
 import com.google.common.base.Joiner;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.protobuf.Empty;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.SubscriptionIdVBuilder;
@@ -34,8 +33,6 @@ import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
-import io.spine.core.Status;
-import io.spine.core.StatusVBuilder;
 import io.spine.core.TenantId;
 import io.spine.core.UserId;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -49,6 +46,7 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.core.Responses.statusOk;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -118,14 +116,8 @@ public final class FirebaseSubscriptionBridgeTestEnv {
 
     public static Response newResponse() {
         return ResponseVBuilder.newBuilder()
-                               .setStatus(okStatus())
+                               .setStatus(statusOk())
                                .build();
-    }
-
-    private static Status okStatus() {
-        return StatusVBuilder.newBuilder()
-                             .setOk(Empty.getDefaultInstance())
-                             .build();
     }
 
     public static StringWriter mockWriter(ServletResponse response) throws IOException {

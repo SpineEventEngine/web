@@ -20,15 +20,14 @@
 
 package io.spine.web.firebase.given;
 
-import com.google.protobuf.Empty;
 import io.spine.core.Response;
-import io.spine.core.Status;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static io.spine.core.Responses.statusOk;
 import static io.spine.json.Json.toCompactJson;
 import static org.mockito.Mockito.when;
 
@@ -50,16 +49,10 @@ public final class FirebaseResultTestEnv {
         return stringWriter;
     }
 
-    public static Status okStatus() {
-        return Status.newBuilder()
-                     .setOk(Empty.getDefaultInstance())
-                     .build();
-    }
-
     public static String okCancelSubscriptionResult() {
         Response response =
                 Response.newBuilder()
-                        .setStatus(okStatus())
+                        .setStatus(statusOk())
                         .build();
         return toCompactJson(response);
     }

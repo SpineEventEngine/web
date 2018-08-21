@@ -27,9 +27,9 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import static io.spine.core.Responses.statusOk;
 import static io.spine.web.firebase.given.FirebaseResultTestEnv.mockWriter;
 import static io.spine.web.firebase.given.FirebaseResultTestEnv.okCancelSubscriptionResult;
-import static io.spine.web.firebase.given.FirebaseResultTestEnv.okStatus;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -46,7 +46,7 @@ class FirebaseSubscriptionKeepUpResultTest {
         ServletResponse response = mock(ServletResponse.class);
         StringWriter writer = mockWriter(response);
 
-        FirebaseSubscriptionKeepUpResult result = new FirebaseSubscriptionKeepUpResult(okStatus());
+        FirebaseSubscriptionKeepUpResult result = new FirebaseSubscriptionKeepUpResult(statusOk());
         result.writeTo(response);
         verify(response).getWriter();
 
