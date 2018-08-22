@@ -24,6 +24,7 @@ import uuid from 'uuid';
 
 import {Timestamp} from 'spine-js-client-proto/google/protobuf/timestamp_pb';
 import {Query, QueryId} from 'spine-js-client-proto/spine/client/query_pb';
+import {Topic, TopicId} from 'spine-js-client-proto/spine/client/subscription_pb';
 import {
   EntityFilters,
   EntityId,
@@ -88,6 +89,8 @@ class QueryBuilder {
 
 /**
  * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
+ *
+ * @see ActorRequestFactory#query()
  */
 class QueryFactory {
 
@@ -160,7 +163,7 @@ class QueryFactory {
    */
   static _newQueryId() {
     const result = new QueryId();
-    result.setValue('q-' + uuid.v4());
+    result.setValue(`q-${uuid.v4()}`);
     return result;
   }
 }
@@ -216,6 +219,115 @@ class CommandFactory {
 }
 
 /**
+ * A factory of {@link Topic} instances.
+ *
+ * Uses the given {@link ActorRequestFactory} as the source of the topic meta information,
+ * such as the actor.
+ *
+ * @see ActorRequestFactory#topic()
+ */
+class TopicFactory {
+
+  /**
+   * @param {ActorRequestFactory} actorRequestFactory
+   * @constructor
+   */
+  constructor(actorRequestFactory) {
+    this._actorContext = actorRequestFactory.actorContext();
+  }
+
+  /**
+   * Creates a {@link Topic} for the entity states with the given IDs.
+   *
+   * @param {TypeUrl} typeUrl the class of a target entity
+   * @param {Message[]} ids the IDs of interest
+   * @return {Topic} the instance of {@code Topic} assembled according to the parameters
+   */
+  someOf(typeUrl, ids) {
+    const target = TopicFactory._composeTarget(typeUrl, ids, null);
+    return this._forTarget(target);
+  }
+
+  /**
+   * Creates a {@link Topic} for all of the specified entity states.
+   *
+   * @param {TypeUrl} typeUrl the class of a target entity
+   * @return {Topic} an instance of {@code Topic} assembled according to the parameters
+   */
+  allOf(typeUrl) {
+    const target = TopicFactory._composeTarget(typeUrl, null, null);
+    return this._forTarget(target);
+  }
+
+  /**
+   * Creates a {@link Topic} for the specified {@link Target}.
+   *
+   * @param {Target} target the {@code Target} to create a topic for
+   * @return {Topic} the instance of {@code Topic}
+   * @private
+   */
+  _forTarget(target) {
+    const id = TopicFactory._generateId();
+    const topic = new Topic();
+    topic.setId(id);
+    topic.setContext(this._actorContext);
+    topic.setTarget(target);
+    return topic;
+  }
+
+  static _composeTarget(typeUrl, ids, columnFilters) {
+    const includeAll = (!ids || !ids.length) && (!columnFilters || !columnFilters.length);
+
+    const filters = new EntityFilters();
+    if (!includeAll) {
+      const entityIds = TopicFactory._nullToEmpty(ids);
+      const idFilters = this._assembleIdFilters(includeAll, entityIds);
+      filters.setIdFilter(idFilters);
+    }
+    const entityColumnValues = TopicFactory._nullToEmpty(columnFilters);
+    filters.addAllFilter(entityColumnValues);
+
+    return this._newTarget(typeUrl, includeAll, filters);
+  }
+
+  static _newTarget(typeUrl, includeAll, filters) {
+    const target = new Target();
+    target.setType(typeUrl);
+    if (includeAll) {
+      target.setIncludeAll(true);
+    } else {
+      target.setFilters(filters);
+    }
+    return target;
+  }
+
+  static _assembleIdFilters(entityIds) {
+    const idFilter = new EntityIdFilter();
+    entityIds.forEach(rawId => {
+      const packedId = rawId.toAny();
+      const entityId = new EntityId();
+      entityId.setId(packedId);
+      idFilter.addIds(entityId);
+    });
+    return idFilter;
+  }
+
+  static _nullToEmpty(input) {
+    if (input == null) {
+      return [];
+    } else {
+      return input;
+    }
+  }
+
+  static _generateId() {
+    const topicId = new TopicId();
+    topicId.setValue(`t-${uuid.v4()}`);
+    return topicId;
+  }
+}
+
+/**
  * A factory for the various requests fired from the client-side by an actor.
  */
 export class ActorRequestFactory {
@@ -248,6 +360,16 @@ export class ActorRequestFactory {
    */
   command() {
     return new CommandFactory(this);
+  }
+
+  /**
+   * Creates a new topic factory for building subscription topics based on configuration of this
+   * `ActorRequestFactory` instance.
+   *
+   * @return {TopicFactory}
+   */
+  topic() {
+    return new TopicFactory(this);
   }
 
   _actorContext() {
