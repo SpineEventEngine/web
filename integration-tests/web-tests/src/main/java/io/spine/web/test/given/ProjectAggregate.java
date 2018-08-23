@@ -18,14 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
-import io.spine.server.aggregate.AggregateRepository;
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
 /**
- * A repository for the task aggregates.
+ * An aggregate that is used to create projects.
  *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-class TaskRepository extends AggregateRepository<TaskId, TaskAggregate> {
+public class ProjectAggregate extends Aggregate<ProjectId, Project, ProjectVBuilder> {
+
+    public ProjectAggregate(ProjectId id) {
+        super(id);
+    }
+
+    @Assign
+    ProjectCreated handle(CreateProject command) {
+        return ProjectCreatedVBuilder.newBuilder()
+                                     .setId(command.getId())
+                                     .build();
+    }
+
+    @Apply
+    private void on(ProjectCreated event) {
+        getBuilder().setId(event.getId());
+    }
 }

@@ -18,14 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
-import io.spine.server.aggregate.AggregateRepository;
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
 /**
- * A repository for the project aggregates.
+ * An aggregate with the state of type {@code spine.web.test.Task}.
  *
- * @author Mykhailo Drachuk
+ * @author Dmytro Dashenkov
  */
-class ProjectRepository extends AggregateRepository<ProjectId, ProjectAggregate> {
+public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
+
+    public TaskAggregate(TaskId id) {
+        super(id);
+    }
+
+    @Assign
+    TaskCreated handle(CreateTask command) {
+        return TaskCreatedVBuilder.newBuilder()
+                                  .setId(command.getId())
+                                  .setName(command.getName())
+                                  .setDescription(command.getDescription())
+                                  .build();
+    }
+
+    @Apply
+    private void on(TaskCreated event) {
+        getBuilder().setId(event.getId())
+                    .setName(event.getName())
+                    .setDescription(event.getDescription());
+    }
 }

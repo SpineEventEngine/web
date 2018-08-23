@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
 import io.spine.web.CommandServlet;
 

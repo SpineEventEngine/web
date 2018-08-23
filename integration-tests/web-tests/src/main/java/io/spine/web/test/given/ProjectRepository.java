@@ -18,26 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
-import io.spine.web.firebase.FirebaseQueryBridge;
-import io.spine.web.firebase.FirebaseQueryServlet;
-
-import javax.servlet.annotation.WebServlet;
+import io.spine.server.aggregate.AggregateRepository;
 
 /**
- * The query side endpoint of the application.
+ * A repository for the project aggregates.
  *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-@WebServlet("/query")
-@SuppressWarnings("serial")
-public class TestQueryServlet extends FirebaseQueryServlet {
-
-    public TestQueryServlet() {
-        super(FirebaseQueryBridge.newBuilder()
-                                 .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
-                                 .build());
-    }
+class ProjectRepository extends AggregateRepository<ProjectId, ProjectAggregate> {
 }
