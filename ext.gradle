@@ -18,14 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.77-SNAPSHOT'
+final def SPINE_VERSION = '0.10.78-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
     spineBaseVersion = '0.10.66-SNAPSHOT'
 
-    // Publish artifacts of this project with the same version number as Base.
-    versionToPublish = '0.10.67-SNAPSHOT'
+    versionToPublish = SPINE_VERSION;
 
     firebaseVersion = '5.9.0'
     servletApiVersion = '4.0.0'
