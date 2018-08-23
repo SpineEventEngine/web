@@ -274,7 +274,9 @@ class FirebaseFetch extends Fetch {
 
       this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
-          if (isNaN(count)) {
+          if (typeof count === 'undefined') {
+            count = 0;
+          } else if (isNaN(count)) {
             throw EndpointError.serverError('Unexpected format of `count`');
           }
           promisedCount = parseInt(count);

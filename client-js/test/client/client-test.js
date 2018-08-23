@@ -135,13 +135,23 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fetch an empty list for entity that does not get created', done => {
+  it('fetch an empty list for entity that does not get created at once', done => {
     const project = new TypeUrl('type.spine.io/spine.web.test.Project');
     backendClient.fetchAll({ofType: project}).atOnce()
       .then(data => {
         assert.ok(data.length === 0);
         done();
       }, fail(done));
+  });
+
+  it('fetch an empty list for entity that does not get created one-by-one', done => {
+    const project = new TypeUrl('type.spine.io/spine.web.test.Project');
+    backendClient.fetchAll({ofType: project}).oneByOne()
+      .subscribe({
+        next: fail(done),
+        error: fail(done),
+        complete: () => done()
+      });
   });
 
   it('fails a malformed query', done => {

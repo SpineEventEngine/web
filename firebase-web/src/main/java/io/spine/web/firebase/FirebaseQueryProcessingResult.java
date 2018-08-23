@@ -21,12 +21,15 @@
 package io.spine.web.firebase;
 
 import io.spine.web.QueryProcessingResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static io.spine.json.Json.toCompactJson;
+import static java.lang.String.format;
 
 /**
  * A result of a query processed by a {@link FirebaseQueryBridge}.
@@ -57,7 +60,19 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
                                                                            .setPath(path.toString())
                                                                            .setCount(count)
                                                                            .build();
-        response.getWriter().append(toCompactJson(queryResponse));
+        String json = toCompactJson(queryResponse);
+        log().warn(format("THE JSON: %s", json));
+        response.getWriter().append(json);
         response.setContentType(JSON_MIME_TYPE);
+    }
+
+    private static Logger log() {
+        return FirebaseQueryProcessingResult.LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(FirebaseRecord.class);
     }
 }
