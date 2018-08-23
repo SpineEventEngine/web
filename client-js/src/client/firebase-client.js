@@ -47,7 +47,7 @@ export class FirebaseClient {
    * @return {Subscription} a Subscription that can be unsubscribed
    */
   onChildAdded(path, dataCallback) {
-    return this._subscribeToChildEvent('child_added');
+    return this._subscribeToChildEvent('child_added', path, dataCallback);
   }
 
   /**
@@ -64,18 +64,6 @@ export class FirebaseClient {
     return this._subscribeToChildEvent('child_changed', path, dataCallback);
   }
 
-  _subscribeToChildEvent(childEvent, path, dataCallback) {
-    const dbRef = this._firebaseApp.database().ref(path);
-    const callback = dbRef.on(childEvent, response => {
-      const msgJson = response.val();
-      const message = JSON.parse(msgJson);
-      dataCallback(message);
-    });
-    return new Subscription(() => {
-      dbRef.off(childEvent, callback);
-    });
-  }
-
   /**
    * Subscribes to the `child_removed` events of of the node under the given path.
    *
@@ -90,6 +78,17 @@ export class FirebaseClient {
     return this._subscribeToChildEvent('child_removed', path, dataCallback);
   }
 
+  _subscribeToChildEvent(childEvent, path, dataCallback) {
+    const dbRef = this._firebaseApp.database().ref(path);
+    const callback = dbRef.on(childEvent, response => {
+      const msgJson = response.val();
+      const message = JSON.parse(msgJson);
+      dataCallback(message);
+    });
+    return new Subscription(() => {
+      dbRef.off(childEvent, callback);
+    });
+  }
 
   /**
    * Gets the value from Firebase at the provided path.
