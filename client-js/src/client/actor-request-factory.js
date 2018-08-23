@@ -285,7 +285,7 @@ class TopicFactory {
       filters.setIdFilter(idFilters);
     }
     const entityColumnValues = TopicFactory._nullToEmpty(columnFilters);
-    filters.addAllFilter(entityColumnValues);
+    filters.setFilterList(entityColumnValues);
 
     return this._newTarget(typeUrl, includeAll, filters);
   }
