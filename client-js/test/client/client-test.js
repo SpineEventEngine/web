@@ -135,6 +135,15 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
+  it('fetch an empty list for entity that does not get created', done => {
+    const project = new TypeUrl('type.spine.io/spine.web.test.Project');
+    backendClient.fetchAll({ofType: project}).atOnce()
+      .then(data => {
+        assert.ok(data.length === 0);
+        done();
+      }, fail(done));
+  });
+
   it('fails a malformed query', done => {
     const productId = randomId('spine-web-test-2-');
     const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
