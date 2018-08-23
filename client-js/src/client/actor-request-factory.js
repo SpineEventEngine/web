@@ -60,7 +60,7 @@ class QueryBuilder {
   /**
    * Makes the query to return only the object defined by the provided identifiers.
    *
-   * @param {Message|Message[]} id an entity ID or an array of entity IDs to query
+   * @param {!Message|Message[]} id an entity ID or an array of entity IDs to query
    * @return {QueryBuilder} the current builder instance
    * @throws if this method is executed more than once
    */
@@ -95,7 +95,7 @@ class QueryBuilder {
 class QueryFactory {
 
   /**
-   * @param {ActorRequestFactory} requestFactory
+   * @param {!ActorRequestFactory} requestFactory
    */
   constructor(requestFactory) {
     this._requestFactory = requestFactory;
@@ -114,8 +114,8 @@ class QueryFactory {
    *
    * If no identifiers are provided queries for all objects of the provided type.
    *
-   * @param {TypeUrl} typeUrl
-   * @param {TypedMessage[]} ids a list of entity identifier messages; an empty list is acceptable
+   * @param {!TypeUrl} typeUrl
+   * @param {!TypedMessage[]} ids a list of entity identifier messages; an empty list is acceptable
    * @return {Query} a new query
    */
   byIds(typeUrl, ids) {
@@ -141,7 +141,7 @@ class QueryFactory {
   }
 
   /**
-   * @param {Target} target a target of the query
+   * @param {!Target} target a target of the query
    * @return {Query} a new query instance
    * @private
    */
@@ -229,40 +229,40 @@ class CommandFactory {
 class TopicFactory {
 
   /**
-   * @param {ActorRequestFactory} actorRequestFactory
+   * @param {!ActorRequestFactory} actorRequestFactory
    * @constructor
    */
   constructor(actorRequestFactory) {
-    this._actorContext = actorRequestFactory.actorContext();
+    this._actorContext = actorRequestFactory._actorContext();
   }
 
   /**
    * Creates a {@link Topic} for the entity states with the given IDs.
    *
-   * @param {TypeUrl} typeUrl the class of a target entity
-   * @param {Message[]} ids the IDs of interest
+   * @param {!TypeUrl} typeUrl the class of a target entity
+   * @param {!Message[]} ids the IDs of interest
    * @return {Topic} the instance of {@code Topic} assembled according to the parameters
    */
   someOf(typeUrl, ids) {
-    const target = TopicFactory._composeTarget(typeUrl, ids, null);
+    const target = TopicFactory._composeTarget(typeUrl, ids);
     return this._forTarget(target);
   }
 
   /**
    * Creates a {@link Topic} for all of the specified entity states.
    *
-   * @param {TypeUrl} typeUrl the class of a target entity
+   * @param {!TypeUrl} typeUrl the class of a target entity
    * @return {Topic} an instance of {@code Topic} assembled according to the parameters
    */
   allOf(typeUrl) {
-    const target = TopicFactory._composeTarget(typeUrl, null, null);
+    const target = TopicFactory._composeTarget(typeUrl);
     return this._forTarget(target);
   }
 
   /**
    * Creates a {@link Topic} for the specified {@link Target}.
    *
-   * @param {Target} target the {@code Target} to create a topic for
+   * @param {!Target} target the {@code Target} to create a topic for
    * @return {Topic} the instance of {@code Topic}
    * @private
    */
