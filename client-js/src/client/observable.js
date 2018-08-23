@@ -93,14 +93,19 @@ export class Subscription {
   constructor(unsubscribe) {
     this._unsubscribe = unsubscribe;
     this._tearDownCallbacks = [];
+    this.closed = false;
   }
 
   /**
    * Unsubscribes the subscription target stopping it from receiving new values.
    */
   unsubscribe() {
-    this._tearDownCallbacks.forEach(callback => callback());
+    if (this.closed) {
+      throw "Tried to unsubscribe from closed subscription";
+    }
     this._unsubscribe();
+    this._tearDownCallbacks.forEach(callback => callback());
+    this.closed = true;
   }
 
   /**

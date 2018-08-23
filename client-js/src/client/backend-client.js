@@ -20,13 +20,13 @@
 
 "use strict";
 
-import {Observable} from './observable';
+import {Observable, Subscription} from './observable';
 import {TypedMessage, TypeUrl} from './typed-message';
-import {HttpEndpoint, EndpointError, QUERY_STRATEGY} from './http-endpoint';
+import {EndpointError, HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
-
+import {FirebaseSubscriptionService} from "./firebase-subscription-service";
 
 /**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
@@ -35,6 +35,7 @@ import {ActorRequestFactory} from './actor-request-factory';
  * Fetch is a static member of the `BackendClient`.
  *
  * @template <T>
+ * @abstract
  */
 class Fetch {
 
@@ -91,6 +92,8 @@ class Fetch {
  * Backend client defines operations that client is able to perform (`.fetchAll(...)`,
  * `.sendCommand(...)`, etc.), also providing factory methods for creating Backend Client
  * instances (`.usingFirebase(...)`).
+ *
+ * @abstract
  */
 export class BackendClient {
 
@@ -160,7 +163,7 @@ export class BackendClient {
     // noinspection JSCheckFunctionSignatures
     this._fetchOf(query).oneByOne().subscribe(observer);
   }
-  
+
   /**
    * Sends the provided command to the server.
    *
@@ -188,6 +191,30 @@ export class BackendClient {
   }
 
   /**
+   *
+   *
+   * @param typeUrl
+   * @param ids
+   * @param id
+   * @return {Promise<Object>}
+   */
+  subscribeToEntities({ofType: typeUrl, withIds: ids, withId: id}) {
+    if (typeof ids !== 'undefined' && typeof id !== "undefined") {
+      throw "You can specify only one of ids or id as a parameter to subscribeToEntities";
+    }
+    if (id !== undefined) {
+      ids = [id];
+    }
+    let topic;
+    if (ids) {
+      topic = this._requestFactory.topic().allOf(typeUrl);
+    } else {
+      topic = this._requestFactory.topic().someOf(typeUrl, ids);
+    }
+    return this._subscribeToTopic(topic);
+  }
+
+  /**
    * A static factory method that creates a new `BackendClient` instance using Firebase as
    * underlying implementation.
    *
@@ -204,8 +231,9 @@ export class BackendClient {
     const endpoint = new HttpEndpoint(httpClient);
     const firebaseClient = new FirebaseClient(firebaseApp);
     const requestFactory = new ActorRequestFactory(actor);
+    const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
-    return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory)
+    return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory, subscriptionService);
   }
 
   /**
@@ -218,6 +246,17 @@ export class BackendClient {
    * @abstract
    */
   _fetchOf(query) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   *
+   * @param topic
+   * @return {undefined}
+   * @private
+   * @abstract
+   */
+  _subscribeToTopic(topic) {
     throw 'Not implemented in abstract base.';
   }
 }
@@ -310,6 +349,30 @@ class FirebaseFetch extends Fetch {
   }
 }
 
+class EntitySubscription extends Subscription {
+
+  constructor({unsubscribedBy: unsubscribe, 
+                withObservables: observables, 
+                forSubscription: subscription}) {
+    super(unsubscribe);
+    this.itemAdded = observables.add;
+    this.itemChanged = observables.change;
+    this.itemRemoved = observables.remove;
+    this._subscription = subscription;
+  }
+
+  /**
+   * @return {spine.client.Subscription}
+   */
+  internal() {
+    return this._subscription;
+  }
+  
+  id() {
+    return this.internal().getId().getValue();
+  }
+}
+
 /**
  *
  * An implementation of a client connecting to the application backend retrieving data
@@ -323,10 +386,12 @@ class FirebaseBackendClient extends BackendClient {
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
    * @param {!FirebaseClient} firebaseClient the client to read the query results from
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
+   * @param {!FirebaseSubscriptionService} subscriptionService a service handling the subscriptions
    */
-  constructor(endpoint, firebaseClient, actorRequestFactory) {
+  constructor(endpoint, firebaseClient, actorRequestFactory, subscriptionService) {
     super(endpoint, actorRequestFactory);
     this._firebase = firebaseClient;
+    this._subscriptionService = subscriptionService;
   }
 
   /**
@@ -337,6 +402,52 @@ class FirebaseBackendClient extends BackendClient {
   _fetchOf(query) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.
     return new FirebaseBackendClient.Fetch({of: query, using: this});
+  }
+
+  _subscribeToTopic(topic) {
+    return new Promise((resolve, reject) => {
+      this._endpoint.subscribeTo(topic)
+        .then(subscription => {
+          const path = subscription.id.value;
+          const subscriptions = {add: null, remove: null, change: null};
+          const add = new Observable((observer) => {
+            subscriptions.add = this._firebase.onChildAdded(path, value => {
+              observer.next(value);
+            });
+          });
+          const change = new Observable((observer) => {
+            subscriptions.change = this._firebase.onChildChanged(path, value => {
+              observer.next(value);
+            });
+          });
+          const remove = new Observable((observer) => {
+            subscriptions.remove = this._firebase.onChildRemoved(path, value => {
+              observer.next(value);
+            });
+          });
+          const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
+          const entitySubscription = new EntitySubscription({
+            unsubscribedBy: () => FirebaseBackendClient._firebaseSubscriptionTearDown(),
+            withObservables: {add, change, remove},
+            forSubscription: subscriptionProto
+          });
+          resolve(entitySubscription);
+          this._subscriptionService.add(entitySubscription);
+        })
+        .catch(reject);
+    });
+  }
+
+  static _firebaseSubscriptionTearDown(subscriptions) {
+    if (!subscriptions.add.closed) {
+      subscriptions.add.unsubscribe();
+    }
+    if (!subscriptions.remove.closed) {
+      subscriptions.remove.unsubscribe();
+    }
+    if (!subscriptions.change.closed) {
+      subscriptions.change.unsubscribe();
+    }
   }
 }
 

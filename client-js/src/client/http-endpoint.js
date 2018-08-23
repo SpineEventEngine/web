@@ -27,6 +27,7 @@ import {WebQuery} from 'spine-js-client-proto/spine/web/web_query_pb';
  * @type {TypeUrl}
  */
 const WEB_QUERY_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.WebQuery');
+const SUBSCRIPTION_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.client.Subscription');
 
 /**
  * An error which occurred when sending off a request to Spine server endpoint.
@@ -113,6 +114,42 @@ class Endpoint {
   }
 
   /**
+   * Sends off a request to subscribe to a provided topic to an endpoint.
+   *
+   * @param {!Topic} topic a topic for which a subscription is created
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  subscribeTo(topic) {
+    const typedTopic = new TypedMessage(topic, new TypeUrl('type.spine.io/spine.client.Topic'));
+    return this._subscribeTo(typedTopic);
+  }
+
+  /**
+   * Sends off a request to keep a subscription, stopping it from being closed by server.
+   *
+   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  keepUpSubscription(subscription) {
+    const typedSubscription = new TypedMessage(subscription, SUBSCRIPTION_MESSAGE_TYPE);
+    return this._keepUp(typedSubscription);
+  }
+
+  /**
+   * Sends off a request to cancel an existing subscription.
+   *
+   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  cancelSubscription(subscription) {
+    const typedSubscription = new TypedMessage(subscription, SUBSCRIPTION_MESSAGE_TYPE);
+    return this._cancel(typedSubscription);
+  }
+
+  /**
    * Builds a new WebQuery from Query and client delivery strategy.
    *
    * @param {!Query} of a Query to be executed by Spine server
@@ -147,13 +184,46 @@ class Endpoint {
   _performQuery(query) {
     throw 'Not implemented in abstract base.';
   }
+
+  /**
+   * @param {!TypedMessage<Topic>} topic a topic to create a subscription for
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _subscribeTo(topic) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to keep alive
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _keepUp(subscription) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _cancel(subscription) {
+    throw 'Not implemented in abstract base.';
+  }
 }
 
 /**
- * Spine HTTP endpoint which is used to send off Commands and Queries using 
+ * Spine HTTP endpoint which is used to send off Commands and Queries using
  * the provided HTTP client.
  */
-export class HttpEndpoint extends Endpoint{
+export class HttpEndpoint extends Endpoint {
 
   /**
    * @param {!HttpClient} httpClient a client sending requests to server
@@ -191,7 +261,42 @@ export class HttpEndpoint extends Endpoint{
       .postMessage('/query', webQuery)
       .then(HttpEndpoint._jsonOrRejection);
   }
-  
+
+  /**
+   * Sends off a request to create a subscription for a topic.
+   *
+   * @param {!TypedMessage<Topic>} topic a topic to subscribe to
+   * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
+   *                             the client response is not 2xx
+   * @protected
+   */
+  _subscribeTo(topic) {
+    return this._httpClient
+      .postMessage('/subscription/create', topic)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
+  /**
+   * Sends off a request to create a subscription for a topic.
+   *
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented 
+ *                                                                  from being closed by server
+   * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
+   *                             the client response is not 2xx
+   * @protected
+   */
+  _keepUp(subscription) {
+    return this._httpClient
+      .postMessage('/subscription/keep-up', subscription)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
+  _cancel(subscription) {
+    return this._httpClient
+      .postMessage('/subscription/cancel', subscription)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
   /**
    * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
    *

@@ -115,7 +115,7 @@ class QueryFactory {
    * If no identifiers are provided queries for all objects of the provided type.
    *
    * @param {TypeUrl} typeUrl
-   * @param {Message[]} ids a list of entity identifier messages; an empty list is acceptable
+   * @param {TypedMessage[]} ids a list of entity identifier messages; an empty list is acceptable
    * @return {Query} a new query
    */
   byIds(typeUrl, ids) {
