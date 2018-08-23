@@ -200,7 +200,7 @@ export class BackendClient {
    * @param {!TypeUrl} typeUrl
    * @param {?Message[]} ids
    * @param {?Message} id
-   * @return {Promise<Object>}
+   * @return {Promise<{itemAdded: Observable<Object>, itemChanged: Observable<Object>, itemRemoved: Observable<Object>, unsubscribe: voidCallback}>}
    */
   subscribeToEntities({ofType: typeUrl, withIds: ids, withId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== "undefined") {
