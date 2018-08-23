@@ -27,6 +27,10 @@ import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from "./firebase-subscription-service";
+import {
+  Subscription as SpineSubscription,
+  SubscriptionId
+} from "spine-js-client-proto/spine/client/subscription_pb";
 
 /**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
@@ -193,9 +197,9 @@ export class BackendClient {
   /**
    *
    *
-   * @param typeUrl
-   * @param ids
-   * @param id
+   * @param {!TypeUrl} typeUrl
+   * @param {?Message[]} ids
+   * @param {?Message} id
    * @return {Promise<Object>}
    */
   subscribeToEntities({ofType: typeUrl, withIds: ids, withId: id}) {
@@ -251,8 +255,8 @@ export class BackendClient {
 
   /**
    *
-   * @param topic
-   * @return {undefined}
+   * @param {!Topic} topic
+   * @return {Promise<Object>}
    * @private
    * @abstract
    */
@@ -351,9 +355,11 @@ class FirebaseFetch extends Fetch {
 
 class EntitySubscription extends Subscription {
 
-  constructor({unsubscribedBy: unsubscribe, 
-                withObservables: observables, 
-                forSubscription: subscription}) {
+  constructor({
+                unsubscribedBy: unsubscribe,
+                withObservables: observables,
+                forSubscription: subscription
+              }) {
     super(unsubscribe);
     this.itemAdded = observables.add;
     this.itemChanged = observables.change;
@@ -367,7 +373,7 @@ class EntitySubscription extends Subscription {
   internal() {
     return this._subscription;
   }
-  
+
   id() {
     return this.internal().getId().getValue();
   }
@@ -448,6 +454,15 @@ class FirebaseBackendClient extends BackendClient {
     if (!subscriptions.change.closed) {
       subscriptions.change.unsubscribe();
     }
+  }
+
+  static subscriptionProto(path, topic) {
+    const subscription = new SpineSubscription();
+    const id = new SubscriptionId();
+    id.setValue(path);
+    subscription.setId(id);
+    subscription.setTopic(topic);
+    return subscription;
   }
 }
 
