@@ -60,9 +60,7 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
                                                                            .setPath(path.toString())
                                                                            .setCount(count)
                                                                            .build();
-        String json = toCompactJson(queryResponse);
-        log().warn(format("THE JSON: %s", json));
-        response.getWriter().append(json);
+        response.getWriter().append(toCompactJson(queryResponse));
         response.setContentType(JSON_MIME_TYPE);
     }
 

@@ -100,9 +100,7 @@ final class FirebaseRecord {
     long getCount() {
         CountConsumer countConsumer = new CountConsumer();
         queryResponse.thenAccept(countConsumer);
-        long value = countConsumer.getValue();
-        log().warn(format("THE COUNT: %s", value));
-        return value;
+        return countConsumer.getValue();
     }
 
     /**
