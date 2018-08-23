@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// noinspection NodeJsCodingAssistanceForCoreModules
 import assert from 'assert';
 
 import {devFirebaseApp} from './test-firebase-app';
@@ -61,9 +60,7 @@ function newBackendClient() {
 
 function fail(done) {
   return error => {
-    console.error(error);
-    assert.ok(false);
-    done();
+    done(new Error(`Test failed. Cause: ${error ? JSON.stringify(error) : 'not identified'}`));
   };
 }
 
@@ -164,21 +161,38 @@ describe('Client should', function () {
 
     }, fail(done), fail(done));
   });
-  
+
   it('subscribes to entity changes', done => {
     const malformedId = randomId(null);
-
+    let count = 0;
     const taskType = new TypeUrl('type.spine.io/spine.web.test.Task');
     backendClient.subscribeToEntities({ofType: taskType})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
-        done(new Error('Unexpected result received'));
+        itemAdded.subscribe({
+          next: item => {
+            count++;
+            if (count === 3) {
+              done();
+            }
+          }
+        });
+        itemRemoved.subscribe({next: fail(done)});
+        itemChanged.subscribe({next: fail(done)});
       })
-      .catch(error => {
-        assert.ok(true);
-        done();
-      });
+      .catch(fail(done));
+    const noop = () => {
+    };
+    const productId1 = randomId('spine-web-test-subscribe-');
+    const command1 = createTaskCommand(productId1, 'Run tests', 'client-js has tests; run\'em');
+    backendClient.sendCommand(command1, noop, noop, noop);
+    const productId2 = randomId('spine-web-test-subscribe-');
+    const command2 = createTaskCommand(productId2, 'Run tests', 'client-js has tests; run\'em');
+    backendClient.sendCommand(command2, noop, noop, noop);
+    const productId3 = randomId('spine-web-test-subscribe-');
+    const command3 = createTaskCommand(productId3, 'Run tests', 'client-js has tests; run\'em');
+    backendClient.sendCommand(command3, noop, noop, noop);
   });
-  
+
   it('fails a malformed subscription', done => {
     const malformedType = new TypeUrl('type.spine.io/malformed');
     backendClient.subscribeToEntities({ofType: malformedType})
