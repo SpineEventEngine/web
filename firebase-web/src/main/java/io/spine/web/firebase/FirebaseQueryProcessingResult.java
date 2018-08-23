@@ -63,14 +63,4 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
         response.getWriter().append(toCompactJson(queryResponse));
         response.setContentType(JSON_MIME_TYPE);
     }
-
-    private static Logger log() {
-        return FirebaseQueryProcessingResult.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FirebaseRecord.class);
-    }
 }
