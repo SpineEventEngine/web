@@ -283,12 +283,14 @@ class FirebaseFetch extends Fetch {
           return path;
         })
         .then(path => {
+          if (receivedCount === promisedCount) {
+            FirebaseFetch._complete(observer, dbSubscription);
+          }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
             observer.next(value);
             receivedCount++;
             if (receivedCount === promisedCount) {
-              observer.complete();
-              dbSubscription.unsubscribe();
+              FirebaseFetch._complete(observer, dbSubscription);
             }
           });
         })
@@ -302,6 +304,11 @@ class FirebaseFetch extends Fetch {
       };
     });
   }
+  
+  static _complete(observer, dbSubscription) {
+    observer.complete();
+    dbSubscription.unsubscribe();
+  };
 
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
