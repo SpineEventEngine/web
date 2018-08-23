@@ -292,7 +292,7 @@ class TopicFactory {
 
   static _newTarget(typeUrl, includeAll, filters) {
     const target = new Target();
-    target.setType(typeUrl);
+    target.setType(typeUrl.value);
     if (includeAll) {
       target.setIncludeAll(true);
     } else {
