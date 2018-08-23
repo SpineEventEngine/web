@@ -26,13 +26,14 @@ import {TypedMessage, TypeUrl} from '../../src/client/typed-message';
 
 import {CreateTask} from '../../proto/test/js/spine/web/test/commands_pb';
 import {TaskId} from '../../proto/test/js/spine/web/test/task_pb';
+import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {BackendClient} from '../../src/client/backend-client';
 
 const MILLISECONDS = 1;
 const SECONDS = 1000 * MILLISECONDS;
 const MINUTES = 60 * SECONDS;
 
-function creteTaskCommand(id, name, description) {
+function createTaskCommand(id, name, description) {
   const command = new CreateTask();
   command.setId(id);
   command.setName(name);
@@ -75,7 +76,7 @@ describe('Client should', function () {
 
   it('send commands successfully', done => {
     const productId = randomId('spine-web-test-1-');
-    const command = creteTaskCommand(productId, 'Write tests', 'client-js needs tests; write\'em');
+    const command = createTaskCommand(productId, 'Write tests', 'client-js needs tests; write\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -92,9 +93,21 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
+  it('fails a malformed command', done => {
+    const malformedId = randomId(null);
+    const command = createTaskCommand(malformedId, 'Run tests', 'client-js has tests; run\'em');
+
+    backendClient.sendCommand(command, fail(done), error => {
+      assert.equal(error.code, 2);
+      assert.equal(error.type, 'spine.core.CommandValidationError');
+      assert.ok(error.validationError);
+      done();
+    }, fail(done));
+  });
+
   it('fetch all the existing entities of given type one by one', done => {
     const productId = randomId('spine-web-test-2-');
-    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
+    const command = createTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -120,7 +133,7 @@ describe('Client should', function () {
 
   it('fetch all the existing entities of given type at once', done => {
     const productId = randomId('spine-web-test-2-');
-    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
+    const command = createTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -137,7 +150,7 @@ describe('Client should', function () {
 
   it('fails a malformed query', done => {
     const productId = randomId('spine-web-test-2-');
-    const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
+    const command = createTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
@@ -151,16 +164,30 @@ describe('Client should', function () {
 
     }, fail(done), fail(done));
   });
-
-  it('fails a malformed command', done => {
+  
+  it('subscribes to entity changes', done => {
     const malformedId = randomId(null);
-    const command = creteTaskCommand(malformedId, 'Run tests', 'client-js has tests; run\'em');
 
-    backendClient.sendCommand(command, fail(done), error => {
-      assert.equal(error.code, 2);
-      assert.equal(error.type, 'spine.core.CommandValidationError');
-      assert.ok(error.validationError);
-      done();
-    }, fail(done));
+    const taskType = new TypeUrl('type.spine.io/spine.web.test.Task');
+    backendClient.subscribeToEntities({ofType: taskType})
+      .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        done(new Error('Unexpected result received'));
+      })
+      .catch(error => {
+        assert.ok(true);
+        done();
+      });
+  });
+  
+  it('fails a malformed subscription', done => {
+    const malformedType = new TypeUrl('type.spine.io/malformed');
+    backendClient.subscribeToEntities({ofType: malformedType})
+      .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        done(new Error('Unexpected result received'));
+      })
+      .catch(error => {
+        assert.ok(true);
+        done();
+      });
   });
 });
