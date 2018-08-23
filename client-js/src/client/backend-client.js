@@ -304,7 +304,7 @@ class FirebaseFetch extends Fetch {
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
       this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._backend._firebase.getValue(path, resolve))
+        .then(({path}) => this._backend._firebase.getValueList(path, resolve))
         .catch(error => reject(error));
     });
   }
