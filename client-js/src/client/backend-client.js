@@ -323,7 +323,7 @@ class FirebaseFetch extends Fetch {
       dbSubscription.unsubscribe();
     }
     observer.complete();
-  };
+  }
 
   /**
    * Executes a request to fetch many values from Firebase as an array of objects.
