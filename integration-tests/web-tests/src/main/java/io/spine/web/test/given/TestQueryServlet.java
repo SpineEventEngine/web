@@ -18,22 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
-import io.spine.web.command.CommandServlet;
+import io.spine.web.firebase.FirebaseQueryBridge;
+import io.spine.web.firebase.FirebaseQueryServlet;
 
 import javax.servlet.annotation.WebServlet;
 
 /**
- * The command side endpoint of the application.
+ * The query side endpoint of the application.
  *
  * @author Dmytro Dashenkov
  */
-@WebServlet("/command")
+@WebServlet("/query")
 @SuppressWarnings("serial")
-public final class TestCommandServlet extends CommandServlet {
+public class TestQueryServlet extends FirebaseQueryServlet {
 
-    public TestCommandServlet() {
-        super(Server.application().getCommandService());
+    public TestQueryServlet() {
+        super(FirebaseQueryBridge.newBuilder()
+                                 .setQueryService(Server.application().getQueryService())
+                                 .setDatabase(FirebaseClient.database())
+                                 .build());
     }
 }

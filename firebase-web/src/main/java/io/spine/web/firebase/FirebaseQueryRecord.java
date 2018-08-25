@@ -91,7 +91,7 @@ final class FirebaseQueryRecord {
     /**
      * Writes this record to the given {@link FirebaseDatabase} in a single transaction
      * (i.e. in a single batch).
-     * 
+     *
      * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
      */
     void storeTransactionallyTo(FirebaseDatabase database) {
@@ -104,7 +104,7 @@ final class FirebaseQueryRecord {
      *
      * @return an integer number of records
      */
-    int getCount() {
+    long getCount() {
         CountConsumer countConsumer = new CountConsumer();
         queryResponse.thenAccept(countConsumer);
         return countConsumer.getValue();
@@ -115,7 +115,7 @@ final class FirebaseQueryRecord {
      */
     private static class CountConsumer implements Consumer<QueryResponse> {
 
-        private int value;
+        private long value;
 
         @Override
         public void accept(QueryResponse response) {
@@ -125,7 +125,7 @@ final class FirebaseQueryRecord {
         /**
          * @return the count of messages in the consumed response
          */
-        public int getValue() {
+        public long getValue() {
             return value;
         }
     }

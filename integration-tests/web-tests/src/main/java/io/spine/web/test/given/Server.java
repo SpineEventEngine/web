@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
@@ -57,6 +57,7 @@ final class Server {
                               .setStorageFactorySupplier(() -> storageFactory)
                               .build();
         boundedContext.register(new TaskRepository());
+        boundedContext.register(new ProjectRepository());
         Application app = Application.create(boundedContext);
         return app;
     }

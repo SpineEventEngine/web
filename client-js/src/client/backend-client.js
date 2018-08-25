@@ -308,6 +308,12 @@ class FirebaseFetch extends Fetch {
     return this._fetchManyAtOnce();
   }
 
+  /**
+   * Executes a request to fetch many values from Firebase one-by-one.
+   *
+   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   *                              that be rejected with an `EndpointError`
+   */
   _fetchManyOneByOne() {
     return new Observable(observer => {
 
@@ -317,19 +323,23 @@ class FirebaseFetch extends Fetch {
 
       this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
-          if (isNaN(count)) {
+          if (typeof count === 'undefined') {
+            count = 0;
+          } else if (isNaN(count)) {
             throw EndpointError.serverError('Unexpected format of `count`');
           }
           promisedCount = parseInt(count);
           return path;
         })
         .then(path => {
+          if (receivedCount === promisedCount) {
+            FirebaseFetch._complete(observer);
+          }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
             observer.next(value);
             receivedCount++;
             if (receivedCount === promisedCount) {
-              observer.complete();
-              dbSubscription.unsubscribe();
+              FirebaseFetch._complete(observer, dbSubscription);
             }
           });
         })
@@ -344,10 +354,30 @@ class FirebaseFetch extends Fetch {
     });
   }
 
+  /**
+   * A method completing an observer unsubscribing the Firebase subscriptions
+   *
+   * @param {!Observer} observer an observer that resolves query values
+   * @param {?Subscription} dbSubscription a Firebase subscription
+   * @private
+   */
+  static _complete(observer, dbSubscription) {
+    if (dbSubscription) {
+      dbSubscription.unsubscribe();
+    }
+    observer.complete();
+  }
+
+  /**
+   * Executes a request to fetch many values from Firebase as an array of objects.
+   *
+   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   *                              that be rejected with an `EndpointError`
+   */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
       this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._backend._firebase.getValue(path, resolve))
+        .then(({path}) => this._backend._firebase.getValues(path, resolve))
         .catch(error => reject(error));
     });
   }
