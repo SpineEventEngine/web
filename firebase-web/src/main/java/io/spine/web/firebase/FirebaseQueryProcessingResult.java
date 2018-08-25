@@ -21,15 +21,12 @@
 package io.spine.web.firebase;
 
 import io.spine.web.QueryProcessingResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static io.spine.json.Json.toCompactJson;
-import static java.lang.String.format;
 
 /**
  * A result of a query processed by a {@link FirebaseQueryBridge}.
