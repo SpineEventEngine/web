@@ -290,7 +290,7 @@ class FirebaseFetch extends Fetch {
         })
         .then(path => {
           if (receivedCount === promisedCount) {
-            FirebaseFetch._complete(observer, dbSubscription);
+            FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
             observer.next(value);
@@ -314,12 +314,14 @@ class FirebaseFetch extends Fetch {
   /**
    * A method completing an observer unsubscribing the Firebase subscriptions
    *
-   * @param {Observer} observer an observer that resolves query values
-   * @param {Subscription} dbSubscription a Firebase subscription
+   * @param {!Observer} observer an observer that resolves query values
+   * @param {?Subscription} dbSubscription a Firebase subscription
    * @private
    */
   static _complete(observer, dbSubscription) {
-    dbSubscription.unsubscribe();
+    if (dbSubscription) {
+      dbSubscription.unsubscribe();
+    }
     observer.complete();
   };
 
