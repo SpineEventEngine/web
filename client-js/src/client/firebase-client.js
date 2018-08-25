@@ -59,16 +59,19 @@ export class FirebaseClient {
   }
 
   /**
-   * Gets the value from Firebase at the provided path. 
+   * Gets an array of values from Firebase at the provided path. 
    *
    * @param {!string} path the path to the node to get value from
    * @param {!consumerCallback<Object[]>} dataCallback a callback which is invoked with an array of 
    *                                                   entities at path
    */
-  getValue(path, dataCallback) {
+  getValues(path, dataCallback) {
     const dbRef = this._firebaseApp.database().ref(path);
     dbRef.once('value', response => {
       const data = response.val(); // an Object mapping Firebase ids to objects is returned
+      if (data == null) {
+        return dataCallback([]);
+      }
       const objectStrings = Object.values(data);
       const items = objectStrings.map(item => JSON.parse(item));
       dataCallback(items);

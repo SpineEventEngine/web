@@ -18,14 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.78-SNAPSHOT'
+package io.spine.web.test.given;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = '0.10.66-SNAPSHOT'
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
-    versionToPublish = '0.10.79-SNAPSHOT';
+/**
+ * An aggregate that is used to create projects.
+ *
+ * @author Mykhailo Drachuk
+ */
+public class ProjectAggregate extends Aggregate<ProjectId, Project, ProjectVBuilder> {
 
-    firebaseVersion = '5.9.0'
-    servletApiVersion = '4.0.0'
+    public ProjectAggregate(ProjectId id) {
+        super(id);
+    }
+
+    @Assign
+    ProjectCreated handle(CreateProject command) {
+        return ProjectCreatedVBuilder.newBuilder()
+                                     .setId(command.getId())
+                                     .build();
+    }
+
+    @Apply
+    private void on(ProjectCreated event) {
+        getBuilder().setId(event.getId());
+    }
 }

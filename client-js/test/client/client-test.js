@@ -24,13 +24,18 @@ import assert from 'assert';
 import {devFirebaseApp} from './test-firebase-app';
 import {TypedMessage, TypeUrl} from '../../src/client/typed-message';
 
-import {CreateTask} from '../../proto/test/js/spine/web/test/commands_pb';
-import {TaskId} from '../../proto/test/js/spine/web/test/task_pb';
+import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
+import {TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
 import {BackendClient} from '../../src/client/backend-client';
 
 const MILLISECONDS = 1;
 const SECONDS = 1000 * MILLISECONDS;
 const MINUTES = 60 * SECONDS;
+
+const PROJECT_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.test.given.Project');
+const CREATE_TASK_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.test.given.CreateTask');
+const TASK_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.test.given.Task');
+const TASK_ID_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.test.given.TaskId');
 
 function creteTaskCommand(id, name, description) {
   const command = new CreateTask();
@@ -38,9 +43,7 @@ function creteTaskCommand(id, name, description) {
   command.setName(name);
   command.setDescription(description);
 
-  const commandType = new TypeUrl('type.spine.io/spine.web.test.CreateTask');
-
-  return new TypedMessage(command, commandType);
+  return new TypedMessage(command, CREATE_TASK_MESSAGE_TYPE);
 }
 
 function randomId(prefix) {
@@ -74,16 +77,14 @@ describe('Client should', function () {
   this.timeout(2 * MINUTES);
 
   it('send commands successfully', done => {
-    const productId = randomId('spine-web-test-1-');
+    const productId = randomId('spine-web-test-send-command-');
     const command = creteTaskCommand(productId, 'Write tests', 'client-js needs tests; write\'em');
 
     backendClient.sendCommand(command, () => {
 
-      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
-      const idType = new TypeUrl('type.spine.io/spine.web.test.TaskId');
-      const typedId = new TypedMessage(productId, idType);
+      const typedId = new TypedMessage(productId, TASK_ID_MESSAGE_TYPE);
 
-      backendClient.fetchById(type, typedId, data => {
+      backendClient.fetchById(TASK_MESSAGE_TYPE, typedId, data => {
         assert.equal(data.name, command.message.getName());
         assert.equal(data.description, command.message.getDescription());
         done();
@@ -93,15 +94,14 @@ describe('Client should', function () {
   });
 
   it('fetch all the existing entities of given type one by one', done => {
-    const productId = randomId('spine-web-test-2-');
+    const productId = randomId('spine-web-test-one-by-one-');
     const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
       let itemFound = false;
-      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
 
-      backendClient.fetchAll({ofType: type}).oneByOne().subscribe({
+      backendClient.fetchAll({ofType: TASK_MESSAGE_TYPE}).oneByOne().subscribe({
         next(data) {
           // Ordering is not guaranteed by fetch and 
           // the list of entities cannot be cleaned for tests,
@@ -119,12 +119,12 @@ describe('Client should', function () {
   });
 
   it('fetch all the existing entities of given type at once', done => {
-    const productId = randomId('spine-web-test-2-');
+    const productId = randomId('spine-web-test-at-once-');
     const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {
 
-      const type = new TypeUrl('type.spine.io/spine.web.test.Task');
+      const type = new TypeUrl('type.spine.io/spine.web.test.given.Task');
       backendClient.fetchAll({ofType: type}).atOnce()
         .then(data => {
           const targetObject = data.find(item => item.id.value === productId.getValue());
@@ -135,8 +135,25 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
+  it('fetch an empty list for entity that does not get created at once', done => {
+    backendClient.fetchAll({ofType: PROJECT_MESSAGE_TYPE}).atOnce()
+      .then(data => {
+        assert.ok(data.length === 0);
+        done();
+      }, fail(done));
+  });
+
+  it('fetch an empty list for entity that does not get created one-by-one', done => {
+    backendClient.fetchAll({ofType: PROJECT_MESSAGE_TYPE}).oneByOne()
+      .subscribe({
+        next: fail(done),
+        error: fail(done),
+        complete: () => done()
+      });
+  });
+
   it('fails a malformed query', done => {
-    const productId = randomId('spine-web-test-2-');
+    const productId = randomId('spine-web-test-malformed-query-');
     const command = creteTaskCommand(productId, 'Run tests', 'client-js has tests; run\'em');
 
     backendClient.sendCommand(command, () => {

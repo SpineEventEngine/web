@@ -18,14 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.78-SNAPSHOT'
+package io.spine.web.test.given;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = '0.10.66-SNAPSHOT'
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
-    versionToPublish = '0.10.79-SNAPSHOT';
+/**
+ * An aggregate with the state of type {@code spine.web.test.Task}.
+ *
+ * @author Dmytro Dashenkov
+ */
+public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
-    firebaseVersion = '5.9.0'
-    servletApiVersion = '4.0.0'
+    public TaskAggregate(TaskId id) {
+        super(id);
+    }
+
+    @Assign
+    TaskCreated handle(CreateTask command) {
+        return TaskCreatedVBuilder.newBuilder()
+                                  .setId(command.getId())
+                                  .setName(command.getName())
+                                  .setDescription(command.getDescription())
+                                  .build();
+    }
+
+    @Apply
+    private void on(TaskCreated event) {
+        getBuilder().setId(event.getId())
+                    .setName(event.getName())
+                    .setDescription(event.getDescription());
+    }
 }

@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
 import io.spine.server.aggregate.AggregateRepository;
 
 /**
- * A repository for the task aggregates.
+ * A repository for the project aggregates.
  *
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
-class TaskRepository extends AggregateRepository<TaskId, TaskAggregate> {
+class ProjectRepository extends AggregateRepository<ProjectId, ProjectAggregate> {
 }
