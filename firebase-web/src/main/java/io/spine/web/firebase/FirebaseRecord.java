@@ -39,7 +39,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
@@ -84,7 +83,7 @@ final class FirebaseRecord {
     /**
      * Writes this record to the given {@link FirebaseDatabase} in a single transaction
      * (i.e. in a single batch).
-     * 
+     *
      * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
      */
     void storeTransactionallyTo(FirebaseDatabase database) {
