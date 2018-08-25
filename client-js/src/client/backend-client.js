@@ -22,7 +22,7 @@
 
 import {Observable} from './observable';
 import {TypedMessage, TypeUrl} from './typed-message';
-import {HttpEndpoint, EndpointError, QUERY_STRATEGY} from './http-endpoint';
+import {EndpointError, HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -265,6 +265,12 @@ class FirebaseFetch extends Fetch {
     return this._fetchManyAtOnce();
   }
 
+  /**
+   * Executes a request to fetch many values from Firebase one-by-one.
+   *
+   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   *                              that be rejected with an `EndpointError`
+   */
   _fetchManyOneByOne() {
     return new Observable(observer => {
 
@@ -304,12 +310,25 @@ class FirebaseFetch extends Fetch {
       };
     });
   }
-  
+
+  /**
+   * A method completing an observer unsubscribing the Firebase subscriptions
+   *
+   * @param {Observer} observer an observer that resolves query values
+   * @param {Subscription} dbSubscription a Firebase subscription
+   * @private
+   */
   static _complete(observer, dbSubscription) {
-    observer.complete();
     dbSubscription.unsubscribe();
+    observer.complete();
   };
 
+  /**
+   * Executes a request to fetch many values from Firebase as an array of objects.
+   *
+   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   *                              that be rejected with an `EndpointError`
+   */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
       this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
