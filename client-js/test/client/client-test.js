@@ -182,8 +182,7 @@ describe('Client should', function () {
   it('subscribes to entity changes', done => {
     const malformedId = randomId(null);
     let count = 0;
-    const taskType = new TypeUrl('type.spine.io/spine.web.test.Task');
-    backendClient.subscribeToEntities({ofType: taskType})
+    backendClient.subscribeToEntities({ofType: TASK_MESSAGE_TYPE})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {

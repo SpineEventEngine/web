@@ -18,26 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
 import io.spine.web.firebase.FirebaseSubscriptionBridge;
-import io.spine.web.firebase.FirebaseSubscriptionCancelServlet;
+import io.spine.web.firebase.FirebaseSubscriptionKeepUpServlet;
 
 import javax.servlet.annotation.WebServlet;
 
-import static io.spine.web.test.FirebaseClient.database;
-import static io.spine.web.test.Server.application;
+import static io.spine.web.test.given.FirebaseClient.database;
+import static io.spine.web.test.given.Server.application;
 
 /**
- * An endpoint canceling the client entity change subscriptions.
+ * An endpoint for client requests to keep subscription running.
  *
  * @author Drachuk Mykhailo
  */
-@WebServlet("/subscription/cancel")
+@WebServlet("/subscription/keep-up")
 @SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelServlet {
+public class TestSubscriptionKeepUpServlet extends FirebaseSubscriptionKeepUpServlet {
 
-    public TestSubscriptionCancelServlet() {
+    public TestSubscriptionKeepUpServlet() {
         super(FirebaseSubscriptionBridge.newBuilder()
                                         .setQueryService(application().getQueryService())
                                         .setDatabase(database())

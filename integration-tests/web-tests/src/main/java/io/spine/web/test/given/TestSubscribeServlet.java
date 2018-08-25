@@ -18,15 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test;
+package io.spine.web.test.given;
 
 import io.spine.web.firebase.FirebaseSubscribeServlet;
 import io.spine.web.firebase.FirebaseSubscriptionBridge;
 
 import javax.servlet.annotation.WebServlet;
 
-import static io.spine.web.test.FirebaseClient.database;
-import static io.spine.web.test.Server.application;
+import static io.spine.web.test.given.FirebaseClient.database;
+import static io.spine.web.test.given.Server.application;
 
 /**
  * An endpoint creating new client subscriptions to entity changes.
