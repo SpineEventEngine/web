@@ -402,13 +402,14 @@ describe('Client should', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskName
     });
-    const taskId = createCommand.message.getId().getValue();
+    const taskId = new TypedMessage(createCommand.message.getId(), given.TYPE.OF_IDENTIFIER.TASK_ID);
+    const taskIdValue = createCommand.message.getId().getValue();
 
     const promise = new Promise(resolve => {
       backendClient.sendCommand(
         createCommand,
         () => {
-          console.log(`Task '${taskId}' created.`);
+          console.log(`Task '${taskIdValue}' created.`);
           resolve();
         },
         fail(done, 'Unexpected error while creating a task.'),
@@ -423,13 +424,13 @@ describe('Client should', function () {
           next: item => {
             const id = item.id.value;
             console.log(`Retrieved new task '${id}'.`);
-            if (taskId === id) {
+            if (taskIdValue === id) {
               assert.equal(
                 item.name, initialTaskName,
                 `Task is named "${item.name}", expected "${initialTaskName}"`
               );
             } else {
-              done(new Error(`Only changes for task with ID ${taskId} should be received.`))
+              done(new Error(`Only changes for task with ID ${taskIdValue} should be received.`))
             }
           }
         });
@@ -439,7 +440,7 @@ describe('Client should', function () {
         itemChanged.subscribe({
           next: item => {
             const id = item.id.value;
-            if (taskId === id) {
+            if (taskIdValue === id) {
               console.log(`Got task changes for ${id}.`);
               assert.equal(item.name, expectedRenames[changesCount]);
               changesCount++;
@@ -461,14 +462,14 @@ describe('Client should', function () {
       return new Promise(resolve => {
         setTimeout(() => {
           const renameCommand = given.renameTaskCommand({
-            withId: taskId,
+            withId: taskIdValue,
             to: 'Renamed once'
           });
           backendClient.sendCommand(
             renameCommand,
             () => {
               resolve();
-              console.log(`Task '${taskId}' renamed for the first time.`)
+              console.log(`Task '${taskIdValue}' renamed for the first time.`)
             },
             fail(done, 'Unexpected error while renaming a task.'),
             fail(done, 'Unexpected rejection while renaming a task.')
@@ -478,12 +479,12 @@ describe('Client should', function () {
     }).then(() => {
       setTimeout(() => {
         const renameCommand = given.renameTaskCommand({
-          withId: taskId,
+          withId: taskIdValue,
           to: 'Renamed twice'
         });
         backendClient.sendCommand(
           renameCommand,
-          () => console.log(`Task '${taskId}' renamed for the second time.`),
+          () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
           fail(done, 'Unexpected error while renaming a task.'),
           fail(done, 'Unexpected rejection while renaming a task.')
         );
