@@ -233,7 +233,7 @@ class TopicFactory {
    * @constructor
    */
   constructor(actorRequestFactory) {
-    this._actorContext = actorRequestFactory._actorContext();
+    this._requestFactory = actorRequestFactory;
   }
 
   /**
@@ -270,7 +270,7 @@ class TopicFactory {
     const id = TopicFactory._generateId();
     const topic = new Topic();
     topic.setId(id);
-    topic.setContext(this._actorContext);
+    topic.setContext(this._requestFactory._actorContext());
     topic.setTarget(target);
     return topic;
   }
@@ -375,7 +375,7 @@ export class ActorRequestFactory {
   _actorContext() {
     const result = new ActorContext();
     result.setActor(this._actor);
-    const seconds = new Date().getUTCSeconds();
+    const seconds = Math.round(new Date().getTime() / 1000);
     const time = new Timestamp();
     time.setSeconds(seconds);
     result.setTimestamp(time);
