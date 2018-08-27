@@ -281,7 +281,7 @@ class TopicFactory {
     const filters = new EntityFilters();
     if (!includeAll) {
       const entityIds = TopicFactory._nullToEmpty(ids);
-      const idFilters = this._assembleIdFilters(includeAll, entityIds);
+      const idFilters = this._assembleIdFilters(entityIds);
       filters.setIdFilter(idFilters);
     }
     const entityColumnValues = TopicFactory._nullToEmpty(columnFilters);
