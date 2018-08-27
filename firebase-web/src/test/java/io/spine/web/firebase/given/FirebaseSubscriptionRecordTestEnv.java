@@ -57,11 +57,12 @@ public final class FirebaseSubscriptionRecordTestEnv {
     private FirebaseSubscriptionRecordTestEnv() {
     }
 
-    public static Book updateAuthors(Book designPatterns, Iterable<Author> gangOfFour) {
-        return designPatterns.toBuilder()
-                             .clearAuthors()
-                             .addAllAuthors(gangOfFour)
-                             .build();
+    public static Book updateAuthors(Book designPatterns, List<Author> gangOfFour) {
+        BookVBuilder builder = BookVBuilder.newBuilder();
+        builder.mergeFrom(designPatterns);
+        return builder.clearAuthors()
+                      .addAllAuthors(gangOfFour)
+                      .build();
     }
 
     public static MutableData mutableBookData(String key, Book book) {
