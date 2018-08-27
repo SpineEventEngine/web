@@ -30,7 +30,7 @@ import {FirebaseSubscriptionService} from "./firebase-subscription-service";
 import {
   Subscription as SpineSubscription,
   SubscriptionId
-} from "spine-js-client-proto/spine/client/subscription_pb";
+} from "spine-web-client-proto/spine/client/subscription_pb";
 
 /**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways

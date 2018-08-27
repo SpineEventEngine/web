@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Subscription} from 'spine-js-client-proto/spine/client/subscription_pb';
+import {Subscription} from 'spine-web-client-proto/spine/client/subscription_pb';
 
 const SECOND = 1000;
 const TEN_SECONDS = 10 * SECOND;
