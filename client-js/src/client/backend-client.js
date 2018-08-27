@@ -428,6 +428,7 @@ class FirebaseBackendClient extends BackendClient {
     super(endpoint, actorRequestFactory);
     this._firebase = firebaseClient;
     this._subscriptionService = subscriptionService;
+    this._subscriptionService.run();
   }
 
   /**
@@ -463,18 +464,25 @@ class FirebaseBackendClient extends BackendClient {
           });
           const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
           const entitySubscription = new EntitySubscription({
-            unsubscribedBy: () => FirebaseBackendClient._firebaseSubscriptionTearDown(),
+            unsubscribedBy: () => {
+              FirebaseBackendClient._tearDownSubscriptions(subscriptions)
+            },
             withObservables: {add, change, remove},
             forSubscription: subscriptionProto
           });
-          resolve(entitySubscription);
+          resolve({
+            itemAdded: entitySubscription.itemAdded,
+            itemChanged: entitySubscription.itemChanged,
+            itemRemoved: entitySubscription.itemRemoved,
+            unsubscribe: () => entitySubscription.unsubscribe()
+          });
           this._subscriptionService.add(entitySubscription);
         })
         .catch(reject);
     });
   }
 
-  static _firebaseSubscriptionTearDown(subscriptions) {
+  static _tearDownSubscriptions(subscriptions) {
     if (!subscriptions.add.closed) {
       subscriptions.add.unsubscribe();
     }
