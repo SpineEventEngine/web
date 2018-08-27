@@ -229,9 +229,9 @@ export class BackendClient {
     }
     let topic;
     if (ids) {
-      topic = this._requestFactory.topic().allOf(typeUrl);
-    } else {
       topic = this._requestFactory.topic().someOf(typeUrl, ids);
+    } else {
+      topic = this._requestFactory.topic().allOf(typeUrl);
     }
     return this._subscribeToTopic(topic);
   }
