@@ -221,10 +221,10 @@ export class BackendClient {
    *                                             and unsubscribe from the updated 
    */
   subscribeToEntities({ofType: typeUrl, byIds: ids, byId: id}) {
-    if (typeof ids !== 'undefined' && typeof id !== "undefined") {
+    if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
       throw "You can specify only one of ids or id as a parameter to subscribeToEntities";
     }
-    if (id !== undefined) {
+    if (typeof id !== 'undefined') {
       ids = [id];
     }
     let topic;
@@ -442,7 +442,7 @@ class EntitySubscription extends Subscription {
       itemChanged: this.itemChanged,
       itemRemoved: this.itemRemoved,
       unsubscribe: () => this.unsubscribe()
-    }
+    };
   }
 }
 
@@ -504,7 +504,7 @@ class FirebaseBackendClient extends BackendClient {
           const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
           const entitySubscription = new EntitySubscription({
             unsubscribedBy: () => {
-              FirebaseBackendClient._tearDownSubscriptions(subscriptions)
+              FirebaseBackendClient._tearDownSubscriptions(subscriptions);
             },
             withObservables: {add, change, remove},
             forSubscription: subscriptionProto

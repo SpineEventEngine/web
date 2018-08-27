@@ -23,7 +23,6 @@ package io.spine.web.query;
 import io.spine.web.RequestsResult;
 
 import javax.servlet.ServletResponse;
-import java.io.IOException;
 
 /**
  * A result of a query processing.

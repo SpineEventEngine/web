@@ -21,7 +21,6 @@
 package io.spine.web.firebase;
 
 import io.spine.client.Subscription;
-import io.spine.core.Response;
 import io.spine.web.subscription.result.SubscribeResult;
 
 import javax.servlet.ServletResponse;
@@ -30,7 +29,7 @@ import java.io.IOException;
 import static io.spine.json.Json.toCompactJson;
 
 /**
- * A result of a request to subscribe to some {@link io.spine.client.Topic Topic} 
+ * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
  * to be written to the {@link ServletResponse}.
  *
  * <p>The result is a JSON formatted {@link Subscription} message.

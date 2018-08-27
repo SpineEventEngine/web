@@ -36,9 +36,9 @@ const MINUTES = 60 * SECONDS;
 function fail(done, message) {
   return error => {
     if (message) {
-      done(new Error(`Test failed. Cause: ${message}`))
+      done(new Error(`Test failed. Cause: ${message}`));
     } else {
-      done(new Error(`Test failed. Cause: ${error ? JSON.stringify(error) : 'not identified'}`))
+      done(new Error(`Test failed. Cause: ${error ? JSON.stringify(error) : 'not identified'}`));
     }
   };
 }
