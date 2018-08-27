@@ -20,19 +20,17 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.core.ApiFuture;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.core.Repo;
 import com.google.protobuf.Message;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import io.spine.web.firebase.FirebaseSubscriptionRecords.AddedRecord;
-import io.spine.web.firebase.FirebaseSubscriptionRecords.ChangedRecord;
-import io.spine.web.firebase.FirebaseSubscriptionRecords.RemovedRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +43,8 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.firebase.database.Transaction.success;
+import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static java.util.Collections.unmodifiableList;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -93,9 +93,33 @@ final class FirebaseSubscriptionRecord {
      */
     private void flushTo(DatabaseReference reference) {
         queryResponse.thenAcceptAsync(
-                response -> mapMessagesToJson(response)
-                        .map(json -> addRecord(reference, new AddedRecord(json)))
-                        .forEach(this::mute)
+                response -> {
+                    List<String> newEntries = mapMessagesToJson(response).collect(toList());
+                    reference.runTransaction(new Transaction.Handler() {
+                        @Override
+                        public Transaction.Result doTransaction(MutableData currentData) {
+                            newEntries.forEach(record -> {
+                                Repo repo = reference.getRepo();
+                                String childName = generatePushChildName(repo.getServerTime());
+                                currentData.child(childName)
+                                           .setValue(record);
+                            });
+                            return success(currentData);
+                        }
+
+                        @Override
+                        public void onComplete(DatabaseError error, boolean committed,
+                                               DataSnapshot currentData) {
+                            if (!committed) {
+                                log().error("Subscription initial state was not committed to the Firebase.");
+                                if (error != null) {
+                                    log().error(error.getMessage());
+                                }
+                            }
+                        }
+                    });
+
+                }
         );
     }
 
@@ -104,43 +128,42 @@ final class FirebaseSubscriptionRecord {
      */
     void storeAsUpdate(FirebaseDatabase database) {
         DatabaseReference reference = path().reference(database);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                QueryResponseConsumer consumer = new QueryResponseConsumer();
-                queryResponse.thenAccept(consumer);
-                List<String> newEntries = consumer.jsonMessages();
-                FirebaseSubscriptionDiff diff = computeDiff(newEntries, snapshot.getChildren());
-                flushTo(reference, diff);
-            }
+        QueryResponseConsumer consumer = new QueryResponseConsumer();
+        queryResponse.thenAcceptAsync(response -> {
+            consumer.accept(response);
+            List<String> newEntries = consumer.jsonMessages();
+            reference.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData currentData) {
+                    FirebaseSubscriptionDiff diff = computeDiff(newEntries, currentData.getChildren());
+                    
+                    diff.changed()
+                        .forEach(record -> currentData.child(record.key())
+                                                      .setValue(record.data()));
+                    diff.removed()
+                        .forEach(record -> currentData.child(record.key())
+                                                      .setValue(null));
+                    Repo repo = reference.getRepo();
+                    diff.added()
+                        .forEach(record -> {
+                            currentData.child(generatePushChildName(repo.getServerTime()))
+                                       .setValue(record.data());
+                        });
+                    return success(currentData);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                log().error("An error retrieving values from the Firebase database.");
-            }
+                @Override
+                public void onComplete(DatabaseError error, boolean committed,
+                                       DataSnapshot currentData) {
+                    if (!committed) {
+                        log().error("Subscription update was not committed to the Firebase.");
+                        if (error != null) {
+                            log().error(error.getMessage());
+                        }
+                    }
+                }
+            });
         });
-    }
-
-    /**
-     * Updates the database reference using the retrieved diff. Adds, updates and removes the
-     * values from the database.
-     *
-     * @param reference a Firebase reference to the location of data in database
-     * @param diff      a diff between current Firebase storage state and data actual at current moment
-     */
-    private void flushTo(DatabaseReference reference, FirebaseSubscriptionDiff diff) {
-        diff.added()
-            .parallelStream()
-            .map(record -> addRecord(reference, record))
-            .forEach(this::mute);
-        diff.removed()
-            .parallelStream()
-            .map(record -> removeRecord(reference, record))
-            .forEach(this::mute);
-        diff.changed()
-            .parallelStream()
-            .map(record -> update(reference, record))
-            .forEach(this::mute);
     }
 
     /**
@@ -168,30 +191,6 @@ final class FirebaseSubscriptionRecord {
         List<String> jsonMessages() {
             return unmodifiableList(jsonMessages);
         }
-    }
-
-    /**
-     * Stores a new record to the database asynchronously.
-     */
-    private static ApiFuture<Void> addRecord(DatabaseReference reference, AddedRecord record) {
-        return reference.push()
-                        .setValueAsync(record.data());
-    }
-
-    /**
-     * Removes a record from the database asynchronously.
-     */
-    private static ApiFuture<Void> removeRecord(DatabaseReference reference, RemovedRecord record) {
-        return reference.child(record.key())
-                        .removeValueAsync();
-    }
-
-    /**
-     * Updates the record in the database asynchronously.
-     */
-    private static ApiFuture<Void> update(DatabaseReference reference, ChangedRecord record) {
-        return reference.child(record.key())
-                        .setValueAsync(record.data());
     }
 
     /**

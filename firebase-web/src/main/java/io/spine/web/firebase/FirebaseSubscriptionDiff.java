@@ -21,6 +21,7 @@
 package io.spine.web.firebase;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.MutableData;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.Entry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.ExistingEntry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.UpToDateEntry;
@@ -78,7 +79,7 @@ class FirebaseSubscriptionDiff {
      * @return a diff between Spine and Firebase data states
      */
     static FirebaseSubscriptionDiff computeDiff(List<String> newEntries,
-                                                Iterable<DataSnapshot> firebaseEntries) {
+                                                Iterable<MutableData> firebaseEntries) {
         List<ExistingEntry> existingEntries = existingEntries(firebaseEntries);
         FirebaseSubscriptionEntriesMatcher matcher = 
                 new FirebaseSubscriptionEntriesMatcher(existingEntries);
@@ -88,9 +89,9 @@ class FirebaseSubscriptionDiff {
                                             entriesToRemove(entryUpdates));
     }
 
-    private static List<ExistingEntry> existingEntries(Iterable<DataSnapshot> entries) {
-        return StreamSupport.stream(entries.spliterator(), false)
-                            .map(ExistingEntry::fromFirebaseSnapshot)
+    private static List<ExistingEntry> existingEntries(Iterable<MutableData> entries) {
+        return StreamSupport.stream(entries.spliterator(), true)
+                            .map(ExistingEntry::fromFirebaseData)
                             .collect(toList());
     }
 

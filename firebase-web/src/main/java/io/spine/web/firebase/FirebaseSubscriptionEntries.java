@@ -22,7 +22,7 @@ package io.spine.web.firebase;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.MutableData;
 
 import java.io.IOException;
 
@@ -106,7 +106,7 @@ class FirebaseSubscriptionEntries {
             this.containsId = id != null;
         }
 
-        static ExistingEntry fromFirebaseSnapshot(DataSnapshot snapshot) {
+        static ExistingEntry fromFirebaseData(MutableData snapshot) {
             String value = (String) snapshot.getValue();
             return new ExistingEntry(snapshot.getKey(), value);
         }
