@@ -98,10 +98,9 @@ final class FirebaseSubscriptionRecord {
                     reference.runTransaction(new Transaction.Handler() {
                         @Override
                         public Transaction.Result doTransaction(MutableData currentData) {
+                            Repo repo = reference.getRepo();
                             newEntries.forEach(record -> {
-                                Repo repo = reference.getRepo();
-                                String childName = generatePushChildName(repo.getServerTime());
-                                currentData.child(childName)
+                                currentData.child(generatePushChildName(repo.getServerTime()))
                                            .setValue(record);
                             });
                             return success(currentData);
