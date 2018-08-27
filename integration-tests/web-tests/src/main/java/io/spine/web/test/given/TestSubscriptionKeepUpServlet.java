@@ -31,7 +31,7 @@ import static io.spine.web.test.given.Server.application;
 /**
  * An endpoint for client requests to keep subscription running.
  *
- * @author Drachuk Mykhailo
+ * @author Mykhailo Drachuk
  */
 @WebServlet("/subscription/keep-up")
 @SuppressWarnings("serial")
