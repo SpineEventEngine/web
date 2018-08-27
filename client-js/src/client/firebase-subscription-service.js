@@ -21,7 +21,7 @@
 import {Subscription} from 'spine-js-client-proto/spine/client/subscription_pb';
 
 const SECOND = 1000;
-const FIVE_SECONDS = 5 * SECOND;
+const TEN_SECONDS = 10 * SECOND;
 
 export class FirebaseSubscriptionService {
   /**
@@ -57,7 +57,7 @@ export class FirebaseSubscriptionService {
     }
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
-    }, FIVE_SECONDS);
+    }, TEN_SECONDS);
   }
 
   _keepUpSubscriptions() {
