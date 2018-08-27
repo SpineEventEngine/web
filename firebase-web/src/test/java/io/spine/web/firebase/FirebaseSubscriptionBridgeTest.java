@@ -20,14 +20,15 @@
 
 package io.spine.web.firebase;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
-import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,20 +48,23 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newS
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newTarget;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.topicFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * @author Dmytro Dashenkov
+ * @author Mykhailo Drachuk
  */
 @DisplayName("FirebaseSubscriptionBridge should")
 class FirebaseSubscriptionBridgeTest {
 
     private FirebaseSubscriptionBridge bridge;
     private TopicFactory topicFactory;
+    private FirebaseDatabase firebaseDatabase;
 
     @BeforeEach
     void setUp() {
-        FirebaseDatabase firebaseDatabase = mock(FirebaseDatabase.class);
+        this.firebaseDatabase = mock(FirebaseDatabase.class);
         QueryServiceImplBase queryService = mock(QueryServiceImplBase.class);
         bridge = newBridge(firebaseDatabase, queryService);
         topicFactory = topicFactory();
@@ -71,6 +75,9 @@ class FirebaseSubscriptionBridgeTest {
     void keepUpSubscription() throws IOException {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
+
+        DatabaseReference reference = mock(DatabaseReference.class);
+        when(firebaseDatabase.getReference(anyString())).thenReturn(reference);
 
         SubscriptionKeepUpResult result = bridge.keepUp(subscription);
 

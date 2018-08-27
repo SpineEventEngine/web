@@ -23,14 +23,17 @@ package io.spine.web.firebase;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
+import io.spine.client.QueryVBuilder;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
+import io.spine.client.SubscriptionIdVBuilder;
+import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.web.query.service.AsyncQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
+import static io.spine.web.firebase.FirebaseDatabasePath.allocateForQuery;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -65,33 +69,34 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     public SubscribeResult subscribe(Topic topic) {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse,
-                                                             writeAwaitSeconds);
-        record.storeTo(database);
+        FirebaseDatabasePath path = allocateForQuery(query);
+        FirebaseSubscriptionRecord record = 
+                new FirebaseSubscriptionRecord(path, queryResponse, writeAwaitSeconds);
+        record.storeAsInitial(database);
         Subscription subscription = newSubscription(topic, record.path());
         return new FirebaseSubscribeResult(subscription);
     }
 
     private static Query newQueryForTopic(Topic topic) {
-        return Query.newBuilder()
-                    .setId(generateId())
-                    .setTarget(topic.getTarget())
-                    .setContext(topic.getContext())
-                    .build();
+        return QueryVBuilder.newBuilder()
+                            .setId(generateId())
+                            .setTarget(topic.getTarget())
+                            .setContext(topic.getContext())
+                            .build();
     }
 
     private static Subscription newSubscription(Topic topic, FirebaseDatabasePath path) {
         SubscriptionId subscriptionId = newSubscriptionId(path);
-        return Subscription.newBuilder()
-                           .setTopic(topic)
-                           .setId(subscriptionId)
-                           .build();
+        return SubscriptionVBuilder.newBuilder()
+                                   .setTopic(topic)
+                                   .setId(subscriptionId)
+                                   .build();
     }
 
     private static SubscriptionId newSubscriptionId(FirebaseDatabasePath path) {
-        return SubscriptionId.newBuilder()
-                             .setValue(path.toString())
-                             .build();
+        return SubscriptionIdVBuilder.newBuilder()
+                                     .setValue(path.toString())
+                                     .build();
     }
 
     @Override
@@ -100,9 +105,9 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
-        FirebaseQueryRecord record = new FirebaseQueryRecord(path, queryResponse,
-                                                             writeAwaitSeconds);
-        record.storeTo(database);
+        FirebaseSubscriptionRecord record = 
+                new FirebaseSubscriptionRecord(path, queryResponse, writeAwaitSeconds);
+        record.storeAsUpdate(database);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 
@@ -128,7 +133,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         /**
          * The default amount of seconds to wait for a single record to be written.
          */
-        private static final long DEFAULT_WRITE_AWAIT_SECONDS = 60L;
+        private static final long DEFAULT_WRITE_AWAIT_SECONDS = 10L;
 
         private AsyncQueryService queryService;
         private FirebaseDatabase database;

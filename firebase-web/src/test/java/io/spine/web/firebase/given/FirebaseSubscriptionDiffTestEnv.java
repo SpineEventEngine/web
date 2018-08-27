@@ -20,35 +20,33 @@
 
 package io.spine.web.firebase.given;
 
-import io.spine.client.Query;
-import io.spine.web.WebQuery;
-import io.spine.web.WebQueryVBuilder;
+import com.google.firebase.database.DataSnapshot;
+import io.spine.core.Response;
+
+import javax.servlet.ServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static io.spine.core.Responses.statusOk;
+import static io.spine.json.Json.toCompactJson;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Mykhailo Drachuk
  */
-public final class FirebaseQueryBridgeTestEnv {
-
-    public static final int ONE_SECOND = 1000 /* ms */;
-    public static final int SECONDS = ONE_SECOND;
+public final class FirebaseSubscriptionDiffTestEnv {
 
     /**
      * Prevents instantiation of this test environment.
      */
-    private FirebaseQueryBridgeTestEnv() {
+    private FirebaseSubscriptionDiffTestEnv() {
     }
 
-    public static WebQuery transactionalQuery(Query query) {
-        return WebQueryVBuilder.newBuilder()
-                               .setQuery(query)
-                               .setDeliveredTransactionally(true)
-                               .build();
-    }
-
-    public static WebQuery nonTransactionalQuery(Query query) {
-        return WebQueryVBuilder.newBuilder()
-                               .setQuery(query)
-                               .setDeliveredTransactionally(false)
-                               .build();
+    public static DataSnapshot snapshotReturning(String s) {
+        DataSnapshot mock = mock(DataSnapshot.class);
+        when(mock.getValue()).thenReturn(s);
+        return mock;
     }
 }

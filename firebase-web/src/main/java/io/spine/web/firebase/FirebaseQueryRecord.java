@@ -63,14 +63,6 @@ final class FirebaseQueryRecord {
         this.writeAwaitSeconds = writeAwaitSeconds;
     }
 
-    FirebaseQueryRecord(FirebaseDatabasePath path,
-                        CompletionStage<QueryResponse> queryResponse,
-                        long writeAwaitSeconds) {
-        this.path = path;
-        this.queryResponse = queryResponse;
-        this.writeAwaitSeconds = writeAwaitSeconds;
-    }
-
     /**
      * Retrieves the database path to this record.
      */
