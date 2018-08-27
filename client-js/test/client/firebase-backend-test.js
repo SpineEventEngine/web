@@ -392,6 +392,105 @@ describe('Client should', function () {
     });
   });
 
+  it('subscribe to entity changes by id', done => {
+    const expectedChangesCount = 2;
+    const initialTaskName = 'Initial task name';
+    const expectedRenames = ['Renamed once', 'Renamed twice'];
+
+    // Create tasks.
+    const createCommand = given.createTaskCommand({
+      withPrefix: 'spine-web-test-subscribe',
+      named: initialTaskName
+    });
+    const taskId = createCommand.message.getId().getValue();
+
+    const promise = new Promise(resolve => {
+      backendClient.sendCommand(
+        createCommand,
+        () => {
+          console.log(`Task '${taskId}' created.`);
+          resolve();
+        },
+        fail(done, 'Unexpected error while creating a task.'),
+        fail(done, 'Unexpected rejection while creating a task.')
+      );
+    });
+
+    let changesCount = 0;
+    backendClient.subscribeToEntities({ofType: given.TYPE.OF_ENTITY.TASK, withId: taskId})
+      .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        itemAdded.subscribe({
+          next: item => {
+            const id = item.id.value;
+            console.log(`Retrieved new task '${id}'.`);
+            if (taskId === id) {
+              assert.equal(
+                item.name, initialTaskName,
+                `Task is named "${item.name}", expected "${initialTaskName}"`
+              );
+            } else {
+              done(new Error(`Only changes for task with ID ${taskId} should be received.`))
+            }
+          }
+        });
+        itemRemoved.subscribe({
+          next: fail(done, 'Task was removed in a test of entity changes subscription.')
+        });
+        itemChanged.subscribe({
+          next: item => {
+            const id = item.id.value;
+            if (taskId === id) {
+              console.log(`Got task changes for ${id}.`);
+              assert.equal(item.name, expectedRenames[changesCount]);
+              changesCount++;
+              if (changesCount === expectedChangesCount) {
+                unsubscribe();
+                done();
+              }
+            } else {
+              done(new Error('Unexpected entity changes during subscription to entity changes test'));
+            }
+          }
+        });
+      })
+      .catch(fail(done));
+
+    // Rename created task.
+    promise.then(() => {
+      // Tasks are renamed with a timeout after to allow for changes to show up in subscriptions.
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const renameCommand = given.renameTaskCommand({
+            withId: taskId,
+            to: 'Renamed once'
+          });
+          backendClient.sendCommand(
+            renameCommand,
+            () => {
+              resolve();
+              console.log(`Task '${taskId}' renamed for the first time.`)
+            },
+            fail(done, 'Unexpected error while renaming a task.'),
+            fail(done, 'Unexpected rejection while renaming a task.')
+          );
+        }, 20 * SECONDS);
+      });
+    }).then(() => {
+      setTimeout(() => {
+        const renameCommand = given.renameTaskCommand({
+          withId: taskId,
+          to: 'Renamed twice'
+        });
+        backendClient.sendCommand(
+          renameCommand,
+          () => console.log(`Task '${taskId}' renamed for the second time.`),
+          fail(done, 'Unexpected error while renaming a task.'),
+          fail(done, 'Unexpected rejection while renaming a task.')
+        );
+      }, 20 * SECONDS);
+    });
+  });
+
   it('fail a malformed subscription', done => {
     backendClient.subscribeToEntities({ofType: given.TYPE.MALFORMED})
       .then(() => {
