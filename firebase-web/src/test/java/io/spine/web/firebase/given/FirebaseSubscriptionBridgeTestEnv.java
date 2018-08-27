@@ -34,6 +34,7 @@ import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
 import io.spine.core.UserId;
+import io.spine.core.UserIdVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseSubscriptionBridge;
 
@@ -51,6 +52,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author Mykhailo Drachuk
+ * @see FirebaseSubscriptionBridgeTestEnv
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
 public final class FirebaseSubscriptionBridgeTestEnv {
@@ -118,14 +120,14 @@ public final class FirebaseSubscriptionBridgeTestEnv {
         return FirebaseSubscriptionBridge.newBuilder()
                                          .setDatabase(firebaseDatabase)
                                          .setQueryService(queryService)
-                                         .setWriteAwaitSeconds(5)
                                          .build();
     }
 
     public static TopicFactory topicFactory() {
-        return TestActorRequestFactory.newInstance(UserId.newBuilder()
-                                                         .setValue("test-user")
-                                                         .build())
+        UserId userId = UserIdVBuilder.newBuilder()
+                                      .setValue("test-user")
+                                      .build();
+        return TestActorRequestFactory.newInstance(userId)
                                       .topic();
     }
 

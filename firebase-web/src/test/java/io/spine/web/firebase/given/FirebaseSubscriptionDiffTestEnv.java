@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author Mykhailo Drachuk
+ * @see io.spine.web.firebase.FirebaseSubscriptionDiffTest
  */
 public final class FirebaseSubscriptionDiffTestEnv {
 
