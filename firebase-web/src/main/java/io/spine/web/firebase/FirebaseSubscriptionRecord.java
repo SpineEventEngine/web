@@ -208,19 +208,6 @@ final class FirebaseSubscriptionRecord {
                        .map(Json::toCompactJson);
     }
 
-    /**
-     * Awaits the given {@link Future} and catches all the exceptions.
-     *
-     * <p>The encountered exceptions are logged and never thrown.
-     */
-    private void mute(Future<?> future) {
-        try {
-            future.get(writeAwaitSeconds, SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log().error(e.getMessage());
-        }
-    }
-
     private static Logger log() {
         return LogSingleton.INSTANCE.value;
     }
