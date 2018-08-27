@@ -417,7 +417,7 @@ describe('Client should', function () {
     });
 
     let changesCount = 0;
-    backendClient.subscribeToEntities({ofType: given.TYPE.OF_ENTITY.TASK, withId: taskId})
+    backendClient.subscribeToEntities({ofType: given.TYPE.OF_ENTITY.TASK, byId: taskId})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {

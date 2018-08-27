@@ -240,7 +240,7 @@ class TopicFactory {
    * Creates a {@link Topic} for the entity states with the given IDs.
    *
    * @param {!TypeUrl} typeUrl the class of a target entity
-   * @param {!Message[]} ids the IDs of interest
+   * @param {!TypedMessage[]} ids the IDs of interest
    * @return {Topic} the instance of {@code Topic} assembled according to the parameters
    */
   someOf(typeUrl, ids) {

@@ -214,13 +214,13 @@ export class BackendClient {
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer. 
    *
-   * @param {!TypeUrl} typeUrl a type URL of entities to observe changes
-   * @param {?Message[]} ids an array of ids of entities to observe changes
-   * @param {?Message} id an id of a single entity to observe changes
+   * @param {!TypeUrl} ofType a type URL of entities to observe changes
+   * @param {?TypedMessage[]} byIds an array of ids of entities to observe changes
+   * @param {?TypedMessage} byId an id of a single entity to observe changes
    * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes 
    *                                             and unsubscribe from the updated 
    */
-  subscribeToEntities({ofType: typeUrl, withIds: ids, withId: id}) {
+  subscribeToEntities({ofType: typeUrl, byIds: ids, byId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== "undefined") {
       throw "You can specify only one of ids or id as a parameter to subscribeToEntities";
     }
