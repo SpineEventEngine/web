@@ -21,7 +21,7 @@
 import {Subscription} from 'spine-js-client-proto/spine/client/subscription_pb';
 
 const SECOND = 1000;
-const TEN_SECONDS = 10 * SECOND;
+const THIRTY_SECONDS = 30 * SECOND;
 
 /**
  * A service that manages the subscriptions periodically sending requests to keep them running.
@@ -65,7 +65,7 @@ export class FirebaseSubscriptionService {
     }
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
-    }, TEN_SECONDS);
+    }, THIRTY_SECONDS);
   }
 
   _keepUpSubscriptions() {
