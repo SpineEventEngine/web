@@ -30,7 +30,6 @@ import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import io.spine.web.query.QueryProcessingResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +40,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.ONE_SECOND;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.SECONDS;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
@@ -108,8 +109,8 @@ class FirebaseQueryBridgeTest {
         @SuppressWarnings("unused")
         QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
-        verify(pathReference, timeout(5 * FirebaseQueryBridgeTestEnv.SECONDS)).push();
-        verify(childReference, timeout(5 * FirebaseQueryBridgeTestEnv.SECONDS))
+        verify(pathReference, timeout(5 * SECONDS)).push();
+        verify(childReference, timeout(5 * SECONDS))
                 .setValueAsync(eq(toCompactJson(dataElement)));
     }
 
@@ -158,7 +159,7 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(childReference, timeout(FirebaseQueryBridgeTestEnv.ONE_SECOND)).setValueAsync(eq("{}"));
+        verify(childReference, timeout(ONE_SECOND)).setValueAsync(eq("{}"));
         verify(pathReference, never()).setValueAsync(any(Object.class));
     }
 
