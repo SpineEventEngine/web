@@ -21,7 +21,7 @@
 "use strict";
 
 import base64 from 'base64-js';
-import {Any} from 'spine-js-client-proto/google/protobuf/any_pb';
+import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
 
 /**
  * A URL of a Protobuf type.
