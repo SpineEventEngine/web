@@ -41,7 +41,7 @@ import static java.util.stream.Stream.concat;
  *
  * @author Mykhailo Drachuk
  */
-class FirebaseSubscriptionEntriesMatcher {
+final class FirebaseSubscriptionEntriesMatcher {
 
     private final List<ExistingEntry> unmatchedEntries;
 

@@ -26,7 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
-import com.google.firebase.database.core.Repo;
+import com.google.firebase.database.utilities.Clock;
+import com.google.firebase.database.utilities.DefaultClock;
+import com.google.firebase.database.utilities.OffsetClock;
 import com.google.protobuf.Message;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
@@ -36,18 +38,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.firebase.database.Transaction.success;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
-import static java.util.Collections.unmodifiableList;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -59,16 +54,15 @@ import static java.util.stream.Collectors.toList;
  */
 final class FirebaseSubscriptionRecord {
 
+    private static final Clock CLOCK = new OffsetClock(new DefaultClock(), 0);
+
     private final FirebaseDatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
-    private final long writeAwaitSeconds;
 
     FirebaseSubscriptionRecord(FirebaseDatabasePath path,
-                               CompletionStage<QueryResponse> queryResponse,
-                               long writeAwaitSeconds) {
+                               CompletionStage<QueryResponse> queryResponse) {
         this.path = path;
         this.queryResponse = queryResponse;
-        this.writeAwaitSeconds = writeAwaitSeconds;
     }
 
     /**
@@ -84,42 +78,39 @@ final class FirebaseSubscriptionRecord {
      */
     void storeAsInitial(FirebaseDatabase database) {
         DatabaseReference reference = path().reference(database);
-        flushTo(reference);
+        flushNewTo(reference);
     }
 
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
-     * adding array items to storage one-by-one.
+     * adding array items to storage in a transaction.
      */
-    private void flushTo(DatabaseReference reference) {
-        queryResponse.thenAcceptAsync(
-                response -> {
-                    List<String> newEntries = mapMessagesToJson(response).collect(toList());
-                    reference.runTransaction(new Transaction.Handler() {
-                        @Override
-                        public Transaction.Result doTransaction(MutableData currentData) {
-                            Repo repo = reference.getRepo();
-                            newEntries.forEach(record -> {
-                                currentData.child(generatePushChildName(repo.getServerTime()))
-                                           .setValue(record);
-                            });
-                            return success(currentData);
-                        }
-
-                        @Override
-                        public void onComplete(DatabaseError error, boolean committed,
-                                               DataSnapshot currentData) {
-                            if (!committed) {
-                                log().error("Subscription initial state was not committed to the Firebase.");
-                                if (error != null) {
-                                    log().error(error.getMessage());
-                                }
-                            }
-                        }
-                    });
-
+    private void flushNewTo(DatabaseReference reference) {
+        queryResponse.thenAcceptAsync(response -> {
+            List<String> newEntries = mapMessagesToJson(response).collect(toList());
+            reference.runTransaction(new SubscriptionUpdateTransactionHandler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData currentData) {
+                    addEntriesToData(currentData, newEntries);
+                    return success(currentData);
                 }
-        );
+            });
+        });
+    }
+
+    /**
+     * Adds the provided entries as children to the provided mutable record.
+     *
+     * @param currentData an instance of mutable data of existing subscription state
+     * @param entries     new subscription entries to be added to Firebase
+     */
+    private static void addEntriesToData(MutableData currentData, Iterable<String> entries) {
+        entries.forEach(entry -> currentData.child(newChildKey())
+                                            .setValue(entry));
+    }
+
+    private static String newChildKey() {
+        return generatePushChildName(CLOCK.millis());
     }
 
     /**
@@ -127,69 +118,44 @@ final class FirebaseSubscriptionRecord {
      */
     void storeAsUpdate(FirebaseDatabase database) {
         DatabaseReference reference = path().reference(database);
-        QueryResponseConsumer consumer = new QueryResponseConsumer();
+        flushDiffTo(reference);
+    }
+
+    /**
+     * Flushes an array response of the query to the Firebase asynchronously,
+     * adding, removing and updating items already present in storage in a transaction.
+     */
+    private void flushDiffTo(DatabaseReference reference) {
         queryResponse.thenAcceptAsync(response -> {
-            consumer.accept(response);
-            List<String> newEntries = consumer.jsonMessages();
-            reference.runTransaction(new Transaction.Handler() {
+            List<String> newEntries = mapMessagesToJson(response).collect(toList());
+            reference.runTransaction(new SubscriptionUpdateTransactionHandler() {
                 @Override
                 public Transaction.Result doTransaction(MutableData currentData) {
-                    FirebaseSubscriptionDiff diff = computeDiff(newEntries, currentData.getChildren());
-                    
-                    diff.changed()
-                        .forEach(record -> currentData.child(record.key())
-                                                      .setValue(record.data()));
-                    diff.removed()
-                        .forEach(record -> currentData.child(record.key())
-                                                      .setValue(null));
-                    Repo repo = reference.getRepo();
-                    diff.added()
-                        .forEach(record -> {
-                            currentData.child(generatePushChildName(repo.getServerTime()))
-                                       .setValue(record.data());
-                        });
+                    Iterable<MutableData> children = currentData.getChildren();
+                    FirebaseSubscriptionDiff diff = computeDiff(newEntries, children);
+                    updateWithDiff(currentData, diff);
                     return success(currentData);
-                }
-
-                @Override
-                public void onComplete(DatabaseError error, boolean committed,
-                                       DataSnapshot currentData) {
-                    if (!committed) {
-                        log().error("Subscription update was not committed to the Firebase.");
-                        if (error != null) {
-                            log().error(error.getMessage());
-                        }
-                    }
                 }
             });
         });
     }
 
     /**
-     * A consumer of a {@link QueryResponse} from which a list of JSON serialized messages
-     * can be retrieved.
+     * Updates the provided MutableData with provided subscription diff.
+     *
+     * @param currentData an instance of mutable data of existing subscription state
+     * @param diff        a diff between updated and existing subscription states
      */
-    private static class QueryResponseConsumer implements Consumer<QueryResponse> {
-
-        private final List<String> jsonMessages;
-
-        private QueryResponseConsumer() {
-            this.jsonMessages = newArrayList();
-        }
-
-        @Override
-        public void accept(QueryResponse response) {
-            this.jsonMessages.addAll(mapMessagesToJson(response).collect(toList()));
-        }
-
-        /**
-         * A list of messages which were retrieved from the consumed {@link QueryResponse response}.
-         *
-         * @return a list of messages serialized to JSON
-         */
-        List<String> jsonMessages() {
-            return unmodifiableList(jsonMessages);
-        }
+    private static void updateWithDiff(MutableData currentData, FirebaseSubscriptionDiff diff) {
+        diff.changed()
+            .forEach(record -> currentData.child(record.key())
+                                          .setValue(record.data()));
+        diff.removed()
+            .forEach(record -> currentData.child(record.key())
+                                          .setValue(null));
+        diff.added()
+            .forEach(record -> currentData.child(newChildKey())
+                                          .setValue(record.data()));
     }
 
     /**
@@ -207,6 +173,28 @@ final class FirebaseSubscriptionRecord {
                        .map(Json::toCompactJson);
     }
 
+    /**
+     * An abstract base for a subscription transaction handler.
+     *
+     * <p>Logs an error in case it occurs, leaving the {@link #doTransaction(MutableData)}
+     * to actual implementors.
+     */
+    private abstract static class SubscriptionUpdateTransactionHandler
+            implements Transaction.Handler {
+
+        @Override
+        public void onComplete(DatabaseError error, boolean committed,
+                               DataSnapshot currentData) {
+            if (!committed) {
+                log().error("Subscription update was not committed to the Firebase.");
+                if (error != null) {
+                    log().error(error.getMessage());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass") // A log method is placed in the outer class.
     private static Logger log() {
         return LogSingleton.INSTANCE.value;
     }

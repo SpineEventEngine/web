@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Mykhailo Drachuk
  */
-class FirebaseSubscriptionEntries {
+final class FirebaseSubscriptionEntries {
 
     /**
      * An empty constructor preventing instantiation.

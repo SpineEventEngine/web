@@ -56,12 +56,10 @@ import static io.spine.web.firebase.FirebaseDatabasePath.allocateForQuery;
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     private final AsyncQueryService queryService;
-    private final long writeAwaitSeconds;
     private final FirebaseDatabase database;
 
     private FirebaseSubscriptionBridge(FirebaseSubscriptionBridge.Builder builder) {
         this.queryService = builder.queryService;
-        this.writeAwaitSeconds = builder.writeAwaitSeconds;
         this.database = builder.database;
     }
 
@@ -71,7 +69,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         FirebaseDatabasePath path = allocateForQuery(query);
         FirebaseSubscriptionRecord record = 
-                new FirebaseSubscriptionRecord(path, queryResponse, writeAwaitSeconds);
+                new FirebaseSubscriptionRecord(path, queryResponse);
         record.storeAsInitial(database);
         Subscription subscription = newSubscription(topic, record.path());
         return new FirebaseSubscribeResult(subscription);
@@ -106,7 +104,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         SubscriptionId id = subscription.getId();
         FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
         FirebaseSubscriptionRecord record = 
-                new FirebaseSubscriptionRecord(path, queryResponse, writeAwaitSeconds);
+                new FirebaseSubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(database);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
@@ -133,11 +131,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         /**
          * The default amount of seconds to wait for a single record to be written.
          */
-        private static final long DEFAULT_WRITE_AWAIT_SECONDS = 10L;
-
         private AsyncQueryService queryService;
         private FirebaseDatabase database;
-        private long writeAwaitSeconds = DEFAULT_WRITE_AWAIT_SECONDS;
 
         /**
          * Prevents local instantiation.
@@ -154,18 +149,6 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
         public Builder setDatabase(FirebaseDatabase database) {
             this.database = checkNotNull(database);
-            return this;
-        }
-
-        /**
-         * Sets the amount of seconds to wait for a single record to be written.
-         *
-         * <p>The default value is {@code 60} seconds.
-         *
-         * @param writeAwaitSeconds time to await a single write operation, in seconds
-         */
-        public Builder setWriteAwaitSeconds(long writeAwaitSeconds) {
-            this.writeAwaitSeconds = writeAwaitSeconds;
             return this;
         }
 

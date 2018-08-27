@@ -25,7 +25,7 @@ package io.spine.web.firebase;
  *
  * @author Mykhailo Drachuk
  */
-class FirebaseSubscriptionRecords {
+final class FirebaseSubscriptionRecords {
 
     /**
      * An empty constructor preventing instantiation.

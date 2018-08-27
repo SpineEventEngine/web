@@ -44,7 +44,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Mykhailo Drachuk
  */
-class FirebaseSubscriptionDiff {
+final class FirebaseSubscriptionDiff {
 
     private final List<AddedRecord> added;
     private final List<ChangedRecord> changed;
