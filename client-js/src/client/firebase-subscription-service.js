@@ -23,10 +23,12 @@ import {Subscription} from 'spine-js-client-proto/spine/client/subscription_pb';
 const SECOND = 1000;
 const TEN_SECONDS = 10 * SECOND;
 
+/**
+ * A service that manages the subscriptions periodically sending requests to keep them running.
+ */
 export class FirebaseSubscriptionService {
   /**
-   *
-   * @param {Endpoint} endpoint
+   * @param {Endpoint} endpoint an endpoint to communicate with
    */
   constructor(endpoint) {
     /**
@@ -42,7 +44,10 @@ export class FirebaseSubscriptionService {
   }
 
   /**
-   * @param {EntitySubscription} subscription
+   * Add a subscription to the service to handle the keep-up requests and cancel in
+   * case of unsubscribe.
+   *
+   * @param {EntitySubscription} subscription an entity subscription to keep running
    */
   add(subscription) {
     if (this._isRegistered(subscription)) {
@@ -51,6 +56,9 @@ export class FirebaseSubscriptionService {
     this._subscriptions.push(subscription);
   }
 
+  /**
+   * Starts the subscription service, keeping up the added subscriptions.
+   */
   run() {
     if (this._interval) {
       throw "The FirebaseSubscriptionService is already running";
@@ -73,19 +81,35 @@ export class FirebaseSubscriptionService {
     });
   }
 
+  /**
+   * Stops the subscription service unsubscribing and removing all added subscriptions.
+   */
   stop() {
     if (!this._interval) {
       throw "The FirebaseSubscriptionService was stopped when it was not running";
     }
     clearInterval(this._interval);
+    this._subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+      this._removeSubscription(subscription);
+    });
     this._interval = null;
   }
 
+  /**
+   * Removes the provided subscription from subscriptions list, which stops any attempts 
+   * to update it.
+   *
+   * @private
+   */
   _removeSubscription(subscription) {
     const index = this._subscriptions.indexOf(subscription);
     this._subscriptions.splice(index, 1);
   }
 
+  /**
+   * @private
+   */
   _isRegistered(subscription) {
     const id = subscription.id();
     const exists = this._subscriptions.find(registered => registered.id() === id);

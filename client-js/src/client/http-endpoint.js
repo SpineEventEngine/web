@@ -43,21 +43,21 @@ export class EndpointError {
   }
 
   /**
-   * @returns {boolean} `true` if the error was caused by an invalid client behaviour
+   * @return {boolean} `true` if the error was caused by an invalid client behaviour
    */
   isClient() {
     return this._causedByClient;
   }
 
   /**
-   * @returns {boolean} `true` in case of the server error
+   * @return {boolean} `true` in case of the server error
    */
   isServer() {
     return !this._causedByClient;
   }
 
   /**
-   * @returns {Object} the reason of the error
+   * @return {Object} the reason of the error
    */
   reason() {
     return this._reason;
@@ -67,7 +67,7 @@ export class EndpointError {
    * Returns new `EndpointError` caused by the client.
    *
    * @param reason the reason why the error occurred
-   * @returns {EndpointError} new error instance
+   * @return {EndpointError} new error instance
    */
   static clientError(reason) {
     const CAUSED_BY_CLIENT = true;
@@ -78,7 +78,7 @@ export class EndpointError {
    * Returns new `EndpointError` caused by the server.
    *
    * @param reason the reason why the error occurred
-   * @returns {EndpointError} new error instance
+   * @return {EndpointError} new error instance
    */
   static serverError(reason) {
     const CAUSED_BY_SERVER = false;

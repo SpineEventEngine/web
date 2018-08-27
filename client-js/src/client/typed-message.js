@@ -74,7 +74,7 @@ export class TypedMessage {
   /**
    * Converts this message into a byte array.
    *
-   * @returns an array of bytes representing the message
+   * @return an array of bytes representing the message
    */
   toBytes() {
     return this.message.serializeBinary();
@@ -83,7 +83,7 @@ export class TypedMessage {
   /**
    * Converts this message into an {@link Any}.
    *
-   * @returns this message packed into an instance of Any
+   * @return this message packed into an instance of Any
    */
   toAny() {
     const result = new Any();
@@ -95,7 +95,7 @@ export class TypedMessage {
   /**
    * Converts this message into a Base64-encoded byte string.
    *
-   * @returns the string representing this message
+   * @return the string representing this message
    */
   toBase64() {
     const bytes = this.toBytes();

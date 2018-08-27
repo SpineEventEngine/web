@@ -30,7 +30,7 @@
 /**
  * @callback observableFunction
  * @param {Observer<V>} observer
- * @returns {voidCallback}
+ * @return {voidCallback}
  * @template <V, B>
  */
 
