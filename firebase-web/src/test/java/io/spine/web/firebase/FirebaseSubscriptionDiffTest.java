@@ -20,13 +20,13 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.MutableData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
-import static io.spine.web.firebase.given.FirebaseSubscriptionDiffTestEnv.snapshotReturning;
+import static io.spine.web.firebase.given.FirebaseSubscriptionDiffTestEnv.dataReturning;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -38,7 +38,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
-        DataSnapshot mock = snapshotReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        MutableData mock = dataReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
@@ -66,7 +66,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a removed object")
     void createRemovedDiff() {
-        DataSnapshot mock = snapshotReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        MutableData mock = dataReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList(),
@@ -81,10 +81,10 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge changes spanning multiple objects")
     void createComplexDiff() {
-        DataSnapshot changedMock = snapshotReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
-        DataSnapshot removedMock = snapshotReturning("{\"x\":\"asd\",\"y\":3}");
-        DataSnapshot passMock = snapshotReturning("{\"pass\":true}");
-        DataSnapshot passByIdMock = snapshotReturning("{\"id\":{\"value\": \"passed\"}}");
+        MutableData changedMock = dataReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        MutableData removedMock = dataReturning("{\"x\":\"asd\",\"y\":3}");
+        MutableData passMock = dataReturning("{\"pass\":true}");
+        MutableData passByIdMock = dataReturning("{\"id\":{\"value\": \"passed\"}}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 

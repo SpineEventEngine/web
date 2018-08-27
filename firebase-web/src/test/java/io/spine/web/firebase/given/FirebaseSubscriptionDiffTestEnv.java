@@ -20,16 +20,8 @@
 
 package io.spine.web.firebase.given;
 
-import com.google.firebase.database.DataSnapshot;
-import io.spine.core.Response;
+import com.google.firebase.database.MutableData;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import static io.spine.core.Responses.statusOk;
-import static io.spine.json.Json.toCompactJson;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,8 +36,8 @@ public final class FirebaseSubscriptionDiffTestEnv {
     private FirebaseSubscriptionDiffTestEnv() {
     }
 
-    public static DataSnapshot snapshotReturning(String s) {
-        DataSnapshot mock = mock(DataSnapshot.class);
+    public static MutableData dataReturning(String s) {
+        MutableData mock = mock(MutableData.class);
         when(mock.getValue()).thenReturn(s);
         return mock;
     }
