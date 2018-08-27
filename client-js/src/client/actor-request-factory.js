@@ -22,19 +22,19 @@
 
 import uuid from 'uuid';
 
-import {Timestamp} from 'spine-js-client-proto/google/protobuf/timestamp_pb';
-import {Query, QueryId} from 'spine-js-client-proto/spine/client/query_pb';
-import {Topic, TopicId} from 'spine-js-client-proto/spine/client/subscription_pb';
+import {Timestamp} from 'spine-web-client-proto/google/protobuf/timestamp_pb';
+import {Query, QueryId} from 'spine-web-client-proto/spine/client/query_pb';
+import {Topic, TopicId} from 'spine-web-client-proto/spine/client/subscription_pb';
 import {
   EntityFilters,
   EntityId,
   EntityIdFilter,
   Target
-} from 'spine-js-client-proto/spine/client/entities_pb';
-import {ActorContext} from 'spine-js-client-proto/spine/core/actor_context_pb';
-import {Command, CommandContext, CommandId} from 'spine-js-client-proto/spine/core/command_pb';
-import {UserId} from 'spine-js-client-proto/spine/core/user_id_pb';
-import {ZoneId, ZoneOffset} from 'spine-js-client-proto/spine/time/time_pb';
+} from 'spine-web-client-proto/spine/client/entities_pb';
+import {ActorContext} from 'spine-web-client-proto/spine/core/actor_context_pb';
+import {Command, CommandContext, CommandId} from 'spine-web-client-proto/spine/core/command_pb';
+import {UserId} from 'spine-web-client-proto/spine/core/user_id_pb';
+import {ZoneId, ZoneOffset} from 'spine-web-client-proto/spine/time/time_pb';
 import {TypedMessage, TypeUrl} from './typed-message';
 
 

@@ -19,7 +19,7 @@
  */
 
 import {TypedMessage, TypeUrl} from './typed-message';
-import {WebQuery} from 'spine-js-client-proto/spine/web/web_query_pb';
+import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
 /**
  * The type URL representing the spine.client.Query.
