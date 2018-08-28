@@ -140,6 +140,8 @@ class Endpoint {
   /**
    * Sends off a request to cancel an existing subscription.
    *
+   * Cancelling subscription stops the server updating subscription with new values.
+   *
    * @param {!spine.client.Subscription} subscription a subscription that should be kept open
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs

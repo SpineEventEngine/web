@@ -95,7 +95,8 @@ class Fetch {
  * @property {Observable<T>} itemAdded
  * @property {Observable<T>} itemChanged
  * @property {Observable<T>} itemRemoved
- * @property {voidCallback} unsubscribe a method to be called to stop all of the subscriptions
+ * @property {voidCallback} unsubscribe a method to be called to cancel the subscription, stopping 
+ *                                      the subscribers from receiving new entities
  *
  * @template <T>
  */
