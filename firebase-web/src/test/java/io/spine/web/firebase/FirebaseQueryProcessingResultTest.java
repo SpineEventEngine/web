@@ -46,7 +46,8 @@ import static org.mockito.Mockito.when;
 class FirebaseQueryProcessingResultTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseQueryProcessingResultTest.class).query();
+            TestActorRequestFactory.newInstance(FirebaseQueryProcessingResultTest.class)
+                                   .query();
 
     private FirebaseDatabasePath databasePath;
 

@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.QueryServlet;
+import io.spine.web.query.QueryServlet;
 
 /**
  * A {@link QueryServlet} which uses the {@link FirebaseQueryBridge}.

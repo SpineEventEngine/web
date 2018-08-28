@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.QueryProcessingResult;
+import io.spine.web.query.QueryProcessingResult;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -53,10 +53,11 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
      */
     @Override
     public void writeTo(ServletResponse response) throws IOException {
-        FirebaseQueryResponse queryResponse = FirebaseQueryResponseVBuilder.newBuilder()
-                                                                           .setPath(path.toString())
-                                                                           .setCount(count)
-                                                                           .build();
+        FirebaseQueryResponse queryResponse =
+                FirebaseQueryResponseVBuilder.newBuilder()
+                                             .setPath(path.toString())
+                                             .setCount(count)
+                                             .build();
         response.getWriter().append(toCompactJson(queryResponse));
         response.setContentType(JSON_MIME_TYPE);
     }

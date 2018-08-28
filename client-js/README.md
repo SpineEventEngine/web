@@ -2,7 +2,7 @@
 This module is a JS library that communicates with Spine Web server. It’s a facade for sending 
 domain commands, querying data and subscribing to entity states.  
 
-The latest published version can be found on [NPM](https://www.npmjs.com/package/spine-js-client).
+The latest published version can be found on [NPM](https://www.npmjs.com/package/spine-web-client).
 
 ## Publishing
 

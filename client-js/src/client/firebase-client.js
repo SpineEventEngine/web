@@ -37,32 +37,64 @@ export class FirebaseClient {
   }
 
   /**
-   * Subscribes to the child_added events of of the node under the given path.
+   * Subscribes to the `child_added` events of of the node under the given path.
    *
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
    * @param {!string} path the path to the watched node
    * @param {!consumerCallback<Object>} dataCallback the child value callback
-   * 
+   *
    * @return {Subscription} a Subscription that can be unsubscribed
    */
   onChildAdded(path, dataCallback) {
+    return this._subscribeToChildEvent('child_added', path, dataCallback);
+  }
+
+  /**
+   * Subscribes to the `child_changed` events of of the node under the given path.
+   *
+   * Each child's value is parsed as a JSON and dispatched to the given callback
+   *
+   * @param {!string} path the path to the watched node
+   * @param {!consumerCallback<Object>} dataCallback the child value callback
+   *
+   * @return {Subscription} a Subscription that can be unsubscribed
+   */
+  onChildChanged(path, dataCallback) {
+    return this._subscribeToChildEvent('child_changed', path, dataCallback);
+  }
+
+  /**
+   * Subscribes to the `child_removed` events of of the node under the given path.
+   *
+   * Each child's value is parsed as a JSON and dispatched to the given callback
+   *
+   * @param {!string} path the path to the watched node
+   * @param {!consumerCallback<Object>} dataCallback the child value callback
+   *
+   * @return {Subscription} a Subscription that can be unsubscribed
+   */
+  onChildRemoved(path, dataCallback) {
+    return this._subscribeToChildEvent('child_removed', path, dataCallback);
+  }
+
+  _subscribeToChildEvent(childEvent, path, dataCallback) {
     const dbRef = this._firebaseApp.database().ref(path);
-    const callback = dbRef.on('child_added', response => {
+    const callback = dbRef.on(childEvent, response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
       dataCallback(message);
     });
     return new Subscription(() => {
-      dbRef.off('child_added', callback);
+      dbRef.off(childEvent, callback);
     });
   }
 
   /**
-   * Gets an array of values from Firebase at the provided path. 
+   * Gets an array of values from Firebase at the provided path.
    *
    * @param {!string} path the path to the node to get value from
-   * @param {!consumerCallback<Object[]>} dataCallback a callback which is invoked with an array of 
+   * @param {!consumerCallback<Object[]>} dataCallback a callback which is invoked with an array of
    *                                                   entities at path
    */
   getValues(path, dataCallback) {

@@ -31,6 +31,7 @@ dependencies {
     api ("com.google.firebase:firebase-admin:$firebaseVersion") {
         exclude group: 'com.google.guava', module: 'guava'
     }
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
     implementation "io.spine:spine-client:$spineVersion"
 }

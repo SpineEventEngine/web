@@ -19,11 +19,14 @@
  */
 
 /**
- * This package contains the implementation of the Spine web API based on the Firebase Realtime
- * Database.
+ * This package contains the implementation of the Spine web API using the Firebase Realtime
+ * Database to deliver data to web clients.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.web.firebase;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

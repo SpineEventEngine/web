@@ -66,6 +66,10 @@ final class FirebaseDatabasePath {
         return new FirebaseDatabasePath(path);
     }
 
+    static FirebaseDatabasePath fromString(String string) {
+        return new FirebaseDatabasePath(string);
+    }
+
     private static String constructPath(Query query) {
         String tenantId = tenantIdAsString(query);
         String actor = actorAsString(query);
@@ -91,9 +95,11 @@ final class FirebaseDatabasePath {
         TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
-                return tenantId.getEmail().getValue();
+                return tenantId.getEmail()
+                               .getValue();
             case DOMAIN:
-                return tenantId.getDomain().getValue();
+                return tenantId.getDomain()
+                               .getValue();
             case VALUE:
                 return tenantId.getValue();
             case KIND_NOT_SET: // Fallthrough intended.
@@ -115,7 +121,8 @@ final class FirebaseDatabasePath {
     }
 
     private static String escaped(String dirty) {
-        return ILLEGAL_DATABASE_PATH_SYMBOL.matcher(dirty).replaceAll(SUBSTITUTION_SYMBOL);
+        return ILLEGAL_DATABASE_PATH_SYMBOL.matcher(dirty)
+                                           .replaceAll(SUBSTITUTION_SYMBOL);
     }
 
     /**

@@ -24,10 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-import io.spine.web.QueryBridge;
-import io.spine.web.QueryProcessingResult;
 import io.spine.web.WebQuery;
-import io.spine.web.queryservice.AsyncQueryService;
+import io.spine.web.query.QueryBridge;
+import io.spine.web.query.QueryProcessingResult;
+import io.spine.web.query.service.AsyncQueryService;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -79,7 +79,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
     public QueryProcessingResult send(WebQuery webQuery) {
         Query query = webQuery.getQuery();
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseRecord record = new FirebaseRecord(query, queryResponse, writeAwaitSeconds);
+        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse,
+                                                             writeAwaitSeconds);
 
         if (webQuery.getDeliveredTransactionally()) {
             record.storeTransactionallyTo(database);

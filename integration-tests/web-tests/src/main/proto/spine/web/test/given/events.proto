@@ -22,6 +22,13 @@ message TaskCreated {
     string description = 3;
 }
 
+message TaskRenamed {
+
+    TaskId id = 1;
+
+    string name = 2 [(required) = true];
+}
+
 message ProjectCreated {
     
     ProjectId id = 1;

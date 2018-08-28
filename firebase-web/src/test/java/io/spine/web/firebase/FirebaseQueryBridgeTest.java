@@ -30,8 +30,8 @@ import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.QueryProcessingResult;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
+import io.spine.web.query.QueryProcessingResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +40,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.ONE_SECOND;
+import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.SECONDS;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
@@ -62,9 +64,8 @@ import static org.mockito.Mockito.when;
 class FirebaseQueryBridgeTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class).query();
-    private static final int ONE_SECOND = 1000 /* ms */;
-    private static final int SECONDS = ONE_SECOND;
+            TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class)
+                                   .query();
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference pathReference;
@@ -105,8 +106,8 @@ class FirebaseQueryBridgeTest {
                                                         .setDatabase(firebaseDatabase)
                                                         .build();
         Query query = queryFactory.all(Timestamp.class);
-        //noinspection ResultOfMethodCallIgnored
-        bridge.send(nonTransactionalQuery(query));
+        @SuppressWarnings("unused")
+        QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
         verify(pathReference, timeout(5 * SECONDS)).push();
         verify(childReference, timeout(5 * SECONDS))

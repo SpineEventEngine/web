@@ -22,7 +22,10 @@
  * This package contains the Spine web API.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.web;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

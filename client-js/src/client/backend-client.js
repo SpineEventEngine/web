@@ -20,13 +20,17 @@
 
 "use strict";
 
-import {Observable} from './observable';
+import {Observable, Subscription} from './observable';
 import {TypedMessage, TypeUrl} from './typed-message';
 import {EndpointError, HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
-
+import {FirebaseSubscriptionService} from "./firebase-subscription-service";
+import {
+  Subscription as SpineSubscription,
+  SubscriptionId
+} from "spine-web-client-proto/spine/client/subscription_pb";
 
 /**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
@@ -35,6 +39,7 @@ import {ActorRequestFactory} from './actor-request-factory';
  * Fetch is a static member of the `BackendClient`.
  *
  * @template <T>
+ * @abstract
  */
 class Fetch {
 
@@ -61,7 +66,7 @@ class Fetch {
    *   complete() { ... }
    * })
    *
-   * @returns {Observable<Object, EndpointError>} an observable retrieving values one at a time.
+   * @return {Observable<Object, EndpointError>} an observable retrieving values one at a time.
    * @abstract
    */
   oneByOne() {
@@ -75,7 +80,7 @@ class Fetch {
    * // To query all entities of developer-defined Task type at once:
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
-   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
    *                              that be rejected with an `EndpointError`
    * @abstract
    */
@@ -85,12 +90,26 @@ class Fetch {
 }
 
 /**
+ * @typedef {Object} EntitySubscriptionObject
+ *
+ * @property {Observable<T>} itemAdded
+ * @property {Observable<T>} itemChanged
+ * @property {Observable<T>} itemRemoved
+ * @property {voidCallback} unsubscribe a method to be called to cancel the subscription, stopping 
+ *                                      the subscribers from receiving new entities
+ *
+ * @template <T>
+ */
+
+/**
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
  *
  * Backend client defines operations that client is able to perform (`.fetchAll(...)`,
  * `.sendCommand(...)`, etc.), also providing factory methods for creating Backend Client
  * instances (`.usingFirebase(...)`).
+ *
+ * @abstract
  */
 export class BackendClient {
 
@@ -128,7 +147,7 @@ export class BackendClient {
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
    * @param {!TypeUrl<T>} ofType a type of the entities to be queried
-   * @returns {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
+   * @return {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
    *                                call parameters and executed the query.
    *
    * @template <T>
@@ -173,7 +192,7 @@ export class BackendClient {
    *        a callback executed if the command was rejected by Spine server
    */
   sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
-    const command = this._requestFactory.command(commandMessage);
+    const command = this._requestFactory.command().create(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
         const status = ack.status;
@@ -188,6 +207,37 @@ export class BackendClient {
   }
 
   /**
+   * Subscribes to entity changes on the backend, providing the changes via `itemAdded`,
+   * `itemChanged`, and `itemRemoved` observers.
+   *
+   * The changes can be handled for a one or many entities by specifying the entity type
+   * and the ids.
+   *
+   * The entities that already exist will be initially passed to the `itemAdded` observer. 
+   *
+   * @param {!TypeUrl} ofType a type URL of entities to observe changes
+   * @param {?TypedMessage[]} byIds an array of ids of entities to observe changes
+   * @param {?TypedMessage} byId an id of a single entity to observe changes
+   * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes 
+   *                                             and unsubscribe from the updated 
+   */
+  subscribeToEntities({ofType: typeUrl, byIds: ids, byId: id}) {
+    if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
+      throw "You can specify only one of ids or id as a parameter to subscribeToEntities";
+    }
+    if (typeof id !== 'undefined') {
+      ids = [id];
+    }
+    let topic;
+    if (ids) {
+      topic = this._requestFactory.topic().someOf(typeUrl, ids);
+    } else {
+      topic = this._requestFactory.topic().allOf(typeUrl);
+    }
+    return this._subscribeToTopic(topic);
+  }
+
+  /**
    * A static factory method that creates a new `BackendClient` instance using Firebase as
    * underlying implementation.
    *
@@ -195,7 +245,7 @@ export class BackendClient {
    * @param {!firebase.app.App} withFirebaseStorage
    *        a Firebase Application that will be used to retrieve data from
    * @param {!string} forActor an id of the user interacting with Spine
-   * @returns {BackendClient} a new backend client instance which will send the requests on behalf
+   * @return {BackendClient} a new backend client instance which will send the requests on behalf
    *                          of the provided actor to the provided endpoint, retrieving the data
    *                          from the provided Firebase storage
    */
@@ -204,20 +254,33 @@ export class BackendClient {
     const endpoint = new HttpEndpoint(httpClient);
     const firebaseClient = new FirebaseClient(firebaseApp);
     const requestFactory = new ActorRequestFactory(actor);
+    const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
-    return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory)
+    return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory, subscriptionService);
   }
 
   /**
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
    * @param {!Query} query a query processed by Spine
-   * @returns {BackendClient.Fetch<T>} an object that performs the fetch
+   * @return {BackendClient.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected
    * @abstract
    */
   _fetchOf(query) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   * Creates a subscription to the topic which is updated with backend changes.
+   *
+   * @param {!Topic} topic
+   * @return {Promise<EntitySubscriptionObject>}
+   * @protected
+   * @abstract
+   */
+  _subscribeToTopic(topic) {
     throw 'Not implemented in abstract base.';
   }
 }
@@ -268,7 +331,7 @@ class FirebaseFetch extends Fetch {
   /**
    * Executes a request to fetch many values from Firebase one-by-one.
    *
-   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
    *                              that be rejected with an `EndpointError`
    */
   _fetchManyOneByOne() {
@@ -328,7 +391,7 @@ class FirebaseFetch extends Fetch {
   /**
    * Executes a request to fetch many values from Firebase as an array of objects.
    *
-   * @returns {Promise<Object[]>} a promise resolving an array of entities matching query,
+   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
    *                              that be rejected with an `EndpointError`
    */
   _fetchManyAtOnce() {
@@ -341,7 +404,50 @@ class FirebaseFetch extends Fetch {
 }
 
 /**
- *
+ * A subscription to entity changes on application backend.
+ */
+class EntitySubscription extends Subscription {
+
+  constructor({
+                unsubscribedBy: unsubscribe,
+                withObservables: observables,
+                forSubscription: subscription
+              }) {
+    super(unsubscribe);
+    this.itemAdded = observables.add;
+    this.itemChanged = observables.change;
+    this.itemRemoved = observables.remove;
+    this._subscription = subscription;
+  }
+
+  /**
+   * @return {spine.client.Subscription} an internal Spine `Subscription`
+   */
+  internal() {
+    return this._subscription;
+  }
+
+  /**
+   * @return {String} a string value of the `internal` subscription id.
+   */
+  id() {
+    return this.internal().getId().getValue();
+  }
+
+  /**
+   * @return {EntitySubscriptionObject} a plain object with observables and unsubscribe method
+   */
+  toObject() {
+    return {
+      itemAdded: this.itemAdded,
+      itemChanged: this.itemChanged,
+      itemRemoved: this.itemRemoved,
+      unsubscribe: () => this.unsubscribe()
+    };
+  }
+}
+
+/**
  * An implementation of a client connecting to the application backend retrieving data
  * through Firebase.
  *
@@ -353,10 +459,13 @@ class FirebaseBackendClient extends BackendClient {
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
    * @param {!FirebaseClient} firebaseClient the client to read the query results from
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
+   * @param {!FirebaseSubscriptionService} subscriptionService a service handling the subscriptions
    */
-  constructor(endpoint, firebaseClient, actorRequestFactory) {
+  constructor(endpoint, firebaseClient, actorRequestFactory, subscriptionService) {
     super(endpoint, actorRequestFactory);
     this._firebase = firebaseClient;
+    this._subscriptionService = subscriptionService;
+    this._subscriptionService.run();
   }
 
   /**
@@ -367,6 +476,78 @@ class FirebaseBackendClient extends BackendClient {
   _fetchOf(query) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.
     return new FirebaseBackendClient.Fetch({of: query, using: this});
+  }
+
+  /**
+   * @inheritDoc
+   */
+  _subscribeToTopic(topic) {
+    return new Promise((resolve, reject) => {
+      this._endpoint.subscribeTo(topic)
+        .then(subscription => {
+          const path = subscription.id.value;
+          const subscriptions = {add: null, remove: null, change: null};
+          const add = new Observable((observer) => {
+            subscriptions.add = this._firebase.onChildAdded(path, value => {
+              observer.next(value);
+            });
+          });
+          const change = new Observable((observer) => {
+            subscriptions.change = this._firebase.onChildChanged(path, value => {
+              observer.next(value);
+            });
+          });
+          const remove = new Observable((observer) => {
+            subscriptions.remove = this._firebase.onChildRemoved(path, value => {
+              observer.next(value);
+            });
+          });
+          const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
+          const entitySubscription = new EntitySubscription({
+            unsubscribedBy: () => {
+              FirebaseBackendClient._tearDownSubscriptions(subscriptions);
+            },
+            withObservables: {add, change, remove},
+            forSubscription: subscriptionProto
+          });
+          resolve(entitySubscription.toObject());
+          this._subscriptionService.add(entitySubscription);
+        })
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Unsubscribes the provided Firebase subscriptions.
+   *
+   * @param {{add: Subscription, remove: Subscription, change: Subscription}} subscriptions
+   * @private
+   */
+  static _tearDownSubscriptions(subscriptions) {
+    if (!subscriptions.add.closed) {
+      subscriptions.add.unsubscribe();
+    }
+    if (!subscriptions.remove.closed) {
+      subscriptions.remove.unsubscribe();
+    }
+    if (!subscriptions.change.closed) {
+      subscriptions.change.unsubscribe();
+    }
+  }
+
+  /**
+   * Creates a Protobuf `Subscription` instance to communicate with Spine server.
+   *
+   * @param {String} path a path to object which gets updated in Firebase
+   * @param {Topic} topic a topic for which the Subscription gets updates
+   */
+  static subscriptionProto(path, topic) {
+    const subscription = new SpineSubscription();
+    const id = new SubscriptionId();
+    id.setValue(path);
+    subscription.setId(id);
+    subscription.setTopic(topic);
+    return subscription;
   }
 }
 

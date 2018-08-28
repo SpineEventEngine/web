@@ -27,6 +27,7 @@ import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
  * @type {TypeUrl}
  */
 const WEB_QUERY_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.WebQuery');
+const SUBSCRIPTION_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.client.Subscription');
 
 /**
  * An error which occurred when sending off a request to Spine server endpoint.
@@ -42,21 +43,21 @@ export class EndpointError {
   }
 
   /**
-   * @returns {boolean} `true` if the error was caused by an invalid client behaviour
+   * @return {boolean} `true` if the error was caused by an invalid client behaviour
    */
   isClient() {
     return this._causedByClient;
   }
 
   /**
-   * @returns {boolean} `true` in case of the server error
+   * @return {boolean} `true` in case of the server error
    */
   isServer() {
     return !this._causedByClient;
   }
 
   /**
-   * @returns {Object} the reason of the error
+   * @return {Object} the reason of the error
    */
   reason() {
     return this._reason;
@@ -66,7 +67,7 @@ export class EndpointError {
    * Returns new `EndpointError` caused by the client.
    *
    * @param reason the reason why the error occurred
-   * @returns {EndpointError} new error instance
+   * @return {EndpointError} new error instance
    */
   static clientError(reason) {
     const CAUSED_BY_CLIENT = true;
@@ -77,7 +78,7 @@ export class EndpointError {
    * Returns new `EndpointError` caused by the server.
    *
    * @param reason the reason why the error occurred
-   * @returns {EndpointError} new error instance
+   * @return {EndpointError} new error instance
    */
   static serverError(reason) {
     const CAUSED_BY_SERVER = false;
@@ -110,6 +111,44 @@ class Endpoint {
     const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
     const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
     return this._performQuery(typedQuery);
+  }
+
+  /**
+   * Sends off a request to subscribe to a provided topic to an endpoint.
+   *
+   * @param {!Topic} topic a topic for which a subscription is created
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  subscribeTo(topic) {
+    const typedTopic = new TypedMessage(topic, new TypeUrl('type.spine.io/spine.client.Topic'));
+    return this._subscribeTo(typedTopic);
+  }
+
+  /**
+   * Sends off a request to keep a subscription, stopping it from being closed by server.
+   *
+   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  keepUpSubscription(subscription) {
+    const typedSubscription = new TypedMessage(subscription, SUBSCRIPTION_MESSAGE_TYPE);
+    return this._keepUp(typedSubscription);
+  }
+
+  /**
+   * Sends off a request to cancel an existing subscription.
+   *
+   * Cancelling subscription stops the server updating subscription with new values.
+   *
+   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  cancelSubscription(subscription) {
+    const typedSubscription = new TypedMessage(subscription, SUBSCRIPTION_MESSAGE_TYPE);
+    return this._cancel(typedSubscription);
   }
 
   /**
@@ -147,13 +186,46 @@ class Endpoint {
   _performQuery(query) {
     throw 'Not implemented in abstract base.';
   }
+
+  /**
+   * @param {!TypedMessage<Topic>} topic a topic to create a subscription for
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _subscribeTo(topic) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to keep alive
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _keepUp(subscription) {
+    throw 'Not implemented in abstract base.';
+  }
+
+  /**
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _cancel(subscription) {
+    throw 'Not implemented in abstract base.';
+  }
 }
 
 /**
- * Spine HTTP endpoint which is used to send off Commands and Queries using 
+ * Spine HTTP endpoint which is used to send off Commands and Queries using
  * the provided HTTP client.
  */
-export class HttpEndpoint extends Endpoint{
+export class HttpEndpoint extends Endpoint {
 
   /**
    * @param {!HttpClient} httpClient a client sending requests to server
@@ -191,7 +263,42 @@ export class HttpEndpoint extends Endpoint{
       .postMessage('/query', webQuery)
       .then(HttpEndpoint._jsonOrRejection);
   }
-  
+
+  /**
+   * Sends off a request to create a subscription for a topic.
+   *
+   * @param {!TypedMessage<Topic>} topic a topic to subscribe to
+   * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
+   *                             the client response is not 2xx
+   * @protected
+   */
+  _subscribeTo(topic) {
+    return this._httpClient
+      .postMessage('/subscription/create', topic)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
+  /**
+   * Sends off a request to create a subscription for a topic.
+   *
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented 
+ *                                                                  from being closed by server
+   * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
+   *                             the client response is not 2xx
+   * @protected
+   */
+  _keepUp(subscription) {
+    return this._httpClient
+      .postMessage('/subscription/keep-up', subscription)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
+  _cancel(subscription) {
+    return this._httpClient
+      .postMessage('/subscription/cancel', subscription)
+      .then(HttpEndpoint._jsonOrRejection);
+  }
+
   /**
    * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
    *

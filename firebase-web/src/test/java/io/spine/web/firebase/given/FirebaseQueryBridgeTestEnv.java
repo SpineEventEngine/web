@@ -27,13 +27,15 @@ import io.spine.web.WebQueryVBuilder;
 /**
  * @author Mykhailo Drachuk
  */
-public class FirebaseQueryBridgeTestEnv {
+public final class FirebaseQueryBridgeTestEnv {
+
+    public static final int ONE_SECOND = 1000 /* ms */;
+    public static final int SECONDS = ONE_SECOND;
 
     /**
      * Prevents instantiation of this test environment.
      */
     private FirebaseQueryBridgeTestEnv() {
-        
     }
 
     public static WebQuery transactionalQuery(Query query) {
