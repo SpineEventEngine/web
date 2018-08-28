@@ -60,7 +60,7 @@ class QueryBuilder {
   /**
    * Makes the query to return only the object defined by the provided identifiers.
    *
-   * @param {!Message|Message[]} id an entity ID or an array of entity IDs to query
+   * @param {!TypedMessage|TypedMessage[]} id an entity ID or an array of entity IDs to query
    * @return {QueryBuilder} the current builder instance
    * @throws if this method is executed more than once
    */
@@ -69,7 +69,7 @@ class QueryBuilder {
       throw "Can not set query id more than once.";
     }
     if (id instanceof Array) {
-      this._ids = id.map(each => each);
+      this._ids = id.slice();
     } else {
       this._ids = [id];
     }
@@ -84,6 +84,110 @@ class QueryBuilder {
    */
   build() {
     return this._factory.byIds(this._typeUrl, this._ids);
+  }
+}
+
+/**
+ * Utilities for working with `Query` and `Topic` targets.
+ */
+class Targets {
+
+  /**
+   * Instantiation not allowed and will throw an error.
+   */
+  constructor() {
+    throw "Tried instantiating a utility class."
+  }
+
+  /**
+   * Composes a new target for entities of specified type, optionally with specified IDs and
+   * columnFilters.
+   *
+   * @param {!TypeUrl} type a Type URL for all target entities to match
+   * @param {?TypedMessage[]} ids an array of IDs one of which must be matched by each target entity
+   * @param {?CompositeColumnFilter[]} columnFilters an array of filters target
+   *
+   * @return {Target} a newly created target for entities with specified filters
+   */
+  static compose(type, ids, columnFilters) {
+    const includeAll = !ids && !columnFilters;
+
+    if (includeAll) {
+      return Targets._includingAll(type);
+    }
+
+    const filters = new EntityFilters();
+
+    const entityIds = Targets._nullToEmpty(ids);
+    const idFilter = Targets._assembleIdFilter(entityIds);
+    filters.setIdFilter(idFilter);
+
+    const entityColumnValues = Targets._nullToEmpty(columnFilters);
+    filters.setFilterList(entityColumnValues);
+
+    return Targets._filtered(type, filters);
+  }
+
+  /**
+   * Creates a new target including all items of type.
+   *
+   * @param {!TypeUrl} type
+   * @return {Target}
+   * @private
+   */
+  static _includingAll(type) {
+    const target = new Target();
+    target.setType(type.value);
+    target.setIncludeAll(true);
+    return target;
+  }
+
+
+  /**
+   * Creates a new target including only entities of the specified type that pass filtering.
+   *
+   * @param {!TypeUrl} type
+   * @param {!EntityFilters} filters
+   * @return {Target}
+   * @private
+   */
+  static _filtered(type, filters) {
+    const target = new Target();
+    target.setType(type.value);
+    target.setFilters(filters);
+    return target;
+  }
+
+  /**
+   * Creates an targets ID filter including only items which are included in the provided ID list.
+   *
+   * @param {!TypedMessage} entityIds an array of IDs for entities matching target to be included in
+   * @return {EntityIdFilter}
+   * @private
+   */
+  static _assembleIdFilter(entityIds) {
+    const idFilter = new EntityIdFilter();
+    entityIds.forEach(rawId => {
+      const packedId = rawId.toAny();
+      const entityId = new EntityId();
+      entityId.setId(packedId);
+      idFilter.addIds(entityId);
+    });
+    return idFilter;
+  }
+
+  /**
+   * @param {!Array<T>} input 
+   * @return {Array<T>} an empty array if the value is `null`, or the provided input otherwise
+   * @template <T>
+   * @private
+   */
+  static _nullToEmpty(input) {
+    if (input == null) {
+      return [];
+    } else {
+      return input;
+    }
   }
 }
 
@@ -119,24 +223,7 @@ class QueryFactory {
    * @return {Query} a new query
    */
   byIds(typeUrl, ids) {
-    const target = new Target();
-    target.setType(typeUrl.value);
-
-    if (ids !== null && ids.length) {
-      const idFilter = new EntityIdFilter();
-      ids.forEach(id => {
-        const entityId = new EntityId();
-        entityId.setId(id.toAny());
-
-        idFilter.addIds(entityId);
-      });
-      const filters = new EntityFilters();
-      filters.setIdFilter(idFilter);
-      target.setFilters(filters);
-    } else {
-      target.setIncludeAll(true);
-    }
-
+    const target = Targets.compose(typeUrl, ids);
     return this._newQuery(target);
   }
 
@@ -146,7 +233,7 @@ class QueryFactory {
    * @private
    */
   _newQuery(target) {
-    const id = QueryFactory._newQueryId();
+    const id = QueryFactory._newId();
     const actorContext = this._requestFactory._actorContext();
 
     const result = new Query();
@@ -161,7 +248,7 @@ class QueryFactory {
    * @return {QueryId}
    * @private
    */
-  static _newQueryId() {
+  static _newId() {
     const result = new QueryId();
     result.setValue(`q-${uuid.v4()}`);
     return result;
@@ -183,7 +270,7 @@ class CommandFactory {
   }
 
   /**
-   * Creates a Command from the given command message.
+   * Creates a `Command` from the given command message.
    *
    * @param {!TypedMessage} message a typed command message
    * @return {TypedMessage<Command>} a typed representation of the Spine Command
@@ -244,7 +331,7 @@ class TopicFactory {
    * @return {Topic} the instance of {@code Topic} assembled according to the parameters
    */
   someOf(typeUrl, ids) {
-    const target = TopicFactory._composeTarget(typeUrl, ids);
+    const target = Targets.compose(typeUrl, ids);
     return this._forTarget(target);
   }
 
@@ -255,7 +342,7 @@ class TopicFactory {
    * @return {Topic} an instance of {@code Topic} assembled according to the parameters
    */
   allOf(typeUrl) {
-    const target = TopicFactory._composeTarget(typeUrl);
+    const target = Targets.compose(typeUrl);
     return this._forTarget(target);
   }
 
@@ -273,51 +360,6 @@ class TopicFactory {
     topic.setContext(this._requestFactory._actorContext());
     topic.setTarget(target);
     return topic;
-  }
-
-  static _composeTarget(typeUrl, ids, columnFilters) {
-    const includeAll = (!ids || !ids.length) && (!columnFilters || !columnFilters.length);
-
-    const filters = new EntityFilters();
-    if (!includeAll) {
-      const entityIds = TopicFactory._nullToEmpty(ids);
-      const idFilters = this._assembleIdFilters(entityIds);
-      filters.setIdFilter(idFilters);
-    }
-    const entityColumnValues = TopicFactory._nullToEmpty(columnFilters);
-    filters.setFilterList(entityColumnValues);
-
-    return this._newTarget(typeUrl, includeAll, filters);
-  }
-
-  static _newTarget(typeUrl, includeAll, filters) {
-    const target = new Target();
-    target.setType(typeUrl.value);
-    if (includeAll) {
-      target.setIncludeAll(true);
-    } else {
-      target.setFilters(filters);
-    }
-    return target;
-  }
-
-  static _assembleIdFilters(entityIds) {
-    const idFilter = new EntityIdFilter();
-    entityIds.forEach(rawId => {
-      const packedId = rawId.toAny();
-      const entityId = new EntityId();
-      entityId.setId(packedId);
-      idFilter.addIds(entityId);
-    });
-    return idFilter;
-  }
-
-  static _nullToEmpty(input) {
-    if (input == null) {
-      return [];
-    } else {
-      return input;
-    }
   }
 
   static _generateId() {
