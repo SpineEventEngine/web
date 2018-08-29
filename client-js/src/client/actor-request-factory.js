@@ -26,6 +26,8 @@ import {Timestamp} from 'spine-web-client-proto/google/protobuf/timestamp_pb';
 import {Query, QueryId} from 'spine-web-client-proto/spine/client/query_pb';
 import {Topic, TopicId} from 'spine-web-client-proto/spine/client/subscription_pb';
 import {
+  ColumnFilter,
+  CompositeColumnFilter,
   EntityFilters,
   EntityId,
   EntityIdFilter,
@@ -35,6 +37,7 @@ import {ActorContext} from 'spine-web-client-proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from 'spine-web-client-proto/spine/core/command_pb';
 import {UserId} from 'spine-web-client-proto/spine/core/user_id_pb';
 import {ZoneId, ZoneOffset} from 'spine-web-client-proto/spine/time/time_pb';
+import {FieldMask} from 'spine-web-client-proto/google/protobuf/field_mask_pb';
 import {TypedMessage, TypeUrl} from './typed-message';
 
 
@@ -45,45 +48,34 @@ import {TypedMessage, TypeUrl} from './typed-message';
  */
 const COMMAND_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.core.Command');
 
-/**
- * A builder for creating `Query` instances. A more flexible approach to query creation
- * than using a `QueryFactory`.
- */
-class QueryBuilder {
-
-  constructor(typeUrl, queryFactory) {
-    this._typeUrl = typeUrl;
-    this._factory = queryFactory;
-    this._ids = null;
+class ColumnFilters {
+  /**
+   * @param {ColumnFilter[]} filters
+   * @return {CompositeColumnFilter}
+   */
+  static all(filters) {
+    return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.ALL);
   }
 
   /**
-   * Makes the query to return only the object defined by the provided identifiers.
-   *
-   * @param {!TypedMessage|TypedMessage[]} id an entity ID or an array of entity IDs to query
-   * @return {QueryBuilder} the current builder instance
-   * @throws if this method is executed more than once
+   * @param {ColumnFilter[]} filters
+   * @return {CompositeColumnFilter}
    */
-  byId(id) {
-    if (this._ids !== null) {
-      throw "Can not set query id more than once.";
-    }
-    if (id instanceof Array) {
-      this._ids = id.slice();
-    } else {
-      this._ids = [id];
-    }
-
-    return this;
+  static either(filters) {
+    return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.EITHER);
   }
 
   /**
-   * Creates the Query instance based on all set parameters.
    *
-   * @return {Query} a new query
+   * @param {ColumnFilter[]} filters
+   * @param {CompositeColumnFilter.CompositeOperator} operator
+   * @return {CompositeColumnFilter}
    */
-  build() {
-    return this._factory.byIds(this._typeUrl, this._ids);
+  static compose(filters, operator) {
+    const compositeFilter = new CompositeColumnFilter();
+    compositeFilter.setFilterList(filters);
+    compositeFilter.setOperator(operator);
+    return compositeFilter;
   }
 }
 
@@ -96,7 +88,7 @@ class Targets {
    * Instantiation not allowed and will throw an error.
    */
   constructor() {
-    throw "Tried instantiating a utility class."
+    throw 'Tried instantiating a utility class.';
   }
 
   /**
@@ -113,7 +105,7 @@ class Targets {
     const includeAll = !ids && !columnFilters;
 
     if (includeAll) {
-      return Targets._includingAll(type);
+      return Targets._all(type);
     }
 
     const filters = new EntityFilters();
@@ -135,7 +127,7 @@ class Targets {
    * @return {Target}
    * @private
    */
-  static _includingAll(type) {
+  static _all(type) {
     const target = new Target();
     target.setType(type.value);
     target.setIncludeAll(true);
@@ -177,7 +169,7 @@ class Targets {
   }
 
   /**
-   * @param {!Array<T>} input 
+   * @param {!Array<T>} input
    * @return {Array<T>} an empty array if the value is `null`, or the provided input otherwise
    * @template <T>
    * @private
@@ -188,6 +180,137 @@ class Targets {
     } else {
       return input;
     }
+  }
+}
+
+const INVALID_FILTER_TYPE =
+  'All filters passed to QueryFilter#where() must be of a single type: ' +
+  'either ColumnFilter or CompositeColumnFilter.';
+
+/**
+ * A builder for creating `Query` instances. A more flexible approach to query creation
+ * than using a `QueryFactory`.
+ */
+class QueryBuilder {
+
+  constructor(typeUrl, queryFactory) {
+    this._typeUrl = typeUrl;
+    /**
+     * @type {QueryFactory}
+     * @private
+     */
+    this._factory = queryFactory;
+    /**
+     * @type {TypedMessage[]}
+     * @private
+     */
+    this._ids = null;
+    /**
+     * @type {CompositeColumnFilter[]}
+     * @private
+     */
+    this._columns = null;
+  }
+
+  /**
+   * Sets an ID predicate of the `Query#getTarget()`.
+   *
+   * Makes the query return only the entities identified by the provided IDs.
+   *
+   * @param {!TypedMessage[]} ids an array with identifiers of entities to query
+   * @return {QueryBuilder} the current builder instance
+   * @throws if this method is executed more than once
+   */
+  byIds(ids) {
+    if (this._ids !== null) {
+      throw 'Can not set query ID more than once for QueryBuilder.';
+    }
+    this._ids = ids.slice();
+    return this;
+  }
+
+  /**
+   * Sets an Entity Column predicate of the `Query#getTarget()`.
+   *
+   * <p>If there are no `ColumnFilter`s (i.e. the provided array is empty), all
+   * the records will be returned by executing the `Query`.
+   *
+   * <p>An array of predicates provided to this method are considered to be joined in
+   * a conjunction (using `CompositeColumnFilter.CompositeOperator#ALL`). This means
+   * a record would match this query only if it matches all of the predicates.
+   *
+   * @param {!ColumnFilter[]|CompositeColumnFilter[]} predicates
+   * the predicates to filter the requested entities by
+   * @return {QueryBuilder} self for method chaining
+   * @throws if this method is executed more than once
+   * @see ColumnFilters a convenient way to create `ColumnFilter`s
+   */
+  where(predicates) {
+    if (this._columns !== null) {
+      throw 'Can not set filters more than once for QueryBuilder.';
+    }
+    if (predicates[0] instanceof ColumnFilter) {
+      QueryBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
+      const aggregatingFilter = ColumnFilters.all(predicates);
+      this._columns = [aggregatingFilter];
+    } else {
+      QueryBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
+      this._columns = predicates.slice();
+    }
+    return this;
+  }
+
+  /**
+   * Sets a Field Mask of the `Query`.
+   *
+   * The names of the fields must be formatted according to the `FieldMask`
+   * specification.
+   *
+   * If there are no fields (i.e. an empty array is passed), all the fields will
+   * be returned by query.
+   *
+   * @param {!String[]} fieldNames
+   * @return {QueryBuilder} self for method chaining
+   * @throws if this method is executed more than once
+   * @see FieldMask
+   */
+  withMask(fieldNames) {
+    if (typeof this._fieldMask !== 'undefined') {
+      throw 'Can not set field mask more than once for QueryBuilder.';
+    }
+    if (!fieldNames.length) {
+      return this;
+    }
+    this._fieldMask = new FieldMask();
+    this._fieldMask.setPathsList(fieldNames);
+    return this;
+  }
+
+  /**
+   * Creates the Query instance based on the parameters set to this builder.
+   *
+   * @return {Query} a new query
+   */
+  build() {
+    const target = Targets.compose(this._typeUrl, this._ids, this._columns);
+    return this._factory.forTarget(target, this._fieldMask);
+  }
+
+  /**
+   * Checks that each provided item is an instance of the provided class. In case the check does
+   * not pass an error is thrown.
+   *
+   * @param {![]} items an array of objects that are expected to be of the provided type
+   * @param {!Object} cls a class each item is required to be instance of
+   * @param {!String} message
+   * @private
+   */
+  static _checkAllOfType(items, cls, message = 'Unexpected parameter type.') {
+    items.forEach(item => {
+      if (!(item instanceof cls)) {
+        throw message;
+      }
+    });
   }
 }
 
@@ -206,39 +329,41 @@ class QueryFactory {
   }
 
   /**
-   * @param {!TypeUrl} typeUrl a type URL of the target type
+   * Creates a new builder of Query instances of the provided type
+   * @param {!TypeUrl} type a type URL of the target type
    * @return {QueryBuilder}
    */
-  select(typeUrl) {
-    return new QueryBuilder(typeUrl, this);
+  select(type) {
+    return new QueryBuilder(type, this);
   }
 
   /**
-   * Creates a new query which returns entities of a matching type with specified IDs.
+   * Creates a new `Query` which would return only entities which conform the target specification.
    *
-   * If no identifiers are provided queries for all objects of the provided type.
+   * An optional field mask can be provided to specify particular fields to be returned for `Query`
    *
-   * @param {!TypeUrl} typeUrl
-   * @param {!TypedMessage[]} ids a list of entity identifier messages; an empty list is acceptable
-   * @return {Query} a new query
+   * @param {!Target} target a specification of type and filters for `Query` result to match
+   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
+   * @return {Query}
    */
-  byIds(typeUrl, ids) {
-    const target = Targets.compose(typeUrl, ids);
-    return this._newQuery(target);
+  forTarget(target, fieldMask) {
+    return this._newQuery(target, fieldMask)
   }
 
   /**
-   * @param {!Target} target a target of the query
+   * @param {!Target} target a specification of type and filters for `Query` result to match
+   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
    * @return {Query} a new query instance
    * @private
    */
-  _newQuery(target) {
+  _newQuery(target, fieldMask) {
     const id = QueryFactory._newId();
     const actorContext = this._requestFactory._actorContext();
 
     const result = new Query();
     result.setId(id);
     result.setTarget(target);
+    result.setFieldMask(fieldMask);
     result.setContext(actorContext);
 
     return result;

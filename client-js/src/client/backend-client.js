@@ -170,7 +170,7 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._requestFactory.query().select(type).byId(id).build();
+    const query = this._requestFactory.query().select(type).byIds([id]).build();
 
     const observer = {next: dataCallback};
     if (errorCallback) {
