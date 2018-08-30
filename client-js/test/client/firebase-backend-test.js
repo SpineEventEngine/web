@@ -151,12 +151,12 @@ class Given {
 const given = new Given();
 const backendClient = given.backendClient();
 
-describe('Client should', function () {
+describe('FirebaseBackendClient', function () {
 
   // Big timeout due to remote calls during tests.
   this.timeout(2 * MINUTES);
 
-  it('send commands successfully', done => {
+  it('sends commands successfully', done => {
 
     const command = given.createTaskCommand({
       withIdPrefix: 'spine-web-test-send-command',
@@ -182,7 +182,7 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fail a malformed command', done => {
+  it('fails a malformed command', done => {
     const command = given.createTaskCommand({withId: null});
 
     backendClient.sendCommand(
@@ -197,7 +197,7 @@ describe('Client should', function () {
       fail(done, 'A command was rejected when an error was expected.'));
   });
 
-  it('fetch all the existing entities of given type one by one', done => {
+  it('fetches all the existing entities of given type one by one', done => {
     const command = given.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
     const taskId = command.message.getId();
 
@@ -222,7 +222,7 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fetch all the existing entities of given type at once', done => {
+  it('fetches all the existing entities of given type at once', done => {
     const command = given.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
     const taskId = command.message.getId();
 
@@ -238,7 +238,7 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fetch an empty list for entity that does not get created at once', done => {
+  it('fetches an empty list for entity that does not get created at once', done => {
     backendClient.fetchAll({ofType: given.TYPE.OF_ENTITY.PROJECT}).atOnce()
       .then(data => {
         assert.ok(data.length === 0);
@@ -246,7 +246,7 @@ describe('Client should', function () {
       }, fail(done));
   });
 
-  it('fetch an empty list for entity that does not get created one-by-one', done => {
+  it('fetches an empty list for entity that does not get created one-by-one', done => {
     backendClient.fetchAll({ofType: given.TYPE.OF_ENTITY.PROJECT}).oneByOne()
       .subscribe({
         next: fail(done),
@@ -255,7 +255,7 @@ describe('Client should', function () {
       });
   });
 
-  it('fail a malformed query', done => {
+  it('fails a malformed query', done => {
     const command = given.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
 
     backendClient.sendCommand(command, () => {
@@ -270,7 +270,7 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('subscribe to new entities of type', done => {
+  it('subscribes to new entities of type', done => {
     const TASKS_TO_BE_CREATED = 3;
     let taskIds;
     let count = 0;
@@ -309,7 +309,7 @@ describe('Client should', function () {
     });
   });
 
-  it('subscribe to entity changes of type', done => {
+  it('subscribes to entity changes of type', done => {
     const TASKS_TO_BE_CHANGED = 3;
     let taskIds;
     let countChanged = 0;
@@ -394,7 +394,7 @@ describe('Client should', function () {
     });
   });
 
-  it('subscribe to entity changes by id', done => {
+  it('subscribes to entity changes by id', done => {
     const expectedChangesCount = 2;
     const initialTaskName = 'Initial task name';
     const expectedRenames = ['Renamed once', 'Renamed twice'];
@@ -494,7 +494,7 @@ describe('Client should', function () {
     });
   });
 
-  it('fail a malformed subscription', done => {
+  it('fails a malformed subscription', done => {
     backendClient.subscribeToEntities({ofType: given.TYPE.MALFORMED})
       .then(() => {
         done(new Error('A malformed subscription should not yield results.'));
