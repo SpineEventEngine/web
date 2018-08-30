@@ -70,7 +70,7 @@ class Fetch {
    * @abstract
    */
   oneByOne() {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -85,7 +85,7 @@ class Fetch {
    * @abstract
    */
   atOnce() {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 }
 
@@ -223,7 +223,7 @@ export class BackendClient {
    */
   subscribeToEntities({ofType: typeUrl, byIds: ids, byId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
-      throw "You can specify only one of ids or id as a parameter to subscribeToEntities";
+      throw new Error('You can specify only one of ids or id as a parameter to subscribeToEntities');
     }
     if (typeof id !== 'undefined') {
       ids = [id];
@@ -269,7 +269,7 @@ export class BackendClient {
    * @abstract
    */
   _fetchOf(query) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -281,7 +281,7 @@ export class BackendClient {
    * @abstract
    */
   _subscribeToTopic(topic) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 }
 

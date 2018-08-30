@@ -88,7 +88,7 @@ class Targets {
    * Instantiation not allowed and will throw an error.
    */
   constructor() {
-    throw 'Tried instantiating a utility class.';
+    throw new Error('Tried instantiating a utility class.');
   }
 
   /**
@@ -223,7 +223,7 @@ class QueryBuilder {
    */
   byIds(ids) {
     if (this._ids !== null) {
-      throw 'Can not set query ID more than once for QueryBuilder.';
+      throw new Error('Can not set query ID more than once for QueryBuilder.');
     }
     this._ids = ids.slice();
     return this;
@@ -247,7 +247,7 @@ class QueryBuilder {
    */
   where(predicates) {
     if (this._columns !== null) {
-      throw 'Can not set filters more than once for QueryBuilder.';
+      throw new Error('Can not set filters more than once for QueryBuilder.');
     }
     if (predicates[0] instanceof ColumnFilter) {
       QueryBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
@@ -275,8 +275,8 @@ class QueryBuilder {
    * @see FieldMask
    */
   withMask(fieldNames) {
-    if (typeof this._fieldMask !== 'undefined') {
-      throw 'Can not set field mask more than once for QueryBuilder.';
+    if (this._fieldMask != null) {
+      throw new Error('Can not set field mask more than once for QueryBuilder.');
     }
     if (!fieldNames.length) {
       return this;
@@ -308,7 +308,7 @@ class QueryBuilder {
   static _checkAllOfType(items, cls, message = 'Unexpected parameter type.') {
     items.forEach(item => {
       if (!(item instanceof cls)) {
-        throw message;
+        throw new Error(message);
       }
     });
   }

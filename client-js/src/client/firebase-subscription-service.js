@@ -51,7 +51,7 @@ export class FirebaseSubscriptionService {
    */
   add(subscription) {
     if (this._isRegistered(subscription)) {
-      throw "This subscription is already registered in subscription service";
+      throw new Error('This subscription is already registered in subscription service');
     }
     this._subscriptions.push(subscription);
   }
@@ -61,7 +61,7 @@ export class FirebaseSubscriptionService {
    */
   run() {
     if (this._interval) {
-      throw "The FirebaseSubscriptionService is already running";
+      throw new Error('The FirebaseSubscriptionService is already running');
     }
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
@@ -86,7 +86,7 @@ export class FirebaseSubscriptionService {
    */
   stop() {
     if (!this._interval) {
-      throw "The FirebaseSubscriptionService was stopped when it was not running";
+      throw new Error('The FirebaseSubscriptionService was stopped when it was not running');
     }
     clearInterval(this._interval);
     this._subscriptions.forEach(subscription => {

@@ -173,7 +173,7 @@ class Endpoint {
    * @abstract
    */
   _executeCommand(command) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -184,7 +184,7 @@ class Endpoint {
    * @abstract
    */
   _performQuery(query) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -195,7 +195,7 @@ class Endpoint {
    * @abstract
    */
   _subscribeTo(topic) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -206,7 +206,7 @@ class Endpoint {
    * @abstract
    */
   _keepUp(subscription) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -217,7 +217,7 @@ class Endpoint {
    * @abstract
    */
   _cancel(subscription) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 }
 
