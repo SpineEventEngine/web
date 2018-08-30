@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// noinspection NodeJsCodingAssistanceForCoreModules
 import assert from 'assert';
 
 import {Observable} from '../../src/client/observable';
