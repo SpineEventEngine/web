@@ -377,7 +377,7 @@ describe('QueryBuilder', function () {
       CompositeColumnFilter.CompositeOperator.EITHER, nameFilter1, nameFilter2
     );
     const descriptionFilter = Given.newCompositeFilter(
-      CompositeColumnFilter.CompositeOperator.AND,
+      CompositeColumnFilter.CompositeOperator.ALL,
       Given.newColumnFilter(
         'description', new TypedMessage(new StringValue(['Web needs tests, eh?']), Type.STRING)
       )
