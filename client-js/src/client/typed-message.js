@@ -22,6 +22,15 @@
 
 import base64 from 'base64-js';
 import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
+import {
+  Int32Value,
+  Int64Value,
+  StringValue
+} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
+import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
+import {Subscription, Topic} from 'spine-web-client-proto/spine/client/subscription_pb';
+import {Command} from 'spine-web-client-proto/spine/core/command_pb';
+
 
 /**
  * A URL of a Protobuf type.
@@ -50,6 +59,40 @@ export class TypeUrl {
   }
 }
 
+export class Type {
+  /**
+   * @param {Object} cls
+   * @param {TypeUrl} typeUrl
+   */
+  constructor(cls, typeUrl) {
+    this._cls = cls;
+    this._typeUrl = typeUrl;
+  }
+
+  url() {
+    return this._typeUrl;
+  }
+
+  class() {
+    return this._cls;
+  }
+}
+
+// PRIMITIVE WRAPPERS
+Type.STRING = new Type(StringValue, new TypeUrl('type.googleapis.com/proto.google.protobuf.StringValue'));
+Type.INT32 = new Type(Int32Value, new TypeUrl('type.googleapis.com/proto.google.protobuf.Int32Value'));
+Type.INT64 = new Type(Int64Value, new TypeUrl('type.googleapis.com/proto.google.protobuf.Int64Value'));
+
+// SPINE WEB
+Type.WEB_QUERY = new Type(WebQuery, new TypeUrl('type.spine.io/spine.web.WebQuery'));
+
+// SPINE CLIENT
+Type.SUBSCRIPTION = new Type(Subscription, new TypeUrl('type.spine.io/spine.client.Subscription'));
+Type.TOPIC = new Type(Topic, new TypeUrl('type.spine.io/spine.client.Topic'));
+
+// SPINE CORE
+Type.COMMAND = new Type(Command, new TypeUrl('type.spine.io/spine.core.Command'));
+
 /**
  * A Protobuf message with a {@link TypeUrl}.
  *
@@ -64,41 +107,20 @@ export class TypedMessage {
    * type URL.
    *
    * @param {!Message} message a Protobuf message
-   * @param {!TypeUrl<T>} typeUrl a Protobuf type of the message
+   * @param {!Type<T>} type a Protobuf type of the message
    */
-  constructor(message, typeUrl) {
+  constructor(message, type) {
     this.message = message;
-    this.type = typeUrl;
+    this.type = type;
   }
-
-  /**
-   * Converts this message into a byte array.
-   *
-   * @return an array of bytes representing the message
-   */
-  toBytes() {
-    return this.message.serializeBinary();
-  }
-
-  /**
-   * Converts this message into an {@link Any}.
-   *
-   * @return this message packed into an instance of Any
-   */
-  toAny() {
-    const result = new Any();
-    const bytes = this.toBytes();
-    result.pack(bytes, this.type.typeName, this.type.typeUrlPrefix);
-    return result;
-  }
-
+  
   /**
    * Converts this message into a Base64-encoded byte string.
    *
    * @return the string representing this message
    */
   toBase64() {
-    const bytes = this.toBytes();
+    const bytes = this.message.serializeBinary();
     return base64.fromByteArray(bytes);
   }
 }

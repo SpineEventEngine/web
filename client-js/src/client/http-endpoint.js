@@ -18,16 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {TypedMessage, TypeUrl} from './typed-message';
+import {Type, TypedMessage} from './typed-message';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
-
-/**
- * The type URL representing the spine.client.Query.
- *
- * @type {TypeUrl}
- */
-const WEB_QUERY_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.web.WebQuery');
-const SUBSCRIPTION_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.client.Subscription');
 
 /**
  * An error which occurred when sending off a request to Spine server endpoint.
@@ -109,7 +101,7 @@ class Endpoint {
    */
   query(query, strategy) {
     const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
-    const typedQuery = new TypedMessage(webQuery, WEB_QUERY_MESSAGE_TYPE);
+    const typedQuery = new TypedMessage(webQuery, Type.WEB_QUERY);
     return this._performQuery(typedQuery);
   }
 
@@ -121,7 +113,7 @@ class Endpoint {
    *                           an error occurs
    */
   subscribeTo(topic) {
-    const typedTopic = new TypedMessage(topic, new TypeUrl('type.spine.io/spine.client.Topic'));
+    const typedTopic = new TypedMessage(topic, Type.TOPIC);
     return this._subscribeTo(typedTopic);
   }
 
@@ -133,7 +125,7 @@ class Endpoint {
    *                           an error occurs
    */
   keepUpSubscription(subscription) {
-    const typedSubscription = new TypedMessage(subscription, SUBSCRIPTION_MESSAGE_TYPE);
+    const typedSubscription = new TypedMessage(subscription, Type.SUBSCRIPTION);
     return this._keepUp(typedSubscription);
   }
 
@@ -147,7 +139,7 @@ class Endpoint {
    *                           an error occurs
    */
   cancelSubscription(subscription) {
-    const typedSubscription = new TypedMessage(subscription, SUBSCRIPTION_MESSAGE_TYPE);
+    const typedSubscription = new TypedMessage(subscription, Type.SUBSCRIPTION);
     return this._cancel(typedSubscription);
   }
 
@@ -281,8 +273,8 @@ export class HttpEndpoint extends Endpoint {
   /**
    * Sends off a request to create a subscription for a topic.
    *
-   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented 
- *                                                                  from being closed by server
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented
+   *                                                                  from being closed by server
    * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
    *                             the client response is not 2xx
    * @protected
