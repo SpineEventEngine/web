@@ -38,6 +38,11 @@ const SECONDS = 1000 * MILLISECONDS;
 
 
 class Given {
+
+  constructor() {
+    throw new Error('A utility Given class cannot be instantiated.');
+  }
+
   /**
    * @param {String} value
    * @return {TypedMessage}
