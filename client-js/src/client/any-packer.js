@@ -253,7 +253,7 @@ class Pack {
    */
   static _primitive(value, type) {
     const wrapper = type.class();
-    const message = wrapper([value]);
+    const message = new wrapper([value]);
     return Pack._message(message, type);
   }
 
