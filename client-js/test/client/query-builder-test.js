@@ -437,7 +437,7 @@ describe('QueryBuilder', function () {
         .query()
         .select(Given.TYPE.TASK)
         .where(['Duck', 'duck', 'goose']);
-      done(new Error('An error was expected due to invalid #where() parameter.'))
+      done(new Error('An error was expected due to invalid #where() parameter.'));
     } catch (e) {
       done();
     }
