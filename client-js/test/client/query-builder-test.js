@@ -22,7 +22,7 @@
 import assert from 'assert';
 
 import {Type, TypedMessage, TypeUrl} from '../../src/client/typed-message';
-import {ActorRequestFactory} from '../../src/client/actor-request-factory';
+import {ActorRequestFactory, ColumnFilters} from '../../src/client/actor-request-factory';
 import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
 import {AnyPacker} from '../../src/client/any-packer';
 import {Message} from 'google-protobuf';
@@ -102,33 +102,6 @@ class Given {
    */
   static requestFactory() {
     return new ActorRequestFactory(Given.ACTOR);
-  }
-
-  /**
-   * @param {string} column
-   * @param {TypedMessage} value
-   * @param {ColumnFilter.Operator} operator
-   * @return {ColumnFilter}
-   */
-  static newColumnFilter(column, value, operator = ColumnFilter.Operator.EQUAL) {
-    const filter = new ColumnFilter();
-    filter.setColumnName(column);
-    filter.setValue(AnyPacker.packTyped(value));
-    filter.setOperator(operator);
-    return filter;
-  }
-
-  /**
-   *
-   * @param {CompositeColumnFilter.CompositeOperator} operator
-   * @param {...ColumnFilter} filters
-   * @return {CompositeColumnFilter}
-   */
-  static newCompositeFilter(operator, ...filters) {
-    const filter = new CompositeColumnFilter();
-    filter.setFilterList(filters);
-    filter.setOperator(operator);
-    return filter;
   }
 }
 
@@ -338,7 +311,7 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a single ColumnFilter', done => {
-    const nameFilter = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
+    const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
     const query = Given.requestFactory()
       .query()
       .select(Given.TYPE.TASK)
@@ -353,11 +326,8 @@ describe('QueryBuilder', function () {
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    const expectedCompositeFilter = new CompositeColumnFilter();
-    expectedCompositeFilter.setFilterList([nameFilter]);
-    expectedCompositeFilter.setOperator(CompositeColumnFilter.CompositeOperator.ALL);
     const expectedFilters = new EntityFilters();
-    expectedFilters.setFilterList([expectedCompositeFilter]);
+    expectedFilters.setFilterList([ColumnFilters.all([nameFilter])]);
 
     Given.assertMessagesEqual(target.getFilters(), expectedFilters);
 
@@ -365,8 +335,8 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a multiple ColumnFilter', done => {
-    const nameFilter = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
-    const descriptionFilter = Given.newColumnFilter(
+    const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
+    const descriptionFilter = ColumnFilters.eq(
       'description', TypedMessage.string('Web needs tests, eh?')
     );
     const query = Given.requestFactory()
@@ -383,11 +353,8 @@ describe('QueryBuilder', function () {
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    const expectedCompositeFilter = new CompositeColumnFilter();
-    expectedCompositeFilter.setFilterList([nameFilter, descriptionFilter]);
-    expectedCompositeFilter.setOperator(CompositeColumnFilter.CompositeOperator.ALL);
     const expectedFilters = new EntityFilters();
-    expectedFilters.setFilterList([expectedCompositeFilter]);
+    expectedFilters.setFilterList([ColumnFilters.all([nameFilter, descriptionFilter])]);
 
     Given.assertMessagesEqual(target.getFilters(), expectedFilters);
 
@@ -395,11 +362,9 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a single CompositeColumnFilter', done => {
-    const nameFilter1 = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = Given.newColumnFilter('name', TypedMessage.string('Create a PR'));
-    const compositeColumnFilter = Given.newCompositeFilter(
-      CompositeColumnFilter.CompositeOperator.EITHER, nameFilter1, nameFilter2
-    );
+    const nameFilter1 = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter2 = ColumnFilters.eq('name', TypedMessage.string('Create a PR'));
+    const compositeColumnFilter = ColumnFilters.either([nameFilter1, nameFilter2]);
     const query = Given.requestFactory()
       .query()
       .select(Given.TYPE.TASK)
@@ -423,17 +388,12 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a multiple CompositeColumnFilters', done => {
-    const nameFilter1 = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = Given.newColumnFilter('name', TypedMessage.string('Create a PR'));
-    const nameFilter = Given.newCompositeFilter(
-      CompositeColumnFilter.CompositeOperator.EITHER, nameFilter1, nameFilter2
-    );
-    const descriptionFilter = Given.newCompositeFilter(
-      CompositeColumnFilter.CompositeOperator.ALL,
-      Given.newColumnFilter(
-        'description', TypedMessage.string('Web needs tests, eh?')
-      )
-    );
+    const nameFilter1 = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter2 = ColumnFilters.eq('name', TypedMessage.string('Create a PR'));
+    const nameFilter = ColumnFilters.either([nameFilter1, nameFilter2]);
+    const descriptionFilter = ColumnFilters.all([
+      ColumnFilters.eq('description', TypedMessage.string('Web needs tests, eh?')),
+    ]);
 
     const query = Given.requestFactory()
       .query()
@@ -458,7 +418,7 @@ describe('QueryBuilder', function () {
   });
 
   it('throws an error if #where() is invoked with non-Array value', done => {
-    const nameFilter = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
+    const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
 
     try {
       const query = Given.requestFactory()
@@ -501,7 +461,7 @@ describe('QueryBuilder', function () {
         .query()
         .select(Given.TYPE.TASK)
         .where([new ColumnFilter()])
-        .where([new CompositeColumnFilter()]);
+        .where([new ColumnFilter()]);
       done(new Error('An error was expected due to multiple #where() invocations.'))
     } catch (e) {
       done();

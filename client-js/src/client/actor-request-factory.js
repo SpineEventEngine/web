@@ -42,28 +42,129 @@ import {Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 
 
-class ColumnFilters {
+/**
+ * A factory for `ColumnFilter` and `CompositeColumnFilter` instances.
+ */
+export class ColumnFilters {
+
   /**
-   * @param {ColumnFilter[]} filters
-   * @return {CompositeColumnFilter}
+   * Instantiation not allowed and will throw an error.
+   */
+  constructor() {
+    throw new Error('Tried instantiating a utility class.');
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be equal to the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static eq(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilters.Operator.EQUAL, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be less than the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static lt(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilters.Operator.LESS_THAN, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be greater than the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static gt(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilters.Operator.GREATER_THAN, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be less or equal compared to
+   * the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static le(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilters.Operator.LESS_OR_EQUAL, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be greater or equal compared to
+   * the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static ge(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilters.Operator.GREATER_OR_EQUAL, value);
+  }
+
+  /**
+   * Creates a filter for a column by name to match the provided value according to an operator.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {!ColumnFilter.Operator} operator an operator to check column value to filter
+   * @param {TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static with(columnName, operator, value) {
+    const wrappedValue = AnyPacker().packTyped(value);
+    const filter = new ColumnFilter();
+    filter.setColumnName(columnName);
+    filter.setValue(wrappedValue);
+    filter.setOperator(operator);
+    return filter;
+  }
+
+  /**
+   * Creates a new composite filter which matches entities that fit every provided filter.
+   *
+   * @param {ColumnFilter[]} filters an array of column filters
+   *
+   * @return {CompositeColumnFilter} a new composite filter with `ALL` operator
    */
   static all(filters) {
     return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.ALL);
   }
 
   /**
-   * @param {ColumnFilter[]} filters
-   * @return {CompositeColumnFilter}
+   * Creates a new composite filter which matches entities that fit at least one
+   * of the provided filters.
+   *
+   * @param {ColumnFilter[]} filters an array of column filters
+   *
+   * @return {CompositeColumnFilter} a new composite filter with `EITHER` operator
    */
   static either(filters) {
     return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.EITHER);
   }
 
   /**
+   * Creates a new composite filter which matches entities according to an array of filters with a
+   * specified logical operator.
    *
-   * @param {ColumnFilter[]} filters
-   * @param {CompositeColumnFilter.CompositeOperator} operator
-   * @return {CompositeColumnFilter}
+   * @param {ColumnFilter[]} filters an array of column filters
+   * @param {CompositeColumnFilter.CompositeOperator} operator a logical operator for `filters`
+   *
+   * @return {CompositeColumnFilter} a new composite filter
    */
   static compose(filters, operator) {
     const compositeFilter = new CompositeColumnFilter();
