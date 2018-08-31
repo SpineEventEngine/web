@@ -58,7 +58,7 @@ export class ColumnFilters {
    * Creates a new filter for the value of named column to be equal to the provided value.
    *
    * @param {!String} columnName a string name of the entity column
-   * @param {TypedMessage} value a value to compare the column value to
+   * @param {!TypedMessage} value a value to compare the column value to
    *
    * @return {ColumnFilter} a new column filter
    */
@@ -70,7 +70,7 @@ export class ColumnFilters {
    * Creates a new filter for the value of named column to be less than the provided value.
    *
    * @param {!String} columnName a string name of the entity column
-   * @param {TypedMessage} value a value to compare the column value to
+   * @param {!TypedMessage} value a value to compare the column value to
    *
    * @return {ColumnFilter} a new column filter
    */
@@ -82,7 +82,7 @@ export class ColumnFilters {
    * Creates a new filter for the value of named column to be greater than the provided value.
    *
    * @param {!String} columnName a string name of the entity column
-   * @param {TypedMessage} value a value to compare the column value to
+   * @param {!TypedMessage} value a value to compare the column value to
    *
    * @return {ColumnFilter} a new column filter
    */
@@ -95,7 +95,7 @@ export class ColumnFilters {
    * the provided value.
    *
    * @param {!String} columnName a string name of the entity column
-   * @param {TypedMessage} value a value to compare the column value to
+   * @param {!TypedMessage} value a value to compare the column value to
    *
    * @return {ColumnFilter} a new column filter
    */
@@ -108,7 +108,7 @@ export class ColumnFilters {
    * the provided value.
    *
    * @param {!String} columnName a string name of the entity column
-   * @param {TypedMessage} value a value to compare the column value to
+   * @param {!TypedMessage} value a value to compare the column value to
    *
    * @return {ColumnFilter} a new column filter
    */
@@ -121,7 +121,7 @@ export class ColumnFilters {
    *
    * @param {!String} columnName a string name of the entity column
    * @param {!ColumnFilter.Operator} operator an operator to check column value to filter
-   * @param {TypedMessage} value a value to compare the column value to
+   * @param {!TypedMessage} value a value to compare the column value to
    *
    * @return {ColumnFilter} a new column filter
    */
@@ -137,7 +137,7 @@ export class ColumnFilters {
   /**
    * Creates a new composite filter which matches entities that fit every provided filter.
    *
-   * @param {ColumnFilter[]} filters an array of column filters
+   * @param {!ColumnFilter[]} filters an array of column filters
    *
    * @return {CompositeColumnFilter} a new composite filter with `ALL` operator
    */
@@ -149,7 +149,7 @@ export class ColumnFilters {
    * Creates a new composite filter which matches entities that fit at least one
    * of the provided filters.
    *
-   * @param {ColumnFilter[]} filters an array of column filters
+   * @param {!ColumnFilter[]} filters an array of column filters
    *
    * @return {CompositeColumnFilter} a new composite filter with `EITHER` operator
    */
@@ -161,8 +161,8 @@ export class ColumnFilters {
    * Creates a new composite filter which matches entities according to an array of filters with a
    * specified logical operator.
    *
-   * @param {ColumnFilter[]} filters an array of column filters
-   * @param {CompositeColumnFilter.CompositeOperator} operator a logical operator for `filters`
+   * @param {!ColumnFilter[]} filters an array of column filters
+   * @param {!CompositeColumnFilter.CompositeOperator} operator a logical operator for `filters`
    *
    * @return {CompositeColumnFilter} a new composite filter
    */
@@ -228,7 +228,7 @@ class Targets {
    */
   static _all(type) {
     const target = new Target();
-    target.setType(type.url().value);
+    target.setType(type.url().value());
     target.setIncludeAll(true);
     return target;
   }
@@ -243,7 +243,7 @@ class Targets {
    */
   static _filtered(type, filters) {
     const target = new Target();
-    target.setType(type.url().value);
+    target.setType(type.url().value());
     target.setFilters(filters);
     return target;
   }
