@@ -437,7 +437,7 @@ class QueryBuilder {
    *
    * @param {![]} items an array of objects that are expected to be of the provided type
    * @param {!Object} cls a class each item is required to be instance of
-   * @param {!String} message
+   * @param {!String} message an error message thrown on type mismatch
    * @private
    */
   static _checkAllOfType(items, cls, message = 'Unexpected parameter type.') {
@@ -452,6 +452,11 @@ class QueryBuilder {
     }
   }
 
+  /**
+   * @param {![]} items an array of objects that are expected to be strings
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
   static _checkAllAreStrings(items, message) {
     items.forEach(item => {
       if (typeof item !== 'string' && !(item instanceof String)) {
@@ -460,6 +465,11 @@ class QueryBuilder {
     });
   }
 
+  /**
+   * @param {![]} items an array of objects that are expected to be numbers
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
   static _checkAllAreNumbers(items, message) {
     items.forEach(item => {
       if (typeof item !== 'number' && !(item instanceof Number)) {
@@ -468,6 +478,11 @@ class QueryBuilder {
     });
   }
 
+  /**
+   * @param {![]} items an array of objects that are expected to be booleans
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
   static _checkAllAreBooleans(items, message) {
     items.forEach(item => {
       if (typeof item !== 'boolean' && !(item instanceof Boolean)) {
@@ -476,6 +491,12 @@ class QueryBuilder {
     });
   }
 
+  /**
+   * @param {!Object} cls a class tyo check items against
+   * @param {![]} items an array of objects that are expected to instances of class
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
   static _checkAllOfClass(cls, items, message) {
     items.forEach(item => {
       if (!(item instanceof cls)) {
