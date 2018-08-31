@@ -320,7 +320,7 @@ export class AnyPacker {
    * @return {Unpack} an unpacker for the provided `Any` instance
    */
   static unpack(any) {
-    return new Unpack(any)
+    return new Unpack(any);
   }
 
   /**
@@ -351,7 +351,7 @@ export class AnyPacker {
    */
   static packTyped(message) {
     if (!(message instanceof TypedMessage)) {
-      throw new Error('Only TypedMessage instance can be packed using AnyPacker#packTyped().')
+      throw new Error('Only TypedMessage instance can be packed using AnyPacker#packTyped().');
     }
     return new Pack(message.message).as(message.type);
   }

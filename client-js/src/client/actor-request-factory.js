@@ -544,7 +544,7 @@ class QueryFactory {
    * @return {Query}
    */
   forTarget(target, fieldMask) {
-    return this._newQuery(target, fieldMask)
+    return this._newQuery(target, fieldMask);
   }
 
   /**

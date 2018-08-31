@@ -50,7 +50,7 @@ class Given {
   static newTaskId(value) {
     const id = new TaskId();
     id.setValue(value);
-    return new TypedMessage(id, Given.TYPE.TASK_ID)
+    return new TypedMessage(id, Given.TYPE.TASK_ID);
   }
 
   /**
@@ -425,7 +425,7 @@ describe('QueryBuilder', function () {
         .query()
         .select(Given.TYPE.TASK)
         .where(nameFilter);
-      done(new Error('An error was expected due to invalid #where() parameter.'))
+      done(new Error('An error was expected due to invalid #where() parameter.'));
     } catch (e) {
       done();
     }
@@ -449,7 +449,7 @@ describe('QueryBuilder', function () {
         .query()
         .select(Given.TYPE.TASK)
         .where([new ColumnFilter(), new CompositeColumnFilter()]);
-      done(new Error('An error was expected due to mixed column filter types.'))
+      done(new Error('An error was expected due to mixed column filter types.'));
     } catch (e) {
       done();
     }
