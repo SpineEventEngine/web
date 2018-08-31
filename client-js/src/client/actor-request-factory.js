@@ -323,6 +323,11 @@ class QueryBuilder {
    * Sets an ID predicate of the `Query#getTarget()`.
    *
    * Makes the query return only the entities identified by the provided IDs.
+   * 
+   * Supported ID types are string, number, and `TypedMessage`. To use other primitive types
+   * wrap them in type message using Protobuf primitive wrappers (e.g. StringValue, BytesValue).
+   * 
+   * If number IDs are passed they are assumed to be of `int64` Protobuf type. 
    *
    * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers of entities to query
    * @return {QueryBuilder} the current builder instance
