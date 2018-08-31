@@ -63,7 +63,7 @@ export class ColumnFilters {
    * @return {ColumnFilter} a new column filter
    */
   static eq(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilters.Operator.EQUAL, value);
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.EQUAL, value);
   }
 
   /**
@@ -75,7 +75,7 @@ export class ColumnFilters {
    * @return {ColumnFilter} a new column filter
    */
   static lt(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilters.Operator.LESS_THAN, value);
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.LESS_THAN, value);
   }
 
   /**
@@ -87,7 +87,7 @@ export class ColumnFilters {
    * @return {ColumnFilter} a new column filter
    */
   static gt(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilters.Operator.GREATER_THAN, value);
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.GREATER_THAN, value);
   }
 
   /**
@@ -100,7 +100,7 @@ export class ColumnFilters {
    * @return {ColumnFilter} a new column filter
    */
   static le(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilters.Operator.LESS_OR_EQUAL, value);
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.LESS_OR_EQUAL, value);
   }
 
   /**
@@ -113,7 +113,7 @@ export class ColumnFilters {
    * @return {ColumnFilter} a new column filter
    */
   static ge(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilters.Operator.GREATER_OR_EQUAL, value);
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.GREATER_OR_EQUAL, value);
   }
 
   /**
