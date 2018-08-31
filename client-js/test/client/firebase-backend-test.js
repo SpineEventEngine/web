@@ -55,7 +55,7 @@ class Given {
     return BackendClient.usingFirebase({
       atEndpoint: 'https://spine-dev.appspot.com',
       withFirebaseStorage: devFirebaseApp,
-      forActor: 'web-test-actor-2'
+      forActor: 'web-test-actor'
     });
   }
 
