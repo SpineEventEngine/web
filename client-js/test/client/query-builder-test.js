@@ -215,6 +215,70 @@ describe('QueryBuilder', function () {
     done();
   });
 
+  it('creates a Query for type with string IDs', done => {
+    const values = ['meeny', 'miny', 'moe'];
+
+    const query = Given.requestFactory()
+      .query()
+      .select(Given.TYPE.TASK)
+      .byIds(values).build();
+
+    assert.ok(query.getId());
+
+    Given.assertActorContextCorrect(query.getContext());
+
+    const target = query.getTarget();
+    assert.ok(target);
+    Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
+
+    const filters = target.getFilters();
+    assert.ok(filters);
+    assert.ok(filters.getFilterList().length === 0);
+
+    const idFilter = filters.getIdFilter();
+    assert.ok(idFilter);
+
+    const targetIds = idFilter.getIdsList()
+      .map(entityId => entityId.getId())
+      .map(any => AnyPacker.unpack(any).asString());
+
+    Given.assertUnorderedEqual(targetIds, values);
+
+    done();
+  });
+
+  it('creates a Query for type with number IDs', done => {
+    const values = [29, 99971, 104729];
+
+    const query = Given.requestFactory()
+      .query()
+      .select(Given.TYPE.TASK)
+      .byIds(values).build();
+
+    assert.ok(query.getId());
+
+    Given.assertActorContextCorrect(query.getContext());
+
+    const target = query.getTarget();
+    assert.ok(target);
+    Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
+
+    const filters = target.getFilters();
+    assert.ok(filters);
+    assert.ok(filters.getFilterList().length === 0);
+
+    const idFilter = filters.getIdFilter();
+    assert.ok(idFilter);
+
+    const targetIds = idFilter.getIdsList()
+      .map(entityId => entityId.getId())
+      .map(any => AnyPacker.unpack(any).asInt64());
+
+    Given.assertUnorderedEqual(targetIds, values);
+
+    done();
+  });
+
   it('throws an error on multiple #byIds() invocations', done => {
     const firstIds = Given.newTaskIds(['tick']);
     const secondIds = Given.newTaskIds(['tock']);
@@ -246,7 +310,7 @@ describe('QueryBuilder', function () {
     try {
       Given.requestFactory().query()
         .select(Given.TYPE.TASK)
-        .byIds(['Tinker', 'Tailor', 'Soldier', 'Sailor']);
+        .byIds([{tinker: 'tailor'}, {soldier: 'sailor'}]);
       done(new Error('#byIds() non-TypedMessage IDs did not result in error.'));
     } catch (error) {
       done();
@@ -274,9 +338,7 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a single ColumnFilter', done => {
-    const nameFilter = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Implement tests']), Type.STRING)
-    );
+    const nameFilter = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
     const query = Given.requestFactory()
       .query()
       .select(Given.TYPE.TASK)
@@ -303,11 +365,9 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a multiple ColumnFilter', done => {
-    const nameFilter = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Implement tests']), Type.STRING)
-    );
+    const nameFilter = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
     const descriptionFilter = Given.newColumnFilter(
-      'description', new TypedMessage(new StringValue(['Web needs tests, eh?']), Type.STRING)
+      'description', TypedMessage.string('Web needs tests, eh?')
     );
     const query = Given.requestFactory()
       .query()
@@ -335,12 +395,8 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a single CompositeColumnFilter', done => {
-    const nameFilter1 = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Implement tests']), Type.STRING)
-    );
-    const nameFilter2 = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Create a PR']), Type.STRING)
-    );
+    const nameFilter1 = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
+    const nameFilter2 = Given.newColumnFilter('name', TypedMessage.string('Create a PR'));
     const compositeColumnFilter = Given.newCompositeFilter(
       CompositeColumnFilter.CompositeOperator.EITHER, nameFilter1, nameFilter2
     );
@@ -367,19 +423,15 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a multiple CompositeColumnFilters', done => {
-    const nameFilter1 = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Implement tests']), Type.STRING)
-    );
-    const nameFilter2 = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Create a PR']), Type.STRING)
-    );
+    const nameFilter1 = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
+    const nameFilter2 = Given.newColumnFilter('name', TypedMessage.string('Create a PR'));
     const nameFilter = Given.newCompositeFilter(
       CompositeColumnFilter.CompositeOperator.EITHER, nameFilter1, nameFilter2
     );
     const descriptionFilter = Given.newCompositeFilter(
       CompositeColumnFilter.CompositeOperator.ALL,
       Given.newColumnFilter(
-        'description', new TypedMessage(new StringValue(['Web needs tests, eh?']), Type.STRING)
+        'description', TypedMessage.string('Web needs tests, eh?')
       )
     );
 
@@ -406,9 +458,7 @@ describe('QueryBuilder', function () {
   });
 
   it('throws an error if #where() is invoked with non-Array value', done => {
-    const nameFilter = Given.newColumnFilter(
-      'name', new TypedMessage(new StringValue(['Implement tests']), Type.STRING)
-    );
+    const nameFilter = Given.newColumnFilter('name', TypedMessage.string('Implement tests'));
 
     try {
       const query = Given.requestFactory()

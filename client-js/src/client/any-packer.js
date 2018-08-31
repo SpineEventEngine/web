@@ -129,13 +129,7 @@ class Pack {
   }
 }
 
-
 export class AnyPacker {
-  static string(value) {
-    const result = new StringValue();
-    result.setValue(value);
-    return result;
-  }
 
   /**
    * @param {!Any} any

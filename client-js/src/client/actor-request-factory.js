@@ -223,7 +223,7 @@ class QueryBuilder {
    *
    * Makes the query return only the entities identified by the provided IDs.
    *
-   * @param {!TypedMessage[]} ids an array with identifiers of entities to query
+   * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers of entities to query
    * @return {QueryBuilder} the current builder instance
    * @throws if this method is executed more than once
    * @throws if the provided IDs are not an instance of `Array`
@@ -239,8 +239,17 @@ class QueryBuilder {
     if (!ids.length) {
       return this;
     }
-    QueryBuilder._checkAllOfType(ids, TypedMessage, 'Each provided ID must be a TypedMessage.');
-    this._ids = ids.slice();
+    const invalidTypeMessage = 'Each provided ID must be a string, number or a TypedMessage.';
+    if (ids[0] instanceof Number || typeof ids[0] === 'number') {
+      QueryBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
+      this._ids = ids.map(TypedMessage.int64);
+    } else if (ids[0] instanceof String || typeof ids[0] === 'string') {
+      QueryBuilder._checkAllOfType(ids, String, invalidTypeMessage);
+      this._ids = ids.map(TypedMessage.string);
+    } else {
+      QueryBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
+      this._ids = ids.slice();
+    }
     return this;
   }
 
