@@ -126,7 +126,7 @@ export class ColumnFilters {
    * @return {ColumnFilter} a new column filter
    */
   static with(columnName, operator, value) {
-    const wrappedValue = AnyPacker().packTyped(value);
+    const wrappedValue = AnyPacker.packTyped(value);
     const filter = new ColumnFilter();
     filter.setColumnName(columnName);
     filter.setValue(wrappedValue);
