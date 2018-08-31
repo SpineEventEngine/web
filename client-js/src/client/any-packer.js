@@ -121,7 +121,7 @@ class Unpack {
    * @return {Message} a protobuf message wrapped in `Any` deserialized using the provided type
    */
   as(type) {
-    return this._any.unpack(type.class().deserializeBinary, type.url().typeName);
+    return this._any.unpack(type.class().deserializeBinary, type.url().name());
   }
 }
 
@@ -271,7 +271,7 @@ class Pack {
     const typeUrl = type.url();
     const result = new Any();
     const bytes = message.serializeBinary();
-    result.pack(bytes, typeUrl.typeName, typeUrl.typeUrlPrefix);
+    result.pack(bytes, typeUrl.name(), typeUrl.prefix());
     return result;
   }
 }

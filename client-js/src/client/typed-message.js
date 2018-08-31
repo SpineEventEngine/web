@@ -58,9 +58,30 @@ export class TypeUrl {
    */
   constructor(value) {
     const urlParts = value.split('/');
-    this.typeUrlPrefix = urlParts[0];
-    this.typeName = urlParts[1];
-    this.value = value;
+    this._value = value;
+    this._prefix = urlParts[0];
+    this._name = urlParts[1];
+  }
+
+  /**
+   * @return {string} part of the type URL before `/` specifying a namespace
+   */
+  prefix() {
+    return this._prefix;
+  }
+
+  /**
+   * @return {string} part of the type URL after `/` specifying the type name
+   */
+  name() {
+    return this._name;
+  }
+
+  /**
+   * @return {!string} full type URL value formatted as `<prefix>/<name>` string
+   */
+  value() {
+    return this._value;
   }
 }
 

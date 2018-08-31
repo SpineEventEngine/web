@@ -86,7 +86,7 @@ class Given {
    * @param {Type} type
    */
   static assertTargetTypeEqual(target, type) {
-    assert.equal(target.getType(), type.url().value);
+    assert.equal(target.getType(), type.url().value());
   }
 
   /**
