@@ -94,7 +94,7 @@ class Given {
    * @param {Message} expected
    */
   static assertMessagesEqual(actual, expected) {
-    assert.ok(Message.equals(actual, expected), 'Messages are expected to be identical.')
+    assert.ok(Message.equals(actual, expected), 'Messages are expected to be identical.');
   }
 
   /**
