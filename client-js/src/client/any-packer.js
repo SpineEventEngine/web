@@ -56,7 +56,7 @@ class Unpack {
    * @return {Number}
    */
   asInt64() {
-    return this.as(TYPE.INT64).getValue();
+    return this.as(Type.INT64).getValue();
   }
 
   /**
