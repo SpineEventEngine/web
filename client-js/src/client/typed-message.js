@@ -64,44 +64,71 @@ export class TypeUrl {
   }
 }
 
+/**
+ * A type of the Protobuf message represented by its JavaScript class and type URL.
+ *
+ * @template <T>
+ */
 export class Type {
+
   /**
-   * @param {Object} cls
-   * @param {TypeUrl} typeUrl
+   * @param {!Class<T>} cls a class of the `Message` type is for
+   * @param {!TypeUrl<T>} typeUrl a type URL of the `Message` type is for
    */
   constructor(cls, typeUrl) {
     this._cls = cls;
     this._typeUrl = typeUrl;
   }
 
+  /**
+   * @return {!TypeUrl<T>} a type URL of a defined type
+   */
   url() {
     return this._typeUrl;
   }
 
+  /**
+   * @return {!Class<T>} a JS class of a defined type
+   */
   class() {
     return this._cls;
+  }
+
+  /**
+   * A static factory for creating Type instances from `Message` class and type URL.
+   *
+   * @param {!Class<T>} cls a class of the `Message` type is for
+   * @param {!string|TypeUrl<T>} typeUrl a type URL of the `Message` type is for
+   *
+   * @return {Type<T>} new Type instance
+   */
+  static of(cls, typeUrl) {
+    if (!(typeUrl instanceof TypeUrl)) {
+      typeUrl = new TypeUrl(typeUrl);
+    }
+    return new Type(cls, typeUrl);
   }
 }
 
 // PRIMITIVE WRAPPERS
-Type.STRING = new Type(StringValue, new TypeUrl('type.googleapis.com/proto.google.protobuf.StringValue'));
-Type.INT32 = new Type(Int32Value, new TypeUrl('type.googleapis.com/proto.google.protobuf.Int32Value'));
-Type.UINT32 = new Type(UInt32Value, new TypeUrl('type.googleapis.com/proto.google.protobuf.Int32Value'));
-Type.INT64 = new Type(Int64Value, new TypeUrl('type.googleapis.com/proto.google.protobuf.Int64Value'));
-Type.UINT64 = new Type(UInt64Value, new TypeUrl('type.googleapis.com/proto.google.protobuf.Int64Value'));
-Type.BOOL = new Type(BoolValue, new TypeUrl('type.googleapis.com/proto.google.protobuf.BoolValue'));
-Type.DOUBLE = new Type(DoubleValue, new TypeUrl('type.googleapis.com/proto.google.protobuf.DoubleValue'));
-Type.FLOAT = new Type(FloatValue, new TypeUrl('type.googleapis.com/proto.google.protobuf.FloatValue'));
+Type.STRING = Type.of(StringValue, 'type.googleapis.com/proto.google.protobuf.StringValue');
+Type.INT32 = Type.of(Int32Value, 'type.googleapis.com/proto.google.protobuf.Int32Value');
+Type.UINT32 = Type.of(UInt32Value, 'type.googleapis.com/proto.google.protobuf.Int32Value');
+Type.INT64 = Type.of(Int64Value, 'type.googleapis.com/proto.google.protobuf.Int64Value');
+Type.UINT64 = Type.of(UInt64Value, 'type.googleapis.com/proto.google.protobuf.Int64Value');
+Type.BOOL = Type.of(BoolValue, 'type.googleapis.com/proto.google.protobuf.BoolValue');
+Type.DOUBLE = Type.of(DoubleValue, 'type.googleapis.com/proto.google.protobuf.DoubleValue');
+Type.FLOAT = Type.of(FloatValue, 'type.googleapis.com/proto.google.protobuf.FloatValue');
 
 // SPINE WEB
-Type.WEB_QUERY = new Type(WebQuery, new TypeUrl('type.spine.io/spine.web.WebQuery'));
+Type.WEB_QUERY = Type.of(WebQuery, 'type.spine.io/spine.web.WebQuery');
 
 // SPINE CLIENT
-Type.SUBSCRIPTION = new Type(Subscription, new TypeUrl('type.spine.io/spine.client.Subscription'));
-Type.TOPIC = new Type(Topic, new TypeUrl('type.spine.io/spine.client.Topic'));
+Type.SUBSCRIPTION = Type.of(Subscription, 'type.spine.io/spine.client.Subscription');
+Type.TOPIC = Type.of(Topic, 'type.spine.io/spine.client.Topic');
 
 // SPINE CORE
-Type.COMMAND = new Type(Command, new TypeUrl('type.spine.io/spine.core.Command'));
+Type.COMMAND = Type.of(Command, 'type.spine.io/spine.core.Command');
 
 /**
  * A Protobuf message with a {@link TypeUrl}.

@@ -22,7 +22,7 @@ import assert from 'assert';
 import uuid from 'uuid';
 
 import {devFirebaseApp} from './test-firebase-app';
-import {Type, TypedMessage, TypeUrl} from '../../src/client/typed-message';
+import {Type, TypedMessage} from '../../src/client/typed-message';
 
 import {CreateTask, RenameTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
@@ -147,17 +147,17 @@ Given.defaultTaskName = 'Get to Mount Doom';
 Given.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
 Given.TYPE = {
   OF_ENTITY: {
-    TASK: new Type(Task, new TypeUrl('type.spine.io/spine.web.test.given.Task')),
-    PROJECT: new Type(Project, new TypeUrl('type.spine.io/spine.web.test.given.Project')),
+    TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
+    PROJECT: Type.of(Project, 'type.spine.io/spine.web.test.given.Project'),
   },
   OF_IDENTIFIER: {
-    TASK_ID: new Type(TaskId, new TypeUrl('type.spine.io/spine.web.test.given.TaskId')),
+    TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
   },
   OF_COMMAND: {
-    CREATE_TASK: new Type(CreateTask, new TypeUrl('type.spine.io/spine.web.test.given.CreateTask')),
-    RENAME_TASK: new Type(RenameTask, new TypeUrl('type.spine.io/spine.web.test.given.RenameTask')),
+    CREATE_TASK: Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'),
+    RENAME_TASK: Type.of(RenameTask, 'type.spine.io/spine.web.test.given.RenameTask'),
   },
-  MALFORMED: new Type(Object, new TypeUrl('types.spine.io/malformed')),
+  MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
 
 const backendClient = Given.backendClient();

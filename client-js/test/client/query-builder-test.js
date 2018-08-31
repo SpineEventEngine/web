@@ -21,7 +21,7 @@
 
 import assert from 'assert';
 
-import {Type, TypedMessage, TypeUrl} from '../../src/client/typed-message';
+import {Type, TypedMessage} from '../../src/client/typed-message';
 import {ActorRequestFactory, ColumnFilters} from '../../src/client/actor-request-factory';
 import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
 import {AnyPacker} from '../../src/client/any-packer';
@@ -106,8 +106,8 @@ class Given {
 }
 
 Given.TYPE = {
-  TASK_ID: new Type(TaskId, new TypeUrl('type.spine.io/spine.web.test.given.TaskId')),
-  TASK: new Type(Task, new TypeUrl('type.spine.io/spine.web.test.given.Task')),
+  TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
+  TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
 };
 Given.ACTOR = 'spine-web-client-test-actor';
 
