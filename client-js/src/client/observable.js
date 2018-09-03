@@ -101,7 +101,7 @@ export class Subscription {
    */
   unsubscribe() {
     if (this.closed) {
-      throw "Tried to unsubscribe from closed subscription";
+      throw new Error('Tried to unsubscribe from closed subscription');
     }
     this._unsubscribe();
     this._tearDownCallbacks.forEach(callback => callback());

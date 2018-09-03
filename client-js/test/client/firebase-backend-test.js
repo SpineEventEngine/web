@@ -22,11 +22,13 @@ import assert from 'assert';
 import uuid from 'uuid';
 
 import {devFirebaseApp} from './test-firebase-app';
-import {TypedMessage, TypeUrl} from '../../src/client/typed-message';
+import {Type, TypedMessage} from '../../src/client/typed-message';
 
 import {CreateTask, RenameTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
-import {TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
+import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
+import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/client/entities_pb';
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
+import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
 
 const MILLISECONDS = 1;
@@ -46,34 +48,26 @@ function fail(done, message) {
 class Given {
 
   constructor() {
-    this.defaultTaskName = 'Get to Mount Doom';
-    this.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
-    this.TYPE = {
-      OF_ENTITY: {
-        TASK: new TypeUrl('type.spine.io/spine.web.test.given.Task'),
-        PROJECT: new TypeUrl('type.spine.io/spine.web.test.given.Project')
-      },
-      OF_IDENTIFIER: {
-        TASK_ID: new TypeUrl('type.spine.io/spine.web.test.given.TaskId'),
-      },
-      OF_COMMAND: {
-        CREATE_TASK: new TypeUrl('type.spine.io/spine.web.test.given.CreateTask'),
-        RENAME_TASK: new TypeUrl('type.spine.io/spine.web.test.given.RenameTask'),
-      },
-      MALFORMED: new TypeUrl('types.spine.io/malformed')
-    };
-    Given._deepFreeze(this);
+    throw new Error('A utility Given class cannot be instantiated.');
   }
 
-  backendClient() {
+  static backendClient() {
     return BackendClient.usingFirebase({
       atEndpoint: 'https://spine-dev.appspot.com',
       withFirebaseStorage: devFirebaseApp,
-      forActor: 'web-test-actor-2'
+      forActor: 'web-test-actor'
     });
   }
 
-  createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
+  /**
+   * @param {?String} withId
+   * @param {?String} withPrefix
+   * @param {?String} named
+   * @param {?String} describedAs
+   *
+   * @return {TypedMessage<CreateTask>}
+   */
+  static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
     const taskId = this._taskId({value: id, withPrefix: idPrefix});
 
     name = typeof name === 'undefined' ? this.defaultTaskName : name;
@@ -87,12 +81,15 @@ class Given {
     return new TypedMessage(command, this.TYPE.OF_COMMAND.CREATE_TASK);
   }
 
-  createTaskCommands({count, withPrefix: idPrefix, named: names}) {
-    if (!names || names.length !== count) {
-      throw new Error('Name count does not match the count of tasks to be created');
-    }
+  /**
+   * @param {!String[]} named
+   * @param {?String} withPrefix
+   *
+   * @return {TypedMessage<CreateTask>[]}
+   */
+  static createTaskCommands({named: names, withPrefix: idPrefix}) {
     const commands = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < names.length; i++) {
       const command = this.createTaskCommand({
         withPrefix: idPrefix,
         named: names[i]
@@ -102,7 +99,13 @@ class Given {
     return commands;
   }
 
-  renameTaskCommand({withId: id, to: newName}) {
+  /**
+   * @param {!String} withId
+   * @param {!String} to
+   *
+   * @return {TypedMessage<RenameTask>}
+   */
+  static renameTaskCommand({withId: id, to: newName}) {
     const taskId = this._taskId({value: id});
 
     const command = new RenameTask();
@@ -113,7 +116,14 @@ class Given {
 
   }
 
-  _taskId({value, withPrefix: prefix}) {
+  /**
+   * @param value
+   * @param withPrefix
+   *
+   * @return {TaskId}
+   * @private
+   */
+  static _taskId({value, withPrefix: prefix}) {
     if (typeof value === 'undefined') {
       value = uuid.v4();
     }
@@ -128,35 +138,38 @@ class Given {
   /**
    * A function that does nothing.
    */
-  noop() {
+  static noop() {
     // Do nothing.
-  }
-
-  static _deepFreeze(object) {
-
-    const propNames = Object.getOwnPropertyNames(object);
-
-    propNames.forEach((name) => {
-      const value = object[name];
-
-      object[name] = value && typeof value === "object" ? Given._deepFreeze(value) : value;
-    });
-
-    return Object.freeze(object);
   }
 }
 
-const given = new Given();
-const backendClient = given.backendClient();
+Given.defaultTaskName = 'Get to Mount Doom';
+Given.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
+Given.TYPE = {
+  OF_ENTITY: {
+    TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
+    PROJECT: Type.of(Project, 'type.spine.io/spine.web.test.given.Project'),
+  },
+  OF_IDENTIFIER: {
+    TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
+  },
+  OF_COMMAND: {
+    CREATE_TASK: Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'),
+    RENAME_TASK: Type.of(RenameTask, 'type.spine.io/spine.web.test.given.RenameTask'),
+  },
+  MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
+};
 
-describe('Client should', function () {
+const backendClient = Given.backendClient();
+
+describe('FirebaseBackendClient', function () {
 
   // Big timeout due to remote calls during tests.
   this.timeout(2 * MINUTES);
 
-  it('send commands successfully', done => {
+  it('sends commands successfully', done => {
 
-    const command = given.createTaskCommand({
+    const command = Given.createTaskCommand({
       withIdPrefix: 'spine-web-test-send-command',
       named: 'Implement Spine Web JS client tests',
       describedAs: 'Spine Web need integration tests'
@@ -166,9 +179,9 @@ describe('Client should', function () {
 
     backendClient.sendCommand(command, () => {
 
-      const typedId = new TypedMessage(taskId, given.TYPE.OF_IDENTIFIER.TASK_ID);
+      const typedId = new TypedMessage(taskId, Given.TYPE.OF_IDENTIFIER.TASK_ID);
 
-      backendClient.fetchById(given.TYPE.OF_ENTITY.TASK, typedId, data => {
+      backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, typedId, data => {
         assert.equal(data.id.value, taskId.getValue());
         assert.equal(data.name, command.message.getName());
         assert.equal(data.description, command.message.getDescription());
@@ -180,8 +193,8 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fail a malformed command', done => {
-    const command = given.createTaskCommand({withId: null});
+  it('fails a malformed command', done => {
+    const command = Given.createTaskCommand({withId: null});
 
     backendClient.sendCommand(
       command,
@@ -195,15 +208,15 @@ describe('Client should', function () {
       fail(done, 'A command was rejected when an error was expected.'));
   });
 
-  it('fetch all the existing entities of given type one by one', done => {
-    const command = given.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
+  it('fetches all the existing entities of Given type one by one', done => {
+    const command = Given.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
     const taskId = command.message.getId();
 
     backendClient.sendCommand(command, () => {
 
       let itemFound = false;
 
-      backendClient.fetchAll({ofType: given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
+      backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
         next(data) {
           // Ordering is not guaranteed by fetch and 
           // the list of entities cannot be cleaned for tests,
@@ -220,13 +233,13 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fetch all the existing entities of given type at once', done => {
-    const command = given.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
+  it('fetches all the existing entities of Given type at once', done => {
+    const command = Given.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
     const taskId = command.message.getId();
 
     backendClient.sendCommand(command, () => {
 
-      backendClient.fetchAll({ofType: given.TYPE.OF_ENTITY.TASK}).atOnce()
+      backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).atOnce()
         .then(data => {
           const targetObject = data.find(item => item.id.value === taskId.getValue());
           assert.ok(targetObject);
@@ -236,16 +249,16 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('fetch an empty list for entity that does not get created at once', done => {
-    backendClient.fetchAll({ofType: given.TYPE.OF_ENTITY.PROJECT}).atOnce()
+  it('fetches an empty list for entity that does not get created at once', done => {
+    backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.PROJECT}).atOnce()
       .then(data => {
         assert.ok(data.length === 0);
         done();
       }, fail(done));
   });
 
-  it('fetch an empty list for entity that does not get created one-by-one', done => {
-    backendClient.fetchAll({ofType: given.TYPE.OF_ENTITY.PROJECT}).oneByOne()
+  it('fetches an empty list for entity that does not get created one-by-one', done => {
+    backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.PROJECT}).oneByOne()
       .subscribe({
         next: fail(done),
         error: fail(done),
@@ -253,12 +266,12 @@ describe('Client should', function () {
       });
   });
 
-  it('fail a malformed query', done => {
-    const command = given.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
+  it('fails a malformed query', done => {
+    const command = Given.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
 
     backendClient.sendCommand(command, () => {
 
-      backendClient.fetchAll({ofType: given.TYPE.MALFORMED}).atOnce()
+      backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
           assert.ok(!error.isClient());
           assert.ok(error.isServer());
@@ -268,11 +281,12 @@ describe('Client should', function () {
     }, fail(done), fail(done));
   });
 
-  it('subscribe to new entities of type', done => {
-    const TASKS_TO_BE_CREATED = 3;
+  it('subscribes to new entities of type', done => {
+    const names = ['Task #1', 'Task #2', 'Task #3'];
+    const tasksToBeCreated = names.length;
     let taskIds;
     let count = 0;
-    backendClient.subscribeToEntities({ofType: given.TYPE.OF_ENTITY.TASK})
+    backendClient.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: task => {
@@ -280,7 +294,7 @@ describe('Client should', function () {
             console.log(`Retrieved task '${id}'`);
             if (taskIds.includes(id)) {
               count++;
-              if (count === TASKS_TO_BE_CREATED) {
+              if (count === tasksToBeCreated) {
                 unsubscribe();
                 done();
               }
@@ -296,24 +310,23 @@ describe('Client should', function () {
       })
       .catch(fail(done));
 
-    const commands = given.createTaskCommands({
-      count: TASKS_TO_BE_CREATED,
+    const commands = Given.createTaskCommands({
       withPrefix: 'spine-web-test-subscribe',
-      named: ['Task #1', 'Task #2', 'Task #3']
+      named: names
     });
     taskIds = commands.map(command => command.message.getId().getValue());
     commands.forEach(command => {
-      backendClient.sendCommand(command, given.noop, fail(done), fail(done));
+      backendClient.sendCommand(command, Given.noop, fail(done), fail(done));
     });
   });
 
-  it('subscribe to entity changes of type', done => {
+  it('subscribes to entity changes of type', done => {
     const TASKS_TO_BE_CHANGED = 3;
     let taskIds;
     let countChanged = 0;
     const initialTaskNames = ['Created task #1', 'Created task #2', 'Created task #3'];
 
-    backendClient.subscribeToEntities({ofType: given.TYPE.OF_ENTITY.TASK})
+    backendClient.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {
@@ -349,7 +362,7 @@ describe('Client should', function () {
       .catch(fail(done));
 
     // Create tasks.
-    const createCommands = given.createTaskCommands({
+    const createCommands = Given.createTaskCommands({
       count: TASKS_TO_BE_CHANGED,
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskNames
@@ -377,7 +390,7 @@ describe('Client should', function () {
       // allow for added subscriptions to be updated first.
       setTimeout(() => {
         taskIds.forEach(taskId => {
-          const renameCommand = given.renameTaskCommand({
+          const renameCommand = Given.renameTaskCommand({
             withId: taskId,
             to: `Renamed '${taskId}'`
           });
@@ -392,17 +405,17 @@ describe('Client should', function () {
     });
   });
 
-  it('subscribe to entity changes by id', done => {
+  it('subscribes to entity changes by id', done => {
     const expectedChangesCount = 2;
     const initialTaskName = 'Initial task name';
     const expectedRenames = ['Renamed once', 'Renamed twice'];
 
     // Create tasks.
-    const createCommand = given.createTaskCommand({
+    const createCommand = Given.createTaskCommand({
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskName
     });
-    const taskId = new TypedMessage(createCommand.message.getId(), given.TYPE.OF_IDENTIFIER.TASK_ID);
+    const taskId = new TypedMessage(createCommand.message.getId(), Given.TYPE.OF_IDENTIFIER.TASK_ID);
     const taskIdValue = createCommand.message.getId().getValue();
 
     const promise = new Promise(resolve => {
@@ -418,7 +431,7 @@ describe('Client should', function () {
     });
 
     let changesCount = 0;
-    backendClient.subscribeToEntities({ofType: given.TYPE.OF_ENTITY.TASK, byId: taskId})
+    backendClient.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK, byId: taskId})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {
@@ -461,7 +474,7 @@ describe('Client should', function () {
       // Tasks are renamed with a timeout after to allow for changes to show up in subscriptions.
       return new Promise(resolve => {
         setTimeout(() => {
-          const renameCommand = given.renameTaskCommand({
+          const renameCommand = Given.renameTaskCommand({
             withId: taskIdValue,
             to: 'Renamed once'
           });
@@ -478,7 +491,7 @@ describe('Client should', function () {
       });
     }).then(() => {
       setTimeout(() => {
-        const renameCommand = given.renameTaskCommand({
+        const renameCommand = Given.renameTaskCommand({
           withId: taskIdValue,
           to: 'Renamed twice'
         });
@@ -492,8 +505,8 @@ describe('Client should', function () {
     });
   });
 
-  it('fail a malformed subscription', done => {
-    backendClient.subscribeToEntities({ofType: given.TYPE.MALFORMED})
+  it('fails a malformed subscription', done => {
+    backendClient.subscribeToEntities({ofType: Given.TYPE.MALFORMED})
       .then(() => {
         done(new Error('A malformed subscription should not yield results.'));
       })

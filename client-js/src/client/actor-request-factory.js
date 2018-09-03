@@ -26,6 +26,8 @@ import {Timestamp} from 'spine-web-client-proto/google/protobuf/timestamp_pb';
 import {Query, QueryId} from 'spine-web-client-proto/spine/client/query_pb';
 import {Topic, TopicId} from 'spine-web-client-proto/spine/client/subscription_pb';
 import {
+  ColumnFilter,
+  CompositeColumnFilter,
   EntityFilters,
   EntityId,
   EntityIdFilter,
@@ -35,55 +37,140 @@ import {ActorContext} from 'spine-web-client-proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from 'spine-web-client-proto/spine/core/command_pb';
 import {UserId} from 'spine-web-client-proto/spine/core/user_id_pb';
 import {ZoneId, ZoneOffset} from 'spine-web-client-proto/spine/time/time_pb';
-import {TypedMessage, TypeUrl} from './typed-message';
+import {FieldMask} from 'spine-web-client-proto/google/protobuf/field_mask_pb';
+import {Type, TypedMessage} from './typed-message';
+import {AnyPacker} from './any-packer';
 
 
 /**
- * The type URL representing the spine.core.Command.
- *
- * @type {TypeUrl}
+ * A factory for `ColumnFilter` and `CompositeColumnFilter` instances.
  */
-const COMMAND_MESSAGE_TYPE = new TypeUrl('type.spine.io/spine.core.Command');
+export class ColumnFilters {
 
-/**
- * A builder for creating `Query` instances. A more flexible approach to query creation
- * than using a `QueryFactory`.
- */
-class QueryBuilder {
-
-  constructor(typeUrl, queryFactory) {
-    this._typeUrl = typeUrl;
-    this._factory = queryFactory;
-    this._ids = null;
+  /**
+   * Instantiation not allowed and will throw an error.
+   */
+  constructor() {
+    throw new Error('Tried instantiating a utility class.');
   }
 
   /**
-   * Makes the query to return only the object defined by the provided identifiers.
+   * Creates a new filter for the value of named column to be equal to the provided value.
    *
-   * @param {!TypedMessage|TypedMessage[]} id an entity ID or an array of entity IDs to query
-   * @return {QueryBuilder} the current builder instance
-   * @throws if this method is executed more than once
+   * @param {!String} columnName a string name of the entity column
+   * @param {!TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
    */
-  byId(id) {
-    if (this._ids !== null) {
-      throw "Can not set query id more than once.";
-    }
-    if (id instanceof Array) {
-      this._ids = id.slice();
-    } else {
-      this._ids = [id];
-    }
-
-    return this;
+  static eq(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.EQUAL, value);
   }
 
   /**
-   * Creates the Query instance based on all set parameters.
+   * Creates a new filter for the value of named column to be less than the provided value.
    *
-   * @return {Query} a new query
+   * @param {!String} columnName a string name of the entity column
+   * @param {!TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
    */
-  build() {
-    return this._factory.byIds(this._typeUrl, this._ids);
+  static lt(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.LESS_THAN, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be greater than the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {!TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static gt(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.GREATER_THAN, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be less or equal compared to
+   * the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {!TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static le(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.LESS_OR_EQUAL, value);
+  }
+
+  /**
+   * Creates a new filter for the value of named column to be greater or equal compared to
+   * the provided value.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {!TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static ge(columnName, value) {
+    return ColumnFilters.with(columnName, ColumnFilter.Operator.GREATER_OR_EQUAL, value);
+  }
+
+  /**
+   * Creates a filter for a column by name to match the provided value according to an operator.
+   *
+   * @param {!String} columnName a string name of the entity column
+   * @param {!ColumnFilter.Operator} operator an operator to check column value to filter
+   * @param {!TypedMessage} value a value to compare the column value to
+   *
+   * @return {ColumnFilter} a new column filter
+   */
+  static with(columnName, operator, value) {
+    const wrappedValue = AnyPacker.packTyped(value);
+    const filter = new ColumnFilter();
+    filter.setColumnName(columnName);
+    filter.setValue(wrappedValue);
+    filter.setOperator(operator);
+    return filter;
+  }
+
+  /**
+   * Creates a new composite filter which matches entities that fit every provided filter.
+   *
+   * @param {!ColumnFilter[]} filters an array of column filters
+   *
+   * @return {CompositeColumnFilter} a new composite filter with `ALL` operator
+   */
+  static all(filters) {
+    return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.ALL);
+  }
+
+  /**
+   * Creates a new composite filter which matches entities that fit at least one
+   * of the provided filters.
+   *
+   * @param {!ColumnFilter[]} filters an array of column filters
+   *
+   * @return {CompositeColumnFilter} a new composite filter with `EITHER` operator
+   */
+  static either(filters) {
+    return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.EITHER);
+  }
+
+  /**
+   * Creates a new composite filter which matches entities according to an array of filters with a
+   * specified logical operator.
+   *
+   * @param {!ColumnFilter[]} filters an array of column filters
+   * @param {!CompositeColumnFilter.CompositeOperator} operator a logical operator for `filters`
+   *
+   * @return {CompositeColumnFilter} a new composite filter
+   */
+  static compose(filters, operator) {
+    const compositeFilter = new CompositeColumnFilter();
+    compositeFilter.setFilterList(filters);
+    compositeFilter.setOperator(operator);
+    return compositeFilter;
   }
 }
 
@@ -96,14 +183,14 @@ class Targets {
    * Instantiation not allowed and will throw an error.
    */
   constructor() {
-    throw "Tried instantiating a utility class."
+    throw new Error('Tried instantiating a utility class.');
   }
 
   /**
    * Composes a new target for entities of specified type, optionally with specified IDs and
    * columnFilters.
    *
-   * @param {!TypeUrl} type a Type URL for all target entities to match
+   * @param {!Type} type a Type URL for all target entities to match
    * @param {?TypedMessage[]} ids an array of IDs one of which must be matched by each target entity
    * @param {?CompositeColumnFilter[]} columnFilters an array of filters target
    *
@@ -113,17 +200,21 @@ class Targets {
     const includeAll = !ids && !columnFilters;
 
     if (includeAll) {
-      return Targets._includingAll(type);
+      return Targets._all(type);
     }
 
     const filters = new EntityFilters();
 
     const entityIds = Targets._nullToEmpty(ids);
-    const idFilter = Targets._assembleIdFilter(entityIds);
-    filters.setIdFilter(idFilter);
+    if (entityIds.length) {
+      const idFilter = Targets._assembleIdFilter(entityIds);
+      filters.setIdFilter(idFilter);
+    }
 
     const entityColumnValues = Targets._nullToEmpty(columnFilters);
-    filters.setFilterList(entityColumnValues);
+    if (entityColumnValues) {
+      filters.setFilterList(entityColumnValues);
+    }
 
     return Targets._filtered(type, filters);
   }
@@ -131,29 +222,28 @@ class Targets {
   /**
    * Creates a new target including all items of type.
    *
-   * @param {!TypeUrl} type
+   * @param {!Type} type
    * @return {Target}
    * @private
    */
-  static _includingAll(type) {
+  static _all(type) {
     const target = new Target();
-    target.setType(type.value);
+    target.setType(type.url().value());
     target.setIncludeAll(true);
     return target;
   }
 
-
   /**
    * Creates a new target including only entities of the specified type that pass filtering.
    *
-   * @param {!TypeUrl} type
+   * @param {!Type} type
    * @param {!EntityFilters} filters
    * @return {Target}
    * @private
    */
   static _filtered(type, filters) {
     const target = new Target();
-    target.setType(type.value);
+    target.setType(type.url().value());
     target.setFilters(filters);
     return target;
   }
@@ -161,14 +251,14 @@ class Targets {
   /**
    * Creates an targets ID filter including only items which are included in the provided ID list.
    *
-   * @param {!TypedMessage} entityIds an array of IDs for entities matching target to be included in
+   * @param {!TypedMessage[]} entityIds an array of IDs for entities matching target to be included in
    * @return {EntityIdFilter}
    * @private
    */
   static _assembleIdFilter(entityIds) {
     const idFilter = new EntityIdFilter();
     entityIds.forEach(rawId => {
-      const packedId = rawId.toAny();
+      const packedId = AnyPacker.packTyped(rawId);
       const entityId = new EntityId();
       entityId.setId(packedId);
       idFilter.addIds(entityId);
@@ -177,7 +267,7 @@ class Targets {
   }
 
   /**
-   * @param {!Array<T>} input 
+   * @param {!Array<T>} input
    * @return {Array<T>} an empty array if the value is `null`, or the provided input otherwise
    * @template <T>
    * @private
@@ -188,6 +278,236 @@ class Targets {
     } else {
       return input;
     }
+  }
+}
+
+const INVALID_FILTER_TYPE =
+  'All filters passed to QueryFilter#where() must be of a single type: ' +
+  'either ColumnFilter or CompositeColumnFilter.';
+
+/**
+ * A builder for creating `Query` instances. A more flexible approach to query creation
+ * than using a `QueryFactory`.
+ */
+class QueryBuilder {
+
+  constructor(type, queryFactory) {
+    /**
+     * @type {Type}
+     * @private
+     */
+    this._type = type;
+    /**
+     * @type {QueryFactory}
+     * @private
+     */
+    this._factory = queryFactory;
+    /**
+     * @type {TypedMessage[]}
+     * @private
+     */
+    this._ids = null;
+    /**
+     * @type {CompositeColumnFilter[]}
+     * @private
+     */
+    this._columns = null;
+    /**
+     * @type {FieldMask}
+     * @private
+     */
+    this._fieldMask = null;
+  }
+
+  /**
+   * Sets an ID predicate of the `Query#getTarget()`.
+   *
+   * Makes the query return only the entities identified by the provided IDs.
+   * 
+   * Supported ID types are string, number, and `TypedMessage`. To use other primitive types
+   * wrap them in type message using Protobuf primitive wrappers (e.g. StringValue, BytesValue).
+   * 
+   * If number IDs are passed they are assumed to be of `int64` Protobuf type. 
+   *
+   * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers of entities to query
+   * @return {QueryBuilder} the current builder instance
+   * @throws if this method is executed more than once
+   * @throws if the provided IDs are not an instance of `Array`
+   * @throws if any of provided IDs are not an instance of `TypedMessage`
+   */
+  byIds(ids) {
+    if (this._ids !== null) {
+      throw new Error('Can not set query ID more than once for QueryBuilder.');
+    }
+    if (!(ids instanceof Array)) {
+      throw new Error('Only an array of IDs is allowed as parameter to QueryBuilder#byIds().');
+    }
+    if (!ids.length) {
+      return this;
+    }
+    const invalidTypeMessage = 'Each provided ID must be a string, number or a TypedMessage.';
+    if (ids[0] instanceof Number || typeof ids[0] === 'number') {
+      QueryBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
+      this._ids = ids.map(TypedMessage.int64);
+    } else if (ids[0] instanceof String || typeof ids[0] === 'string') {
+      QueryBuilder._checkAllOfType(ids, String, invalidTypeMessage);
+      this._ids = ids.map(TypedMessage.string);
+    } else {
+      QueryBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
+      this._ids = ids.slice();
+    }
+    return this;
+  }
+
+  /**
+   * Sets an Entity Column predicate of the `Query#getTarget()`.
+   *
+   * <p>If there are no `ColumnFilter`s (i.e. the provided array is empty), all
+   * the records will be returned by executing the `Query`.
+   *
+   * <p>An array of predicates provided to this method are considered to be joined in
+   * a conjunction (using `CompositeColumnFilter.CompositeOperator#ALL`). This means
+   * a record would match this query only if it matches all of the predicates.
+   *
+   * @param {!ColumnFilter[]|CompositeColumnFilter[]} predicates
+   * the predicates to filter the requested entities by
+   * @return {QueryBuilder} self for method chaining
+   * @throws if this method is executed more than once
+   * @see ColumnFilters a convenient way to create `ColumnFilter`s
+   */
+  where(predicates) {
+    if (this._columns !== null) {
+      throw new Error('Can not set filters more than once for QueryBuilder.');
+    }
+    if (!(predicates instanceof Array)) {
+      throw new Error('Only an array of predicates is allowed as parameter to QueryBuilder#where().');
+    }
+    if (!predicates.length) {
+      return this;
+    }
+    if (predicates[0] instanceof ColumnFilter) {
+      QueryBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
+      const aggregatingFilter = ColumnFilters.all(predicates);
+      this._columns = [aggregatingFilter];
+    } else {
+      QueryBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
+      this._columns = predicates.slice();
+    }
+    return this;
+  }
+
+  /**
+   * Sets a Field Mask of the `Query`.
+   *
+   * The names of the fields must be formatted according to the `FieldMask`
+   * specification.
+   *
+   * If there are no fields (i.e. an empty array is passed), all the fields will
+   * be returned by query.
+   *
+   * @param {!String[]} fieldNames
+   * @return {QueryBuilder} self for method chaining
+   * @throws if this method is executed more than once
+   * @see FieldMask specification for `FieldMask`
+   */
+  withMask(fieldNames) {
+    if (this._fieldMask != null) {
+      throw new Error('Can not set field mask more than once for QueryBuilder.');
+    }
+    if (!(fieldNames instanceof Array)) {
+      throw new Error('Only an array of strings is allowed as parameter to QueryBuilder#withMask().');
+    }
+    QueryBuilder._checkAllOfType(fieldNames, String, 'Field names should be strings.');
+    if (!fieldNames.length) {
+      return this;
+    }
+    this._fieldMask = new FieldMask();
+    this._fieldMask.setPathsList(fieldNames);
+    return this;
+  }
+
+  /**
+   * Creates the Query instance based on the parameters set to this builder.
+   *
+   * @return {Query} a new query
+   */
+  build() {
+    const target = Targets.compose(this._type, this._ids, this._columns);
+    return this._factory.forTarget(target, this._fieldMask);
+  }
+
+  /**
+   * Checks that each provided item is an instance of the provided class. In case the check does
+   * not pass an error is thrown.
+   *
+   * @param {![]} items an array of objects that are expected to be of the provided type
+   * @param {!Object} cls a class each item is required to be instance of
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
+  static _checkAllOfType(items, cls, message = 'Unexpected parameter type.') {
+    if (cls === String) {
+      QueryBuilder._checkAllAreStrings(items, message);
+    } else if (cls === Number) {
+      QueryBuilder._checkAllAreNumbers(items, message);
+    } else if (cls === Boolean) {
+      QueryBuilder._checkAllAreBooleans(items, message);
+    } else {
+      QueryBuilder._checkAllOfClass(cls, items, message);
+    }
+  }
+
+  /**
+   * @param {![]} items an array of objects that are expected to be strings
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
+  static _checkAllAreStrings(items, message) {
+    items.forEach(item => {
+      if (typeof item !== 'string' && !(item instanceof String)) {
+        throw new Error(message);
+      }
+    });
+  }
+
+  /**
+   * @param {![]} items an array of objects that are expected to be numbers
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
+  static _checkAllAreNumbers(items, message) {
+    items.forEach(item => {
+      if (typeof item !== 'number' && !(item instanceof Number)) {
+        throw new Error(message);
+      }
+    });
+  }
+
+  /**
+   * @param {![]} items an array of objects that are expected to be booleans
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
+  static _checkAllAreBooleans(items, message) {
+    items.forEach(item => {
+      if (typeof item !== 'boolean' && !(item instanceof Boolean)) {
+        throw new Error(message);
+      }
+    });
+  }
+
+  /**
+   * @param {!Object} cls a class tyo check items against
+   * @param {![]} items an array of objects that are expected to instances of class
+   * @param {!String} message an error message thrown on type mismatch
+   * @private
+   */
+  static _checkAllOfClass(cls, items, message) {
+    items.forEach(item => {
+      if (!(item instanceof cls)) {
+        throw new Error(message);
+      }
+    });
   }
 }
 
@@ -206,39 +526,41 @@ class QueryFactory {
   }
 
   /**
-   * @param {!TypeUrl} typeUrl a type URL of the target type
+   * Creates a new builder of Query instances of the provided type
+   * @param {!Type} type a type URL of the target type
    * @return {QueryBuilder}
    */
-  select(typeUrl) {
-    return new QueryBuilder(typeUrl, this);
+  select(type) {
+    return new QueryBuilder(type, this);
   }
 
   /**
-   * Creates a new query which returns entities of a matching type with specified IDs.
+   * Creates a new `Query` which would return only entities which conform the target specification.
    *
-   * If no identifiers are provided queries for all objects of the provided type.
+   * An optional field mask can be provided to specify particular fields to be returned for `Query`
    *
-   * @param {!TypeUrl} typeUrl
-   * @param {!TypedMessage[]} ids a list of entity identifier messages; an empty list is acceptable
-   * @return {Query} a new query
+   * @param {!Target} target a specification of type and filters for `Query` result to match
+   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
+   * @return {Query}
    */
-  byIds(typeUrl, ids) {
-    const target = Targets.compose(typeUrl, ids);
-    return this._newQuery(target);
+  forTarget(target, fieldMask) {
+    return this._newQuery(target, fieldMask);
   }
 
   /**
-   * @param {!Target} target a target of the query
+   * @param {!Target} target a specification of type and filters for `Query` result to match
+   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
    * @return {Query} a new query instance
    * @private
    */
-  _newQuery(target) {
+  _newQuery(target, fieldMask) {
     const id = QueryFactory._newId();
     const actorContext = this._requestFactory._actorContext();
 
     const result = new Query();
     result.setId(id);
     result.setTarget(target);
+    result.setFieldMask(fieldMask);
     result.setContext(actorContext);
 
     return result;
@@ -277,14 +599,14 @@ class CommandFactory {
    */
   create(message) {
     const id = CommandFactory._newCommandId();
-    const messageAny = message.toAny();
+    const messageAny = AnyPacker.packTyped(message);
     const context = this._commandContext();
 
     const result = new Command();
     result.setId(id);
     result.setMessage(messageAny);
     result.setContext(context);
-    return new TypedMessage(result, COMMAND_MESSAGE_TYPE);
+    return new TypedMessage(result, Type.COMMAND);
   }
 
   _commandContext() {
@@ -326,23 +648,23 @@ class TopicFactory {
   /**
    * Creates a {@link Topic} for the entity states with the given IDs.
    *
-   * @param {!TypeUrl} typeUrl the class of a target entity
+   * @param {!Type} type the class of a target entity
    * @param {!TypedMessage[]} ids the IDs of interest
    * @return {Topic} the instance of {@code Topic} assembled according to the parameters
    */
-  someOf(typeUrl, ids) {
-    const target = Targets.compose(typeUrl, ids);
+  someOf(type, ids) {
+    const target = Targets.compose(type, ids);
     return this._forTarget(target);
   }
 
   /**
    * Creates a {@link Topic} for all of the specified entity states.
    *
-   * @param {!TypeUrl} typeUrl the class of a target entity
+   * @param {!Type} type the class of a target entity
    * @return {Topic} an instance of {@code Topic} assembled according to the parameters
    */
-  allOf(typeUrl) {
-    const target = Targets.compose(typeUrl);
+  allOf(type) {
+    const target = Targets.compose(type);
     return this._forTarget(target);
   }
 

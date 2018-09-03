@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {TypedMessage, TypeUrl} from './typed-message';
+import {Type, TypedMessage, TypeUrl} from './typed-message';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseClient} from './firebase-client';
 import {HttpClient} from './http-client';
@@ -37,5 +37,6 @@ export const client = {
   FirebaseClient,
   ActorRequestFactory,
   TypeUrl,
-  TypedMessage
+  TypedMessage,
+  Type,
 };

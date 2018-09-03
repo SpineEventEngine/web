@@ -21,16 +21,16 @@
 "use strict";
 
 import {Observable, Subscription} from './observable';
-import {TypedMessage, TypeUrl} from './typed-message';
+import {TypedMessage} from './typed-message';
 import {EndpointError, HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
-import {FirebaseSubscriptionService} from "./firebase-subscription-service";
+import {FirebaseSubscriptionService} from './firebase-subscription-service';
 import {
   Subscription as SpineSubscription,
   SubscriptionId
-} from "spine-web-client-proto/spine/client/subscription_pb";
+} from 'spine-web-client-proto/spine/client/subscription_pb';
 
 /**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
@@ -70,7 +70,7 @@ class Fetch {
    * @abstract
    */
   oneByOne() {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -85,7 +85,7 @@ class Fetch {
    * @abstract
    */
   atOnce() {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 }
 
@@ -146,21 +146,21 @@ export class BackendClient {
    * // Fetch all entities of a developer-defined Task type at once using a Promise.
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
-   * @param {!TypeUrl<T>} ofType a type of the entities to be queried
+   * @param {!Type<T>} ofType a type of the entities to be queried
    * @return {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
    *                                call parameters and executed the query.
    *
    * @template <T>
    */
-  fetchAll({ofType: typeUrl}) {
-    const query = this._requestFactory.query().select(typeUrl).build();
+  fetchAll({ofType: type}) {
+    const query = this._requestFactory.query().select(type).build();
     return this._fetchOf(query);
   }
 
   /**
    * Fetches a single entity of the given type.
    *
-   * @param {!TypeUrl<T>} type a type URL of the target entity
+   * @param {!Type<T>} type a type URL of the target entity
    * @param {!TypedMessage} id an ID of the target entity
    * @param {!consumerCallback<Object>} dataCallback
    *        a callback receiving a single data item as a JS object
@@ -170,7 +170,7 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._requestFactory.query().select(type).byId(id).build();
+    const query = this._requestFactory.query().select(type).byIds([id]).build();
 
     const observer = {next: dataCallback};
     if (errorCallback) {
@@ -215,24 +215,24 @@ export class BackendClient {
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer. 
    *
-   * @param {!TypeUrl} ofType a type URL of entities to observe changes
+   * @param {!Type} ofType a type URL of entities to observe changes
    * @param {?TypedMessage[]} byIds an array of ids of entities to observe changes
    * @param {?TypedMessage} byId an id of a single entity to observe changes
    * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes 
    *                                             and unsubscribe from the updated 
    */
-  subscribeToEntities({ofType: typeUrl, byIds: ids, byId: id}) {
+  subscribeToEntities({ofType: type, byIds: ids, byId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
-      throw "You can specify only one of ids or id as a parameter to subscribeToEntities";
+      throw new Error('You can specify only one of ids or id as a parameter to subscribeToEntities');
     }
     if (typeof id !== 'undefined') {
       ids = [id];
     }
     let topic;
     if (ids) {
-      topic = this._requestFactory.topic().someOf(typeUrl, ids);
+      topic = this._requestFactory.topic().someOf(type, ids);
     } else {
-      topic = this._requestFactory.topic().allOf(typeUrl);
+      topic = this._requestFactory.topic().allOf(type);
     }
     return this._subscribeToTopic(topic);
   }
@@ -269,7 +269,7 @@ export class BackendClient {
    * @abstract
    */
   _fetchOf(query) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -281,7 +281,7 @@ export class BackendClient {
    * @abstract
    */
   _subscribeToTopic(topic) {
-    throw 'Not implemented in abstract base.';
+    throw new Error('Not implemented in abstract base.');
   }
 }
 
