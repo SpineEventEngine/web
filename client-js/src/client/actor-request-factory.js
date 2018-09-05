@@ -282,10 +282,30 @@ class Targets {
 }
 
 /**
- * @template <T>
+ * An abstract base for builders that create `Message` instances which have a `Target`
+ * and a `FieldMask` as attributes.
+ *
+ * <p>The `Target` matching the builder configuration is accessed with `#getTarget()`,
+ * while the `FieldMask` is retrieved with `#getMask()`.
+ *
+ * This classes public API is inspired by the SQL syntax.
+ * ```javascript
+ *     select(CUSTOMER_TYPE) // returning <AbstractTargetBuilder> instance
+ *         .byIds(getWestCoastCustomerIds())
+ *         .withMask(["name", "address", "email"])
+ *         .where([
+ *             ColumnFilters.eq("type", "permanent"),
+ *             ColumnFilters.eq("discountPercent", 10),
+ *             ColumnFilters.eq("companySize", Company.Size.SMALL)
+ *         ])
+ *         .build()
+ * ```
+ *
+ * @param <T>
+ *         a type of the message which is returned by the implementations `#build()`
  * @abstract
  */
-class TargetBuilder {
+class AbstractTargetBuilder {
 
   constructor(type) {
     /**
@@ -418,6 +438,13 @@ class TargetBuilder {
   }
 
   /**
+   * @return {Target} a target matching builders configuration
+   */
+  getTarget() {
+    return this._buildTarget();
+  }
+
+  /**
    * Creates a new target `Target` instance based on this builder configuration.
    *
    * @return {Target} a new target
@@ -427,14 +454,7 @@ class TargetBuilder {
   }
 
   /**
-   * @return {Target}
-   */
-  getTarget() {
-    return this._buildTarget();
-  }
-
-  /**
-   * @return {FieldMask}
+   * @return {FieldMask} a fields mask set to this builder
    */
   getMask() {
     return this._fieldMask;
@@ -531,9 +551,9 @@ const INVALID_FILTER_TYPE =
  * A builder for creating `Query` instances. A more flexible approach to query creation
  * than using a `QueryFactory`.
  *
- * @extends {TargetBuilder<Query>}
+ * @extends {AbstractTargetBuilder<Query>}
  */
-class QueryBuilder extends TargetBuilder {
+class QueryBuilder extends AbstractTargetBuilder {
 
   /**
    * @param {!Type} type
@@ -680,9 +700,9 @@ class CommandFactory {
  * A builder for creating `Topic` instances. A more flexible approach to query creation
  * than using a `TopicFactory`.
  *
- * @extends {TargetBuilder<Topic>}
+ * @extends {AbstractTargetBuilder<Topic>}
  */
-class TopicBuilder extends TargetBuilder {
+class TopicBuilder extends AbstractTargetBuilder {
 
   /**
    * @param {!Type} type
