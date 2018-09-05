@@ -267,9 +267,9 @@ class Targets {
   }
 
   /**
-   * @param {!Array<T>} input
-   * @return {Array<T>} an empty array if the value is `null`, or the provided input otherwise
-   * @template <T>
+   * @param {?T[]} input
+   * @return {T[]} an empty array if the value is `null`, or the provided input otherwise
+   * @template <T> type of items in the provided array
    * @private
    */
   static _nullToEmpty(input) {
@@ -526,7 +526,7 @@ class QueryFactory {
   }
 
   /**
-   * Creates a new builder of Query instances of the provided type
+   * Creates a new builder of `Query` instances of the provided type
    * @param {!Type} type a type URL of the target type
    * @return {QueryBuilder}
    */
@@ -646,7 +646,7 @@ class TopicFactory {
   }
 
   /**
-   * Creates a {@link Topic} for the entity states with the given IDs.
+   * Creates a `Topic` for all of the specified entity states.
    *
    * @param {!Type} type the class of a target entity
    * @param {!TypedMessage[]} ids the IDs of interest
@@ -658,7 +658,7 @@ class TopicFactory {
   }
 
   /**
-   * Creates a {@link Topic} for all of the specified entity states.
+   * Creates a `Topic` for the specified `Target`.
    *
    * @param {!Type} type the class of a target entity
    * @return {Topic} an instance of {@code Topic} assembled according to the parameters
@@ -684,6 +684,10 @@ class TopicFactory {
     return topic;
   }
 
+  /**
+   * @return {TopicId} a newly created topic ID
+   * @private
+   */
   static _generateId() {
     const topicId = new TopicId();
     topicId.setValue(`t-${uuid.v4()}`);
