@@ -21,13 +21,11 @@
 import uuid from 'uuid';
 import assert from 'assert';
 
+import {Message} from 'google-protobuf';
 import {AnyPacker} from "../../src/client/any-packer";
 import {Type, TypedMessage} from "../../src/client/typed-message";
+import {Duration} from "../../src/client/time-utils";
 import {Task, TaskId} from "../../proto/test/js/spine/web/test/given/task_pb";
-import {Message} from 'google-protobuf';
-
-const MILLISECONDS = 1;
-const SECONDS = 1000 * MILLISECONDS;
 
 class Given {
   constructor() {
@@ -71,7 +69,8 @@ Given.TYPE = {
 
 describe('AnyPacker', function () {
 
-  this.timeout(5 * SECONDS);
+  const timeoutDuration = new Duration({seconds: 5});
+  this.timeout(timeoutDuration.inMs());
 
   it('packs messages', () => {
     const task = Given.newTask();

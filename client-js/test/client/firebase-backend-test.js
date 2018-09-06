@@ -23,6 +23,7 @@ import uuid from 'uuid';
 
 import {devFirebaseApp} from './test-firebase-app';
 import {Type, TypedMessage} from '../../src/client/typed-message';
+import {Duration} from '../../src/client/time-utils';
 
 import {CreateTask, RenameTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
@@ -30,10 +31,6 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-
-const MILLISECONDS = 1;
-const SECONDS = 1000 * MILLISECONDS;
-const MINUTES = 60 * SECONDS;
 
 function fail(done, message) {
   return error => {
@@ -165,7 +162,8 @@ const backendClient = Given.backendClient();
 describe('FirebaseBackendClient', function () {
 
   // Big timeout due to remote calls during tests.
-  this.timeout(2 * MINUTES);
+  const timeoutDuration = new Duration({minutes: 2});
+  this.timeout(timeoutDuration.inMs());
 
   it('sends commands successfully', done => {
 

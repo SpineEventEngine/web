@@ -21,13 +21,13 @@
 import assert from 'assert';
 
 import {Observable} from '../../src/client/observable';
+import {Duration} from '../../src/client/time-utils';
 
-const MILLISECONDS = 1;
-const SECONDS = 1000 * MILLISECONDS;
 
 describe('Observable', function () {
 
-  this.timeout(5 * SECONDS);
+  const timeoutDuration = new Duration({seconds: 5});
+  this.timeout(timeoutDuration.inMs());
 
   it('sends next values to the observer', done => {
     const observable = new Observable(observer => {

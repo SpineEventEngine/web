@@ -21,21 +21,18 @@
 
 import assert from 'assert';
 
+import {Message} from 'google-protobuf';
 import {Type, TypedMessage} from '../../src/client/typed-message';
 import {ActorRequestFactory, ColumnFilters} from '../../src/client/actor-request-factory';
-import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
 import {AnyPacker} from '../../src/client/any-packer';
-import {Message} from 'google-protobuf';
+import {Duration} from '../../src/client/time-utils';
+import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
 import {StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
 import {
   ColumnFilter,
   CompositeColumnFilter,
   EntityFilters
 } from 'spine-web-client-proto/spine/client/entities_pb';
-
-const MILLISECONDS = 1;
-const SECONDS = 1000 * MILLISECONDS;
-
 
 class Given {
 
@@ -113,7 +110,8 @@ Given.ACTOR = 'spine-web-client-test-actor';
 
 describe('QueryBuilder', function () {
 
-  this.timeout(5 * SECONDS);
+  const timeoutDuration = new Duration({seconds: 5});
+  this.timeout(timeoutDuration.inMs());
 
   it('creates a Query of query for type', done => {
     const query = Given.requestFactory()
