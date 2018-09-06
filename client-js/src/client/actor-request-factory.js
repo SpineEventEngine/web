@@ -281,6 +281,10 @@ class Targets {
   }
 }
 
+const INVALID_FILTER_TYPE =
+  'All filters passed to QueryFilter#where() must be of a single type: ' +
+  'either ColumnFilter or CompositeColumnFilter.';
+
 /**
  * An abstract base for builders that create `Message` instances which have a `Target`
  * and a `FieldMask` as attributes.
@@ -544,10 +548,6 @@ class AbstractTargetBuilder {
     });
   }
 }
-
-const INVALID_FILTER_TYPE =
-  'All filters passed to QueryFilter#where() must be of a single type: ' +
-  'either ColumnFilter or CompositeColumnFilter.';
 
 /**
  * A builder for creating `Query` instances. A more flexible approach to query creation
