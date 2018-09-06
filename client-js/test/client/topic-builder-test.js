@@ -461,7 +461,7 @@ describe('TopicBuilder', function () {
         .select(Given.TYPE.TASK)
         .where([new ColumnFilter()])
         .where([new ColumnFilter()]);
-      done(new Error('An error was expected due to multiple #where() invocations.'))
+      done(new Error('An error was expected due to multiple #where() invocations.'));
     } catch (e) {
       done();
     }
