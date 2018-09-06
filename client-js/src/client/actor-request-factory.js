@@ -288,9 +288,9 @@ class Targets {
  * <p>The `Target` matching the builder configuration is accessed with `#getTarget()`,
  * while the `FieldMask` is retrieved with `#getMask()`.
  *
- * This classes public API is inspired by the SQL syntax.
+ * The public API of this class is inspired by the SQL syntax.
  * ```javascript
- *     select(CUSTOMER_TYPE) // returning <AbstractTargetBuilder> instance
+ *     select(CUSTOMER_TYPE) // returning <AbstractTargetBuilder> descendant instance
  *         .byIds(getWestCoastCustomerIds())
  *         .withMask(["name", "address", "email"])
  *         .where([
@@ -301,7 +301,7 @@ class Targets {
  *         .build()
  * ```
  *
- * @param <T>
+ * @template <T>
  *         a type of the message which is returned by the implementations `#build()`
  * @abstract
  */
@@ -461,7 +461,9 @@ class AbstractTargetBuilder {
   }
 
   /**
-   * @return {T}
+   * A build method for creating instances of this builders target class.
+   *
+   * @return {T} a new target class instance
    * @abstract
    */
   build() {
