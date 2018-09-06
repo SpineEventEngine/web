@@ -386,6 +386,7 @@ describe('FirebaseBackendClient', function () {
     Promise.all(createPromises).then(() => {
       // Rename tasks in a timeout after they are created to 
       // allow for added subscriptions to be updated first.
+      const renameTimeout = new Duration({seconds: 30});
       setTimeout(() => {
         taskIds.forEach(taskId => {
           const renameCommand = Given.renameTaskCommand({
@@ -399,7 +400,7 @@ describe('FirebaseBackendClient', function () {
             fail(done, 'Unexpected rejection while renaming a task.')
           );
         });
-      }, 30 * SECONDS);
+      }, renameTimeout.inMs());
     });
   });
 
@@ -468,6 +469,7 @@ describe('FirebaseBackendClient', function () {
       .catch(fail(done));
 
     // Rename created task.
+    const renameTimeout = new Duration({seconds: 20});
     promise.then(() => {
       // Tasks are renamed with a timeout after to allow for changes to show up in subscriptions.
       return new Promise(resolve => {
@@ -485,7 +487,7 @@ describe('FirebaseBackendClient', function () {
             fail(done, 'Unexpected error while renaming a task.'),
             fail(done, 'Unexpected rejection while renaming a task.')
           );
-        }, 20 * SECONDS);
+        }, renameTimeout.inMs());
       });
     }).then(() => {
       setTimeout(() => {
@@ -499,7 +501,7 @@ describe('FirebaseBackendClient', function () {
           fail(done, 'Unexpected error while renaming a task.'),
           fail(done, 'Unexpected rejection while renaming a task.')
         );
-      }, 20 * SECONDS);
+      }, renameTimeout.inMs());
     });
   });
 
