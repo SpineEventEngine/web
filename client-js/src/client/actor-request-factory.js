@@ -358,13 +358,13 @@ class AbstractTargetBuilder {
     }
     const invalidTypeMessage = 'Each provided ID must be a string, number or a TypedMessage.';
     if (ids[0] instanceof Number || typeof ids[0] === 'number') {
-      QueryBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
+      AbstractTargetBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.int64);
     } else if (ids[0] instanceof String || typeof ids[0] === 'string') {
-      QueryBuilder._checkAllOfType(ids, String, invalidTypeMessage);
+      AbstractTargetBuilder._checkAllOfType(ids, String, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.string);
     } else {
-      QueryBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
+      AbstractTargetBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
       this._ids = ids.slice();
     }
     return this;
@@ -397,11 +397,11 @@ class AbstractTargetBuilder {
       return this;
     }
     if (predicates[0] instanceof ColumnFilter) {
-      QueryBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
+      AbstractTargetBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
       const aggregatingFilter = ColumnFilters.all(predicates);
       this._columns = [aggregatingFilter];
     } else {
-      QueryBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
+      AbstractTargetBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
       this._columns = predicates.slice();
     }
     return this;
@@ -428,7 +428,7 @@ class AbstractTargetBuilder {
     if (!(fieldNames instanceof Array)) {
       throw new Error('Only an array of strings is allowed as parameter to QueryBuilder#withMask().');
     }
-    QueryBuilder._checkAllOfType(fieldNames, String, 'Field names should be strings.');
+    AbstractTargetBuilder._checkAllOfType(fieldNames, String, 'Field names should be strings.');
     if (!fieldNames.length) {
       return this;
     }
@@ -481,13 +481,13 @@ class AbstractTargetBuilder {
    */
   static _checkAllOfType(items, cls, message = 'Unexpected parameter type.') {
     if (cls === String) {
-      QueryBuilder._checkAllAreStrings(items, message);
+      AbstractTargetBuilder._checkAllAreStrings(items, message);
     } else if (cls === Number) {
-      QueryBuilder._checkAllAreNumbers(items, message);
+      AbstractTargetBuilder._checkAllAreNumbers(items, message);
     } else if (cls === Boolean) {
-      QueryBuilder._checkAllAreBooleans(items, message);
+      AbstractTargetBuilder._checkAllAreBooleans(items, message);
     } else {
-      QueryBuilder._checkAllOfClass(cls, items, message);
+      AbstractTargetBuilder._checkAllOfClass(cls, items, message);
     }
   }
 
