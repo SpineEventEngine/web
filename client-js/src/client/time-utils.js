@@ -25,6 +25,11 @@
  * @property {number} minutes
  */
 
+const MILLISECONDS_IN_SECOND = 1000;
+
+const SECONDS_IN_MINUTE = 60;
+const MILLISECONDS_IN_MINUTE = SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND;
+
 /**
  * A duration of a specified amount of seconds or minutes.
  */
@@ -63,8 +68,3 @@ export class Duration {
     return total;
   }
 }
-
-const MILLISECONDS_IN_SECOND = 1000;
-
-const SECONDS_IN_MINUTE = 60;
-const MILLISECONDS_IN_MINUTE = SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND;
