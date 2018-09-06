@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-final def SPINE_VERSION = '0.10.80-SNAPSHOT'
+final def SPINE_VERSION = '0.10.86-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
-    spineBaseVersion = '0.10.67-SNAPSHOT'
+    spineBaseVersion = '0.10.69-SNAPSHOT'
 
     versionToPublish = SPINE_VERSION;
 
