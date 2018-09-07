@@ -52,9 +52,6 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
         this.type = type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Optional<M> parse(String raw) {
         String json = cleanUp(raw);
