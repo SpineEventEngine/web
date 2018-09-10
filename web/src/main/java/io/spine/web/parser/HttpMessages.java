@@ -42,8 +42,12 @@ import static java.util.stream.Collectors.joining;
  *
  * <p>In order to specify either format, add the {@code Content-Type} header. The accepted values
  * are {@code application/json} and {@code application/x-protobuf}, case insensitive. If the header
- * is absent, the JSON format is expected. If the header value is not recognized, the parsing is
- * failed.
+ * is absent, the JSON format is expected. If the header value is not recognized, the parsing fails,
+ * returning an empty {@link java.util.Optional Optional}.
+ *
+ * <p>No parameters are accepted in {@code Content-Type}, except for type, subtype and charset. Any
+ * unhandled {@code Content-Type} attributes will result in failed parsing returning an empty
+ * {@link java.util.Optional Optional}.
  *
  * <p>There is a difference in behavior when parsing one or the other format.
  * When parsing a JSON-encoded message, if an unknown field is found, the parsing is considered
@@ -51,8 +55,8 @@ import static java.util.stream.Collectors.joining;
  * the field can be found in the {@linkplain Message#getUnknownFields() unknown fields set} of
  * the parsed message.
  *
- * @see MessageFormat
  * @author Dmytro Dashenkov
+ * @see MessageFormat
  */
 public final class HttpMessages {
 
@@ -65,11 +69,15 @@ public final class HttpMessages {
     /**
      * Parses the body of the given request into a message of the given type.
      *
-     * @param request the request with a JSON in its body
-     * @param type    the class of message contained in the JSON
-     * @param <M>     the type of the message to parse
+     * @param request
+     *         the request with a JSON in its body
+     * @param type
+     *         the class of message contained in the JSON
+     * @param <M>
+     *         the type of the message to parse
      * @return parsed message or {@code Optional.empty()} if the message cannot be parsed
-     * @throws IOException if the {@code request} throws the exception
+     * @throws IOException
+     *         if the {@code request} throws the exception
      */
     public static <M extends Message> Optional<M> parse(HttpServletRequest request, Class<M> type)
             throws IOException {
