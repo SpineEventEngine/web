@@ -23,6 +23,7 @@ import uuid from 'uuid';
 
 import {devFirebaseApp} from './test-firebase-app';
 import {Type, TypedMessage} from '../../src/client/typed-message';
+import {Duration} from '../../src/client/time-utils';
 
 import {CreateTask, RenameTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
@@ -30,10 +31,6 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-
-const MILLISECONDS = 1;
-const SECONDS = 1000 * MILLISECONDS;
-const MINUTES = 60 * SECONDS;
 
 function fail(done, message) {
   return error => {
@@ -165,7 +162,8 @@ const backendClient = Given.backendClient();
 describe('FirebaseBackendClient', function () {
 
   // Big timeout due to remote calls during tests.
-  this.timeout(2 * MINUTES);
+  const timeoutDuration = new Duration({minutes: 2});
+  this.timeout(timeoutDuration.inMs());
 
   it('sends commands successfully', done => {
 
@@ -388,6 +386,7 @@ describe('FirebaseBackendClient', function () {
     Promise.all(createPromises).then(() => {
       // Rename tasks in a timeout after they are created to 
       // allow for added subscriptions to be updated first.
+      const renameTimeout = new Duration({seconds: 30});
       setTimeout(() => {
         taskIds.forEach(taskId => {
           const renameCommand = Given.renameTaskCommand({
@@ -401,7 +400,7 @@ describe('FirebaseBackendClient', function () {
             fail(done, 'Unexpected rejection while renaming a task.')
           );
         });
-      }, 30 * SECONDS);
+      }, renameTimeout.inMs());
     });
   });
 
@@ -470,6 +469,7 @@ describe('FirebaseBackendClient', function () {
       .catch(fail(done));
 
     // Rename created task.
+    const renameTimeout = new Duration({seconds: 20});
     promise.then(() => {
       // Tasks are renamed with a timeout after to allow for changes to show up in subscriptions.
       return new Promise(resolve => {
@@ -487,7 +487,7 @@ describe('FirebaseBackendClient', function () {
             fail(done, 'Unexpected error while renaming a task.'),
             fail(done, 'Unexpected rejection while renaming a task.')
           );
-        }, 20 * SECONDS);
+        }, renameTimeout.inMs());
       });
     }).then(() => {
       setTimeout(() => {
@@ -501,7 +501,7 @@ describe('FirebaseBackendClient', function () {
           fail(done, 'Unexpected error while renaming a task.'),
           fail(done, 'Unexpected rejection while renaming a task.')
         );
-      }, 20 * SECONDS);
+      }, renameTimeout.inMs());
     });
   });
 

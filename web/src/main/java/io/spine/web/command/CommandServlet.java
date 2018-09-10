@@ -20,6 +20,7 @@
 
 package io.spine.web.command;
 
+import com.google.common.net.MediaType;
 import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.server.CommandService;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static io.spine.json.Json.toCompactJson;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
@@ -47,8 +49,7 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class CommandServlet extends NonSerializableServlet {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // The duplication is a coincidence.
-    private static final String MIME_TYPE = "application/json";
+    private static final MediaType MIME_TYPE = JSON_UTF_8;
 
     private final CommandService commandService;
 
@@ -78,6 +79,6 @@ public abstract class CommandServlet extends NonSerializableServlet {
             throws IOException {
         String json = toCompactJson(ack);
         response.getWriter().append(json);
-        response.setContentType(MIME_TYPE);
+        response.setContentType(MIME_TYPE.toString());
     }
 }

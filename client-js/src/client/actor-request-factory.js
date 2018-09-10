@@ -190,13 +190,13 @@ class Targets {
    * Composes a new target for entities of specified type, optionally with specified IDs and
    * columnFilters.
    *
-   * @param {!Type} type a Type URL for all target entities to match
-   * @param {?TypedMessage[]} ids an array of IDs one of which must be matched by each target entity
-   * @param {?CompositeColumnFilter[]} columnFilters an array of filters target
+   * @param {!Type} forType a Type URL for all target entities to match
+   * @param {?TypedMessage[]} withIds an array of IDs one of which must be matched by each target entity
+   * @param {?CompositeColumnFilter[]} filteredBy an array of filters target
    *
    * @return {Target} a newly created target for entities with specified filters
    */
-  static compose(type, ids, columnFilters) {
+  static compose({forType: type, withIds: ids, filteredBy: columnFilters}) {
     const includeAll = !ids && !columnFilters;
 
     if (includeAll) {
@@ -267,9 +267,9 @@ class Targets {
   }
 
   /**
-   * @param {!Array<T>} input
-   * @return {Array<T>} an empty array if the value is `null`, or the provided input otherwise
-   * @template <T>
+   * @param {?T[]} input
+   * @return {T[]} an empty array if the value is `null`, or the provided input otherwise
+   * @template <T> type of items in the provided array
    * @private
    */
   static _nullToEmpty(input) {
@@ -286,22 +286,37 @@ const INVALID_FILTER_TYPE =
   'either ColumnFilter or CompositeColumnFilter.';
 
 /**
- * A builder for creating `Query` instances. A more flexible approach to query creation
- * than using a `QueryFactory`.
+ * An abstract base for builders that create `Message` instances which have a `Target`
+ * and a `FieldMask` as attributes.
+ *
+ * <p>The `Target` matching the builder configuration is accessed with `#getTarget()`,
+ * while the `FieldMask` is retrieved with `#getMask()`.
+ *
+ * The public API of this class is inspired by the SQL syntax.
+ * ```javascript
+ *     select(CUSTOMER_TYPE) // returning <AbstractTargetBuilder> descendant instance
+ *         .byIds(getWestCoastCustomerIds())
+ *         .withMask(["name", "address", "email"])
+ *         .where([
+ *             ColumnFilters.eq("type", "permanent"),
+ *             ColumnFilters.eq("discountPercent", 10),
+ *             ColumnFilters.eq("companySize", Company.Size.SMALL)
+ *         ])
+ *         .build()
+ * ```
+ *
+ * @template <T>
+ *         a type of the message which is returned by the implementations `#build()`
+ * @abstract
  */
-class QueryBuilder {
+class AbstractTargetBuilder {
 
-  constructor(type, queryFactory) {
+  constructor(type) {
     /**
      * @type {Type}
      * @private
      */
     this._type = type;
-    /**
-     * @type {QueryFactory}
-     * @private
-     */
-    this._factory = queryFactory;
     /**
      * @type {TypedMessage[]}
      * @private
@@ -323,14 +338,14 @@ class QueryBuilder {
    * Sets an ID predicate of the `Query#getTarget()`.
    *
    * Makes the query return only the entities identified by the provided IDs.
-   * 
+   *
    * Supported ID types are string, number, and `TypedMessage`. To use other primitive types
    * wrap them in type message using Protobuf primitive wrappers (e.g. StringValue, BytesValue).
-   * 
-   * If number IDs are passed they are assumed to be of `int64` Protobuf type. 
+   *
+   * If number IDs are passed they are assumed to be of `int64` Protobuf type.
    *
    * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers of entities to query
-   * @return {QueryBuilder} the current builder instance
+   * @return {this} the current builder instance
    * @throws if this method is executed more than once
    * @throws if the provided IDs are not an instance of `Array`
    * @throws if any of provided IDs are not an instance of `TypedMessage`
@@ -347,13 +362,13 @@ class QueryBuilder {
     }
     const invalidTypeMessage = 'Each provided ID must be a string, number or a TypedMessage.';
     if (ids[0] instanceof Number || typeof ids[0] === 'number') {
-      QueryBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
+      AbstractTargetBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.int64);
     } else if (ids[0] instanceof String || typeof ids[0] === 'string') {
-      QueryBuilder._checkAllOfType(ids, String, invalidTypeMessage);
+      AbstractTargetBuilder._checkAllOfType(ids, String, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.string);
     } else {
-      QueryBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
+      AbstractTargetBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
       this._ids = ids.slice();
     }
     return this;
@@ -371,7 +386,7 @@ class QueryBuilder {
    *
    * @param {!ColumnFilter[]|CompositeColumnFilter[]} predicates
    * the predicates to filter the requested entities by
-   * @return {QueryBuilder} self for method chaining
+   * @return {this} self for method chaining
    * @throws if this method is executed more than once
    * @see ColumnFilters a convenient way to create `ColumnFilter`s
    */
@@ -386,11 +401,11 @@ class QueryBuilder {
       return this;
     }
     if (predicates[0] instanceof ColumnFilter) {
-      QueryBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
+      AbstractTargetBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
       const aggregatingFilter = ColumnFilters.all(predicates);
       this._columns = [aggregatingFilter];
     } else {
-      QueryBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
+      AbstractTargetBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
       this._columns = predicates.slice();
     }
     return this;
@@ -406,7 +421,7 @@ class QueryBuilder {
    * be returned by query.
    *
    * @param {!String[]} fieldNames
-   * @return {QueryBuilder} self for method chaining
+   * @return {this} self for method chaining
    * @throws if this method is executed more than once
    * @see FieldMask specification for `FieldMask`
    */
@@ -417,7 +432,7 @@ class QueryBuilder {
     if (!(fieldNames instanceof Array)) {
       throw new Error('Only an array of strings is allowed as parameter to QueryBuilder#withMask().');
     }
-    QueryBuilder._checkAllOfType(fieldNames, String, 'Field names should be strings.');
+    AbstractTargetBuilder._checkAllOfType(fieldNames, String, 'Field names should be strings.');
     if (!fieldNames.length) {
       return this;
     }
@@ -427,13 +442,36 @@ class QueryBuilder {
   }
 
   /**
-   * Creates the Query instance based on the parameters set to this builder.
+   * @return {Target} a target matching builders configuration
+   */
+  getTarget() {
+    return this._buildTarget();
+  }
+
+  /**
+   * Creates a new target `Target` instance based on this builder configuration.
    *
-   * @return {Query} a new query
+   * @return {Target} a new target
+   */
+  _buildTarget() {
+    return Targets.compose({forType: this._type, withIds: this._ids, filteredBy: this._columns});
+  }
+
+  /**
+   * @return {FieldMask} a fields mask set to this builder
+   */
+  getMask() {
+    return this._fieldMask;
+  }
+
+  /**
+   * A build method for creating instances of this builders target class.
+   *
+   * @return {T} a new target class instance
+   * @abstract
    */
   build() {
-    const target = Targets.compose(this._type, this._ids, this._columns);
-    return this._factory.forTarget(target, this._fieldMask);
+    throw new Error('Not implemented in abstract base.');
   }
 
   /**
@@ -447,13 +485,13 @@ class QueryBuilder {
    */
   static _checkAllOfType(items, cls, message = 'Unexpected parameter type.') {
     if (cls === String) {
-      QueryBuilder._checkAllAreStrings(items, message);
+      AbstractTargetBuilder._checkAllAreStrings(items, message);
     } else if (cls === Number) {
-      QueryBuilder._checkAllAreNumbers(items, message);
+      AbstractTargetBuilder._checkAllAreNumbers(items, message);
     } else if (cls === Boolean) {
-      QueryBuilder._checkAllAreBooleans(items, message);
+      AbstractTargetBuilder._checkAllAreBooleans(items, message);
     } else {
-      QueryBuilder._checkAllOfClass(cls, items, message);
+      AbstractTargetBuilder._checkAllOfClass(cls, items, message);
     }
   }
 
@@ -512,6 +550,39 @@ class QueryBuilder {
 }
 
 /**
+ * A builder for creating `Query` instances. A more flexible approach to query creation
+ * than using a `QueryFactory`.
+ *
+ * @extends {AbstractTargetBuilder<Query>}
+ */
+class QueryBuilder extends AbstractTargetBuilder {
+
+  /**
+   * @param {!Type} type
+   * @param {!QueryFactory} queryFactory
+   */
+  constructor(type, queryFactory) {
+    super(type);
+    /**
+     * @type {QueryFactory}
+     * @private
+     */
+    this._factory = queryFactory;
+  }
+
+  /**
+   * Creates the Query instance based on the current builder configuration.
+   *
+   * @return {Query} a new query
+   */
+  build() {
+    const target = this.getTarget();
+    const fieldMask = this.getMask();
+    return this._factory.compose({forTarget: target, withMask: fieldMask});
+  }
+}
+
+/**
  * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
  *
  * @see ActorRequestFactory#query()
@@ -526,7 +597,7 @@ class QueryFactory {
   }
 
   /**
-   * Creates a new builder of Query instances of the provided type
+   * Creates a new builder of `Query` instances of the provided type
    * @param {!Type} type a type URL of the target type
    * @return {QueryBuilder}
    */
@@ -539,11 +610,11 @@ class QueryFactory {
    *
    * An optional field mask can be provided to specify particular fields to be returned for `Query`
    *
-   * @param {!Target} target a specification of type and filters for `Query` result to match
-   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
+   * @param {!Target} forTarget a specification of type and filters for `Query` result to match
+   * @param {?FieldMask} withMask a specification of fields to be returned by executing `Query`
    * @return {Query}
    */
-  forTarget(target, fieldMask) {
+  compose({forTarget: target, withMask: fieldMask}) {
     return this._newQuery(target, fieldMask);
   }
 
@@ -628,6 +699,40 @@ class CommandFactory {
 }
 
 /**
+ * A builder for creating `Topic` instances. A more flexible approach to query creation
+ * than using a `TopicFactory`.
+ *
+ * @extends {AbstractTargetBuilder<Topic>}
+ */
+class TopicBuilder extends AbstractTargetBuilder {
+
+  /**
+   * @param {!Type} type
+   * @param {!TopicFactory} topicFactory
+   */
+  constructor(type, topicFactory) {
+    super(type);
+    /**
+     * @type {TopicFactory}
+     * @private
+     */
+    this._factory = topicFactory;
+  }
+
+  /**
+   * Creates the `Topic` instance based on the current builder configuration.
+   *
+   * @return {Topic} a new topic
+   */
+  build() {
+    return this._factory.compose({
+      forTarget: this.getTarget(),
+      withMask: this.getMask(),
+    });
+  }
+}
+
+/**
  * A factory of {@link Topic} instances.
  *
  * Uses the given {@link ActorRequestFactory} as the source of the topic meta information,
@@ -646,44 +751,47 @@ class TopicFactory {
   }
 
   /**
-   * Creates a {@link Topic} for the entity states with the given IDs.
-   *
-   * @param {!Type} type the class of a target entity
-   * @param {!TypedMessage[]} ids the IDs of interest
-   * @return {Topic} the instance of {@code Topic} assembled according to the parameters
+   * Creates a new builder of `Topic` instances of the provided type
+   * @param {!Type} type a type URL of the target type
+   * @return {TopicBuilder}
    */
-  someOf(type, ids) {
-    const target = Targets.compose(type, ids);
-    return this._forTarget(target);
+  select(type) {
+    return new TopicBuilder(type, this);
   }
 
   /**
-   * Creates a {@link Topic} for all of the specified entity states.
+   * Creates a `Topic` for all of the specified entity states.
    *
-   * @param {!Type} type the class of a target entity
-   * @return {Topic} an instance of {@code Topic} assembled according to the parameters
+   * @param {!Type} of the class of a target entity
+   * @param {?TypedMessage[]} withIds the IDs of interest
+   * @return {Topic} an instance of `Topic` assembled according to the parameters
    */
-  allOf(type) {
-    const target = Targets.compose(type);
-    return this._forTarget(target);
+  all({of: type, withIds: ids}) {
+    const target = Targets.compose({forType: type, withIds: ids});
+    return this.compose({forTarget: target});
   }
 
   /**
-   * Creates a {@link Topic} for the specified {@link Target}.
+   * Creates a `Topic` for the specified `Target`.
    *
-   * @param {!Target} target the {@code Target} to create a topic for
-   * @return {Topic} the instance of {@code Topic}
-   * @private
+   * @param {!Target} forTarget a `Target` to create a topic for
+   * @param {?FieldMask} withMask a mask specifying fields to be returned
+   * @return {Topic} the instance of `Topic`
    */
-  _forTarget(target) {
+  compose({forTarget: target, withMask: fieldMask}) {
     const id = TopicFactory._generateId();
     const topic = new Topic();
     topic.setId(id);
     topic.setContext(this._requestFactory._actorContext());
     topic.setTarget(target);
+    topic.setFieldMask(fieldMask);
     return topic;
   }
 
+  /**
+   * @return {TopicId} a newly created topic ID
+   * @private
+   */
   static _generateId() {
     const topicId = new TopicId();
     topicId.setValue(`t-${uuid.v4()}`);

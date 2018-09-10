@@ -34,6 +34,7 @@ import {
   EntityFilters
 } from 'spine-web-client-proto/spine/client/entities_pb';
 
+
 class Given {
 
   constructor() {
@@ -108,22 +109,22 @@ Given.TYPE = {
 };
 Given.ACTOR = 'spine-web-client-test-actor';
 
-describe('QueryBuilder', function () {
+describe('TopicBuilder', function () {
 
   const timeoutDuration = new Duration({seconds: 5});
   this.timeout(timeoutDuration.inMs());
 
-  it('creates a Query of query for type', done => {
-    const query = Given.requestFactory()
-      .query()
+  it('creates a Topic of topic for type', done => {
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .build();
 
-    assert.ok(query.getId());
+    assert.ok(topic.getId());
 
-    Given.assertActorContextCorrect(query.getContext());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
@@ -133,18 +134,18 @@ describe('QueryBuilder', function () {
 
   /********* IDs *********/
 
-  it('creates a Query for type with with no IDs', done => {
-    const query = Given.requestFactory()
-      .query()
+  it('creates a Topic for type with with no IDs', done => {
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .byIds([])
       .build();
 
-    assert.ok(query.getId());
+    assert.ok(topic.getId());
 
-    Given.assertActorContextCorrect(query.getContext());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
@@ -152,20 +153,20 @@ describe('QueryBuilder', function () {
     done();
   });
 
-  it('creates a Query for type with multiple IDs', done => {
+  it('creates a Topic for type with multiple IDs', done => {
     const values = ['meeny', 'miny', 'moe'];
     const taskIds = Given.newTaskIds(values);
 
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .byIds(taskIds).build();
 
-    assert.ok(query.getId());
+    assert.ok(topic.getId());
 
-    Given.assertActorContextCorrect(query.getContext());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
@@ -186,19 +187,19 @@ describe('QueryBuilder', function () {
     done();
   });
 
-  it('creates a Query for type with string IDs', done => {
+  it('creates a Topic for type with string IDs', done => {
     const values = ['meeny', 'miny', 'moe'];
 
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .byIds(values).build();
 
-    assert.ok(query.getId());
+    assert.ok(topic.getId());
 
-    Given.assertActorContextCorrect(query.getContext());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
@@ -218,19 +219,19 @@ describe('QueryBuilder', function () {
     done();
   });
 
-  it('creates a Query for type with number IDs', done => {
+  it('creates a Topic for type with number IDs', done => {
     const values = [29, 99971, 104729];
 
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .byIds(values).build();
 
-    assert.ok(query.getId());
+    assert.ok(topic.getId());
 
-    Given.assertActorContextCorrect(query.getContext());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
@@ -255,7 +256,7 @@ describe('QueryBuilder', function () {
     const secondIds = Given.newTaskIds(['tock']);
     try {
       Given.requestFactory()
-        .query()
+        .topic()
         .select(Given.TYPE.TASK)
         .byIds(firstIds)
         .byIds(secondIds);
@@ -268,7 +269,7 @@ describe('QueryBuilder', function () {
   it('throws an error if #byIds() is invoked with non-Array value', done => {
     try {
       Given.requestFactory()
-        .query()
+        .topic()
         .select(Given.TYPE.TASK)
         .byIds({error: true});
       done(new Error('#byIds() non-Array value did not result in error.'));
@@ -279,7 +280,7 @@ describe('QueryBuilder', function () {
 
   it('throws an error if #byIds() is invoked with non-TypedMessage IDs', done => {
     try {
-      Given.requestFactory().query()
+      Given.requestFactory().topic()
         .select(Given.TYPE.TASK)
         .byIds([{tinker: 'tailor'}, {soldier: 'sailor'}]);
       done(new Error('#byIds() non-TypedMessage IDs did not result in error.'));
@@ -290,36 +291,36 @@ describe('QueryBuilder', function () {
 
   /********* FILTERS *********/
 
-  it('creates a Query with a no filters', done => {
-    const query = Given.requestFactory()
-      .query()
+  it('creates a Topic with a no filters', done => {
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .where([])
       .build();
 
-    assert.ok(query.getId());
+    assert.ok(topic.getId());
 
-    Given.assertActorContextCorrect(query.getContext());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
     done();
   });
 
-  it('creates a Query with a single ColumnFilter', done => {
+  it('creates a Topic with a single ColumnFilter', done => {
     const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .where([nameFilter])
       .build();
 
-    assert.ok(query.getId());
-    Given.assertActorContextCorrect(query.getContext());
+    assert.ok(topic.getId());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
@@ -332,21 +333,21 @@ describe('QueryBuilder', function () {
     done();
   });
 
-  it('creates a Query with a multiple ColumnFilter', done => {
+  it('creates a Topic with a multiple ColumnFilter', done => {
     const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
     const descriptionFilter = ColumnFilters.eq(
       'description', TypedMessage.string('Web needs tests, eh?')
     );
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .where([nameFilter, descriptionFilter])
       .build();
 
-    assert.ok(query.getId());
-    Given.assertActorContextCorrect(query.getContext());
+    assert.ok(topic.getId());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
@@ -359,20 +360,20 @@ describe('QueryBuilder', function () {
     done();
   });
 
-  it('creates a Query with a single CompositeColumnFilter', done => {
+  it('creates a Topic with a single CompositeColumnFilter', done => {
     const nameFilter1 = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
     const nameFilter2 = ColumnFilters.eq('name', TypedMessage.string('Create a PR'));
     const compositeColumnFilter = ColumnFilters.either([nameFilter1, nameFilter2]);
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .where([compositeColumnFilter])
       .build();
 
-    assert.ok(query.getId());
-    Given.assertActorContextCorrect(query.getContext());
+    assert.ok(topic.getId());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
@@ -385,7 +386,7 @@ describe('QueryBuilder', function () {
     done();
   });
 
-  it('creates a Query with a multiple CompositeColumnFilters', done => {
+  it('creates a Topic with a multiple CompositeColumnFilters', done => {
     const nameFilter1 = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
     const nameFilter2 = ColumnFilters.eq('name', TypedMessage.string('Create a PR'));
     const nameFilter = ColumnFilters.either([nameFilter1, nameFilter2]);
@@ -393,16 +394,16 @@ describe('QueryBuilder', function () {
       ColumnFilters.eq('description', TypedMessage.string('Web needs tests, eh?')),
     ]);
 
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .where([nameFilter, descriptionFilter])
       .build();
 
-    assert.ok(query.getId());
-    Given.assertActorContextCorrect(query.getContext());
+    assert.ok(topic.getId());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
@@ -419,8 +420,8 @@ describe('QueryBuilder', function () {
     const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
 
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .where(nameFilter);
       done(new Error('An error was expected due to invalid #where() parameter.'));
@@ -431,8 +432,8 @@ describe('QueryBuilder', function () {
 
   it('throws an error if #where() is invoked with non-filter values', done => {
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .where(['Duck', 'duck', 'goose']);
       done(new Error('An error was expected due to invalid #where() parameter.'));
@@ -443,8 +444,8 @@ describe('QueryBuilder', function () {
 
   it('throws an error if #where() is invoked with mixed ColumnFilter and CompositeColumnFilter values', done => {
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .where([new ColumnFilter(), new CompositeColumnFilter()]);
       done(new Error('An error was expected due to mixed column filter types.'));
@@ -455,8 +456,8 @@ describe('QueryBuilder', function () {
 
   it('throws an error if #where() is invoked more than once', done => {
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .where([new ColumnFilter()])
         .where([new ColumnFilter()]);
@@ -468,31 +469,31 @@ describe('QueryBuilder', function () {
 
   /********* MASKS *********/
 
-  it('creates a Query with a provided field mask', done => {
+  it('creates a Topic with a provided field mask', done => {
     const maskedFields = ['id', 'description'];
-    const query = Given.requestFactory()
-      .query()
+    const topic = Given.requestFactory()
+      .topic()
       .select(Given.TYPE.TASK)
       .withMask(maskedFields)
       .build();
 
-    assert.ok(query.getId());
-    Given.assertActorContextCorrect(query.getContext());
+    assert.ok(topic.getId());
+    Given.assertActorContextCorrect(topic.getContext());
 
-    const target = query.getTarget();
+    const target = topic.getTarget();
     assert.ok(target);
     assert.ok(target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    Given.assertUnorderedEqual(query.getFieldMask().getPathsList(), maskedFields);
+    Given.assertUnorderedEqual(topic.getFieldMask().getPathsList(), maskedFields);
 
     done();
   });
 
   it('throws an error if #withMask() is invoked more than once', done => {
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .withMask(['name'])
         .withMask(['description']);
@@ -504,8 +505,8 @@ describe('QueryBuilder', function () {
 
   it('throws an error if #withMask() is invoked with non-Array value', done => {
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .withMask('name');
       done(new Error('An error was expected due to invalid #withMask() argument.'))
@@ -516,8 +517,8 @@ describe('QueryBuilder', function () {
 
   it('throws an error if #withMask() is invoked with non-string field names', done => {
     try {
-      const query = Given.requestFactory()
-        .query()
+      const topic = Given.requestFactory()
+        .topic()
         .select(Given.TYPE.TASK)
         .withMask([22]);
       done(new Error('An error was expected due to invalid #withMask() argument.'))

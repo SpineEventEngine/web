@@ -20,56 +20,53 @@
 
 package io.spine.web.parser;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.net.MediaType;
 import com.google.protobuf.Message;
 
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static com.google.common.net.MediaType.create;
+import static com.google.common.net.MediaType.parse;
+import static java.util.Optional.empty;
 
 /**
  * Message formats supported by the {@link HttpMessages}.
  *
  * @author Dmytro Dashenkov
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 enum MessageFormat {
 
     /**
      * The JSON message stringification format.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // The duplication is a coincidence.
-    JSON("application/json") {
+    JSON(Constants.PROTOBUF_JSON) {
         @Override
         <M extends Message> MessageParser<M> parserFor(Class<M> type) {
             return new JsonMessageParser<>(type);
-        }
-
-        @Override
-        protected boolean matches(@Nullable String requestContentType) {
-            return isNullOrEmpty(requestContentType) || super.matches(requestContentType);
         }
     },
 
     /**
      * The Base64 bytes message stringification format.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // The duplication is a coincidence.
-    BASE64("application/x-protobuf") {
+    BASE64(Constants.PROTOBUF_BINARY) {
         @Override
         <M extends Message> MessageParser<M> parserFor(Class<M> type) {
             return new Base64MessageParser<>(type);
         }
     };
 
-    @VisibleForTesting
-    static final String CONTENT_TYPE = "Content-Type";
+    @SuppressWarnings("DuplicateStringLiteralInspection") // A duplicate is in tests.
+    private static final String CONTENT_TYPE = "Content-Type";
 
-    private final String contentType;
+    private final MediaType contentType;
 
-    MessageFormat(String contentType) {
+    MessageFormat(MediaType contentType) {
         this.contentType = contentType;
     }
 
@@ -81,22 +78,35 @@ enum MessageFormat {
      * If the value is equal to {@code application/x-protobuf} (case insensitive), returns
      * {@link #BASE64}. If the header is not set, returns {@link #JSON}.
      *
-     * @param request the request to get the format for
+     * @param request
+     *         the request to get the format for
      * @return the format of the message in the given request or {@code Optional.empty()} if
      *         the request does not justify the described format
      */
     static Optional<MessageFormat> formatOf(HttpServletRequest request) {
-        String formatHeader = request.getHeader(CONTENT_TYPE);
-        Optional<MessageFormat> matchedFormat =
-                Stream.of(values())
-                      .filter(format -> format.matches(formatHeader))
-                      .findFirst();
-        return matchedFormat;
+        String contentTypeHeader = request.getHeader(CONTENT_TYPE);
+
+        if (isNullOrEmpty(contentTypeHeader)) {
+            return Optional.of(JSON);
+        }
+
+        try {
+            MediaType type = parse(contentTypeHeader);
+            Optional<MessageFormat> format = formatOf(type);
+            return format;
+        } catch (IllegalArgumentException ignored) {
+            return empty();
+        }
     }
 
-    protected boolean matches(@Nullable String requestContentType) {
-        boolean result = contentType.equalsIgnoreCase(requestContentType);
-        return result;
+    static Optional<MessageFormat> formatOf(MediaType type) {
+        return Stream.of(values())
+                     .filter(format -> format.matches(type))
+                     .findFirst();
+    }
+
+    boolean matches(MediaType otherContentType) {
+        return contentType.is(otherContentType);
     }
 
     /**
@@ -104,9 +114,17 @@ enum MessageFormat {
      *
      * <p>The parser works with {@code this} message format.
      *
-     * @param type the class of the message to parse
-     * @param <M>  the type of the message to parse
+     * @param type
+     *         the class of the message to parse
+     * @param <M>
+     *         the type of the message to parse
      * @return a message parses instance
      */
     abstract <M extends Message> MessageParser<M> parserFor(Class<M> type);
+
+    private static class Constants {
+
+        private static final MediaType PROTOBUF_JSON = JSON_UTF_8;
+        private static final MediaType PROTOBUF_BINARY = create("application", "x-protobuf");
+    }
 }

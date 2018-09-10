@@ -71,7 +71,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         FirebaseSubscriptionRecord record = 
                 new FirebaseSubscriptionRecord(path, queryResponse);
         record.storeAsInitial(database);
-        Subscription subscription = newSubscription(topic, record.path());
+        SubscriptionId id = newSubscriptionId(record.path());
+        Subscription subscription = newSubscription(id, topic);
         return new FirebaseSubscribeResult(subscription);
     }
 
@@ -79,15 +80,15 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         return QueryVBuilder.newBuilder()
                             .setId(generateId())
                             .setTarget(topic.getTarget())
+                            .setFieldMask(topic.getFieldMask())
                             .setContext(topic.getContext())
                             .build();
     }
 
-    private static Subscription newSubscription(Topic topic, FirebaseDatabasePath path) {
-        SubscriptionId subscriptionId = newSubscriptionId(path);
+    private static Subscription newSubscription(SubscriptionId subscriptionId, Topic topic) {
         return SubscriptionVBuilder.newBuilder()
-                                   .setTopic(topic)
                                    .setId(subscriptionId)
+                                   .setTopic(topic)
                                    .build();
     }
 
@@ -99,7 +100,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     @Override
     public SubscriptionKeepUpResult keepUp(Subscription subscription) {
-        Query query = newQueryForTopic(subscription.getTopic());
+        Topic topic = subscription.getTopic();
+        Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());

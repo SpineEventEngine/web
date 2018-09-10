@@ -19,9 +19,9 @@
  */
 
 import {Subscription} from 'spine-web-client-proto/spine/client/subscription_pb';
+import {Duration} from './time-utils';
 
-const SECOND = 1000;
-const TEN_SECONDS = 10 * SECOND;
+const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({seconds: 10});
 
 /**
  * A service that manages the subscriptions periodically sending requests to keep them running.
@@ -63,9 +63,10 @@ export class FirebaseSubscriptionService {
     if (this._interval) {
       throw new Error('The FirebaseSubscriptionService is already running');
     }
+
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
-    }, TEN_SECONDS);
+    }, SUBSCRIPTION_KEEP_UP_INTERVAL.inMs());
   }
 
   _keepUpSubscriptions() {
@@ -97,7 +98,7 @@ export class FirebaseSubscriptionService {
   }
 
   /**
-   * Removes the provided subscription from subscriptions list, which stops any attempts 
+   * Removes the provided subscription from subscriptions list, which stops any attempts
    * to update it.
    *
    * @private
