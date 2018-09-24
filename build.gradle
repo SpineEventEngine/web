@@ -117,6 +117,8 @@ subprojects {
     apply plugin: 'maven-publish'
 
     apply from: deps.scripts.testOutput
+    apply from: deps.scripts.javadocOptions
+    apply from: deps.scripts.javacArgs
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -133,6 +135,9 @@ subprojects {
     }
 
     dependencies {
+        errorprone deps.build.errorProneCore
+        errorproneJavac deps.build.errorProneJavac
+
         implementation deps.build.guava
         implementation deps.build.slf4j
         implementation deps.build.checkerAnnotations
@@ -156,13 +161,6 @@ subprojects {
             java.srcDirs generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir
             resources.srcDirs "$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"
         }
-    }
-
-    tasks.withType(JavaCompile) {
-        // Exclude generated sources from being analyzed by Error Prone.
-        options.compilerArgs += [
-                '-XepExcludedPaths:.*/generated/.*'
-        ]
     }
 
     task sourceJar(type: Jar) {
