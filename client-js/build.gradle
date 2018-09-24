@@ -51,6 +51,8 @@ project.compileTestJava.enabled = false
 
 apply from: "$rootDir/scripts/js.gradle"
 
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
 task linkClientProto {
     doLast {
         npm 'link', 'spine-web-client-proto'

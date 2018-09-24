@@ -37,6 +37,7 @@ buildscript {
         classpath deps.build.gradlePlugins.protobuf
         classpath deps.build.gradlePlugins.errorProne
         classpath "io.spine.tools:spine-model-compiler:$spineBaseVersion"
+        classpath "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"
     }
 
     configurations.all({
