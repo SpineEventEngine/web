@@ -180,9 +180,9 @@ describe('FirebaseBackendClient', function () {
       const typedId = new TypedMessage(taskId, Given.TYPE.OF_IDENTIFIER.TASK_ID);
 
       backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, typedId, data => {
-        assert.equal(data.id.value, taskId.getValue());
-        assert.equal(data.name, command.message.getName());
-        assert.equal(data.description, command.message.getDescription());
+        assert.equal(data.getId().getValue(), taskId.getValue());
+        assert.equal(data.getName(), command.message.getName());
+        assert.equal(data.getDescription(), command.message.getDescription());
 
         done();
 
@@ -219,7 +219,7 @@ describe('FirebaseBackendClient', function () {
           // Ordering is not guaranteed by fetch and 
           // the list of entities cannot be cleaned for tests,
           // thus at least one of entities should match the target one.
-          itemFound = data.id.value === taskId.getValue() || itemFound;
+          itemFound = data.getId().getValue() === taskId.getValue() || itemFound;
         },
         error: fail(done),
         complete() {
@@ -239,7 +239,7 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).atOnce()
         .then(data => {
-          const targetObject = data.find(item => item.id.value === taskId.getValue());
+          const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
           assert.ok(targetObject);
           done();
         }, fail(done));
@@ -288,7 +288,7 @@ describe('FirebaseBackendClient', function () {
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: task => {
-            const id = task.id.value;
+            const id = task.getId().getValue();
             console.log(`Retrieved task '${id}'`);
             if (taskIds.includes(id)) {
               count++;
@@ -328,12 +328,12 @@ describe('FirebaseBackendClient', function () {
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {
-            const id = item.id.value;
+            const id = item.getId().getValue();
             console.log(`Retrieved new task '${id}'.`);
             if (taskIds.includes(id)) {
               assert.ok(
-                initialTaskNames.includes(item.name),
-                `Task is named "${item.name}", expected one of [${initialTaskNames}]`
+                initialTaskNames.includes(item.getName()),
+                `Task is named "${item.getName()}", expected one of [${initialTaskNames}]`
               );
             }
           }
@@ -343,7 +343,7 @@ describe('FirebaseBackendClient', function () {
         });
         itemChanged.subscribe({
           next: item => {
-            const id = item.id.value;
+            const id = item.getId().getValue();
             if (taskIds.includes(id)) {
               console.log(`Got task changes for ${id}.`);
               countChanged++;
@@ -434,12 +434,12 @@ describe('FirebaseBackendClient', function () {
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {
-            const id = item.id.value;
+            const id = item.getId().getValue();
             console.log(`Retrieved new task '${id}'.`);
             if (taskIdValue === id) {
               assert.equal(
-                item.name, initialTaskName,
-                `Task is named "${item.name}", expected "${initialTaskName}"`
+                item.getName(), initialTaskName,
+                `Task is named "${item.getName()}", expected "${initialTaskName}"`
               );
             } else {
               done(new Error(`Only changes for task with ID ${taskIdValue} should be received.`))
@@ -451,10 +451,10 @@ describe('FirebaseBackendClient', function () {
         });
         itemChanged.subscribe({
           next: item => {
-            const id = item.id.value;
+            const id = item.getId().getValue();
             if (taskIdValue === id) {
               console.log(`Got task changes for ${id}.`);
-              assert.equal(item.name, expectedRenames[changesCount]);
+              assert.equal(item.getName(), expectedRenames[changesCount]);
               changesCount++;
               if (changesCount === expectedChangesCount) {
                 unsubscribe();

@@ -54,6 +54,8 @@ project.compileTestJava.enabled = false
 
 apply from: "$rootDir/scripts/js.gradle"
 
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
 testJs.enabled = false
 coverageJs.enabled = false
 

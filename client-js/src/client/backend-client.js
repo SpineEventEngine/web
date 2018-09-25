@@ -154,7 +154,7 @@ export class BackendClient {
    */
   fetchAll({ofType: type}) {
     const query = this._requestFactory.query().select(type).build();
-    return this._fetchOf(query);
+    return this._fetchOf(query, type);
   }
 
   /**
@@ -177,7 +177,7 @@ export class BackendClient {
       observer.error = errorCallback;
     }
     // noinspection JSCheckFunctionSignatures
-    this._fetchOf(query).oneByOne().subscribe(observer);
+    this._fetchOf(query, type).oneByOne().subscribe(observer);
   }
 
   /**
@@ -234,7 +234,7 @@ export class BackendClient {
     } else {
       topic = this._requestFactory.topic().all({of: type});
     }
-    return this._subscribeToTopic(topic);
+    return this._subscribeToTopic(topic, type);
   }
 
   /**
@@ -263,12 +263,13 @@ export class BackendClient {
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
    * @param {!Query} query a query processed by Spine
+   * @param {!Type} type a type of queried entities
    * @return {BackendClient.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected
    * @abstract
    */
-  _fetchOf(query) {
+  _fetchOf(query, type) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -276,11 +277,12 @@ export class BackendClient {
    * Creates a subscription to the topic which is updated with backend changes.
    *
    * @param {!Topic} topic
+   * @param {!Type} type
    * @return {Promise<EntitySubscriptionObject>}
    * @protected
    * @abstract
    */
-  _subscribeToTopic(topic) {
+  _subscribeToTopic(topic, type) {
     throw new Error('Not implemented in abstract base.');
   }
 }
@@ -308,10 +310,12 @@ class FirebaseFetch extends Fetch {
 
   /**
    * @param {!Query} query a query to be performed by Spine server
+   * @param {!Type} type a type of queried entities
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
-  constructor({of: query, using: backend}) {
+  constructor({of: query, withType: type, using: backend}) {
     super({of: query, using: backend});
+    this._type = type;
   }
 
   /**
@@ -356,7 +360,9 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            observer.next(value);
+            let messageClass = this._type.class();
+            let message = messageClass.fromObject(value);
+            observer.next(message);
             receivedCount++;
             if (receivedCount === promisedCount) {
               FirebaseFetch._complete(observer, dbSubscription);
@@ -397,7 +403,13 @@ class FirebaseFetch extends Fetch {
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
       this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._backend._firebase.getValues(path, resolve))
+        .then(({path}) => this._backend._firebase.getValues(path, values => {
+          let messages = values.map(value => {
+            const messageClass = this._type.class();
+            return messageClass.fromObject(value);
+          });
+          resolve(messages);
+        }))
         .catch(error => reject(error));
     });
   }
@@ -473,15 +485,15 @@ class FirebaseBackendClient extends BackendClient {
    * @return {BackendClient.Fetch<T>}
    * @template <T>
    */
-  _fetchOf(query) {
+  _fetchOf(query, type) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.
-    return new FirebaseBackendClient.Fetch({of: query, using: this});
+    return new FirebaseBackendClient.Fetch({of: query, withType: type, using: this});
   }
 
   /**
    * @inheritDoc
    */
-  _subscribeToTopic(topic) {
+  _subscribeToTopic(topic, type) {
     return new Promise((resolve, reject) => {
       this._endpoint.subscribeTo(topic)
         .then(subscription => {
@@ -489,17 +501,23 @@ class FirebaseBackendClient extends BackendClient {
           const subscriptions = {add: null, remove: null, change: null};
           const add = new Observable((observer) => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              observer.next(value);
+              const messageClass = type.class();
+              const message = messageClass.fromObject(value);
+              observer.next(message);
             });
           });
           const change = new Observable((observer) => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              observer.next(value);
+              const messageClass = type.class();
+              const message = messageClass.fromObject(value);
+              observer.next(message);
             });
           });
           const remove = new Observable((observer) => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              observer.next(value);
+              const messageClass = type.class();
+              const message = messageClass.fromObject(value);
+              observer.next(message);
             });
           });
           const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
