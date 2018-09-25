@@ -24,7 +24,7 @@ ext {
     spineVersion = SPINE_VERSION
     spineBaseVersion = '0.10.91-SNAPSHOT'
 
-    versionToPublish = '0.10.88-SNAPSHOT';
+    versionToPublish = '0.10.88-SNAPSHOT'
 
     firebaseVersion = '5.9.0'
     servletApiVersion = '4.0.0'
