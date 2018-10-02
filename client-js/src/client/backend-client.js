@@ -45,10 +45,12 @@ class Fetch {
 
   /**
    * @param {!Query} query a query to be performed by Spine server
+   * @param {!Type} query a query to be performed by Spine server
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
-  constructor({of: query, using: backend}) {
+  constructor({of: query, withType: type, using: backend}) {
     this._query = query;
+    this._type = type;
     this._backend = backend;
   }
 
@@ -228,13 +230,15 @@ export class BackendClient {
     if (typeof id !== 'undefined') {
       ids = [id];
     }
-    let topic;
+    let spineTopic;
     if (ids) {
-      topic = this._requestFactory.topic().all({of: type, withIds: ids});
+      spineTopic = this._requestFactory.topic().all({of: type, withIds: ids});
     } else {
-      topic = this._requestFactory.topic().all({of: type});
+      spineTopic = this._requestFactory.topic().all({of: type});
     }
-    return this._subscribeToTopic(topic, type);
+
+    const topic = new Topic(spineTopic, type);
+    return this._subscribeToTopic(topic);
   }
 
   /**
@@ -282,7 +286,7 @@ export class BackendClient {
    * @protected
    * @abstract
    */
-  _subscribeToTopic(topic, type) {
+  _subscribeToTopic(topic) {
     throw new Error('Not implemented in abstract base.');
   }
 }
@@ -314,8 +318,7 @@ class FirebaseFetch extends Fetch {
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, withType: type, using: backend}) {
-    super({of: query, using: backend});
-    this._type = type;
+    super({of: query, withType: type, using: backend});
   }
 
   /**
@@ -493,29 +496,30 @@ class FirebaseBackendClient extends BackendClient {
   /**
    * @inheritDoc
    */
-  _subscribeToTopic(topic, type) {
+  _subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
-      this._endpoint.subscribeTo(topic)
+      const spineTopic = topic.internal();
+      this._endpoint.subscribeTo(spineTopic)
         .then(subscription => {
           const path = subscription.id.value;
           const subscriptions = {add: null, remove: null, change: null};
           const add = new Observable((observer) => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              const messageClass = type.class();
+              const messageClass = topic.entityType().class();
               const message = messageClass.fromObject(value);
               observer.next(message);
             });
           });
           const change = new Observable((observer) => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              const messageClass = type.class();
+              const messageClass = topic.entityType().class();
               const message = messageClass.fromObject(value);
               observer.next(message);
             });
           });
           const remove = new Observable((observer) => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              const messageClass = type.class();
+              const messageClass = topic.entityType().class();
               const message = messageClass.fromObject(value);
               observer.next(message);
             });
@@ -564,8 +568,25 @@ class FirebaseBackendClient extends BackendClient {
     const id = new SubscriptionId();
     id.setValue(path);
     subscription.setId(id);
-    subscription.setTopic(topic);
+    const spineTopic = topic.internal();
+    subscription.setTopic(spineTopic);
     return subscription;
+  }
+}
+
+class Topic {
+
+  constructor(topic, type) {
+    this._topic = topic;
+    this._type = type;
+  }
+
+  internal() {
+    return this._topic;
+  }
+
+  entityType() {
+    return this._type;
   }
 }
 
