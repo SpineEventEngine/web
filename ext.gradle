@@ -22,9 +22,9 @@ final def SPINE_VERSION = '0.10.87-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
-    spineBaseVersion = '0.10.91-SNAPSHOT'
+    spineBaseVersion = '0.10.94-SNAPSHOT'
 
-    versionToPublish = '0.10.88-SNAPSHOT'
+    versionToPublish = '0.10.89-SNAPSHOT'
 
     firebaseVersion = '5.9.0'
     servletApiVersion = '4.0.0'
