@@ -45,12 +45,10 @@ class Fetch {
 
   /**
    * @param {!Query} query a query to be performed by Spine server
-   * @param {!Type} query a query to be performed by Spine server
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
-  constructor({of: query, withType: type, using: backend}) {
+  constructor({of: query, using: backend}) {
     this._query = query;
-    this._type = type;
     this._backend = backend;
   }
 
@@ -155,8 +153,9 @@ export class BackendClient {
    * @template <T>
    */
   fetchAll({ofType: type}) {
-    const query = this._requestFactory.query().select(type).build();
-    return this._fetchOf(query, type);
+    const spineQuery = this._requestFactory.query().select(type).build();
+    const query = new Query(spineQuery, type);
+    return this._fetchOf(query);
   }
 
   /**
@@ -172,14 +171,15 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._requestFactory.query().select(type).byIds([id]).build();
+    const spineQuery = this._requestFactory.query().select(type).byIds([id]).build();
 
     const observer = {next: dataCallback};
     if (errorCallback) {
       observer.error = errorCallback;
     }
+    const query = new Query(spineQuery, type);
     // noinspection JSCheckFunctionSignatures
-    this._fetchOf(query, type).oneByOne().subscribe(observer);
+    this._fetchOf(query).oneByOne().subscribe(observer);
   }
 
   /**
@@ -267,13 +267,12 @@ export class BackendClient {
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
    * @param {!Query} query a query processed by Spine
-   * @param {!Type} type a type of queried entities
    * @return {BackendClient.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected
    * @abstract
    */
-  _fetchOf(query, type) {
+  _fetchOf(query) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -314,11 +313,10 @@ class FirebaseFetch extends Fetch {
 
   /**
    * @param {!Query} query a query to be performed by Spine server
-   * @param {!Type} type a type of queried entities
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
-  constructor({of: query, withType: type, using: backend}) {
-    super({of: query, withType: type, using: backend});
+  constructor({of: query, using: backend}) {
+    super({of: query, using: backend});
   }
 
   /**
@@ -348,7 +346,8 @@ class FirebaseFetch extends Fetch {
       let promisedCount = null;
       let dbSubscription = null;
 
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
+      const spineQuery = this._query.internal();
+      this._backend._endpoint.query(spineQuery, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
           if (typeof count === 'undefined') {
             count = 0;
@@ -363,7 +362,7 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            let messageClass = this._type.class();
+            let messageClass = this._query.entityType().class();
             let message = messageClass.fromObject(value);
             observer.next(message);
             receivedCount++;
@@ -405,10 +404,11 @@ class FirebaseFetch extends Fetch {
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
+      const spineQuery = this._query.internal();
+      this._backend._endpoint.query(spineQuery, QUERY_STRATEGY.allAtOnce)
         .then(({path}) => this._backend._firebase.getValues(path, values => {
           let messages = values.map(value => {
-            const messageClass = this._type.class();
+            const messageClass = this._query.entityType().class();
             return messageClass.fromObject(value);
           });
           resolve(messages);
@@ -488,9 +488,9 @@ class FirebaseBackendClient extends BackendClient {
    * @return {BackendClient.Fetch<T>}
    * @template <T>
    */
-  _fetchOf(query, type) {
+  _fetchOf(query) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.
-    return new FirebaseBackendClient.Fetch({of: query, withType: type, using: this});
+    return new FirebaseBackendClient.Fetch({of: query, using: this});
   }
 
   /**
@@ -571,6 +571,22 @@ class FirebaseBackendClient extends BackendClient {
     const spineTopic = topic.internal();
     subscription.setTopic(spineTopic);
     return subscription;
+  }
+}
+
+class Query {
+
+  constructor(query, type) {
+    this._query = query;
+    this._type = type;
+  }
+
+  internal() {
+    return this._query;
+  }
+
+  entityType() {
+    return this._type;
   }
 }
 
