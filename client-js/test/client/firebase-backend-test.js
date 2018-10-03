@@ -31,6 +31,7 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
+import {ServerError} from "../../src/client/http-endpoint-error";
 
 function fail(done, message) {
   return error => {
@@ -271,8 +272,7 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
-          assert.ok(!error.isClient());
-          assert.ok(error.isServer());
+          assert.ok(error instanceof ServerError);
           done();
         });
 

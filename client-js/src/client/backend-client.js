@@ -22,7 +22,8 @@
 
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
-import {EndpointError, HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {ServerError} from './http-endpoint-error';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -346,7 +347,7 @@ class FirebaseFetch extends Fetch {
           if (typeof count === 'undefined') {
             count = 0;
           } else if (isNaN(count)) {
-            throw EndpointError.serverError('Unexpected format of `count`');
+            throw new ServerError('Unexpected format of `count`');
           }
           promisedCount = parseInt(count);
           return path;

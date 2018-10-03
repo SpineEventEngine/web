@@ -19,64 +19,8 @@
  */
 
 import {Type, TypedMessage} from './typed-message';
+import {ClientError, ServerError, ConnectionError} from './http-endpoint-error';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
-
-/**
- * An error which occurred when sending off a request to Spine server endpoint.
- */
-export class EndpointError {
-  /**
-   * @param {boolean} causedByClient `true` if the error was caused by the client, `false` otherwise
-   * @param {Object} reason the reason why this error occurred
-   */
-  constructor(causedByClient, reason) {
-    this._causedByClient = causedByClient;
-    this._reason = reason;
-  }
-
-  /**
-   * @return {boolean} `true` if the error was caused by an invalid client behaviour
-   */
-  isClient() {
-    return this._causedByClient;
-  }
-
-  /**
-   * @return {boolean} `true` in case of the server error
-   */
-  isServer() {
-    return !this._causedByClient;
-  }
-
-  /**
-   * @return {Object} the reason of the error
-   */
-  reason() {
-    return this._reason;
-  }
-
-  /**
-   * Returns new `EndpointError` caused by the client.
-   *
-   * @param reason the reason why the error occurred
-   * @return {EndpointError} new error instance
-   */
-  static clientError(reason) {
-    const CAUSED_BY_CLIENT = true;
-    return new EndpointError(CAUSED_BY_CLIENT, reason);
-  }
-
-  /**
-   * Returns new `EndpointError` caused by the server.
-   *
-   * @param reason the reason why the error occurred
-   * @return {EndpointError} new error instance
-   */
-  static serverError(reason) {
-    const CAUSED_BY_SERVER = false;
-    return new EndpointError(CAUSED_BY_SERVER, reason);
-  }
-}
 
 class Endpoint {
 
@@ -238,7 +182,8 @@ export class HttpEndpoint extends Endpoint {
   _executeCommand(command) {
     return this._httpClient
       .postMessage('/command', command)
-      .then(HttpEndpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection)
+      .catch(HttpEndpoint._connectionError);
   }
 
   /**
@@ -253,7 +198,8 @@ export class HttpEndpoint extends Endpoint {
   _performQuery(webQuery) {
     return this._httpClient
       .postMessage('/query', webQuery)
-      .then(HttpEndpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection)
+      .catch(HttpEndpoint._connectionError);
   }
 
   /**
@@ -267,7 +213,8 @@ export class HttpEndpoint extends Endpoint {
   _subscribeTo(topic) {
     return this._httpClient
       .postMessage('/subscription/create', topic)
-      .then(HttpEndpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection)
+      .catch(HttpEndpoint._connectionError);
   }
 
   /**
@@ -282,13 +229,15 @@ export class HttpEndpoint extends Endpoint {
   _keepUp(subscription) {
     return this._httpClient
       .postMessage('/subscription/keep-up', subscription)
-      .then(HttpEndpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection)
+      .catch(HttpEndpoint._connectionError);
   }
 
   _cancel(subscription) {
     return this._httpClient
       .postMessage('/subscription/cancel', subscription)
-      .then(HttpEndpoint._jsonOrRejection);
+      .then(HttpEndpoint._jsonOrRejection)
+      .catch(HttpEndpoint._connectionError);
   }
 
   /**
@@ -303,9 +252,9 @@ export class HttpEndpoint extends Endpoint {
       return response.json();
     } else {
       if (400 <= response.status && response.status < 500) {
-        return Promise.reject(EndpointError.clientError(response));
+        return Promise.reject(new ClientError(response));
       } else {
-        return Promise.reject(EndpointError.serverError(response));
+        return Promise.reject(new ServerError(response));
       }
     }
   }
@@ -317,6 +266,10 @@ export class HttpEndpoint extends Endpoint {
    */
   static _isSuccessfulResponse(response) {
     return 200 <= response.status && response.status < 300;
+  }
+
+  static _connectionError(error) {
+    return Promise.reject(new ConnectionError(error));
   }
 }
 
