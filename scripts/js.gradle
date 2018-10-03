@@ -133,6 +133,11 @@ task copyModuleSources(type: Copy) {
 
 apply plugin: 'io.spine.tools.proto-js-plugin'
 
+protoJs {
+    generateParsersTask().dependsOn compileProtoToJs
+    copyModuleSources.dependsOn generateParsersTask()
+}
+
 /**
  * Installs the module dependencies using the `npm install` command.
  */
