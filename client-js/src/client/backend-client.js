@@ -171,13 +171,14 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
+    const spineQuery = this._requestFactory.query().select(type).byIds([id]).build();
+    const query = new Query(spineQuery, type);
+
+    // noinspection JSCheckFunctionSignatures
     const observer = {next: dataCallback};
     if (errorCallback) {
       observer.error = errorCallback;
     }
-    const spineQuery = this._requestFactory.query().select(type).byIds([id]).build();
-    const query = new Query(spineQuery, type);
-    // noinspection JSCheckFunctionSignatures
     this._fetchOf(query).oneByOne().subscribe(observer);
   }
 
