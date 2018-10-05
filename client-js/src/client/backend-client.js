@@ -171,12 +171,11 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const spineQuery = this._requestFactory.query().select(type).byIds([id]).build();
-
     const observer = {next: dataCallback};
     if (errorCallback) {
       observer.error = errorCallback;
     }
+    const spineQuery = this._requestFactory.query().select(type).byIds([id]).build();
     const query = new Query(spineQuery, type);
     // noinspection JSCheckFunctionSignatures
     this._fetchOf(query).oneByOne().subscribe(observer);
@@ -236,7 +235,6 @@ export class BackendClient {
     } else {
       spineTopic = this._requestFactory.topic().all({of: type});
     }
-
     const topic = new Topic(spineTopic, type);
     return this._subscribeToTopic(topic);
   }
@@ -280,7 +278,6 @@ export class BackendClient {
    * Creates a subscription to the topic which is updated with backend changes.
    *
    * @param {!Topic} topic
-   * @param {!Type} type
    * @return {Promise<EntitySubscriptionObject>}
    * @protected
    * @abstract
@@ -505,22 +502,19 @@ class FirebaseBackendClient extends BackendClient {
           const subscriptions = {add: null, remove: null, change: null};
           const add = new Observable((observer) => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              const messageClass = topic.entityType().class();
-              const message = messageClass.fromObject(value);
+              const message = FirebaseBackendClient._entityUpdateToProto(value, topic);
               observer.next(message);
             });
           });
           const change = new Observable((observer) => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              const messageClass = topic.entityType().class();
-              const message = messageClass.fromObject(value);
+              const message = FirebaseBackendClient._entityUpdateToProto(value, topic);
               observer.next(message);
             });
           });
           const remove = new Observable((observer) => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              const messageClass = topic.entityType().class();
-              const message = messageClass.fromObject(value);
+              const message = FirebaseBackendClient._entityUpdateToProto(value, topic);
               observer.next(message);
             });
           });
@@ -537,6 +531,18 @@ class FirebaseBackendClient extends BackendClient {
         })
         .catch(reject);
     });
+  }
+
+  /**
+   * Converts an object which represents observed entity update to the corresponding proto message.
+   *
+   * @param {!Object} entityUpdate an object representing entity update
+   * @param {!Topic} topic a topic which is observed
+   */
+  static _entityUpdateToProto(entityUpdate, topic) {
+    const messageClass = topic.entityType().class();
+    const message = messageClass.fromObject(entityUpdate);
+    return message;
   }
 
   /**
@@ -574,33 +580,59 @@ class FirebaseBackendClient extends BackendClient {
   }
 }
 
+/**
+ * A wrapper for the query sent to the server.
+ */
 class Query {
 
+  /**
+   * @param {!spine.client.Query} query an underlying proto message representing the query
+   * @param {!Type} type a type of the entity this query is targeted on
+   */
   constructor(query, type) {
     this._query = query;
     this._type = type;
   }
 
+  /**
+   * Retrieves the underlying proto message.
+   */
   internal() {
     return this._query;
   }
 
+  /**
+   * Retrieves the type of the targeted entity.
+   */
   entityType() {
     return this._type;
   }
 }
 
+/**
+ * A wrapper for the topic on which the client subscribes.
+ */
 class Topic {
 
+  /**
+   * @param {!spine.client.Topic} topic an underlying proto message representing the topic
+   * @param {!Type} type a type of the subscription target
+   */
   constructor(topic, type) {
     this._topic = topic;
     this._type = type;
   }
 
+  /**
+   * Retrieves the underlying proto message.
+   */
   internal() {
     return this._topic;
   }
 
+  /**
+   * Retrieves the type of the entity targeted by subscription.
+   */
   entityType() {
     return this._type;
   }
