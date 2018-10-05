@@ -70,7 +70,10 @@ class CommandServletTest {
     void testHandle() throws IOException {
         CommandServlet servlet = new TestCommandServlet();
         StringWriter response = new StringWriter();
-        CreateTask createTask = CreateTaskVBuilder.newBuilder().setId(newUuid()).build();
+        CreateTask createTask = CreateTaskVBuilder
+                .newBuilder()
+                .setId(newUuid())
+                .build();
         Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);
