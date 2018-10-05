@@ -359,8 +359,7 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            let messageClass = this._query.entityType().class();
-            let message = messageClass.fromObject(value);
+            const message = this._queryResultToProto(value);
             observer.next(message);
             receivedCount++;
             if (receivedCount === promisedCount) {
@@ -405,13 +404,25 @@ class FirebaseFetch extends Fetch {
       this._backend._endpoint.query(spineQuery, QUERY_STRATEGY.allAtOnce)
         .then(({path}) => this._backend._firebase.getValues(path, values => {
           let messages = values.map(value => {
-            const messageClass = this._query.entityType().class();
-            return messageClass.fromObject(value);
+            const message = this._queryResultToProto(value);
+            return message;
           });
           resolve(messages);
         }))
         .catch(error => reject(error));
     });
+  }
+
+  /**
+   * Converts a query response sent by the server to the corresponding proto message.
+   *
+   * @param {!Object} queryResult an object representing the response for the query
+   * @private
+   */
+  _queryResultToProto(queryResult) {
+    const messageClass = this._query.entityType().class();
+    const message = messageClass.fromObject(queryResult);
+    return message;
   }
 }
 
@@ -538,6 +549,7 @@ class FirebaseBackendClient extends BackendClient {
    *
    * @param {!Object} entityUpdate an object representing entity update
    * @param {!Topic} topic a topic which is observed
+   * @private
    */
   static _entityUpdateToProto(entityUpdate, topic) {
     const messageClass = topic.entityType().class();
