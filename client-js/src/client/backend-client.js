@@ -33,6 +33,89 @@ import {
 } from 'spine-web-client-proto/spine/client/subscription_pb';
 
 /**
+ * A converter between the JS object and its Protobuf counterpart.
+ */
+class ObjectToProto {
+
+  /**
+   * Converts the object to the corresponding Protobuf message.
+   *
+   * The input is supposed to be a Protobuf message in JS object format, i.e. all object attributes correspond to the
+   * message fields.
+   *
+   * @param {Object} object an object to convert
+   * @param {Type} type a type of the corresponding Protobuf message
+   */
+  static convert(object, type) {
+    const messageClass = type.class();
+    const proto = messageClass.fromObject(object);
+    return proto;
+  }
+}
+
+/**
+ * Matches the static information about the query with the queried entity type gathered at runtime.
+ */
+class TypedQuery {
+
+  /**
+   * @param {!spine.client.Query} query an underlying proto message representing the query
+   * @param {!Type} type a type of the entity this query is targeted on
+   */
+  constructor(query, type) {
+    this._query = query;
+    this._type = type;
+  }
+
+  /**
+   * Retrieves the underlying proto message.
+   */
+  raw() {
+    return this._query;
+  }
+
+  /**
+   * Converts a query response sent by the server to the corresponding proto message.
+   *
+   * @param {!Object} response an object representing the response for the query
+   */
+  convert(response) {
+    return ObjectToProto.convert(response, this._type);
+  }
+}
+
+/**
+ * Matches the static information about the topic with the subscribed entity type gathered at runtime.
+ */
+class TypedTopic {
+
+  /**
+   * @param {!spine.client.Topic} topic an underlying proto message representing the topic
+   * @param {!Type} type a type of the subscription target
+   */
+  constructor(topic, type) {
+    this._topic = topic;
+    this._type = type;
+  }
+
+  /**
+   * Retrieves the underlying proto message.
+   */
+  raw() {
+    return this._topic;
+  }
+
+  /**
+   * Converts an object which represents the observed entity update to the corresponding proto message.
+   *
+   * @param {!Object} update an object representing the entity update
+   */
+  convert(update) {
+    return ObjectToProto.convert(update, this._type);
+  }
+}
+
+/**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
  * (one-by-one or all-at-once) using the provided backend.
  *
@@ -565,89 +648,6 @@ class FirebaseBackendClient extends BackendClient {
     const spineTopic = topic.raw();
     subscription.setTopic(spineTopic);
     return subscription;
-  }
-}
-
-/**
- * A converter between the JS object and its Protobuf counterpart.
- */
-class ObjectToProto {
-
-  /**
-   * Converts the object to the corresponding Protobuf message.
-   *
-   * The input is supposed to be a Protobuf message in JS object format, i.e. all object attributes correspond to the
-   * message fields.
-   *
-   * @param {Object} object an object to convert
-   * @param {Type} type a type of the corresponding Protobuf message
-   */
-  static convert(object, type) {
-    const messageClass = type.class();
-    const proto = messageClass.fromObject(object);
-    return proto;
-  }
-}
-
-/**
- * Matches the static information about the query with the queried entity type gathered at runtime.
- */
-class TypedQuery {
-
-  /**
-   * @param {!spine.client.Query} query an underlying proto message representing the query
-   * @param {!Type} type a type of the entity this query is targeted on
-   */
-  constructor(query, type) {
-    this._query = query;
-    this._type = type;
-  }
-
-  /**
-   * Retrieves the underlying proto message.
-   */
-  raw() {
-    return this._query;
-  }
-
-  /**
-   * Converts a query response sent by the server to the corresponding proto message.
-   *
-   * @param {!Object} response an object representing the response for the query
-   */
-  convert(response) {
-    return ObjectToProto.convert(response, this._type);
-  }
-}
-
-/**
- * Matches the static information about the topic with the subscribed entity type gathered at runtime.
- */
-class TypedTopic {
-
-  /**
-   * @param {!spine.client.Topic} topic an underlying proto message representing the topic
-   * @param {!Type} type a type of the subscription target
-   */
-  constructor(topic, type) {
-    this._topic = topic;
-    this._type = type;
-  }
-
-  /**
-   * Retrieves the underlying proto message.
-   */
-  raw() {
-    return this._topic;
-  }
-
-  /**
-   * Converts an object which represents the observed entity update to the corresponding proto message.
-   *
-   * @param {!Object} update an object representing the entity update
-   */
-  convert(update) {
-    return ObjectToProto.convert(update, this._type);
   }
 }
 
