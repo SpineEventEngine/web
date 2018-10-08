@@ -33,15 +33,15 @@ import {
 } from 'spine-web-client-proto/spine/client/subscription_pb';
 
 /**
- * A converter between the JS object and its Protobuf counterpart.
+ * A utility which converts the JS object to its Protobuf counterpart.
  */
 class ObjectToProto {
 
   /**
    * Converts the object to the corresponding Protobuf message.
    *
-   * The input is supposed to be a Protobuf message in JS object format, i.e. all object attributes correspond to the
-   * message fields.
+   * The input object is supposed to be a Protobuf message representation, i.e. all its attributes should correspond to
+   * the message fields.
    *
    * @param {Object} object an object to convert
    * @param {Type} type a type of the corresponding Protobuf message
