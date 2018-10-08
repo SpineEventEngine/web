@@ -20,7 +20,7 @@
 
 buildscript {
     apply from: "$rootDir/config/gradle/dependencies.gradle"
-    apply from: "$rootDir/ext.gradle"
+    apply from: "$rootDir/version.gradle"
 
     repositories {
         jcenter()
@@ -48,7 +48,7 @@ buildscript {
     })
 }
 
-apply from: 'ext.gradle'
+apply from: 'version.gradle'
 
 ext {
     credentialsPropertyFile = 'credentials.properties'
@@ -72,7 +72,7 @@ allprojects {
 
 subprojects {
     buildscript {
-        apply from: "$rootDir/ext.gradle"
+        apply from: "$rootDir/version.gradle"
 
         repositories {
             jcenter()
