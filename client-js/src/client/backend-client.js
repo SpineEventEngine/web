@@ -310,7 +310,7 @@ BackendClient.Fetch = Fetch;
 class FirebaseFetch extends Fetch {
 
   /**
-   * @param {!TypedQuery} query a typed query to be performed by Spine server
+   * @param {!TypedQuery} query a query to be performed by Spine server
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, using: backend}) {
@@ -360,7 +360,7 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            const message = this._query.toProto(value);
+            const message = this._query.responseToProto(value);
             observer.next(message);
             receivedCount++;
             if (receivedCount === promisedCount) {
@@ -405,7 +405,7 @@ class FirebaseFetch extends Fetch {
       this._backend._endpoint.query(query, QUERY_STRATEGY.allAtOnce)
         .then(({path}) => this._backend._firebase.getValues(path, values => {
           let messages = values.map(value => {
-            const message = this._query.toProto(value);
+            const message = this._query.responseToProto(value);
             return message;
           });
           resolve(messages);
@@ -502,19 +502,19 @@ class FirebaseBackendClient extends BackendClient {
           const subscriptions = {add: null, remove: null, change: null};
           const add = new Observable((observer) => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              const message = topic.toProto(value);
+              const message = topic.updateToProto(value);
               observer.next(message);
             });
           });
           const change = new Observable((observer) => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              const message = topic.toProto(value);
+              const message = topic.updateToProto(value);
               observer.next(message);
             });
           });
           const remove = new Observable((observer) => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              const message = topic.toProto(value);
+              const message = topic.updateToProto(value);
               observer.next(message);
             });
           });
@@ -569,7 +569,7 @@ class FirebaseBackendClient extends BackendClient {
 }
 
 /**
- * Matcher of the static information about the query with the queried entity type gathered at runtime.
+ * Matches the static information about the query with the queried entity type gathered at runtime.
  */
 class TypedQuery {
 
@@ -594,7 +594,7 @@ class TypedQuery {
    *
    * @param {!Object} response an object representing the response for the query
    */
-  toProto(response) {
+  responseToProto(response) {
     const messageClass = this._type.class();
     const message = messageClass.fromObject(response);
     return message;
@@ -602,7 +602,7 @@ class TypedQuery {
 }
 
 /**
- * Matcher of the static information about the topic with the subscribed entity type gathered at runtime.
+ * Matches the static information about the topic with the subscribed entity type gathered at runtime.
  */
 class TypedTopic {
 
@@ -623,18 +623,11 @@ class TypedTopic {
   }
 
   /**
-   * Retrieves the type of the entity targeted by subscription.
-   */
-  type() {
-    return this._type;
-  }
-
-  /**
    * Converts an object which represents the observed entity update to the corresponding proto message.
    *
    * @param {!Object} update an object representing the entity update
    */
-  toProto(update) {
+  updateToProto(update) {
     const messageClass = this._type.class();
     const message = messageClass.fromObject(update);
     return message;
