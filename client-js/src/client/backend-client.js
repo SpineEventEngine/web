@@ -44,7 +44,7 @@ import {
 class Fetch {
 
   /**
-   * @param {!TypedQuery} query a query to be performed by Spine server
+   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
@@ -310,7 +310,7 @@ BackendClient.Fetch = Fetch;
 class FirebaseFetch extends Fetch {
 
   /**
-   * @param {!TypedQuery} query a query to be performed by Spine server
+   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, using: backend}) {
