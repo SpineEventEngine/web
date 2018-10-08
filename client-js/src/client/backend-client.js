@@ -41,7 +41,7 @@ class ObjectToProto {
    * Converts the object to the corresponding Protobuf message.
    *
    * The input object is supposed to be a Protobuf message representation, i.e. all its attributes should correspond to
-   * the message fields.
+   * the fields of the specified message type.
    *
    * @param {Object} object an object to convert
    * @param {Type} type a type of the corresponding Protobuf message
