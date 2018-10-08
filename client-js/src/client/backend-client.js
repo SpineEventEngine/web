@@ -360,7 +360,7 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            const message = this._query.responseToProto(value);
+            const message = this._query.convert(value);
             observer.next(message);
             receivedCount++;
             if (receivedCount === promisedCount) {
@@ -405,7 +405,7 @@ class FirebaseFetch extends Fetch {
       this._backend._endpoint.query(query, QUERY_STRATEGY.allAtOnce)
         .then(({path}) => this._backend._firebase.getValues(path, values => {
           let messages = values.map(value => {
-            const message = this._query.responseToProto(value);
+            const message = this._query.convert(value);
             return message;
           });
           resolve(messages);
@@ -502,19 +502,19 @@ class FirebaseBackendClient extends BackendClient {
           const subscriptions = {add: null, remove: null, change: null};
           const add = new Observable((observer) => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              const message = topic.updateToProto(value);
+              const message = topic.convert(value);
               observer.next(message);
             });
           });
           const change = new Observable((observer) => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              const message = topic.updateToProto(value);
+              const message = topic.convert(value);
               observer.next(message);
             });
           });
           const remove = new Observable((observer) => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              const message = topic.updateToProto(value);
+              const message = topic.convert(value);
               observer.next(message);
             });
           });
@@ -569,6 +569,27 @@ class FirebaseBackendClient extends BackendClient {
 }
 
 /**
+ * A converter between the JS object and its Protobuf counterpart.
+ */
+class ObjectToProto {
+
+  /**
+   * Converts the object to the corresponding Protobuf message.
+   *
+   * The input is supposed to be a Protobuf message in JS object format, i.e. all object attributes correspond to the
+   * message fields.
+   *
+   * @param {Object} object an object to convert
+   * @param {Type} type a type of the corresponding Protobuf message
+   */
+  static convert(object, type) {
+    const messageClass = type.class();
+    const proto = messageClass.fromObject(object);
+    return proto;
+  }
+}
+
+/**
  * Matches the static information about the query with the queried entity type gathered at runtime.
  */
 class TypedQuery {
@@ -594,10 +615,8 @@ class TypedQuery {
    *
    * @param {!Object} response an object representing the response for the query
    */
-  responseToProto(response) {
-    const messageClass = this._type.class();
-    const message = messageClass.fromObject(response);
-    return message;
+  convert(response) {
+    return ObjectToProto.convert(response, this._type);
   }
 }
 
@@ -627,10 +646,8 @@ class TypedTopic {
    *
    * @param {!Object} update an object representing the entity update
    */
-  updateToProto(update) {
-    const messageClass = this._type.class();
-    const message = messageClass.fromObject(update);
-    return message;
+  convert(update) {
+    return ObjectToProto.convert(update, this._type);
   }
 }
 
