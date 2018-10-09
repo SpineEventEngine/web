@@ -180,10 +180,7 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _executeCommand(command) {
-    return this._httpClient
-      .postMessage('/command', command)
-      .then(HttpEndpoint._jsonOrRejection)
-      .catch(HttpEndpoint._connectionError);
+    return this._postMessage('/command', command);
   }
 
   /**
@@ -196,10 +193,7 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _performQuery(webQuery) {
-    return this._httpClient
-      .postMessage('/query', webQuery)
-      .then(HttpEndpoint._jsonOrRejection)
-      .catch(HttpEndpoint._connectionError);
+    return this._postMessage('/query', webQuery);
   }
 
   /**
@@ -211,10 +205,7 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _subscribeTo(topic) {
-    return this._httpClient
-      .postMessage('/subscription/create', topic)
-      .then(HttpEndpoint._jsonOrRejection)
-      .catch(HttpEndpoint._connectionError);
+      return this._postMessage('/subscription/create', topic);
   }
 
   /**
@@ -227,19 +218,23 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _keepUp(subscription) {
-    return this._httpClient
-      .postMessage('/subscription/keep-up', subscription)
-      .then(HttpEndpoint._jsonOrRejection)
-      .catch(HttpEndpoint._connectionError);
+    return this._postMessage('/subscription/keep-up', subscription);
   }
 
   _cancel(subscription) {
-    return this._httpClient
-      .postMessage('/subscription/cancel', subscription)
-      .then(HttpEndpoint._jsonOrRejection)
-      .catch(HttpEndpoint._connectionError);
+    return this._postMessage('/subscription/cancel', subscription);
   }
 
+  _postMessage(path, message) {
+      return new Promise((resolve, reject) => {
+          this._httpClient
+              .postMessage(path, message)
+              .then(response => HttpEndpoint._jsonOrRejection(response)
+                                            .then(json => resolve(json))
+                                            .catch(rejection => reject(rejection)))
+              .catch(error => reject(new ConnectionError(error)));
+      });
+  }
   /**
    * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
    *
@@ -249,7 +244,7 @@ export class HttpEndpoint extends Endpoint {
    */
   static _jsonOrRejection(response) {
     if (HttpEndpoint._isSuccessfulResponse(response)) {
-      return response.json();
+      return Promise.resolve(response.json());
     } else {
       if (400 <= response.status && response.status < 500) {
         return Promise.reject(new ClientError(response));
@@ -266,10 +261,6 @@ export class HttpEndpoint extends Endpoint {
    */
   static _isSuccessfulResponse(response) {
     return 200 <= response.status && response.status < 300;
-  }
-
-  static _connectionError(error) {
-    return Promise.reject(new ConnectionError(error));
   }
 }
 
