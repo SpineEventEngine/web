@@ -175,8 +175,8 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a command to the endpoint.
    *
    * @param {!TypedMessage<Command>} command a Command send to Spine server
-   * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
-   *                           the client response is not 2xx
+   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                           the client response is not 2xx or the connection error occurred
    * @protected
    */
   _executeCommand(command) {
@@ -187,9 +187,8 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a query to the endpoint.
    *
    * @param {!TypedMessage<WebQuery>} webQuery a Query to Spine server to retrieve some domain entities
-   * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
-   * @return {Promise<Object>} a promise of a successful server response JSON data, rejected if
-   *                           the client response is not 2xx
+   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                           the client response is not 2xx or the connection error occurred
    * @protected
    */
   _performQuery(webQuery) {
@@ -200,58 +199,63 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a request to create a subscription for a topic.
    *
    * @param {!TypedMessage<Topic>} topic a topic to subscribe to
-   * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
-   *                             the client response is not 2xx
+   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                           the client response is not 2xx or the connection error occurred
    * @protected
    */
   _subscribeTo(topic) {
-      return this._postMessage('/subscription/create', topic);
+    return this._postMessage('/subscription/create', topic);
   }
 
   /**
-   * Sends off a request to create a subscription for a topic.
+   * Sends off a request to keep alive a subscription.
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented
    *                                                                  from being closed by server
-   * @return {Promise<Response>} a promise of a successful server response JSON data, rejected if
-   *                             the client response is not 2xx
+   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                           the client response is not 2xx or the connection error occurred
    * @protected
    */
   _keepUp(subscription) {
     return this._postMessage('/subscription/keep-up', subscription);
   }
 
+  /**
+   * Sends off a request to cancel a subscription.
+   *
+   * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
+   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                           the client response is not 2xx or the connection error occurred
+   * @protected
+   * @abstract
+   */
   _cancel(subscription) {
     return this._postMessage('/subscription/cancel', subscription);
   }
 
-  _postMessage(path, message) {
-      return new Promise((resolve, reject) => {
-          this._httpClient
-              .postMessage(path, message)
-              .then(response => HttpEndpoint._jsonOrRejection(response)
-                                            .then(json => resolve(json))
-                                            .catch(rejection => reject(rejection)))
-              .catch(error => reject(new ConnectionError(error)));
-      });
-  }
   /**
-   * Retrieves the response JSON data if the response was successful, returning a rejection otherwise
+   * Sends the given message to the given endpoint.
    *
-   * @param {!Response} response an HTTP request response
-   * @return {Object|Promise} response JSON or rejected promise
+   * @param {!string} endpoint a endpoint to send the message to
+   * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
+   * @return {Promise<Response|EndpointError>}
    * @private
    */
-  static _jsonOrRejection(response) {
-    if (HttpEndpoint._isSuccessfulResponse(response)) {
-      return Promise.resolve(response.json());
-    } else {
-      if (400 <= response.status && response.status < 500) {
-        return Promise.reject(new ClientError(response));
-      } else {
-        return Promise.reject(new ServerError(response));
-      }
-    }
+  _postMessage(endpoint, message) {
+    return new Promise((resolve, reject) => {
+      this._httpClient
+        .postMessage(endpoint, message)
+        .then(response => {
+          if (HttpEndpoint._isSuccessfulResponse(response)) {
+            resolve(response.json());
+          } else if (HttpEndpoint._isClientErrorResponse(response)) {
+            reject(new ClientError(response));
+          } else if(HttpEndpoint._isServerErrorResponse(response)) {
+            reject(new ServerError(response))
+          }
+        })
+        .catch(error => reject(new ConnectionError(error)));
+    });
   }
 
   /**
@@ -261,6 +265,24 @@ export class HttpEndpoint extends Endpoint {
    */
   static _isSuccessfulResponse(response) {
     return 200 <= response.status && response.status < 300;
+  }
+
+  /**
+   * @param {!Response} response an HTTP request response
+   * @return {boolean} `true` if the response status code is from 400 to 499, `false` otherwise
+   * @private
+   */
+  static _isClientErrorResponse(response) {
+    return 400 <= response.status && response.status < 500;
+  }
+
+  /**
+   * @param {!Response} response an HTTP request response
+   * @return {boolean} `true` if the response status code is from 500, `false` otherwise
+   * @private
+   */
+  static _isServerErrorResponse(response) {
+    return 500 <= response.status;
   }
 }
 
