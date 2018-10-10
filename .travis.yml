@@ -7,7 +7,7 @@ before_install:
   - chmod +x gradlew
 
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
-  - openssl aes-256-cbc -K $encrypted_ff92f6056352_key -iv $encrypted_ff92f6056352_iv -in credentials.tar.enc -out credentials.tar -d
+  - openssl aes-256-cbc -K $encrypted_f5821d4f7269_key -iv $encrypted_f5821d4f7269_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar
 
 script:
