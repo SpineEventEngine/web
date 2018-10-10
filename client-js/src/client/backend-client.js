@@ -34,6 +34,89 @@ import {
 } from 'spine-web-client-proto/spine/client/subscription_pb';
 
 /**
+ * A utility which converts the JS object to its Protobuf counterpart.
+ */
+class ObjectToProto {
+
+  /**
+   * Converts the object to the corresponding Protobuf message.
+   *
+   * The input object is supposed to be a Protobuf message representation, i.e. all its attributes should correspond to
+   * the fields of the specified message type.
+   *
+   * @param {Object} object an object to convert
+   * @param {Type} type a type of the corresponding Protobuf message
+   */
+  static convert(object, type) {
+    const messageClass = type.class();
+    const proto = messageClass.fromObject(object);
+    return proto;
+  }
+}
+
+/**
+ * Matches the static information about the query with the queried entity type gathered at runtime.
+ */
+class TypedQuery {
+
+  /**
+   * @param {!spine.client.Query} query an underlying proto message representing the query
+   * @param {!Type} type a type of the entity this query is targeted on
+   */
+  constructor(query, type) {
+    this._query = query;
+    this._type = type;
+  }
+
+  /**
+   * Retrieves the underlying proto message.
+   */
+  raw() {
+    return this._query;
+  }
+
+  /**
+   * Converts a query response sent by the server to the corresponding proto message.
+   *
+   * @param {!Object} response an object representing the response for the query
+   */
+  convert(response) {
+    return ObjectToProto.convert(response, this._type);
+  }
+}
+
+/**
+ * Matches the static information about the topic with the subscribed entity type gathered at runtime.
+ */
+class TypedTopic {
+
+  /**
+   * @param {!spine.client.Topic} topic an underlying proto message representing the topic
+   * @param {!Type} type a type of the subscription target
+   */
+  constructor(topic, type) {
+    this._topic = topic;
+    this._type = type;
+  }
+
+  /**
+   * Retrieves the underlying proto message.
+   */
+  raw() {
+    return this._topic;
+  }
+
+  /**
+   * Converts an object which represents the observed entity update to the corresponding proto message.
+   *
+   * @param {!Object} update an object representing the entity update
+   */
+  convert(update) {
+    return ObjectToProto.convert(update, this._type);
+  }
+}
+
+/**
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
  * (one-by-one or all-at-once) using the provided backend.
  *
@@ -45,7 +128,7 @@ import {
 class Fetch {
 
   /**
-   * @param {!Query} query a query to be performed by Spine server
+   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
@@ -155,7 +238,8 @@ export class BackendClient {
    */
   fetchAll({ofType: type}) {
     const query = this._requestFactory.query().select(type).build();
-    return this._fetchOf(query);
+    const typedQuery = new TypedQuery(query, type);
+    return this._fetchOf(typedQuery);
   }
 
   /**
@@ -172,13 +256,14 @@ export class BackendClient {
    */
   fetchById(type, id, dataCallback, errorCallback) {
     const query = this._requestFactory.query().select(type).byIds([id]).build();
+    const typedQuery = new TypedQuery(query, type);
 
+    // noinspection JSCheckFunctionSignatures
     const observer = {next: dataCallback};
     if (errorCallback) {
       observer.error = errorCallback;
     }
-    // noinspection JSCheckFunctionSignatures
-    this._fetchOf(query).oneByOne().subscribe(observer);
+    this._fetchOf(typedQuery).oneByOne().subscribe(observer);
   }
 
   /**
@@ -235,7 +320,8 @@ export class BackendClient {
     } else {
       topic = this._requestFactory.topic().all({of: type});
     }
-    return this._subscribeToTopic(topic);
+    const typedTopic = new TypedTopic(topic, type);
+    return this._subscribeToTopic(typedTopic);
   }
 
   /**
@@ -263,7 +349,7 @@ export class BackendClient {
   /**
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
-   * @param {!Query} query a query processed by Spine
+   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
    * @return {BackendClient.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected
@@ -276,7 +362,7 @@ export class BackendClient {
   /**
    * Creates a subscription to the topic which is updated with backend changes.
    *
-   * @param {!Topic} topic
+   * @param {!TypedTopic} topic a typed topic which contains runtime information about the subscribed entity type
    * @return {Promise<EntitySubscriptionObject>}
    * @protected
    * @abstract
@@ -308,7 +394,7 @@ BackendClient.Fetch = Fetch;
 class FirebaseFetch extends Fetch {
 
   /**
-   * @param {!Query} query a query to be performed by Spine server
+   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, using: backend}) {
@@ -342,7 +428,8 @@ class FirebaseFetch extends Fetch {
       let promisedCount = null;
       let dbSubscription = null;
 
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
+      const query = this._query.raw();
+      this._backend._endpoint.query(query, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
           if (typeof count === 'undefined') {
             count = 0;
@@ -357,7 +444,8 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            observer.next(value);
+            const message = this._query.convert(value);
+            observer.next(message);
             receivedCount++;
             if (receivedCount === promisedCount) {
               FirebaseFetch._complete(observer, dbSubscription);
@@ -397,8 +485,15 @@ class FirebaseFetch extends Fetch {
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._backend._firebase.getValues(path, resolve))
+      const query = this._query.raw();
+      this._backend._endpoint.query(query, QUERY_STRATEGY.allAtOnce)
+        .then(({path}) => this._backend._firebase.getValues(path, values => {
+          let messages = values.map(value => {
+            const message = this._query.convert(value);
+            return message;
+          });
+          resolve(messages);
+        }))
         .catch(error => reject(error));
     });
   }
@@ -484,23 +579,27 @@ class FirebaseBackendClient extends BackendClient {
    */
   _subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
-      this._endpoint.subscribeTo(topic)
+      const spineTopic = topic.raw();
+      this._endpoint.subscribeTo(spineTopic)
         .then(subscription => {
           const path = subscription.id.value;
           const subscriptions = {add: null, remove: null, change: null};
           const add = new Observable((observer) => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              observer.next(value);
+              const message = topic.convert(value);
+              observer.next(message);
             });
           });
           const change = new Observable((observer) => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              observer.next(value);
+              const message = topic.convert(value);
+              observer.next(message);
             });
           });
           const remove = new Observable((observer) => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              observer.next(value);
+              const message = topic.convert(value);
+              observer.next(message);
             });
           });
           const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
@@ -540,14 +639,15 @@ class FirebaseBackendClient extends BackendClient {
    * Creates a Protobuf `Subscription` instance to communicate with Spine server.
    *
    * @param {String} path a path to object which gets updated in Firebase
-   * @param {Topic} topic a topic for which the Subscription gets updates
+   * @param {TypedTopic} topic a topic for which the Subscription gets updates
    */
   static subscriptionProto(path, topic) {
     const subscription = new SpineSubscription();
     const id = new SubscriptionId();
     id.setValue(path);
     subscription.setId(id);
-    subscription.setTopic(topic);
+    const spineTopic = topic.raw();
+    subscription.setTopic(spineTopic);
     return subscription;
   }
 }

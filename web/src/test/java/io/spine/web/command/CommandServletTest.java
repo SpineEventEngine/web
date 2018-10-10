@@ -27,6 +27,8 @@ import io.spine.core.Command;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
+import io.spine.testing.client.c.CreateTask;
+import io.spine.testing.client.c.CreateTaskVBuilder;
 import io.spine.web.command.given.CommandServletTestEnv.TestCommandServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
+import static io.spine.base.Identifier.newUuid;
 import static io.spine.core.Status.StatusCase.OK;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
@@ -67,7 +70,11 @@ class CommandServletTest {
     void testHandle() throws IOException {
         CommandServlet servlet = new TestCommandServlet();
         StringWriter response = new StringWriter();
-        Command command = commandFactory.create(Time.getCurrentTime());
+        CreateTask createTask = CreateTaskVBuilder
+                .newBuilder()
+                .setId(newUuid())
+                .build();
+        Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);
         assertEquals(OK, ack.getStatus().getStatusCase());

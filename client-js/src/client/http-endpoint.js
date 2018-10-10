@@ -38,7 +38,7 @@ class Endpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param {!Query} query a Query to Spine server to retrieve some domain entities
+   * @param {!spine.client.Query} query a Query to Spine server to retrieve some domain entities
    * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
@@ -52,7 +52,7 @@ class Endpoint {
   /**
    * Sends off a request to subscribe to a provided topic to an endpoint.
    *
-   * @param {!Topic} topic a topic for which a subscription is created
+   * @param {!spine.client.Topic} topic a topic for which a subscription is created
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
@@ -90,7 +90,7 @@ class Endpoint {
   /**
    * Builds a new WebQuery from Query and client delivery strategy.
    *
-   * @param {!Query} of a Query to be executed by Spine server
+   * @param {!spine.client.Query} of a Query to be executed by Spine server
    * @param {!QUERY_STRATEGY} delivered the strategy for query results delivery
    * @private
    */
@@ -124,7 +124,7 @@ class Endpoint {
   }
 
   /**
-   * @param {!TypedMessage<Topic>} topic a topic to create a subscription for
+   * @param {!TypedMessage<spine.client.Topic>} topic a topic to create a subscription for
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    * @protected
@@ -198,7 +198,7 @@ export class HttpEndpoint extends Endpoint {
   /**
    * Sends off a request to create a subscription for a topic.
    *
-   * @param {!TypedMessage<Topic>} topic a topic to subscribe to
+   * @param {!TypedMessage<spine.client.Topic>} topic a topic to subscribe to
    * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
    *                                           the client response is not 2xx or the connection error occurred
    * @protected

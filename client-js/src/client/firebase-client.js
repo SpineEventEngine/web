@@ -37,7 +37,7 @@ export class FirebaseClient {
   }
 
   /**
-   * Subscribes to the `child_added` events of of the node under the given path.
+   * Subscribes to the `child_added` events of the node under the given path.
    *
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
@@ -51,7 +51,7 @@ export class FirebaseClient {
   }
 
   /**
-   * Subscribes to the `child_changed` events of of the node under the given path.
+   * Subscribes to the `child_changed` events of the node under the given path.
    *
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
@@ -65,7 +65,7 @@ export class FirebaseClient {
   }
 
   /**
-   * Subscribes to the `child_removed` events of of the node under the given path.
+   * Subscribes to the `child_removed` events of the node under the given path.
    *
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *

@@ -24,7 +24,7 @@ buildscript {
     }
 }
 
-apply from: "$rootDir/ext.gradle"
+apply from: "$rootDir/version.gradle"
 apply from: "$projectDir/scripts/appengine-descriptor.gradle"
 
 apply plugin: 'java'

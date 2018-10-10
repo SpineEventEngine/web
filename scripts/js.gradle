@@ -80,6 +80,9 @@ protobuf {
                 js {
                     option "import_style=commonjs"
                 }
+
+                task.generateDescriptorSet = true
+                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
             }
             compileProtoToJs.dependsOn task
         }
@@ -126,6 +129,13 @@ task copyModuleSources(type: Copy) {
     filter { filterPackageDescriptor(it) }
 
     dependsOn compileProtoToJs
+}
+
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
+protoJs {
+    generateParsersTask().dependsOn compileProtoToJs
+    copyModuleSources.dependsOn generateParsersTask()
 }
 
 /**
