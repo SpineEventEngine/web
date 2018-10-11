@@ -19,7 +19,7 @@
  */
 
 import {Type, TypedMessage} from './typed-message';
-import {EndpointError, ClientError, ServerError, ConnectionError} from './http-endpoint-error';
+import {EndpointError, ClientError, InternalServerError, ConnectionError} from './http-endpoint-error';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
 class Endpoint {
@@ -236,7 +236,7 @@ export class HttpEndpoint extends Endpoint {
   /**
    * Sends the given message to the given endpoint.
    *
-   * @param {!string} endpoint a endpoint to send the message to
+   * @param {!string} endpoint an endpoint to send the message to
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
    * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
@@ -266,7 +266,7 @@ export class HttpEndpoint extends Endpoint {
     } else if (HttpEndpoint._isClientErrorResponse(response)) {
       return Promise.reject(new ClientError(response));
     } else if(HttpEndpoint._isServerErrorResponse(response)) {
-      return Promise.reject(new ServerError(response))
+      return Promise.reject(new InternalServerError(response))
     }
   }
 
@@ -274,14 +274,15 @@ export class HttpEndpoint extends Endpoint {
    * Parses the given response to JSON, rejects if parsing completed with failure.
    *
    * @param {!Response} response an HTTP request response
-   * @return {Promise<JSON|ServerError>} a promise of a server response parsing to be fulfilled with a JSON data, or
-   *                                     rejected with {@link ServerError} if parsing to JSON completed with failure
+   * @return {Promise<JSON|InternalServerError>} a promise of a server response parsing to be fulfilled with a JSON
+   *                                             data, or rejected with {@link InternalServerError} if parsing to JSON
+   *                                             completes with failure
    * @private
    */
   static _parseJson(response) {
    return response.json()
             .then(json => Promise.resolve(json))
-            .catch(error => Promise.reject(new ServerError(error)));
+            .catch(error => Promise.reject(new InternalServerError(error)));
   }
 
   /**

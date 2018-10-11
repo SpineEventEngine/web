@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {ServerError} from './http-endpoint-error';
+import {EndpointError, CommandValidationError, InternalServerError} from './http-endpoint-error';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -272,8 +272,8 @@ export class BackendClient {
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} successCallback
    *        a no-argument callback invoked if the command is acknowledged
-   * @param {?consumerCallback<spine.base.Error>} errorCallback
-   *        a callback receiving the errors executed if an error occured when processing command
+   * @param {?consumerCallback<EndpointError>} errorCallback
+   *        a callback receiving the errors executed if an error occurred when processing command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
    */
@@ -285,7 +285,7 @@ export class BackendClient {
         if (status.hasOwnProperty('ok')) {
           successCallback();
         } else if (status.hasOwnProperty('error')) {
-          errorCallback(status.error);
+          errorCallback(new CommandValidationError(status.error));
         } else if (status.hasOwnProperty('rejection')) {
           rejectionCallback(status.rejection);
         }
@@ -434,7 +434,7 @@ class FirebaseFetch extends Fetch {
           if (typeof count === 'undefined') {
             count = 0;
           } else if (isNaN(count)) {
-            throw new ServerError('Unexpected format of `count`');
+            throw new InternalServerError('Unexpected format of `count`');
           }
           promisedCount = parseInt(count);
           return path;

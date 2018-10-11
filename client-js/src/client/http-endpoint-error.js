@@ -26,7 +26,7 @@ export class ConnectionError extends EndpointError {
     }
 }
 
-export class ServerError extends EndpointError {
+export class InternalServerError extends EndpointError {
     /**
      * @param {Object} response the reason why this error occurred
      */
@@ -36,6 +36,15 @@ export class ServerError extends EndpointError {
 }
 
 export class ClientError extends EndpointError {
+    /**
+     * @param {Object} response the reason why this error occurred
+     */
+    constructor(response) {
+        super(response)
+    }
+}
+
+export class CommandValidationError extends EndpointError {
     /**
      * @param {Object} response the reason why this error occurred
      */
