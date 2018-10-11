@@ -1,7 +1,7 @@
 /**
 * An error which occurred when sending off a request to Spine server endpoint.
 */
-class EndpointError {
+export class EndpointError {
     /**
      * @param {Object} reason the reason why this error occurred
      */

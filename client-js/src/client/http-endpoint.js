@@ -19,7 +19,7 @@
  */
 
 import {Type, TypedMessage} from './typed-message';
-import {ClientError, ServerError, ConnectionError} from './http-endpoint-error';
+import {EndpointError, ClientError, ServerError, ConnectionError} from './http-endpoint-error';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
 class Endpoint {
@@ -175,36 +175,36 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a command to the endpoint.
    *
    * @param {!TypedMessage<Command>} command a Command send to Spine server
-   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
-   *                                           the client response is not 2xx or the connection error occurred
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
   _executeCommand(command) {
-    return this._postMessage('/command', command);
+    return this._sendMessage('/command', command);
   }
 
   /**
    * Sends off a query to the endpoint.
    *
    * @param {!TypedMessage<WebQuery>} webQuery a Query to Spine server to retrieve some domain entities
-   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
-   *                                           the client response is not 2xx or the connection error occurred
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
   _performQuery(webQuery) {
-    return this._postMessage('/query', webQuery);
+    return this._sendMessage('/query', webQuery);
   }
 
   /**
    * Sends off a request to create a subscription for a topic.
    *
    * @param {!TypedMessage<spine.client.Topic>} topic a topic to subscribe to
-   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
-   *                                           the client response is not 2xx or the connection error occurred
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
   _subscribeTo(topic) {
-    return this._postMessage('/subscription/create', topic);
+    return this._sendMessage('/subscription/create', topic);
   }
 
   /**
@@ -212,25 +212,25 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented
    *                                                                  from being closed by server
-   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
-   *                                           the client response is not 2xx or the connection error occurred
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
   _keepUp(subscription) {
-    return this._postMessage('/subscription/keep-up', subscription);
+    return this._sendMessage('/subscription/keep-up', subscription);
   }
 
   /**
    * Sends off a request to cancel a subscription.
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
-   * @return {Promise<Response|EndpointError>} a promise of a successful server response JSON data, rejected if
-   *                                           the client response is not 2xx or the connection error occurred
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or a connection error occurs
    * @protected
    * @abstract
    */
   _cancel(subscription) {
-    return this._postMessage('/subscription/cancel', subscription);
+    return this._sendMessage('/subscription/cancel', subscription);
   }
 
   /**
@@ -238,24 +238,52 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!string} endpoint a endpoint to send the message to
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
-   * @return {Promise<Response|EndpointError>}
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or a connection error occurs
    * @private
    */
-  _postMessage(endpoint, message) {
+  _sendMessage(endpoint, message) {
     return new Promise((resolve, reject) => {
       this._httpClient
         .postMessage(endpoint, message)
         .then(response => {
-          if (HttpEndpoint._isSuccessfulResponse(response)) {
-            resolve(response.json());
-          } else if (HttpEndpoint._isClientErrorResponse(response)) {
-            reject(new ClientError(response));
-          } else if(HttpEndpoint._isServerErrorResponse(response)) {
-            reject(new ServerError(response))
-          }
+          HttpEndpoint._resolveResponse(response)
+            .then(resolve, reject)
         })
         .catch(error => reject(new ConnectionError(error)));
     });
+  }
+
+  /**
+   * Retrieves the JSON data from the given response if it was successful, rejects with a respective error otherwise.
+   *
+   * @param {!Response} response an HTTP request response
+   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   *                                       the client response is not 2xx or its parsing to JSON completed with failure
+   * @private
+   */
+  static _resolveResponse(response) {
+    if (HttpEndpoint._isSuccessfulResponse(response)) {
+      return HttpEndpoint._parseJson(response);
+    } else if (HttpEndpoint._isClientErrorResponse(response)) {
+      return Promise.reject(new ClientError(response));
+    } else if(HttpEndpoint._isServerErrorResponse(response)) {
+      return Promise.reject(new ServerError(response))
+    }
+  }
+
+  /**
+   * Parses the given response to JSON, rejects if parsing completed with failure.
+   *
+   * @param {!Response} response an HTTP request response
+   * @return {Promise<JSON|ServerError>} a promise of a server response parsing to be fulfilled with a JSON data, or
+   *                                     rejected with {@link ServerError} if parsing to JSON completed with failure
+   * @private
+   */
+  static _parseJson(response) {
+   return response.json()
+            .then(json => Promise.resolve(json))
+            .catch(error => Promise.reject(new ServerError(error)));
   }
 
   /**
