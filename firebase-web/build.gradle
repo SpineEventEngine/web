@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+group 'io.spine.gcloud'
+
 configurations {
     // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
     runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
