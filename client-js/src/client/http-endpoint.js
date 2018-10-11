@@ -246,10 +246,8 @@ export class HttpEndpoint extends Endpoint {
     return new Promise((resolve, reject) => {
       this._httpClient
         .postMessage(endpoint, message)
-        .then(response => {
-          HttpEndpoint._resolveResponse(response)
-            .then(resolve, reject)
-        })
+        .then(HttpEndpoint._resolveResponse)
+        .then(resolve, reject)
         .catch(error => reject(new ConnectionError(error)));
     });
   }
