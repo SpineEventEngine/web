@@ -197,7 +197,7 @@ describe('FirebaseBackendClient', function () {
 
     backendClient.sendCommand(
       command,
-      fail(done, 'A command was successful when it was expected to fail.'),
+      fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
         assert.ok(error instanceof CommandValidationError);
         const rootCauseError = error.reason();

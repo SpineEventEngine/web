@@ -269,21 +269,45 @@ export class BackendClient {
   /**
    * Sends the provided command to the server.
    *
+   * After sending the command to the server the following scenarios are possible:
+   * <ul>
+   *     <li>the {@param acknowledgedCallback} is called if the command is acknowledged for further processing
+   *     <li>the {@param errorCallback} is called if sending of the command failed
+   * </ul>
+   *
+   * Invocation of {@param acknowledgedCallback} and {@param errorCallback} are mutually exclusive.
+   *
+   * The reason of command sending failure can be recognized by the type of error passed to the {@param errorCallback}
+   * as follows:
+   * <ul>
+   *     <li>{@code ConnectionError}        - if the connection error occurs;
+   *     <li>{@code ClientError}            - if the command message can`t be parsed from the request;
+   *     <li>{@code CommandValidationError} - if the command message type is unsupported by the server or the command
+   *                                          recipient is missing;
+   *     <li>{@code InternalServerError}    - if the internal server error occurred upon command processing;
+   * </ul>
+   *
+   * The {@code ClientError} and {@code CommandValidationError} error occurrence guaranties that the command
+   * wasn't accepted by the server.
+   *
+   * If other error types were received, the command sending result is unknown (can't be considered as succeeded or
+   * failed) and should be interpreted respectively on the UI.
+   *
    * @param {!TypedMessage} commandMessage a typed command message
-   * @param {!voidCallback} successCallback
+   * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<SpineWebError>} errorCallback
    *        a callback receiving the errors executed if an error occurred when processing command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
    */
-  sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
+  sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
     const command = this._requestFactory.command().create(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
         const status = ack.status;
         if (status.hasOwnProperty('ok')) {
-          successCallback();
+          acknowledgedCallback();
         } else if (status.hasOwnProperty('error')) {
           errorCallback(new CommandValidationError(status.error));
         } else if (status.hasOwnProperty('rejection')) {
