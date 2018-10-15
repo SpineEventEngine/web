@@ -31,7 +31,7 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-import {InternalServerError, CommandValidationError} from "../../src/client/http-endpoint-error";
+import {InternalServerError, CommandValidationError} from '../../src/client/spine-web-error';
 
 function fail(done, message) {
   return error => {

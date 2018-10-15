@@ -19,7 +19,7 @@
  */
 
 import {Type, TypedMessage} from './typed-message';
-import {EndpointError, ClientError, InternalServerError, ConnectionError} from './http-endpoint-error';
+import {SpineWebError, ClientError, InternalServerError, ConnectionError} from './spine-web-error';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
 class Endpoint {
@@ -175,7 +175,7 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a command to the endpoint.
    *
    * @param {!TypedMessage<Command>} command a Command send to Spine server
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
@@ -187,7 +187,7 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a query to the endpoint.
    *
    * @param {!TypedMessage<WebQuery>} webQuery a Query to Spine server to retrieve some domain entities
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
@@ -199,7 +199,7 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a request to create a subscription for a topic.
    *
    * @param {!TypedMessage<spine.client.Topic>} topic a topic to subscribe to
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
@@ -212,7 +212,7 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented
    *                                                                  from being closed by server
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @protected
    */
@@ -224,7 +224,7 @@ export class HttpEndpoint extends Endpoint {
    * Sends off a request to cancel a subscription.
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @protected
    * @abstract
@@ -238,7 +238,7 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!string} endpoint an endpoint to send the message to
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @private
    */
@@ -256,7 +256,7 @@ export class HttpEndpoint extends Endpoint {
    * Retrieves the JSON data from the given response if it was successful, rejects with a respective error otherwise.
    *
    * @param {!Response} response an HTTP request response
-   * @return {Promise<JSON|EndpointError>} a promise of a successful server response JSON data, rejected if
+   * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or its parsing to JSON completed with failure
    * @private
    */
