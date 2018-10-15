@@ -31,7 +31,9 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-import {InternalServerError, CommandProcessingError} from '../../src/client/spine-web-error';
+import {InternalServerError,
+        CommandProcessingError,
+        ConnectionError} from '../../src/client/spine-web-error';
 
 function fail(done, message) {
   return error => {
@@ -49,9 +51,9 @@ class Given {
     throw new Error('A utility Given class cannot be instantiated.');
   }
 
-  static backendClient() {
+  static backendClient(atEndpoint = 'https://spine-dev.appspot.com') {
     return BackendClient.usingFirebase({
-      atEndpoint: 'https://spine-dev.appspot.com',
+      atEndpoint: atEndpoint,
       withFirebaseStorage: devFirebaseApp,
       forActor: 'web-test-actor'
     });
@@ -192,6 +194,25 @@ describe('FirebaseBackendClient', function () {
     }, fail(done), fail(done));
   });
 
+  it('fails command sending when wrong server endpoint specified', done => {
+    const malformedBackendClient = Given.backendClient('https://malformed-server-endpoint.com');
+    const command = Given.createTaskCommand({
+      withIdPrefix: 'spine-web-test-send-command',
+      named: 'Implement Spine Web JS client tests',
+      describedAs: 'Spine Web need integration tests'
+    });
+
+    malformedBackendClient.sendCommand(
+      command,
+      fail(done, 'A command was acknowledged when it was expected to fail.'),
+      error => {
+        assert.ok(error instanceof ConnectionError);
+        // TODO:2018-10-15:yegor.udovchenko: Provide more assertions
+        done();
+      },
+      fail(done, 'A command was rejected when an error was expected.'));
+  });
+
   it('fails a malformed command', done => {
     const command = Given.createTaskCommand({withId: null});
 
@@ -200,10 +221,9 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
         assert.ok(error instanceof CommandProcessingError);
-        const rootCauseError = error.reason();
-        assert.equal(rootCauseError.code, 2);
-        assert.equal(rootCauseError.type, 'spine.core.CommandValidationError');
-        assert.ok(rootCauseError.validationError);
+        assert.equal(error.getCode(), 2);
+        assert.equal(error.getType(), 'spine.core.CommandValidationError');
+        assert.ok(error.reason().validationError);
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));

@@ -249,9 +249,8 @@ export class HttpEndpoint extends Endpoint {
     return new Promise((resolve, reject) => {
       this._httpClient
         .postMessage(endpoint, message)
-        .then(HttpEndpoint._resolveResponse)
-        .then(resolve, reject)
-        .catch(error => reject(new ConnectionError(error)));
+        .then(HttpEndpoint._jsonOrError, HttpEndpoint._connectionError)
+        .then(resolve, reject);
     });
   }
 
@@ -263,13 +262,13 @@ export class HttpEndpoint extends Endpoint {
    *                                       the client response is not 2xx or its parsing to JSON completed with failure
    * @private
    */
-  static _resolveResponse(response) {
+  static _jsonOrError(response) {
     if (HttpEndpoint._isSuccessfulResponse(response)) {
       return HttpEndpoint._parseJson(response);
     } else if (HttpEndpoint._isClientErrorResponse(response)) {
       return Promise.reject(new RequestProcessingError(response));
     } else if(HttpEndpoint._isServerErrorResponse(response)) {
-      return Promise.reject(new InternalServerError(response))
+      return Promise.reject(new InternalServerError(response));
     }
   }
 
@@ -286,6 +285,18 @@ export class HttpEndpoint extends Endpoint {
    return response.json()
             .then(json => Promise.resolve(json))
             .catch(error => Promise.reject(new InternalServerError(error)));
+  }
+
+  // TODO:2018-10-15:yegor.udovchenko: Clarify `_connectionError` doc
+  /**
+   * Returns a rejected promise with a {@link ConnectionError}.
+   *
+   * @param {FetchError} error an error which occurred upon {@code fetch} execution
+   * @return {Promise<ConnectionError>} a rejected promise with a {@code ConnectionError}
+   * @private
+   */
+  static _connectionError(error) {
+    return Promise.reject(new ConnectionError(error));
   }
 
   /**
