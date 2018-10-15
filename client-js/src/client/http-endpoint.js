@@ -19,7 +19,10 @@
  */
 
 import {Type, TypedMessage} from './typed-message';
-import {SpineWebError, ClientError, InternalServerError, ConnectionError} from './spine-web-error';
+import {SpineWebError,
+        RequestProcessingError,
+        InternalServerError,
+        ConnectionError} from './spine-web-error';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
 class Endpoint {
@@ -264,7 +267,7 @@ export class HttpEndpoint extends Endpoint {
     if (HttpEndpoint._isSuccessfulResponse(response)) {
       return HttpEndpoint._parseJson(response);
     } else if (HttpEndpoint._isClientErrorResponse(response)) {
-      return Promise.reject(new ClientError(response));
+      return Promise.reject(new RequestProcessingError(response));
     } else if(HttpEndpoint._isServerErrorResponse(response)) {
       return Promise.reject(new InternalServerError(response))
     }

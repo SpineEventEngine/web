@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {SpineWebError, CommandValidationError, InternalServerError} from './spine-web-error';
+import {SpineWebError, CommandProcessingError, InternalServerError} from './spine-web-error';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -281,14 +281,15 @@ export class BackendClient {
    * as follows:
    * <ul>
    *     <li>{@code ConnectionError}        - if the connection error occurs;
-   *     <li>{@code ClientError}            - if the command message can`t be parsed from the request;
-   *     <li>{@code CommandValidationError} - if the command message type is unsupported by the server or the command
+   *     <li>{@code RequestProcessingError} - if the request can't be processed by the server (e.g. command message
+   *                                          can`t be parsed from the request);
+   *     <li>{@code CommandProcessingError} - if the command message type is unsupported by the server or the command
    *                                          recipient is missing;
-   *     <li>{@code InternalServerError}    - if the internal server error occurred upon command processing;
+   *     <li>{@code InternalServerError}    - if the internal server error occurred upon the command processing;
    * </ul>
    *
-   * The {@code ClientError} and {@code CommandValidationError} error occurrence guaranties that the command
-   * wasn't accepted by the server.
+   * The {@code RequestProcessingError} and {@code CommandProcessingError} error occurrence guaranties that the command
+   * wasn't accepted by the server. Both of them are inherited from the {@code ClientError}
    *
    * If other error types were received, the command sending result is unknown (can't be considered as succeeded or
    * failed) and should be interpreted respectively on the UI.
@@ -297,7 +298,7 @@ export class BackendClient {
    * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<SpineWebError>} errorCallback
-   *        a callback receiving the errors executed if an error occurred when processing command
+   *        a callback receiving the errors executed if an error occurred when sending command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
    */
@@ -309,7 +310,7 @@ export class BackendClient {
         if (status.hasOwnProperty('ok')) {
           acknowledgedCallback();
         } else if (status.hasOwnProperty('error')) {
-          errorCallback(new CommandValidationError(status.error));
+          errorCallback(new CommandProcessingError(status.error));
         } else if (status.hasOwnProperty('rejection')) {
           rejectionCallback(status.rejection);
         }

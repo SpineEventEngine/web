@@ -31,7 +31,7 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-import {InternalServerError, CommandValidationError} from '../../src/client/spine-web-error';
+import {InternalServerError, CommandProcessingError} from '../../src/client/spine-web-error';
 
 function fail(done, message) {
   return error => {
@@ -199,7 +199,7 @@ describe('FirebaseBackendClient', function () {
       command,
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
-        assert.ok(error instanceof CommandValidationError);
+        assert.ok(error instanceof CommandProcessingError);
         const rootCauseError = error.reason();
         assert.equal(rootCauseError.code, 2);
         assert.equal(rootCauseError.type, 'spine.core.CommandValidationError');
