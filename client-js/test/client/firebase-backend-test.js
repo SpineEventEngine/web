@@ -33,6 +33,7 @@ import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
 import {InternalServerError,
         CommandProcessingError,
+        RequestProcessingError,
         ConnectionError} from '../../src/client/spine-web-error';
 
 function fail(done, message) {
@@ -213,7 +214,27 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was rejected when an error was expected.'));
   });
 
-  it('fails a malformed command', done => {
+  it('fails with `RequestProcessingError` for a malformed `TypedMessage`', done => {
+    const command = Given.createTaskCommand({
+        withIdPrefix: 'spine-web-test-send-command',
+        named: 'Implement Spine Web JS client tests',
+        describedAs: 'Spine Web need integration tests'
+    });
+
+    const malformedCommandMessage = new TypedMessage(command.message, Given.TYPE.MALFORMED);
+
+    backendClient.sendCommand(
+      malformedCommandMessage,
+      fail(done, 'A command was acknowledged when it was expected to fail.'),
+      error => {
+        assert.ok(error instanceof RequestProcessingError);
+        // TODO:2018-10-15:yegor.udovchenko: Provide more assertions
+        done();
+      },
+      fail(done, 'A command was rejected when an error was expected.'));
+  });
+
+  it('fails with `CommandProcessingError` for invalid command', done => {
     const command = Given.createTaskCommand({withId: null});
 
     backendClient.sendCommand(
