@@ -287,11 +287,11 @@ export class HttpEndpoint extends Endpoint {
             .catch(error => Promise.reject(new InternalServerError(error)));
   }
 
-  // TODO:2018-10-15:yegor.udovchenko: Clarify `_connectionError` doc
   /**
-   * Returns a rejected promise with a {@link ConnectionError}.
+   * Gets the error caught from the {@code HttpClient#postMessage} and returns
+   * a rejected promise with a given error wrapped into {@link ConnectionError}.
    *
-   * @param {FetchError} error an error which occurred upon {@code fetch} execution
+   * @param {Error} error               an error which occurred upon message sending
    * @return {Promise<ConnectionError>} a rejected promise with a {@code ConnectionError}
    * @private
    */
