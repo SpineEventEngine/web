@@ -153,7 +153,7 @@ describe('HttpEndpoint.command', function () {
       .catch(error => {
         assert.ok(error instanceof ResponseProcessingError);
         assert.equal(error.reason(), malformedResponse);
-        done()
+        done();
       });
   });
 

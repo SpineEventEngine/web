@@ -193,7 +193,7 @@ export class CommandProcessingError extends ClientError {
    *                                  no further processing would occur.
    */
   constructor(reason) {
-    super(reason)
+    super(reason);
   }
 
   /**
