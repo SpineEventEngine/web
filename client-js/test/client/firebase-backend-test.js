@@ -222,9 +222,9 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
         assert.ok(error instanceof CommandProcessingError);
-        assert.equal(error.getCode(), 2);
-        assert.equal(error.getType(), 'spine.core.CommandValidationError');
-        assert.ok(error.reason().validationError);
+        assert.equal(error.code(), 2);
+        assert.equal(error.type(), 'spine.core.CommandValidationError');
+        assert.ok(error.validationError());
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
@@ -296,6 +296,7 @@ describe('FirebaseBackendClient', function () {
       backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
           assert.ok(error instanceof InternalServerError);
+          assert.equal(error.message(), 'Internal Server Error');
           done();
         });
 

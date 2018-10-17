@@ -22,6 +22,7 @@ import {Type, TypedMessage} from './typed-message';
 import {SpineWebError,
         RequestProcessingError,
         InternalServerError,
+        ResponseProcessingError,
         ConnectionError} from './spine-web-error';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
@@ -276,22 +277,22 @@ export class HttpEndpoint extends Endpoint {
    * Parses the given response to JSON, rejects if parsing completed with failure.
    *
    * @param {!Response} response an HTTP request response
-   * @return {Promise<JSON|InternalServerError>} a promise of a server response parsing to be fulfilled with a JSON
-   *                                             data, or rejected with {@link InternalServerError} if parsing to JSON
-   *                                             completes with failure
+   * @return {Promise<JSON|ResponseProcessingError>} a promise of a server response parsing to be fulfilled with a JSON
+   *                                                 data, or rejected with {@link ResponseProcessingError} if parsing
+   *                                                 to JSON completes with failure
    * @private
    */
   static _parseJson(response) {
    return response.json()
             .then(json => Promise.resolve(json))
-            .catch(error => Promise.reject(new InternalServerError(error)));
+            .catch(error => Promise.reject(new ResponseProcessingError(error.message, error)));
   }
 
   /**
    * Gets the error caught from the {@code HttpClient#postMessage} and returns
    * a rejected promise with a given error wrapped into {@link ConnectionError}.
    *
-   * @param {Error} error               an error which occurred upon message sending
+   * @param {!Error} error              an error which occurred upon message sending
    * @return {Promise<ConnectionError>} a rejected promise with a {@code ConnectionError}
    * @private
    */
