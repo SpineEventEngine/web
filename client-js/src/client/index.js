@@ -23,6 +23,16 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseClient} from './firebase-client';
 import {HttpClient} from './http-client';
 import {BackendClient} from './backend-client';
+import {
+  SpineWebError,
+  ClientError,
+  ServerError,
+  ConnectionError,
+  InternalServerError,
+  ResponseProcessingError,
+  RequestProcessingError,
+  CommandProcessingError
+} from './spine-web-error';
 
 /**
  * The object which represents the public API of the `client-js` module.
@@ -39,4 +49,12 @@ export const client = {
   TypeUrl,
   TypedMessage,
   Type,
+  SpineWebError,
+  ClientError,
+  ServerError,
+  ConnectionError,
+  InternalServerError,
+  ResponseProcessingError,
+  RequestProcessingError,
+  CommandProcessingError
 };
