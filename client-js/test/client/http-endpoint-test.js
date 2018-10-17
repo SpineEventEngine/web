@@ -27,6 +27,7 @@ import {Type, TypedMessage} from '../../src/client/typed-message';
 import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {ConnectionError,
         RequestProcessingError,
+        ResponseProcessingError,
         InternalServerError} from '../../src/client/spine-web-error';
 import {Duration} from '../../src/client/time-utils';
 
@@ -140,13 +141,15 @@ describe('HttpEndpoint.command', function () {
       .catch(fail(done, 'A message sending failed when it was expected to complete.'));
   });
 
-  it('rejects with `InternalServerError` when response body parsing fails', done => {
-    httpClientBehavior.resolves(Given.responseWithMalformedBody());
+  it('rejects with `ResponseProcessingError` when response body parsing fails', done => {
+    const malformedResponse = Given.responseWithMalformedBody();
+    httpClientBehavior.resolves(malformedResponse);
 
     sendCommand()
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
-        assert.ok(error instanceof InternalServerError);
+        assert.ok(error instanceof ResponseProcessingError);
+        assert.equal(error.reason(), malformedResponse);
         done()
       });
   });
@@ -164,23 +167,27 @@ describe('HttpEndpoint.command', function () {
   });
 
   it('rejects with `RequestProcessingError` when response with status 400 received', done => {
-    httpClientBehavior.resolves(Given.responseWithClientError());
+    const responseWithClientError = Given.responseWithClientError();
+    httpClientBehavior.resolves(responseWithClientError);
 
     sendCommand()
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
         assert.ok(error instanceof RequestProcessingError);
+        assert.equal(error.reason(), responseWithClientError);
         done()
       });
   });
 
   it('rejects with `InternalServerError` when response with status 500 received', done => {
-    httpClientBehavior.resolves(Given.responseWithServerError());
+    const responseWithInternalServerError = Given.responseWithServerError();
+    httpClientBehavior.resolves(responseWithInternalServerError);
 
     sendCommand()
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
         assert.ok(error instanceof InternalServerError);
+        assert.equal(error.reason(), responseWithInternalServerError);
         done()
       });
   });
