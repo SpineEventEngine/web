@@ -41,6 +41,26 @@ function fail(done, message) {
   };
 }
 
+/**
+ * A class that represents mock HTTP Response for tests.
+ */
+class MockResponse {
+  withStatus(status) {
+    this.status = status;
+    return this;
+  }
+
+  withBodyContent(bodyContent) {
+    this.json = () => Promise.resolve(bodyContent);
+    return this;
+  }
+
+  withMalformedBodyContent() {
+    this.json = () => Promise.reject('Failed to parse from JSON');
+    return this;
+  }
+}
+
 class Given {
   constructor() {
     throw new Error('A utility Given class cannot be instantiated.');
@@ -74,23 +94,6 @@ class Given {
 
   static _mockResponse() {
     return new MockResponse();
-  }
-}
-
-class MockResponse {
-  withStatus(status) {
-    this.status = status;
-    return this;
-  }
-
-  withBodyContent(bodyContent) {
-    this.json = () => Promise.resolve(bodyContent);
-    return this;
-  }
-
-  withMalformedBodyContent() {
-    this.json = () => Promise.reject('Failed to parse from JSON');
-    return this;
   }
 }
 
