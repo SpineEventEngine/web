@@ -286,6 +286,7 @@ export class BackendClient {
    *     <li>{@code CommandProcessingError} - if the command message type is unsupported by the server or the command
    *                                          recipient is missing;
    *     <li>{@code InternalServerError}    - if the internal server error occurred upon the command processing;
+   *     <li>{@code ResponseProcessingError}- if parsing of the response failed;
    * </ul>
    *
    * The {@code RequestProcessingError} and {@code CommandProcessingError} error occurrence guaranties that the command
