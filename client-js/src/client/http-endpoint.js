@@ -264,11 +264,14 @@ export class HttpEndpoint extends Endpoint {
    * @private
    */
   static _jsonOrError(response) {
-    if (HttpEndpoint._isSuccessfulResponse(response)) {
+    const statusCode = response.status;
+    if (HttpEndpoint._isSuccessfulResponse(statusCode)) {
       return HttpEndpoint._parseJson(response);
-    } else if (HttpEndpoint._isClientErrorResponse(response)) {
+    }
+    else if (HttpEndpoint._isClientErrorResponse(statusCode)) {
       return Promise.reject(new RequestProcessingError(response));
-    } else if(HttpEndpoint._isServerErrorResponse(response)) {
+    }
+    else if(HttpEndpoint._isServerErrorResponse(statusCode)) {
       return Promise.reject(new InternalServerError(response));
     }
   }
@@ -285,7 +288,7 @@ export class HttpEndpoint extends Endpoint {
   static _parseJson(response) {
    return response.json()
             .then(json => Promise.resolve(json))
-            .catch(error => Promise.reject(new ResponseProcessingError(error.message, response)));
+            .catch(error => Promise.reject(new ResponseProcessingError(error.message, error)));
   }
 
   /**
@@ -301,30 +304,30 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * @param {!Response} response an HTTP request response
+   * @param {!number} statusCode an HTTP request response status code
    * @return {boolean} `true` if the response status code is from 200 to 299, `false` otherwise
    * @private
    */
-  static _isSuccessfulResponse(response) {
-    return 200 <= response.status && response.status < 300;
+  static _isSuccessfulResponse(statusCode) {
+    return 200 <= statusCode && statusCode < 300;
   }
 
   /**
-   * @param {!Response} response an HTTP request response
+   * @param {!number} statusCode an HTTP request response status code
    * @return {boolean} `true` if the response status code is from 400 to 499, `false` otherwise
    * @private
    */
-  static _isClientErrorResponse(response) {
-    return 400 <= response.status && response.status < 500;
+  static _isClientErrorResponse(statusCode) {
+    return 400 <= statusCode && statusCode < 500;
   }
 
   /**
-   * @param {!Response} response an HTTP request response
+   * @param {!number} statusCode an HTTP request response status code
    * @return {boolean} `true` if the response status code is from 500, `false` otherwise
    * @private
    */
-  static _isServerErrorResponse(response) {
-    return 500 <= response.status;
+  static _isServerErrorResponse(statusCode) {
+    return 500 <= statusCode;
   }
 }
 
