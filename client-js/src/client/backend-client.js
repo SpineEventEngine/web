@@ -164,8 +164,8 @@ class Fetch {
    * // To query all entities of developer-defined Task type at once:
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
-   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                              that be rejected with an `SpineWebError`
+   * @return {Promise<Object[]>} a promise to be fulfilled with an array of entities matching query
+   *                             or to be rejected with a `SpineWebError`
    * @abstract
    */
   atOnce() {
@@ -271,29 +271,26 @@ export class BackendClient {
    *
    * After sending the command to the server the following scenarios are possible:
    * <ul>
-   *     <li>the {@param acknowledgedCallback} is called if the command is acknowledged for further processing
-   *     <li>the {@param errorCallback} is called if sending of the command failed
+   *     <li>the `acknowledgedCallback` is called if the command is acknowledged for further processing
+   *     <li>the `errorCallback` is called if sending of the command failed
    * </ul>
    *
-   * Invocation of {@param acknowledgedCallback} and {@param errorCallback} are mutually exclusive.
+   * Invocation of the `acknowledgedCallback` and the `errorCallback` are mutually exclusive.
    *
-   * The reason of command sending failure can be recognized by the type of error passed to the {@param errorCallback}
+   * The reason of command sending failure can be recognized by the type of error passed to the `errorCallback`
    * as follows:
-   * <ul>
-   *     <li>{@code ConnectionError}        - if the connection error occurs;
-   *     <li>{@code RequestProcessingError} - if the request can't be processed by the server (e.g. command message
-   *                                          can`t be parsed from the request);
-   *     <li>{@code CommandProcessingError} - if the command message type is unsupported by the server or the command
-   *                                          recipient is missing;
-   *     <li>{@code InternalServerError}    - if the internal server error occurred upon the command processing;
-   *     <li>{@code ResponseProcessingError}- if parsing of the response failed;
-   * </ul>
+   *  - `ConnectionError`         – if the connection error occurs;
+   *  - `RequestProcessingError`  – if the request can't be processed by the server (e.g. command message
+   *                              can`t be parsed from the request);
+   *  - `CommandProcessingError`  – if the command message type is unsupported by the server or the command
+   *                              recipient is missing;
+   *  - `InternalServerError`     – if the internal server error occurred upon the command processing;
+   *  - `ResponseProcessingError` – if parsing of the response failed;
    *
-   * The {@code RequestProcessingError} and {@code CommandProcessingError} error occurrence guaranties that the command
-   * wasn't accepted by the server. Both of them are inherited from the {@code ClientError}
+   * The `RequestProcessingError` and the `CommandProcessingError` occurrence guaranties that the command
+   * wasn't accepted by the server. Both of them are inherited from the `ClientError`.
    *
-   * If other error types were received, the command sending result is unknown (can't be considered as succeeded or
-   * failed) and should be interpreted respectively on the UI.
+   * Other error types do not indicate if the command was handled by the backend successfully or not.
    *
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} acknowledgedCallback

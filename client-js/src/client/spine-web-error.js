@@ -27,7 +27,7 @@ export class SpineWebError extends Error {
 
   /**
    * @param {!string} message the human-readable error message
-   * @param {!*} cause        the reason why this error occurred
+   * @param {*} cause         the reason why this error occurred
    */
   constructor(message, cause) {
     super(message);

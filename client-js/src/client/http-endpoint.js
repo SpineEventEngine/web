@@ -231,7 +231,6 @@ export class HttpEndpoint extends Endpoint {
    * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
    *                                       the client response is not 2xx or a connection error occurs
    * @protected
-   * @abstract
    */
   _cancel(subscription) {
     return this._sendMessage('/subscription/cancel', subscription);
@@ -260,7 +259,7 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!Response} response an HTTP request response
    * @return {Promise<JSON|SpineWebError>} a promise of a successful server response JSON data, rejected if
-   *                                       the client response is not 2xx or its parsing to JSON completed with failure
+   *                                       the client response is not 2xx or if JSON parsing fails
    * @private
    */
   static _jsonOrError(response) {
@@ -277,12 +276,11 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Parses the given response to JSON, rejects if parsing completed with failure.
+   * Parses the given response JSON data, rejects if parsing fails.
    *
    * @param {!Response} response an HTTP request response
-   * @return {Promise<JSON|ResponseProcessingError>} a promise of a server response parsing to be fulfilled with a JSON
-   *                                                 data, or rejected with {@link ResponseProcessingError} if parsing
-   *                                                 to JSON completes with failure
+   * @return {Promise<*|ResponseProcessingError>} a promise of a server response parsing to be fulfilled with a JSON
+   *       data or rejected with {@link ResponseProcessingError} if JSON parsing fails.
    * @private
    */
   static _parseJson(response) {
@@ -292,11 +290,11 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Gets the error caught from the {@code HttpClient#postMessage} and returns
+   * Gets the error caught from the {@link HttpClient#postMessage} and returns
    * a rejected promise with a given error wrapped into {@link ConnectionError}.
    *
    * @param {!Error} error              an error which occurred upon message sending
-   * @return {Promise<ConnectionError>} a rejected promise with a {@code ConnectionError}
+   * @return {Promise<ConnectionError>} a rejected promise with a `ConnectionError`
    * @private
    */
   static _connectionError(error) {
