@@ -23,30 +23,20 @@
 *
 * @abstract
 */
-export class SpineWebError {
+export class SpineWebError extends Error {
 
   /**
-   * @param {!Object} reason the reason why this error occurred
+   * @param {!string} message the human-readable error message
+   * @param {!*} cause        the reason why this error occurred
    */
-  constructor(reason) {
-    this._reason = reason;
+  constructor(message, cause) {
+    super(message);
+    this.name = this.constructor.name;
+    this.cause = cause;
   }
 
-  /**
-   * @return {Object|string} the reason why this error occurred
-   */
-  reason() {
-    return this._reason;
-  }
-
-  /**
-   * Returns a human-readable error message.
-   *
-   * @return {string}
-   * @public
-   * @abstract
-   */
-  message() {
+  getCause() {
+    return this.cause;
   }
 }
 
@@ -61,17 +51,10 @@ export class SpineWebError {
 export class ConnectionError extends SpineWebError {
 
   /**
-   * @param {!Error} reason the error caught from {@code fetch} invocation
+   * @param {!Error} error the error caught from {@code fetch} invocation
    */
-  constructor(reason) {
-    super(reason);
-  }
-
-  /**
-   * @override
-   */
-  message() {
-    return this.reason().message;
+  constructor(error) {
+    super(error.message, error);
   }
 }
 
@@ -82,13 +65,6 @@ export class ConnectionError extends SpineWebError {
  * @abstract
  */
 export class ServerError extends SpineWebError {
-
-  /**
-   * @param {!Object} reason the reason why this error occurred
-   */
-  constructor(reason) {
-    super(reason);
-  }
 }
 
 /**
@@ -98,13 +74,6 @@ export class ServerError extends SpineWebError {
  * @abstract
  */
 export class ClientError extends SpineWebError {
-
-  /**
-   * @param {!Response|spine.base.Error} reason the reason why this error occurred
-   */
-  constructor(reason) {
-    super(reason);
-  }
 }
 
 /**
@@ -118,17 +87,10 @@ export class ClientError extends SpineWebError {
 export class InternalServerError extends ServerError {
 
   /**
-   * @param {!Object} reason the server response caused this error
+   * @param {!Response} response the server response caused this error
    */
-  constructor(reason) {
-    super(reason);
-  }
-
-  /**
-   * @override
-   */
-  message() {
-    return this.reason().statusText;
+  constructor(response) {
+    super(response.statusText, response);
   }
 }
 
@@ -141,19 +103,10 @@ export class InternalServerError extends ServerError {
 export class ResponseProcessingError extends ServerError {
 
   /**
-   * @param {!string} message the human-readable error message
-   * @param {?Object} reason  the reason why this error occurred
+   * @param {?Error} cause the reason why this error occurred
    */
-  constructor(message, reason) {
-    super(reason || message);
-    this._message = message;
-  }
-
-  /**
-   * @override
-   */
-  message() {
-    return this._message;
+  constructor(cause) {
+    super(cause.message || cause, cause);
   }
 }
 
@@ -166,17 +119,10 @@ export class ResponseProcessingError extends ServerError {
 export class RequestProcessingError extends ClientError {
 
   /**
-   * @param {!Response} reason the server response caused this error
+   * @param {!Response} response the server response caused this error
    */
-  constructor(reason) {
-    super(reason);
-  }
-
-  /**
-   * @override
-   */
-  message() {
-    return this.reason().statusText;
+  constructor(response) {
+    super(response.statusText, response);
   }
 }
 
@@ -189,18 +135,11 @@ export class RequestProcessingError extends ClientError {
  */
 export class CommandProcessingError extends ClientError {
   /**
-   * @param {spine.base.Error} reason the technical error occurred upon receiving the request and
+   * @param {spine.base.Error} error the technical error occurred upon receiving the request and
    *                                  no further processing would occur.
    */
-  constructor(reason) {
-    super(reason);
-  }
-
-  /**
-   * @override
-   */
-  message() {
-    return this.reason().message;
+  constructor(error) {
+    super(error.message, error);
   }
 
   /**
@@ -209,7 +148,7 @@ export class CommandProcessingError extends ClientError {
    * @return {string}
    */
   type() {
-    return this.reason().type;
+    return this.getCause().type;
   }
 
   /**
@@ -218,7 +157,7 @@ export class CommandProcessingError extends ClientError {
    * @return {number}
    */
   code() {
-    return this.reason().code;
+    return this.getCause().code;
   }
 
   /**
@@ -228,6 +167,6 @@ export class CommandProcessingError extends ClientError {
    * @return {?spine.validate.ValidationError}
    */
   validationError() {
-    return this.reason().validationError;
+    return this.getCause().validationError;
   }
 }

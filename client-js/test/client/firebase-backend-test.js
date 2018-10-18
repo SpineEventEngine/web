@@ -33,7 +33,6 @@ import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
 import {InternalServerError,
         CommandProcessingError,
-        RequestProcessingError,
         ConnectionError} from '../../src/client/spine-web-error';
 
 function fail(done, message) {
@@ -196,7 +195,8 @@ describe('FirebaseBackendClient', function () {
   });
 
   it('fails command sending when wrong server endpoint specified', done => {
-    const malformedBackendClient = Given.backendClient('https://malformed-server-endpoint.com');
+    const fakeBaseUrl = 'https://malformed-server-endpoint.com';
+    const malformedBackendClient = Given.backendClient(fakeBaseUrl);
     const command = Given.createTaskCommand({
       withIdPrefix: 'spine-web-test-send-command',
       named: 'Implement Spine Web JS client tests',
@@ -208,7 +208,7 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
         assert.ok(error instanceof ConnectionError);
-        // TODO:2018-10-15:yegor.udovchenko: Provide more assertions
+        assert.equal(error.message, `request to ${fakeBaseUrl}/command failed`);
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
@@ -240,7 +240,7 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
         next(data) {
-          // Ordering is not guaranteed by fetch and 
+          // Ordering is not guaranteed by fetch and
           // the list of entities cannot be cleaned for tests,
           // thus at least one of entities should match the target one.
           itemFound = data.getId().getValue() === taskId.getValue() || itemFound;
@@ -296,7 +296,7 @@ describe('FirebaseBackendClient', function () {
       backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
           assert.ok(error instanceof InternalServerError);
-          assert.equal(error.message(), 'Internal Server Error');
+          assert.equal(error.message, 'Internal Server Error');
           done();
         });
 
@@ -408,7 +408,7 @@ describe('FirebaseBackendClient', function () {
 
     // Rename created tasks.
     Promise.all(createPromises).then(() => {
-      // Rename tasks in a timeout after they are created to 
+      // Rename tasks in a timeout after they are created to
       // allow for added subscriptions to be updated first.
       const renameTimeout = new Duration({seconds: 30});
       setTimeout(() => {

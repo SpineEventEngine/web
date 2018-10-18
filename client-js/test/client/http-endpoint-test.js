@@ -25,10 +25,12 @@ import {HttpEndpoint} from '../../src/client/http-endpoint';
 import {HttpClient} from '../../src/client/http-client';
 import {Type, TypedMessage} from '../../src/client/typed-message';
 import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
-import {ConnectionError,
-        RequestProcessingError,
-        ResponseProcessingError,
-        InternalServerError} from '../../src/client/spine-web-error';
+import {
+    ConnectionError,
+    RequestProcessingError,
+    ResponseProcessingError,
+    InternalServerError, ServerError
+} from '../../src/client/spine-web-error';
 import {Duration} from '../../src/client/time-utils';
 
 function fail(done, message) {
@@ -41,12 +43,15 @@ function fail(done, message) {
   };
 }
 
+const MOCK_RESPONSE_STATUS_TEXT = 'Status text';
+
 /**
  * A class that represents mock HTTP Response for tests.
  */
 class MockResponse {
   withStatus(status) {
     this.status = status;
+    this.statusText = MOCK_RESPONSE_STATUS_TEXT;
     return this;
   }
 
@@ -56,7 +61,7 @@ class MockResponse {
   }
 
   withMalformedBodyContent() {
-    this.json = () => Promise.reject('Failed to parse from JSON');
+    this.json = () => Promise.reject(new Error('Failed to parse JSON'));
     return this;
   }
 }
@@ -98,7 +103,7 @@ class Given {
 }
 
 Given.FAKE_ENDPOINT_URL = 'https://fake-endpoint.url';
-Given.CONNECTION_ERROR = {message: 'Failed to fetch'};
+Given.CONNECTION_ERROR = new Error('Failed to fetch');
 Given.MOCK_COMMAND = new TypedMessage(
   new CreateTask(),
   Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'));
@@ -152,7 +157,8 @@ describe('HttpEndpoint.command', function () {
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
         assert.ok(error instanceof ResponseProcessingError);
-        assert.equal(error.reason(), malformedResponse);
+        assert.ok(error.getCause() instanceof Error);
+        assert.equal(error.message, 'Failed to parse JSON');
         done();
       });
   });
@@ -164,8 +170,9 @@ describe('HttpEndpoint.command', function () {
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
         assert.ok(error instanceof ConnectionError);
-        assert.equal(error.reason(), Given.CONNECTION_ERROR);
-        done()
+        assert.ok(error.getCause() instanceof Error);
+        assert.equal(error.message, Given.CONNECTION_ERROR.message);
+        done();
       });
   });
 
@@ -177,8 +184,9 @@ describe('HttpEndpoint.command', function () {
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
         assert.ok(error instanceof RequestProcessingError);
-        assert.equal(error.reason(), responseWithClientError);
-        done()
+        assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
+        assert.equal(error.getCause(), responseWithClientError);
+        done();
       });
   });
 
@@ -190,8 +198,9 @@ describe('HttpEndpoint.command', function () {
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
         assert.ok(error instanceof InternalServerError);
-        assert.equal(error.reason(), responseWithInternalServerError);
-        done()
+        assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
+        assert.equal(error.getCause(), responseWithInternalServerError);
+        done();
       });
   });
 });
