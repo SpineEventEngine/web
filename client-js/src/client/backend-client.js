@@ -281,14 +281,14 @@ export class BackendClient {
    * as follows:
    *  - `ConnectionError`         – if the connection error occurs;
    *  - `ServerError`             – if the internal server error occurred upon the command processing;
-   *  - `RequestProcessingError`  – if the request can't be processed by the server (e.g. command message
+   *  - `ClientError`             – if the request can't be processed by the server (e.g. command message
    *                              can`t be parsed from the request);
-   *  - `CommandHandlingError`  – if the command message type is unsupported by the server or the command
+   *  - `CommandHandlingError`   – if the command message type is unsupported by the server or the command
    *                              recipient is missing;
    *  - `SpineError`              – if parsing of the response failed;
    *
-   * The `RequestProcessingError` and the `CommandHandlingError` occurrence guaranties that the command
-   * wasn't accepted by the server. Both of them are inherited from the `ClientError`.
+   * The `ClientError` and the `CommandHandlingError` occurrence guaranties that the command
+   * wasn't accepted by the server.
    *
    * Other error types do not indicate if the command was handled by the backend successfully or not.
    *

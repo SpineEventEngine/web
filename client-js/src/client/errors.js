@@ -76,27 +76,21 @@ export class ServerError extends SpineError {
 }
 
 /**
- * An abstract error indicating an invalid client behaviour.
+ * An error indicating an invalid client behaviour.
  *
- * @extends SpineError
- * @abstract
- */
-export class ClientError extends SpineError {
-}
-
-/**
  * An error which occurs when sending off a request to Spine server endpoint results
  * with a response with `4xx` status code.
  *
- * @extends ClientError
+ * @extends SpineError
  */
-export class RequestProcessingError extends ClientError {
+export class ClientError extends SpineError {
 
   /**
-   * @param {!Response} response the server response caused this error
+   * @param {!string} message the human-readable error message
+   * @param {*=} cause        the reason why this error occurred
    */
-  constructor(response) {
-    super(response.statusText, response);
+  constructor(message, cause) {
+    super(message, cause);
   }
 }
 
@@ -105,9 +99,9 @@ export class RequestProcessingError extends ClientError {
  * with a response which indicates that a command message was rejected further processing
  * (e.g. because of a validation error).
  *
- * @extends ClientError
+ * @extends SpineError
  */
-export class CommandHandlingError extends ClientError {
+export class CommandHandlingError extends SpineError {
 
   /**
    * @param {spine.base.Error} error the technical error occurred upon receiving the request and
@@ -155,7 +149,6 @@ export class CommandHandlingError extends ClientError {
  * @property {ConnectionError} ConnectionError
  * @property {ServerError} ServerError
  * @property {ClientError} ClientError
- * @property {RequestProcessingError} RequestProcessingError
  * @property {CommandHandlingError} CommandHandlingError
  */
 
@@ -169,6 +162,5 @@ export const Errors = {
    ConnectionError,
    ServerError,
    ClientError,
-   RequestProcessingError,
    CommandHandlingError,
 };

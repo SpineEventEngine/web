@@ -28,7 +28,7 @@ import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {
   SpineError,
   ConnectionError,
-  RequestProcessingError,
+  ClientError,
   ServerError
 } from '../../src/client/errors';
 import {Duration} from '../../src/client/time-utils';
@@ -167,14 +167,14 @@ describe('HttpEndpoint.command', function () {
       });
   });
 
-  it('rejects with `RequestProcessingError` when response with status 400 received', done => {
+  it('rejects with `ClientError` when response with status 400 received', done => {
     const responseWithClientError = Given.responseWithClientError();
     httpClientBehavior.resolves(responseWithClientError);
 
     sendCommand()
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
-        assert.ok(error instanceof RequestProcessingError);
+        assert.ok(error instanceof ClientError);
         assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
         assert.equal(error.getCause(), responseWithClientError);
         done();

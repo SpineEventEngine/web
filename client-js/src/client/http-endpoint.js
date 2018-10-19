@@ -21,7 +21,7 @@
 import {Type, TypedMessage} from './typed-message';
 import {
   SpineError,
-  RequestProcessingError,
+  ClientError,
   ServerError,
   ConnectionError
 } from './errors';
@@ -270,7 +270,7 @@ export class HttpEndpoint extends Endpoint {
       return HttpEndpoint._parseJson(response);
     }
     else if (HttpEndpoint._isClientErrorResponse(statusCode)) {
-      return Promise.reject(new RequestProcessingError(response));
+      return Promise.reject(new ClientError(response.statusText, response));
     }
     else if(HttpEndpoint._isServerErrorResponse(statusCode)) {
       return Promise.reject(new ServerError(response));
