@@ -40,10 +40,10 @@
  *   .catch(fail(done))
  *
  * @param {function(*=)} done the callback that should be called when your test is complete
- * @param {?string} message the test failure message
+ * @param {string=} message the test failure message
  * @return {function(*=)} a function to fail the test. Accepts the first parameter as a cause for test failure.
  */
-export function fail(done, message) {
+export function fail(done, message = '') {
   return cause => {
     if (message) {
      done(new Error(`Test failed. Cause: ${message}`));

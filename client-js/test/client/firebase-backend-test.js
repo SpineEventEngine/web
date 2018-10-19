@@ -199,7 +199,7 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
         assert.ok(error instanceof ConnectionError);
-        assert.equal(error.message, `request to ${fakeBaseUrl}/command failed`);
+        assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
