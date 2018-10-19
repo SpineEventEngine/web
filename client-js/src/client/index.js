@@ -23,7 +23,7 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseClient} from './firebase-client';
 import {HttpClient} from './http-client';
 import {BackendClient} from './backend-client';
-import {Errors} from './spine-web-error';
+import {Errors} from './errors';
 
 /**
  * The object which represents the public API of the `client-js` module.

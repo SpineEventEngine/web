@@ -31,9 +31,11 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-import {InternalServerError,
-        CommandProcessingError,
-        ConnectionError} from '../../src/client/spine-web-error';
+import {
+ InternalServerError,
+ CommandProcessingError,
+ ConnectionError
+} from '../../src/client/errors';
 import {fail} from './test-helpers';
 
 class Given {

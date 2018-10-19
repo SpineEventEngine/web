@@ -19,11 +19,13 @@
  */
 
 import {Type, TypedMessage} from './typed-message';
-import {SpineWebError,
-        RequestProcessingError,
-        InternalServerError,
-        ResponseProcessingError,
-        ConnectionError} from './spine-web-error';
+import {
+  SpineWebError,
+  RequestProcessingError,
+  InternalServerError,
+  ResponseProcessingError,
+  ConnectionError
+} from './errors';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 
 class Endpoint {

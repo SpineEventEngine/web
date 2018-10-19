@@ -26,11 +26,11 @@ import {HttpClient} from '../../src/client/http-client';
 import {Type, TypedMessage} from '../../src/client/typed-message';
 import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {
-    ConnectionError,
-    RequestProcessingError,
-    ResponseProcessingError,
-    InternalServerError
-} from '../../src/client/spine-web-error';
+  ConnectionError,
+  RequestProcessingError,
+  ResponseProcessingError,
+  InternalServerError
+} from '../../src/client/errors';
 import {Duration} from '../../src/client/time-utils';
 import {fail} from './test-helpers';
 

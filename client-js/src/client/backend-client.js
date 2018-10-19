@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {SpineWebError, CommandProcessingError, ResponseProcessingError} from './spine-web-error';
+import {SpineWebError, CommandProcessingError, ResponseProcessingError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
