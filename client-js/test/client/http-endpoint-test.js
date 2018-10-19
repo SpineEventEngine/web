@@ -29,19 +29,10 @@ import {
     ConnectionError,
     RequestProcessingError,
     ResponseProcessingError,
-    InternalServerError, ServerError
+    InternalServerError
 } from '../../src/client/spine-web-error';
 import {Duration} from '../../src/client/time-utils';
-
-function fail(done, message) {
-  return error => {
-    if (message) {
-      done(new Error(`Test failed. Cause: ${message}`));
-    } else {
-      done(new Error(`Test failed. Cause: ${error ? JSON.stringify(error) : 'not identified'}`));
-    }
-  };
-}
+import {fail} from './test-helpers';
 
 const MOCK_RESPONSE_STATUS_TEXT = 'Status text';
 

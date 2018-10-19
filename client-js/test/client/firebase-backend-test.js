@@ -34,16 +34,7 @@ import {BackendClient} from '../../src/client/backend-client';
 import {InternalServerError,
         CommandProcessingError,
         ConnectionError} from '../../src/client/spine-web-error';
-
-function fail(done, message) {
-  return error => {
-    if (message) {
-      done(new Error(`Test failed. Cause: ${message}`));
-    } else {
-      done(new Error(`Test failed. Cause: ${error ? JSON.stringify(error) : 'not identified'}`));
-    }
-  };
-}
+import {fail} from './test-helpers';
 
 class Given {
 
@@ -51,9 +42,9 @@ class Given {
     throw new Error('A utility Given class cannot be instantiated.');
   }
 
-  static backendClient(atEndpoint = 'https://spine-dev.appspot.com') {
+  static backendClient(endpoint = 'https://spine-dev.appspot.com') {
     return BackendClient.usingFirebase({
-      atEndpoint: atEndpoint,
+      atEndpoint: endpoint,
       withFirebaseStorage: devFirebaseApp,
       forActor: 'web-test-actor'
     });
