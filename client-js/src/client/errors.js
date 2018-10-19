@@ -40,9 +40,10 @@ export class SpineError extends Error {
 
 /**
  * An error which occurs when sending off a request to Spine server endpoint fails due to the
- * connection problems. Combines situations in which the response to the sent request is not received.
+ * connection problems.
  *
- * It may be caused by an incorrect server address or lack of network connectivity.
+ * It may be caused by an incorrect server address, lack of network connectivity and situations
+ * in which the response to the sent request is not received.
  *
  * @extends SpineError
  */
@@ -64,14 +65,14 @@ export class ConnectionError extends SpineError {
  *
  * @extends SpineError
  */
-export class InternalServerError extends SpineError {
+export class ServerError extends SpineError {
 
-    /**
-     * @param {!Response} response the server response caused this error
-     */
-    constructor(response) {
-        super(response.statusText, response);
-    }
+  /**
+   * @param {!Response} response the server response caused this error
+   */
+  constructor(response) {
+    super(response.statusText, response);
+  }
 }
 
 /**
@@ -151,10 +152,10 @@ export class CommandProcessingError extends ClientError {
  *
  * @property {SpineError} SpineError
  * @property {ConnectionError} ConnectionError
+ * @property {ServerError} ServerError
  * @property {ClientError} ClientError
  * @property {RequestProcessingError} RequestProcessingError
  * @property {CommandProcessingError} CommandProcessingError
- * @property {InternalServerError} InternalServerError
  */
 
 /**
@@ -165,8 +166,8 @@ export class CommandProcessingError extends ClientError {
 export const Errors = {
    SpineError,
    ConnectionError,
+   ServerError,
    ClientError,
    RequestProcessingError,
-   CommandProcessingError ,
-   InternalServerError,
+   CommandProcessingError,
 };

@@ -29,7 +29,7 @@ import {
   SpineError,
   ConnectionError,
   RequestProcessingError,
-  InternalServerError
+  ServerError
 } from '../../src/client/errors';
 import {Duration} from '../../src/client/time-utils';
 import {fail} from './test-helpers';
@@ -181,16 +181,16 @@ describe('HttpEndpoint.command', function () {
       });
   });
 
-  it('rejects with `InternalServerError` when response with status 500 received', done => {
-    const responseWithInternalServerError = Given.responseWithServerError();
-    httpClientBehavior.resolves(responseWithInternalServerError);
+  it('rejects with `ServerError` when response with status 500 received', done => {
+    const responseWithServerError = Given.responseWithServerError();
+    httpClientBehavior.resolves(responseWithServerError);
 
     sendCommand()
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
-        assert.ok(error instanceof InternalServerError);
+        assert.ok(error instanceof ServerError);
         assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
-        assert.equal(error.getCause(), responseWithInternalServerError);
+        assert.equal(error.getCause(), responseWithServerError);
         done();
       });
   });

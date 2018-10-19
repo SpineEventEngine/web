@@ -22,7 +22,7 @@ import {Type, TypedMessage} from './typed-message';
 import {
   SpineError,
   RequestProcessingError,
-  InternalServerError,
+  ServerError,
   ConnectionError
 } from './errors';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
@@ -272,7 +272,7 @@ export class HttpEndpoint extends Endpoint {
       return Promise.reject(new RequestProcessingError(response));
     }
     else if(HttpEndpoint._isServerErrorResponse(statusCode)) {
-      return Promise.reject(new InternalServerError(response));
+      return Promise.reject(new ServerError(response));
     }
   }
 

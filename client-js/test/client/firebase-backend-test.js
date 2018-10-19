@@ -32,7 +32,7 @@ import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
 import {
- InternalServerError,
+ ServerError,
  CommandProcessingError,
  ConnectionError
 } from '../../src/client/errors';
@@ -288,7 +288,7 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
-          assert.ok(error instanceof InternalServerError);
+          assert.ok(error instanceof ServerError);
           assert.equal(error.message, 'Internal Server Error');
           done();
         });

@@ -280,11 +280,11 @@ export class BackendClient {
    * The reason of command sending failure can be recognized by the type of error passed to the `errorCallback`
    * as follows:
    *  - `ConnectionError`         – if the connection error occurs;
+   *  - `ServerError`             – if the internal server error occurred upon the command processing;
    *  - `RequestProcessingError`  – if the request can't be processed by the server (e.g. command message
    *                              can`t be parsed from the request);
    *  - `CommandProcessingError`  – if the command message type is unsupported by the server or the command
    *                              recipient is missing;
-   *  - `InternalServerError`     – if the internal server error occurred upon the command processing;
    *  - `SpineError`              – if parsing of the response failed;
    *
    * The `RequestProcessingError` and the `CommandProcessingError` occurrence guaranties that the command
