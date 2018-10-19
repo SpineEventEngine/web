@@ -170,3 +170,34 @@ export class CommandProcessingError extends ClientError {
     return this.getCause().validationError;
   }
 }
+
+/**
+ * Typedef representing the type union of `client-js` module errors.
+ *
+ * @typedef {Object} Errors
+ *
+ * @property {SpineWebError} SpineWebError
+ * @property {ConnectionError} ConnectionError
+ * @property {ClientError} ClientError
+ * @property {ServerError} ServerError
+ * @property {RequestProcessingError} RequestProcessingError
+ * @property {CommandProcessingError} CommandProcessingError
+ * @property {ResponseProcessingError} ResponseProcessingError
+ * @property {InternalServerError} InternalServerError
+ */
+
+/**
+ * The object which represents the type union of `client-js` module errors.
+ *
+ * @type {Errors}
+ */
+export const Errors = {
+   SpineWebError: SpineWebError,
+   ConnectionError: ConnectionError,
+   ClientError: ClientError,
+   ServerError: ServerError,
+   RequestProcessingError: RequestProcessingError,
+   CommandProcessingError: CommandProcessingError ,
+   ResponseProcessingError: ResponseProcessingError,
+   InternalServerError: InternalServerError,
+};
