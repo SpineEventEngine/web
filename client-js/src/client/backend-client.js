@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {SpineError, CommandProcessingError} from './errors';
+import {SpineError, CommandHandlingError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -283,11 +283,11 @@ export class BackendClient {
    *  - `ServerError`             – if the internal server error occurred upon the command processing;
    *  - `RequestProcessingError`  – if the request can't be processed by the server (e.g. command message
    *                              can`t be parsed from the request);
-   *  - `CommandProcessingError`  – if the command message type is unsupported by the server or the command
+   *  - `CommandHandlingError`  – if the command message type is unsupported by the server or the command
    *                              recipient is missing;
    *  - `SpineError`              – if parsing of the response failed;
    *
-   * The `RequestProcessingError` and the `CommandProcessingError` occurrence guaranties that the command
+   * The `RequestProcessingError` and the `CommandHandlingError` occurrence guaranties that the command
    * wasn't accepted by the server. Both of them are inherited from the `ClientError`.
    *
    * Other error types do not indicate if the command was handled by the backend successfully or not.
@@ -308,7 +308,7 @@ export class BackendClient {
         if (status.hasOwnProperty('ok')) {
           acknowledgedCallback();
         } else if (status.hasOwnProperty('error')) {
-          errorCallback(new CommandProcessingError(status.error));
+          errorCallback(new CommandHandlingError(status.error));
         } else if (status.hasOwnProperty('rejection')) {
           rejectionCallback(status.rejection);
         }

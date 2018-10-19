@@ -101,16 +101,17 @@ export class RequestProcessingError extends ClientError {
 }
 
 /**
- * An error which occurs when sending off a command to Spine server endpoint results with a response
- * containing {@code spine.base.Ack} with error status. It means that a command message was rejected further
- * processing (e.g. because of a validation error).
+ * An error which occurs when sending off a command to Spine server endpoint results
+ * with a response which indicates that a command message was rejected further processing
+ * (e.g. because of a validation error).
  *
  * @extends ClientError
  */
-export class CommandProcessingError extends ClientError {
+export class CommandHandlingError extends ClientError {
+
   /**
    * @param {spine.base.Error} error the technical error occurred upon receiving the request and
-   *                                  no further processing would occur.
+   *                                 no further processing would occur.
    */
   constructor(error) {
     super(error.message, error);
@@ -155,7 +156,7 @@ export class CommandProcessingError extends ClientError {
  * @property {ServerError} ServerError
  * @property {ClientError} ClientError
  * @property {RequestProcessingError} RequestProcessingError
- * @property {CommandProcessingError} CommandProcessingError
+ * @property {CommandHandlingError} CommandHandlingError
  */
 
 /**
@@ -169,5 +170,5 @@ export const Errors = {
    ServerError,
    ClientError,
    RequestProcessingError,
-   CommandProcessingError,
+   CommandHandlingError,
 };

@@ -33,7 +33,7 @@ import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
 import {
  ServerError,
- CommandProcessingError,
+ CommandHandlingError,
  ConnectionError
 } from '../../src/client/errors';
 import {fail} from './test-helpers';
@@ -207,14 +207,14 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was rejected when an error was expected.'));
   });
 
-  it('fails with `CommandProcessingError` for invalid command', done => {
+  it('fails with `CommandHandlingError` for invalid command', done => {
     const command = Given.createTaskCommand({withId: null});
 
     backendClient.sendCommand(
       command,
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
-        assert.ok(error instanceof CommandProcessingError);
+        assert.ok(error instanceof CommandHandlingError);
         assert.equal(error.code(), 2);
         assert.equal(error.type(), 'spine.core.CommandValidationError');
         assert.ok(error.validationError());
