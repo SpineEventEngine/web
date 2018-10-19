@@ -192,12 +192,12 @@ export class CommandProcessingError extends ClientError {
  * @type {Errors}
  */
 export const Errors = {
-   SpineWebError: SpineWebError,
-   ConnectionError: ConnectionError,
-   ClientError: ClientError,
-   ServerError: ServerError,
-   RequestProcessingError: RequestProcessingError,
-   CommandProcessingError: CommandProcessingError ,
-   ResponseProcessingError: ResponseProcessingError,
-   InternalServerError: InternalServerError,
+   SpineWebError,
+   ConnectionError,
+   ClientError,
+   ServerError,
+   RequestProcessingError,
+   CommandProcessingError ,
+   ResponseProcessingError,
+   InternalServerError,
 };
