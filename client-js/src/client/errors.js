@@ -20,8 +20,6 @@
 
 /**
 * An error which occurs when sending off a request to Spine server endpoint.
-*
-* @abstract
 */
 export class SpineError extends Error {
 
@@ -59,12 +57,21 @@ export class ConnectionError extends SpineError {
 }
 
 /**
- * An abstract error indicating an invalid server behaviour.
+ * An error which occurs when sending off a request to Spine server endpoint results
+ * with a response with `5xx` status code.
+ *
+ * Indicates an unhandled exception was thrown upon the request processing.
  *
  * @extends SpineError
- * @abstract
  */
-export class ServerError extends SpineError {
+export class InternalServerError extends SpineError {
+
+    /**
+     * @param {!Response} response the server response caused this error
+     */
+    constructor(response) {
+        super(response.statusText, response);
+    }
 }
 
 /**
@@ -74,41 +81,6 @@ export class ServerError extends SpineError {
  * @abstract
  */
 export class ClientError extends SpineError {
-}
-
-/**
- * An error which occurs when sending off a request to Spine server endpoint results
- * with a response with `5xx` status code.
- *
- * Indicates an unhandled exception was thrown upon the request processing.
- *
- * @extends ServerError
- */
-export class InternalServerError extends ServerError {
-
-  /**
-   * @param {!Response} response the server response caused this error
-   */
-  constructor(response) {
-    super(response.statusText, response);
-  }
-}
-
-/**
- * An error which occurs when sending off a request to Spine server endpoint results with a
- * malformed response which can't be processed.
- *
- * @extends ServerError
- */
-export class ResponseProcessingError extends ServerError {
-
-  /**
-   * @param {!string} message the human-readable error message
-   * @param {Error=} cause the reason why this error occurred
-   */
-  constructor(message, cause) {
-    super(message, cause);
-  }
 }
 
 /**
@@ -180,10 +152,8 @@ export class CommandProcessingError extends ClientError {
  * @property {SpineError} SpineError
  * @property {ConnectionError} ConnectionError
  * @property {ClientError} ClientError
- * @property {ServerError} ServerError
  * @property {RequestProcessingError} RequestProcessingError
  * @property {CommandProcessingError} CommandProcessingError
- * @property {ResponseProcessingError} ResponseProcessingError
  * @property {InternalServerError} InternalServerError
  */
 
@@ -196,9 +166,7 @@ export const Errors = {
    SpineError,
    ConnectionError,
    ClientError,
-   ServerError,
    RequestProcessingError,
    CommandProcessingError ,
-   ResponseProcessingError,
    InternalServerError,
 };

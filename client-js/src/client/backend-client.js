@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {SpineError, CommandProcessingError, ResponseProcessingError} from './errors';
+import {SpineError, CommandProcessingError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -285,7 +285,7 @@ export class BackendClient {
    *  - `CommandProcessingError`  – if the command message type is unsupported by the server or the command
    *                              recipient is missing;
    *  - `InternalServerError`     – if the internal server error occurred upon the command processing;
-   *  - `ResponseProcessingError` – if parsing of the response failed;
+   *  - `SpineError`              – if parsing of the response failed;
    *
    * The `RequestProcessingError` and the `CommandProcessingError` occurrence guaranties that the command
    * wasn't accepted by the server. Both of them are inherited from the `ClientError`.
@@ -457,7 +457,7 @@ class FirebaseFetch extends Fetch {
           if (typeof count === 'undefined') {
             count = 0;
           } else if (isNaN(count)) {
-            throw new ResponseProcessingError('Unexpected format of `count`');
+            throw new SpineError('Unexpected format of `count`');
           }
           promisedCount = parseInt(count);
           return path;

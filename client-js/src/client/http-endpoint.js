@@ -23,7 +23,6 @@ import {
   SpineError,
   RequestProcessingError,
   InternalServerError,
-  ResponseProcessingError,
   ConnectionError
 } from './errors';
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
@@ -281,14 +280,14 @@ export class HttpEndpoint extends Endpoint {
    * Parses the given response JSON data, rejects if parsing fails.
    *
    * @param {!Response} response an HTTP request response
-   * @return {Promise<*|ResponseProcessingError>} a promise of a server response parsing to be fulfilled with a JSON
-   *       data or rejected with {@link ResponseProcessingError} if JSON parsing fails.
+   * @return {Promise<*|SpineError>} a promise of a server response parsing to be fulfilled with a JSON
+   *       data or rejected with {@link SpineError} if JSON parsing fails.
    * @private
    */
   static _parseJson(response) {
    return response.json()
             .then(json => Promise.resolve(json))
-            .catch(error => Promise.reject(new ResponseProcessingError(error.message, error)));
+            .catch(error => Promise.reject(new SpineError('Failed to parse response JSON', error)));
   }
 
   /**

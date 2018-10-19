@@ -26,9 +26,9 @@ import {HttpClient} from '../../src/client/http-client';
 import {Type, TypedMessage} from '../../src/client/typed-message';
 import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
 import {
+  SpineError,
   ConnectionError,
   RequestProcessingError,
-  ResponseProcessingError,
   InternalServerError
 } from '../../src/client/errors';
 import {Duration} from '../../src/client/time-utils';
@@ -140,16 +140,16 @@ describe('HttpEndpoint.command', function () {
       .catch(fail(done, 'A message sending failed when it was expected to complete.'));
   });
 
-  it('rejects with `ResponseProcessingError` when response body parsing fails', done => {
+  it('rejects with `SpineError` when response body parsing fails', done => {
     const malformedResponse = Given.responseWithMalformedBody();
     httpClientBehavior.resolves(malformedResponse);
 
     sendCommand()
       .then(fail(done, 'A message sending was completed when it was expected to fail.'))
       .catch(error => {
-        assert.ok(error instanceof ResponseProcessingError);
+        assert.ok(error instanceof SpineError);
         assert.ok(error.getCause() instanceof Error);
-        assert.equal(error.message, 'Failed to parse JSON');
+        assert.equal(error.message, 'Failed to parse response JSON');
         done();
       });
   });
