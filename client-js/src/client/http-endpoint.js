@@ -288,7 +288,7 @@ export class HttpEndpoint extends Endpoint {
   static _parseJson(response) {
    return response.json()
             .then(json => Promise.resolve(json))
-            .catch(error => Promise.reject(new ResponseProcessingError(error)));
+            .catch(error => Promise.reject(new ResponseProcessingError(error.message, error)));
   }
 
   /**

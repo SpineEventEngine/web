@@ -27,7 +27,7 @@ export class SpineError extends Error {
 
   /**
    * @param {!string} message the human-readable error message
-   * @param {*} cause         the reason why this error occurred
+   * @param {*=} cause        the reason why this error occurred
    */
   constructor(message, cause) {
     super(message);
@@ -103,10 +103,11 @@ export class InternalServerError extends ServerError {
 export class ResponseProcessingError extends ServerError {
 
   /**
-   * @param {?Error} cause the reason why this error occurred
+   * @param {!string} message the human-readable error message
+   * @param {Error=} cause the reason why this error occurred
    */
-  constructor(cause) {
-    super(cause.message || cause, cause);
+  constructor(message, cause) {
+    super(message, cause);
   }
 }
 
