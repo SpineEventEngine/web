@@ -23,7 +23,7 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseClient} from './firebase-client';
 import {HttpClient} from './http-client';
 import {BackendClient} from './backend-client';
-import {Errors} from './errors';
+import {errors} from './errors';
 
 /**
  * The object which represents the public API of the `client-js` module.
@@ -38,7 +38,7 @@ import {Errors} from './errors';
  *   TypeUrl: TypeUrl,
  *   TypedMessage: TypedMessage,
  *   Type: Type,
- *   Errors: Errors
+ *   errors: Errors
  * }}
  */
 export const client = {
@@ -49,5 +49,5 @@ export const client = {
   TypeUrl,
   TypedMessage,
   Type,
-  Errors,
+  errors,
 };

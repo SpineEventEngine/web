@@ -19,7 +19,10 @@
  */
 
 /**
-* An error which occurs when sending off a request to Spine server endpoint.
+ * The base `spine-web-client` error type. This error type is only used directly when a
+ * more appropriate category is not defined for the offending error.
+ *
+ * @extends Error
 */
 export class SpineError extends Error {
 
@@ -30,11 +33,14 @@ export class SpineError extends Error {
   constructor(message, cause) {
     super(message);
     this.name = this.constructor.name;
-    this.cause = cause;
+    this._cause = cause;
   }
 
+  /**
+   * @return {*|undefined} The cause of this error, if available.
+   */
   getCause() {
-    return this.cause;
+    return this._cause;
   }
 }
 
@@ -42,8 +48,8 @@ export class SpineError extends Error {
  * An error which occurs when sending off a request to Spine server endpoint fails due to the
  * connection problems.
  *
- * It may be caused by an incorrect server address, lack of network connectivity and situations
- * in which the response to the sent request is not received.
+ * Can be caused by an incorrect server address, lack of network connectivity or
+ * if the response is not received from the server.
  *
  * @extends SpineError
  */
@@ -61,8 +67,6 @@ export class ConnectionError extends SpineError {
  * An error which occurs when sending off a request to Spine server endpoint results
  * with a response with `5xx` status code.
  *
- * Indicates an unhandled exception was thrown upon the request processing.
- *
  * @extends SpineError
  */
 export class ServerError extends SpineError {
@@ -76,8 +80,6 @@ export class ServerError extends SpineError {
 }
 
 /**
- * An error indicating an invalid client behaviour.
- *
  * An error which occurs when sending off a request to Spine server endpoint results
  * with a response with `4xx` status code.
  *
@@ -95,53 +97,86 @@ export class ClientError extends SpineError {
 }
 
 /**
- * An error which occurs when sending off a command to Spine server endpoint results
- * with a response which indicates that a command message was rejected further processing
- * (e.g. because of a validation error).
+ * An error which occurs when sending off a command to Spine server endpoint.
  *
  * @extends SpineError
  */
 export class CommandHandlingError extends SpineError {
 
   /**
-   * @param {spine.base.Error} error the technical error occurred upon receiving the request and
-   *                                 no further processing would occur.
+   * @param {!Error} error the reason why this error occurred
    */
   constructor(error) {
     super(error.message, error);
   }
 
   /**
-   * Returns the type of {@code spine.base.Error}.
+   * Returns the type of a cause error if it is {@code spine.base.Error} kind.
    *
-   * @return {string}
+   * @return {string|undefined}
    */
   type() {
     return this.getCause().type;
   }
 
   /**
-   * Returns the code of {@code spine.base.Error}.
+   * Returns the code of a cause error if it is {@code spine.base.Error} kind.
    *
-   * @return {number}
+   * @return {number|undefined}
    */
   code() {
     return this.getCause().code;
   }
 
   /**
-   * Returns an optional validation error object error indicating that a
-   * message sent to the server did not pass validation.
+   * Returns `true` if the command wasn't accepted by the server; returns `false`
+   * if this is not guaranteed.
    *
-   * @return {?spine.validate.ValidationError}
+   * @return {boolean}
    */
-  validationError() {
-    return this.getCause().validationError;
+  assureCommandNeglected() {
+    return this.getCause() instanceof ClientError;
   }
 }
 
 /**
- * Typedef representing the type union of `client-js` module errors.
+ * An error which occurs when sending off a command to Spine server endpoint results
+ * with a response indicating that a command message was rejected further processing
+ * because of a validation error.
+ *
+ * @extends CommandHandlingError
+ */
+export class CommandValidationError extends CommandHandlingError {
+
+  /**
+   * @param {!spine.base.Error} error the command validation error
+   */
+  constructor(error) {
+    super(error);
+  }
+
+  /**
+   * @return {spine.validate.ValidationError} command validation error
+   */
+  validationError() {
+    return this.getCause().validationError;
+  }
+
+  /**
+   * Returns `true`.
+   *
+   * The type of this error guaranties that the command wasn't accepted by the server.
+   *
+   * @return {boolean}
+   * @override
+   */
+  assureCommandNeglected() {
+    return true;
+  }
+}
+
+/**
+ * Typedef representing the type union of `spine-web-client` module errors.
  *
  * @typedef {Object} Errors
  *
@@ -150,17 +185,24 @@ export class CommandHandlingError extends SpineError {
  * @property {ServerError} ServerError
  * @property {ClientError} ClientError
  * @property {CommandHandlingError} CommandHandlingError
+ * @property {CommandValidationError} CommandValidationError
  */
 
 /**
- * The object which represents the type union of `client-js` module errors.
+ * All of `spine-web-client` errors gathered in a single namespace.
+ *
+ * These errors can be checked using `instanceof`, but beware the order of subsequent
+ * checks, because the errors are arranged in a hierarchy.
+ *
+ * Base error class for all errors thrown by `spine-web-client` is `SpineError`.
  *
  * @type {Errors}
  */
-export const Errors = {
-   SpineError,
-   ConnectionError,
-   ServerError,
-   ClientError,
-   CommandHandlingError,
+export const errors = {
+  SpineError,
+  ConnectionError,
+  ServerError,
+  ClientError,
+  CommandHandlingError,
+  CommandValidationError,
 };

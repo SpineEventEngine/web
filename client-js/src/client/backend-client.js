@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {SpineError, CommandHandlingError} from './errors';
+import {SpineError, CommandHandlingError, CommandValidationError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -295,7 +295,7 @@ export class BackendClient {
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
-   * @param {?consumerCallback<SpineError>} errorCallback
+   * @param {?consumerCallback<CommandHandlingError>} errorCallback
    *        a callback receiving the errors executed if an error occurred when sending command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
@@ -308,11 +308,14 @@ export class BackendClient {
         if (status.hasOwnProperty('ok')) {
           acknowledgedCallback();
         } else if (status.hasOwnProperty('error')) {
-          errorCallback(new CommandHandlingError(status.error));
+          errorCallback(status.error.hasOwnProperty('validationError')
+              ? new CommandValidationError(status.error)
+              : new CommandHandlingError(status.error));
         } else if (status.hasOwnProperty('rejection')) {
           rejectionCallback(status.rejection);
         }
-      }, errorCallback);
+      })
+      .catch(error => errorCallback(new CommandHandlingError(error)));
   }
 
   /**
