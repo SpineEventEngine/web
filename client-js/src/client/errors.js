@@ -23,7 +23,7 @@
 *
 * @abstract
 */
-export class SpineWebError extends Error {
+export class SpineError extends Error {
 
   /**
    * @param {!string} message the human-readable error message
@@ -46,9 +46,9 @@ export class SpineWebError extends Error {
  *
  * It may be caused by an incorrect server address or lack of network connectivity.
  *
- * @extends SpineWebError
+ * @extends SpineError
  */
-export class ConnectionError extends SpineWebError {
+export class ConnectionError extends SpineError {
 
   /**
    * @param {!Error} error the error caught from {@code fetch} invocation
@@ -61,19 +61,19 @@ export class ConnectionError extends SpineWebError {
 /**
  * An abstract error indicating an invalid server behaviour.
  *
- * @extends SpineWebError
+ * @extends SpineError
  * @abstract
  */
-export class ServerError extends SpineWebError {
+export class ServerError extends SpineError {
 }
 
 /**
  * An abstract error indicating an invalid client behaviour.
  *
- * @extends SpineWebError
+ * @extends SpineError
  * @abstract
  */
-export class ClientError extends SpineWebError {
+export class ClientError extends SpineError {
 }
 
 /**
@@ -176,7 +176,7 @@ export class CommandProcessingError extends ClientError {
  *
  * @typedef {Object} Errors
  *
- * @property {SpineWebError} SpineWebError
+ * @property {SpineError} SpineError
  * @property {ConnectionError} ConnectionError
  * @property {ClientError} ClientError
  * @property {ServerError} ServerError
@@ -192,7 +192,7 @@ export class CommandProcessingError extends ClientError {
  * @type {Errors}
  */
 export const Errors = {
-   SpineWebError,
+   SpineError,
    ConnectionError,
    ClientError,
    ServerError,

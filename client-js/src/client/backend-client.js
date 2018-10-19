@@ -23,7 +23,7 @@
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
-import {SpineWebError, CommandProcessingError, ResponseProcessingError} from './errors';
+import {SpineError, CommandProcessingError, ResponseProcessingError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -150,7 +150,7 @@ class Fetch {
    *   complete() { ... }
    * })
    *
-   * @return {Observable<Object, SpineWebError>} an observable retrieving values one at a time.
+   * @return {Observable<Object, SpineError>} an observable retrieving values one at a time.
    * @abstract
    */
   oneByOne() {
@@ -165,7 +165,7 @@ class Fetch {
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
    * @return {Promise<Object[]>} a promise to be fulfilled with an array of entities matching query
-   *                             or to be rejected with a `SpineWebError`
+   *                             or to be rejected with a `SpineError`
    * @abstract
    */
   atOnce() {
@@ -249,7 +249,7 @@ export class BackendClient {
    * @param {!TypedMessage} id an ID of the target entity
    * @param {!consumerCallback<Object>} dataCallback
    *        a callback receiving a single data item as a JS object
-   * @param {?consumerCallback<SpineWebError>} errorCallback
+   * @param {?consumerCallback<SpineError>} errorCallback
    *        a callback receiving an error
    *
    * @template <T>
@@ -295,7 +295,7 @@ export class BackendClient {
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
-   * @param {?consumerCallback<SpineWebError>} errorCallback
+   * @param {?consumerCallback<SpineError>} errorCallback
    *        a callback receiving the errors executed if an error occurred when sending command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
@@ -442,7 +442,7 @@ class FirebaseFetch extends Fetch {
    * Executes a request to fetch many values from Firebase one-by-one.
    *
    * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                             that be rejected with an `SpineWebError`
+   *                             that be rejected with an `SpineError`
    */
   _fetchManyOneByOne() {
     return new Observable(observer => {
@@ -504,7 +504,7 @@ class FirebaseFetch extends Fetch {
    * Executes a request to fetch many values from Firebase as an array of objects.
    *
    * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                             that be rejected with an `SpineWebError`
+   *                             that be rejected with an `SpineError`
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
