@@ -17,7 +17,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import {Error as SpineBaseError} from 'spine-web-client-proto/spine/base/error_pb';
+import 'spine-web-client-proto/spine/base/error_pb';
+const SpineBaseError = proto.spine.base.Error;
 
 /**
  * The base `spine-web-client` error type. This error type is only used directly when a
@@ -105,35 +106,19 @@ export class ClientError extends SpineError {
 export class CommandHandlingError extends SpineError {
 
   /**
+   * @param {!string} message the human-readable error message
    * @param {!Error|SpineError|SpineBaseError} error the reason why this error occurred
    */
-  constructor(error) {
-    super(error.message, error);
-  }
-
-  /**
-   * Returns the type of a `SpineBaseError`.
-   *
-   * @return {string|undefined}
-   */
-  type() {
-    return this.getCause().getType();
-  }
-
-  /**
-   * Returns the code of a cause error if it is `SpineBaseError` kind.
-   *
-   * @return {number|undefined}
-   */
-  code() {
-    return this.getCause().getCode();
+  constructor(message, error) {
+    super(message, error);
   }
 
   /**
    * Returns `true` if the command wasn't accepted by the server; returns `false`
    * if this is not guaranteed.
    *
-   * A command is assumed neglected if it is caused by the `ClientError` or the `SpineBaseError`.
+   * A command is assumed neglected if this error is caused by the `ClientError`
+   * or the `SpineBaseError`.
    *
    * @return {boolean}
    */
@@ -153,10 +138,11 @@ export class CommandHandlingError extends SpineError {
 export class CommandValidationError extends CommandHandlingError {
 
   /**
+   * @param {!string} message the human-readable error message
    * @param {!SpineBaseError} error the command validation error
    */
-  constructor(error) {
-    super(error);
+  constructor(message, error) {
+    super(message, error);
   }
 
   /**

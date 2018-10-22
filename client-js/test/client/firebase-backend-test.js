@@ -218,10 +218,13 @@ describe('FirebaseBackendClient', function () {
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
         assert.ok(error instanceof CommandValidationError);
-        assert.equal(error.code(), 2);
-        assert.equal(error.type(), 'spine.core.CommandValidationError');
         assert.ok(error.validationError());
         assert.ok(error.assureCommandNeglected());
+
+        const cause = error.getCause();
+        assert.ok(cause);
+        assert.equal(cause.getCode(), 2);
+        assert.equal(cause.getType(), 'spine.core.CommandValidationError');
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));

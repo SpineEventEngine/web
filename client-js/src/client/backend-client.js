@@ -318,9 +318,10 @@ export class BackendClient {
             break;
           case Status.StatusCase.ERROR:
             const error = responseStatusProto.getError();
+            const message = error.getMessage();
             errorCallback(error.hasValidationError()
-                ? new CommandValidationError(error)
-                : new CommandHandlingError(error));
+                ? new CommandValidationError(message, error)
+                : new CommandHandlingError(message, error));
             break;
           case Status.StatusCase.REJECTION:
             rejectionCallback(responseStatusProto.getRejection());
@@ -329,7 +330,7 @@ export class BackendClient {
             errorCallback(new SpineError(`Unknown response status case ${responseStatusCase}`))
         }
       })
-      .catch(error => errorCallback(new CommandHandlingError(error)));
+      .catch(error => errorCallback(new CommandHandlingError(error.message, error)));
   }
 
   /**
