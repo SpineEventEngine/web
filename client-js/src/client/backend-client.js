@@ -32,6 +32,7 @@ import {
   Subscription as SpineSubscription,
   SubscriptionId
 } from 'spine-web-client-proto/spine/client/subscription_pb';
+import {Status} from 'spine-web-client-proto/spine/core/response_pb';
 
 /**
  * A utility which converts the JS object to its Protobuf counterpart.
@@ -277,19 +278,16 @@ export class BackendClient {
    * Invocation of the `acknowledgedCallback` and the `errorCallback` are mutually exclusive.
    *
    * If the command sending fails, the respective error is passed to the `errorCallback`. This error is
-   * always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method
-   * and can be the type of:
+   * always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method and can
+   * be represented with the following types:
    *
    *  - `ConnectionError`  – if the connection error occurs;
-   *  - `ServerError`      – if the internal server error occurred upon the command processing;
-   *  - `ClientError`      – if the request can't be processed by the server (e.g. command message
-   *                         can`t be parsed from the request);
-   *  - `spine.base.Error` – if the command message type is unsupported by the server or the command
-   *                         recipient is missing;
-   *  - `SpineError`       – if parsing of the response failed;
-   *  - `Error`            - in case of unhandled error;
+   *  - `ClientError`      – if the server responds with `4xx` HTTP status code;
+   *  - `ServerError`      – if the server responds with `5xx` HTTP status code;
+   *  - `spine.base.Error` – if the command message can't be processed by the server;
+   *  - `SpineError`       – if parsing of the response fails;
    *
-   * If the command sending fails due to command validation error, the error passed to the
+   * If the command sending fails due to a command validation error, an error passed to the
    * `errorCallback` is the type of `CommandValidationError` (inherited from `CommandHandlingError`).
    * The validation error can be retrieved by `validationError()` method.
    *
@@ -310,15 +308,25 @@ export class BackendClient {
     const command = this._requestFactory.command().create(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
-        const status = ack.status;
-        if (status.hasOwnProperty('ok')) {
-          acknowledgedCallback();
-        } else if (status.hasOwnProperty('error')) {
-          errorCallback(status.error.hasOwnProperty('validationError')
-              ? new CommandValidationError(status.error)
-              : new CommandHandlingError(status.error, true));
-        } else if (status.hasOwnProperty('rejection')) {
-          rejectionCallback(status.rejection);
+        const responseStatus = ack.status;
+        const responseStatusProto = Status.fromObject(responseStatus);
+        const responseStatusCase = responseStatusProto.getStatusCase();
+
+        switch (responseStatusCase) {
+          case Status.StatusCase.OK:
+            acknowledgedCallback();
+            break;
+          case Status.StatusCase.ERROR:
+            const error = responseStatusProto.getError();
+            errorCallback(error.hasValidationError()
+                ? new CommandValidationError(error)
+                : new CommandHandlingError(error));
+            break;
+          case Status.StatusCase.REJECTION:
+            rejectionCallback(responseStatusProto.getRejection());
+            break;
+          default:
+            errorCallback(new SpineError(`Unknown response status case ${responseStatusCase}`))
         }
       })
       .catch(error => errorCallback(new CommandHandlingError(error)));
