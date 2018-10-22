@@ -279,7 +279,7 @@ export class BackendClient {
    *
    * If the command sending fails, the respective error is passed to the `errorCallback`. This error is
    * always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method and can
-   * be represented with the following types:
+   * be represented with the following types of errors:
    *
    *  - `ConnectionError`  – if the connection error occurs;
    *  - `ClientError`      – if the server responds with `4xx` HTTP status code;
@@ -292,7 +292,7 @@ export class BackendClient {
    * The validation error can be retrieved by `validationError()` method.
    *
    * The occurrence of an error does not guarantee that the command is not accepted by the server
-   * for further processing. To ensure that, call the error `assureCommandNeglected()` method.
+   * for further processing. To verify this, call the error `assureCommandNeglected()` method.
    *
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} acknowledgedCallback
