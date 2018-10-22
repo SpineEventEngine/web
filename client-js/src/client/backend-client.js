@@ -327,7 +327,7 @@ export class BackendClient {
             rejectionCallback(responseStatusProto.getRejection());
             break;
           default:
-            errorCallback(new SpineError(`Unknown response status case ${responseStatusCase}`))
+            errorCallback(new SpineError(`Unknown response status case ${responseStatusCase}`));
         }
       })
       .catch(error => errorCallback(new CommandHandlingError(error.message, error)));

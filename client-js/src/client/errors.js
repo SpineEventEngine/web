@@ -18,6 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import 'spine-web-client-proto/spine/base/error_pb';
+// noinspection JSUnresolvedVariable
 const SpineBaseError = proto.spine.base.Error;
 
 /**
