@@ -34,6 +34,7 @@ import {BackendClient} from '../../src/client/backend-client';
 import {
  ServerError,
  CommandValidationError,
+ CommandHandlingError,
  ConnectionError
 } from '../../src/client/errors';
 import {fail} from './test-helpers';
@@ -200,8 +201,10 @@ describe('FirebaseBackendClient', function () {
       command,
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
-        assert.ok(error instanceof ConnectionError);
+        assert.ok(error instanceof CommandHandlingError);
         assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
+        const connectionError = error.getCause();
+        assert.ok(connectionError instanceof ConnectionError);
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
@@ -218,6 +221,7 @@ describe('FirebaseBackendClient', function () {
         assert.equal(error.code(), 2);
         assert.equal(error.type(), 'spine.core.CommandValidationError');
         assert.ok(error.validationError());
+        assert.ok(error.assureCommandNeglected());
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
