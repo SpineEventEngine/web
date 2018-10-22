@@ -104,10 +104,13 @@ export class ClientError extends SpineError {
 export class CommandHandlingError extends SpineError {
 
   /**
-   * @param {!Error} error the reason why this error occurred
+   * @param {!Error|SpineError|spine.base.Error} error the reason why this error occurred
+   * @param {boolean=} commandNeglected `true` if the command was neglected by the server;
+   *                                    `false` if not guaranteed.
    */
-  constructor(error) {
+  constructor(error, commandNeglected = false) {
     super(error.message, error);
+    this._commandNeglected = commandNeglected;
   }
 
   /**
@@ -132,10 +135,13 @@ export class CommandHandlingError extends SpineError {
    * Returns `true` if the command wasn't accepted by the server; returns `false`
    * if this is not guaranteed.
    *
+   * The command is assumed neglected if the its caused by `ClientError` or `spine.base.Error`
+   * retrieved from the succeeded response.
+   *
    * @return {boolean}
    */
   assureCommandNeglected() {
-    return this.getCause() instanceof ClientError;
+    return this._commandNeglected || this.getCause() instanceof ClientError;
   }
 }
 
@@ -149,10 +155,12 @@ export class CommandHandlingError extends SpineError {
 export class CommandValidationError extends CommandHandlingError {
 
   /**
+   * The type of this error guaranties that the command wasn't accepted by the server.
+   *
    * @param {!spine.base.Error} error the command validation error
    */
   constructor(error) {
-    super(error);
+    super(error, true);
   }
 
   /**
@@ -160,18 +168,6 @@ export class CommandValidationError extends CommandHandlingError {
    */
   validationError() {
     return this.getCause().validationError;
-  }
-
-  /**
-   * Returns `true`.
-   *
-   * The type of this error guaranties that the command wasn't accepted by the server.
-   *
-   * @return {boolean}
-   * @override
-   */
-  assureCommandNeglected() {
-    return true;
   }
 }
 

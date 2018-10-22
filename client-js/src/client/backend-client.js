@@ -270,27 +270,31 @@ export class BackendClient {
    * Sends the provided command to the server.
    *
    * After sending the command to the server the following scenarios are possible:
-   * <ul>
-   *     <li>the `acknowledgedCallback` is called if the command is acknowledged for further processing
-   *     <li>the `errorCallback` is called if sending of the command failed
-   * </ul>
+   *
+   *  - the `acknowledgedCallback` is called if the command is acknowledged for further processing
+   *  - the `errorCallback` is called if sending of the command failed
    *
    * Invocation of the `acknowledgedCallback` and the `errorCallback` are mutually exclusive.
    *
-   * The reason of command sending failure can be recognized by the type of error passed to the `errorCallback`
-   * as follows:
-   *  - `ConnectionError`         – if the connection error occurs;
-   *  - `ServerError`             – if the internal server error occurred upon the command processing;
-   *  - `ClientError`             – if the request can't be processed by the server (e.g. command message
-   *                              can`t be parsed from the request);
-   *  - `CommandHandlingError`   – if the command message type is unsupported by the server or the command
-   *                              recipient is missing;
-   *  - `SpineError`              – if parsing of the response failed;
+   * If the command sending fails, the respective error is passed to the `errorCallback`. This error is
+   * always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method
+   * and can be the type of:
    *
-   * The `ClientError` and the `CommandHandlingError` occurrence guaranties that the command
-   * wasn't accepted by the server.
+   *  - `ConnectionError`  – if the connection error occurs;
+   *  - `ServerError`      – if the internal server error occurred upon the command processing;
+   *  - `ClientError`      – if the request can't be processed by the server (e.g. command message
+   *                         can`t be parsed from the request);
+   *  - `spine.base.Error` – if the command message type is unsupported by the server or the command
+   *                         recipient is missing;
+   *  - `SpineError`       – if parsing of the response failed;
+   *  - `Error`            - in case of unhandled error;
    *
-   * Other error types do not indicate if the command was handled by the backend successfully or not.
+   * If the command sending fails due to command validation error, the error passed to the
+   * `errorCallback` is the type of `CommandValidationError` (inherited from `CommandHandlingError`).
+   * The validation error can be retrieved by `validationError()` method.
+   *
+   * The occurrence of an error does not guarantee that the command is not accepted by the server
+   * for further processing. To ensure that, call the error `assureCommandNeglected()` method.
    *
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} acknowledgedCallback
@@ -299,6 +303,8 @@ export class BackendClient {
    *        a callback receiving the errors executed if an error occurred when sending command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
+   * @see CommandHandlingError
+   * @see CommandValidationError
    */
   sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
     const command = this._requestFactory.command().create(commandMessage);
@@ -310,7 +316,7 @@ export class BackendClient {
         } else if (status.hasOwnProperty('error')) {
           errorCallback(status.error.hasOwnProperty('validationError')
               ? new CommandValidationError(status.error)
-              : new CommandHandlingError(status.error));
+              : new CommandHandlingError(status.error, true));
         } else if (status.hasOwnProperty('rejection')) {
           rejectionCallback(status.rejection);
         }
