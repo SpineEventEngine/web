@@ -31,16 +31,13 @@ import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/
 import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
 import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
-
-function fail(done, message) {
-  return error => {
-    if (message) {
-      done(new Error(`Test failed. Cause: ${message}`));
-    } else {
-      done(new Error(`Test failed. Cause: ${error ? JSON.stringify(error) : 'not identified'}`));
-    }
-  };
-}
+import {
+ ServerError,
+ CommandValidationError,
+ CommandHandlingError,
+ ConnectionError
+} from '../../src/client/errors';
+import {fail} from './test-helpers';
 
 class Given {
 
@@ -48,9 +45,9 @@ class Given {
     throw new Error('A utility Given class cannot be instantiated.');
   }
 
-  static backendClient() {
+  static backendClient(endpoint = 'https://spine-dev.appspot.com') {
     return BackendClient.usingFirebase({
-      atEndpoint: 'https://spine-dev.appspot.com',
+      atEndpoint: endpoint,
       withFirebaseStorage: devFirebaseApp,
       forActor: 'web-test-actor'
     });
@@ -191,16 +188,43 @@ describe('FirebaseBackendClient', function () {
     }, fail(done), fail(done));
   });
 
-  it('fails a malformed command', done => {
+  it('fails command sending when wrong server endpoint specified', done => {
+    const fakeBaseUrl = 'https://malformed-server-endpoint.com';
+    const malformedBackendClient = Given.backendClient(fakeBaseUrl);
+    const command = Given.createTaskCommand({
+      withIdPrefix: 'spine-web-test-send-command',
+      named: 'Implement Spine Web JS client tests',
+      describedAs: 'Spine Web need integration tests'
+    });
+
+    malformedBackendClient.sendCommand(
+      command,
+      fail(done, 'A command was acknowledged when it was expected to fail.'),
+      error => {
+        assert.ok(error instanceof CommandHandlingError);
+        assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
+        const connectionError = error.getCause();
+        assert.ok(connectionError instanceof ConnectionError);
+        done();
+      },
+      fail(done, 'A command was rejected when an error was expected.'));
+  });
+
+  it('fails with `CommandValidationError` for invalid command', done => {
     const command = Given.createTaskCommand({withId: null});
 
     backendClient.sendCommand(
       command,
-      fail(done, 'A command was successful when it was expected to fail.'),
+      fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
-        assert.equal(error.code, 2);
-        assert.equal(error.type, 'spine.core.CommandValidationError');
-        assert.ok(error.validationError);
+        assert.ok(error instanceof CommandValidationError);
+        assert.ok(error.validationError());
+        assert.ok(error.assuresCommandNeglected());
+
+        const cause = error.getCause();
+        assert.ok(cause);
+        assert.equal(cause.getCode(), 2);
+        assert.equal(cause.getType(), 'spine.core.CommandValidationError');
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
@@ -216,7 +240,7 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
         next(data) {
-          // Ordering is not guaranteed by fetch and 
+          // Ordering is not guaranteed by fetch and
           // the list of entities cannot be cleaned for tests,
           // thus at least one of entities should match the target one.
           itemFound = data.getId().getValue() === taskId.getValue() || itemFound;
@@ -271,8 +295,8 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
-          assert.ok(!error.isClient());
-          assert.ok(error.isServer());
+          assert.ok(error instanceof ServerError);
+          assert.equal(error.message, 'Internal Server Error');
           done();
         });
 
@@ -384,7 +408,7 @@ describe('FirebaseBackendClient', function () {
 
     // Rename created tasks.
     Promise.all(createPromises).then(() => {
-      // Rename tasks in a timeout after they are created to 
+      // Rename tasks in a timeout after they are created to
       // allow for added subscriptions to be updated first.
       const renameTimeout = new Duration({seconds: 30});
       setTimeout(() => {

@@ -22,7 +22,8 @@
 
 import {Observable, Subscription} from './observable';
 import {TypedMessage} from './typed-message';
-import {EndpointError, HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {SpineError, CommandHandlingError, CommandValidationError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -31,6 +32,7 @@ import {
   Subscription as SpineSubscription,
   SubscriptionId
 } from 'spine-web-client-proto/spine/client/subscription_pb';
+import {Status} from 'spine-web-client-proto/spine/core/response_pb';
 
 /**
  * A utility which converts the JS object to its Protobuf counterpart.
@@ -149,7 +151,7 @@ class Fetch {
    *   complete() { ... }
    * })
    *
-   * @return {Observable<Object, EndpointError>} an observable retrieving values one at a time.
+   * @return {Observable<Object, SpineError>} an observable retrieving values one at a time.
    * @abstract
    */
   oneByOne() {
@@ -163,8 +165,8 @@ class Fetch {
    * // To query all entities of developer-defined Task type at once:
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
-   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                              that be rejected with an `EndpointError`
+   * @return {Promise<Object[]>} a promise to be fulfilled with an array of entities matching query
+   *                             or to be rejected with a `SpineError`
    * @abstract
    */
   atOnce() {
@@ -248,7 +250,7 @@ export class BackendClient {
    * @param {!TypedMessage} id an ID of the target entity
    * @param {!consumerCallback<Object>} dataCallback
    *        a callback receiving a single data item as a JS object
-   * @param {?consumerCallback<EndpointError>} errorCallback
+   * @param {?consumerCallback<SpineError>} errorCallback
    *        a callback receiving an error
    *
    * @template <T>
@@ -268,27 +270,67 @@ export class BackendClient {
   /**
    * Sends the provided command to the server.
    *
+   * After sending the command to the server the following scenarios are possible:
+   *
+   *  - the `acknowledgedCallback` is called if the command is acknowledged for further processing
+   *  - the `errorCallback` is called if sending of the command failed
+   *
+   * Invocation of the `acknowledgedCallback` and the `errorCallback` are mutually exclusive.
+   *
+   * If the command sending fails, the respective error is passed to the `errorCallback`. This error is
+   * always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method and can
+   * be represented with the following types of errors:
+   *
+   *  - `ConnectionError`  – if the connection error occurs;
+   *  - `ClientError`      – if the server responds with `4xx` HTTP status code;
+   *  - `ServerError`      – if the server responds with `5xx` HTTP status code;
+   *  - `spine.base.Error` – if the command message can't be processed by the server;
+   *  - `SpineError`       – if parsing of the response fails;
+   *
+   * If the command sending fails due to a command validation error, an error passed to the
+   * `errorCallback` is the type of `CommandValidationError` (inherited from `CommandHandlingError`).
+   * The validation error can be retrieved by `validationError()` method.
+   *
+   * The occurrence of an error does not guarantee that the command is not accepted by the server
+   * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
+   *
    * @param {!TypedMessage} commandMessage a typed command message
-   * @param {!voidCallback} successCallback
+   * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
-   * @param {?consumerCallback<spine.base.Error>} errorCallback
-   *        a callback receiving the errors executed if an error occured when processing command
+   * @param {?consumerCallback<CommandHandlingError>} errorCallback
+   *        a callback receiving the errors executed if an error occurred when sending command
    * @param {?consumerCallback<Rejection>} rejectionCallback
    *        a callback executed if the command was rejected by Spine server
+   * @see CommandHandlingError
+   * @see CommandValidationError
    */
-  sendCommand(commandMessage, successCallback, errorCallback, rejectionCallback) {
+  sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
     const command = this._requestFactory.command().create(commandMessage);
     this._endpoint.command(command)
       .then(ack => {
-        const status = ack.status;
-        if (status.hasOwnProperty('ok')) {
-          successCallback();
-        } else if (status.hasOwnProperty('error')) {
-          errorCallback(status.error);
-        } else if (status.hasOwnProperty('rejection')) {
-          rejectionCallback(status.rejection);
+        const responseStatus = ack.status;
+        const responseStatusProto = Status.fromObject(responseStatus);
+        const responseStatusCase = responseStatusProto.getStatusCase();
+
+        switch (responseStatusCase) {
+          case Status.StatusCase.OK:
+            acknowledgedCallback();
+            break;
+          case Status.StatusCase.ERROR:
+            const error = responseStatusProto.getError();
+            const message = error.getMessage();
+            errorCallback(error.hasValidationError()
+                ? new CommandValidationError(message, error)
+                : new CommandHandlingError(message, error));
+            break;
+          case Status.StatusCase.REJECTION:
+            rejectionCallback(responseStatusProto.getRejection());
+            break;
+          default:
+            errorCallback(new SpineError(`Unknown response status case ${responseStatusCase}`));
         }
-      }, errorCallback);
+      })
+      .catch(error => errorCallback(new CommandHandlingError(error.message, error)));
   }
 
   /**
@@ -418,7 +460,7 @@ class FirebaseFetch extends Fetch {
    * Executes a request to fetch many values from Firebase one-by-one.
    *
    * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                              that be rejected with an `EndpointError`
+   *                             that be rejected with an `SpineError`
    */
   _fetchManyOneByOne() {
     return new Observable(observer => {
@@ -433,7 +475,7 @@ class FirebaseFetch extends Fetch {
           if (typeof count === 'undefined') {
             count = 0;
           } else if (isNaN(count)) {
-            throw EndpointError.serverError('Unexpected format of `count`');
+            throw new SpineError('Unexpected format of `count`');
           }
           promisedCount = parseInt(count);
           return path;
@@ -480,7 +522,7 @@ class FirebaseFetch extends Fetch {
    * Executes a request to fetch many values from Firebase as an array of objects.
    *
    * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                              that be rejected with an `EndpointError`
+   *                             that be rejected with an `SpineError`
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {

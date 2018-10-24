@@ -23,13 +23,23 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseClient} from './firebase-client';
 import {HttpClient} from './http-client';
 import {BackendClient} from './backend-client';
+import {errors} from './errors';
 
 /**
  * The object which represents the public API of the `client-js` module.
  *
  * This object is exported from the artifact built by webpack.
  *
- * @type {{BackendClient: BackendClient, HttpClient: HttpClient, FirebaseClient: FirebaseClient, ActorRequestFactory: ActorRequestFactory}}
+ * @type {{
+ *   BackendClient: BackendClient,
+ *   HttpClient: HttpClient,
+ *   FirebaseClient: FirebaseClient,
+ *   ActorRequestFactory: ActorRequestFactory
+ *   TypeUrl: TypeUrl,
+ *   TypedMessage: TypedMessage,
+ *   Type: Type,
+ *   errors: Errors
+ * }}
  */
 export const client = {
   BackendClient,
@@ -39,4 +49,5 @@ export const client = {
   TypeUrl,
   TypedMessage,
   Type,
+  errors,
 };
