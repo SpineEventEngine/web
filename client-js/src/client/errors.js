@@ -19,6 +19,12 @@
  */
 import 'spine-web-client-proto/spine/base/error_pb';
 // noinspection JSUnresolvedVariable
+/**
+ * The class of errors that can be received from the server in response to the command sent.
+ *
+ * Imported from the global namespace to provide error instances type comparison
+ * using `instanceof` operator.
+ */
 const SpineBaseError = proto.spine.base.Error;
 
 /**
