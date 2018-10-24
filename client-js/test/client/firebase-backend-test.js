@@ -219,7 +219,7 @@ describe('FirebaseBackendClient', function () {
       error => {
         assert.ok(error instanceof CommandValidationError);
         assert.ok(error.validationError());
-        assert.ok(error.assureCommandNeglected());
+        assert.ok(error.assuresCommandNeglected());
 
         const cause = error.getCause();
         assert.ok(cause);

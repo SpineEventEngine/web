@@ -292,7 +292,7 @@ export class BackendClient {
    * The validation error can be retrieved by `validationError()` method.
    *
    * The occurrence of an error does not guarantee that the command is not accepted by the server
-   * for further processing. To verify this, call the error `assureCommandNeglected()` method.
+   * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
    *
    * @param {!TypedMessage} commandMessage a typed command message
    * @param {!voidCallback} acknowledgedCallback

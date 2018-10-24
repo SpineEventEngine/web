@@ -123,7 +123,7 @@ export class CommandHandlingError extends SpineError {
    *
    * @return {boolean}
    */
-  assureCommandNeglected() {
+  assuresCommandNeglected() {
     return this.getCause() instanceof SpineBaseError
            || this.getCause() instanceof ClientError;
   }
