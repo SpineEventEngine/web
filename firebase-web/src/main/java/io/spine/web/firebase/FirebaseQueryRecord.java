@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.appengine.api.ThreadManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
@@ -133,24 +132,16 @@ final class FirebaseQueryRecord {
     private void flushTo(DatabaseReference reference) {
         queryResponse.thenAccept(
                 response -> {
-                    Thread thread = ThreadManager.createThreadForCurrentRequest(() -> {
-                        try {
-                            mapMessagesToJson(response).forEach(json -> {
-                                try {
-                                    addTo(reference, json);
-                                } catch (IOException e) {
-                                    log().error("Exception during writing: " + e.getLocalizedMessage());
-                                }
-                            });
-                        } catch (Throwable e) {
-                            log().warn("Error when flushing query response: " + e.getLocalizedMessage());
-                        }
-                    });
                     try {
-                        thread.start();
-                        thread.join();
+                        mapMessagesToJson(response).forEach(json -> {
+                            try {
+                                addTo(reference, json);
+                            } catch (IOException e) {
+                                log().error("Exception during writing: " + e.getLocalizedMessage());
+                            }
+                        });
                     } catch (Throwable e) {
-                        log().error("Exception in starting/joining the thread: " + e.getLocalizedMessage());
+                        log().warn("Error when flushing query response: " + e.getLocalizedMessage());
                     }
                 }
         );

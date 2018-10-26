@@ -25,7 +25,6 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.util.IOUtils;
-import com.google.appengine.api.ThreadManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,13 +43,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.web.firebase.FirebaseRest.byteArrayContent;
 import static io.spine.web.firebase.FirebaseRest.getContent;
 import static io.spine.web.firebase.FirebaseRest.httpRequestFactory;
@@ -101,31 +98,23 @@ final class FirebaseSubscriptionRecord {
     @SuppressWarnings("Duplicates")
     private void flushNewTo(DatabaseReference reference) {
         queryResponse.thenAccept(response -> {
-            Thread thread = ThreadManager.createThreadForCurrentRequest(() -> {
-                try {
-                    List<String> newEntries = mapMessagesToJson(response).collect(toList());
-
-                    JsonObject jsonObject = new JsonObject();
-                    newEntries.forEach(entry -> put(entry, jsonObject));
-                    ByteArrayContent content = byteArrayContent(jsonObject);
-                    GenericUrl url = nodeUrl(reference);
-                    log().warn("Flushing new subscription content " + jsonObject.toString() + " to url " + url);
-                    HttpRequest request = httpRequestFactory().buildPutRequest(url, content);
-                    HttpResponse firebaseResponse = request.execute();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    IOUtils.copy(firebaseResponse.getContent(), outputStream);
-                    String firebaseResponseStr = outputStream.toString();
-                    log().warn("Firebase response to flushing new subscription: status - "
-                            + firebaseResponse.getStatusCode() + ", text: " + firebaseResponseStr);
-                } catch (Throwable e) {
-                    log().error("2: Exception when writing content of the new subscription: " + e.getLocalizedMessage());
-                }
-            });
             try {
-                thread.start();
-                thread.join();
+                List<String> newEntries = mapMessagesToJson(response).collect(toList());
+
+                JsonObject jsonObject = new JsonObject();
+                newEntries.forEach(entry -> put(entry, jsonObject));
+                ByteArrayContent content = byteArrayContent(jsonObject);
+                GenericUrl url = nodeUrl(reference);
+                log().warn("Flushing new subscription content " + jsonObject.toString() + " to url " + url);
+                HttpRequest request = httpRequestFactory().buildPutRequest(url, content);
+                HttpResponse firebaseResponse = request.execute();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                IOUtils.copy(firebaseResponse.getContent(), outputStream);
+                String firebaseResponseStr = outputStream.toString();
+                log().warn("Firebase response to flushing new subscription: status - "
+                        + firebaseResponse.getStatusCode() + ", text: " + firebaseResponseStr);
             } catch (Throwable e) {
-                log().error("Exception in starting/joining the thread: " + e.getLocalizedMessage());
+                log().error("2: Exception when writing content of the new subscription: " + e.getLocalizedMessage());
             }
         });
     }
@@ -160,38 +149,30 @@ final class FirebaseSubscriptionRecord {
     @SuppressWarnings("Duplicates")
     private void flushDiffTo(DatabaseReference reference) {
         queryResponse.thenAccept(response -> {
-            Thread thread = ThreadManager.createThreadForCurrentRequest(() -> {
-                try {
-                    List<String> newEntries = mapMessagesToJson(response).collect(toList());
-
-                    String restData = getContent(reference);
-                    if ("null".equals(restData)) {
-                        JsonObject jsonObject = new JsonObject();
-                        newEntries.forEach(entry -> put(entry, jsonObject));
-                        ByteArrayContent content = byteArrayContent(jsonObject);
-                        GenericUrl url = nodeUrl(reference);
-                        log().warn("Flushing kept up subscription content from scratch " + jsonObject.toString() + " to url " + url);
-                        HttpRequest request = httpRequestFactory().buildPutRequest(url, content);
-                        HttpResponse firebaseResponse = request.execute();
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        IOUtils.copy(firebaseResponse.getContent(), outputStream);
-                        String firebaseResponseStr = outputStream.toString();
-                        log().warn("Firebase response to flushing kept up subscription from scratch: status - "
-                                + firebaseResponse.getStatusCode() + ", text: " + firebaseResponseStr);
-                    } else {
-                        FirebaseSubscriptionDiff diff = computeDiff(newEntries, restData);
-                        updateWithDiff(reference, diff);
-                    }
-                } catch (Throwable e) {
-                    log().error("Exception when writing subscription content from scratch: "
-                            + e.getLocalizedMessage());
-                }
-            });
             try {
-                thread.start();
-                thread.join();
+                List<String> newEntries = mapMessagesToJson(response).collect(toList());
+
+                String restData = getContent(reference);
+                if ("null".equals(restData)) {
+                    JsonObject jsonObject = new JsonObject();
+                    newEntries.forEach(entry -> put(entry, jsonObject));
+                    ByteArrayContent content = byteArrayContent(jsonObject);
+                    GenericUrl url = nodeUrl(reference);
+                    log().warn("Flushing kept up subscription content from scratch " + jsonObject.toString() + " to url " + url);
+                    HttpRequest request = httpRequestFactory().buildPutRequest(url, content);
+                    HttpResponse firebaseResponse = request.execute();
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    IOUtils.copy(firebaseResponse.getContent(), outputStream);
+                    String firebaseResponseStr = outputStream.toString();
+                    log().warn("Firebase response to flushing kept up subscription from scratch: status - "
+                            + firebaseResponse.getStatusCode() + ", text: " + firebaseResponseStr);
+                } else {
+                    FirebaseSubscriptionDiff diff = computeDiff(newEntries, restData);
+                    updateWithDiff(reference, diff);
+                }
             } catch (Throwable e) {
-                log().error("Exception in starting/joining the thread: " + e.getLocalizedMessage());
+                log().error("Exception when writing subscription content from scratch: "
+                        + e.getLocalizedMessage());
             }
         });
     }

@@ -37,8 +37,6 @@ dependencies {
     compile 'com.google.http-client:google-http-client:1.26.0'
 
     implementation "io.spine:spine-client:$spineVersion"
-
-    implementation "com.google.appengine:appengine-api-1.0-sdk:1.9.67"
 }
 
 modelCompiler {
