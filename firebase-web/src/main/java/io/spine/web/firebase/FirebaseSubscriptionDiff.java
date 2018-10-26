@@ -22,14 +22,21 @@ package io.spine.web.firebase;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.MutableData;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.Entry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.ExistingEntry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.UpToDateEntry;
 import io.spine.web.firebase.FirebaseSubscriptionRecords.AddedRecord;
 import io.spine.web.firebase.FirebaseSubscriptionRecords.ChangedRecord;
 import io.spine.web.firebase.FirebaseSubscriptionRecords.RemovedRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.ADD;
@@ -89,6 +96,24 @@ final class FirebaseSubscriptionDiff {
                                             entriesToRemove(entryUpdates));
     }
 
+    static FirebaseSubscriptionDiff computeDiff(List<String> newEntries, String currentData) {
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonObject = jsonParser.parse(currentData).getAsJsonObject();
+        List<ExistingEntry> existingEntries = existingEntries(jsonObject.entrySet());
+        FirebaseSubscriptionEntriesMatcher matcher =
+                new FirebaseSubscriptionEntriesMatcher(existingEntries);
+        List<Entry> entryUpdates = matcher.match(upToDateEntries(newEntries));
+        return new FirebaseSubscriptionDiff(entriesToAdd(entryUpdates),
+                entriesToChange(entryUpdates),
+                entriesToRemove(entryUpdates));
+    }
+
+    private static List<ExistingEntry> existingEntries(Set<Map.Entry<String, JsonElement>> entries) {
+        return entries.parallelStream()
+                .map(ExistingEntry::fromJsonObjectEntry)
+                .collect(toList());
+    }
+
     private static List<ExistingEntry> existingEntries(Iterable<MutableData> entries) {
         return StreamSupport.stream(entries.spliterator(), true)
                             .map(ExistingEntry::fromFirebaseData)
@@ -120,5 +145,16 @@ final class FirebaseSubscriptionDiff {
                       .filter(entry -> entry.operation() == ADD)
                       .map(entry -> new AddedRecord(entry.data()))
                       .collect(toList());
+    }
+
+
+    private static Logger log() {
+        return FirebaseSubscriptionDiff.LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(FirebaseQueryRecord.class);
     }
 }

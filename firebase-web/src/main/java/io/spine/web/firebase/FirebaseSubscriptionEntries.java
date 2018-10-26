@@ -23,8 +23,10 @@ package io.spine.web.firebase;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.MutableData;
+import com.google.gson.JsonElement;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Data classes for processing of entries retrieved from both Spine and Firebase storage.
@@ -109,6 +111,10 @@ final class FirebaseSubscriptionEntries {
         static ExistingEntry fromFirebaseData(MutableData snapshot) {
             String value = (String) snapshot.getValue();
             return new ExistingEntry(snapshot.getKey(), value);
+        }
+
+        static ExistingEntry fromJsonObjectEntry(Map.Entry<String, JsonElement> entry) {
+            return new ExistingEntry(entry.getKey(), entry.getValue().getAsString());
         }
 
         /**

@@ -21,9 +21,12 @@
 package io.spine.web.command;
 
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -87,9 +90,12 @@ public final class FutureObserver<T> implements StreamObserver<T> {
      */
     @Override
     public void onNext(T value) {
+        log().warn("FutureObserver onNext()");
         if (future.isDone()) {
+            log().warn("Future is done, throwing...");
             throw newIllegalStateException("FutureObserver may only be used for UNARY calls.");
         } else {
+            log().warn("Completing future");
             future.complete(value);
         }
     }
@@ -99,6 +105,7 @@ public final class FutureObserver<T> implements StreamObserver<T> {
      */
     @Override
     public void onError(Throwable t) {
+        log().warn("FutureObserver onError()");
         future.obtrudeException(t);
     }
 
@@ -107,7 +114,9 @@ public final class FutureObserver<T> implements StreamObserver<T> {
      */
     @Override
     public void onCompleted() {
+        log().warn("FutureObserver onCompleted()");
         if (!future.isDone()) {
+            log().warn("FutureObserver completing underlying future");
             future.complete(defaultValue);
         }
     }
@@ -128,5 +137,16 @@ public final class FutureObserver<T> implements StreamObserver<T> {
      */
     public CompletableFuture<T> toFuture() {
         return future;
+    }
+
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(FutureObserver.class);
     }
 }

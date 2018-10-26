@@ -52,7 +52,7 @@ class Given {
     return BackendClient.usingFirebase({
       atEndpoint: 'https://spine-dev.appspot.com',
       withFirebaseStorage: devFirebaseApp,
-      forActor: 'web-test-actor'
+      forActor: 'web-test-actor-2'
     });
   }
 
@@ -216,7 +216,7 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
         next(data) {
-          // Ordering is not guaranteed by fetch and 
+          // Ordering is not guaranteed by fetch and
           // the list of entities cannot be cleaned for tests,
           // thus at least one of entities should match the target one.
           itemFound = data.getId().getValue() === taskId.getValue() || itemFound;
@@ -384,7 +384,7 @@ describe('FirebaseBackendClient', function () {
 
     // Rename created tasks.
     Promise.all(createPromises).then(() => {
-      // Rename tasks in a timeout after they are created to 
+      // Rename tasks in a timeout after they are created to
       // allow for added subscriptions to be updated first.
       const renameTimeout = new Duration({seconds: 30});
       setTimeout(() => {

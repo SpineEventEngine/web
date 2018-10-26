@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.core.ApiFuture;
+import com.google.appengine.api.ThreadManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
@@ -31,6 +31,7 @@ import io.spine.protobuf.AnyPacker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static io.spine.web.firebase.FirebaseRest.addOrUpdate;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
@@ -129,9 +131,28 @@ final class FirebaseQueryRecord {
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
     private void flushTo(DatabaseReference reference) {
-        queryResponse.thenAcceptAsync(
-                response -> mapMessagesToJson(response).map(json -> addTo(reference, json))
-                                                       .forEach(this::mute)
+        queryResponse.thenAccept(
+                response -> {
+                    Thread thread = ThreadManager.createThreadForCurrentRequest(() -> {
+                        try {
+                            mapMessagesToJson(response).forEach(json -> {
+                                try {
+                                    addTo(reference, json);
+                                } catch (IOException e) {
+                                    log().error("Exception during writing: " + e.getLocalizedMessage());
+                                }
+                            });
+                        } catch (Throwable e) {
+                            log().warn("Error when flushing query response: " + e.getLocalizedMessage());
+                        }
+                    });
+                    try {
+                        thread.start();
+                        thread.join();
+                    } catch (Throwable e) {
+                        log().error("Exception in starting/joining the thread: " + e.getLocalizedMessage());
+                    }
+                }
         );
     }
 
@@ -142,9 +163,8 @@ final class FirebaseQueryRecord {
      * @param item      a String value to add to an Array inside of Firebase
      * @return a {@code Future} of an item being added
      */
-    private static ApiFuture<Void> addTo(DatabaseReference reference, String item) {
-        return reference.push()
-                        .setValueAsync(item);
+    private static void addTo(DatabaseReference reference, String item) throws IOException {
+        addOrUpdate(reference, item);
     }
 
     /**
@@ -154,7 +174,13 @@ final class FirebaseQueryRecord {
         queryResponse.thenAccept(
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
-                    mute(reference.setValueAsync(jsonItems));
+                    jsonItems.forEach(item -> {
+                        try {
+                            addOrUpdate(reference, item);
+                        } catch (Throwable e) {
+                            log().error("Exception during flushing transactionally: " + e.getLocalizedMessage());
+                        }
+                    });
                 }
         );
     }
@@ -168,7 +194,7 @@ final class FirebaseQueryRecord {
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
     private static Stream<String> mapMessagesToJson(QueryResponse response) {
         return response.getMessagesList()
-                       .parallelStream()
+                       .stream()
                        .unordered()
                        .map(AnyPacker::<Message>unpack)
                        .map(Json::toCompactJson);

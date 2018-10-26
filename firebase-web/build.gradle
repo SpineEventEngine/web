@@ -34,8 +34,11 @@ dependencies {
         exclude group: 'com.google.guava', module: 'guava'
     }
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
+    compile 'com.google.http-client:google-http-client:1.26.0'
 
     implementation "io.spine:spine-client:$spineVersion"
+
+    implementation "com.google.appengine:appengine-api-1.0-sdk:1.9.67"
 }
 
 modelCompiler {

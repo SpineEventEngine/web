@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import io.spine.client.QueryResponse;
 import io.spine.web.firebase.given.Book;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +53,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Mykhailo Drachuk
  */
+@Disabled
 @DisplayName("FirebaseSubscriptionRecord should")
 class FirebaseSubscriptionRecordTest {
 

@@ -33,6 +33,7 @@ import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import io.spine.web.query.QueryProcessingResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -60,6 +61,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Dmytro Dashenkov
  */
+@Disabled
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
 

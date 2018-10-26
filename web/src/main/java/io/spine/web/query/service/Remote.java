@@ -23,6 +23,8 @@ package io.spine.web.query.service;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceBlockingStub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -46,11 +48,22 @@ final class Remote implements AsyncQueryService {
     @Override
     public CompletableFuture<QueryResponse> execute(Query query) {
         CompletableFuture<QueryResponse> result = supplyAsync(() -> service.read(query));
+        log().warn("Read in Remote AsyncQueryService");
         return result;
     }
 
     @Override
     public String toString() {
         return "AsyncQueryService.remote(...)";
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(Remote.class);
     }
 }
