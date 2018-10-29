@@ -25,6 +25,8 @@ import io.spine.web.firebase.FirebaseQueryServlet;
 
 import javax.servlet.annotation.WebServlet;
 
+import static io.spine.web.test.given.Application.databaseUrl;
+
 /**
  * The query side endpoint of the application.
  *
@@ -37,7 +39,7 @@ public class TestQueryServlet extends FirebaseQueryServlet {
     public TestQueryServlet() {
         super(FirebaseQueryBridge.newBuilder()
                                  .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
+                                 .setDatabaseUrl(databaseUrl())
                                  .build());
     }
 }

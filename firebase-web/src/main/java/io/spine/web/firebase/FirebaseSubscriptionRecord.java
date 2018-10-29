@@ -27,7 +27,6 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.util.IOUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
@@ -51,7 +50,7 @@ import static com.google.firebase.database.utilities.PushIdGenerator.generatePus
 import static io.spine.web.firebase.FirebaseRest.byteArrayContent;
 import static io.spine.web.firebase.FirebaseRest.getContent;
 import static io.spine.web.firebase.FirebaseRest.httpRequestFactory;
-import static io.spine.web.firebase.FirebaseRest.nodeUrl;
+import static io.spine.web.firebase.FirebaseRest.genericUrl;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static java.util.stream.Collectors.toList;
 
@@ -85,18 +84,20 @@ final class FirebaseSubscriptionRecord {
     /**
      * Writes this record to the given {@link FirebaseDatabase} as initial data, without checking
      * what is already stored in database at given location.
+     * @param databaseUrl
      */
-    void storeAsInitial(FirebaseDatabase database) {
-        DatabaseReference reference = path().reference(database);
-        flushNewTo(reference);
+    void storeAsInitial(String databaseUrl) {
+        String nodeUrl = path().join(databaseUrl);
+        flushNewTo(nodeUrl);
     }
 
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
      * adding array items to storage in a transaction.
+     * @param nodeUrl
      */
     @SuppressWarnings("Duplicates")
-    private void flushNewTo(DatabaseReference reference) {
+    private void flushNewTo(String nodeUrl) {
         queryResponse.thenAccept(response -> {
             try {
                 List<String> newEntries = mapMessagesToJson(response).collect(toList());
@@ -104,7 +105,7 @@ final class FirebaseSubscriptionRecord {
                 JsonObject jsonObject = new JsonObject();
                 newEntries.forEach(entry -> put(entry, jsonObject));
                 ByteArrayContent content = byteArrayContent(jsonObject);
-                GenericUrl url = nodeUrl(reference);
+                GenericUrl url = genericUrl(nodeUrl);
                 log().warn("Flushing new subscription content " + jsonObject.toString() + " to url " + url);
                 HttpRequest request = httpRequestFactory().buildPutRequest(url, content);
                 HttpResponse firebaseResponse = request.execute();
@@ -136,28 +137,30 @@ final class FirebaseSubscriptionRecord {
 
     /**
      * Stores the data to the Firebase, updating only the data that has changed.
+     * @param databaseUrl
      */
-    void storeAsUpdate(FirebaseDatabase database) {
-        DatabaseReference reference = path().reference(database);
-        flushDiffTo(reference);
+    void storeAsUpdate(String databaseUrl) {
+        String nodeUrl = path().join(databaseUrl);
+        flushDiffTo(nodeUrl);
     }
 
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
      * adding, removing and updating items already present in storage in a transaction.
+     * @param nodeUrl
      */
     @SuppressWarnings("Duplicates")
-    private void flushDiffTo(DatabaseReference reference) {
+    private void flushDiffTo(String nodeUrl) {
         queryResponse.thenAccept(response -> {
             try {
                 List<String> newEntries = mapMessagesToJson(response).collect(toList());
 
-                String restData = getContent(reference);
+                String restData = getContent(nodeUrl);
                 if ("null".equals(restData)) {
                     JsonObject jsonObject = new JsonObject();
                     newEntries.forEach(entry -> put(entry, jsonObject));
                     ByteArrayContent content = byteArrayContent(jsonObject);
-                    GenericUrl url = nodeUrl(reference);
+                    GenericUrl url = genericUrl(nodeUrl);
                     log().warn("Flushing kept up subscription content from scratch " + jsonObject.toString() + " to url " + url);
                     HttpRequest request = httpRequestFactory().buildPutRequest(url, content);
                     HttpResponse firebaseResponse = request.execute();
@@ -168,7 +171,7 @@ final class FirebaseSubscriptionRecord {
                             + firebaseResponse.getStatusCode() + ", text: " + firebaseResponseStr);
                 } else {
                     FirebaseSubscriptionDiff diff = computeDiff(newEntries, restData);
-                    updateWithDiff(reference, diff);
+                    updateWithDiff(nodeUrl, diff);
                 }
             } catch (Throwable e) {
                 log().error("Exception when writing subscription content from scratch: "
@@ -182,7 +185,7 @@ final class FirebaseSubscriptionRecord {
         jsonObject.addProperty(key, entry);
     }
 
-    private static void updateWithDiff(DatabaseReference reference, FirebaseSubscriptionDiff diff) {
+    private static void updateWithDiff(String nodeUrl, FirebaseSubscriptionDiff diff) {
         JsonObject jsonObject = new JsonObject();
 
         diff.changed()
@@ -204,7 +207,7 @@ final class FirebaseSubscriptionRecord {
 
         ByteArrayContent content = byteArrayContent(jsonObject);
         try {
-            GenericUrl url = nodeUrl(reference);
+            GenericUrl url = genericUrl(nodeUrl);
             log().warn("Flushing kept up subscription diff content " + jsonObject.toString() + " to url " + url);
             HttpRequest request = httpRequestFactory().buildPatchRequest(url, content);
             HttpResponse firebaseResponse = request.execute();

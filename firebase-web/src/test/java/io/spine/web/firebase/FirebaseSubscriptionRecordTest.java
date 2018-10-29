@@ -78,7 +78,7 @@ class FirebaseSubscriptionRecordTest {
 
         FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(fromString(dbPath),
                                                                            queryResponse);
-        record.storeAsInitial(db);
+        record.storeAsInitial("test");
 
         verify(mutableItem, times(2)).setValue(any());
         verify(mutableItem).setValue(toCompactJson(aliceInWonderland));
@@ -125,7 +125,7 @@ class FirebaseSubscriptionRecordTest {
 
         FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(fromString(dbPath),
                                                                            queryResponse);
-        record.storeAsUpdate(db);
+        record.storeAsUpdate("test");
 
         verify(mutableItem, times(3)).setValue(any());
         verify(mutableData, times(3)).child(anyString());

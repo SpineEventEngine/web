@@ -66,7 +66,7 @@ class FirebaseSubscriptionBridgeTest {
     void setUp() {
         this.firebaseDatabase = mock(FirebaseDatabase.class);
         QueryServiceImplBase queryService = mock(QueryServiceImplBase.class);
-        bridge = newBridge(firebaseDatabase, queryService);
+        bridge = newBridge("test", queryService);
         topicFactory = topicFactory();
     }
 

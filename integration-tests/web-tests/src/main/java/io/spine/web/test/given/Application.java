@@ -33,6 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class Application {
 
+    private static final String DATABASE_URL = "https://spine-dev.firebaseio.com/";
+
     private final CommandService commandService;
     private final QueryService queryService;
 
@@ -58,5 +60,9 @@ final class Application {
 
     QueryService getQueryService() {
         return queryService;
+    }
+
+    static String databaseUrl() {
+        return DATABASE_URL;
     }
 }

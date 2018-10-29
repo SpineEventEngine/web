@@ -57,12 +57,12 @@ import static com.google.common.base.Preconditions.checkState;
 public final class FirebaseQueryBridge implements QueryBridge {
 
     private final AsyncQueryService queryService;
-    private final FirebaseDatabase database;
+    private final String databaseUrl;
     private final long writeAwaitSeconds;
 
     private FirebaseQueryBridge(Builder builder) {
         this.queryService = builder.queryService;
-        this.database = builder.database;
+        this.databaseUrl = builder.databaseUrl;
         this.writeAwaitSeconds = builder.writeAwaitSeconds;
     }
 
@@ -83,9 +83,9 @@ public final class FirebaseQueryBridge implements QueryBridge {
                                                              writeAwaitSeconds);
 
         if (webQuery.getDeliveredTransactionally()) {
-            record.storeTransactionallyTo(database);
+            record.storeTransactionallyTo(databaseUrl);
         } else {
-            record.storeTo(database);
+            record.storeTo(databaseUrl);
         }
 
         QueryProcessingResult result =
@@ -113,7 +113,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
         private static final long DEFAULT_WRITE_AWAIT_SECONDS = 60L;
 
         private AsyncQueryService queryService;
-        private FirebaseDatabase database;
+        private String databaseUrl;
         private long writeAwaitSeconds = DEFAULT_WRITE_AWAIT_SECONDS;
 
         /**
@@ -128,8 +128,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
             return this;
         }
 
-        public Builder setDatabase(FirebaseDatabase database) {
-            this.database = checkNotNull(database);
+        public Builder setDatabaseUrl(String databaseUrl) {
+            this.databaseUrl = checkNotNull(databaseUrl);
             return this;
         }
 
@@ -152,7 +152,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
          */
         public FirebaseQueryBridge build() {
             checkState(queryService != null, "Query Service is not set.");
-            checkState(database != null, "FirebaseDatabase is not set.");
+            checkState(databaseUrl != null, "Firebase database URL is not set.");
             return new FirebaseQueryBridge(this);
         }
     }

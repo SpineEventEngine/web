@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.QueryVBuilder;
@@ -56,11 +55,11 @@ import static io.spine.web.firebase.FirebaseDatabasePath.allocateForQuery;
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     private final AsyncQueryService queryService;
-    private final FirebaseDatabase database;
+    private final String databaseUrl;
 
     private FirebaseSubscriptionBridge(FirebaseSubscriptionBridge.Builder builder) {
         this.queryService = builder.queryService;
-        this.database = builder.database;
+        this.databaseUrl = builder.databaseUrl;
     }
 
     @Override
@@ -70,7 +69,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         FirebaseDatabasePath path = allocateForQuery(query);
         FirebaseSubscriptionRecord record = 
                 new FirebaseSubscriptionRecord(path, queryResponse);
-        record.storeAsInitial(database);
+        record.storeAsInitial(databaseUrl);
         SubscriptionId id = newSubscriptionId(record.path());
         Subscription subscription = newSubscription(id, topic);
         return new FirebaseSubscribeResult(subscription);
@@ -107,7 +106,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
         FirebaseSubscriptionRecord record = 
                 new FirebaseSubscriptionRecord(path, queryResponse);
-        record.storeAsUpdate(database);
+        record.storeAsUpdate(databaseUrl);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 
@@ -134,7 +133,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
          * The default amount of seconds to wait for a single record to be written.
          */
         private AsyncQueryService queryService;
-        private FirebaseDatabase database;
+        private String databaseUrl;
 
         /**
          * Prevents local instantiation.
@@ -149,8 +148,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             return this;
         }
 
-        public Builder setDatabase(FirebaseDatabase database) {
-            this.database = checkNotNull(database);
+        public Builder setDatabaseUrl(String databaseUrl) {
+            this.databaseUrl = checkNotNull(databaseUrl);
             return this;
         }
 
@@ -162,8 +161,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         public FirebaseSubscriptionBridge build() {
             checkState(queryService != null,
                        "Query Service is not set to FirebaseSubscriptionBridge.");
-            checkState(database != null,
-                       "FirebaseDatabase is not set to to FirebaseSubscriptionBridge.");
+            checkState(databaseUrl != null,
+                       "Firebase database URL is not set to to FirebaseSubscriptionBridge.");
             return new FirebaseSubscriptionBridge(this);
         }
     }

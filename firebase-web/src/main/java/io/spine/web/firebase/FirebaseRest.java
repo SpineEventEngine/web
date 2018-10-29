@@ -8,8 +8,6 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.util.IOUtils;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.core.Path;
 import com.google.firebase.database.utilities.Clock;
 import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
@@ -33,11 +31,11 @@ public class FirebaseRest {
     private FirebaseRest() {
     }
 
-    public static String getContent(DatabaseReference reference) {
+    static String getContent(String nodeUrl) {
         try {
-            GenericUrl nodeUrl = nodeUrl(reference);
-            HttpRequest getRequest = httpRequestFactory().buildGetRequest(nodeUrl);
-            log().warn("Executing GET request for node " + nodeUrl.getRawPath());
+            GenericUrl genericUrl = genericUrl(nodeUrl);
+            HttpRequest getRequest = httpRequestFactory().buildGetRequest(genericUrl);
+            log().warn("Executing GET request for node " + genericUrl.getRawPath());
             HttpResponse getResponse = getRequest.execute();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             IOUtils.copy(getResponse.getContent(), outputStream);
@@ -51,21 +49,28 @@ public class FirebaseRest {
         }
     }
 
-    static void addOrUpdate(DatabaseReference reference, String item) throws IOException {
-        if (exists(reference)) {
-            update(reference, item);
+    /**
+     * Adds the value to the referenced Firebase array path.
+     *
+     * @param nodeUrl a Firebase array reference which can be appended an object.
+     * @param item      a String value to add to an Array inside of Firebase
+     * @return a {@code Future} of an item being added
+     */
+    static void addOrUpdate(String nodeUrl, String item) throws IOException {
+        if (exists(nodeUrl)) {
+            update(nodeUrl, item);
         } else {
-            add(reference, item);
+            add(nodeUrl, item);
         }
     }
 
-    public static void add(DatabaseReference reference, String item) throws IOException {
-        GenericUrl nodeUrl = nodeUrl(reference);
+    public static void add(String nodeUrl, String item) throws IOException {
+        GenericUrl genericUrl = genericUrl(nodeUrl);
         ByteArrayContent content = createRequestContent(item);
-        log().warn("Adding item " + item + " under url " + nodeUrl.getRawPath());
+        log().warn("Adding item " + item + " under url " + genericUrl.getRawPath());
         HttpTransport httpTransport = UrlFetchTransport.getDefaultInstance();
         HttpRequestFactory factory = httpTransport.createRequestFactory();
-        HttpRequest request = factory.buildPutRequest(nodeUrl, content);
+        HttpRequest request = factory.buildPutRequest(genericUrl, content);
         HttpResponse firebaseResponse = request.execute();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         IOUtils.copy(firebaseResponse.getContent(), outputStream);
@@ -74,8 +79,8 @@ public class FirebaseRest {
                 + firebaseResponseStr);
     }
 
-    public static void update(DatabaseReference reference, String item) throws IOException {
-        GenericUrl nodeUrl = nodeUrl(reference);
+    public static void update(String reference, String item) throws IOException {
+        GenericUrl nodeUrl = genericUrl(reference);
         ByteArrayContent content = createRequestContent(item);
         log().warn("Updating item " + item + " under url " + nodeUrl.getRawPath());
         HttpRequest request = httpRequestFactory().buildPatchRequest(nodeUrl, content);
@@ -93,8 +98,8 @@ public class FirebaseRest {
         return result;
     }
 
-    private static boolean exists(DatabaseReference reference) {
-        return !isNull(reference);
+    private static boolean exists(String nodeUrl) {
+        return !isNull(nodeUrl);
     }
 
     private static String newChildKey() {
@@ -113,16 +118,14 @@ public class FirebaseRest {
         return result;
     }
 
-    private static boolean isNull(DatabaseReference reference) {
-        String responseContent = getContent(reference);
+    private static boolean isNull(String nodeUrl) {
+        String responseContent = getContent(nodeUrl);
         boolean result = NULL_NODE.equals(responseContent);
         return result;
     }
 
-    static GenericUrl nodeUrl(DatabaseReference reference) {
-        Path path = reference.getPath();
-        String firebaseNodeUrl = String.format("%s/%s.json", "https://spine-dev.firebaseio.com", path.wireFormat());
-        return new GenericUrl(firebaseNodeUrl);
+    static GenericUrl genericUrl(String nodeUrl) {
+        return new GenericUrl(nodeUrl);
     }
 
     static HttpRequestFactory httpRequestFactory() {

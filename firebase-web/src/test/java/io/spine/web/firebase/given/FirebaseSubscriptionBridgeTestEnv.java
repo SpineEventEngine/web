@@ -21,7 +21,6 @@
 package io.spine.web.firebase.given;
 
 import com.google.common.base.Joiner;
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.SubscriptionIdVBuilder;
@@ -115,10 +114,10 @@ public final class FirebaseSubscriptionBridgeTestEnv {
                              .build();
     }
 
-    public static FirebaseSubscriptionBridge newBridge(FirebaseDatabase firebaseDatabase,
+    public static FirebaseSubscriptionBridge newBridge(String databaseUrl,
                                                        QueryServiceImplBase queryService) {
         return FirebaseSubscriptionBridge.newBuilder()
-                                         .setDatabase(firebaseDatabase)
+                                         .setDatabaseUrl(databaseUrl)
                                          .setQueryService(queryService)
                                          .build();
     }

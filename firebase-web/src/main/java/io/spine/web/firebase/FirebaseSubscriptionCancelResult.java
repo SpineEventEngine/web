@@ -55,9 +55,6 @@ class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
                                .build();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         response.getWriter()

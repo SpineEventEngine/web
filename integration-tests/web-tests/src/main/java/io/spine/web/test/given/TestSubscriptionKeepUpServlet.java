@@ -25,7 +25,7 @@ import io.spine.web.firebase.FirebaseSubscriptionKeepUpServlet;
 
 import javax.servlet.annotation.WebServlet;
 
-import static io.spine.web.test.given.FirebaseClient.database;
+import static io.spine.web.test.given.Application.databaseUrl;
 import static io.spine.web.test.given.Server.application;
 
 /**
@@ -40,7 +40,7 @@ public class TestSubscriptionKeepUpServlet extends FirebaseSubscriptionKeepUpSer
     public TestSubscriptionKeepUpServlet() {
         super(FirebaseSubscriptionBridge.newBuilder()
                                         .setQueryService(application().getQueryService())
-                                        .setDatabase(database())
+                                        .setDatabaseUrl(databaseUrl())
                                         .build());
     }
 }

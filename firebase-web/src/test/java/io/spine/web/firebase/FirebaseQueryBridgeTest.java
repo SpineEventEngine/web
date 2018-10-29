@@ -65,17 +65,18 @@ import static org.mockito.Mockito.when;
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
 
+    private static final String TEST_DATABASE_URL = "test";
+
     private static final QueryFactory queryFactory =
             TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class)
                                    .query();
 
-    private FirebaseDatabase firebaseDatabase;
     private DatabaseReference pathReference;
     private DatabaseReference childReference;
 
     @BeforeEach
     void setUp() {
-        firebaseDatabase = mock(FirebaseDatabase.class);
+        FirebaseDatabase firebaseDatabase = mock(FirebaseDatabase.class);
         pathReference = mock(DatabaseReference.class);
         childReference = mock(DatabaseReference.class);
         when(firebaseDatabase.getReference(anyString())).thenReturn(pathReference);
@@ -88,7 +89,7 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService();
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setDatabaseUrl(TEST_DATABASE_URL)
                                                         .build();
         Query query = queryFactory.all(Empty.class);
         QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
@@ -105,7 +106,7 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService(dataElement);
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setDatabaseUrl(TEST_DATABASE_URL)
                                                         .build();
         Query query = queryFactory.all(Timestamp.class);
         @SuppressWarnings("unused")
@@ -128,7 +129,7 @@ class FirebaseQueryBridgeTest {
         FirebaseQueryBridge bridge =
                 FirebaseQueryBridge.newBuilder()
                                    .setQueryService(queryService)
-                                   .setDatabase(firebaseDatabase)
+                                   .setDatabaseUrl(TEST_DATABASE_URL)
                                    .setWriteAwaitSeconds(awaitSeconds)
                                    .build();
         Query query = queryFactory.all(Timestamp.class);
@@ -142,7 +143,7 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setDatabaseUrl(TEST_DATABASE_URL)
                                                         .build();
         bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
 
@@ -157,7 +158,7 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setDatabaseUrl(TEST_DATABASE_URL)
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 

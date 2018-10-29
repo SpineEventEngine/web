@@ -48,9 +48,6 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
         this.count = count;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         FirebaseQueryResponse queryResponse =

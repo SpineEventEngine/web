@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
 import io.spine.client.Query;
@@ -39,6 +38,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static io.spine.web.firebase.FirebaseClientProvider.firebaseClient;
 import static io.spine.web.firebase.FirebaseRest.addOrUpdate;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
@@ -75,10 +75,11 @@ final class FirebaseQueryRecord {
      * Writes this record to the given {@link FirebaseDatabase}.
      *
      * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
+     * @param databaseUrl
      */
-    void storeTo(FirebaseDatabase database) {
-        DatabaseReference reference = path().reference(database);
-        flushTo(reference);
+    void storeTo(String databaseUrl) {
+        String nodeUrl = path().join(databaseUrl);
+        flushTo(nodeUrl);
     }
 
     /**
@@ -86,10 +87,11 @@ final class FirebaseQueryRecord {
      * (i.e. in a single batch).
      *
      * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
+     * @param databaseUrl
      */
-    void storeTransactionallyTo(FirebaseDatabase database) {
-        DatabaseReference reference = path().reference(database);
-        flushTransactionallyTo(reference);
+    void storeTransactionallyTo(String databaseUrl) {
+        String nodeUrl = path().join(databaseUrl);
+        flushTransactionallyTo(nodeUrl);
     }
 
     /**
@@ -128,18 +130,14 @@ final class FirebaseQueryRecord {
      * adding array items to storage one by one.
      *
      * <p>Suitable for big queries, spanning thousands and millions of items.
+     * @param nodeUrl
      */
-    private void flushTo(DatabaseReference reference) {
+    private void flushTo(String nodeUrl) {
         queryResponse.thenAccept(
                 response -> {
                     try {
-                        mapMessagesToJson(response).forEach(json -> {
-                            try {
-                                addTo(reference, json);
-                            } catch (IOException e) {
-                                log().error("Exception during writing: " + e.getLocalizedMessage());
-                            }
-                        });
+                        mapMessagesToJson(response).forEach(
+                                json -> firebaseClient().set(nodeUrl, json));
                     } catch (Throwable e) {
                         log().warn("Error when flushing query response: " + e.getLocalizedMessage());
                     }
@@ -148,26 +146,16 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Adds the value to the referenced Firebase array path.
-     *
-     * @param reference a Firebase array reference which can be appended an object.
-     * @param item      a String value to add to an Array inside of Firebase
-     * @return a {@code Future} of an item being added
-     */
-    private static void addTo(DatabaseReference reference, String item) throws IOException {
-        addOrUpdate(reference, item);
-    }
-
-    /**
      * Flushes the array response of the query to the Firebase asynchronously but in one go.
+     * @param nodeUrl
      */
-    private void flushTransactionallyTo(DatabaseReference reference) {
+    private void flushTransactionallyTo(String nodeUrl) {
         queryResponse.thenAccept(
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
                         try {
-                            addOrUpdate(reference, item);
+                            addOrUpdate(nodeUrl, item);
                         } catch (Throwable e) {
                             log().error("Exception during flushing transactionally: " + e.getLocalizedMessage());
                         }
