@@ -20,100 +20,115 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.client.http.*;
-import com.google.api.client.util.IOUtils;
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpTransport;
+import com.google.firebase.database.utilities.Clock;
+import com.google.firebase.database.utilities.DefaultClock;
+import com.google.firebase.database.utilities.OffsetClock;
+import com.google.gson.JsonObject;
+import io.spine.web.http.RequestExecutor;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.concurrent.ThreadFactory;
 
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 
-public class FirebaseRestClient implements FirebaseClient {
+class FirebaseRestClient implements FirebaseClient {
 
-    private final HttpRequestFactory requestFactory;
+    private static final Clock CLOCK = new OffsetClock(new DefaultClock(), 0);
+
+    private final RequestExecutor requestExecutor;
     private final ThreadFactory threadFactory;
 
-    private FirebaseRestClient(HttpTransport httpTransport, ThreadFactory threadFactory) {
-        this.requestFactory = requestFactory(httpTransport);
+    private FirebaseRestClient(RequestExecutor requestExecutor, ThreadFactory threadFactory) {
+        this.requestExecutor = requestExecutor;
         this.threadFactory = threadFactory;
     }
 
+    static FirebaseRestClient create(HttpTransport httpTransport, ThreadFactory threadFactory) {
+        RequestExecutor requestExecutor = RequestExecutor.using(httpTransport);
+        return new FirebaseRestClient(requestExecutor, threadFactory);
+    }
+
     @Override
-    public void set(String nodeUrl, String value) {
-        Thread thread = threadFactory.newThread(() -> {
-            addOrUpdate(nodeUrl, value);
-        });
+    public String get(String nodeUrl) {
+        GenericUrl url = new GenericUrl(nodeUrl);
+        String data = requestExecutor.get(url);
+        return data;
+    }
+
+    @Override
+    public void add(String nodeUrl, String value) {
+        Thread thread = threadFactory.newThread(() -> addOrUpdate(nodeUrl, value));
         thread.start();
     }
 
+    @Override
+    public void update(String nodeUrl, JsonObject jsonObject) {
+        Thread thread = threadFactory.newThread(() -> doUpdate(nodeUrl, jsonObject));
+        thread.start();
+    }
+
+    @Override
+    public void overwrite(String nodeUrl, JsonObject jsonObject) {
+        Thread thread = threadFactory.newThread(() -> add(nodeUrl, jsonObject));
+        thread.start();
+    }
+
+    /**
+     * Adds the value to the referenced Firebase array path.
+     *
+     * @param nodeUrl a Firebase array reference which can be appended an object.
+     * @param value      a String value to add to an Array inside of Firebase
+     * @return a {@code Future} of an item being added
+     */
     private void addOrUpdate(String nodeUrl, String value) {
+        JsonObject firebaseEntry = toFirebaseEntry(value);
         if (!exists(nodeUrl)) {
-            add(nodeUrl, value);
+            // todo make a separate FirebaseEntry class with NodeUrl and Data.
+            add(nodeUrl, firebaseEntry);
         } else {
-            update(nodeUrl, value);
+            doUpdate(nodeUrl, firebaseEntry);
         }
     }
 
     private boolean exists(String nodeUrl) {
-        String value = getValue(nodeUrl);
-        return !isNull(value);
+        String content = get(nodeUrl);
+        return !isNullData(content);
     }
 
-    private String getValue(String nodeUrl) {
+    private void add(String nodeUrl, JsonObject firebaseEntry) {
         GenericUrl genericUrl = new GenericUrl(nodeUrl);
-        try {
-            HttpRequest getRequest = requestFactory.buildGetRequest(genericUrl);
-            HttpResponse getResponse = getRequest.execute();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            IOUtils.copy(getResponse.getContent(), outputStream);
-            String result = outputStream.toString();
-            return result;
-        } catch (IOException e) {
-            throw newIllegalStateException(e, e.getMessage());
-        }
+        ByteArrayContent content = byteArrayContent(firebaseEntry);
+        requestExecutor.put(genericUrl, content);
     }
 
-    private static boolean isNull(String value) {
+    // todo address naming
+    private void doUpdate(String nodeUrl, JsonObject firebaseEntry) {
+        GenericUrl genericUrl = new GenericUrl(nodeUrl);
+        ByteArrayContent content = byteArrayContent(firebaseEntry);
+        requestExecutor.patch(genericUrl, content);
+    }
+
+    private static JsonObject toFirebaseEntry(String value) {
+        String generatedKey = newChildKey();
+        JsonObject entry = new JsonObject();
+        entry.addProperty(generatedKey, value);
+        return entry;
+    }
+
+    static boolean isNullData(String value) {
         return "null".equals(value);
     }
 
-    private void add(String nodeUrl, String value) {
-
+    private static String newChildKey() {
+        return generatePushChildName(CLOCK.millis());
     }
 
-    private void update(String nodeUrl, String value) {
-
-    }
-
-    private static HttpRequestFactory requestFactory(HttpTransport httpTransport) {
-        HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
-        return requestFactory;
-    }
-
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private HttpTransport httpTransport;
-        private ThreadFactory threadFactory;
-
-        private Builder() {
-        }
-
-        public Builder setHttpTransport(HttpTransport httpTransport) {
-            this.httpTransport = httpTransport;
-            return this;
-        }
-
-        public Builder setThreadFactory(ThreadFactory threadFactory) {
-            this.threadFactory = threadFactory;
-            return this;
-        }
-
-        public FirebaseRestClient build() {
-            return new FirebaseRestClient(httpTransport, threadFactory);
-        }
+    private static ByteArrayContent byteArrayContent(JsonObject jsonObject) {
+        String jsonString = jsonObject.toString();
+        ByteArrayContent result = ByteArrayContent.fromString(JSON_UTF_8.toString(), jsonString);
+        return result;
     }
 }

@@ -29,7 +29,6 @@ import io.spine.protobuf.AnyPacker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -39,7 +38,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static io.spine.web.firebase.FirebaseClientProvider.firebaseClient;
-import static io.spine.web.firebase.FirebaseRest.addOrUpdate;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
@@ -137,7 +135,7 @@ final class FirebaseQueryRecord {
                 response -> {
                     try {
                         mapMessagesToJson(response).forEach(
-                                json -> firebaseClient().set(nodeUrl, json));
+                                json -> firebaseClient().add(nodeUrl, json));
                     } catch (Throwable e) {
                         log().warn("Error when flushing query response: " + e.getLocalizedMessage());
                     }
@@ -155,7 +153,7 @@ final class FirebaseQueryRecord {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
                         try {
-                            addOrUpdate(nodeUrl, item);
+                            firebaseClient().add(nodeUrl, item);
                         } catch (Throwable e) {
                             log().error("Exception during flushing transactionally: " + e.getLocalizedMessage());
                         }

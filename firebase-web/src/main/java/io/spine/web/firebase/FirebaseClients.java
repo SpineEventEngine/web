@@ -21,13 +21,13 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.appengine.api.utils.SystemProperty;
 
 import java.util.concurrent.ThreadFactory;
 
 import static com.google.appengine.api.ThreadManager.backgroundThreadFactory;
+import static io.spine.web.firebase.FirebaseRestClient.create;
 import static java.util.concurrent.Executors.defaultThreadFactory;
 
 final class FirebaseClients {
@@ -51,18 +51,8 @@ final class FirebaseClients {
     }
 
     private static FirebaseClient gae() {
-        UrlFetchTransport httpTransport = new UrlFetchTransport();
+        UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
         ThreadFactory threadFactory = backgroundThreadFactory();
         return create(httpTransport, threadFactory);
-    }
-
-    private static FirebaseClient
-    create(HttpTransport httpTransport, ThreadFactory threadFactory) {
-        FirebaseClient client = FirebaseRestClient
-                .newBuilder()
-                .setHttpTransport(httpTransport)
-                .setThreadFactory(threadFactory)
-                .build();
-        return client;
     }
 }

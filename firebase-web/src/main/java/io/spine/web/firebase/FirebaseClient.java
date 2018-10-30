@@ -20,7 +20,15 @@
 
 package io.spine.web.firebase;
 
+import com.google.gson.JsonObject;
+
 public interface FirebaseClient {
 
-    void set(String nodeUrl, String value);
+    String get(String nodeUrl);
+
+    void add(String nodeUrl, String value);
+
+    void update(String nodeUrl, JsonObject jsonObject);
+
+    void overwrite(String nodeUrl, JsonObject jsonObject);
 }
