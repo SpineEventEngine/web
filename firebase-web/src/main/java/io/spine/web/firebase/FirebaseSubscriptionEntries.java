@@ -22,7 +22,6 @@ package io.spine.web.firebase;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.database.MutableData;
 import com.google.gson.JsonElement;
 
 import java.io.IOException;
@@ -74,8 +73,8 @@ final class FirebaseSubscriptionEntries {
         }
 
         /**
-         * @return {@code true} if the entity contains an {@code "id"} field,
-         *                      {@code false} otherwise
+         * Returns {@code true} if the entity contains an {@code "id"} field and {@code false}
+         * otherwise.
          */
         boolean containsId() {
             return containsId;
@@ -106,11 +105,6 @@ final class FirebaseSubscriptionEntries {
             this.json = toJson(data);
             this.id = this.json.get("id");
             this.containsId = id != null;
-        }
-
-        static ExistingEntry fromFirebaseData(MutableData snapshot) {
-            String value = (String) snapshot.getValue();
-            return new ExistingEntry(snapshot.getKey(), value);
         }
 
         static ExistingEntry fromJsonObjectEntry(Map.Entry<String, JsonElement> entry) {

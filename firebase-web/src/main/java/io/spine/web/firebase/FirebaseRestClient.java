@@ -29,9 +29,10 @@ import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
 import io.spine.web.http.RequestExecutor;
 
-import java.util.concurrent.ThreadFactory;
+import javax.annotation.Nullable;
 
-import static com.google.common.net.MediaType.JSON_UTF_8;
+import java.util.Optional;
+
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 
 class FirebaseRestClient implements FirebaseClient {
@@ -39,76 +40,48 @@ class FirebaseRestClient implements FirebaseClient {
     private static final Clock CLOCK = new OffsetClock(new DefaultClock(), 0);
 
     private final RequestExecutor requestExecutor;
-    private final ThreadFactory threadFactory;
 
-    private FirebaseRestClient(RequestExecutor requestExecutor, ThreadFactory threadFactory) {
+    private FirebaseRestClient(RequestExecutor requestExecutor) {
         this.requestExecutor = requestExecutor;
-        this.threadFactory = threadFactory;
     }
 
-    static FirebaseRestClient create(HttpTransport httpTransport, ThreadFactory threadFactory) {
+    static FirebaseRestClient create(HttpTransport httpTransport) {
         RequestExecutor requestExecutor = RequestExecutor.using(httpTransport);
-        return new FirebaseRestClient(requestExecutor, threadFactory);
+        return new FirebaseRestClient(requestExecutor);
     }
 
     @Override
-    public String get(String nodeUrl) {
-        GenericUrl url = new GenericUrl(nodeUrl);
+    public Optional<NodeContent> get(NodeUrl nodeUrl) {
+        GenericUrl url = nodeUrl.toGenericUrl();
         String data = requestExecutor.get(url);
-        return data;
+        if ("null".equals(data)) {
+            return Optional.empty();
+        }
+        NodeContent content = NodeContent.from(data);
+        Optional<NodeContent> result = Optional.of(content);
+        return result;
     }
 
     @Override
-    public void add(String nodeUrl, String value) {
-        Thread thread = threadFactory.newThread(() -> addOrUpdate(nodeUrl, value));
-        thread.start();
-    }
-
-    @Override
-    public void update(String nodeUrl, JsonObject jsonObject) {
-        Thread thread = threadFactory.newThread(() -> doUpdate(nodeUrl, jsonObject));
-        thread.start();
-    }
-
-    @Override
-    public void overwrite(String nodeUrl, JsonObject jsonObject) {
-        Thread thread = threadFactory.newThread(() -> add(nodeUrl, jsonObject));
-        thread.start();
-    }
-
-    /**
-     * Adds the value to the referenced Firebase array path.
-     *
-     * @param nodeUrl a Firebase array reference which can be appended an object.
-     * @param value      a String value to add to an Array inside of Firebase
-     * @return a {@code Future} of an item being added
-     */
-    private void addOrUpdate(String nodeUrl, String value) {
-        JsonObject firebaseEntry = toFirebaseEntry(value);
-        if (!exists(nodeUrl)) {
-            // todo make a separate FirebaseEntry class with NodeUrl and Data.
-            add(nodeUrl, firebaseEntry);
+    public void addContent(NodeUrl nodeUrl, NodeContent content) {
+        Optional<NodeContent> existingContent = get(nodeUrl);
+        if (!existingContent.isPresent()) {
+            add(nodeUrl, content);
         } else {
-            doUpdate(nodeUrl, firebaseEntry);
+            update(nodeUrl, content);
         }
     }
 
-    private boolean exists(String nodeUrl) {
-        String content = get(nodeUrl);
-        return !isNullData(content);
+    private void add(NodeUrl nodeUrl, NodeContent content) {
+        GenericUrl genericUrl = nodeUrl.toGenericUrl();
+        ByteArrayContent byteArrayContent = content.toByteArray();
+        requestExecutor.put(genericUrl, byteArrayContent);
     }
 
-    private void add(String nodeUrl, JsonObject firebaseEntry) {
-        GenericUrl genericUrl = new GenericUrl(nodeUrl);
-        ByteArrayContent content = byteArrayContent(firebaseEntry);
-        requestExecutor.put(genericUrl, content);
-    }
-
-    // todo address naming
-    private void doUpdate(String nodeUrl, JsonObject firebaseEntry) {
-        GenericUrl genericUrl = new GenericUrl(nodeUrl);
-        ByteArrayContent content = byteArrayContent(firebaseEntry);
-        requestExecutor.patch(genericUrl, content);
+    private void update(NodeUrl nodeUrl, NodeContent content) {
+        GenericUrl genericUrl = nodeUrl.toGenericUrl();
+        ByteArrayContent byteArrayContent = content.toByteArray();
+        requestExecutor.patch(genericUrl, byteArrayContent);
     }
 
     private static JsonObject toFirebaseEntry(String value) {
@@ -124,11 +97,5 @@ class FirebaseRestClient implements FirebaseClient {
 
     private static String newChildKey() {
         return generatePushChildName(CLOCK.millis());
-    }
-
-    private static ByteArrayContent byteArrayContent(JsonObject jsonObject) {
-        String jsonString = jsonObject.toString();
-        ByteArrayContent result = ByteArrayContent.fromString(JSON_UTF_8.toString(), jsonString);
-        return result;
     }
 }

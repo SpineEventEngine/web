@@ -46,13 +46,11 @@ final class FirebaseClients {
 
     private static FirebaseClient local() {
         ApacheHttpTransport httpTransport = new ApacheHttpTransport();
-        ThreadFactory threadFactory = defaultThreadFactory();
-        return create(httpTransport, threadFactory);
+        return create(httpTransport);
     }
 
     private static FirebaseClient gae() {
         UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
-        ThreadFactory threadFactory = backgroundThreadFactory();
-        return create(httpTransport, threadFactory);
+        return create(httpTransport);
     }
 }

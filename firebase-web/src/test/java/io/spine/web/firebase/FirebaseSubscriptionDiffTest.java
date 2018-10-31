@@ -20,13 +20,11 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.MutableData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
-import static io.spine.web.firebase.given.FirebaseSubscriptionDiffTestEnv.dataReturning;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -38,11 +36,11 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
-        MutableData mock = dataReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        NodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
-                newArrayList(mock)
+                content
         );
 
         assertEquals(1, diff.changed().size());
@@ -53,9 +51,10 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
+        NodeContent content = new NodeContent();
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
-                newArrayList()
+                content
         );
 
         assertEquals(0, diff.changed().size());
@@ -66,11 +65,11 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a removed object")
     void createRemovedDiff() {
-        MutableData mock = dataReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        NodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList(),
-                newArrayList(mock)
+                content
         );
 
         assertEquals(0, diff.changed().size());
@@ -81,18 +80,19 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge changes spanning multiple objects")
     void createComplexDiff() {
-        MutableData changedMock = dataReturning("{\"id\":\"1\",\"a\":1,\"b\":3}");
-        MutableData removedMock = dataReturning("{\"x\":\"asd\",\"y\":3}");
-        MutableData passMock = dataReturning("{\"pass\":true}");
-        MutableData passByIdMock = dataReturning("{\"id\":{\"value\": \"passed\"}}");
-
+        NodeContent content = nodeContent(
+                "{\"id\":\"1\",\"a\":1,\"b\":3}",
+                "{\"x\":\"asd\",\"y\":3}",
+                "{\"pass\":true}",
+                "{\"id\":{\"value\": \"passed\"}}"
+        );
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 
                              "{\"a\":1,\"b\":3}", // added
                              "{\"id\":{\"value\": \"passed\"}}", // passed
                              "{\"id\":\"2\",\"added\":1}", // added
                              "{\"pass\": true}"), // passed
-                newArrayList(changedMock, removedMock, passMock, passByIdMock)
+                content
         );
 
         assertEquals(1, diff.changed().size());
@@ -100,4 +100,11 @@ class FirebaseSubscriptionDiffTest {
         assertEquals(1, diff.removed().size());
     }
 
+    private static NodeContent nodeContent(String... entries) {
+        NodeContent nodeContent = new NodeContent();
+        for (String entry : entries) {
+            nodeContent.pushData(entry);
+        }
+        return nodeContent;
+    }
 }

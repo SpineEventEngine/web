@@ -76,7 +76,7 @@ final class FirebaseQueryRecord {
      * @param databaseUrl
      */
     void storeTo(String databaseUrl) {
-        String nodeUrl = path().join(databaseUrl);
+        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
         flushTo(nodeUrl);
     }
 
@@ -88,7 +88,7 @@ final class FirebaseQueryRecord {
      * @param databaseUrl
      */
     void storeTransactionallyTo(String databaseUrl) {
-        String nodeUrl = path().join(databaseUrl);
+        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
         flushTransactionallyTo(nodeUrl);
     }
 
@@ -130,12 +130,15 @@ final class FirebaseQueryRecord {
      * <p>Suitable for big queries, spanning thousands and millions of items.
      * @param nodeUrl
      */
-    private void flushTo(String nodeUrl) {
+    private void flushTo(NodeUrl nodeUrl) {
         queryResponse.thenAccept(
                 response -> {
                     try {
                         mapMessagesToJson(response).forEach(
-                                json -> firebaseClient().add(nodeUrl, json));
+                                json -> {
+                                    NodeContent nodeContent = NodeContent.withSingleChild(json);
+                                    firebaseClient().addContent(nodeUrl, nodeContent);
+                                });
                     } catch (Throwable e) {
                         log().warn("Error when flushing query response: " + e.getLocalizedMessage());
                     }
@@ -147,16 +150,13 @@ final class FirebaseQueryRecord {
      * Flushes the array response of the query to the Firebase asynchronously but in one go.
      * @param nodeUrl
      */
-    private void flushTransactionallyTo(String nodeUrl) {
+    private void flushTransactionallyTo(NodeUrl nodeUrl) {
         queryResponse.thenAccept(
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
-                        try {
-                            firebaseClient().add(nodeUrl, item);
-                        } catch (Throwable e) {
-                            log().error("Exception during flushing transactionally: " + e.getLocalizedMessage());
-                        }
+                        NodeContent nodeContent = NodeContent.withSingleChild(item);
+                        firebaseClient().addContent(nodeUrl, nodeContent);
                     });
                 }
         );

@@ -21,8 +21,6 @@
 package io.spine.web.firebase;
 
 import com.google.common.base.Joiner;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryId;
 import io.spine.core.TenantId;
@@ -36,8 +34,8 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * A path in a Firebase Realtime Database.
  *
- * <p>The path is not aware of the database per se. See {@link #join(String)} to bind this path to
- * a database.
+ * <p>The path is not aware of the database per se. See {@link io.spine.web.firebase.NodeUrl} to
+ * bind this path to a database.
  *
  * @author Dmytro Dashenkov
  */
@@ -123,15 +121,6 @@ final class FirebaseDatabasePath {
     private static String escaped(String dirty) {
         return ILLEGAL_DATABASE_PATH_SYMBOL.matcher(dirty)
                                            .replaceAll(SUBSTITUTION_SYMBOL);
-    }
-
-    /**
-     * Retrieves a {@link DatabaseReference} to the location denoted by this path in the given
-     * {@linkplain FirebaseDatabase database}.
-     */
-    String join(String databaseUrl) {
-        String nodeUrl = String.format("%s/%s.json", databaseUrl, path);
-        return nodeUrl;
     }
 
     /**

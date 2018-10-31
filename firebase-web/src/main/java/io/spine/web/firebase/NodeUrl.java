@@ -18,28 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.given;
+package io.spine.web.firebase;
 
-import com.google.firebase.database.MutableData;
+import com.google.api.client.http.GenericUrl;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-/**
- * @author Mykhailo Drachuk
- * @see io.spine.web.firebase.FirebaseSubscriptionDiffTest
- */
-public final class FirebaseSubscriptionDiffTestEnv {
+final class NodeUrl {
 
     /**
-     * Prevents instantiation of this test environment.
+     * Firebase node URL format.
      */
-    private FirebaseSubscriptionDiffTestEnv() {
+    private static final String NODE_URL_FORMAT = "%s/%s.json";
+
+    private final String dbUrl;
+    private final FirebaseDatabasePath path;
+
+    NodeUrl(String dbUrl, FirebaseDatabasePath path) {
+        this.dbUrl = dbUrl;
+        this.path = path;
     }
 
-    public static MutableData dataReturning(String s) {
-        MutableData mock = mock(MutableData.class);
-        when(mock.getValue()).thenReturn(s);
-        return mock;
+    GenericUrl toGenericUrl() {
+        return new GenericUrl(getAsString());
+    }
+
+    String getAsString() {
+        String fullPath = String.format(NODE_URL_FORMAT, dbUrl, path);
+        return fullPath;
+    }
+
+    @Override
+    public String toString() {
+        return getAsString();
     }
 }

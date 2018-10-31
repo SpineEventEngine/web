@@ -20,29 +20,18 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
-import com.google.firebase.database.utilities.Clock;
-import com.google.firebase.database.utilities.DefaultClock;
-import com.google.firebase.database.utilities.OffsetClock;
-import com.google.gson.JsonObject;
 import com.google.protobuf.Message;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 import static io.spine.web.firebase.FirebaseClientProvider.firebaseClient;
-import static io.spine.web.firebase.FirebaseRestClient.isNullData;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static java.util.stream.Collectors.toList;
 
@@ -54,8 +43,6 @@ import static java.util.stream.Collectors.toList;
  * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionRecord {
-
-    private static final Clock CLOCK = new OffsetClock(new DefaultClock(), 0);
 
     private final FirebaseDatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
@@ -79,7 +66,7 @@ final class FirebaseSubscriptionRecord {
      * @param databaseUrl
      */
     void storeAsInitial(String databaseUrl) {
-        String nodeUrl = path().join(databaseUrl);
+        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
         flushNewTo(nodeUrl);
     }
 
@@ -88,29 +75,13 @@ final class FirebaseSubscriptionRecord {
      * adding array items to storage in a transaction.
      * @param nodeUrl
      */
-    @SuppressWarnings("Duplicates")
-    private void flushNewTo(String nodeUrl) {
+    private void flushNewTo(NodeUrl nodeUrl) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            JsonObject jsonObject = new JsonObject();
-            newEntries.forEach(entry -> put(entry, jsonObject));
-            firebaseClient().overwrite(nodeUrl, jsonObject);
+            NodeContent nodeContent = new NodeContent();
+            newEntries.forEach(nodeContent::pushData);
+            firebaseClient().addContent(nodeUrl, nodeContent);
         });
-    }
-
-    /**
-     * Adds the provided entries as children to the provided mutable record.
-     *
-     * @param currentData an instance of mutable data of existing subscription state
-     * @param entries     new subscription entries to be added to Firebase
-     */
-    private static void addEntriesToData(MutableData currentData, Iterable<String> entries) {
-        entries.forEach(entry -> currentData.child(newChildKey())
-                                            .setValue(entry));
-    }
-
-    private static String newChildKey() {
-        return generatePushChildName(CLOCK.millis());
     }
 
     /**
@@ -118,7 +89,7 @@ final class FirebaseSubscriptionRecord {
      * @param databaseUrl
      */
     void storeAsUpdate(String databaseUrl) {
-        String nodeUrl = path().join(databaseUrl);
+        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
         flushDiffTo(nodeUrl);
     }
 
@@ -127,82 +98,36 @@ final class FirebaseSubscriptionRecord {
      * adding, removing and updating items already present in storage in a transaction.
      * @param nodeUrl
      */
-    @SuppressWarnings("Duplicates")
-    private void flushDiffTo(String nodeUrl) {
+    private void flushDiffTo(NodeUrl nodeUrl) {
         queryResponse.thenAccept(response -> {
-            try {
-                List<String> newEntries = mapMessagesToJson(response).collect(toList());
-
-                String restData = firebaseClient().get(nodeUrl);
-                if (isNullData(restData)) {
-                    JsonObject jsonObject = new JsonObject();
-                    newEntries.forEach(entry -> put(entry, jsonObject));
-                    firebaseClient().overwrite(nodeUrl, jsonObject);
-                } else {
-                    FirebaseSubscriptionDiff diff = computeDiff(newEntries, restData);
-                    updateWithDiff(nodeUrl, diff);
-                }
-            } catch (Throwable e) {
-                log().error("Exception when writing subscription content from scratch: "
-                        + e.getLocalizedMessage());
+            List<String> newEntries = mapMessagesToJson(response).collect(toList());
+            Optional<NodeContent> existingContent = firebaseClient().get(nodeUrl);
+            if (!existingContent.isPresent()) {
+                NodeContent nodeContent = new NodeContent();
+                newEntries.forEach(nodeContent::pushData);
+                firebaseClient().addContent(nodeUrl, nodeContent);
+            } else {
+                FirebaseSubscriptionDiff diff = computeDiff(newEntries, existingContent.get());
+                updateWithDiff(nodeUrl, diff);
             }
         });
     }
 
-    private static void put(String entry, JsonObject jsonObject) {
-        String key = newChildKey();
-        jsonObject.addProperty(key, entry);
-    }
-
-    private static void updateWithDiff(String nodeUrl, FirebaseSubscriptionDiff diff) {
-        JsonObject jsonObject = new JsonObject();
-
+    private static void updateWithDiff(NodeUrl nodeUrl, FirebaseSubscriptionDiff diff) {
+        NodeContent nodeContent = new NodeContent();
         diff.changed()
-                .forEach(record -> {
-                    log().warn("Changed: " + record.key());
-                    jsonObject.addProperty(record.key(), record.data());
-                });
+            .forEach(record -> {
+                nodeContent.addChild(record.key(), record.data());
+            });
         diff.removed()
-                .forEach(record -> {
-                    log().warn("Removed: " + record.key());
-                    jsonObject.addProperty(record.key(), "null");
-                });
+            .forEach(record -> {
+                nodeContent.addChild(record.key(), "null");
+            });
         diff.added()
-                .forEach(record -> {
-                    final String key = newChildKey();
-                    log().warn("Added: " + key);
-                    jsonObject.addProperty(key, record.data());
-                });
-
-        firebaseClient().update(nodeUrl, jsonObject);
-    }
-
-    /**
-     * Updates the provided MutableData with provided subscription diff.
-     *
-     * @param currentData an instance of mutable data of existing subscription state
-     * @param diff        a diff between updated and existing subscription states
-     */
-    private static void updateWithDiff(MutableData currentData, FirebaseSubscriptionDiff diff) {
-        diff.changed()
-                .forEach(record -> {
-                    log().warn("Changed: " + record.key());
-                    currentData.child(record.key())
-                            .setValue(record.data());
-                });
-        diff.removed()
-                .forEach(record -> {
-                    log().warn("Removed: " + record.key());
-                    currentData.child(record.key())
-                            .setValue(null);
-                });
-        diff.added()
-                .forEach(record -> {
-                    final String key = newChildKey();
-                    log().warn("Added: " + key);
-                    currentData.child(key)
-                            .setValue(record.data());
-                });
+            .forEach(record -> {
+                nodeContent.pushData(record.data());
+            });
+        firebaseClient().addContent(nodeUrl, nodeContent);
     }
 
     /**
@@ -218,37 +143,5 @@ final class FirebaseSubscriptionRecord {
                        .unordered()
                        .map(AnyPacker::<Message>unpack)
                        .map(Json::toCompactJson);
-    }
-
-    /**
-     * An abstract base for a subscription transaction handler.
-     *
-     * <p>Logs an error in case it occurs, leaving the {@link #doTransaction(MutableData)}
-     * to actual implementors.
-     */
-    private abstract static class SubscriptionUpdateTransactionHandler
-            implements Transaction.Handler {
-
-        @Override
-        public void onComplete(DatabaseError error, boolean committed,
-                               DataSnapshot currentData) {
-            if (!committed) {
-                log().error("Subscription update was not committed to the Firebase.");
-                if (error != null) {
-                    log().error(error.getMessage());
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass") // A log method is placed in the outer class.
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FirebaseSubscriptionRecord.class);
     }
 }
