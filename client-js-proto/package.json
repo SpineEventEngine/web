@@ -2,7 +2,16 @@
   "name": "spine-web-client-proto",
   "version": "$PACKAGE_VERSION",
   "license": "Apache-2.0",
-  "description": "Protobuf types defined and used by the Spine client library.",
+  "description": "Generated Protocol Buffer types used by Spine Web applications.",
+  "homepage": "https://spine.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpineEventEngine/web"
+  },
+  "bugs": {
+    "url": "https://github.com/SpineEventEngine/web/issues",
+    "email": "spine-developers@teamdev.com"
+  },
   "scripts": {},
   "dependencies": {
     "google-protobuf": "$PACKAGE_PROTOBUF_VERSION"

@@ -2,7 +2,16 @@
   "name": "spine-web-client",
   "version": "$PACKAGE_VERSION",
   "license": "Apache-2.0",
-  "description": "JS implementation of the Spine client.",
+  "description": "A JS client for interacting with Spine applications.",
+  "homepage": "https://spine.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpineEventEngine/web"
+  },
+  "bugs": {
+    "url": "https://github.com/SpineEventEngine/web/issues",
+    "email": "spine-developers@teamdev.com"
+  },
   "directories": {
     "test": "test"
   },
