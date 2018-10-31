@@ -49,7 +49,8 @@ export class HttpClient {
    *
    * @param {!string} endpoint a endpoint to send the message to
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
-   * @return {Promise<Response>}
+   * @return {Promise<Response|Error>} a message sending promise to be fulfilled with a response, or rejected if
+   *                                   an error occurs
    */
   postMessage(endpoint, message) {
     const messageString = message.toBase64();
