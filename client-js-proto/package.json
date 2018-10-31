@@ -14,6 +14,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "google-protobuf": "$PACKAGE_PROTOBUF_VERSION"
+    "google-protobuf": "$PACKAGE_PROTOBUF_VERSION",
+    "base64-js": "^1.3.0"
   }
 }
