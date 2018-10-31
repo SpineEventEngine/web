@@ -38,16 +38,12 @@ final class NodeUrl {
     }
 
     GenericUrl toGenericUrl() {
-        return new GenericUrl(getAsString());
-    }
-
-    String getAsString() {
-        String fullPath = String.format(NODE_URL_FORMAT, dbUrl, path);
-        return fullPath;
+        return new GenericUrl(toString());
     }
 
     @Override
     public String toString() {
-        return getAsString();
+        String fullPath = String.format(NODE_URL_FORMAT, dbUrl, path);
+        return fullPath;
     }
 }

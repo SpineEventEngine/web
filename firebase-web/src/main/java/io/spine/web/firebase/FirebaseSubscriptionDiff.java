@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.Entry;
@@ -33,7 +32,6 @@ import io.spine.web.firebase.FirebaseSubscriptionRecords.RemovedRecord;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.ADD;
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.CHANGE;
@@ -75,7 +73,7 @@ final class FirebaseSubscriptionDiff {
 
     /**
      * Compares the actual state represented by {@code newEntries} to the state of the Firebase
-     * database represented by a a list of {@link DataSnapshot data snapshots}.
+     * database represented by a {@link io.spine.web.firebase.NodeContent}.
      *
      * @param newEntries      a list of JSON serialized entries retrieved from Spine
      * @param currentData     the current node data to match new data to

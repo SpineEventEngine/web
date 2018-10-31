@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
@@ -37,8 +36,8 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * An implementation of {@link QueryBridge} based on the Firebase Realtime Database.
  *
- * <p>This bridge stores the {@link QueryResponse} data to a location in a given
- * {@link FirebaseDatabase} and retrieves the database path to that response as the result.
+ * <p>This bridge stores the {@link QueryResponse} data to a location in a given Firebase database
+ * and retrieves the database path to that response as the result.
  *
  * <p>More formally, for each encountered {@link Query}, the bridge performs a call to
  * the {@code QueryService} and stores the resulting entity states into the given database. The data

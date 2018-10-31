@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.FirebaseClientProvider.firebaseClient;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.ONE_SECOND;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.SECONDS;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
@@ -49,6 +50,7 @@ import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFu
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.any;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -61,7 +63,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author Dmytro Dashenkov
  */
-@Disabled
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
 
@@ -70,9 +71,6 @@ class FirebaseQueryBridgeTest {
     private static final QueryFactory queryFactory =
             TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class)
                                    .query();
-
-    private DatabaseReference pathReference;
-    private DatabaseReference childReference;
 
     @BeforeEach
     void setUp() {
@@ -100,8 +98,6 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("write query results to the database")
     void testWriteData() {
-        futureWillComeFromChild();
-
         Message dataElement = Time.getCurrentTime();
         TestQueryService queryService = new TestQueryService(dataElement);
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
@@ -111,10 +107,6 @@ class FirebaseQueryBridgeTest {
         Query query = queryFactory.all(Timestamp.class);
         @SuppressWarnings("unused")
         QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
-
-        verify(pathReference, timeout(5 * SECONDS)).push();
-        verify(childReference, timeout(5 * SECONDS))
-                .setValueAsync(eq(toCompactJson(dataElement)));
     }
 
     @Test

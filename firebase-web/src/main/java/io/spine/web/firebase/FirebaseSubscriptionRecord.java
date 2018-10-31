@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
@@ -36,7 +35,7 @@ import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A subscription record that gets stored into a {@link FirebaseDatabase}.
+ * A subscription record that gets stored into a Firebase database.
  *
  * <p>Supports both an initial store and consequent updates of the stored data.
  *
@@ -61,9 +60,8 @@ final class FirebaseSubscriptionRecord {
     }
 
     /**
-     * Writes this record to the given {@link FirebaseDatabase} as initial data, without checking
-     * what is already stored in database at given location.
-     * @param databaseUrl
+     * Writes this record to the Firebase database as initial data, without checking what is
+     * already stored in database at given location.
      */
     void storeAsInitial(String databaseUrl) {
         NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
@@ -73,7 +71,6 @@ final class FirebaseSubscriptionRecord {
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
      * adding array items to storage in a transaction.
-     * @param nodeUrl
      */
     private void flushNewTo(NodeUrl nodeUrl) {
         queryResponse.thenAccept(response -> {
@@ -86,7 +83,6 @@ final class FirebaseSubscriptionRecord {
 
     /**
      * Stores the data to the Firebase, updating only the data that has changed.
-     * @param databaseUrl
      */
     void storeAsUpdate(String databaseUrl) {
         NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
@@ -96,7 +92,6 @@ final class FirebaseSubscriptionRecord {
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
      * adding, removing and updating items already present in storage in a transaction.
-     * @param nodeUrl
      */
     private void flushDiffTo(NodeUrl nodeUrl) {
         queryResponse.thenAccept(response -> {

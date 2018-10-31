@@ -21,8 +21,6 @@
 package io.spine.web.firebase;
 
 import com.google.common.testing.EqualsTester;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Any;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
@@ -36,7 +34,6 @@ import io.spine.net.InternetDomain;
 import io.spine.net.InternetDomainVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.time.ZoneOffsets;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,14 +46,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 /**
  * @author Dmytro Dashenkov
  */
-@Disabled
 @DisplayName("FirebaseDatabasePath should")
 class FirebaseDatabasePathTest {
 
@@ -130,16 +123,6 @@ class FirebaseDatabasePathTest {
         assertTrue(path.contains("?"));
         assertTrue(path.contains(")"));
         assertTrue(path.contains("-"));
-    }
-
-    @Test
-    @DisplayName("generate a database reference")
-    void testReference() {
-        Query query = queryFactory.all(Empty.class);
-        FirebaseDatabase database = mock(FirebaseDatabase.class);
-
-        FirebaseDatabasePath path = FirebaseDatabasePath.allocateForQuery(query);
-        verify(database).getReference(eq(path.toString()));
     }
 
     private static Query tenantAwareQuery(TenantId tenantId) {

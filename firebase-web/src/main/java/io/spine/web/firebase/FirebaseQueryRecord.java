@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
@@ -42,7 +41,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A record which can be stored into a {@link FirebaseDatabase}.
+ * A record which can be stored into a Firebase database.
  *
  * <p>A single record represents a {@linkplain QueryResponse response to a single query}.
  *
@@ -70,7 +69,7 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Writes this record to the given {@link FirebaseDatabase}.
+     * Writes this record to the given Firebase database.
      *
      * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
      * @param databaseUrl
@@ -81,7 +80,7 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Writes this record to the given {@link FirebaseDatabase} in a single transaction
+     * Writes this record to the Firebase database in a single transaction
      * (i.e. in a single batch).
      *
      * <p>Receiving data from Spine and writing it to database are both performed asynchronously.

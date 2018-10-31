@@ -26,7 +26,6 @@ import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import javafx.scene.Node;
 
 import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.net.MediaType.JSON_UTF_8;

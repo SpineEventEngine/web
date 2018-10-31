@@ -53,7 +53,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author Mykhailo Drachuk
  */
-@Disabled
 @DisplayName("FirebaseSubscriptionRecord should")
 class FirebaseSubscriptionRecordTest {
 

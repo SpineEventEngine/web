@@ -23,21 +23,11 @@ package io.spine.web.firebase;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
-import com.google.firebase.database.utilities.Clock;
-import com.google.firebase.database.utilities.DefaultClock;
-import com.google.firebase.database.utilities.OffsetClock;
-import com.google.gson.JsonObject;
 import io.spine.web.http.RequestExecutor;
-
-import javax.annotation.Nullable;
 
 import java.util.Optional;
 
-import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
-
 class FirebaseRestClient implements FirebaseClient {
-
-    private static final Clock CLOCK = new OffsetClock(new DefaultClock(), 0);
 
     private final RequestExecutor requestExecutor;
 
@@ -54,7 +44,7 @@ class FirebaseRestClient implements FirebaseClient {
     public Optional<NodeContent> get(NodeUrl nodeUrl) {
         GenericUrl url = nodeUrl.toGenericUrl();
         String data = requestExecutor.get(url);
-        if ("null".equals(data)) {
+        if (isNullData(data)) {
             return Optional.empty();
         }
         NodeContent content = NodeContent.from(data);
@@ -84,18 +74,7 @@ class FirebaseRestClient implements FirebaseClient {
         requestExecutor.patch(genericUrl, byteArrayContent);
     }
 
-    private static JsonObject toFirebaseEntry(String value) {
-        String generatedKey = newChildKey();
-        JsonObject entry = new JsonObject();
-        entry.addProperty(generatedKey, value);
-        return entry;
-    }
-
-    static boolean isNullData(String value) {
+    private static boolean isNullData(String value) {
         return "null".equals(value);
-    }
-
-    private static String newChildKey() {
-        return generatePushChildName(CLOCK.millis());
     }
 }
