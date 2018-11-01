@@ -60,7 +60,8 @@ public final class HttpRequestExecutor {
      *
      * @param url
      *         the target URL
-     * @throws java.lang.IllegalStateException if request couldn't be performed normally
+     * @throws java.lang.IllegalStateException
+     *         if the request couldn't be performed normally
      */
     public String get(GenericUrl url) {
         try {
@@ -78,6 +79,8 @@ public final class HttpRequestExecutor {
      * @param content
      *         the body of the request
      * @return the {@code String} containing response body
+     * @throws java.lang.IllegalStateException
+     *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
     public String post(GenericUrl url, HttpContent content) {
@@ -96,6 +99,8 @@ public final class HttpRequestExecutor {
      * @param content
      *         the body of the request
      * @return the {@code String} containing response body
+     * @throws java.lang.IllegalStateException
+     *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
     public String put(GenericUrl url, HttpContent content) {
@@ -114,6 +119,8 @@ public final class HttpRequestExecutor {
      * @param content
      *         the body of the request
      * @return the {@code String} containing response body
+     * @throws java.lang.IllegalStateException
+     *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
     public String patch(GenericUrl url, HttpContent content) {
