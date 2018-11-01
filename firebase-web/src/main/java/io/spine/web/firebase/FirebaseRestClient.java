@@ -23,9 +23,12 @@ package io.spine.web.firebase;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.web.http.HttpRequestExecutor;
 
 import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A {@code FirebaseClient} which operates via Firebase REST API.
@@ -42,10 +45,19 @@ class FirebaseRestClient implements FirebaseClient {
      */
     private static final String NODE_URL_FORMAT = "%s/%s.json";
 
+    /**
+     * The representation of database {@code null} entry.
+     *
+     * <p>In Firebase the {@code null} node is deemed nonexistent.
+     */
+    @VisibleForTesting
+    static final String NULL_ENTRY = "null";
+
     private final String databaseUrl;
     private final HttpRequestExecutor requestExecutor;
 
-    private FirebaseRestClient(String databaseUrl, HttpRequestExecutor requestExecutor) {
+    @VisibleForTesting
+    FirebaseRestClient(String databaseUrl, HttpRequestExecutor requestExecutor) {
         this.databaseUrl = databaseUrl;
         this.requestExecutor = requestExecutor;
     }
@@ -61,6 +73,8 @@ class FirebaseRestClient implements FirebaseClient {
 
     @Override
     public Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath) {
+        checkNotNull(nodePath);
+
         GenericUrl url = toNodeUrl(nodePath);
         String data = requestExecutor.get(url);
         if (isNullData(data)) {
@@ -73,6 +87,9 @@ class FirebaseRestClient implements FirebaseClient {
 
     @Override
     public void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content) {
+        checkNotNull(nodePath);
+        checkNotNull(content);
+
         GenericUrl url = toNodeUrl(nodePath);
         ByteArrayContent byteArrayContent = content.toByteArray();
         Optional<FirebaseNodeContent> existingContent = get(nodePath);
@@ -105,6 +122,6 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     private static boolean isNullData(String data) {
-        return "null".equals(data);
+        return NULL_ENTRY.equals(data);
     }
 }

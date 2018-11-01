@@ -36,8 +36,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * A tool to create and execute HTTP requests.
  *
  * <p>All responses are returned in a {@code String} form.
+ *
+ * <p>The class is effectively {@code final} and is left non-{@code final} to enable testing mocks.
  */
-public final class HttpRequestExecutor {
+public class HttpRequestExecutor {
 
     private final HttpRequestFactory requestFactory;
 
