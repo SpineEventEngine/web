@@ -81,7 +81,8 @@ final class FirebaseSubscriptionDiff {
      *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    static FirebaseSubscriptionDiff computeDiff(List<String> newEntries, FirebaseNodeContent currentData) {
+    static FirebaseSubscriptionDiff
+    computeDiff(List<String> newEntries, FirebaseNodeContent currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject.entrySet());
         FirebaseSubscriptionEntriesMatcher matcher =
@@ -89,15 +90,15 @@ final class FirebaseSubscriptionDiff {
         List<UpToDateEntry> entries = upToDateEntries(newEntries);
         List<Entry> entryUpdates = matcher.match(entries);
         return new FirebaseSubscriptionDiff(entriesToAdd(entryUpdates),
-                entriesToChange(entryUpdates),
-                entriesToRemove(entryUpdates));
+                                            entriesToChange(entryUpdates),
+                                            entriesToRemove(entryUpdates));
     }
 
     private static List<ExistingEntry>
     existingEntries(Collection<Map.Entry<String, JsonElement>> entries) {
         return entries.parallelStream()
-                .map(ExistingEntry::fromJsonObjectEntry)
-                .collect(toList());
+                      .map(ExistingEntry::fromJsonObjectEntry)
+                      .collect(toList());
     }
 
     private static List<UpToDateEntry> upToDateEntries(List<String> newEntries) {

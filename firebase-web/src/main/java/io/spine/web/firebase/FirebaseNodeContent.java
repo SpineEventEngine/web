@@ -58,7 +58,8 @@ final class FirebaseNodeContent {
      */
     static FirebaseNodeContent from(String json) {
         JsonParser parser = new JsonParser();
-        JsonObject content = parser.parse(json).getAsJsonObject();
+        JsonObject content = parser.parse(json)
+                                   .getAsJsonObject();
         return new FirebaseNodeContent(content);
     }
 

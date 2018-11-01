@@ -104,7 +104,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
-        FirebaseSubscriptionRecord record = 
+        FirebaseSubscriptionRecord record =
                 new FirebaseSubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);
         return new FirebaseSubscriptionKeepUpResult(statusOk());

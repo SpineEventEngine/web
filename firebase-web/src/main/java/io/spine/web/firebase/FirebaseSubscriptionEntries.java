@@ -179,7 +179,7 @@ final class FirebaseSubscriptionEntries {
         }
 
         /**
-         * An operation to be performed with this entry in the Firebase storage. 
+         * An operation to be performed with this entry in the Firebase storage.
          */
         Operation operation() {
             return operation;

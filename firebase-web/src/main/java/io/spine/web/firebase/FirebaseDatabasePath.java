@@ -91,7 +91,8 @@ final class FirebaseDatabasePath {
 
     @SuppressWarnings("UnnecessaryDefault")
     private static String tenantIdAsString(Query query) {
-        TenantId tenantId = query.getContext().getTenantId();
+        TenantId tenantId = query.getContext()
+                                 .getTenantId();
         TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
@@ -109,7 +110,8 @@ final class FirebaseDatabasePath {
     }
 
     private static String actorAsString(Query query) {
-        UserId actor = query.getContext().getActor();
+        UserId actor = query.getContext()
+                            .getActor();
         String result = actor.getValue();
         return result;
     }
