@@ -22,17 +22,13 @@ package io.spine.web.firebase;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.util.IOUtils;
-import com.google.common.collect.Streams;
 import com.google.common.testing.NullPointerTester;
 import io.spine.web.http.HttpRequestExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.web.firebase.FirebaseRestClient.NULL_ENTRY;
@@ -83,7 +79,7 @@ class FirebaseRestClientTest {
         Optional<FirebaseNodeContent> result = client.get(path);
         assertTrue(result.isPresent());
         FirebaseNodeContent content = result.get();
-        String contentString = content.content()
+        String contentString = content.underlyingJson()
                                       .toString();
         assertEquals(DATA, contentString);
     }

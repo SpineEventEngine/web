@@ -80,7 +80,7 @@ final class FirebaseSubscriptionDiff {
      * @return a diff between Spine and Firebase data states
      */
     static FirebaseSubscriptionDiff computeDiff(List<String> newEntries, FirebaseNodeContent currentData) {
-        JsonObject jsonObject = currentData.content();
+        JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject.entrySet());
         FirebaseSubscriptionEntriesMatcher matcher =
                 new FirebaseSubscriptionEntriesMatcher(existingEntries);

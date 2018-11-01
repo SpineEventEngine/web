@@ -102,7 +102,7 @@ final class FirebaseNodeContent {
         content.addProperty(key, data);
     }
 
-    JsonObject content() {
+    JsonObject underlyingJson() {
         return content;
     }
 
