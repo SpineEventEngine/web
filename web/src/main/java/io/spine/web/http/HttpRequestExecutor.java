@@ -34,6 +34,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A tool to create and execute HTTP requests.
+ *
+ * <p>All responses are returned in a {@code String} form.
  */
 public final class HttpRequestExecutor {
 
