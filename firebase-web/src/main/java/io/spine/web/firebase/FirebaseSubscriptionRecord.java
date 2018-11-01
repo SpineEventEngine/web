@@ -67,8 +67,8 @@ final class FirebaseSubscriptionRecord {
     }
 
     /**
-     * Flushes an array response of the query to the Firebase asynchronously,
-     * adding array items to storage in a transaction.
+     * Flushes an array response of the query to the Firebase, adding array items to storage in a
+     * transaction.
      */
     private void flushNewVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
@@ -87,8 +87,8 @@ final class FirebaseSubscriptionRecord {
     }
 
     /**
-     * Flushes an array response of the query to the Firebase asynchronously,
-     * adding, removing and updating items already present in storage in a transaction.
+     * Flushes an array response of the query to the Firebase, adding, removing and updating items
+     * already present in storage in a transaction.
      */
     private void flushDiffVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {

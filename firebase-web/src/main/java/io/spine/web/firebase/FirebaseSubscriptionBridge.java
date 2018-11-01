@@ -159,7 +159,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             checkState(queryService != null,
                        "Query Service is not set to FirebaseSubscriptionBridge.");
             checkState(firebaseClient != null,
-                       "Firebase database client is not set to to FirebaseSubscriptionBridge.");
+                       "Firebase database client is not set to FirebaseSubscriptionBridge.");
             return new FirebaseSubscriptionBridge(this);
         }
     }

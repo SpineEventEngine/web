@@ -31,7 +31,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@code FirebaseClient} which operates via Firebase REST API.
+ * A {@code FirebaseClient} which operates via the Firebase REST API.
  *
  * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
  * </a>.
@@ -46,10 +46,11 @@ class FirebaseRestClient implements FirebaseClient {
     private static final String NODE_URL_FORMAT = "%s/%s.json";
 
     /**
-     * The representation of database {@code null} entry.
+     * The representation of the database {@code null} entry.
      *
      * <p>In Firebase the {@code null} node is deemed nonexistent.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
@@ -63,7 +64,7 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     /**
-     * Create a {@code FirebaseRestClient} which operates on the database located at given
+     * Creates a {@code FirebaseRestClient} which operates on the database located at given
      * {@code databaseUrl} and uses given {@code httpTransport}.
      */
     static FirebaseRestClient create(String databaseUrl, HttpTransport httpTransport) {
@@ -101,7 +102,7 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     /**
-     * Creates the database node or overwrites the node content by the given content.
+     * Creates the database node with the given content or overwrites the existing one.
      */
     private void create(GenericUrl nodeUrl, ByteArrayContent content) {
         requestExecutor.put(nodeUrl, content);

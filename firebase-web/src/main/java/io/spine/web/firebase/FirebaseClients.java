@@ -75,7 +75,7 @@ public final class FirebaseClients {
     }
 
     /**
-     * Creates a {@code FirebaseClient} for usage in a non-GAE environment.
+     * Creates a {@code FirebaseClient} for usage in non-GAE environment.
      */
     private static FirebaseClient other(String databaseUrl) {
         ApacheHttpTransport httpTransport = new ApacheHttpTransport();

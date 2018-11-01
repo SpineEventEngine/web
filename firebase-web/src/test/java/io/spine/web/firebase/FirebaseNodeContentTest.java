@@ -39,7 +39,7 @@ class FirebaseNodeContentTest {
     private static final String DATA = "{\"" + KEY + "\":\"" + VALUE + "\"}";
 
     @Test
-    @DisplayName("be empty when created via default constructor")
+    @DisplayName("be empty when created via the default constructor")
     void beCreatedEmpty() {
         FirebaseNodeContent content = new FirebaseNodeContent();
         JsonObject underlyingJson = content.underlyingJson();

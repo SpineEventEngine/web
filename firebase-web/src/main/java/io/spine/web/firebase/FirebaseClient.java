@@ -23,7 +23,7 @@ package io.spine.web.firebase;
 import java.util.Optional;
 
 /**
- * A client which accesses the Firebase database.
+ * A client which operates on values in the Firebase database.
  *
  * <p>The implementations are meant to work in "one client per database" format.
  */
