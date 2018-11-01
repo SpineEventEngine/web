@@ -37,6 +37,7 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.mock
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.updateAuthors;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("FirebaseSubscriptionRecord should")
@@ -83,5 +84,22 @@ class FirebaseSubscriptionRecordTest {
         record.storeAsUpdate(firebaseClient);
 
         verify(firebaseClient).addContent(any(), any());
+    }
+
+    @Test
+    @DisplayName("store continuous updates for a single entity")
+    void storeContinuousUpdates() {
+        Book aliceInWonderland = aliceInWonderland();
+        String dbPath = "subscription-continuous-db-updates-path";
+        @SuppressWarnings("unchecked")
+        CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
+        mockQueryResponse(queryResponse, aliceInWonderland);
+
+        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(fromString(dbPath),
+                                                                           queryResponse);
+
+        record.storeAsUpdate(firebaseClient);
+        record.storeAsUpdate(firebaseClient);
+        verify(firebaseClient, times(2)).addContent(any(), any());
     }
 }
