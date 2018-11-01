@@ -30,6 +30,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.io.IOException;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -55,6 +56,7 @@ public class HttpRequestExecutor {
      * @return the new instance of {@code HttpRequestExecutor}
      */
     public static HttpRequestExecutor using(HttpTransport transport) {
+        checkNotNull(transport);
         HttpRequestFactory requestFactory = transport.createRequestFactory();
         return new HttpRequestExecutor(requestFactory);
     }
@@ -68,6 +70,7 @@ public class HttpRequestExecutor {
      *         if the request couldn't be performed normally
      */
     public String get(GenericUrl url) {
+        checkNotNull(url);
         try {
             return doGet(url);
         } catch (IOException e) {
@@ -88,6 +91,8 @@ public class HttpRequestExecutor {
      */
     @CanIgnoreReturnValue
     public String post(GenericUrl url, HttpContent content) {
+        checkNotNull(url);
+        checkNotNull(content);
         try {
             return doPost(url, content);
         } catch (IOException e) {
@@ -108,6 +113,8 @@ public class HttpRequestExecutor {
      */
     @CanIgnoreReturnValue
     public String put(GenericUrl url, HttpContent content) {
+        checkNotNull(url);
+        checkNotNull(content);
         try {
             return doPut(url, content);
         } catch (IOException e) {
@@ -128,6 +135,8 @@ public class HttpRequestExecutor {
      */
     @CanIgnoreReturnValue
     public String patch(GenericUrl url, HttpContent content) {
+        checkNotNull(url);
+        checkNotNull(content);
         try {
             return doPatch(url, content);
         } catch (IOException e) {
