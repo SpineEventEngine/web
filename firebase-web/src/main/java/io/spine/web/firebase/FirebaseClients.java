@@ -62,17 +62,23 @@ public final class FirebaseClients {
             Class.forName(SystemProperty.class.getName());
             return gae(databaseUrl);
         } catch (ClassNotFoundException ignored) {
-            return local(databaseUrl);
+            return other(databaseUrl);
         }
     }
 
-    private static FirebaseClient local(String databaseUrl) {
-        ApacheHttpTransport httpTransport = new ApacheHttpTransport();
+    /**
+     * Creates a {@code FirebaseClient} for usage in the Google AppEngine environment.
+     */
+    private static FirebaseClient gae(String databaseUrl) {
+        UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
         return create(databaseUrl, httpTransport);
     }
 
-    private static FirebaseClient gae(String databaseUrl) {
-        UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
+    /**
+     * Creates a {@code FirebaseClient} for usage in a non-GAE environment.
+     */
+    private static FirebaseClient other(String databaseUrl) {
+        ApacheHttpTransport httpTransport = new ApacheHttpTransport();
         return create(databaseUrl, httpTransport);
     }
 }
