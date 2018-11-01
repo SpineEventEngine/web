@@ -60,15 +60,15 @@ final class FirebaseSubscriptionDiff {
     }
 
     List<AddedRecord> added() {
-        return added;
+        return unmodifiableList(added);
     }
 
     List<ChangedRecord> changed() {
-        return changed;
+        return unmodifiableList(changed);
     }
 
     List<RemovedRecord> removed() {
-        return removed;
+        return unmodifiableList(removed);
     }
 
     /**

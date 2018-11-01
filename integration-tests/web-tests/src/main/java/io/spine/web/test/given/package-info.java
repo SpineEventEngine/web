@@ -18,33 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This package contains a simplistic Spine application which allows to test the usage of the Spine
+ * Web API.
+ */
+
+@CheckReturnValue
+@ParametersAreNonnullByDefault
 package io.spine.web.test.given;
 
-import io.spine.server.aggregate.Aggregate;
-import io.spine.server.aggregate.Apply;
-import io.spine.server.command.Assign;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/**
- * An aggregate that is used to create projects.
- *
- * @author Mykhailo Drachuk
- */
-@SuppressWarnings("unused") // Reflective access.
-public class ProjectAggregate extends Aggregate<ProjectId, Project, ProjectVBuilder> {
-
-    public ProjectAggregate(ProjectId id) {
-        super(id);
-    }
-
-    @Assign
-    ProjectCreated handle(CreateProject command) {
-        return ProjectCreatedVBuilder.newBuilder()
-                                     .setId(command.getId())
-                                     .build();
-    }
-
-    @Apply
-    private void on(ProjectCreated event) {
-        getBuilder().setId(event.getId());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

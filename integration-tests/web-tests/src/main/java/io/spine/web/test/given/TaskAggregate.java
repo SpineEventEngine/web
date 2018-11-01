@@ -29,6 +29,7 @@ import io.spine.server.command.Assign;
  *
  * @author Dmytro Dashenkov
  */
+@SuppressWarnings("unused") // Reflective access.
 public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
     public TaskAggregate(TaskId id) {

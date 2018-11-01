@@ -46,6 +46,8 @@ class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
     }
 
     /**
+     * Creates a response with a given status.
+     *
      * @param status
      *         the status of a response to be created
      * @return a new {@link Response}
