@@ -19,7 +19,7 @@
  */
 
 /**
- * This package contains components for working with HTTP communications.
+ * This package contains components for working with HTTP requests.
  */
 
 @CheckReturnValue
