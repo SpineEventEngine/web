@@ -57,12 +57,10 @@ public final class FirebaseQueryBridge implements QueryBridge {
 
     private final AsyncQueryService queryService;
     private final FirebaseClient firebaseClient;
-    private final long writeAwaitSeconds;
 
     private FirebaseQueryBridge(Builder builder) {
         this.queryService = builder.queryService;
         this.firebaseClient = builder.firebaseClient;
-        this.writeAwaitSeconds = builder.writeAwaitSeconds;
     }
 
     /**
@@ -105,14 +103,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
      */
     public static final class Builder {
 
-        /**
-         * The default amount of seconds to wait for a single record to be written.
-         */
-        private static final long DEFAULT_WRITE_AWAIT_SECONDS = 60L;
-
         private AsyncQueryService queryService;
         private FirebaseClient firebaseClient;
-        private long writeAwaitSeconds = DEFAULT_WRITE_AWAIT_SECONDS;
 
         /**
          * Prevents local instantiation.
@@ -128,18 +120,6 @@ public final class FirebaseQueryBridge implements QueryBridge {
 
         public Builder setFirebaseClient(FirebaseClient firebaseClient) {
             this.firebaseClient = checkNotNull(firebaseClient);
-            return this;
-        }
-
-        /**
-         * Sets the amount of seconds to wait for a single record to be written.
-         *
-         * <p>The default value is {@code 60} seconds.
-         *
-         * @param writeAwaitSeconds time to await a single write operation, in seconds
-         */
-        public Builder setWriteAwaitSeconds(long writeAwaitSeconds) {
-            this.writeAwaitSeconds = writeAwaitSeconds;
             return this;
         }
 

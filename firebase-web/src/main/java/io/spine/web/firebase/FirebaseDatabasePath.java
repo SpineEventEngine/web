@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.client.http.GenericUrl;
 import com.google.common.base.Joiner;
 import io.spine.client.Query;
 import io.spine.client.QueryId;
@@ -35,8 +34,8 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * A path in a Firebase Realtime Database.
  *
- * <p>The path is not aware of the database per se. See {@link io.spine.web.firebase.NodeUrl} to
- * bind this path to a database.
+ * <p>The path is not aware of the database per se. See
+ * {@link io.spine.web.firebase.FirebaseRestClient} to bind this path to a database.
  *
  * @author Dmytro Dashenkov
  */

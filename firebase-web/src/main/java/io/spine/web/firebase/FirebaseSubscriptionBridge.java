@@ -57,7 +57,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     private final AsyncQueryService queryService;
     private final FirebaseClient firebaseClient;
 
-    private FirebaseSubscriptionBridge(FirebaseSubscriptionBridge.Builder builder) {
+    private FirebaseSubscriptionBridge(Builder builder) {
         this.queryService = builder.queryService;
         this.firebaseClient = builder.firebaseClient;
     }
