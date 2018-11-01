@@ -30,7 +30,7 @@ import java.util.Optional;
 public interface FirebaseClient {
 
     /**
-     * Returns the content of the specified Firebase database node.
+     * Retrieves the content at the specified Firebase database node.
      *
      * <p>The {@code null} content (i.e. node is not present in the database) is returned as
      * {@link java.util.Optional#empty()}.
