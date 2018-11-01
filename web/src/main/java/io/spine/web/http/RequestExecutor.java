@@ -20,7 +20,6 @@
 
 package io.spine.web.http;
 
-import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
@@ -55,7 +54,7 @@ public final class RequestExecutor {
     }
 
     @CanIgnoreReturnValue
-    public String put(GenericUrl url, ByteArrayContent content) {
+    public String put(GenericUrl url, HttpContent content) {
         try {
             return doPut(url, content);
         } catch (IOException e) {
@@ -64,7 +63,7 @@ public final class RequestExecutor {
     }
 
     @CanIgnoreReturnValue
-    public String patch(GenericUrl url, ByteArrayContent content) {
+    public String patch(GenericUrl url, HttpContent content) {
         try {
             return doPatch(url, content);
         } catch (IOException e) {
