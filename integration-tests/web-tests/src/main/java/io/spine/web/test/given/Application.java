@@ -23,8 +23,10 @@ package io.spine.web.test.given;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.web.firebase.FirebaseClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.web.firebase.FirebaseClients.rest;
 
 /**
  * A test Spine application.
@@ -37,10 +39,14 @@ final class Application {
 
     private final CommandService commandService;
     private final QueryService queryService;
+    private final FirebaseClient firebaseClient;
 
-    private Application(CommandService commandService, QueryService queryService) {
+    private Application(CommandService commandService,
+                        QueryService queryService,
+                        FirebaseClient client) {
         this.commandService = commandService;
         this.queryService = queryService;
+        this.firebaseClient = client;
     }
 
     static Application create(BoundedContext boundedContext) {
@@ -51,18 +57,19 @@ final class Application {
         QueryService queryService = QueryService.newBuilder()
                                                 .add(boundedContext)
                                                 .build();
-        return new Application(commandService, queryService);
+        FirebaseClient firebaseClient = rest(DATABASE_URL);
+        return new Application(commandService, queryService, firebaseClient);
     }
 
-    CommandService getCommandService() {
+    CommandService commandService() {
         return commandService;
     }
 
-    QueryService getQueryService() {
+    QueryService queryService() {
         return queryService;
     }
 
-    static String databaseUrl() {
-        return DATABASE_URL;
+    FirebaseClient firebaseClient() {
+        return firebaseClient;
     }
 }

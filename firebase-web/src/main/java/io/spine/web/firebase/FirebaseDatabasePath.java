@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase;
 
+import com.google.api.client.http.GenericUrl;
 import com.google.common.base.Joiner;
 import io.spine.client.Query;
 import io.spine.client.QueryId;

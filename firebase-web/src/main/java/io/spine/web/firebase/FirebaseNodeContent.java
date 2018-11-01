@@ -31,26 +31,26 @@ import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 
-class NodeContent {
+class FirebaseNodeContent {
 
     private final JsonObject content;
 
-    private NodeContent(JsonObject content) {
+    private FirebaseNodeContent(JsonObject content) {
         this.content = content;
     }
 
-    NodeContent() {
+    FirebaseNodeContent() {
         this.content = new JsonObject();
     }
 
-    static NodeContent from(String json) {
+    static FirebaseNodeContent from(String json) {
         JsonParser parser = new JsonParser();
         JsonObject content = parser.parse(json).getAsJsonObject();
-        return new NodeContent(content);
+        return new FirebaseNodeContent(content);
     }
 
-    static NodeContent withSingleChild(String childContent) {
-        NodeContent nodeContent = new NodeContent();
+    static FirebaseNodeContent withSingleChild(String childContent) {
+        FirebaseNodeContent nodeContent = new FirebaseNodeContent();
         nodeContent.pushData(childContent);
         return nodeContent;
     }

@@ -25,7 +25,6 @@ import io.spine.web.firebase.FirebaseSubscriptionCancelServlet;
 
 import javax.servlet.annotation.WebServlet;
 
-import static io.spine.web.test.given.Application.databaseUrl;
 import static io.spine.web.test.given.Server.application;
 
 /**
@@ -39,9 +38,8 @@ public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelSer
 
     public TestSubscriptionCancelServlet() {
         super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().getQueryService())
-                                        .setDatabaseUrl(databaseUrl())
-
+                                        .setQueryService(application().queryService())
+                                        .setFirebaseClient(application().firebaseClient())
                                         .build());
     }
 }

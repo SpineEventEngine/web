@@ -25,19 +25,12 @@ import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static io.spine.web.firebase.FirebaseClientProvider.firebaseClient;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -51,14 +44,11 @@ final class FirebaseQueryRecord {
 
     private final FirebaseDatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
-    private final long writeAwaitSeconds;
 
     FirebaseQueryRecord(Query query,
-                        CompletionStage<QueryResponse> queryResponse,
-                        long writeAwaitSeconds) {
+                        CompletionStage<QueryResponse> queryResponse) {
         this.path = FirebaseDatabasePath.allocateForQuery(query);
         this.queryResponse = queryResponse;
-        this.writeAwaitSeconds = writeAwaitSeconds;
     }
 
     /**
@@ -72,11 +62,9 @@ final class FirebaseQueryRecord {
      * Writes this record to the given Firebase database.
      *
      * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
-     * @param databaseUrl
      */
-    void storeTo(String databaseUrl) {
-        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
-        flushTo(nodeUrl);
+    void storeVia(FirebaseClient firebaseClient) {
+        flushTo(firebaseClient);
     }
 
     /**
@@ -84,11 +72,9 @@ final class FirebaseQueryRecord {
      * (i.e. in a single batch).
      *
      * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
-     * @param databaseUrl
      */
-    void storeTransactionallyTo(String databaseUrl) {
-        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
-        flushTransactionallyTo(nodeUrl);
+    void storeTransactionallyVia(FirebaseClient firebaseClient) {
+        flushTransactionally(firebaseClient);
     }
 
     /**
@@ -115,7 +101,7 @@ final class FirebaseQueryRecord {
         }
 
         /**
-         * @return the count of messages in the consumed response
+         * Returns the count of messages in the consumed response.
          */
         public long getValue() {
             return value;
@@ -127,35 +113,27 @@ final class FirebaseQueryRecord {
      * adding array items to storage one by one.
      *
      * <p>Suitable for big queries, spanning thousands and millions of items.
-     * @param nodeUrl
      */
-    private void flushTo(NodeUrl nodeUrl) {
+    private void flushTo(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(
-                response -> {
-                    try {
-                        mapMessagesToJson(response).forEach(
-                                json -> {
-                                    NodeContent nodeContent = NodeContent.withSingleChild(json);
-                                    firebaseClient().addContent(nodeUrl, nodeContent);
-                                });
-                    } catch (Throwable e) {
-                        log().warn("Error when flushing query response: " + e.getLocalizedMessage());
-                    }
-                }
+                response -> mapMessagesToJson(response)
+                        .forEach(json -> {
+                            FirebaseNodeContent content = FirebaseNodeContent.withSingleChild(json);
+                            firebaseClient.addContent(path(), content);
+                        })
         );
     }
 
     /**
      * Flushes the array response of the query to the Firebase asynchronously but in one go.
-     * @param nodeUrl
      */
-    private void flushTransactionallyTo(NodeUrl nodeUrl) {
+    private void flushTransactionally(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
-                        NodeContent nodeContent = NodeContent.withSingleChild(item);
-                        firebaseClient().addContent(nodeUrl, nodeContent);
+                        FirebaseNodeContent content = FirebaseNodeContent.withSingleChild(item);
+                        firebaseClient.addContent(path(), content);
                     });
                 }
         );
@@ -174,28 +152,5 @@ final class FirebaseQueryRecord {
                        .unordered()
                        .map(AnyPacker::<Message>unpack)
                        .map(Json::toCompactJson);
-    }
-
-    /**
-     * Awaits the given {@link Future} and catches all the exceptions.
-     *
-     * <p>The encountered exceptions are logged and never thrown.
-     */
-    private void mute(Future<?> future) {
-        try {
-            future.get(writeAwaitSeconds, SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log().error(e.getMessage());
-        }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FirebaseQueryRecord.class);
     }
 }

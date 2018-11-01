@@ -30,7 +30,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static io.spine.web.firebase.FirebaseClientProvider.firebaseClient;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static java.util.stream.Collectors.toList;
 
@@ -63,66 +62,58 @@ final class FirebaseSubscriptionRecord {
      * Writes this record to the Firebase database as initial data, without checking what is
      * already stored in database at given location.
      */
-    void storeAsInitial(String databaseUrl) {
-        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
-        flushNewTo(nodeUrl);
+    void storeAsInitial(FirebaseClient firebaseClient) {
+        flushNewVia(firebaseClient);
     }
 
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
      * adding array items to storage in a transaction.
      */
-    private void flushNewTo(NodeUrl nodeUrl) {
+    private void flushNewVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            NodeContent nodeContent = new NodeContent();
+            FirebaseNodeContent nodeContent = new FirebaseNodeContent();
             newEntries.forEach(nodeContent::pushData);
-            firebaseClient().addContent(nodeUrl, nodeContent);
+            firebaseClient.addContent(path(), nodeContent);
         });
     }
 
     /**
      * Stores the data to the Firebase, updating only the data that has changed.
      */
-    void storeAsUpdate(String databaseUrl) {
-        NodeUrl nodeUrl = new NodeUrl(databaseUrl, path());
-        flushDiffTo(nodeUrl);
+    void storeAsUpdate(FirebaseClient firebaseClient) {
+        flushDiffVia(firebaseClient);
     }
 
     /**
      * Flushes an array response of the query to the Firebase asynchronously,
      * adding, removing and updating items already present in storage in a transaction.
      */
-    private void flushDiffTo(NodeUrl nodeUrl) {
+    private void flushDiffVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            Optional<NodeContent> existingContent = firebaseClient().get(nodeUrl);
+            Optional<FirebaseNodeContent> existingContent = firebaseClient.get(path());
             if (!existingContent.isPresent()) {
-                NodeContent nodeContent = new NodeContent();
+                FirebaseNodeContent nodeContent = new FirebaseNodeContent();
                 newEntries.forEach(nodeContent::pushData);
-                firebaseClient().addContent(nodeUrl, nodeContent);
+                firebaseClient.addContent(path(), nodeContent);
             } else {
                 FirebaseSubscriptionDiff diff = computeDiff(newEntries, existingContent.get());
-                updateWithDiff(nodeUrl, diff);
+                updateWithDiff(diff, firebaseClient);
             }
         });
     }
 
-    private static void updateWithDiff(NodeUrl nodeUrl, FirebaseSubscriptionDiff diff) {
-        NodeContent nodeContent = new NodeContent();
+    private void updateWithDiff(FirebaseSubscriptionDiff diff, FirebaseClient firebaseClient) {
+        FirebaseNodeContent nodeContent = new FirebaseNodeContent();
         diff.changed()
-            .forEach(record -> {
-                nodeContent.addChild(record.key(), record.data());
-            });
+            .forEach(record -> nodeContent.addChild(record.key(), record.data()));
         diff.removed()
-            .forEach(record -> {
-                nodeContent.addChild(record.key(), "null");
-            });
+            .forEach(record -> nodeContent.addChild(record.key(), "null"));
         diff.added()
-            .forEach(record -> {
-                nodeContent.pushData(record.data());
-            });
-        firebaseClient().addContent(nodeUrl, nodeContent);
+            .forEach(record -> nodeContent.pushData(record.data()));
+        firebaseClient.addContent(path(), nodeContent);
     }
 
     /**

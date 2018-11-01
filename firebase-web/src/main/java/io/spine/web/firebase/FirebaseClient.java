@@ -22,9 +22,9 @@ package io.spine.web.firebase;
 
 import java.util.Optional;
 
-interface FirebaseClient {
+public interface FirebaseClient {
 
-    Optional<NodeContent> get(NodeUrl nodeUrl);
+    Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath);
 
-    void addContent(NodeUrl nodeUrl, NodeContent content);
+    void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content);
 }

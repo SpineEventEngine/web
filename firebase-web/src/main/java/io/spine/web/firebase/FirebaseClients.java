@@ -24,33 +24,33 @@ import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.appengine.api.utils.SystemProperty;
 
-import java.util.concurrent.ThreadFactory;
-
-import static com.google.appengine.api.ThreadManager.backgroundThreadFactory;
 import static io.spine.web.firebase.FirebaseRestClient.create;
-import static java.util.concurrent.Executors.defaultThreadFactory;
 
-final class FirebaseClients {
+public final class FirebaseClients {
 
     private FirebaseClients() {
     }
 
-    static FirebaseClient forCurrentEnv() {
+    public static FirebaseClient rest(String databaseUrl) {
+        return restForCurrentEnv(databaseUrl);
+    }
+
+    private static FirebaseClient restForCurrentEnv(String databaseUrl) {
         try {
             Class.forName(SystemProperty.class.getName());
-            return gae();
+            return gae(databaseUrl);
         } catch (ClassNotFoundException ignored) {
-            return local();
+            return local(databaseUrl);
         }
     }
 
-    private static FirebaseClient local() {
+    private static FirebaseClient local(String databaseUrl) {
         ApacheHttpTransport httpTransport = new ApacheHttpTransport();
-        return create(httpTransport);
+        return create(databaseUrl, httpTransport);
     }
 
-    private static FirebaseClient gae() {
+    private static FirebaseClient gae(String databaseUrl) {
         UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
-        return create(httpTransport);
+        return create(databaseUrl, httpTransport);
     }
 }

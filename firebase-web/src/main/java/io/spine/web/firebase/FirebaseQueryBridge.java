@@ -56,12 +56,12 @@ import static com.google.common.base.Preconditions.checkState;
 public final class FirebaseQueryBridge implements QueryBridge {
 
     private final AsyncQueryService queryService;
-    private final String databaseUrl;
+    private final FirebaseClient firebaseClient;
     private final long writeAwaitSeconds;
 
     private FirebaseQueryBridge(Builder builder) {
         this.queryService = builder.queryService;
-        this.databaseUrl = builder.databaseUrl;
+        this.firebaseClient = builder.firebaseClient;
         this.writeAwaitSeconds = builder.writeAwaitSeconds;
     }
 
@@ -78,13 +78,12 @@ public final class FirebaseQueryBridge implements QueryBridge {
     public QueryProcessingResult send(WebQuery webQuery) {
         Query query = webQuery.getQuery();
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse,
-                                                             writeAwaitSeconds);
+        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse);
 
         if (webQuery.getDeliveredTransactionally()) {
-            record.storeTransactionallyTo(databaseUrl);
+            record.storeTransactionallyVia(firebaseClient);
         } else {
-            record.storeTo(databaseUrl);
+            record.storeVia(firebaseClient);
         }
 
         QueryProcessingResult result =
@@ -112,7 +111,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
         private static final long DEFAULT_WRITE_AWAIT_SECONDS = 60L;
 
         private AsyncQueryService queryService;
-        private String databaseUrl;
+        private FirebaseClient firebaseClient;
         private long writeAwaitSeconds = DEFAULT_WRITE_AWAIT_SECONDS;
 
         /**
@@ -127,8 +126,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
             return this;
         }
 
-        public Builder setDatabaseUrl(String databaseUrl) {
-            this.databaseUrl = checkNotNull(databaseUrl);
+        public Builder setFirebaseClient(FirebaseClient firebaseClient) {
+            this.firebaseClient = checkNotNull(firebaseClient);
             return this;
         }
 
@@ -151,7 +150,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
          */
         public FirebaseQueryBridge build() {
             checkState(queryService != null, "Query Service is not set.");
-            checkState(databaseUrl != null, "Firebase database URL is not set.");
+            checkState(firebaseClient != null, "Firebase database client is not set.");
             return new FirebaseQueryBridge(this);
         }
     }

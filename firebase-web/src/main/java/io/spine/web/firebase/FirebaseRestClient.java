@@ -29,49 +29,59 @@ import java.util.Optional;
 
 class FirebaseRestClient implements FirebaseClient {
 
+    /**
+     * Firebase node URL format.
+     */
+    private static final String NODE_URL_FORMAT = "%s/%s.json";
+
+    private final String databaseUrl;
     private final RequestExecutor requestExecutor;
 
-    private FirebaseRestClient(RequestExecutor requestExecutor) {
+    private FirebaseRestClient(String databaseUrl, RequestExecutor requestExecutor) {
+        this.databaseUrl = databaseUrl;
         this.requestExecutor = requestExecutor;
     }
 
-    static FirebaseRestClient create(HttpTransport httpTransport) {
+    static FirebaseRestClient create(String databaseUrl, HttpTransport httpTransport) {
         RequestExecutor requestExecutor = RequestExecutor.using(httpTransport);
-        return new FirebaseRestClient(requestExecutor);
+        return new FirebaseRestClient(databaseUrl, requestExecutor);
     }
 
     @Override
-    public Optional<NodeContent> get(NodeUrl nodeUrl) {
-        GenericUrl url = nodeUrl.toGenericUrl();
+    public Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath) {
+        GenericUrl url = toGenericUrl(nodePath);
         String data = requestExecutor.get(url);
         if (isNullData(data)) {
             return Optional.empty();
         }
-        NodeContent content = NodeContent.from(data);
-        Optional<NodeContent> result = Optional.of(content);
+        FirebaseNodeContent content = FirebaseNodeContent.from(data);
+        Optional<FirebaseNodeContent> result = Optional.of(content);
         return result;
     }
 
     @Override
-    public void addContent(NodeUrl nodeUrl, NodeContent content) {
-        Optional<NodeContent> existingContent = get(nodeUrl);
+    public void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content) {
+        GenericUrl url = toGenericUrl(nodePath);
+        ByteArrayContent byteArrayContent = content.toByteArray();
+        Optional<FirebaseNodeContent> existingContent = get(nodePath);
         if (!existingContent.isPresent()) {
-            add(nodeUrl, content);
+            add(url, byteArrayContent);
         } else {
-            update(nodeUrl, content);
+            update(url, byteArrayContent);
         }
     }
 
-    private void add(NodeUrl nodeUrl, NodeContent content) {
-        GenericUrl genericUrl = nodeUrl.toGenericUrl();
-        ByteArrayContent byteArrayContent = content.toByteArray();
-        requestExecutor.put(genericUrl, byteArrayContent);
+    private void add(GenericUrl nodeUrl, ByteArrayContent content) {
+        requestExecutor.put(nodeUrl, content);
     }
 
-    private void update(NodeUrl nodeUrl, NodeContent content) {
-        GenericUrl genericUrl = nodeUrl.toGenericUrl();
-        ByteArrayContent byteArrayContent = content.toByteArray();
-        requestExecutor.patch(genericUrl, byteArrayContent);
+    private void update(GenericUrl nodeUrl, ByteArrayContent content) {
+        requestExecutor.patch(nodeUrl, content);
+    }
+
+    private GenericUrl toGenericUrl(FirebaseDatabasePath nodePath) {
+        String url = String.format(NODE_URL_FORMAT, databaseUrl, nodePath);
+        return new GenericUrl(url);
     }
 
     private static boolean isNullData(String value) {
