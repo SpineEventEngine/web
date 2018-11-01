@@ -16,6 +16,8 @@
     "test": "test"
   },
   "scripts": {
+    "build": "webpack --config webpack-prod.config.js",
+    "dev": "webpack --config webpack-dev.config.js",
     "coverage": "nyc --reporter=text-lcov $PACKAGE_TEST > ../coverage.lcov",
     "test": "$PACKAGE_TEST"
   },
@@ -35,6 +37,11 @@
     "mocha": "^5.2.0",
     "sinon": "^7.0.0",
     "nyc": "^13.0.1",
-    "google-protobuf": "$PACKAGE_PROTOBUF_VERSION"
-  }
+    "google-protobuf": "$PACKAGE_PROTOBUF_VERSION",
+    "webpack": "^4.23.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-merge": "^4.1.4"
+  },
+  "sideEffects": false,
+  "main": "dist/bundle.umd.js"
 }
