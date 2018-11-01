@@ -49,7 +49,7 @@ class Given {
     return BackendClient.usingFirebase({
       atEndpoint: endpoint,
       withFirebaseStorage: devFirebaseApp,
-      forActor: 'web-test-actor-2'
+      forActor: 'web-test-actor'
     });
   }
 
