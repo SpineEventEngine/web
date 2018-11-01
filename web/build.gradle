@@ -30,7 +30,7 @@ apply plugin: spineProtobufPluginId
 dependencies {
     api "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-    implementation 'com.google.http-client:google-http-client:1.26.0'
+    implementation "com.google.http-client:google-http-client:$httpClientVersion"
 
     implementation "io.spine:spine-server:$spineVersion"
 }
