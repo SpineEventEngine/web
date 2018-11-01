@@ -29,8 +29,6 @@ import static io.spine.web.test.given.Server.application;
 
 /**
  * An endpoint canceling the client entity change subscriptions.
- *
- * @author Mykhailo Drachuk
  */
 @WebServlet("/subscription/cancel")
 @SuppressWarnings("serial")

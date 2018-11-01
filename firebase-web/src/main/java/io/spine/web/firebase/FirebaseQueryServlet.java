@@ -25,7 +25,6 @@ import io.spine.web.query.QueryServlet;
 /**
  * A {@link QueryServlet} which uses the {@link FirebaseQueryBridge}.
  *
- * @author Dmytro Dashenkov
  * @see QueryServlet
  */
 @SuppressWarnings("serial") // Java serialization is not supported.

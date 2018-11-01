@@ -26,8 +26,6 @@ import io.spine.server.command.Assign;
 
 /**
  * An aggregate that is used to create projects.
- *
- * @author Mykhailo Drachuk
  */
 @SuppressWarnings("unused") // Reflective access.
 public class ProjectAggregate extends Aggregate<ProjectId, Project, ProjectVBuilder> {

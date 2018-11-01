@@ -37,8 +37,6 @@ import static java.util.stream.Collectors.toList;
  * A subscription record that gets stored into a Firebase database.
  *
  * <p>Supports both an initial store and consequent updates of the stored data.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionRecord {
 

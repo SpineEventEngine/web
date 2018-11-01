@@ -42,8 +42,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * A diff of the Firebase storage state to an actual state of entities, used to execute updates on
  * Firebase storage.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionDiff {
 

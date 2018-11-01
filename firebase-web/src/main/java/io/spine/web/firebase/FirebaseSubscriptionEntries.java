@@ -29,8 +29,6 @@ import java.util.Map;
 
 /**
  * Data classes for processing of entries retrieved from both Spine and Firebase storage.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionEntries {
 

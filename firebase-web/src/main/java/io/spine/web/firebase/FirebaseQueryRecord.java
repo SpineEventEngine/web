@@ -37,8 +37,6 @@ import static java.util.stream.Collectors.toList;
  * A record which can be stored into a Firebase database.
  *
  * <p>A single record represents a {@linkplain QueryResponse response to a single query}.
- *
- * @author Dmytro Dashenkov
  */
 final class FirebaseQueryRecord {
 

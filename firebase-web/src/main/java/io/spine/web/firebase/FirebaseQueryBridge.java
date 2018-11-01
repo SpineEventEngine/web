@@ -46,8 +46,6 @@ import static com.google.common.base.Preconditions.checkState;
  * the bridge as a result is the path to the database node containing all those records.
  * The absolute position of such a node is not specified, thus the result path is the only way
  * to read the data from the database.
- *
- * @author Dmytro Dashenkov
  */
 public final class FirebaseQueryBridge implements QueryBridge {
 

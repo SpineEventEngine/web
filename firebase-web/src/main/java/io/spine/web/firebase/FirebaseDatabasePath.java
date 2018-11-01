@@ -36,8 +36,6 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * <p>The path is not aware of the database per se. See
  * {@link io.spine.web.firebase.FirebaseRestClient} for how the path is bound to the database.
- *
- * @author Dmytro Dashenkov
  */
 final class FirebaseDatabasePath {
 

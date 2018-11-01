@@ -29,8 +29,6 @@ import static io.spine.web.test.given.Server.application;
 
 /**
  * The query side endpoint of the application.
- *
- * @author Dmytro Dashenkov
  */
 @WebServlet("/query")
 @SuppressWarnings("serial")

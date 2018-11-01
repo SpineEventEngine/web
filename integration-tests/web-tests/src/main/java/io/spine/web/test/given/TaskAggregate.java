@@ -26,8 +26,6 @@ import io.spine.server.command.Assign;
 
 /**
  * An aggregate with the state of type {@code spine.web.test.Task}.
- *
- * @author Dmytro Dashenkov
  */
 @SuppressWarnings("unused") // Reflective access.
 public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {

@@ -33,8 +33,6 @@ import static io.spine.json.Json.toCompactJson;
  *
  * <p>This result represents a database path to the requested data.
  * See {@link FirebaseQueryBridge} for more details.
- *
- * @author Dmytro Dashenkov
  */
 final class FirebaseQueryProcessingResult implements QueryProcessingResult {
 

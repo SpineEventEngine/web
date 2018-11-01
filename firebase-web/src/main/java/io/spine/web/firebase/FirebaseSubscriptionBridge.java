@@ -49,8 +49,6 @@ import static io.spine.web.firebase.FirebaseDatabasePath.allocateForQuery;
  * <p>The bridge allows to {@link #subscribe(Topic) subscribe} to some {@link Topic topic},
  * {@link #keepUp(Subscription) keep up} the created {@link Subscription subscription},
  * and {@link #cancel(Subscription) cancel} the created subscription.
- *
- * @author Mykhailo Drachuk
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 

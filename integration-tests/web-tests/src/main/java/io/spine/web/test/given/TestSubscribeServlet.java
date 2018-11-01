@@ -29,8 +29,6 @@ import static io.spine.web.test.given.Server.application;
 
 /**
  * An endpoint creating new client subscriptions to entity changes.
- *
- * @author Mykhailo Drachuk
  */
 @WebServlet("/subscription/create")
 @SuppressWarnings("serial")

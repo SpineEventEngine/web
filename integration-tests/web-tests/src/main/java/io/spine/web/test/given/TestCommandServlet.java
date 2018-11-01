@@ -28,8 +28,6 @@ import static io.spine.web.test.given.Server.application;
 
 /**
  * The command side endpoint of the application.
- *
- * @author Dmytro Dashenkov
  */
 @WebServlet("/command")
 @SuppressWarnings("serial")

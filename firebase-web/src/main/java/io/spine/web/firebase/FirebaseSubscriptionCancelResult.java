@@ -34,8 +34,6 @@ import static io.spine.json.Json.toCompactJson;
  * A result of a request to cancel a subscription to be written to the {@link ServletResponse}.
  *
  * <p>The result is a JSON formatted {@link Response Spine Response} message.
- *
- * @author Mykhailo Drachuk
  */
 class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
 

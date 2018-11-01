@@ -30,8 +30,6 @@ import static io.spine.web.firebase.FirebaseClients.rest;
 
 /**
  * A test Spine application.
- *
- * @author Dmytro Dashenkov
  */
 final class Application {
 
