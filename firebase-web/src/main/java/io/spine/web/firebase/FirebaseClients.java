@@ -26,16 +26,38 @@ import com.google.appengine.api.utils.SystemProperty;
 
 import static io.spine.web.firebase.FirebaseRestClient.create;
 
+/**
+ * A tool for {@link io.spine.web.firebase.FirebaseClient} instances creation.
+ */
 public final class FirebaseClients {
 
     private FirebaseClients() {
     }
 
+    /**
+     * Creates a {@linkplain io.spine.web.firebase.FirebaseRestClient firebase client} which
+     * operates via the Firebase REST API.
+     *
+     * @param databaseUrl
+     *         the URL of the database on which the client operates
+     * @return the new instance of {@code FirebaseRestClient}
+     */
     public static FirebaseClient rest(String databaseUrl) {
-        return restForCurrentEnv(databaseUrl);
+        return forCurrentEnv(databaseUrl);
     }
 
-    private static FirebaseClient restForCurrentEnv(String databaseUrl) {
+    /**
+     * Creates a {@link io.spine.web.firebase.FirebaseRestClient} for the current environment.
+     *
+     * <p>The different environment requires different {@linkplain
+     * com.google.api.client.http.HttpTransport HTTP transport} to operate.
+     *
+     * <p>For more information on this, see
+     * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
+     * HttpTransport docs
+     * </a>.
+     */
+    private static FirebaseClient forCurrentEnv(String databaseUrl) {
         try {
             Class.forName(SystemProperty.class.getName());
             return gae(databaseUrl);

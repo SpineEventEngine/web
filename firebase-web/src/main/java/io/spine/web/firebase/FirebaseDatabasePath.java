@@ -35,7 +35,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * A path in a Firebase Realtime Database.
  *
  * <p>The path is not aware of the database per se. See
- * {@link io.spine.web.firebase.FirebaseRestClient} to bind this path to a database.
+ * {@link io.spine.web.firebase.FirebaseRestClient} for how the path is bound to the database.
  *
  * @author Dmytro Dashenkov
  */
@@ -44,6 +44,8 @@ final class FirebaseDatabasePath {
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
     private static final String PATH_DELIMITER = "/";
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String DEFAULT_TENANT = "common";
 
     private final String path;
@@ -64,8 +66,8 @@ final class FirebaseDatabasePath {
         return new FirebaseDatabasePath(path);
     }
 
-    static FirebaseDatabasePath fromString(String string) {
-        return new FirebaseDatabasePath(string);
+    static FirebaseDatabasePath fromString(String pathString) {
+        return new FirebaseDatabasePath(pathString);
     }
 
     private static String constructPath(Query query) {

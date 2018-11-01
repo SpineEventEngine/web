@@ -32,6 +32,9 @@ import java.io.IOException;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * A tool to create and execute HTTP requests.
+ */
 public final class RequestExecutor {
 
     private final HttpRequestFactory requestFactory;
@@ -40,11 +43,25 @@ public final class RequestExecutor {
         this.requestFactory = requestFactory;
     }
 
+    /**
+     * Creates a new {@code RequestExecutor} which will use the specified HTTP transport.
+     *
+     * @param transport
+     *         the underlying {@code HttpTransport} to use
+     * @return the new instance of {@code RequestExecutor}
+     */
     public static RequestExecutor using(HttpTransport transport) {
         HttpRequestFactory requestFactory = transport.createRequestFactory();
         return new RequestExecutor(requestFactory);
     }
 
+    /**
+     * Prepares and executes a GET request.
+     *
+     * @param url
+     *         the target URL
+     * @throws java.lang.IllegalStateException if request couldn't be performed normally
+     */
     public String get(GenericUrl url) {
         try {
             return doGet(url);
@@ -53,6 +70,33 @@ public final class RequestExecutor {
         }
     }
 
+    /**
+     * Prepares and executes a POST request.
+     *
+     * @param url
+     *         the target URL
+     * @param content
+     *         the body of the request
+     * @return the {@code String} containing response body
+     */
+    @CanIgnoreReturnValue
+    public String post(GenericUrl url, HttpContent content) {
+        try {
+            return doPost(url, content);
+        } catch (IOException e) {
+            throw newIllegalStateException(e, e.getMessage());
+        }
+    }
+
+    /**
+     * Prepares and executes a PUT request.
+     *
+     * @param url
+     *         the target URL
+     * @param content
+     *         the body of the request
+     * @return the {@code String} containing response body
+     */
     @CanIgnoreReturnValue
     public String put(GenericUrl url, HttpContent content) {
         try {
@@ -62,6 +106,15 @@ public final class RequestExecutor {
         }
     }
 
+    /**
+     * Prepares and executes a PATCH request.
+     *
+     * @param url
+     *         the target URL
+     * @param content
+     *         the body of the request
+     * @return the {@code String} containing response body
+     */
     @CanIgnoreReturnValue
     public String patch(GenericUrl url, HttpContent content) {
         try {
@@ -73,6 +126,11 @@ public final class RequestExecutor {
 
     private String doGet(GenericUrl url) throws IOException {
         HttpRequest request = requestFactory.buildGetRequest(url);
+        return executeAndGetResponse(request);
+    }
+
+    private String doPost(GenericUrl url, HttpContent content) throws IOException {
+        HttpRequest request = requestFactory.buildPostRequest(url, content);
         return executeAndGetResponse(request);
     }
 

@@ -70,8 +70,6 @@ final class FirebaseQueryRecord {
     /**
      * Writes this record to the Firebase database in a single transaction
      * (i.e. in a single batch).
-     *
-     * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
      */
     void storeTransactionallyVia(FirebaseClient firebaseClient) {
         flushTransactionally(firebaseClient);
@@ -109,8 +107,8 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Flushes the array response of the query to the Firebase asynchronously,
-     * adding array items to storage one by one.
+     * Flushes the array response of the query to the Firebase, adding array items to storage one
+     * by one.
      *
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
@@ -125,7 +123,7 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Flushes the array response of the query to the Firebase asynchronously but in one go.
+     * Flushes the array response of the query to the Firebase in one go.
      */
     private void flushTransactionally(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(

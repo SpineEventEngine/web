@@ -27,10 +27,18 @@ import io.spine.web.http.RequestExecutor;
 
 import java.util.Optional;
 
+/**
+ * A {@code FirebaseClient} which operates via Firebase REST API.
+ *
+ * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
+ * </a>.
+ */
 class FirebaseRestClient implements FirebaseClient {
 
     /**
-     * Firebase node URL format.
+     * The format by which Firebase database nodes are accessible via REST API.
+     *
+     * <p>The first placeholder is the database URL and the second one is a node path.
      */
     private static final String NODE_URL_FORMAT = "%s/%s.json";
 
@@ -42,6 +50,10 @@ class FirebaseRestClient implements FirebaseClient {
         this.requestExecutor = requestExecutor;
     }
 
+    /**
+     * Create a {@code FirebaseRestClient} which operates on the database located at given
+     * {@code databaseUrl} and uses given {@code httpTransport}.
+     */
     static FirebaseRestClient create(String databaseUrl, HttpTransport httpTransport) {
         RequestExecutor requestExecutor = RequestExecutor.using(httpTransport);
         return new FirebaseRestClient(databaseUrl, requestExecutor);
@@ -49,7 +61,7 @@ class FirebaseRestClient implements FirebaseClient {
 
     @Override
     public Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath) {
-        GenericUrl url = toGenericUrl(nodePath);
+        GenericUrl url = toNodeUrl(nodePath);
         String data = requestExecutor.get(url);
         if (isNullData(data)) {
             return Optional.empty();
@@ -61,30 +73,38 @@ class FirebaseRestClient implements FirebaseClient {
 
     @Override
     public void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content) {
-        GenericUrl url = toGenericUrl(nodePath);
+        GenericUrl url = toNodeUrl(nodePath);
         ByteArrayContent byteArrayContent = content.toByteArray();
         Optional<FirebaseNodeContent> existingContent = get(nodePath);
         if (!existingContent.isPresent()) {
-            add(url, byteArrayContent);
+            create(url, byteArrayContent);
         } else {
             update(url, byteArrayContent);
         }
     }
 
-    private void add(GenericUrl nodeUrl, ByteArrayContent content) {
+    /**
+     * Creates the database node or overwrites the node content by the given content.
+     */
+    private void create(GenericUrl nodeUrl, ByteArrayContent content) {
         requestExecutor.put(nodeUrl, content);
     }
 
+    /**
+     * Updates the database node with the given content.
+     *
+     * <p>Common entries are overwritten.
+     */
     private void update(GenericUrl nodeUrl, ByteArrayContent content) {
         requestExecutor.patch(nodeUrl, content);
     }
 
-    private GenericUrl toGenericUrl(FirebaseDatabasePath nodePath) {
+    private GenericUrl toNodeUrl(FirebaseDatabasePath nodePath) {
         String url = String.format(NODE_URL_FORMAT, databaseUrl, nodePath);
         return new GenericUrl(url);
     }
 
-    private static boolean isNullData(String value) {
-        return "null".equals(value);
+    private static boolean isNullData(String data) {
+        return "null".equals(data);
     }
 }

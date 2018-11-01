@@ -129,9 +129,6 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
      */
     public static final class Builder {
 
-        /**
-         * The default amount of seconds to wait for a single record to be written.
-         */
         private AsyncQueryService queryService;
         private FirebaseClient firebaseClient;
 
@@ -162,7 +159,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             checkState(queryService != null,
                        "Query Service is not set to FirebaseSubscriptionBridge.");
             checkState(firebaseClient != null,
-                       "Firebase database URL is not set to to FirebaseSubscriptionBridge.");
+                       "Firebase database client is not set to to FirebaseSubscriptionBridge.");
             return new FirebaseSubscriptionBridge(this);
         }
     }

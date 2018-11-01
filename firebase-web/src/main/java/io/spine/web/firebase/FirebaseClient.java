@@ -22,9 +22,37 @@ package io.spine.web.firebase;
 
 import java.util.Optional;
 
+/**
+ * A client which accesses the Firebase database.
+ *
+ * <p>The implementations are meant to work in "one client per database" format.
+ */
 public interface FirebaseClient {
 
+    /**
+     * Returns the content of the specified Firebase database node.
+     *
+     * <p>The {@code null} content (i.e. node is not present in the database) is returned as
+     * {@link java.util.Optional#empty()}.
+     *
+     * @param nodePath
+     *         the path to the requested node in the database
+     * @return the node content or empty {@code Optional} if there is no content
+     */
     Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath);
 
+    /**
+     * Adds the specified content to the specified Firebase database node.
+     *
+     * <p>If the node doesn't exist, it is created.
+     *
+     * <p>If the node exists, the new content will be added to the existing entries (i.e. the node
+     * content is <strong>not</strong> overwritten).
+     *
+     * @param nodePath
+     *         the path to the node in the Firebase database
+     * @param content
+     *         the content to add to the node
+     */
     void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content);
 }

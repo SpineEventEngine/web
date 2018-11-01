@@ -47,10 +47,6 @@ import static com.google.common.base.Preconditions.checkState;
  * The absolute position of such a node is not specified, thus the result path is the only way
  * to read the data from the database.
  *
- * <p>Note that the database writes are non-blocking. This means that when
- * the {@link #send(WebQuery)} method exits, the records may or may not be in
- * the database yet.
- *
  * @author Dmytro Dashenkov
  */
 public final class FirebaseQueryBridge implements QueryBridge {
