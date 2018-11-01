@@ -35,24 +35,24 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A tool to create and execute HTTP requests.
  */
-public final class RequestExecutor {
+public final class HttpRequestExecutor {
 
     private final HttpRequestFactory requestFactory;
 
-    private RequestExecutor(HttpRequestFactory requestFactory) {
+    private HttpRequestExecutor(HttpRequestFactory requestFactory) {
         this.requestFactory = requestFactory;
     }
 
     /**
-     * Creates a new {@code RequestExecutor} which will use the specified HTTP transport.
+     * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP transport.
      *
      * @param transport
      *         the underlying {@code HttpTransport} to use
-     * @return the new instance of {@code RequestExecutor}
+     * @return the new instance of {@code HttpRequestExecutor}
      */
-    public static RequestExecutor using(HttpTransport transport) {
+    public static HttpRequestExecutor using(HttpTransport transport) {
         HttpRequestFactory requestFactory = transport.createRequestFactory();
-        return new RequestExecutor(requestFactory);
+        return new HttpRequestExecutor(requestFactory);
     }
 
     /**

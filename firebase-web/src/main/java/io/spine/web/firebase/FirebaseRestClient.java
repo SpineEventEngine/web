@@ -23,7 +23,7 @@ package io.spine.web.firebase;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
-import io.spine.web.http.RequestExecutor;
+import io.spine.web.http.HttpRequestExecutor;
 
 import java.util.Optional;
 
@@ -43,9 +43,9 @@ class FirebaseRestClient implements FirebaseClient {
     private static final String NODE_URL_FORMAT = "%s/%s.json";
 
     private final String databaseUrl;
-    private final RequestExecutor requestExecutor;
+    private final HttpRequestExecutor requestExecutor;
 
-    private FirebaseRestClient(String databaseUrl, RequestExecutor requestExecutor) {
+    private FirebaseRestClient(String databaseUrl, HttpRequestExecutor requestExecutor) {
         this.databaseUrl = databaseUrl;
         this.requestExecutor = requestExecutor;
     }
@@ -55,7 +55,7 @@ class FirebaseRestClient implements FirebaseClient {
      * {@code databaseUrl} and uses given {@code httpTransport}.
      */
     static FirebaseRestClient create(String databaseUrl, HttpTransport httpTransport) {
-        RequestExecutor requestExecutor = RequestExecutor.using(httpTransport);
+        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(httpTransport);
         return new FirebaseRestClient(databaseUrl, requestExecutor);
     }
 
