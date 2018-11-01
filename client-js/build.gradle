@@ -51,6 +51,11 @@ project.compileTestJava.enabled = false
 
 apply from: "$rootDir/scripts/js.gradle"
 
+buildJs.doLast {
+    npm 'run', 'build'
+    npm 'run', 'dev'
+}
+
 task linkClientProto {
     doLast {
         npm 'link', 'spine-web-client-proto'
