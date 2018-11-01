@@ -27,16 +27,13 @@ import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Mykhailo Drachuk
- */
 @DisplayName("FirebaseSubscriptionDiff should")
 class FirebaseSubscriptionDiffTest {
 
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
-        NodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        FirebaseNodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
@@ -51,7 +48,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
-        NodeContent content = new NodeContent();
+        FirebaseNodeContent content = new FirebaseNodeContent();
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 content
@@ -65,7 +62,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a removed object")
     void createRemovedDiff() {
-        NodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        FirebaseNodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList(),
@@ -80,7 +77,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge changes spanning multiple objects")
     void createComplexDiff() {
-        NodeContent content = nodeContent(
+        FirebaseNodeContent content = nodeContent(
                 "{\"id\":\"1\",\"a\":1,\"b\":3}",
                 "{\"x\":\"asd\",\"y\":3}",
                 "{\"pass\":true}",
@@ -100,8 +97,8 @@ class FirebaseSubscriptionDiffTest {
         assertEquals(1, diff.removed().size());
     }
 
-    private static NodeContent nodeContent(String... entries) {
-        NodeContent nodeContent = new NodeContent();
+    private static FirebaseNodeContent nodeContent(String... entries) {
+        FirebaseNodeContent nodeContent = new FirebaseNodeContent();
         for (String entry : entries) {
             nodeContent.pushData(entry);
         }

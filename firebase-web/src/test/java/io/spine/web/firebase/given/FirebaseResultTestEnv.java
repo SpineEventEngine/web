@@ -32,9 +32,6 @@ import static io.spine.core.Responses.statusOk;
 import static io.spine.json.Json.toCompactJson;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Mykhailo Drachuk
- */
 public final class FirebaseResultTestEnv {
 
     /**

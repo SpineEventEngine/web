@@ -47,9 +47,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Dmytro Dashenkov
- */
 @DisplayName("FirebaseDatabasePath should")
 class FirebaseDatabasePathTest {
 
@@ -112,9 +109,12 @@ class FirebaseDatabasePathTest {
     @DisplayName("construct into a valid path")
     void testEscaped() {
         TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault(), systemDefault());
-        Query query = requestFactory.query().all(Any.class);
-        String path = FirebaseDatabasePath.allocateForQuery(query).toString();
+                TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault(),
+                                                    systemDefault());
+        Query query = requestFactory.query()
+                                    .all(Any.class);
+        String path = FirebaseDatabasePath.allocateForQuery(query)
+                                          .toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -128,7 +128,8 @@ class FirebaseDatabasePathTest {
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance(FirebaseDatabasePathTest.class, tenantId);
-        Query query = requestFactory.query().all(Any.class);
+        Query query = requestFactory.query()
+                                    .all(Any.class);
         return query;
     }
 }

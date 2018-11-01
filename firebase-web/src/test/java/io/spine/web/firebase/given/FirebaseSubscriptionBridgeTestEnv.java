@@ -35,6 +35,7 @@ import io.spine.core.ResponseVBuilder;
 import io.spine.core.UserId;
 import io.spine.core.UserIdVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
+import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.FirebaseSubscriptionBridge;
 
 import javax.servlet.ServletResponse;
@@ -49,10 +50,6 @@ import static io.spine.core.Responses.statusOk;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Mykhailo Drachuk
- * @see FirebaseSubscriptionBridgeTestEnv
- */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
 public final class FirebaseSubscriptionBridgeTestEnv {
 
@@ -114,10 +111,10 @@ public final class FirebaseSubscriptionBridgeTestEnv {
                              .build();
     }
 
-    public static FirebaseSubscriptionBridge newBridge(String databaseUrl,
+    public static FirebaseSubscriptionBridge newBridge(FirebaseClient firebaseClient,
                                                        QueryServiceImplBase queryService) {
         return FirebaseSubscriptionBridge.newBuilder()
-                                         .setDatabaseUrl(databaseUrl)
+                                         .setFirebaseClient(firebaseClient)
                                          .setQueryService(queryService)
                                          .build();
     }
