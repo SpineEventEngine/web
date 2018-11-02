@@ -31,7 +31,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A tool to create and execute HTTP requests.
@@ -75,7 +74,7 @@ class HttpRequestExecutor {
         try {
             return doGet(url);
         } catch (IOException e) {
-            throw newIllegalStateException(e, e.getMessage());
+            throw new RequestToFirebaseFailedException(e.getMessage(), e);
         }
     }
 
@@ -97,7 +96,7 @@ class HttpRequestExecutor {
         try {
             return doPut(url, content);
         } catch (IOException e) {
-            throw newIllegalStateException(e, e.getMessage());
+            throw new RequestToFirebaseFailedException(e.getMessage(), e);
         }
     }
 
@@ -119,7 +118,7 @@ class HttpRequestExecutor {
         try {
             return doPatch(url, content);
         } catch (IOException e) {
-            throw newIllegalStateException(e, e.getMessage());
+            throw new RequestToFirebaseFailedException(e.getMessage(), e);
         }
     }
 
