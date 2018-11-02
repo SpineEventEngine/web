@@ -37,7 +37,7 @@ import static java.util.stream.Collectors.toList;
  * <p>By default checks that the value contains all the {@linkplain #expected expected} entries
  * under the specified keys.
  *
- * <p>If {@link #ANY_KEY} is specified as entry key then the checker verifies the corresponding
+ * <p>If {@link #ANY_KEY} is specified as entry key then the checker verifies that corresponding
  * value is present under any of the keys in the tested object.
  */
 class HasChildren implements ArgumentMatcher<FirebaseNodeValue> {
