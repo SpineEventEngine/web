@@ -66,7 +66,7 @@ class HttpRequestExecutor {
      * @param url
      *         the target URL
      * @return the {@code String} containing response body
-     * @throws java.lang.IllegalStateException
+     * @throws io.spine.web.firebase.RequestToFirebaseFailedException
      *         if the request couldn't be performed normally
      */
     String get(GenericUrl url) {
@@ -86,7 +86,7 @@ class HttpRequestExecutor {
      * @param content
      *         the body of the request
      * @return the {@code String} containing response body
-     * @throws java.lang.IllegalStateException
+     * @throws io.spine.web.firebase.RequestToFirebaseFailedException
      *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
@@ -108,7 +108,7 @@ class HttpRequestExecutor {
      * @param content
      *         the body of the request
      * @return the {@code String} containing response body
-     * @throws java.lang.IllegalStateException
+     * @throws io.spine.web.firebase.RequestToFirebaseFailedException
      *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
