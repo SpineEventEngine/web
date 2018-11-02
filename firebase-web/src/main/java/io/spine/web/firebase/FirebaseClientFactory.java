@@ -29,9 +29,9 @@ import static io.spine.web.firebase.FirebaseRestClient.create;
 /**
  * A tool for {@link io.spine.web.firebase.FirebaseClient} instances creation.
  */
-public final class FirebaseClients {
+public final class FirebaseClientFactory {
 
-    private FirebaseClients() {
+    private FirebaseClientFactory() {
     }
 
     /**
@@ -42,7 +42,7 @@ public final class FirebaseClients {
      *         the URL of the database on which the client operates
      * @return the new instance of {@code FirebaseRestClient}
      */
-    public static FirebaseClient rest(String databaseUrl) {
+    public static FirebaseClient restClient(String databaseUrl) {
         return forCurrentEnv(databaseUrl);
     }
 

@@ -26,7 +26,7 @@ import io.spine.server.QueryService;
 import io.spine.web.firebase.FirebaseClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.FirebaseClients.rest;
+import static io.spine.web.firebase.FirebaseClientFactory.restClient;
 
 /**
  * A test Spine application.
@@ -55,7 +55,7 @@ final class Application {
         QueryService queryService = QueryService.newBuilder()
                                                 .add(boundedContext)
                                                 .build();
-        FirebaseClient firebaseClient = rest(DATABASE_URL);
+        FirebaseClient firebaseClient = restClient(DATABASE_URL);
         return new Application(commandService, queryService, firebaseClient);
     }
 
