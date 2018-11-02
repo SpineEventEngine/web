@@ -115,4 +115,25 @@ class FirebaseSubscriptionRecordTest {
         verify(firebaseClient).addValue(eq(queryResponsePath),
                                         argThat(new HasChildren(expected)));
     }
+
+    @Test
+    @DisplayName("store a subscription update even when no initial record is present")
+    void storeUpdateWhenNoInitialPresent() {
+        String dbPath = "subscription-update-no-initial";
+
+        @SuppressWarnings("unchecked")
+        CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
+        Book aliceInWonderland = aliceInWonderland();
+        mockQueryResponse(queryResponse, aliceInWonderland);
+
+        FirebaseDatabasePath queryResponsePath = fromString(dbPath);
+        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
+                                                                           queryResponse);
+        record.storeAsUpdate(firebaseClient);
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, toCompactJson(aliceInWonderland));
+        verify(firebaseClient).addValue(eq(queryResponsePath),
+                                        argThat(new HasChildren(expected)));
+    }
 }
