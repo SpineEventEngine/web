@@ -114,8 +114,8 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     public static FirebaseSubscriptionBridge newBridge(FirebaseClient firebaseClient,
                                                        QueryServiceImplBase queryService) {
         return FirebaseSubscriptionBridge.newBuilder()
-                                         .setFirebaseClient(firebaseClient)
                                          .setQueryService(queryService)
+                                         .setFirebaseClient(firebaseClient)
                                          .build();
     }
 
