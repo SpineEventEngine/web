@@ -26,6 +26,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
+import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import io.spine.web.query.QueryProcessingResult;
@@ -42,6 +43,7 @@ import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransact
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -62,6 +64,26 @@ class FirebaseQueryBridgeTest {
     @BeforeEach
     void setUp() {
         firebaseClient = mock(FirebaseClient.class);
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("require Query Service set in class Builder")
+    void requireQueryService() {
+        FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
+                .newBuilder()
+                .setFirebaseClient(mock(FirebaseClient.class));
+        assertThrows(IllegalStateException.class, builder::build);
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("require Firebase Client set in class Builder")
+    void requireFirebaseClient() {
+        FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(mock(QueryServiceGrpc.QueryServiceImplBase.class));
+        assertThrows(IllegalStateException.class, builder::build);
     }
 
     @Test

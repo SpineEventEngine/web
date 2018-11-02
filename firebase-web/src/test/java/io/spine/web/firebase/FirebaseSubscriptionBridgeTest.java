@@ -63,6 +63,7 @@ class FirebaseSubscriptionBridgeTest {
         topicFactory = topicFactory();
     }
 
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Query Service set in Builder")
     void requireQueryService() {
