@@ -66,6 +66,7 @@ public class HttpRequestExecutor {
      *
      * @param url
      *         the target URL
+     * @return the new instance of {@code HttpRequestExecutor}
      * @throws java.lang.IllegalStateException
      *         if the request couldn't be performed normally
      */
