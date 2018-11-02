@@ -26,7 +26,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
-import io.spine.client.grpc.QueryServiceGrpc;
+import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import io.spine.web.query.QueryProcessingResult;
@@ -82,7 +82,7 @@ class FirebaseQueryBridgeTest {
     void requireFirebaseClient() {
         FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
                 .newBuilder()
-                .setQueryService(mock(QueryServiceGrpc.QueryServiceImplBase.class));
+                .setQueryService(mock(QueryServiceImplBase.class));
         assertThrows(IllegalStateException.class, builder::build);
     }
 
