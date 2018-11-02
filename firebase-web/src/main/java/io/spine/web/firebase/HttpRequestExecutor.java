@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.http;
+package io.spine.web.firebase;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
@@ -40,7 +40,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} to enable testing mocks.
  */
-public class HttpRequestExecutor {
+class HttpRequestExecutor {
 
     private final HttpRequestFactory requestFactory;
 
@@ -55,7 +55,7 @@ public class HttpRequestExecutor {
      *         the underlying {@code HttpTransport} to use
      * @return the new instance of {@code HttpRequestExecutor}
      */
-    public static HttpRequestExecutor using(HttpTransport transport) {
+    static HttpRequestExecutor using(HttpTransport transport) {
         checkNotNull(transport);
         HttpRequestFactory requestFactory = transport.createRequestFactory();
         return new HttpRequestExecutor(requestFactory);
@@ -70,7 +70,7 @@ public class HttpRequestExecutor {
      * @throws java.lang.IllegalStateException
      *         if the request couldn't be performed normally
      */
-    public String get(GenericUrl url) {
+    String get(GenericUrl url) {
         checkNotNull(url);
         try {
             return doGet(url);
@@ -91,7 +91,7 @@ public class HttpRequestExecutor {
      *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
-    public String post(GenericUrl url, HttpContent content) {
+    String post(GenericUrl url, HttpContent content) {
         checkNotNull(url);
         checkNotNull(content);
         try {
@@ -113,7 +113,7 @@ public class HttpRequestExecutor {
      *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
-    public String put(GenericUrl url, HttpContent content) {
+    String put(GenericUrl url, HttpContent content) {
         checkNotNull(url);
         checkNotNull(content);
         try {
@@ -135,7 +135,7 @@ public class HttpRequestExecutor {
      *         if the request couldn't be performed normally
      */
     @CanIgnoreReturnValue
-    public String patch(GenericUrl url, HttpContent content) {
+    String patch(GenericUrl url, HttpContent content) {
         checkNotNull(url);
         checkNotNull(content);
         try {

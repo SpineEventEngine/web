@@ -23,7 +23,6 @@ package io.spine.web.firebase;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
-import io.spine.web.http.HttpRequestExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

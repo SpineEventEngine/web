@@ -25,7 +25,6 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.web.http.HttpRequestExecutor;
 
 import java.util.Optional;
 
