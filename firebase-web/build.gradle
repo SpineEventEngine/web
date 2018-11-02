@@ -27,7 +27,7 @@ configurations {
 }
 
 ext {
-    appengineSdkVersion = '1.9.67'
+    appengineApiVersion = '1.9.67'
 }
 
 apply plugin: spineProtobufPluginId
@@ -40,7 +40,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
     implementation "com.google.http-client:google-http-client:$httpClientVersion"
-    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineSdkVersion"
+    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineApiVersion"
 
     implementation "io.spine:spine-client:$spineVersion"
 }
