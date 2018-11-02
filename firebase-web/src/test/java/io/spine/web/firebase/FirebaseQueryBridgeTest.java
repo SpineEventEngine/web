@@ -33,16 +33,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.HasChildren.ANY_KEY;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@SuppressWarnings("ConstantConditions") // Passing `null` to mocked methods.
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
+
+    private static final String EMPTY_JSON = "{}";
 
     private static final QueryFactory queryFactory =
             TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class)
@@ -82,7 +91,9 @@ class FirebaseQueryBridgeTest {
         @SuppressWarnings("unused")
         QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
-        verify(firebaseClient).addValue(any(), any());
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, toCompactJson(dataElement));
+        verify(firebaseClient).addValue(any(), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -96,7 +107,9 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(firebaseClient).addValue(any(), any());
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, EMPTY_JSON);
+        verify(firebaseClient).addValue(any(), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -110,6 +123,8 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(firebaseClient).addValue(any(), any());
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, EMPTY_JSON);
+        verify(firebaseClient).addValue(any(), argThat(new HasChildren(expected)));
     }
 }

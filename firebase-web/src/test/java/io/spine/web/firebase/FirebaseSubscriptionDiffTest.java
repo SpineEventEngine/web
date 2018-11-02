@@ -23,9 +23,13 @@ package io.spine.web.firebase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.List;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.web.firebase.FirebaseSubscriptionDiff.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("FirebaseSubscriptionDiff should")
 class FirebaseSubscriptionDiffTest {
@@ -95,6 +99,16 @@ class FirebaseSubscriptionDiffTest {
         assertEquals(1, diff.changed().size());
         assertEquals(2, diff.added().size());
         assertEquals(1, diff.removed().size());
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("throw RuntimeException in case the new entries are invalid")
+    void throwOnIncorrectEntries() {
+        String invalidJson = "invalidJson";
+        List<String> newEntries = Collections.singletonList(invalidJson);
+        FirebaseNodeValue stubValue = new FirebaseNodeValue();
+        assertThrows(RuntimeException.class, () -> computeDiff(newEntries, stubValue));
     }
 
     private static FirebaseNodeValue nodeValue(String... entries) {

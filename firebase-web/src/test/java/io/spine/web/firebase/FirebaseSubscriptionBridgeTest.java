@@ -46,6 +46,7 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newS
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newTarget;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.topicFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("FirebaseSubscriptionBridge should")
@@ -60,6 +61,25 @@ class FirebaseSubscriptionBridgeTest {
         FirebaseClient firebaseClient = mock(FirebaseClient.class);
         bridge = newBridge(firebaseClient, queryService);
         topicFactory = topicFactory();
+    }
+
+    @Test
+    @DisplayName("require Query Service set in Builder")
+    void requireQueryService() {
+        FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
+                .newBuilder()
+                .setFirebaseClient(mock(FirebaseClient.class));
+        assertThrows(IllegalStateException.class, builder::build);
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("require Firebase Client set in Builder")
+    void requireFirebaseClient() {
+        FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
+                .newBuilder()
+                .setQueryService(mock(QueryServiceImplBase.class));
+        assertThrows(IllegalStateException.class, builder::build);
     }
 
     @Test

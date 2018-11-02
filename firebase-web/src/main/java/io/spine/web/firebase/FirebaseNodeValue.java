@@ -21,6 +21,7 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.http.ByteArrayContent;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.firebase.database.utilities.Clock;
 import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
@@ -89,10 +90,14 @@ final class FirebaseNodeValue {
      * <p>The key for the child is generated via
      * {@linkplain com.google.firebase.database.utilities.PushIdGenerator standard Firebase
      * generation mechanism}.
+     *
+     * @return the generated key under which the data was stored
      */
-    void pushData(String data) {
+    @CanIgnoreReturnValue
+    String pushData(String data) {
         String key = ChildKeyGenerator.newKey();
         value.addProperty(key, data);
+        return key;
     }
 
     /**

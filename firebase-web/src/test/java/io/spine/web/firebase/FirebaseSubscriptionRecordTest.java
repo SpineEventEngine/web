@@ -25,9 +25,14 @@ import io.spine.web.firebase.given.Book;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.FirebaseDatabasePath.fromString;
+import static io.spine.web.firebase.HasChildren.ANY_KEY;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Authors.gangOfFour;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.aliceInWonderland;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.designPatterns;
@@ -36,10 +41,13 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Book
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.mockQueryResponse;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.updateAuthors;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@SuppressWarnings("ConstantConditions") // Passing `null` to mocked methods.
 @DisplayName("FirebaseSubscriptionRecord should")
 class FirebaseSubscriptionRecordTest {
 
@@ -56,50 +64,55 @@ class FirebaseSubscriptionRecordTest {
         Book donQuixote = donQuixote();
         mockQueryResponse(queryResponse, aliceInWonderland, donQuixote);
 
-        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(fromString(dbPath),
+        FirebaseDatabasePath queryResponsePath = fromString(dbPath);
+        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
                                                                            queryResponse);
         record.storeAsInitial(firebaseClient);
 
-        verify(firebaseClient).addValue(any(), any());
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, toCompactJson(aliceInWonderland));
+        expected.put(ANY_KEY, toCompactJson(donQuixote));
+        verify(firebaseClient).addValue(eq(queryResponsePath),
+                                        argThat(new HasChildren(expected)));
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     @DisplayName("store a subscription update")
     void storeUpdate() {
+        // Kept untouched. Present in both DB and QueryResponse.
         Book aliceInWonderland = aliceInWonderland();
+        // Added to the Firebase. Present only in QueryResponse.
         Book donQuixote = donQuixote();
+        // Updated with new authors. Present in both DB and QueryResponse
+        // with same ID but different data.
         Book designPatterns = designPatterns();
         Book designPatternsWithAuthors = updateAuthors(designPatterns, gangOfFour());
+        // Removed from Firebase. Present in DB but not the QueryResponse.
         Book guideToTheGalaxy = guideToTheGalaxy();
-
         String dbPath = "subscription-update-db-path";
 
         @SuppressWarnings("unchecked")
         CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
-        mockQueryResponse(queryResponse, aliceInWonderland, donQuixote, designPatternsWithAuthors,
-                          guideToTheGalaxy);
+        mockQueryResponse(queryResponse, aliceInWonderland, donQuixote, designPatternsWithAuthors);
 
-        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(fromString(dbPath),
+        FirebaseDatabasePath queryResponsePath = fromString(dbPath);
+        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
                                                                            queryResponse);
-        record.storeAsUpdate(firebaseClient);
+        FirebaseNodeValue existingValue = new FirebaseNodeValue();
+        existingValue.pushData(toCompactJson(aliceInWonderland));
+        String patternsKey = existingValue.pushData(toCompactJson(designPatterns));
+        String guideKey = existingValue.pushData(toCompactJson(guideToTheGalaxy));
 
-        verify(firebaseClient).addValue(any(), any());
-    }
-
-    @Test
-    @DisplayName("store continuous updates for a single entity")
-    void storeContinuousUpdates() {
-        Book aliceInWonderland = aliceInWonderland();
-        String dbPath = "subscription-continuous-db-updates-path";
-        @SuppressWarnings("unchecked")
-        CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
-        mockQueryResponse(queryResponse, aliceInWonderland);
-
-        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(fromString(dbPath),
-                                                                           queryResponse);
+        when(firebaseClient.get(any())).thenReturn(Optional.of(existingValue));
 
         record.storeAsUpdate(firebaseClient);
-        record.storeAsUpdate(firebaseClient);
-        verify(firebaseClient, times(2)).addValue(any(), any());
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, toCompactJson(donQuixote));
+        expected.put(patternsKey, toCompactJson(designPatternsWithAuthors));
+        expected.put(guideKey, "null");
+        verify(firebaseClient).addValue(eq(queryResponsePath),
+                                        argThat(new HasChildren(expected)));
     }
 }
