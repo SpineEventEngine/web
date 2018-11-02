@@ -22,6 +22,7 @@ package io.spine.web.firebase;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.web.http.HttpRequestExecutor;
@@ -73,7 +74,7 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath) {
+    public Optional<FirebaseNodeValue> get(FirebaseDatabasePath nodePath) {
         checkNotNull(nodePath);
 
         GenericUrl url = toNodeUrl(nodePath);
@@ -81,20 +82,20 @@ class FirebaseRestClient implements FirebaseClient {
         if (isNullData(data)) {
             return Optional.empty();
         }
-        FirebaseNodeContent content = FirebaseNodeContent.from(data);
-        Optional<FirebaseNodeContent> result = Optional.of(content);
+        FirebaseNodeValue value = FirebaseNodeValue.from(data);
+        Optional<FirebaseNodeValue> result = Optional.of(value);
         return result;
     }
 
     @Override
-    public void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content) {
+    public void addValue(FirebaseDatabasePath nodePath, FirebaseNodeValue value) {
         checkNotNull(nodePath);
-        checkNotNull(content);
+        checkNotNull(value);
 
         GenericUrl url = toNodeUrl(nodePath);
-        ByteArrayContent byteArrayContent = content.toByteArray();
-        Optional<FirebaseNodeContent> existingContent = get(nodePath);
-        if (!existingContent.isPresent()) {
+        ByteArrayContent byteArrayContent = value.toByteArray();
+        Optional<FirebaseNodeValue> existingValue = get(nodePath);
+        if (!existingValue.isPresent()) {
             create(url, byteArrayContent);
         } else {
             update(url, byteArrayContent);
@@ -102,19 +103,19 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     /**
-     * Creates the database node with the given content or overwrites the existing one.
+     * Creates the database node with the given value or overwrites the existing one.
      */
-    private void create(GenericUrl nodeUrl, ByteArrayContent content) {
-        requestExecutor.put(nodeUrl, content);
+    private void create(GenericUrl nodeUrl, HttpContent value) {
+        requestExecutor.put(nodeUrl, value);
     }
 
     /**
-     * Updates the database node with the given content.
+     * Updates the database node with the given value.
      *
      * <p>Common entries are overwritten.
      */
-    private void update(GenericUrl nodeUrl, ByteArrayContent content) {
-        requestExecutor.patch(nodeUrl, content);
+    private void update(GenericUrl nodeUrl, HttpContent value) {
+        requestExecutor.patch(nodeUrl, value);
     }
 
     private GenericUrl toNodeUrl(FirebaseDatabasePath nodePath) {

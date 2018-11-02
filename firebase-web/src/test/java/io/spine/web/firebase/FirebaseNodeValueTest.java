@@ -31,8 +31,8 @@ import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FirebaseNodeContent should")
-class FirebaseNodeContentTest {
+@DisplayName("FirebaseNodeValue should")
+class FirebaseNodeValueTest {
 
     private static final String KEY = "theKey";
     private static final String VALUE = "theValue";
@@ -41,43 +41,43 @@ class FirebaseNodeContentTest {
     @Test
     @DisplayName("be empty when created via the default constructor")
     void beCreatedEmpty() {
-        FirebaseNodeContent content = new FirebaseNodeContent();
-        JsonObject underlyingJson = content.underlyingJson();
+        FirebaseNodeValue value = new FirebaseNodeValue();
+        JsonObject underlyingJson = value.underlyingJson();
         assertEmpty(underlyingJson.entrySet());
     }
 
     @Test
     @DisplayName("allow creation from the existing JSON string")
     void beCreatedFromString() {
-        FirebaseNodeContent content = FirebaseNodeContent.from(DATA);
-        assertSingleChild(content, KEY, VALUE);
+        FirebaseNodeValue value = FirebaseNodeValue.from(DATA);
+        assertSingleChild(value, KEY, VALUE);
     }
 
     @Test
     @DisplayName("allow creation with single child")
     void beCreatedWithSingleChild() {
-        FirebaseNodeContent content = FirebaseNodeContent.withSingleChild(VALUE);
-        assertSingleChild(content, VALUE);
+        FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(VALUE);
+        assertSingleChild(value, VALUE);
     }
 
     @Test
     @DisplayName("push a new child, i.e. add it under the generated key")
     void pushChild() {
-        FirebaseNodeContent content = new FirebaseNodeContent();
-        content.pushData(VALUE);
-        assertSingleChild(content, VALUE);
+        FirebaseNodeValue value = new FirebaseNodeValue();
+        value.pushData(VALUE);
+        assertSingleChild(value, VALUE);
     }
 
     @Test
     @DisplayName("add a new child with a predefined key")
     void addChildWithKey() {
-        FirebaseNodeContent content = new FirebaseNodeContent();
-        content.addChild(KEY, VALUE);
-        assertSingleChild(content, KEY, VALUE);
+        FirebaseNodeValue value = new FirebaseNodeValue();
+        value.addChild(KEY, VALUE);
+        assertSingleChild(value, KEY, VALUE);
     }
 
-    private static void assertSingleChild(FirebaseNodeContent content, String childValue) {
-        JsonObject underlyingJson = content.underlyingJson();
+    private static void assertSingleChild(FirebaseNodeValue value, String childValue) {
+        JsonObject underlyingJson = value.underlyingJson();
         assertEquals(1, underlyingJson.entrySet()
                                       .size());
         Map.Entry<String, JsonElement> entry = underlyingJson.entrySet()
@@ -89,8 +89,8 @@ class FirebaseNodeContentTest {
     }
 
     private static void
-    assertSingleChild(FirebaseNodeContent content, String childKey, String childValue) {
-        JsonObject underlyingJson = content.underlyingJson();
+    assertSingleChild(FirebaseNodeValue value, String childKey, String childValue) {
+        JsonObject underlyingJson = value.underlyingJson();
         assertTrue(underlyingJson.has(childKey));
         String actual = underlyingJson.get(childKey)
                                       .getAsString();

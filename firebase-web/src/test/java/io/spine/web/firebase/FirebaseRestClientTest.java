@@ -52,14 +52,14 @@ class FirebaseRestClientTest {
     private HttpRequestExecutor requestExecutor;
     private FirebaseRestClient client;
     private FirebaseDatabasePath path;
-    private FirebaseNodeContent content;
+    private FirebaseNodeValue value;
 
     @BeforeEach
     void setUp() {
         requestExecutor = mock(HttpRequestExecutor.class);
         client = new FirebaseRestClient(URL_STUB, requestExecutor);
         path = FirebaseDatabasePath.fromString(PATH);
-        content = FirebaseNodeContent.from(DATA);
+        value = FirebaseNodeValue.from(DATA);
     }
 
     @Test
@@ -67,7 +67,7 @@ class FirebaseRestClientTest {
     void passNullToleranceCheck() {
         new NullPointerTester()
                 .setDefault(FirebaseDatabasePath.class, path)
-                .setDefault(FirebaseNodeContent.class, content)
+                .setDefault(FirebaseNodeValue.class, value)
                 .testAllPublicInstanceMethods(client);
     }
 
@@ -76,10 +76,10 @@ class FirebaseRestClientTest {
     void getData() {
         when(requestExecutor.get(any())).thenReturn(DATA);
 
-        Optional<FirebaseNodeContent> result = client.get(path);
+        Optional<FirebaseNodeValue> result = client.get(path);
         assertTrue(result.isPresent());
-        FirebaseNodeContent content = result.get();
-        String contentString = content.underlyingJson()
+        FirebaseNodeValue value = result.get();
+        String contentString = value.underlyingJson()
                                       .toString();
         assertEquals(DATA, contentString);
     }
@@ -89,7 +89,7 @@ class FirebaseRestClientTest {
     void getNullData() {
         when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
 
-        Optional<FirebaseNodeContent> result = client.get(path);
+        Optional<FirebaseNodeValue> result = client.get(path);
         assertFalse(result.isPresent());
     }
 
@@ -98,7 +98,7 @@ class FirebaseRestClientTest {
     void storeNewViaPut() {
         when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
 
-        client.addContent(path, content);
+        client.addValue(path, value);
         verify(requestExecutor).put(eq(expectedUrl()), any(ByteArrayContent.class));
     }
 
@@ -107,7 +107,7 @@ class FirebaseRestClientTest {
     void updateExistingViaPatch() {
         when(requestExecutor.get(any())).thenReturn(DATA);
 
-        client.addContent(path, content);
+        client.addValue(path, value);
         verify(requestExecutor).patch(eq(expectedUrl()), any(ByteArrayContent.class));
     }
 

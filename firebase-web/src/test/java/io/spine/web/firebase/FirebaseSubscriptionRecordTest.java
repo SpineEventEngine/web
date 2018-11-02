@@ -60,7 +60,7 @@ class FirebaseSubscriptionRecordTest {
                                                                            queryResponse);
         record.storeAsInitial(firebaseClient);
 
-        verify(firebaseClient).addContent(any(), any());
+        verify(firebaseClient).addValue(any(), any());
     }
 
     @Test
@@ -83,7 +83,7 @@ class FirebaseSubscriptionRecordTest {
                                                                            queryResponse);
         record.storeAsUpdate(firebaseClient);
 
-        verify(firebaseClient).addContent(any(), any());
+        verify(firebaseClient).addValue(any(), any());
     }
 
     @Test
@@ -100,6 +100,6 @@ class FirebaseSubscriptionRecordTest {
 
         record.storeAsUpdate(firebaseClient);
         record.storeAsUpdate(firebaseClient);
-        verify(firebaseClient, times(2)).addContent(any(), any());
+        verify(firebaseClient, times(2)).addValue(any(), any());
     }
 }

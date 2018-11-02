@@ -30,29 +30,29 @@ import java.util.Optional;
 public interface FirebaseClient {
 
     /**
-     * Retrieves the content at the specified Firebase database node.
+     * Retrieves the value of the specified Firebase database node.
      *
-     * <p>The {@code null} content (i.e. node is not present in the database) is returned as
+     * <p>The {@code null} value (i.e. the node is not present in the database) is returned as
      * {@link java.util.Optional#empty()}.
      *
      * @param nodePath
      *         the path to the requested node in the database
-     * @return the node content or empty {@code Optional} if there is no content
+     * @return the node value or empty {@code Optional} if the node is not present in the database
      */
-    Optional<FirebaseNodeContent> get(FirebaseDatabasePath nodePath);
+    Optional<FirebaseNodeValue> get(FirebaseDatabasePath nodePath);
 
     /**
-     * Adds the specified content to the specified Firebase database node.
+     * Adds the specified value under the Firebase database node.
      *
      * <p>If the node doesn't exist, it is created.
      *
-     * <p>If the node exists, the new content will be added to the existing entries (i.e. the node
+     * <p>If the node exists, the new value will be added to the existing entries (i.e. the node
      * content is <strong>not</strong> overwritten).
      *
      * @param nodePath
      *         the path to the node in the Firebase database
-     * @param content
-     *         the content to add to the node
+     * @param value
+     *         the value to add to the node
      */
-    void addContent(FirebaseDatabasePath nodePath, FirebaseNodeContent content);
+    void addValue(FirebaseDatabasePath nodePath, FirebaseNodeValue value);
 }

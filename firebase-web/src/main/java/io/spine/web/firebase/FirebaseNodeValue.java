@@ -32,60 +32,59 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 
 /**
- * The Firebase database node content.
+ * The Firebase database node value.
  */
-final class FirebaseNodeContent {
+final class FirebaseNodeValue {
 
-    private final JsonObject content;
+    private final JsonObject value;
 
-    private FirebaseNodeContent(JsonObject content) {
-        this.content = content;
+    private FirebaseNodeValue(JsonObject value) {
+        this.value = value;
     }
 
     /**
-     * Creates an empty {@code FirebaseNodeContent}.
+     * Creates an empty {@code FirebaseNodeValue}.
      *
-     * <p>This is not equivalent to the {@code null} content, an empty content is supposed to be
+     * <p>This is not equivalent to the {@code null} value, an empty value is supposed to be
      * filled with entries at some point after the creation.
      */
-    FirebaseNodeContent() {
-        this.content = new JsonObject();
+    FirebaseNodeValue() {
+        this.value = new JsonObject();
     }
 
     /**
-     * Creates a {@code FirebaseNodeContent} whose underlying {@link com.google.gson.JsonObject} is
+     * Creates a {@code FirebaseNodeValue} whose underlying {@link com.google.gson.JsonObject} is
      * parsed from the given {@code String}.
      */
-    static FirebaseNodeContent from(String json) {
+    static FirebaseNodeValue from(String json) {
         JsonParser parser = new JsonParser();
-        JsonObject content = parser.parse(json)
-                                   .getAsJsonObject();
-        return new FirebaseNodeContent(content);
+        JsonObject value = parser.parse(json)
+                                 .getAsJsonObject();
+        return new FirebaseNodeValue(value);
     }
 
     /**
-     * Creates a {@code FirebaseNodeContent} which has a single entry under a generated key.
+     * Creates a {@code FirebaseNodeValue} which has a single entry under a generated key.
      *
      * @see ChildKeyGenerator
      */
-    static FirebaseNodeContent withSingleChild(String childContent) {
-        FirebaseNodeContent nodeContent = new FirebaseNodeContent();
-        nodeContent.pushData(childContent);
-        return nodeContent;
+    static FirebaseNodeValue withSingleChild(String childValue) {
+        FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+        nodeValue.pushData(childValue);
+        return nodeValue;
     }
 
     /**
-     * Converts the content to the {@linkplain com.google.api.client.http.ByteArrayContent byte
+     * Converts the value to the {@linkplain com.google.api.client.http.ByteArrayContent byte
      * array} suitable for usage in the HTTP request.
      */
     ByteArrayContent toByteArray() {
-        String contentString = content.toString();
-        ByteArrayContent result = fromString(JSON_UTF_8.toString(), contentString);
+        ByteArrayContent result = fromString(JSON_UTF_8.toString(), value.toString());
         return result;
     }
 
     /**
-     * Adds a child to the content.
+     * Adds a child to the value.
      *
      * <p>The key for the child is generated via
      * {@linkplain com.google.firebase.database.utilities.PushIdGenerator standard Firebase
@@ -93,18 +92,18 @@ final class FirebaseNodeContent {
      */
     void pushData(String data) {
         String key = ChildKeyGenerator.newKey();
-        content.addProperty(key, data);
+        value.addProperty(key, data);
     }
 
     /**
-     * Adds a child to the content under a specified key.
+     * Adds a child to the value under a specified key.
      */
     void addChild(String key, String data) {
-        content.addProperty(key, data);
+        value.addProperty(key, data);
     }
 
     JsonObject underlyingJson() {
-        return content;
+        return value;
     }
 
     /**

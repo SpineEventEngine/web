@@ -82,7 +82,7 @@ class FirebaseQueryBridgeTest {
         @SuppressWarnings("unused")
         QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
-        verify(firebaseClient).addContent(any(), any());
+        verify(firebaseClient).addValue(any(), any());
     }
 
     @Test
@@ -96,7 +96,7 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(firebaseClient).addContent(any(), any());
+        verify(firebaseClient).addValue(any(), any());
     }
 
     @Test
@@ -110,6 +110,6 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(firebaseClient).addContent(any(), any());
+        verify(firebaseClient).addValue(any(), any());
     }
 }

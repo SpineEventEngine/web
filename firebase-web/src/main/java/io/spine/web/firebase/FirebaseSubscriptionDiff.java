@@ -71,7 +71,7 @@ final class FirebaseSubscriptionDiff {
 
     /**
      * Compares the actual state represented by {@code newEntries} to the state of the Firebase
-     * database represented by a {@link FirebaseNodeContent}.
+     * database represented by a {@link FirebaseNodeValue}.
      *
      * @param newEntries
      *         a list of JSON serialized entries retrieved from Spine
@@ -80,7 +80,7 @@ final class FirebaseSubscriptionDiff {
      * @return a diff between Spine and Firebase data states
      */
     static FirebaseSubscriptionDiff
-    computeDiff(List<String> newEntries, FirebaseNodeContent currentData) {
+    computeDiff(List<String> newEntries, FirebaseNodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject.entrySet());
         FirebaseSubscriptionEntriesMatcher matcher =

@@ -71,9 +71,9 @@ final class FirebaseSubscriptionRecord {
     private void flushNewVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            FirebaseNodeContent nodeContent = new FirebaseNodeContent();
-            newEntries.forEach(nodeContent::pushData);
-            firebaseClient.addContent(path(), nodeContent);
+            FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+            newEntries.forEach(nodeValue::pushData);
+            firebaseClient.addValue(path(), nodeValue);
         });
     }
 
@@ -91,13 +91,13 @@ final class FirebaseSubscriptionRecord {
     private void flushDiffVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            Optional<FirebaseNodeContent> existingContent = firebaseClient.get(path());
-            if (!existingContent.isPresent()) {
-                FirebaseNodeContent nodeContent = new FirebaseNodeContent();
-                newEntries.forEach(nodeContent::pushData);
-                firebaseClient.addContent(path(), nodeContent);
+            Optional<FirebaseNodeValue> existingValue = firebaseClient.get(path());
+            if (!existingValue.isPresent()) {
+                FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+                newEntries.forEach(nodeValue::pushData);
+                firebaseClient.addValue(path(), nodeValue);
             } else {
-                FirebaseSubscriptionDiff diff = computeDiff(newEntries, existingContent.get());
+                FirebaseSubscriptionDiff diff = computeDiff(newEntries, existingValue.get());
                 updateWithDiff(diff, firebaseClient);
             }
         });
@@ -105,14 +105,14 @@ final class FirebaseSubscriptionRecord {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private void updateWithDiff(FirebaseSubscriptionDiff diff, FirebaseClient firebaseClient) {
-        FirebaseNodeContent nodeContent = new FirebaseNodeContent();
+        FirebaseNodeValue nodeValue = new FirebaseNodeValue();
         diff.changed()
-            .forEach(record -> nodeContent.addChild(record.key(), record.data()));
+            .forEach(record -> nodeValue.addChild(record.key(), record.data()));
         diff.removed()
-            .forEach(record -> nodeContent.addChild(record.key(), "null"));
+            .forEach(record -> nodeValue.addChild(record.key(), "null"));
         diff.added()
-            .forEach(record -> nodeContent.pushData(record.data()));
-        firebaseClient.addContent(path(), nodeContent);
+            .forEach(record -> nodeValue.pushData(record.data()));
+        firebaseClient.addValue(path(), nodeValue);
     }
 
     /**

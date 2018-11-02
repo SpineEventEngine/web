@@ -33,11 +33,11 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
-        FirebaseNodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        FirebaseNodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
-                content
+                value
         );
 
         assertEquals(1, diff.changed().size());
@@ -48,10 +48,10 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
-        FirebaseNodeContent content = new FirebaseNodeContent();
+        FirebaseNodeValue value = new FirebaseNodeValue();
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
-                content
+                value
         );
 
         assertEquals(0, diff.changed().size());
@@ -62,11 +62,11 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a removed object")
     void createRemovedDiff() {
-        FirebaseNodeContent content = nodeContent("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        FirebaseNodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList(),
-                content
+                value
         );
 
         assertEquals(0, diff.changed().size());
@@ -77,7 +77,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge changes spanning multiple objects")
     void createComplexDiff() {
-        FirebaseNodeContent content = nodeContent(
+        FirebaseNodeValue value = nodeValue(
                 "{\"id\":\"1\",\"a\":1,\"b\":3}",
                 "{\"x\":\"asd\",\"y\":3}",
                 "{\"pass\":true}",
@@ -89,7 +89,7 @@ class FirebaseSubscriptionDiffTest {
                              "{\"id\":{\"value\": \"passed\"}}", // passed
                              "{\"id\":\"2\",\"added\":1}", // added
                              "{\"pass\": true}"), // passed
-                content
+                value
         );
 
         assertEquals(1, diff.changed().size());
@@ -97,11 +97,11 @@ class FirebaseSubscriptionDiffTest {
         assertEquals(1, diff.removed().size());
     }
 
-    private static FirebaseNodeContent nodeContent(String... entries) {
-        FirebaseNodeContent nodeContent = new FirebaseNodeContent();
+    private static FirebaseNodeValue nodeValue(String... entries) {
+        FirebaseNodeValue nodeValue = new FirebaseNodeValue();
         for (String entry : entries) {
-            nodeContent.pushData(entry);
+            nodeValue.pushData(entry);
         }
-        return nodeContent;
+        return nodeValue;
     }
 }
