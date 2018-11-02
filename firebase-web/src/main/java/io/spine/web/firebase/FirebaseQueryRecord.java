@@ -43,8 +43,7 @@ final class FirebaseQueryRecord {
     private final FirebaseDatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
-    FirebaseQueryRecord(Query query,
-                        CompletionStage<QueryResponse> queryResponse) {
+    FirebaseQueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
         this.path = FirebaseDatabasePath.allocateForQuery(query);
         this.queryResponse = queryResponse;
     }
