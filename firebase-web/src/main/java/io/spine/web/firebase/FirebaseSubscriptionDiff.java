@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.Entry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.ExistingEntry;
@@ -29,9 +28,7 @@ import io.spine.web.firebase.FirebaseSubscriptionRecords.AddedRecord;
 import io.spine.web.firebase.FirebaseSubscriptionRecords.ChangedRecord;
 import io.spine.web.firebase.FirebaseSubscriptionRecords.RemovedRecord;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.ADD;
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.CHANGE;
@@ -82,7 +79,7 @@ final class FirebaseSubscriptionDiff {
     static FirebaseSubscriptionDiff
     computeDiff(List<String> newEntries, FirebaseNodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
-        List<ExistingEntry> existingEntries = existingEntries(jsonObject.entrySet());
+        List<ExistingEntry> existingEntries = existingEntries(jsonObject);
         FirebaseSubscriptionEntriesMatcher matcher =
                 new FirebaseSubscriptionEntriesMatcher(existingEntries);
         List<UpToDateEntry> entries = upToDateEntries(newEntries);
@@ -92,11 +89,11 @@ final class FirebaseSubscriptionDiff {
                                             entriesToRemove(entryUpdates));
     }
 
-    private static List<ExistingEntry>
-    existingEntries(Collection<Map.Entry<String, JsonElement>> entries) {
-        return entries.parallelStream()
-                      .map(ExistingEntry::fromJsonObjectEntry)
-                      .collect(toList());
+    private static List<ExistingEntry> existingEntries(JsonObject object) {
+        return object.entrySet()
+                     .stream()
+                     .map(ExistingEntry::fromJsonObjectEntry)
+                     .collect(toList());
     }
 
     private static List<UpToDateEntry> upToDateEntries(List<String> newEntries) {
