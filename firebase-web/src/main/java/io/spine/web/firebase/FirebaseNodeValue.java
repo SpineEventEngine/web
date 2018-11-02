@@ -92,6 +92,7 @@ final class FirebaseNodeValue {
      * generation mechanism}.
      *
      * @return the generated key under which the data was stored
+     * @see ChildKeyGenerator
      */
     @CanIgnoreReturnValue
     String pushData(String data) {
