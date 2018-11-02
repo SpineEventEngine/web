@@ -80,28 +80,6 @@ class HttpRequestExecutor {
     }
 
     /**
-     * Prepares and executes a POST request.
-     *
-     * @param url
-     *         the target URL
-     * @param content
-     *         the body of the request
-     * @return the {@code String} containing response body
-     * @throws java.lang.IllegalStateException
-     *         if the request couldn't be performed normally
-     */
-    @CanIgnoreReturnValue
-    String post(GenericUrl url, HttpContent content) {
-        checkNotNull(url);
-        checkNotNull(content);
-        try {
-            return doPost(url, content);
-        } catch (IOException e) {
-            throw newIllegalStateException(e, e.getMessage());
-        }
-    }
-
-    /**
      * Prepares and executes a PUT request.
      *
      * @param url
@@ -147,11 +125,6 @@ class HttpRequestExecutor {
 
     private String doGet(GenericUrl url) throws IOException {
         HttpRequest request = requestFactory.buildGetRequest(url);
-        return executeAndGetResponse(request);
-    }
-
-    private String doPost(GenericUrl url, HttpContent content) throws IOException {
-        HttpRequest request = requestFactory.buildPostRequest(url, content);
         return executeAndGetResponse(request);
     }
 
