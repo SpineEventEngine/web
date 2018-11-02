@@ -4,6 +4,16 @@ domain commands, querying data and subscribing to entity states.
 
 The latest published version can be found on [NPM](https://www.npmjs.com/package/spine-web-client).
 
+## Usage
+
+To use the library install following modules:
+
+```
+npm i spine-web-client --save
+npm i isomorphic-fetch --save
+```
+
+
 ## Publishing
 
 To publish a new version to NPM:

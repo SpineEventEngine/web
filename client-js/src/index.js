@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,14 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-def final SPINE_VERSION = '1.0.0-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = '1.0.0-pre1'
-    
-    versionToPublish = SPINE_VERSION
-
-    firebaseVersion = '5.9.0'
-    servletApiVersion = '4.0.0'
-}
+export {Type, TypedMessage, TypeUrl} from './client/typed-message';
+export {ActorRequestFactory} from './client/actor-request-factory';
+export {FirebaseClient} from './client/firebase-client';
+export {HttpClient} from './client/http-client';
+export {BackendClient} from './client/backend-client';
+export * from './client/errors';

@@ -121,6 +121,7 @@ task copyModuleSources(type: Copy) {
     from projectDir
     
     include 'package.json'
+    include '*.js'
     include 'proto/**'
     include 'src/**'
     include 'test/**'
@@ -179,6 +180,7 @@ task prepareJsPublication(type: Copy) {
     description = 'Prepares the NPM package for publish.'
 
     from projectDir, {
+        include 'index.js'
         include 'package.json'
         include '.npmrc'
     }

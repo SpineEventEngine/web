@@ -159,35 +159,3 @@ export class CommandValidationError extends CommandHandlingError {
     return this.getCause().getValidationError();
   }
 }
-
-/**
- * Typedef representing the type union of `spine-web-client` module errors.
- *
- * @typedef {Object} Errors
- *
- * @property {SpineError} SpineError
- * @property {ConnectionError} ConnectionError
- * @property {ServerError} ServerError
- * @property {ClientError} ClientError
- * @property {CommandHandlingError} CommandHandlingError
- * @property {CommandValidationError} CommandValidationError
- */
-
-/**
- * All of `spine-web-client` errors gathered in a single namespace.
- *
- * These errors can be checked using `instanceof`, but beware the order of subsequent
- * checks, because the errors are arranged in a hierarchy.
- *
- * Base error class for all errors thrown by `spine-web-client` is `SpineError`.
- *
- * @type {Errors}
- */
-export const errors = {
-  SpineError,
-  ConnectionError,
-  ServerError,
-  ClientError,
-  CommandHandlingError,
-  CommandValidationError,
-};
