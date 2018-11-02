@@ -55,8 +55,7 @@ public final class FirebaseClientFactory {
      *
      * <p>For more information on this, see
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
-     * HttpTransport docs
-     * </a>.
+     * HttpTransport docs</a>.
      */
     private static FirebaseClient forCurrentEnv(String databaseUrl) {
         try {
