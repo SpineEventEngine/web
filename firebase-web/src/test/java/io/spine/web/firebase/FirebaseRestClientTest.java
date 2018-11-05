@@ -80,7 +80,7 @@ class FirebaseRestClientTest {
         assertTrue(result.isPresent());
         FirebaseNodeValue value = result.get();
         String contentString = value.underlyingJson()
-                                      .toString();
+                                    .toString();
         assertEquals(DATA, contentString);
     }
 
