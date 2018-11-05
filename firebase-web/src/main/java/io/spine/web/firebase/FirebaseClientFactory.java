@@ -50,7 +50,7 @@ public final class FirebaseClientFactory {
     /**
      * Creates a {@link io.spine.web.firebase.FirebaseRestClient} for the current environment.
      *
-     * <p>The different environment requires different {@linkplain
+     * <p>Different environments require different {@linkplain
      * com.google.api.client.http.HttpTransport HTTP transport} to operate.
      *
      * <p>For more information on this, see
