@@ -192,7 +192,11 @@ task prepareJsPublication(type: Copy) {
     from "$projectDir/proto/main/js", {
         include '**'
     }
-    
+
+    from "$projectDir/dist", {
+        include '**'
+    }
+
     into publicationDirectory
     exclude "test"
 
