@@ -73,7 +73,7 @@ final class FirebaseSubscriptionRecord {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
             FirebaseNodeValue nodeValue = new FirebaseNodeValue();
             newEntries.forEach(nodeValue::addChild);
-            firebaseClient.append(path(), nodeValue);
+            firebaseClient.merge(path(), nodeValue);
         });
     }
 
@@ -95,7 +95,7 @@ final class FirebaseSubscriptionRecord {
             if (!existingValue.isPresent()) {
                 FirebaseNodeValue nodeValue = new FirebaseNodeValue();
                 newEntries.forEach(nodeValue::addChild);
-                firebaseClient.append(path(), nodeValue);
+                firebaseClient.merge(path(), nodeValue);
             } else {
                 FirebaseSubscriptionDiff diff = computeDiff(newEntries, existingValue.get());
                 updateWithDiff(diff, firebaseClient);
@@ -112,7 +112,7 @@ final class FirebaseSubscriptionRecord {
             .forEach(record -> nodeValue.addChild(record.key(), "null"));
         diff.added()
             .forEach(record -> nodeValue.addChild(record.data()));
-        firebaseClient.append(path(), nodeValue);
+        firebaseClient.merge(path(), nodeValue);
     }
 
     /**

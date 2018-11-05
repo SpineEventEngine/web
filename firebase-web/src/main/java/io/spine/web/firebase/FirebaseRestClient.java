@@ -100,7 +100,7 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     @Override
-    public void append(FirebaseDatabasePath nodePath, FirebaseNodeValue value) {
+    public void merge(FirebaseDatabasePath nodePath, FirebaseNodeValue value) {
         checkNotNull(nodePath);
         checkNotNull(value);
 
