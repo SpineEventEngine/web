@@ -97,7 +97,7 @@ class FirebaseRestClientTest {
     void storeNewViaPut() {
         when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
 
-        client.addValue(path, value);
+        client.append(path, value);
         verify(requestExecutor).put(eq(expectedUrl()), any(ByteArrayContent.class));
     }
 
@@ -106,7 +106,7 @@ class FirebaseRestClientTest {
     void updateExistingViaPatch() {
         when(requestExecutor.get(any())).thenReturn(DATA);
 
-        client.addValue(path, value);
+        client.append(path, value);
         verify(requestExecutor).patch(eq(expectedUrl()), any(ByteArrayContent.class));
     }
 

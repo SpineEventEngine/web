@@ -72,8 +72,7 @@ class FirebaseSubscriptionRecordTest {
         Map<String, String> expected = new HashMap<>();
         expected.put(ANY_KEY, toCompactJson(aliceInWonderland));
         expected.put(ANY_KEY, toCompactJson(donQuixote));
-        verify(firebaseClient).addValue(eq(queryResponsePath),
-                                        argThat(new HasChildren(expected)));
+        verify(firebaseClient).append(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -112,8 +111,7 @@ class FirebaseSubscriptionRecordTest {
         expected.put(ANY_KEY, toCompactJson(donQuixote));
         expected.put(patternsKey, toCompactJson(designPatternsWithAuthors));
         expected.put(guideKey, "null");
-        verify(firebaseClient).addValue(eq(queryResponsePath),
-                                        argThat(new HasChildren(expected)));
+        verify(firebaseClient).append(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -133,7 +131,6 @@ class FirebaseSubscriptionRecordTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put(ANY_KEY, toCompactJson(aliceInWonderland));
-        verify(firebaseClient).addValue(eq(queryResponsePath),
-                                        argThat(new HasChildren(expected)));
+        verify(firebaseClient).append(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 }

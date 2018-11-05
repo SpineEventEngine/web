@@ -114,7 +114,7 @@ final class FirebaseQueryRecord {
                 response -> mapMessagesToJson(response)
                         .forEach(json -> {
                             FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(json);
-                            firebaseClient.addValue(path(), value);
+                            firebaseClient.append(path(), value);
                         })
         );
     }
@@ -128,7 +128,7 @@ final class FirebaseQueryRecord {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
                         FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(item);
-                        firebaseClient.addValue(path(), value);
+                        firebaseClient.append(path(), value);
                     });
                 }
         );

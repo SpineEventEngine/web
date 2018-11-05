@@ -42,7 +42,7 @@ public interface FirebaseClient {
     Optional<FirebaseNodeValue> get(FirebaseDatabasePath nodePath);
 
     /**
-     * Adds the specified value under the Firebase database node.
+     * Appends the specified value to the Firebase database node.
      *
      * <p>If the node doesn't exist, it is created.
      *
@@ -52,7 +52,7 @@ public interface FirebaseClient {
      * @param nodePath
      *         the path to the node in the Firebase database
      * @param value
-     *         the value to add to the node
+     *         the value to append to the node
      */
-    void addValue(FirebaseDatabasePath nodePath, FirebaseNodeValue value);
+    void append(FirebaseDatabasePath nodePath, FirebaseNodeValue value);
 }

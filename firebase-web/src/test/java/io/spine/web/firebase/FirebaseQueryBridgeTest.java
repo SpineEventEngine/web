@@ -115,7 +115,7 @@ class FirebaseQueryBridgeTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put(ANY_KEY, toCompactJson(dataElement));
-        verify(firebaseClient).addValue(any(), argThat(new HasChildren(expected)));
+        verify(firebaseClient).append(any(), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -131,7 +131,7 @@ class FirebaseQueryBridgeTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put(ANY_KEY, EMPTY_JSON);
-        verify(firebaseClient).addValue(any(), argThat(new HasChildren(expected)));
+        verify(firebaseClient).append(any(), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -147,6 +147,6 @@ class FirebaseQueryBridgeTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put(ANY_KEY, EMPTY_JSON);
-        verify(firebaseClient).addValue(any(), argThat(new HasChildren(expected)));
+        verify(firebaseClient).append(any(), argThat(new HasChildren(expected)));
     }
 }
