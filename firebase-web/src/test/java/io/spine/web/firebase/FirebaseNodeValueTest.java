@@ -41,7 +41,7 @@ class FirebaseNodeValueTest {
     @Test
     @DisplayName("be empty when created via the default constructor")
     void beCreatedEmpty() {
-        FirebaseNodeValue value = new FirebaseNodeValue();
+        FirebaseNodeValue value = FirebaseNodeValue.empty();
         JsonObject underlyingJson = value.underlyingJson();
         assertEmpty(underlyingJson.entrySet());
     }
@@ -63,7 +63,7 @@ class FirebaseNodeValueTest {
     @Test
     @DisplayName("add a new child under the generated key")
     void pushChild() {
-        FirebaseNodeValue value = new FirebaseNodeValue();
+        FirebaseNodeValue value = FirebaseNodeValue.empty();
         value.addChild(VALUE);
         assertSingleChild(value, VALUE);
     }
@@ -71,7 +71,7 @@ class FirebaseNodeValueTest {
     @Test
     @DisplayName("add a new child with a predefined key")
     void addChildWithKey() {
-        FirebaseNodeValue value = new FirebaseNodeValue();
+        FirebaseNodeValue value = FirebaseNodeValue.empty();
         value.addChild(KEY, VALUE);
         assertSingleChild(value, KEY, VALUE);
     }

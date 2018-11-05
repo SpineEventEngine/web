@@ -71,7 +71,7 @@ final class FirebaseSubscriptionRecord {
     private void flushNewVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+            FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
             newEntries.forEach(nodeValue::addChild);
             firebaseClient.merge(path(), nodeValue);
         });
@@ -93,7 +93,7 @@ final class FirebaseSubscriptionRecord {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
             Optional<FirebaseNodeValue> existingValue = firebaseClient.get(path());
             if (!existingValue.isPresent()) {
-                FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+                FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
                 newEntries.forEach(nodeValue::addChild);
                 firebaseClient.merge(path(), nodeValue);
             } else {
@@ -105,7 +105,7 @@ final class FirebaseSubscriptionRecord {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private void updateWithDiff(FirebaseSubscriptionDiff diff, FirebaseClient firebaseClient) {
-        FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+        FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
         diff.changed()
             .forEach(record -> nodeValue.addChild(record.key(), record.data()));
         diff.removed()

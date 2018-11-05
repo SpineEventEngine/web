@@ -98,7 +98,7 @@ class FirebaseSubscriptionRecordTest {
         FirebaseDatabasePath queryResponsePath = fromString(dbPath);
         FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
                                                                            queryResponse);
-        FirebaseNodeValue existingValue = new FirebaseNodeValue();
+        FirebaseNodeValue existingValue = FirebaseNodeValue.empty();
         existingValue.addChild(toCompactJson(aliceInWonderland));
         String patternsKey = existingValue.addChild(toCompactJson(designPatterns));
         String guideKey = existingValue.addChild(toCompactJson(guideToTheGalaxy));

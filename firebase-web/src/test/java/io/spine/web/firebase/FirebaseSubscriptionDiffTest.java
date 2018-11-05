@@ -52,7 +52,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
-        FirebaseNodeValue value = new FirebaseNodeValue();
+        FirebaseNodeValue value = FirebaseNodeValue.empty();
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 value
@@ -107,12 +107,12 @@ class FirebaseSubscriptionDiffTest {
     void throwOnIncorrectEntries() {
         String invalidJson = "invalidJson";
         List<String> newEntries = Collections.singletonList(invalidJson);
-        FirebaseNodeValue stubValue = new FirebaseNodeValue();
+        FirebaseNodeValue stubValue = FirebaseNodeValue.empty();
         assertThrows(RuntimeException.class, () -> computeDiff(newEntries, stubValue));
     }
 
     private static FirebaseNodeValue nodeValue(String... entries) {
-        FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+        FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
         for (String entry : entries) {
             nodeValue.addChild(entry);
         }

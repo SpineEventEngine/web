@@ -43,14 +43,18 @@ final class FirebaseNodeValue {
         this.value = value;
     }
 
+    private FirebaseNodeValue() {
+        this(new JsonObject());
+    }
+
     /**
      * Creates an empty {@code FirebaseNodeValue}.
      *
      * <p>This is not equivalent to the {@code null} value, an empty value is supposed to be
      * filled with entries at some point after the creation.
      */
-    FirebaseNodeValue() {
-        this.value = new JsonObject();
+    static FirebaseNodeValue empty() {
+        return new FirebaseNodeValue();
     }
 
     /**
