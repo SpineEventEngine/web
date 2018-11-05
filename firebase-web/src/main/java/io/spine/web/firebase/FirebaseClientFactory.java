@@ -24,6 +24,7 @@ import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import io.spine.server.ServerEnvironment;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.FirebaseRestClient.create;
 
 /**
@@ -44,6 +45,7 @@ public final class FirebaseClientFactory {
      * @return the new instance of {@code FirebaseRestClient}
      */
     public static FirebaseClient restClient(DatabaseUrl url) {
+        checkNotNull(url);
         return forCurrentEnv(url);
     }
 
