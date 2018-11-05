@@ -28,5 +28,4 @@ ext {
 
     firebaseVersion = '5.9.0'
     servletApiVersion = '4.0.0'
-    httpClientVersion = '1.26.0'
 }
