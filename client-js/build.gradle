@@ -25,11 +25,13 @@ dependencies {
 }
 
 idea.module {
-    sourceDirs += file("${projectDir}/proto")
     sourceDirs += file("$projectDir/src")
+
     testSourceDirs += file("$projectDir/test")
-    excludeDirs += file("$projectDir/node_modules")
+
     excludeDirs += file("$projectDir/.nyc_output")
+    excludeDirs += file("$projectDir/node_modules")
+    excludeDirs += file("$projectDir/proto")
 
     iml {
         beforeMerged { module ->
@@ -41,8 +43,20 @@ idea.module {
     }
 }
 
+sourceSets {
+    main {
+        java.srcDirs = []
+        resources.srcDirs = []
+    }
+    test {
+        java.srcDirs = []
+        resources.srcDirs = []
+    }
+}
+
 clean {
     delete "$projectDir/proto"
+    delete "$projectDir/node_modules"
 }
 
 // Suppress building the JS project as a Java module.

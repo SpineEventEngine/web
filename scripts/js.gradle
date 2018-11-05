@@ -111,33 +111,7 @@ String filterPackageDescriptor(final String line) {
     return result
 }
 
-/**
- * Copies the module sources from the project directory to an isolated working directory, where
- * the module is built and tested.
- */
-task copyModuleSources(type: Copy) {
-    into workDirectory
-    
-    from projectDir
-    
-    include 'package.json'
-    include '*.js'
-    include 'proto/**'
-    include 'src/**'
-    include 'test/**'
-    include '.babelrc'
-
-    filter { filterPackageDescriptor(it) }
-
-    dependsOn compileProtoToJs
-}
-
 apply plugin: 'io.spine.tools.proto-js-plugin'
-
-protoJs {
-    generateParsersTask().dependsOn compileProtoToJs
-    copyModuleSources.dependsOn generateParsersTask()
-}
 
 /**
  * Installs the module dependencies using the `npm install` command.
@@ -149,13 +123,18 @@ task installDependencies {
     inputs.files "$projectDir/package.json"
     outputs.files "$projectDir/node_modules"
 
-    dependsOn copyModuleSources
+    dependsOn compileProtoToJs
 
     doLast {
         npm 'install'
     }
 
     outputs.upToDateWhen { false }
+}
+
+protoJs {
+    generateParsersTask().dependsOn compileProtoToJs
+    installDependencies.dependsOn generateParsersTask()
 }
 
 /**
