@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 @DisplayName("FirebaseRestClient should")
 class FirebaseRestClientTest {
 
-    private static final String URL_STUB = "https://database.com";
+    private static final DatabaseUrl URL = DatabaseUrl.from("https://database.com");
 
     private static final String PATH = "node/path";
     private static final String DATA = "{\"a\":\"b\"}";
@@ -56,7 +56,7 @@ class FirebaseRestClientTest {
     @BeforeEach
     void setUp() {
         requestExecutor = mock(HttpRequestExecutor.class);
-        client = new FirebaseRestClient(URL_STUB, requestExecutor);
+        client = new FirebaseRestClient(URL, requestExecutor);
         path = FirebaseDatabasePath.fromString(PATH);
         value = FirebaseNodeValue.from(DATA);
     }
@@ -111,7 +111,7 @@ class FirebaseRestClientTest {
     }
 
     private static GenericUrl expectedUrl() {
-        String fullPath = URL_STUB + '/' + PATH + ".json";
+        String fullPath = URL.value() + '/' + PATH + ".json";
         GenericUrl result = new GenericUrl(fullPath);
         return result;
     }

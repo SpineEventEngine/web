@@ -23,9 +23,11 @@ package io.spine.web.test.given;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.FirebaseClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.web.firebase.DatabaseUrl.from;
 import static io.spine.web.firebase.FirebaseClientFactory.restClient;
 
 /**
@@ -33,7 +35,7 @@ import static io.spine.web.firebase.FirebaseClientFactory.restClient;
  */
 final class Application {
 
-    private static final String DATABASE_URL = "https://spine-dev.firebaseio.com/";
+    private static final DatabaseUrl DATABASE_URL = from("https://spine-dev.firebaseio.com/");
 
     private final CommandService commandService;
     private final QueryService queryService;

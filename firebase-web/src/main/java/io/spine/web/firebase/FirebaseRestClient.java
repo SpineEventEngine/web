@@ -54,22 +54,22 @@ class FirebaseRestClient implements FirebaseClient {
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
-    private final String databaseUrl;
+    private final DatabaseUrl databaseUrl;
     private final HttpRequestExecutor requestExecutor;
 
     @VisibleForTesting
-    FirebaseRestClient(String databaseUrl, HttpRequestExecutor requestExecutor) {
+    FirebaseRestClient(DatabaseUrl databaseUrl, HttpRequestExecutor requestExecutor) {
         this.databaseUrl = databaseUrl;
         this.requestExecutor = requestExecutor;
     }
 
     /**
      * Creates a {@code FirebaseRestClient} which operates on the database located at given
-     * {@code databaseUrl} and uses given {@code httpTransport}.
+     * {@code url} and uses given {@code httpTransport}.
      */
-    static FirebaseRestClient create(String databaseUrl, HttpTransport httpTransport) {
+    static FirebaseRestClient create(DatabaseUrl url, HttpTransport httpTransport) {
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(httpTransport);
-        return new FirebaseRestClient(databaseUrl, requestExecutor);
+        return new FirebaseRestClient(url, requestExecutor);
     }
 
     @Override

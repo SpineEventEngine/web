@@ -39,12 +39,12 @@ public final class FirebaseClientFactory {
      * Creates a {@linkplain io.spine.web.firebase.FirebaseRestClient firebase client} which
      * operates via the Firebase REST API.
      *
-     * @param databaseUrl
+     * @param url
      *         the URL of the database on which the client operates
      * @return the new instance of {@code FirebaseRestClient}
      */
-    public static FirebaseClient restClient(String databaseUrl) {
-        return forCurrentEnv(databaseUrl);
+    public static FirebaseClient restClient(DatabaseUrl url) {
+        return forCurrentEnv(url);
     }
 
     /**
@@ -57,28 +57,28 @@ public final class FirebaseClientFactory {
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
      * HttpTransport docs</a>.
      */
-    private static FirebaseClient forCurrentEnv(String databaseUrl) {
+    private static FirebaseClient forCurrentEnv(DatabaseUrl url) {
         try {
             Class.forName(SystemProperty.class.getName());
-            return gae(databaseUrl);
+            return gae(url);
         } catch (ClassNotFoundException ignored) {
-            return other(databaseUrl);
+            return other(url);
         }
     }
 
     /**
      * Creates a {@code FirebaseClient} for usage in the Google AppEngine environment.
      */
-    private static FirebaseClient gae(String databaseUrl) {
+    private static FirebaseClient gae(DatabaseUrl url) {
         UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
-        return create(databaseUrl, httpTransport);
+        return create(url, httpTransport);
     }
 
     /**
      * Creates a {@code FirebaseClient} for usage in non-GAE environment.
      */
-    private static FirebaseClient other(String databaseUrl) {
+    private static FirebaseClient other(DatabaseUrl url) {
         ApacheHttpTransport httpTransport = new ApacheHttpTransport();
-        return create(databaseUrl, httpTransport);
+        return create(url, httpTransport);
     }
 }

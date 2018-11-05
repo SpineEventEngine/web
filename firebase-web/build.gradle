@@ -28,6 +28,7 @@ configurations {
 
 ext {
     appengineApiVersion = '1.9.67'
+    apacheValidatorVersion = '1.4.0'
 }
 
 apply plugin: spineProtobufPluginId
@@ -41,6 +42,7 @@ dependencies {
 
     implementation "com.google.http-client:google-http-client:$httpClientVersion"
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineApiVersion"
+    implementation "commons-validator:commons-validator:$apacheValidatorVersion"
 
     implementation "io.spine:spine-client:$spineVersion"
 }
