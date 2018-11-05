@@ -46,7 +46,7 @@ apply from: "$rootDir/scripts/js-cli.gradle"
 ext {
     JAVA_SCRIPT_TASK_GROUP = 'JavaScript'
 
-    workDirectory = "$buildDir/node-module/"
+    workDirectory = "$projectDir"
     publicationDirectory = "$buildDir/npm-publication/"
 
     npm = { final String... command ->
