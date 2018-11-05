@@ -162,17 +162,14 @@ task prepareJsPublication(type: Copy) {
         include 'index.js'
         include 'package.json'
         include '.npmrc'
+        include 'dist/**'
     }
-    
+
     from "$projectDir/src", {
         include '**'
     }
-    
-    from "$projectDir/proto/main/js", {
-        include '**'
-    }
 
-    from "$projectDir/dist", {
+    from "$projectDir/proto/main/js", {
         include '**'
     }
 
