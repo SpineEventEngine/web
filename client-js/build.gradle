@@ -57,6 +57,7 @@ sourceSets {
 clean {
     delete "$projectDir/proto"
     delete "$projectDir/node_modules"
+    delete "$projectDir/dist"
 }
 
 // Suppress building the JS project as a Java module.
