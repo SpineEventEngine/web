@@ -61,10 +61,10 @@ class FirebaseNodeValueTest {
     }
 
     @Test
-    @DisplayName("push a new child, i.e. add it under the generated key")
+    @DisplayName("add a new child under the generated key")
     void pushChild() {
         FirebaseNodeValue value = new FirebaseNodeValue();
-        value.pushData(VALUE);
+        value.addChild(VALUE);
         assertSingleChild(value, VALUE);
     }
 

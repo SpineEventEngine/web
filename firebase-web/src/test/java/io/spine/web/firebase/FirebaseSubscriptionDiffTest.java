@@ -114,7 +114,7 @@ class FirebaseSubscriptionDiffTest {
     private static FirebaseNodeValue nodeValue(String... entries) {
         FirebaseNodeValue nodeValue = new FirebaseNodeValue();
         for (String entry : entries) {
-            nodeValue.pushData(entry);
+            nodeValue.addChild(entry);
         }
         return nodeValue;
     }

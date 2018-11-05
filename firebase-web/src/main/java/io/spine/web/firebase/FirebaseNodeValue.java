@@ -71,7 +71,7 @@ final class FirebaseNodeValue {
      */
     static FirebaseNodeValue withSingleChild(String childValue) {
         FirebaseNodeValue nodeValue = new FirebaseNodeValue();
-        nodeValue.pushData(childValue);
+        nodeValue.addChild(childValue);
         return nodeValue;
     }
 
@@ -95,7 +95,7 @@ final class FirebaseNodeValue {
      * @see ChildKeyGenerator
      */
     @CanIgnoreReturnValue
-    String pushData(String data) {
+    String addChild(String data) {
         String key = ChildKeyGenerator.newKey();
         value.addProperty(key, data);
         return key;
