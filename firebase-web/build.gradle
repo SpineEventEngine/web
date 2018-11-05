@@ -44,6 +44,7 @@ dependencies {
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineApiVersion"
     implementation "commons-validator:commons-validator:$apacheValidatorVersion"
 
+    implementation "io.spine:spine-server:$spineVersion"
     implementation "io.spine:spine-client:$spineVersion"
 }
 

@@ -22,7 +22,7 @@ package io.spine.web.firebase;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
-import com.google.appengine.api.utils.SystemProperty;
+import io.spine.server.ServerEnvironment;
 
 import static io.spine.web.firebase.FirebaseRestClient.create;
 
@@ -58,12 +58,11 @@ public final class FirebaseClientFactory {
      * HttpTransport docs</a>.
      */
     private static FirebaseClient forCurrentEnv(DatabaseUrl url) {
-        try {
-            Class.forName(SystemProperty.class.getName());
+        ServerEnvironment environment = ServerEnvironment.getInstance();
+        if (environment.isAppEngine()) {
             return gae(url);
-        } catch (ClassNotFoundException ignored) {
-            return other(url);
         }
+        return other(url);
     }
 
     /**
