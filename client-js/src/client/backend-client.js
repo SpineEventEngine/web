@@ -558,7 +558,9 @@ class EntitySubscription extends Subscription {
   }
 
   /**
-   * @return {SpineSubscription} an internal Spine `Subscription`
+   * An internal Spine subscription which includes the topic the updates are received for.
+   *
+   * @return {SpineSubscription} a `spine.client.Subscription` instane
    */
   internal() {
     return this._subscription;
