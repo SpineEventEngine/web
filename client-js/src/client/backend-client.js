@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {Observable, Subscription} from './observable';
+import {Observable, Subscription} from 'rxjs';
 import {TypedMessage} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {SpineError, CommandHandlingError, CommandValidationError} from './errors';
@@ -463,7 +463,7 @@ class FirebaseFetch extends Fetch {
    *                             that be rejected with an `SpineError`
    */
   _fetchManyOneByOne() {
-    return new Observable(observer => {
+    return Observable.create(observer => {
 
       let receivedCount = 0;
       let promisedCount = null;
@@ -558,7 +558,9 @@ class EntitySubscription extends Subscription {
   }
 
   /**
-   * @return {spine.client.Subscription} an internal Spine `Subscription`
+   * An internal Spine subscription which includes the topic the updates are received for.
+   *
+   * @return {SpineSubscription} a `spine.client.Subscription` instane
    */
   internal() {
     return this._subscription;
@@ -625,19 +627,19 @@ class FirebaseBackendClient extends BackendClient {
         .then(subscription => {
           const path = subscription.id.value;
           const subscriptions = {add: null, remove: null, change: null};
-          const add = new Observable((observer) => {
+          const add = Observable.create(observer => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
               const message = topic.convert(value);
               observer.next(message);
             });
           });
-          const change = new Observable((observer) => {
+          const change = Observable.create(observer => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
               const message = topic.convert(value);
               observer.next(message);
             });
           });
-          const remove = new Observable((observer) => {
+          const remove = Observable.create(observer => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
               const message = topic.convert(value);
               observer.next(message);

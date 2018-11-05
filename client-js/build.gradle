@@ -53,7 +53,7 @@ apply from: "$rootDir/scripts/js.gradle"
 
 buildJs.doLast {
     npm 'run', 'build'
-    npm 'run', 'dev'
+    npm 'run', 'build-dev'
 }
 
 task linkClientProto {

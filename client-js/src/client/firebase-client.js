@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {Subscription} from './observable';
+import {Subscription} from 'rxjs';
 
 /**
  * The client of a Firebase Realtime database.
