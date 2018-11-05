@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.web.firebase.FirebaseRestClient.NULL_ENTRY;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,7 +44,7 @@ import static org.mockito.Mockito.when;
 @DisplayName("FirebaseRestClient should")
 class FirebaseRestClientTest {
 
-    private static final DatabaseUrl URL = DatabaseUrl.from("https://database.com");
+    private static final String NODE_ACCESS_FORMAT = "https://database.com/%s.json";
 
     private static final String PATH = "node/path";
     private static final String DATA = "{\"a\":\"b\"}";
@@ -56,7 +57,7 @@ class FirebaseRestClientTest {
     @BeforeEach
     void setUp() {
         requestExecutor = mock(HttpRequestExecutor.class);
-        client = new FirebaseRestClient(URL, requestExecutor);
+        client = new FirebaseRestClient(NODE_ACCESS_FORMAT, requestExecutor);
         path = FirebaseDatabasePath.fromString(PATH);
         value = FirebaseNodeValue.from(DATA);
     }
@@ -111,7 +112,7 @@ class FirebaseRestClientTest {
     }
 
     private static GenericUrl expectedUrl() {
-        String fullPath = URL.value() + '/' + PATH + ".json";
+        String fullPath = format(NODE_ACCESS_FORMAT, PATH);
         GenericUrl result = new GenericUrl(fullPath);
         return result;
     }

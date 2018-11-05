@@ -29,6 +29,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * A {@code FirebaseClient} which operates via the Firebase REST API.
@@ -54,12 +55,12 @@ class FirebaseRestClient implements FirebaseClient {
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
-    private final DatabaseUrl databaseUrl;
+    private final String nodeAccessFormat;
     private final HttpRequestExecutor requestExecutor;
 
     @VisibleForTesting
-    FirebaseRestClient(DatabaseUrl databaseUrl, HttpRequestExecutor requestExecutor) {
-        this.databaseUrl = databaseUrl;
+    FirebaseRestClient(String nodeAccessFormat, HttpRequestExecutor requestExecutor) {
+        this.nodeAccessFormat = nodeAccessFormat;
         this.requestExecutor = requestExecutor;
     }
 
@@ -68,8 +69,20 @@ class FirebaseRestClient implements FirebaseClient {
      * {@code url} and uses given {@code httpTransport}.
      */
     static FirebaseRestClient create(DatabaseUrl url, HttpTransport httpTransport) {
+        String nodeAccessFormat = nodeAccessFormat(url);
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(httpTransport);
-        return new FirebaseRestClient(url, requestExecutor);
+        return new FirebaseRestClient(nodeAccessFormat, requestExecutor);
+    }
+
+    /**
+     * Returns format in which the individual nodes are accessed for the given database.
+     *
+     * <p>The format is a string with one placeholder which should be substituted by the node path.
+     */
+    private static String nodeAccessFormat(DatabaseUrl databaseUrl) {
+        String nodePathPlaceholder = "%s";
+        String result = format(NODE_URL_FORMAT, databaseUrl, nodePathPlaceholder);
+        return result;
     }
 
     @Override
@@ -118,7 +131,7 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     private GenericUrl toNodeUrl(FirebaseDatabasePath nodePath) {
-        String url = String.format(NODE_URL_FORMAT, databaseUrl, nodePath);
+        String url = format(nodeAccessFormat, nodePath);
         return new GenericUrl(url);
     }
 
