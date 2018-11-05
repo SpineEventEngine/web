@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
-    "dev": "webpack --config webpack-dev.config.js",
+    "build-dev": "webpack --config webpack-dev.config.js",
     "coverage": "nyc --reporter=text-lcov $PACKAGE_TEST > ../coverage.lcov",
     "test": "$PACKAGE_TEST"
   },
