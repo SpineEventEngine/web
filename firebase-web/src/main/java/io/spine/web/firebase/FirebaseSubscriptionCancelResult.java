@@ -32,10 +32,8 @@ import static io.spine.json.Json.toCompactJson;
 
 /**
  * A result of a request to cancel a subscription to be written to the {@link ServletResponse}.
- * 
- * <p>The result is a JSON formatted {@link Response Spine Response} message.
  *
- * @author Mykhailo Drachuk
+ * <p>The result is a JSON formatted {@link Response Spine Response} message.
  */
 class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
 
@@ -46,7 +44,10 @@ class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
     }
 
     /**
-     * @param status the status of a response to be created 
+     * Creates a response with a given status.
+     *
+     * @param status
+     *         the status of a response to be created
      * @return a new {@link Response}
      */
     private static Response newResponseWithStatus(Status status) {
@@ -55,9 +56,6 @@ class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
                                .build();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         response.getWriter()

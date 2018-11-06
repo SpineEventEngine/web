@@ -20,47 +20,32 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.core.ApiFuture;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Message;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A record which can be stored into a {@link FirebaseDatabase}.
+ * A record which can be stored into a Firebase database.
  *
  * <p>A single record represents a {@linkplain QueryResponse response to a single query}.
- *
- * @author Dmytro Dashenkov
  */
 final class FirebaseQueryRecord {
 
     private final FirebaseDatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
-    private final long writeAwaitSeconds;
 
-    FirebaseQueryRecord(Query query,
-                        CompletionStage<QueryResponse> queryResponse,
-                        long writeAwaitSeconds) {
+    FirebaseQueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
         this.path = FirebaseDatabasePath.allocateForQuery(query);
         this.queryResponse = queryResponse;
-        this.writeAwaitSeconds = writeAwaitSeconds;
     }
 
     /**
@@ -71,24 +56,20 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Writes this record to the given {@link FirebaseDatabase}.
+     * Writes this record to the given Firebase database.
      *
      * @see FirebaseQueryBridge FirebaseQueryBridge for the detailed storage protocol
      */
-    void storeTo(FirebaseDatabase database) {
-        DatabaseReference reference = path().reference(database);
-        flushTo(reference);
+    void storeVia(FirebaseClient firebaseClient) {
+        flushTo(firebaseClient);
     }
 
     /**
-     * Writes this record to the given {@link FirebaseDatabase} in a single transaction
+     * Writes this record to the Firebase database in a single transaction
      * (i.e. in a single batch).
-     *
-     * <p>Receiving data from Spine and writing it to database are both performed asynchronously.
      */
-    void storeTransactionallyTo(FirebaseDatabase database) {
-        DatabaseReference reference = path().reference(database);
-        flushTransactionallyTo(reference);
+    void storeTransactionallyVia(FirebaseClient firebaseClient) {
+        flushTransactionally(firebaseClient);
     }
 
     /**
@@ -115,7 +96,7 @@ final class FirebaseQueryRecord {
         }
 
         /**
-         * @return the count of messages in the consumed response
+         * Returns the count of messages in the consumed response.
          */
         public long getValue() {
             return value;
@@ -123,38 +104,32 @@ final class FirebaseQueryRecord {
     }
 
     /**
-     * Flushes the array response of the query to the Firebase asynchronously,
-     * adding array items to storage one by one.
+     * Flushes the array response of the query to the Firebase, adding array items to storage one
+     * by one.
      *
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
-    private void flushTo(DatabaseReference reference) {
-        queryResponse.thenAcceptAsync(
-                response -> mapMessagesToJson(response).map(json -> addTo(reference, json))
-                                                       .forEach(this::mute)
+    private void flushTo(FirebaseClient firebaseClient) {
+        queryResponse.thenAccept(
+                response -> mapMessagesToJson(response)
+                        .forEach(json -> {
+                            FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(json);
+                            firebaseClient.merge(path(), value);
+                        })
         );
     }
 
     /**
-     * Adds the value to the referenced Firebase array path.
-     *
-     * @param reference a Firebase array reference which can be appended an object.
-     * @param item      a String value to add to an Array inside of Firebase
-     * @return a {@code Future} of an item being added
+     * Flushes the array response of the query to the Firebase in one go.
      */
-    private static ApiFuture<Void> addTo(DatabaseReference reference, String item) {
-        return reference.push()
-                        .setValueAsync(item);
-    }
-
-    /**
-     * Flushes the array response of the query to the Firebase asynchronously but in one go.
-     */
-    private void flushTransactionallyTo(DatabaseReference reference) {
+    private void flushTransactionally(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
-                    mute(reference.setValueAsync(jsonItems));
+                    jsonItems.forEach(item -> {
+                        FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(item);
+                        firebaseClient.merge(path(), value);
+                    });
                 }
         );
     }
@@ -168,32 +143,9 @@ final class FirebaseQueryRecord {
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
     private static Stream<String> mapMessagesToJson(QueryResponse response) {
         return response.getMessagesList()
-                       .parallelStream()
+                       .stream()
                        .unordered()
                        .map(AnyPacker::<Message>unpack)
                        .map(Json::toCompactJson);
-    }
-
-    /**
-     * Awaits the given {@link Future} and catches all the exceptions.
-     *
-     * <p>The encountered exceptions are logged and never thrown.
-     */
-    private void mute(Future<?> future) {
-        try {
-            future.get(writeAwaitSeconds, SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log().error(e.getMessage());
-        }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FirebaseQueryRecord.class);
     }
 }

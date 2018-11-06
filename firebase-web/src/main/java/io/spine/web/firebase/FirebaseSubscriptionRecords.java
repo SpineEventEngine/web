@@ -22,8 +22,6 @@ package io.spine.web.firebase;
 
 /**
  * The records that get stored to Firebase database upon subscription updates.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionRecords {
 

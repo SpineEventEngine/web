@@ -18,26 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test.given;
+package io.spine.web.firebase;
 
-import io.spine.web.firebase.FirebaseSubscribeServlet;
-import io.spine.web.firebase.FirebaseSubscriptionBridge;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-import javax.servlet.annotation.WebServlet;
+@DisplayName("FirebaseClientFactory should")
+class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
 
-import static io.spine.web.test.given.Server.application;
-
-/**
- * An endpoint creating new client subscriptions to entity changes.
- */
-@WebServlet("/subscription/create")
-@SuppressWarnings("serial")
-public class TestSubscribeServlet extends FirebaseSubscribeServlet {
-
-    public TestSubscribeServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+    FirebaseClientFactoryTest() {
+        super(FirebaseClientFactory.class);
     }
 }

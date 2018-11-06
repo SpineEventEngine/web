@@ -25,13 +25,10 @@ import io.spine.web.firebase.FirebaseSubscriptionKeepUpServlet;
 
 import javax.servlet.annotation.WebServlet;
 
-import static io.spine.web.test.given.FirebaseClient.database;
 import static io.spine.web.test.given.Server.application;
 
 /**
  * An endpoint for client requests to keep subscription running.
- *
- * @author Mykhailo Drachuk
  */
 @WebServlet("/subscription/keep-up")
 @SuppressWarnings("serial")
@@ -39,8 +36,8 @@ public class TestSubscriptionKeepUpServlet extends FirebaseSubscriptionKeepUpSer
 
     public TestSubscriptionKeepUpServlet() {
         super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().getQueryService())
-                                        .setDatabase(database())
+                                        .setQueryService(application().queryService())
+                                        .setFirebaseClient(application().firebaseClient())
                                         .build());
     }
 }

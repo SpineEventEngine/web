@@ -25,13 +25,10 @@ import io.spine.web.firebase.FirebaseSubscriptionCancelServlet;
 
 import javax.servlet.annotation.WebServlet;
 
-import static io.spine.web.test.given.FirebaseClient.database;
 import static io.spine.web.test.given.Server.application;
 
 /**
  * An endpoint canceling the client entity change subscriptions.
- *
- * @author Mykhailo Drachuk
  */
 @WebServlet("/subscription/cancel")
 @SuppressWarnings("serial")
@@ -39,8 +36,8 @@ public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelSer
 
     public TestSubscriptionCancelServlet() {
         super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().getQueryService())
-                                        .setDatabase(database())
+                                        .setQueryService(application().queryService())
+                                        .setFirebaseClient(application().firebaseClient())
                                         .build());
     }
 }

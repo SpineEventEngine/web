@@ -28,8 +28,6 @@ import static io.spine.server.storage.memory.InMemoryStorageFactory.newInstance;
 
 /**
  * The test application server.
- *
- * @author Dmytro Dashenkov
  */
 final class Server {
 

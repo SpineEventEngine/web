@@ -20,8 +20,7 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.MutableData;
+import com.google.gson.JsonObject;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.Entry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.ExistingEntry;
 import io.spine.web.firebase.FirebaseSubscriptionEntries.UpToDateEntry;
@@ -30,7 +29,6 @@ import io.spine.web.firebase.FirebaseSubscriptionRecords.ChangedRecord;
 import io.spine.web.firebase.FirebaseSubscriptionRecords.RemovedRecord;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.ADD;
 import static io.spine.web.firebase.FirebaseSubscriptionEntries.Entry.Operation.CHANGE;
@@ -41,8 +39,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * A diff of the Firebase storage state to an actual state of entities, used to execute updates on
  * Firebase storage.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionDiff {
 
@@ -59,40 +55,45 @@ final class FirebaseSubscriptionDiff {
     }
 
     List<AddedRecord> added() {
-        return added;
+        return unmodifiableList(added);
     }
 
     List<ChangedRecord> changed() {
-        return changed;
+        return unmodifiableList(changed);
     }
 
     List<RemovedRecord> removed() {
-        return removed;
+        return unmodifiableList(removed);
     }
 
     /**
      * Compares the actual state represented by {@code newEntries} to the state of the Firebase
-     * database represented by a a list of {@link DataSnapshot data snapshots}.
+     * database represented by a {@link FirebaseNodeValue}.
      *
-     * @param newEntries      a list of JSON serialized entries retrieved from Spine
-     * @param firebaseEntries a list of Firebase {@code DataSnapshot}s to match new data to
+     * @param newEntries
+     *         a list of JSON serialized entries retrieved from Spine
+     * @param currentData
+     *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    static FirebaseSubscriptionDiff computeDiff(List<String> newEntries,
-                                                Iterable<MutableData> firebaseEntries) {
-        List<ExistingEntry> existingEntries = existingEntries(firebaseEntries);
-        FirebaseSubscriptionEntriesMatcher matcher = 
+    static FirebaseSubscriptionDiff
+    computeDiff(List<String> newEntries, FirebaseNodeValue currentData) {
+        JsonObject jsonObject = currentData.underlyingJson();
+        List<ExistingEntry> existingEntries = existingEntries(jsonObject);
+        FirebaseSubscriptionEntriesMatcher matcher =
                 new FirebaseSubscriptionEntriesMatcher(existingEntries);
-        List<Entry> entryUpdates = matcher.match(upToDateEntries(newEntries));
+        List<UpToDateEntry> entries = upToDateEntries(newEntries);
+        List<Entry> entryUpdates = matcher.match(entries);
         return new FirebaseSubscriptionDiff(entriesToAdd(entryUpdates),
                                             entriesToChange(entryUpdates),
                                             entriesToRemove(entryUpdates));
     }
 
-    private static List<ExistingEntry> existingEntries(Iterable<MutableData> entries) {
-        return StreamSupport.stream(entries.spliterator(), true)
-                            .map(ExistingEntry::fromFirebaseData)
-                            .collect(toList());
+    private static List<ExistingEntry> existingEntries(JsonObject object) {
+        return object.entrySet()
+                     .stream()
+                     .map(ExistingEntry::fromJsonObjectEntry)
+                     .collect(toList());
     }
 
     private static List<UpToDateEntry> upToDateEntries(List<String> newEntries) {

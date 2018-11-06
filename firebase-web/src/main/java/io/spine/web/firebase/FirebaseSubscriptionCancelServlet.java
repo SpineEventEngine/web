@@ -28,7 +28,6 @@ import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
  * A {@link SubscriptionCancelServlet} which uses a {@link FirebaseSubscriptionBridge} to send off
  * the requests to cancel a subscription.
  *
- * @author Mykhailo Drachuk
  * @see FirebaseSubscriptionBridge#cancel(Subscription)
  */
 @SuppressWarnings("serial") // Java serialization is not supported.

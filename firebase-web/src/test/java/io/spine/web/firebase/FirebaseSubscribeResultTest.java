@@ -40,9 +40,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Mykhailo Drachuk
- */
 @DisplayName("FirebaseSubscribeResult should")
 class FirebaseSubscribeResultTest {
 
@@ -63,5 +60,4 @@ class FirebaseSubscribeResultTest {
         String expected = toCompactJson(subscription);
         assertEquals(expected, writer.toString());
     }
-
 }

@@ -20,10 +20,6 @@
 
 package io.spine.web.firebase.given;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import io.spine.client.QueryResponse;
 import io.spine.client.QueryResponseVBuilder;
 import io.spine.core.Response;
@@ -38,17 +34,11 @@ import java.util.function.Consumer;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.json.Json.toCompactJson;
 import static io.spine.protobuf.AnyPacker.pack;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-/**
- * @author Mykhailo Drachuk
- * @see io.spine.web.firebase.FirebaseSubscriptionRecordTest
- */
 public final class FirebaseSubscriptionRecordTestEnv {
 
     /**
@@ -65,25 +55,6 @@ public final class FirebaseSubscriptionRecordTestEnv {
                       .build();
     }
 
-    public static MutableData mutableBookData(String key, Book book) {
-        MutableData mutableGuide = mock(MutableData.class);
-        when(mutableGuide.getValue()).thenReturn(toCompactJson(book));
-        when(mutableGuide.getKey()).thenReturn(key);
-        return mutableGuide;
-    }
-
-    public static void mockTransactionalWrite(DatabaseReference ref, MutableData mutableData) {
-        doAnswer(invocation -> {
-            Object[] arguments = invocation.getArguments();
-            Transaction.Handler handler = (Transaction.Handler) arguments[0];
-            handler.doTransaction(mutableData);
-            handler.onComplete(null, true, mock(DataSnapshot.class));
-            //noinspection ReturnOfNull returned by a void invokation
-            return null;
-        }).when(ref)
-          .runTransaction(any());
-    }
-
     public static void mockQueryResponse(CompletionStage<QueryResponse> queryResponse,
                                          Book... books) {
         doAnswer(invocation -> {
@@ -98,10 +69,13 @@ public final class FirebaseSubscriptionRecordTestEnv {
             consumer.accept(responseBuilder.build());
             return mock(CompletionStage.class);
         }).when(queryResponse)
-          .thenAcceptAsync(any());
+          .thenAccept(any());
     }
 
     public static final class Books {
+
+        private Books() {
+        }
 
         public static Book designPatterns() {
             return book(bookId(),
@@ -139,6 +113,9 @@ public final class FirebaseSubscriptionRecordTestEnv {
     }
 
     public static final class Authors {
+
+        private Authors() {
+        }
 
         private static Author erichGamma() {
             return author(name("Erich", "Gamma"));

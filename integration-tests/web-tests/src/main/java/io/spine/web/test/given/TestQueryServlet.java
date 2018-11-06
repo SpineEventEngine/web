@@ -25,10 +25,10 @@ import io.spine.web.firebase.FirebaseQueryServlet;
 
 import javax.servlet.annotation.WebServlet;
 
+import static io.spine.web.test.given.Server.application;
+
 /**
  * The query side endpoint of the application.
- *
- * @author Dmytro Dashenkov
  */
 @WebServlet("/query")
 @SuppressWarnings("serial")
@@ -36,8 +36,8 @@ public class TestQueryServlet extends FirebaseQueryServlet {
 
     public TestQueryServlet() {
         super(FirebaseQueryBridge.newBuilder()
-                                 .setQueryService(Server.application().getQueryService())
-                                 .setDatabase(FirebaseClient.database())
+                                 .setQueryService(application().queryService())
+                                 .setFirebaseClient(application().firebaseClient())
                                  .build());
     }
 }

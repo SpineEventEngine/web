@@ -33,8 +33,6 @@ import static io.spine.json.Json.toCompactJson;
  * to be written to the {@link ServletResponse}.
  *
  * <p>The result is a JSON formatted {@link Subscription} message.
- *
- * @author Mykhailo Drachuk
  */
 class FirebaseSubscribeResult implements SubscribeResult {
 
