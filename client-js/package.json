@@ -1,6 +1,6 @@
 {
   "name": "spine-web-client",
-  "version": "$PACKAGE_VERSION",
+  "version": "1.0.0-SNAPSHOT",
   "license": "Apache-2.0",
   "description": "A JS client for interacting with Spine applications.",
   "homepage": "https://spine.io",
@@ -18,15 +18,15 @@
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build-dev": "webpack --config webpack-dev.config.js",
-    "coverage": "nyc --reporter=text-lcov $PACKAGE_TEST > ../coverage.lcov",
-    "test": "$PACKAGE_TEST"
+    "coverage": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
+    "test": "mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test"
   },
   "dependencies": {
     "base64-js": "^1.3.0",
     "firebase": "^5.5.6",
     "isomorphic-fetch": "^2.2.1",
     "rxjs": "^6.3.3",
-    "spine-web-client-proto": "$PACKAGE_VERSION",
+    "spine-web-client-proto": "1.0.0-SNAPSHOT",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "mocha": "^5.2.0",
     "sinon": "^7.0.0",
     "nyc": "^13.0.1",
-    "google-protobuf": "$PACKAGE_PROTOBUF_VERSION",
+    "google-protobuf": "^3.6.0",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4"
