@@ -21,8 +21,6 @@
 package io.spine.web.firebase;
 
 import com.google.common.base.Joiner;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryId;
 import io.spine.core.TenantId;
@@ -36,16 +34,16 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * A path in a Firebase Realtime Database.
  *
- * <p>The path is not aware of the database per se. See {@link #reference(FirebaseDatabase)} to
- * bind this path to a database.
- *
- * @author Dmytro Dashenkov
+ * <p>The path is not aware of the database per se. See
+ * {@link io.spine.web.firebase.FirebaseRestClient} for how the path is bound to the database.
  */
 final class FirebaseDatabasePath {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
     private static final String PATH_DELIMITER = "/";
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String DEFAULT_TENANT = "common";
 
     private final String path;
@@ -66,8 +64,8 @@ final class FirebaseDatabasePath {
         return new FirebaseDatabasePath(path);
     }
 
-    static FirebaseDatabasePath fromString(String string) {
-        return new FirebaseDatabasePath(string);
+    static FirebaseDatabasePath fromString(String pathString) {
+        return new FirebaseDatabasePath(pathString);
     }
 
     private static String constructPath(Query query) {
@@ -91,7 +89,8 @@ final class FirebaseDatabasePath {
 
     @SuppressWarnings("UnnecessaryDefault")
     private static String tenantIdAsString(Query query) {
-        TenantId tenantId = query.getContext().getTenantId();
+        TenantId tenantId = query.getContext()
+                                 .getTenantId();
         TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
@@ -109,7 +108,8 @@ final class FirebaseDatabasePath {
     }
 
     private static String actorAsString(Query query) {
-        UserId actor = query.getContext().getActor();
+        UserId actor = query.getContext()
+                            .getActor();
         String result = actor.getValue();
         return result;
     }
@@ -123,14 +123,6 @@ final class FirebaseDatabasePath {
     private static String escaped(String dirty) {
         return ILLEGAL_DATABASE_PATH_SYMBOL.matcher(dirty)
                                            .replaceAll(SUBSTITUTION_SYMBOL);
-    }
-
-    /**
-     * Retrieves a {@link DatabaseReference} to the location denoted by this path in the given
-     * {@linkplain FirebaseDatabase database}.
-     */
-    DatabaseReference reference(FirebaseDatabase firebaseDatabase) {
-        return firebaseDatabase.getReference(path);
     }
 
     /**

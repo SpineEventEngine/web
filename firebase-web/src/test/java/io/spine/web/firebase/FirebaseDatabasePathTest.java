@@ -21,8 +21,6 @@
 package io.spine.web.firebase;
 
 import com.google.common.testing.EqualsTester;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Any;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
@@ -48,13 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-/**
- * @author Dmytro Dashenkov
- */
 @DisplayName("FirebaseDatabasePath should")
 class FirebaseDatabasePathTest {
 
@@ -116,10 +108,15 @@ class FirebaseDatabasePathTest {
     @Test
     @DisplayName("construct into a valid path")
     void testEscaped() {
-        TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance("a.aa#@)?$0[abb-ab", ZoneOffsets.getDefault(), systemDefault());
-        Query query = requestFactory.query().all(Any.class);
-        String path = FirebaseDatabasePath.allocateForQuery(query).toString();
+        TestActorRequestFactory requestFactory = TestActorRequestFactory.newInstance(
+                "a.aa#@)?$0[abb-ab",
+                ZoneOffsets.getDefault(),
+                systemDefault()
+        );
+        Query query = requestFactory.query()
+                                    .all(Any.class);
+        String path = FirebaseDatabasePath.allocateForQuery(query)
+                                          .toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -130,22 +127,11 @@ class FirebaseDatabasePathTest {
         assertTrue(path.contains("-"));
     }
 
-    @Test
-    @DisplayName("generate a database reference")
-    void testReference() {
-        Query query = queryFactory.all(Empty.class);
-        FirebaseDatabase database = mock(FirebaseDatabase.class);
-
-        FirebaseDatabasePath path = FirebaseDatabasePath.allocateForQuery(query);
-        @SuppressWarnings("unused")
-        DatabaseReference reference = path.reference(database);
-        verify(database).getReference(eq(path.toString()));
-    }
-
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance(FirebaseDatabasePathTest.class, tenantId);
-        Query query = requestFactory.query().all(Any.class);
+        Query query = requestFactory.query()
+                                    .all(Any.class);
         return query;
     }
 }

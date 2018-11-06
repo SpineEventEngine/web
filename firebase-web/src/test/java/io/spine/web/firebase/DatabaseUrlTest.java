@@ -23,31 +23,26 @@ package io.spine.web.firebase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
-
-import static io.spine.core.Responses.statusOk;
-import static io.spine.web.firebase.given.FirebaseResultTestEnv.mockWriter;
-import static io.spine.web.firebase.given.FirebaseResultTestEnv.okCancelSubscriptionResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FirebaseSubscriptionCancelResult should")
-class FirebaseSubscriptionCancelResultTest {
+@DisplayName("DatabaseUrl should")
+class DatabaseUrlTest {
+
+    private static final String VALID_URL = "https://spine-dev.appspot.com/";
+    private static final String INVALID_URL = "invalid_url";
 
     @Test
-    @DisplayName("write DB path to servlet response")
-    void testWritePath() throws IOException {
-        ServletResponse response = mock(ServletResponse.class);
-        StringWriter writer = mockWriter(response);
+    @DisplayName("be successfully created from valid URL")
+    void acceptValidUrl() {
+        DatabaseUrl url = DatabaseUrl.from(VALID_URL);
+        assertEquals(VALID_URL, url.value());
+    }
 
-        FirebaseSubscriptionCancelResult result = new FirebaseSubscriptionCancelResult(statusOk());
-        result.writeTo(response);
-        verify(response).getWriter();
-
-        String expected = okCancelSubscriptionResult();
-        assertEquals(expected, writer.toString());
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("throw IAE when invalid URL passed on construction")
+    void rejectInvalidUrl() {
+        assertThrows(IllegalArgumentException.class, () -> DatabaseUrl.from(INVALID_URL));
     }
 }

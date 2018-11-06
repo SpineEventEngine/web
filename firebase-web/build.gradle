@@ -35,6 +35,11 @@ dependencies {
     }
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
+    implementation deps.build.googleHttpClient
+    implementation deps.build.appengineApi
+    implementation deps.build.apacheValidator
+
+    implementation "io.spine:spine-server:$spineVersion"
     implementation "io.spine:spine-client:$spineVersion"
 }
 

@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase.given;
 
-import com.google.api.core.ApiFuture;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
@@ -32,45 +31,17 @@ import io.spine.protobuf.AnyPacker;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static io.spine.core.Responses.ok;
 import static java.util.stream.Collectors.toSet;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-/**
- * @author Dmytro Dashenkov
- */
 public final class FirebaseQueryMediatorTestEnv {
 
     /**
      * Prevents the utility class instantiation.
      */
     private FirebaseQueryMediatorTestEnv() {
-    }
-
-    /**
-     * Produces a mock {@link ApiFuture} which thrown a {@link TimeoutException} on any call
-     * to {@link java.util.concurrent.Future#get(long, TimeUnit)}.
-     *
-     * <p>The resulting mock does not support any other methods.
-     *
-     * @param <T> the type of the future
-     * @return a mock future
-     */
-    public static <T> ApiFuture<T> timeoutFuture()
-            throws InterruptedException, ExecutionException, TimeoutException {
-        @SuppressWarnings("unchecked") ApiFuture<T> future = mock(ApiFuture.class);
-
-        when(future.get(anyLong(), any(TimeUnit.class)))
-                .thenThrow(new TimeoutException("FirebaseQueryMediatorTestEnv.timeoutFuture()"));
-        return future;
     }
 
     public static final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBase {

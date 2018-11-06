@@ -18,28 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.given;
-
-import com.google.firebase.database.MutableData;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /**
- * @author Mykhailo Drachuk
- * @see io.spine.web.firebase.FirebaseSubscriptionDiffTest
+ * This package contains a simplistic Spine application which allows to test the usage of the Spine
+ * Web API.
  */
-public final class FirebaseSubscriptionDiffTestEnv {
 
-    /**
-     * Prevents instantiation of this test environment.
-     */
-    private FirebaseSubscriptionDiffTestEnv() {
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.test.given;
 
-    public static MutableData dataReturning(String s) {
-        MutableData mock = mock(MutableData.class);
-        when(mock.getValue()).thenReturn(s);
-        return mock;
-    }
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

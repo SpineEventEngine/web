@@ -24,8 +24,6 @@ import io.spine.server.aggregate.AggregateRepository;
 
 /**
  * A repository for the project aggregates.
- *
- * @author Mykhailo Drachuk
  */
 class ProjectRepository extends AggregateRepository<ProjectId, ProjectAggregate> {
 }

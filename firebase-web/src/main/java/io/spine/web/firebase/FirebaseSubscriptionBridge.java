@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.QueryVBuilder;
@@ -50,17 +49,15 @@ import static io.spine.web.firebase.FirebaseDatabasePath.allocateForQuery;
  * <p>The bridge allows to {@link #subscribe(Topic) subscribe} to some {@link Topic topic},
  * {@link #keepUp(Subscription) keep up} the created {@link Subscription subscription},
  * and {@link #cancel(Subscription) cancel} the created subscription.
- *
- * @author Mykhailo Drachuk
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     private final AsyncQueryService queryService;
-    private final FirebaseDatabase database;
+    private final FirebaseClient firebaseClient;
 
-    private FirebaseSubscriptionBridge(FirebaseSubscriptionBridge.Builder builder) {
+    private FirebaseSubscriptionBridge(Builder builder) {
         this.queryService = builder.queryService;
-        this.database = builder.database;
+        this.firebaseClient = builder.firebaseClient;
     }
 
     @Override
@@ -68,9 +65,9 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         FirebaseDatabasePath path = allocateForQuery(query);
-        FirebaseSubscriptionRecord record = 
+        FirebaseSubscriptionRecord record =
                 new FirebaseSubscriptionRecord(path, queryResponse);
-        record.storeAsInitial(database);
+        record.storeAsInitial(firebaseClient);
         SubscriptionId id = newSubscriptionId(record.path());
         Subscription subscription = newSubscription(id, topic);
         return new FirebaseSubscribeResult(subscription);
@@ -105,9 +102,9 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
-        FirebaseSubscriptionRecord record = 
+        FirebaseSubscriptionRecord record =
                 new FirebaseSubscriptionRecord(path, queryResponse);
-        record.storeAsUpdate(database);
+        record.storeAsUpdate(firebaseClient);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 
@@ -130,11 +127,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
      */
     public static final class Builder {
 
-        /**
-         * The default amount of seconds to wait for a single record to be written.
-         */
         private AsyncQueryService queryService;
-        private FirebaseDatabase database;
+        private FirebaseClient firebaseClient;
 
         /**
          * Prevents local instantiation.
@@ -149,8 +143,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             return this;
         }
 
-        public Builder setDatabase(FirebaseDatabase database) {
-            this.database = checkNotNull(database);
+        public Builder setFirebaseClient(FirebaseClient firebaseClient) {
+            this.firebaseClient = checkNotNull(firebaseClient);
             return this;
         }
 
@@ -162,8 +156,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         public FirebaseSubscriptionBridge build() {
             checkState(queryService != null,
                        "Query Service is not set to FirebaseSubscriptionBridge.");
-            checkState(database != null,
-                       "FirebaseDatabase is not set to to FirebaseSubscriptionBridge.");
+            checkState(firebaseClient != null,
+                       "Firebase database client is not set to FirebaseSubscriptionBridge.");
             return new FirebaseSubscriptionBridge(this);
         }
     }

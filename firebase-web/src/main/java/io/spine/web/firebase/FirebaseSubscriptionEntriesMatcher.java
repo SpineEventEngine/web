@@ -38,8 +38,6 @@ import static java.util.stream.Stream.concat;
 
 /**
  * A matcher of the up-to-date subscription state to the one stored in one Firebase database.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionEntriesMatcher {
 

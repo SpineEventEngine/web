@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase;
 
+import io.spine.web.RequestsResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Mykhailo Drachuk
- */
 @DisplayName("FirebaseSubscriptionKeepUpResult should")
 class FirebaseSubscriptionKeepUpResultTest {
 
@@ -46,7 +44,7 @@ class FirebaseSubscriptionKeepUpResultTest {
         ServletResponse response = mock(ServletResponse.class);
         StringWriter writer = mockWriter(response);
 
-        FirebaseSubscriptionKeepUpResult result = new FirebaseSubscriptionKeepUpResult(statusOk());
+        RequestsResult result = new FirebaseSubscriptionKeepUpResult(statusOk());
         result.writeTo(response);
         verify(response).getWriter();
 

@@ -22,14 +22,13 @@ package io.spine.web.firebase;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.database.MutableData;
+import com.google.gson.JsonElement;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Data classes for processing of entries retrieved from both Spine and Firebase storage.
- *
- * @author Mykhailo Drachuk
  */
 final class FirebaseSubscriptionEntries {
 
@@ -72,8 +71,8 @@ final class FirebaseSubscriptionEntries {
         }
 
         /**
-         * @return {@code true} if the entity contains an {@code "id"} field,
-         *                      {@code false} otherwise
+         * Returns {@code true} if the entity contains an {@code "id"} field and {@code false}
+         * otherwise.
          */
         boolean containsId() {
             return containsId;
@@ -106,9 +105,8 @@ final class FirebaseSubscriptionEntries {
             this.containsId = id != null;
         }
 
-        static ExistingEntry fromFirebaseData(MutableData snapshot) {
-            String value = (String) snapshot.getValue();
-            return new ExistingEntry(snapshot.getKey(), value);
+        static ExistingEntry fromJsonObjectEntry(Map.Entry<String, JsonElement> entry) {
+            return new ExistingEntry(entry.getKey(), entry.getValue().getAsString());
         }
 
         /**
@@ -179,7 +177,7 @@ final class FirebaseSubscriptionEntries {
         }
 
         /**
-         * An operation to be performed with this entry in the Firebase storage. 
+         * An operation to be performed with this entry in the Firebase storage.
          */
         Operation operation() {
             return operation;

@@ -27,7 +27,6 @@ import io.spine.web.subscription.servlet.SubscribeServlet;
  * A {@link SubscribeServlet} which uses a {@link FirebaseSubscriptionBridge} to send off
  * the requests to subscribe to topic.
  *
- * @author Mykhailo Drachuk
  * @see FirebaseSubscriptionBridge#subscribe(Topic)
  */
 @SuppressWarnings("serial") // Java serialization is not supported.

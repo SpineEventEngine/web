@@ -20,10 +20,10 @@
 
 package io.spine.web.query.service;
 
-import io.spine.web.command.FutureObserver;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+import io.spine.web.command.FutureObserver;
 
 import java.util.concurrent.CompletableFuture;
 

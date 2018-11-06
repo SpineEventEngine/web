@@ -32,10 +32,6 @@ import io.spine.core.UserId;
 import io.spine.core.UserIdVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 
-/**
- * @author Mykhailo Drachuk
- * @see io.spine.web.firebase.FirebaseSubscribeResultTest
- */
 public final class FirebaseSubscribeResultTestEnv {
 
     /**

@@ -20,15 +20,13 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.core.ApiFuture;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
+import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.TestQueryService;
 import io.spine.web.query.QueryProcessingResult;
@@ -36,48 +34,56 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.spine.json.Json.toCompactJson;
-import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.ONE_SECOND;
-import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.SECONDS;
+import static io.spine.web.firebase.HasChildren.ANY_KEY;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
-import static io.spine.web.firebase.given.FirebaseQueryMediatorTestEnv.timeoutFuture;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-/**
- * @author Dmytro Dashenkov
- */
+@SuppressWarnings("ConstantConditions") // Passing `null` to mocked methods.
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
+
+    private static final String EMPTY_JSON = "{}";
 
     private static final QueryFactory queryFactory =
             TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class)
                                    .query();
 
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference pathReference;
-    private DatabaseReference childReference;
+    private FirebaseClient firebaseClient;
 
     @BeforeEach
     void setUp() {
-        firebaseDatabase = mock(FirebaseDatabase.class);
-        pathReference = mock(DatabaseReference.class);
-        childReference = mock(DatabaseReference.class);
-        when(firebaseDatabase.getReference(anyString())).thenReturn(pathReference);
-        when(pathReference.push()).thenReturn(childReference);
+        firebaseClient = mock(FirebaseClient.class);
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("require Query Service set in class Builder")
+    void requireQueryService() {
+        FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
+                .newBuilder()
+                .setFirebaseClient(mock(FirebaseClient.class));
+        assertThrows(IllegalStateException.class, builder::build);
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("require Firebase Client set in class Builder")
+    void requireFirebaseClient() {
+        FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(mock(QueryServiceImplBase.class));
+        assertThrows(IllegalStateException.class, builder::build);
     }
 
     @Test
@@ -86,7 +92,7 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService();
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setFirebaseClient(firebaseClient)
                                                         .build();
         Query query = queryFactory.all(Empty.class);
         QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
@@ -97,40 +103,19 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("write query results to the database")
     void testWriteData() {
-        futureWillComeFromChild();
-
         Message dataElement = Time.getCurrentTime();
         TestQueryService queryService = new TestQueryService(dataElement);
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setFirebaseClient(firebaseClient)
                                                         .build();
         Query query = queryFactory.all(Timestamp.class);
         @SuppressWarnings("unused")
         QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
-        verify(pathReference, timeout(5 * SECONDS)).push();
-        verify(childReference, timeout(5 * SECONDS))
-                .setValueAsync(eq(toCompactJson(dataElement)));
-    }
-
-    @Test
-    @DisplayName("ignore execution timeouts")
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testIgnoreErrors() throws InterruptedException, ExecutionException, TimeoutException {
-        futureWillNotComeFromChild();
-
-        Message dataElement = Time.getCurrentTime();
-        TestQueryService queryService = new TestQueryService(dataElement);
-        long awaitSeconds = 1L;
-        FirebaseQueryBridge bridge =
-                FirebaseQueryBridge.newBuilder()
-                                   .setQueryService(queryService)
-                                   .setDatabase(firebaseDatabase)
-                                   .setWriteAwaitSeconds(awaitSeconds)
-                                   .build();
-        Query query = queryFactory.all(Timestamp.class);
-        bridge.send(nonTransactionalQuery(query));
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, toCompactJson(dataElement));
+        verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -140,12 +125,13 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setFirebaseClient(firebaseClient)
                                                         .build();
         bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(pathReference).setValueAsync(eq(singletonList("{}")));
-        verify(childReference, never()).setValueAsync(any(Object.class));
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, EMPTY_JSON);
+        verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -155,22 +141,12 @@ class FirebaseQueryBridgeTest {
         TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
-                                                        .setDatabase(firebaseDatabase)
+                                                        .setFirebaseClient(firebaseClient)
                                                         .build();
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 
-        verify(childReference, timeout(ONE_SECOND)).setValueAsync(eq("{}"));
-        verify(pathReference, never()).setValueAsync(any(Object.class));
-    }
-
-    private void futureWillComeFromChild() {
-        @SuppressWarnings("unchecked") ApiFuture<Void> future = mock(ApiFuture.class);
-        when(childReference.setValueAsync(anyString())).thenReturn(future);
-    }
-
-    private void futureWillNotComeFromChild()
-            throws InterruptedException, ExecutionException, TimeoutException {
-        ApiFuture<Void> future = timeoutFuture();
-        when(childReference.setValueAsync(anyString())).thenReturn(future);
+        Map<String, String> expected = new HashMap<>();
+        expected.put(ANY_KEY, EMPTY_JSON);
+        verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 }

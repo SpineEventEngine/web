@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.firebase.database.FirebaseDatabase;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
@@ -37,8 +36,8 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * An implementation of {@link QueryBridge} based on the Firebase Realtime Database.
  *
- * <p>This bridge stores the {@link QueryResponse} data to a location in a given
- * {@link FirebaseDatabase} and retrieves the database path to that response as the result.
+ * <p>This bridge stores the {@link QueryResponse} data to a location in a given Firebase database
+ * and retrieves the database path to that response as the result.
  *
  * <p>More formally, for each encountered {@link Query}, the bridge performs a call to
  * the {@code QueryService} and stores the resulting entity states into the given database. The data
@@ -47,23 +46,15 @@ import static com.google.common.base.Preconditions.checkState;
  * the bridge as a result is the path to the database node containing all those records.
  * The absolute position of such a node is not specified, thus the result path is the only way
  * to read the data from the database.
- *
- * <p>Note that the database writes are non-blocking. This means that when
- * the {@link #send(WebQuery)} method exits, the records may or may not be in
- * the database yet.
- *
- * @author Dmytro Dashenkov
  */
 public final class FirebaseQueryBridge implements QueryBridge {
 
     private final AsyncQueryService queryService;
-    private final FirebaseDatabase database;
-    private final long writeAwaitSeconds;
+    private final FirebaseClient firebaseClient;
 
     private FirebaseQueryBridge(Builder builder) {
         this.queryService = builder.queryService;
-        this.database = builder.database;
-        this.writeAwaitSeconds = builder.writeAwaitSeconds;
+        this.firebaseClient = builder.firebaseClient;
     }
 
     /**
@@ -79,13 +70,12 @@ public final class FirebaseQueryBridge implements QueryBridge {
     public QueryProcessingResult send(WebQuery webQuery) {
         Query query = webQuery.getQuery();
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse,
-                                                             writeAwaitSeconds);
+        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse);
 
         if (webQuery.getDeliveredTransactionally()) {
-            record.storeTransactionallyTo(database);
+            record.storeTransactionallyVia(firebaseClient);
         } else {
-            record.storeTo(database);
+            record.storeVia(firebaseClient);
         }
 
         QueryProcessingResult result =
@@ -107,14 +97,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
      */
     public static final class Builder {
 
-        /**
-         * The default amount of seconds to wait for a single record to be written.
-         */
-        private static final long DEFAULT_WRITE_AWAIT_SECONDS = 60L;
-
         private AsyncQueryService queryService;
-        private FirebaseDatabase database;
-        private long writeAwaitSeconds = DEFAULT_WRITE_AWAIT_SECONDS;
+        private FirebaseClient firebaseClient;
 
         /**
          * Prevents local instantiation.
@@ -128,20 +112,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
             return this;
         }
 
-        public Builder setDatabase(FirebaseDatabase database) {
-            this.database = checkNotNull(database);
-            return this;
-        }
-
-        /**
-         * Sets the amount of seconds to wait for a single record to be written.
-         *
-         * <p>The default value is {@code 60} seconds.
-         *
-         * @param writeAwaitSeconds time to await a single write operation, in seconds
-         */
-        public Builder setWriteAwaitSeconds(long writeAwaitSeconds) {
-            this.writeAwaitSeconds = writeAwaitSeconds;
+        public Builder setFirebaseClient(FirebaseClient firebaseClient) {
+            this.firebaseClient = checkNotNull(firebaseClient);
             return this;
         }
 
@@ -152,7 +124,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
          */
         public FirebaseQueryBridge build() {
             checkState(queryService != null, "Query Service is not set.");
-            checkState(database != null, "FirebaseDatabase is not set.");
+            checkState(firebaseClient != null, "Firebase database client is not set.");
             return new FirebaseQueryBridge(this);
         }
     }
