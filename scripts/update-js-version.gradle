@@ -22,6 +22,11 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
+/**
+ * This script updates the package.json version and {@code spine-web-client-proto} dependency
+ * version for JS modules.
+ */
+
 ext.JS_PACKAGE_FILE_LOCATION = "$projectDir/package.json"
 ext.JS_PACKAGES_VERSION = versionToPublish
 
