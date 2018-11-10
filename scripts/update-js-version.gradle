@@ -35,7 +35,7 @@ Object readJsonFile(final String sourcePath) {
     return new JsonSlurper().parseText(packageJsonFile.text)
 }
 
-String prettify(String jsonText) {
+String prettify(final String jsonText) {
     def prettyText = JsonOutput.prettyPrint(jsonText)
     prettyText = prettyText.replace('  ', ' ')
     prettyText = (prettyText =~ /\{\s+}/).replaceAll('{}')
