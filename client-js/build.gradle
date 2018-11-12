@@ -80,4 +80,5 @@ task linkClientProto {
     dependsOn ':client-js-proto:link'
 }
 
+linkClientProto.dependsOn cleanOldDependencies
 installDependencies.dependsOn linkClientProto
