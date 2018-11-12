@@ -93,6 +93,13 @@ protobuf {
 apply plugin: 'io.spine.tools.proto-js-plugin'
 
 /**
+ * Cleans old module dependencies.
+ */
+task cleanOldDependencies {
+    delete "$projectDir/node_modules"
+}
+
+/**
  * Installs the module dependencies using the `npm install` command.
  */
 task installDependencies {
@@ -100,7 +107,6 @@ task installDependencies {
     description = 'Installs the JavaScript dependencies.'
 
     inputs.files "$projectDir/package.json"
-    outputs.files "$projectDir/node_modules"
 
     dependsOn compileProtoToJs
 
@@ -108,7 +114,7 @@ task installDependencies {
         npm 'install'
     }
 
-    outputs.upToDateWhen { false }
+    dependsOn cleanOldDependencies
 }
 
 protoJs {
