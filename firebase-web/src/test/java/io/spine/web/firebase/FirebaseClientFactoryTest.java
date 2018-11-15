@@ -20,13 +20,26 @@
 
 package io.spine.web.firebase;
 
+import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
+import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+
+import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 @DisplayName("FirebaseClientFactory should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
 
+    private static final String SOME_URL = "https://someUrl.com";
+
     FirebaseClientFactoryTest() {
         super(FirebaseClientFactory.class);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        MockGoogleCredential mockGoogleCredential = new MockGoogleCredential.Builder().build();
+        tester.setDefault(DatabaseUrl.class, DatabaseUrl.from(SOME_URL))
+              .setDefault(FirebaseCredentials.class, fromGoogleCredentials(mockGoogleCredential));
     }
 }
