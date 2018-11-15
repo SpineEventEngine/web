@@ -24,13 +24,22 @@ import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.web.firebase.DatabaseUrl.from;
 import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 @DisplayName("FirebaseClientFactory should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
 
-    private static final String SOME_URL = "https://someUrl.com";
+    private static final DatabaseUrl SOME_URL = from("https://someUrl.com");
+
+    private static final MockGoogleCredential GOOGLE_CREDENTIALS =
+            new MockGoogleCredential.Builder().build();
+
+    private static final FirebaseCredentials CREDENTIALS =
+            fromGoogleCredentials(GOOGLE_CREDENTIALS);
 
     FirebaseClientFactoryTest() {
         super(FirebaseClientFactory.class);
@@ -38,8 +47,21 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
 
     @Override
     protected void configure(NullPointerTester tester) {
-        MockGoogleCredential mockGoogleCredential = new MockGoogleCredential.Builder().build();
-        tester.setDefault(DatabaseUrl.class, DatabaseUrl.from(SOME_URL))
-              .setDefault(FirebaseCredentials.class, fromGoogleCredentials(mockGoogleCredential));
+        tester.setDefault(DatabaseUrl.class, SOME_URL)
+              .setDefault(FirebaseCredentials.class, CREDENTIALS);
+    }
+
+    @Test
+    @DisplayName("create REST client for AppEngine environment")
+    void createGaeRestClient() {
+        FirebaseClient client = FirebaseClientFactory.gae(SOME_URL, CREDENTIALS);
+        assertThat(client).isInstanceOf(FirebaseRestClient.class);
+    }
+
+    @Test
+    @DisplayName("create REST client for non-GAE environment")
+    void createNonGaeRestClient() {
+        FirebaseClient client = FirebaseClientFactory.other(SOME_URL, CREDENTIALS);
+        assertThat(client).isInstanceOf(FirebaseRestClient.class);
     }
 }

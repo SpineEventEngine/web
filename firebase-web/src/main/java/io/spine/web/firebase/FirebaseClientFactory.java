@@ -25,6 +25,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.ServerEnvironment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -76,7 +77,8 @@ public final class FirebaseClientFactory {
     /**
      * Creates a {@code FirebaseClient} for usage in the Google AppEngine environment.
      */
-    private static FirebaseClient gae(DatabaseUrl url, FirebaseCredentials credentials) {
+    @VisibleForTesting
+    static FirebaseClient gae(DatabaseUrl url, FirebaseCredentials credentials) {
         UrlFetchTransport urlFetchTransport = UrlFetchTransport.getDefaultInstance();
         return createWithTransport(urlFetchTransport, url, credentials);
     }
@@ -84,7 +86,8 @@ public final class FirebaseClientFactory {
     /**
      * Creates a {@code FirebaseClient} for usage in non-GAE environment.
      */
-    private static FirebaseClient other(DatabaseUrl url, FirebaseCredentials credentials) {
+    @VisibleForTesting
+    static FirebaseClient other(DatabaseUrl url, FirebaseCredentials credentials) {
         ApacheHttpTransport apacheHttpTransport = new ApacheHttpTransport();
         return createWithTransport(apacheHttpTransport, url, credentials);
     }
