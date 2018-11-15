@@ -47,9 +47,10 @@ class HttpRequestExecutor {
     }
 
     /**
-     * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP transport.
+     * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP request factory.
      *
      * @param requestFactory
+     *         the {@code HttpRequestFactory} to use for HTTP requests execution
      * @return the new instance of {@code HttpRequestExecutor}
      */
     static HttpRequestExecutor using(HttpRequestFactory requestFactory) {

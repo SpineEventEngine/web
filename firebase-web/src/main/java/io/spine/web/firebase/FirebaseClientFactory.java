@@ -46,6 +46,7 @@ public final class FirebaseClientFactory {
      * @param url
      *         the URL of the database on which the client operates
      * @param credentials
+     *         the Firebase Database credentials to use
      * @return the new instance of {@code FirebaseRestClient}
      */
     public static FirebaseClient restClient(DatabaseUrl url, FirebaseCredentials credentials) {

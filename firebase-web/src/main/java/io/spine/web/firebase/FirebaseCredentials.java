@@ -28,16 +28,26 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.util.Arrays.asList;
 
 /**
- * Class is read-only outside of the package.
+ * A Firebase Database credentials.
+ *
+ * <p>The underlying Google OAuth 2.0 service can be used as an authentication facility for the
+ * requests to Firebase REST API.
+ *
+ * <p>See <a href="https://firebase.google.com/docs/database/rest/auth">Firebase REST docs</a>.
  */
-public class FirebaseCredentials {
+public final class FirebaseCredentials {
 
-    private static final String AUTH_DATABASE = "https://www.googleapis.com/auth/firebase.database";
+    private static final String AUTH_DATABASE =
+            "https://www.googleapis.com/auth/firebase.database";
     private static final String AUTH_USER_EMAIL = "https://www.googleapis.com/auth/userinfo.email";
+
+    /**
+     * The authentication scopes which are required to access the Firebase Database.
+     */
     private static final Collection<String> AUTH_SCOPES = asList(AUTH_DATABASE, AUTH_USER_EMAIL);
 
     private final GoogleCredential credentials;
@@ -52,9 +62,24 @@ public class FirebaseCredentials {
         return new FirebaseCredentials(credentials);
     }
 
-    public static FirebaseCredentials fromStream(InputStream resource) {
-        checkNotNull(resource);
-        GoogleCredential credentials = parseCredentials(resource);
+    /**
+     * Creates a new instance of the {@code FirebaseCredentials} from the given credential stream.
+     *
+     * <p>Typically the stream will contain a service account JSON file data.
+     *
+     * <p>See <a href="https://firebase.google.com/docs/admin/setup#add_firebase_to_your_app">docs
+     * </a> for how to obtain the file.
+     *
+     * @param credentialStream
+     *         the stream containing credentials data
+     * @return a new instance of {@code FirebaseCredentials}
+     * @throws java.lang.IllegalArgumentException
+     *         in case there are problems with parsing the given stream into
+     *         {@link GoogleCredential}
+     */
+    public static FirebaseCredentials fromStream(InputStream credentialStream) {
+        checkNotNull(credentialStream);
+        GoogleCredential credentials = parseCredentials(credentialStream);
         return new FirebaseCredentials(credentials);
     }
 
@@ -62,13 +87,13 @@ public class FirebaseCredentials {
         return credentials;
     }
 
-    private static GoogleCredential parseCredentials(InputStream resource) {
+    private static GoogleCredential parseCredentials(InputStream credentialStream) {
         try {
-            GoogleCredential credentials = GoogleCredential.fromStream(resource)
+            GoogleCredential credentials = GoogleCredential.fromStream(credentialStream)
                                                            .createScoped(AUTH_SCOPES);
             return credentials;
         } catch (IOException e) {
-            throw newIllegalStateException(
+            throw newIllegalArgumentException(
                     e, "Exception when acquiring Firebase credentials: %s", e.getMessage());
         }
     }
