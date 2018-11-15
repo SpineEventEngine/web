@@ -21,6 +21,9 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import io.spine.server.ServerEnvironment;
 
@@ -42,11 +45,13 @@ public final class FirebaseClientFactory {
      *
      * @param url
      *         the URL of the database on which the client operates
+     * @param credentials
      * @return the new instance of {@code FirebaseRestClient}
      */
-    public static FirebaseClient restClient(DatabaseUrl url) {
+    public static FirebaseClient restClient(DatabaseUrl url, FirebaseCredentials credentials) {
         checkNotNull(url);
-        return forCurrentEnv(url);
+        checkNotNull(credentials);
+        return forCurrentEnv(url, credentials);
     }
 
     /**
@@ -59,27 +64,35 @@ public final class FirebaseClientFactory {
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
      * HttpTransport docs</a>.
      */
-    private static FirebaseClient forCurrentEnv(DatabaseUrl url) {
+    private static FirebaseClient forCurrentEnv(DatabaseUrl url, FirebaseCredentials credentials) {
         ServerEnvironment environment = ServerEnvironment.getInstance();
         if (environment.isAppEngine()) {
-            return gae(url);
+            return gae(url, credentials);
         }
-        return other(url);
+        return other(url, credentials);
     }
 
     /**
      * Creates a {@code FirebaseClient} for usage in the Google AppEngine environment.
      */
-    private static FirebaseClient gae(DatabaseUrl url) {
-        UrlFetchTransport httpTransport = UrlFetchTransport.getDefaultInstance();
-        return create(url, httpTransport);
+    private static FirebaseClient gae(DatabaseUrl url, FirebaseCredentials credentials) {
+        UrlFetchTransport urlFetchTransport = UrlFetchTransport.getDefaultInstance();
+        return createWithTransport(urlFetchTransport, url, credentials);
     }
 
     /**
      * Creates a {@code FirebaseClient} for usage in non-GAE environment.
      */
-    private static FirebaseClient other(DatabaseUrl url) {
-        ApacheHttpTransport httpTransport = new ApacheHttpTransport();
-        return create(url, httpTransport);
+    private static FirebaseClient other(DatabaseUrl url, FirebaseCredentials credentials) {
+        ApacheHttpTransport apacheHttpTransport = new ApacheHttpTransport();
+        return createWithTransport(apacheHttpTransport, url, credentials);
+    }
+
+    private static FirebaseClient createWithTransport(HttpTransport httpTransport,
+                                                      DatabaseUrl url,
+                                                      FirebaseCredentials credentials) {
+        GoogleCredential googleCredentials = credentials.credentials();
+        HttpRequestFactory requestFactory = httpTransport.createRequestFactory(googleCredentials);
+        return create(url, requestFactory);
     }
 }

@@ -25,7 +25,6 @@ import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.io.IOException;
@@ -50,13 +49,11 @@ class HttpRequestExecutor {
     /**
      * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP transport.
      *
-     * @param transport
-     *         the underlying {@code HttpTransport} to use
+     * @param requestFactory
      * @return the new instance of {@code HttpRequestExecutor}
      */
-    static HttpRequestExecutor using(HttpTransport transport) {
-        checkNotNull(transport);
-        HttpRequestFactory requestFactory = transport.createRequestFactory();
+    static HttpRequestExecutor using(HttpRequestFactory requestFactory) {
+        checkNotNull(requestFactory);
         return new HttpRequestExecutor(requestFactory);
     }
 

@@ -22,6 +22,8 @@ package io.spine.web.firebase;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
 import com.google.api.client.testing.http.MockHttpTransport;
@@ -48,7 +50,7 @@ class HttpRequestExecutorTest {
     @Test
     @DisplayName("execute GET request")
     void executeGetRequest() {
-        MockHttpTransport transport = mockHttpTransport(RESPONSE);
+        HttpRequestFactory transport = mockRequestFactory(RESPONSE);
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
         String content = requestExecutor.get(URL);
         assertEquals(RESPONSE, content);
@@ -56,8 +58,8 @@ class HttpRequestExecutorTest {
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on GET request")
-    void throwIfErrorOnGet() {
-        MockHttpTransport transport = throwingHttpTransport();
+    void throwIfErrorOnGet() throws IOException {
+        HttpRequestFactory transport = throwingRequestFactory();
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
         assertThrows(RequestToFirebaseFailedException.class, () -> requestExecutor.get(URL));
     }
@@ -65,7 +67,7 @@ class HttpRequestExecutorTest {
     @Test
     @DisplayName("execute PUT request")
     void executePutRequest() {
-        MockHttpTransport transport = mockHttpTransport(RESPONSE);
+        HttpRequestFactory transport = mockRequestFactory(RESPONSE);
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
         String content = requestExecutor.put(URL, CONTENT);
         assertEquals(RESPONSE, content);
@@ -73,8 +75,8 @@ class HttpRequestExecutorTest {
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PUT request")
-    void throwIfErrorOnPut() {
-        MockHttpTransport transport = throwingHttpTransport();
+    void throwIfErrorOnPut() throws IOException {
+        HttpRequestFactory transport = throwingRequestFactory();
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.put(URL, CONTENT));
@@ -83,7 +85,7 @@ class HttpRequestExecutorTest {
     @Test
     @DisplayName("execute PATCH request")
     void executePatchRequest() {
-        MockHttpTransport transport = mockHttpTransport(RESPONSE);
+        HttpRequestFactory transport = mockRequestFactory(RESPONSE);
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
         String content = requestExecutor.patch(URL, CONTENT);
         assertEquals(RESPONSE, content);
@@ -91,17 +93,33 @@ class HttpRequestExecutorTest {
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PATCH request")
-    void throwIfErrorOnPatch() {
-        MockHttpTransport transport = throwingHttpTransport();
+    void throwIfErrorOnPatch() throws IOException {
+        HttpRequestFactory transport = throwingRequestFactory();
         HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.patch(URL, CONTENT));
     }
 
     /**
-     * Returns an {@code HttpTransport} mock which returns the specified content on every request.
+     * Returns an {@code HttpRequestFactory} mock which returns the specified content on every
+     * request.
      */
-    private static MockHttpTransport mockHttpTransport(String content) {
+    private static HttpRequestFactory mockRequestFactory(String content) {
+        HttpTransport transportMock = mockHttpTransport(content);
+        HttpRequestFactory requestFactoryMock = transportMock.createRequestFactory();
+        return requestFactoryMock;
+    }
+
+    /**
+     * Returns an {@code HttpRequestFactory} mock which throws {@link java.io.IOException} on every
+     * request.
+     */
+    private static HttpRequestFactory throwingRequestFactory() throws IOException {
+        HttpRequestFactory result = throwingHttpTransport().createRequestFactory();
+        return result;
+    }
+
+    private static HttpTransport mockHttpTransport(String content) {
         return new MockHttpTransport() {
             @Override
             public LowLevelHttpRequest
@@ -118,11 +136,7 @@ class HttpRequestExecutorTest {
         };
     }
 
-    /**
-     * Returns an {@code HttpTransport} mock which throws {@link java.io.IOException} on every
-     * request.
-     */
-    private static MockHttpTransport throwingHttpTransport() {
+    private static MockHttpTransport throwingHttpTransport() throws IOException {
         return new MockHttpTransport() {
             @Override
             public LowLevelHttpRequest
