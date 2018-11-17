@@ -42,6 +42,7 @@
  */
 
 apply from: "$rootDir/scripts/js-cli.gradle"
+apply from: "$rootDir/scripts/update-js-version.gradle"
 
 ext {
     JAVA_SCRIPT_TASK_GROUP = 'JavaScript'
@@ -87,28 +88,6 @@ protobuf {
             compileProtoToJs.dependsOn task
         }
     }
-}
-
-/**
- * Processes a `package.json` file line.
- *
- * <p>Replaces the templates used in the package descriptor with the actual values.
- *
- * @param line the line to process
- * @return the processed line
- */
-String filterPackageDescriptor(final String line) {
-    final Map<String, String> replacements = [
-            '\\$PACKAGE_VERSION'         : ext.versionToPublish,
-            '\\$PACKAGE_PROTOBUF_VERSION': '^3.6.0',
-            '\\$PACKAGE_TEST'            : 'mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test'
-    ]
-
-    def result = line
-    replacements.each {
-        result = result.replaceAll(it.key, it.value)
-    }
-    return result
 }
 
 apply plugin: 'io.spine.tools.proto-js-plugin'
@@ -181,8 +160,6 @@ task prepareJsPublication(type: Copy) {
 
     into publicationDirectory
     exclude "test"
-
-    filter { filterPackageDescriptor(it) }
 
     dependsOn buildJs
 }
