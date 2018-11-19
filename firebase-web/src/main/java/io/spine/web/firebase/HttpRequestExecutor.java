@@ -43,6 +43,10 @@ class HttpRequestExecutor {
 
     /**
      * The header which enables correct parsing of query parameters in request.
+     *
+     * <p>See Firebase REST API
+     * <a href="https://firebase.google.com/docs/reference/rest/database/#section-api-usage">
+     * reference</a>.
      */
     private static final String FIREBASE_DECODING_HEADER = "X-Firebase-Decoding";
 
