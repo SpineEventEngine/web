@@ -52,14 +52,14 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
     }
 
     @Test
-    @DisplayName("create a REST client without credentials")
+    @DisplayName("create a REST client without Firebase credentials")
     void createWithoutCredentials() {
         FirebaseClient client = FirebaseClientFactory.restClient(SOME_URL);
         assertThat(client).isInstanceOf(FirebaseRestClient.class);
     }
 
     @Test
-    @DisplayName("create a REST client with the given credentials")
+    @DisplayName("create a REST client with the given Firebase credentials")
     void createWithCredentials() {
         FirebaseClient client = FirebaseClientFactory.restClient(SOME_URL, CREDENTIALS);
         assertThat(client).isInstanceOf(FirebaseRestClient.class);
