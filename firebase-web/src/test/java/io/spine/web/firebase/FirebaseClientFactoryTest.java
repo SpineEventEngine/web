@@ -52,16 +52,16 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
     }
 
     @Test
-    @DisplayName("create REST client for AppEngine environment")
+    @DisplayName("create a REST client for the AppEngine environment")
     void createGaeRestClient() {
         FirebaseClient client = FirebaseClientFactory.gae(SOME_URL, CREDENTIALS);
         assertThat(client).isInstanceOf(FirebaseRestClient.class);
     }
 
     @Test
-    @DisplayName("create REST client for non-GAE environment")
+    @DisplayName("create a REST client for the non-GAE environment")
     void createNonGaeRestClient() {
-        FirebaseClient client = FirebaseClientFactory.other(SOME_URL, CREDENTIALS);
+        FirebaseClient client = FirebaseClientFactory.nonGae(SOME_URL, CREDENTIALS);
         assertThat(client).isInstanceOf(FirebaseRestClient.class);
     }
 }

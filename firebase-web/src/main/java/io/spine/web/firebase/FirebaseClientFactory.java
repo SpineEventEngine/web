@@ -71,7 +71,7 @@ public final class FirebaseClientFactory {
         if (environment.isAppEngine()) {
             return gae(url, credentials);
         }
-        return other(url, credentials);
+        return nonGae(url, credentials);
     }
 
     /**
@@ -84,10 +84,10 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@code FirebaseClient} for usage in non-GAE environment.
+     * Creates a {@code FirebaseClient} for usage in the non-GAE environment.
      */
     @VisibleForTesting
-    static FirebaseClient other(DatabaseUrl url, FirebaseCredentials credentials) {
+    static FirebaseClient nonGae(DatabaseUrl url, FirebaseCredentials credentials) {
         ApacheHttpTransport apacheHttpTransport = new ApacheHttpTransport();
         return createWithTransport(apacheHttpTransport, url, credentials);
     }
