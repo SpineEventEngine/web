@@ -18,7 +18,7 @@
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build-dev": "webpack --config webpack-dev.config.js",
-    "coverage": "nyc --reporter=text-lcov npm run test > build/coverage.lcov",
+    "coverage": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
     "test": "mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test"
   },
   "dependencies": {
