@@ -44,6 +44,23 @@ public final class FirebaseClientFactory {
      * Creates a {@linkplain io.spine.web.firebase.FirebaseRestClient firebase client} which
      * operates via the Firebase REST API.
      *
+     * <p>The client created with this method is suitable only for databases whose read/write side
+     * is public, to access the databases requiring authentication, use
+     * {@link #restClient(DatabaseUrl, FirebaseCredentials)}.
+     *
+     * @param url
+     *         the URL of the database on which the client operates
+     * @return the new instance of {@code FirebaseRestClient}
+     */
+    public static FirebaseClient restClient(DatabaseUrl url) {
+        checkNotNull(url);
+        return forCurrentEnv(url, FirebaseCredentials.empty());
+    }
+
+    /**
+     * Creates a {@link io.spine.web.firebase.FirebaseRestClient} which uses given credentials to
+     * authorize its requests to the Firebase database.
+     *
      * @param url
      *         the URL of the database on which the client operates
      * @param credentials
@@ -95,8 +112,29 @@ public final class FirebaseClientFactory {
     private static FirebaseClient createWithTransport(HttpTransport httpTransport,
                                                       DatabaseUrl url,
                                                       FirebaseCredentials credentials) {
+        if (!credentials.isEmpty()) {
+            return createAuthorized(httpTransport, url, credentials);
+        }
+        return createUnauthorized(httpTransport, url);
+    }
+
+    /**
+     * Creates a {@code FirebaseClient} authorized with the given credentials.
+     */
+    private static FirebaseClient createAuthorized(HttpTransport httpTransport,
+                                                   DatabaseUrl url,
+                                                   FirebaseCredentials credentials) {
         GoogleCredential googleCredentials = credentials.credentials();
         HttpRequestFactory requestFactory = httpTransport.createRequestFactory(googleCredentials);
+        return create(url, requestFactory);
+    }
+
+    /**
+     * Creates a non-authorized {@code FirebaseClient} for accessing databases with public rules.
+     */
+    private static FirebaseClient createUnauthorized(HttpTransport httpTransport,
+                                                     DatabaseUrl url) {
+        HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
         return create(url, requestFactory);
     }
 }

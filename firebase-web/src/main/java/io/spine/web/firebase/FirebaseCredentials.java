@@ -23,6 +23,7 @@ package io.spine.web.firebase;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.common.annotations.VisibleForTesting;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -52,6 +53,10 @@ public final class FirebaseCredentials {
 
     private final GoogleCredential credentials;
 
+    private FirebaseCredentials() {
+        this.credentials = null;
+    }
+
     private FirebaseCredentials(GoogleCredential credentials) {
         this.credentials = credentials;
     }
@@ -60,6 +65,15 @@ public final class FirebaseCredentials {
     static FirebaseCredentials fromGoogleCredentials(GoogleCredential credentials) {
         checkNotNull(credentials);
         return new FirebaseCredentials(credentials);
+    }
+
+    /**
+     * Creates an empty instance of {@code FirebaseCredentials}.
+     *
+     * @return an empty {@code FirebaseCredentials}
+     */
+    public static FirebaseCredentials empty() {
+        return new FirebaseCredentials();
     }
 
     /**
@@ -83,6 +97,22 @@ public final class FirebaseCredentials {
         return new FirebaseCredentials(credentials);
     }
 
+    /**
+     * Checks if the instance of the {@code FirebaseCredentials} is empty.
+     *
+     * @return {@code true} if {@code FirebaseCredentials} are empty and {@code false} otherwise
+     */
+    boolean isEmpty() {
+        return credentials == null;
+    }
+
+    /**
+     * Returns the underlying Google credentials.
+     *
+     * @return the underlying credentials or {@code null} if the credentials are
+     *         {@linkplain #isEmpty() empty}
+     */
+    @Nullable
     GoogleCredential credentials() {
         return credentials;
     }
