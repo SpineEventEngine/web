@@ -130,7 +130,7 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a non-authorized {@code FirebaseClient} for accessing databases with public rules.
+     * Creates an unauthorized {@code FirebaseClient} to access the database with public rules.
      */
     private static FirebaseClient createUnauthorized(HttpTransport httpTransport,
                                                      DatabaseUrl url) {
