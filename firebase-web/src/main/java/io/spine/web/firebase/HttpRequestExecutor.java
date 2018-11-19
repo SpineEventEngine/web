@@ -22,6 +22,7 @@ package io.spine.web.firebase;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
@@ -39,6 +40,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The class is effectively {@code final} and is left non-{@code final} to enable testing mocks.
  */
 class HttpRequestExecutor {
+
+    /**
+     * The header which enables correct parsing of query parameters in request.
+     */
+    private static final String FIREBASE_DECODING_HEADER = "X-Firebase-Decoding";
 
     private final HttpRequestFactory requestFactory;
 
@@ -136,9 +142,23 @@ class HttpRequestExecutor {
     }
 
     private static String executeAndGetResponse(HttpRequest request) throws IOException {
+        setFirebaseDecodingHeader(request);
         HttpResponse httpResponse = request.execute();
         String response = httpResponse.parseAsString();
         httpResponse.disconnect();
         return response;
+    }
+
+    /**
+     * Sets the "X-Firebase-Decoding" header which allows query parameters in URL to be parsed
+     * correctly and be RFC-compliant.
+     *
+     * <p>See REST API
+     * <a href="https://firebase.google.com/docs/reference/rest/database/#section-api-usage">
+     * reference.</a>
+     */
+    private static void setFirebaseDecodingHeader(HttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+        headers.put(FIREBASE_DECODING_HEADER, 1);
     }
 }
