@@ -27,8 +27,8 @@ import io.spine.core.Command;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.testing.client.c.CreateTask;
-import io.spine.testing.client.c.CreateTaskVBuilder;
+import io.spine.testing.client.command.TestCommandMessage;
+import io.spine.testing.client.command.TestCommandMessageVBuilder;
 import io.spine.web.command.given.CommandServletTestEnv.TestCommandServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
@@ -47,9 +48,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Dmytro Dashenkov
- */
 @DisplayName("CommandServlet should")
 class CommandServletTest {
 
@@ -61,7 +59,7 @@ class CommandServletTest {
     @DisplayName("fail to serialize")
     void testSerialize() throws IOException {
         CommandServlet servlet = new TestCommandServlet();
-        ObjectOutputStream stream = new ObjectOutputStream(new ByteArrayOutputStream());
+        ObjectOutput stream = new ObjectOutputStream(new ByteArrayOutputStream());
         assertThrows(UnsupportedOperationException.class, () -> stream.writeObject(servlet));
     }
 
@@ -70,7 +68,7 @@ class CommandServletTest {
     void testHandle() throws IOException {
         CommandServlet servlet = new TestCommandServlet();
         StringWriter response = new StringWriter();
-        CreateTask createTask = CreateTaskVBuilder
+        TestCommandMessage createTask = TestCommandMessageVBuilder
                 .newBuilder()
                 .setId(newUuid())
                 .build();
