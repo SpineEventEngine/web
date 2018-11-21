@@ -23,7 +23,7 @@ package io.spine.web.firebase;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.Optional;
@@ -65,12 +65,12 @@ class FirebaseRestClient implements FirebaseClient {
     }
 
     /**
-     * Creates a {@code FirebaseRestClient} which operates on the database located at given
-     * {@code url} and uses given {@code httpTransport}.
+     * Creates a {@code FirebaseRestClient} which operates on the database located at the given
+     * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
-    static FirebaseRestClient create(DatabaseUrl url, HttpTransport httpTransport) {
+    static FirebaseRestClient create(DatabaseUrl url, HttpRequestFactory requestFactory) {
         String nodeAccessFormat = nodeAccessFormat(url);
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(httpTransport);
+        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(requestFactory);
         return new FirebaseRestClient(nodeAccessFormat, requestExecutor);
     }
 

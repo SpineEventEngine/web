@@ -22,10 +22,10 @@ package io.spine.web.firebase;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.io.IOException;
@@ -41,6 +41,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 class HttpRequestExecutor {
 
+    /**
+     * The header which enables correct parsing of query parameters in request.
+     *
+     * <p>See Firebase REST API
+     * <a href="https://firebase.google.com/docs/reference/rest/database/#section-api-usage">
+     * reference</a>.
+     */
+    private static final String FIREBASE_DECODING_HEADER = "X-Firebase-Decoding";
+
     private final HttpRequestFactory requestFactory;
 
     private HttpRequestExecutor(HttpRequestFactory requestFactory) {
@@ -48,15 +57,14 @@ class HttpRequestExecutor {
     }
 
     /**
-     * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP transport.
+     * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP request factory.
      *
-     * @param transport
-     *         the underlying {@code HttpTransport} to use
+     * @param requestFactory
+     *         the {@code HttpRequestFactory} to use for HTTP requests execution
      * @return the new instance of {@code HttpRequestExecutor}
      */
-    static HttpRequestExecutor using(HttpTransport transport) {
-        checkNotNull(transport);
-        HttpRequestFactory requestFactory = transport.createRequestFactory();
+    static HttpRequestExecutor using(HttpRequestFactory requestFactory) {
+        checkNotNull(requestFactory);
         return new HttpRequestExecutor(requestFactory);
     }
 
@@ -138,9 +146,23 @@ class HttpRequestExecutor {
     }
 
     private static String executeAndGetResponse(HttpRequest request) throws IOException {
+        setFirebaseDecodingHeader(request);
         HttpResponse httpResponse = request.execute();
         String response = httpResponse.parseAsString();
         httpResponse.disconnect();
         return response;
+    }
+
+    /**
+     * Sets the "X-Firebase-Decoding" header which allows query parameters in URL to be parsed
+     * correctly and be RFC-compliant.
+     *
+     * <p>See REST API
+     * <a href="https://firebase.google.com/docs/reference/rest/database/#section-api-usage">
+     * reference.</a>
+     */
+    private static void setFirebaseDecodingHeader(HttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+        headers.put(FIREBASE_DECODING_HEADER, 1);
     }
 }
