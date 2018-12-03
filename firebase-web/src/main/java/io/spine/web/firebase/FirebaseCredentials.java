@@ -21,7 +21,6 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.common.annotations.VisibleForTesting;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -61,12 +60,6 @@ public final class FirebaseCredentials {
         this.credentials = credentials;
     }
 
-    @VisibleForTesting
-    static FirebaseCredentials fromGoogleCredentials(GoogleCredential credentials) {
-        checkNotNull(credentials);
-        return new FirebaseCredentials(credentials);
-    }
-
     /**
      * Creates an empty instance of {@code FirebaseCredentials}.
      *
@@ -74,6 +67,23 @@ public final class FirebaseCredentials {
      */
     public static FirebaseCredentials empty() {
         return new FirebaseCredentials();
+    }
+
+    /**
+     * Creates a new {@code FirebaseCredentials} from the given {@link GoogleCredential}.
+     *
+     * <p>The method sets scopes required for Firebase.
+     *
+     * <p>The method is useful to create credentials from the
+     * {@linkplain GoogleCredential#getApplicationDefault() application default credentials}.
+     *
+     * @param credentials the credentials to create from
+     * @return a new instance of {@code FirebaseCredentials}
+     */
+    public static FirebaseCredentials fromGoogleCredentials(GoogleCredential credentials) {
+        checkNotNull(credentials);
+        GoogleCredential scopedCredential = credentials.createScoped(AUTH_SCOPES);
+        return new FirebaseCredentials(scopedCredential);
     }
 
     /**
@@ -94,7 +104,7 @@ public final class FirebaseCredentials {
     public static FirebaseCredentials fromStream(InputStream credentialStream) {
         checkNotNull(credentialStream);
         GoogleCredential credentials = parseCredentials(credentialStream);
-        return new FirebaseCredentials(credentials);
+        return fromGoogleCredentials(credentials);
     }
 
     /**
@@ -119,8 +129,7 @@ public final class FirebaseCredentials {
 
     private static GoogleCredential parseCredentials(InputStream credentialStream) {
         try {
-            GoogleCredential credentials = GoogleCredential.fromStream(credentialStream)
-                                                           .createScoped(AUTH_SCOPES);
+            GoogleCredential credentials = GoogleCredential.fromStream(credentialStream);
             return credentials;
         } catch (IOException e) {
             throw newIllegalArgumentException(
