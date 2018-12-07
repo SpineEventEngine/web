@@ -13,6 +13,18 @@ npm i spine-web-client --save
 npm i isomorphic-fetch --save
 ```
 
+## Testing
+
+You can run tests as follows:
+```bash
+npm run test
+```
+
+You can also run tests from Intellij IDEA. To do it:
+* Install [NodeJs Plugin](https://plugins.jetbrains.com/plugin/6098-nodejs). The plugin adds `Mocha` configuration.
+* Update `Mocha` configuration template:
+  * Add `--require babel-register` to `node options`. It is required to support `import` statements in Node environment.
+  * Specify the path to `Mocha` package: `~\IdeaProjects\Spine\web\client-js\node_modules\mocha`.
 
 ## Publishing
 
