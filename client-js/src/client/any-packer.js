@@ -20,10 +20,6 @@
 import {Type, TypedMessage} from './typed-message';
 import {Int32Value, Int64Value, StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
 import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
-import {types} from 'spine-web-client-proto/known_types';
-
-// import {types} from '../../proto/test/js/known_types';
-
 
 /**
  * An packer of string, number, boolean, and message values from Protobuf `Any`.
@@ -341,6 +337,7 @@ export class AnyPacker {
     return new Pack(value);
   }
 
+  //TODO:2018-12-10:dmytro.grankin: document
   static packMessage(message) {
     const typedMessage = TypedMessage.of(message);
     return this.packTyped(typedMessage);
