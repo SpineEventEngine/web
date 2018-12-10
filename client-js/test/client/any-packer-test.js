@@ -95,6 +95,17 @@ describe('AnyPacker', function () {
     Given.assertMessagesEqual(task, message);
   });
 
+  it ('packs an untyped message', () => {
+    const task = Given.newTask();
+
+    const any = AnyPacker.packMessage(task);
+    assert.ok(any);
+    Given.assertTypeUrlForType(any.getTypeUrl(), Given.TYPE.TASK);
+
+    const message = AnyPacker.unpack(any).as(Given.TYPE.TASK);
+    Given.assertMessagesEqual(task, message);
+  });
+
   it('packs a string', () => {
     const value = 'AnyPacker, I’m coming for you!';
 

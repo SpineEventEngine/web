@@ -35,6 +35,10 @@ import {
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 import {Subscription, Topic} from 'spine-web-client-proto/spine/client/subscription_pb';
 import {Command} from 'spine-web-client-proto/spine/core/command_pb';
+// import {types as knownTypes} from 'spine-web-client-proto/known_types';
+import {types as knownTypes} from '../../proto/test/js/known_types';
+
+//TODO:2018-12-10:dmytro.grankin: import known types from the proper place
 
 
 /**
@@ -173,6 +177,18 @@ export class TypedMessage {
   }
 
   /**
+   * Creates a new instance of TypedMessage from the given Protobuf message.
+   *
+   * @param {!Message} message a Protobuf message
+   * @returns {!TypedMessage} the created typed message
+   */
+  static of(message) {
+    const typeUrl = this._typeUrlOf(message);
+    const type = Type.of(message.constructor, typeUrl);
+    return new TypedMessage(message, type)
+  }
+
+  /**
    * Converts this message into a Base64-encoded byte string.
    *
    * @return the string representing this message
@@ -274,5 +290,22 @@ export class TypedMessage {
    */
   static bool(value) {
     return new TypedMessage(new BoolValue([value]), Type.BOOL);
+  }
+
+  /**
+   * Finds the type URL for the Protobuf message in the known types.
+   *
+   * @param {!Message} message a Protobuf message
+   * @returns {!string} the type URL
+   * @private
+   */
+  static _typeUrlOf(message) {
+    //TODO:2018-12-10:dmytro.grankin: swap keys and values to achieve O(1)
+    for (let [typeUrl, type] of knownTypes.entries()) {
+      if (type === message.constructor) {
+        return typeUrl;
+      }
+    }
+    throw new Error(`Cannot find the TypeUrl for message ${message}`);
   }
 }

@@ -18,12 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import {Type, TypedMessage} from './typed-message';
-import {
-  Int32Value,
-  Int64Value,
-  StringValue
-} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
+import {Int32Value, Int64Value, StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
 import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
+import {types} from 'spine-web-client-proto/known_types';
+
+// import {types} from '../../proto/test/js/known_types';
 
 
 /**
@@ -340,6 +339,11 @@ export class AnyPacker {
    */
   static pack(value) {
     return new Pack(value);
+  }
+
+  static packMessage(message) {
+    const typedMessage = TypedMessage.of(message);
+    return this.packTyped(typedMessage);
   }
 
   /**
