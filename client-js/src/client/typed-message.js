@@ -133,6 +133,42 @@ export class Type {
     }
     return new Type(cls, typeUrl);
   }
+
+  /**
+   * Creates a new `Type` for the passed `Message` class.
+   *
+   * @param cls {!Class<T>} cls a class of the `Message`
+   */
+  static forClass(cls) {
+    const typeUrl = this._typeUrlOf(cls);
+    return this.of(cls, typeUrl);
+  }
+
+  /**
+   * Creates a new `Type` for the passed `Message`.
+   *
+   * @param {!Message} message a Protobuf message
+   */
+  static forMessage(message) {
+    return this.forClass(message.constructor);
+  }
+
+  /**
+   * Finds the type URL for the Protobuf message in the known types.
+   *
+   * @param {!Class} messageClass the class of a Protobuf message
+   * @returns {!string} the type URL
+   * @private
+   */
+  static _typeUrlOf(messageClass) {
+    //TODO:2018-12-10:dmytro.grankin: swap keys and values to achieve O(1)
+    for (let [typeUrl, type] of knownTypes.entries()) {
+      if (type === messageClass) {
+        return typeUrl;
+      }
+    }
+    throw new Error(`Cannot find the TypeUrl for a message class.`);
+  }
 }
 
 // PRIMITIVE WRAPPERS
@@ -183,8 +219,7 @@ export class TypedMessage {
    * @returns {!TypedMessage} the created typed message
    */
   static of(message) {
-    const typeUrl = this._typeUrlOf(message);
-    const type = Type.of(message.constructor, typeUrl);
+    const type = Type.forMessage(message);
     return new TypedMessage(message, type)
   }
 
@@ -290,22 +325,5 @@ export class TypedMessage {
    */
   static bool(value) {
     return new TypedMessage(new BoolValue([value]), Type.BOOL);
-  }
-
-  /**
-   * Finds the type URL for the Protobuf message in the known types.
-   *
-   * @param {!Message} message a Protobuf message
-   * @returns {!string} the type URL
-   * @private
-   */
-  static _typeUrlOf(message) {
-    //TODO:2018-12-10:dmytro.grankin: swap keys and values to achieve O(1)
-    for (let [typeUrl, type] of knownTypes.entries()) {
-      if (type === message.constructor) {
-        return typeUrl;
-      }
-    }
-    throw new Error(`Cannot find the TypeUrl for message ${message}`);
   }
 }
