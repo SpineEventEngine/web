@@ -18,7 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import {Type, TypedMessage} from './typed-message';
-import {Int32Value, Int64Value, StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
+import {
+  Int32Value,
+  Int64Value,
+  StringValue
+} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
 import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
 
 /**
