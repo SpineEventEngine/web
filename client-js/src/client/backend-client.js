@@ -247,7 +247,7 @@ export class BackendClient {
    * Fetches a single entity of the given type.
    *
    * @param {!Type<T>} type a type URL of the target entity
-   * @param {!TypedMessage} id an ID of the target entity
+   * @param {!Message} id an ID of the target entity
    * @param {!consumerCallback<Object>} dataCallback
    *        a callback receiving a single data item as a JS object
    * @param {?consumerCallback<SpineError>} errorCallback
@@ -256,7 +256,8 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._requestFactory.query().select(type).byIds([id]).build();
+    const typedId = TypedMessage.of(id);
+    const query = this._requestFactory.query().select(type).byIds([typedId]).build();
     const typedQuery = new TypedQuery(query, type);
 
     // noinspection JSCheckFunctionSignatures
@@ -343,8 +344,8 @@ export class BackendClient {
    * The entities that already exist will be initially passed to the `itemAdded` observer. 
    *
    * @param {!Type} ofType a type URL of entities to observe changes
-   * @param {?TypedMessage[]} byIds an array of ids of entities to observe changes
-   * @param {?TypedMessage} byId an id of a single entity to observe changes
+   * @param {?Message[]} byIds an array of ids of entities to observe changes
+   * @param {?Message} byId an id of a single entity to observe changes
    * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes 
    *                                             and unsubscribe from the updated 
    */
@@ -357,7 +358,8 @@ export class BackendClient {
     }
     let topic;
     if (ids) {
-      topic = this._requestFactory.topic().all({of: type, withIds: ids});
+      const typedIds = ids.map(TypedMessage.of);
+      topic = this._requestFactory.topic().all({of: type, withIds: typedIds});
     } else {
       topic = this._requestFactory.topic().all({of: type});
     }

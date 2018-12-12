@@ -174,10 +174,8 @@ describe('FirebaseBackendClient', function () {
 
     backendClient.sendCommand(command, () => {
 
-      const typedId = new TypedMessage(taskId, Given.TYPE.OF_IDENTIFIER.TASK_ID);
-
-      backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, typedId, data => {
-        assert.equal(data.getId().getValue(), taskId.getValue());
+      backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
+        assert.equal(data.getId().getValue(), taskId);
         assert.equal(data.getName(), command.getName());
         assert.equal(data.getDescription(), command.getDescription());
 
@@ -438,7 +436,7 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskName
     });
-    const taskId = new TypedMessage(createCommand.getId(), Given.TYPE.OF_IDENTIFIER.TASK_ID);
+    const taskId = createCommand.getId();
     const taskIdValue = createCommand.getId().getValue();
 
     const promise = new Promise(resolve => {
