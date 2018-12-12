@@ -665,12 +665,12 @@ class CommandFactory {
   /**
    * Creates a `Command` from the given command message.
    *
-   * @param {!TypedMessage} message a typed command message
+   * @param {!Message} message a command message
    * @return {TypedMessage<Command>} a typed representation of the Spine Command
    */
   create(message) {
     const id = CommandFactory._newCommandId();
-    const messageAny = AnyPacker.packTyped(message);
+    const messageAny = AnyPacker.packMessage(message);
     const context = this._commandContext();
 
     const result = new Command();

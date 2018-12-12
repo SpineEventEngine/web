@@ -59,7 +59,7 @@ class Given {
    * @param {?String} named
    * @param {?String} describedAs
    *
-   * @return {TypedMessage<CreateTask>}
+   * @return {CreateTask}
    */
   static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
     const taskId = this._taskId({value: id, withPrefix: idPrefix});
@@ -72,14 +72,14 @@ class Given {
     command.setName(name);
     command.setDescription(description);
 
-    return new TypedMessage(command, this.TYPE.OF_COMMAND.CREATE_TASK);
+    return command;
   }
 
   /**
    * @param {!String[]} named
    * @param {?String} withPrefix
    *
-   * @return {TypedMessage<CreateTask>[]}
+   * @return {CreateTask[]}
    */
   static createTaskCommands({named: names, withPrefix: idPrefix}) {
     const commands = [];
@@ -97,7 +97,7 @@ class Given {
    * @param {!String} withId
    * @param {!String} to
    *
-   * @return {TypedMessage<RenameTask>}
+   * @return {RenameTask}
    */
   static renameTaskCommand({withId: id, to: newName}) {
     const taskId = this._taskId({value: id});
@@ -106,7 +106,7 @@ class Given {
     command.setId(taskId);
     command.setName(newName);
 
-    return new TypedMessage(command, this.TYPE.OF_COMMAND.RENAME_TASK);
+    return command;
 
   }
 
@@ -170,7 +170,7 @@ describe('FirebaseBackendClient', function () {
       describedAs: 'Spine Web need integration tests'
     });
 
-    const taskId = command.message.getId();
+    const taskId = command.getId();
 
     backendClient.sendCommand(command, () => {
 
@@ -178,8 +178,8 @@ describe('FirebaseBackendClient', function () {
 
       backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, typedId, data => {
         assert.equal(data.getId().getValue(), taskId.getValue());
-        assert.equal(data.getName(), command.message.getName());
-        assert.equal(data.getDescription(), command.message.getDescription());
+        assert.equal(data.getName(), command.getName());
+        assert.equal(data.getDescription(), command.getDescription());
 
         done();
 
@@ -232,7 +232,7 @@ describe('FirebaseBackendClient', function () {
 
   it('fetches all the existing entities of Given type one by one', done => {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
-    const taskId = command.message.getId();
+    const taskId = command.getId();
 
     backendClient.sendCommand(command, () => {
 
@@ -257,7 +257,7 @@ describe('FirebaseBackendClient', function () {
 
   it('fetches all the existing entities of Given type at once', done => {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
-    const taskId = command.message.getId();
+    const taskId = command.getId();
 
     backendClient.sendCommand(command, () => {
 
@@ -336,7 +336,7 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: names
     });
-    taskIds = commands.map(command => command.message.getId().getValue());
+    taskIds = commands.map(command => command.getId().getValue());
     commands.forEach(command => {
       backendClient.sendCommand(command, Given.noop, fail(done), fail(done));
     });
@@ -389,14 +389,14 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskNames
     });
-    taskIds = createCommands.map(command => command.message.getId().getValue());
+    taskIds = createCommands.map(command => command.getId().getValue());
     const createPromises = [];
     createCommands.forEach(command => {
       const promise = new Promise(resolve => {
         backendClient.sendCommand(
           command,
           () => {
-            console.log(`Task '${command.message.getId().getValue()}' created.`);
+            console.log(`Task '${command.getId().getValue()}' created.`);
             resolve();
           },
           fail(done, 'Unexpected error while creating a task.'),
@@ -438,8 +438,8 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskName
     });
-    const taskId = new TypedMessage(createCommand.message.getId(), Given.TYPE.OF_IDENTIFIER.TASK_ID);
-    const taskIdValue = createCommand.message.getId().getValue();
+    const taskId = new TypedMessage(createCommand.getId(), Given.TYPE.OF_IDENTIFIER.TASK_ID);
+    const taskIdValue = createCommand.getId().getValue();
 
     const promise = new Promise(resolve => {
       backendClient.sendCommand(

@@ -294,7 +294,7 @@ export class BackendClient {
    * The occurrence of an error does not guarantee that the command is not accepted by the server
    * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
    *
-   * @param {!TypedMessage} commandMessage a typed command message
+   * @param {!Message} commandMessage a Protobuf message representing the comand
    * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<CommandHandlingError>} errorCallback

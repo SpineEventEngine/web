@@ -17,6 +17,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Message} from 'google-protobuf';
 import {Type, TypedMessage} from './typed-message';
 import {
   Int32Value,
@@ -341,8 +343,17 @@ export class AnyPacker {
     return new Pack(value);
   }
 
-  //TODO:2018-12-10:dmytro.grankin: document
+  /**
+   * Packs a `Message` into a Protobuf `Any`.
+   *
+   * @param {!Message} message a message to be packed
+   *
+   * @return {Any} a new Any with the provided message inside
+   */
   static packMessage(message) {
+    if (!(message instanceof Message)) {
+      throw new Error('The `Message` type was expected by AnyPacker#packMessage().')
+    }
     const typedMessage = TypedMessage.of(message);
     return this.packTyped(typedMessage);
   }
@@ -352,7 +363,7 @@ export class AnyPacker {
    *
    * @param {!TypedMessage} message a message to be packed
    *
-   * @return {Any} a new Any with provided typed message inside
+   * @return {Any} a new Any with the provided typed message inside
    */
   static packTyped(message) {
     if (!(message instanceof TypedMessage)) {
