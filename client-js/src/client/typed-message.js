@@ -35,10 +35,7 @@ import {
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 import {Subscription, Topic} from 'spine-web-client-proto/spine/client/subscription_pb';
 import {Command} from 'spine-web-client-proto/spine/core/command_pb';
-// import {types as knownTypes} from 'spine-web-client-proto/known_types';
-import {types as knownTypes} from '../../proto/test/js/known_types';
-
-//TODO:2018-12-10:dmytro.grankin: import known types from the proper place
+import KnownTypes from './known_types'
 
 
 /**
@@ -140,7 +137,7 @@ export class Type {
    * @param cls {!Class<T>} cls a class of the `Message`
    */
   static forClass(cls) {
-    const typeUrl = this._typeUrlOf(cls);
+    const typeUrl = KnownTypes.typeUrlFor(cls);
     return this.of(cls, typeUrl);
   }
 
@@ -151,23 +148,6 @@ export class Type {
    */
   static forMessage(message) {
     return this.forClass(message.constructor);
-  }
-
-  /**
-   * Finds the type URL for the Protobuf message in the known types.
-   *
-   * @param {!Class} messageClass the class of a Protobuf message
-   * @returns {!string} the type URL
-   * @private
-   */
-  static _typeUrlOf(messageClass) {
-    //TODO:2018-12-10:dmytro.grankin: swap keys and values to achieve O(1)
-    for (let [typeUrl, type] of knownTypes.entries()) {
-      if (type === messageClass) {
-        return typeUrl;
-      }
-    }
-    throw new Error(`Cannot find the TypeUrl for a message class.`);
   }
 }
 

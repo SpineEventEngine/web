@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import KnownTypes from '../../src/client/known_types';
+import {types as webClientTypes} from 'spine-web-client-proto/known_types';
+import {types as testTypes} from '../../proto/test/js/known_types';
+
 /**
  * Can be used in callback-based async tests to fail them before waiting
  * of the full test timeout.
@@ -51,4 +55,12 @@ export function fail(done, message = '') {
      done(new Error(`Test failed. Cause: ${cause ? JSON.stringify(cause) : 'not identified'}`));
     }
   };
+}
+
+/**
+ * Registers known types required for the tests.
+ */
+export function registerKnownTypes() {
+  KnownTypes.with(webClientTypes);
+  KnownTypes.with(testTypes);
 }

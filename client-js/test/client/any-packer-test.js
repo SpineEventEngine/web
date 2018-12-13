@@ -26,6 +26,7 @@ import {AnyPacker} from "../../src/client/any-packer";
 import {Type, TypedMessage} from "../../src/client/typed-message";
 import {Duration} from "../../src/client/time-utils";
 import {Task, TaskId} from "../../proto/test/js/spine/web/test/given/task_pb";
+import {registerKnownTypes} from './test-helpers';
 
 class Given {
   constructor() {
@@ -69,6 +70,7 @@ Given.TYPE = {
 
 describe('AnyPacker', function () {
 
+  registerKnownTypes();
   const timeoutDuration = new Duration({seconds: 5});
   this.timeout(timeoutDuration.inMs());
 
