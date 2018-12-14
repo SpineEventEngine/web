@@ -40,7 +40,7 @@ export default class KnownTypes {
    * @public
    */
   static with(knownTypesSubset) {
-    for (let [typeUrl, messageClass] of knownTypesSubset.entries()) {
+    for (let [typeUrl, messageClass] of knownTypesSubset) {
       if (!types.has(typeUrl)) {
         types.set(typeUrl, messageClass);
       }
@@ -57,13 +57,22 @@ export default class KnownTypes {
    */
   static typeUrlFor(messageClass) {
     //TODO:2018-12-10:dmytro.grankin: swap keys and values to achieve O(1)
-    for (let [typeUrl, type] of types.entries()) {
-      if (type === messageClass) {
+    for (let [typeUrl, type] of types) {
+      if (this._areTypesEqual(type, messageClass)) {
         return typeUrl;
       }
     }
-    //TODO:2018-12-13:dmytro.grankin: test lookup of types that are registered twice
     throw new Error('Cannot find the TypeUrl for a message class.');
+  }
+
+  static _areTypesEqual(leftClass, rightClass) {
+    //TODO:2018-12-14:dmytro.grankin: fix tests
+
+    // const left = new leftClass();
+    // const right = new rightClass();
+    // return Message.equals(left, right) || Message.compareFields(left.toArray(), right.toArray())
+    // const diff = Message.difference(new leftClass(), new rightClass());
+    return leftClass === rightClass;
   }
 }
 
