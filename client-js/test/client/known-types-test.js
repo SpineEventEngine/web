@@ -18,19 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import uuid from 'uuid';
 import assert from 'assert';
 
-import {Message} from 'google-protobuf';
 import KnownTypes from '../../src/client/known_types';
 import {types as webClientTypes} from 'spine-web-client-proto/known_types';
 import {types as testTypes} from '../../proto/test/js/known_types';
 
 describe('KnownTypes', () => {
 
-  it('registers types', () => {
+  it('registers web-client types', () => {
     KnownTypes.with(webClientTypes);
     assertHasTypeUrls(webClientTypes);
+  });
+
+  it('registers test types', () => {
+    KnownTypes.with(testTypes);
+    assertHasTypeUrls(testTypes);
   });
 
   it('skips already registered types',() => {

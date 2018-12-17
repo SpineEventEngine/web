@@ -48,31 +48,14 @@ export default class KnownTypes {
   }
 
   /**
-   * Finds the type URL for the Protobuf message in the known types.
+   * Obtains the type URL for the Protobuf type.
    *
-   * @param {!Class} messageClass the class of a Protobuf message
+   * @param {!Class} messageClass the class of a Protobuf message or enum
    * @returns {!string} the type URL
-   * @throws {Error} if the message class in unknown
    * @public
    */
   static typeUrlFor(messageClass) {
-    //TODO:2018-12-10:dmytro.grankin: swap keys and values to achieve O(1)
-    for (let [typeUrl, type] of types) {
-      if (this._areTypesEqual(type, messageClass)) {
-        return typeUrl;
-      }
-    }
-    throw new Error('Cannot find the TypeUrl for a message class.');
-  }
-
-  static _areTypesEqual(leftClass, rightClass) {
-    //TODO:2018-12-14:dmytro.grankin: fix tests
-
-    // const left = new leftClass();
-    // const right = new rightClass();
-    // return Message.equals(left, right) || Message.compareFields(left.toArray(), right.toArray())
-    // const diff = Message.difference(new leftClass(), new rightClass());
-    return leftClass === rightClass;
+    return messageClass.typeUrl();
   }
 }
 
