@@ -26,6 +26,6 @@ ext {
     
     versionToPublish = '1.0.0-SNAPSHOT'
 
-    firebaseVersion = '5.9.0'
+    firebaseVersion = '6.6.0'
     servletApiVersion = '4.0.0'
 }
