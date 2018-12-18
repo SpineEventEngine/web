@@ -95,6 +95,20 @@ subprojects {
         })
     }
 
+    configurations.all({
+        resolutionStrategy {
+            /**
+             * {@code proto-google-common-protos} starting with version {@code 1.1.0}
+             * and {@code proto-google-iam-v1} starting with version {@code 0.1.29}
+             * include Protobuf message definitions alongside with compiled Java.
+             * This breaks the spine compiler which searches for all Protobuf definitions 
+             * in classpath, and assumes they implement the Type URLs.
+             */
+            force "com.google.api.grpc:proto-google-common-protos:1.0.0"
+            force "com.google.api.grpc:proto-google-iam-v1:0.1.28"
+        }
+    })
+
     ext {
         spineProtobufPluginId = 'io.spine.tools.spine-model-compiler'
 
