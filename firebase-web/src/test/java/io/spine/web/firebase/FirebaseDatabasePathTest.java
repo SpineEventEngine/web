@@ -110,7 +110,6 @@ class FirebaseDatabasePathTest {
     void testEscaped() {
         TestActorRequestFactory requestFactory = TestActorRequestFactory.newInstance(
                 "a.aa#@)?$0[abb-ab",
-                ZoneOffsets.getDefault(),
                 systemDefault()
         );
         Query query = requestFactory.query()
