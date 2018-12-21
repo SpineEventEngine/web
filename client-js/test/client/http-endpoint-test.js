@@ -95,9 +95,7 @@ class Given {
 
 Given.FAKE_ENDPOINT_URL = 'https://fake-endpoint.url';
 Given.CONNECTION_ERROR = new Error('Failed to fetch');
-Given.MOCK_COMMAND = new TypedMessage(
-  new CreateTask(),
-  Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'));
+Given.MOCK_COMMAND = TypedMessage.of(new CreateTask);
 
 Given.HTTP_RESPONSE = {
   STATUS: {

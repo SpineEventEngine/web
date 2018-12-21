@@ -152,24 +152,24 @@ export class Type {
 }
 
 // PRIMITIVE WRAPPERS
-Type.STRING = Type.of(StringValue, 'type.googleapis.com/proto.google.protobuf.StringValue');
-Type.INT32 = Type.of(Int32Value, 'type.googleapis.com/proto.google.protobuf.Int32Value');
-Type.UINT32 = Type.of(UInt32Value, 'type.googleapis.com/proto.google.protobuf.Int32Value');
-Type.INT64 = Type.of(Int64Value, 'type.googleapis.com/proto.google.protobuf.Int64Value');
-Type.UINT64 = Type.of(UInt64Value, 'type.googleapis.com/proto.google.protobuf.Int64Value');
-Type.BOOL = Type.of(BoolValue, 'type.googleapis.com/proto.google.protobuf.BoolValue');
-Type.DOUBLE = Type.of(DoubleValue, 'type.googleapis.com/proto.google.protobuf.DoubleValue');
-Type.FLOAT = Type.of(FloatValue, 'type.googleapis.com/proto.google.protobuf.FloatValue');
+Type.STRING = Type.forClass(StringValue);
+Type.INT32 = Type.forClass(Int32Value);
+Type.UINT32 = Type.forClass(UInt32Value);
+Type.INT64 = Type.forClass(Int64Value);
+Type.UINT64 = Type.forClass(UInt64Value);
+Type.BOOL = Type.forClass(BoolValue);
+Type.DOUBLE = Type.forClass(DoubleValue);
+Type.FLOAT = Type.forClass(FloatValue);
 
 // SPINE WEB
-Type.WEB_QUERY = Type.of(WebQuery, 'type.spine.io/spine.web.WebQuery');
+Type.WEB_QUERY = Type.forClass(WebQuery);
 
 // SPINE CLIENT
-Type.SUBSCRIPTION = Type.of(Subscription, 'type.spine.io/spine.client.Subscription');
-Type.TOPIC = Type.of(Topic, 'type.spine.io/spine.client.Topic');
+Type.SUBSCRIPTION = Type.forClass(Subscription);
+Type.TOPIC = Type.forClass(Topic);
 
 // SPINE CORE
-Type.COMMAND = Type.of(Command, 'type.spine.io/spine.core.Command');
+Type.COMMAND = Type.forClass(Command);
 
 /**
  * A Protobuf message with a {@link TypeUrl}.

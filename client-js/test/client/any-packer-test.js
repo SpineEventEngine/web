@@ -64,8 +64,8 @@ class Given {
 }
 
 Given.TYPE = {
-  TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
-  TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
+  TASK_ID: Type.forClass(TaskId),
+  TASK: Type.forClass(Task),
 };
 
 describe('AnyPacker', function () {

@@ -141,15 +141,8 @@ Given.defaultTaskName = 'Get to Mount Doom';
 Given.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
 Given.TYPE = {
   OF_ENTITY: {
-    TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
-    PROJECT: Type.of(Project, 'type.spine.io/spine.web.test.given.Project'),
-  },
-  OF_IDENTIFIER: {
-    TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
-  },
-  OF_COMMAND: {
-    CREATE_TASK: Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'),
-    RENAME_TASK: Type.of(RenameTask, 'type.spine.io/spine.web.test.given.RenameTask'),
+    TASK: Type.forClass(Task),
+    PROJECT: Type.forClass(Project),
   },
   MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
