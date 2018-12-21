@@ -677,7 +677,7 @@ class CommandFactory {
     result.setId(id);
     result.setMessage(messageAny);
     result.setContext(context);
-    return new TypedMessage(result, Type.COMMAND);
+    return TypedMessage.of(result);
   }
 
   _commandContext() {

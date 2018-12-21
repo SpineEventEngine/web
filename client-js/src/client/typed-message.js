@@ -220,7 +220,8 @@ export class TypedMessage {
    * @return {TypedMessage<StringValue>} a new `TypedMessage` instance with provided value
    */
   static string(value) {
-    return new TypedMessage(new StringValue([value.toString()]), Type.STRING);
+    const message = new StringValue([value.toString()]);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -233,7 +234,7 @@ export class TypedMessage {
    */
   static int32(value) {
     const message = new Int32Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.INT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -246,7 +247,7 @@ export class TypedMessage {
    */
   static uint32(value) {
     const message = new UInt32Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.UINT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -259,7 +260,7 @@ export class TypedMessage {
    */
   static int64(value) {
     const message = new Int64Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.INT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -272,7 +273,7 @@ export class TypedMessage {
    */
   static uint64(value) {
     const message = new UInt64Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.UINT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -283,7 +284,7 @@ export class TypedMessage {
    */
   static float(value) {
     const message = new FloatValue([value.valueOf()]);
-    return new TypedMessage(message, Type.FLOAT);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -294,7 +295,7 @@ export class TypedMessage {
    */
   static double(value) {
     const message = new DoubleValue([value.valueOf()]);
-    return new TypedMessage(message, Type.DOUBLE);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -304,6 +305,7 @@ export class TypedMessage {
    * @return {TypedMessage<BoolValue>} a new `TypedMessage` instance with provided value
    */
   static bool(value) {
-    return new TypedMessage(new BoolValue([value]), Type.BOOL);
+    const message = new BoolValue([value]);
+    return TypedMessage.of(message);
   }
 }

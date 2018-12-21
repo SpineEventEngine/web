@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Type, TypedMessage} from './typed-message';
+import {TypedMessage} from './typed-message';
 import {
   SpineError,
   ClientError,
@@ -50,7 +50,7 @@ class Endpoint {
    */
   query(query, strategy) {
     const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
-    const typedQuery = new TypedMessage(webQuery, Type.WEB_QUERY);
+    const typedQuery = TypedMessage.of(webQuery);
     return this._performQuery(typedQuery);
   }
 
@@ -62,7 +62,7 @@ class Endpoint {
    *                           an error occurs
    */
   subscribeTo(topic) {
-    const typedTopic = new TypedMessage(topic, Type.TOPIC);
+    const typedTopic = TypedMessage.of(topic);
     return this._subscribeTo(typedTopic);
   }
 
@@ -74,7 +74,7 @@ class Endpoint {
    *                           an error occurs
    */
   keepUpSubscription(subscription) {
-    const typedSubscription = new TypedMessage(subscription, Type.SUBSCRIPTION);
+    const typedSubscription = TypedMessage.of(subscription);
     return this._keepUp(typedSubscription);
   }
 
@@ -88,7 +88,7 @@ class Endpoint {
    *                           an error occurs
    */
   cancelSubscription(subscription) {
-    const typedSubscription = new TypedMessage(subscription, Type.SUBSCRIPTION);
+    const typedSubscription = TypedMessage.of(subscription);
     return this._cancel(typedSubscription);
   }
 
