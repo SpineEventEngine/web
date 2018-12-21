@@ -161,16 +161,6 @@ Type.BOOL = Type.forClass(BoolValue);
 Type.DOUBLE = Type.forClass(DoubleValue);
 Type.FLOAT = Type.forClass(FloatValue);
 
-// SPINE WEB
-Type.WEB_QUERY = Type.forClass(WebQuery);
-
-// SPINE CLIENT
-Type.SUBSCRIPTION = Type.forClass(Subscription);
-Type.TOPIC = Type.forClass(Topic);
-
-// SPINE CORE
-Type.COMMAND = Type.forClass(Command);
-
 /**
  * A Protobuf message with a {@link TypeUrl}.
  *
