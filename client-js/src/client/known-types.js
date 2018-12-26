@@ -51,11 +51,22 @@ export default class KnownTypes {
    * Obtains the type URL for the Protobuf type.
    *
    * @param {!Class} messageClass the class of a Protobuf message or enum
-   * @returns {!string} the type URL
+   * @return {!string} the type URL
    * @public
    */
   static typeUrlFor(messageClass) {
     return messageClass.typeUrl();
+  }
+
+  /**
+   * Tells if the given type URL is known the system.
+   *
+   * @param {!String} typeUrl the type URL to look up
+   * @return {!boolean} true if the given type is known, false otherwise
+   */
+  static contains(typeUrl) {
+    const messageClass = types.get(typeUrl);
+    return messageClass !== 'undefined';
   }
 }
 

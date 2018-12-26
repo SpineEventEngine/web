@@ -44,9 +44,9 @@ describe('KnownTypes', () => {
   });
 
   function assertHasTypeUrls(knownTypesSubset) {
-    for (let [typeUrl, messageClass] of knownTypesSubset) {
-      const actualTypeUrl = KnownTypes.typeUrlFor(messageClass);
-      assert.equal(actualTypeUrl, typeUrl);
+    for (let [typeUrl] of knownTypesSubset) {
+      const isKnown = KnownTypes.contains(typeUrl);
+      assert.ok(isKnown);
     }
   }
 });
