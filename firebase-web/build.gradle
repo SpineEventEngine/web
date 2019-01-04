@@ -30,7 +30,7 @@ apply plugin: spineProtobufPluginId
 
 dependencies {
     api project(':web')
-    api ("com.google.firebase:firebase-admin:$firebaseVersion") {
+    api(deps.build.firebaseAdmin) {
         exclude group: 'com.google.guava', module: 'guava'
     }
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
