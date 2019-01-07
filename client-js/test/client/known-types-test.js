@@ -27,12 +27,10 @@ import {types as testTypes} from '../../proto/test/js/known_types';
 describe('KnownTypes', () => {
 
   it('registers web-client types', () => {
-    KnownTypes.with(webClientTypes);
     assertHasTypeUrls(webClientTypes);
   });
 
   it('registers test types', () => {
-    KnownTypes.with(testTypes);
     assertHasTypeUrls(testTypes);
   });
 
@@ -44,9 +42,9 @@ describe('KnownTypes', () => {
   });
 
   function assertHasTypeUrls(knownTypesSubset) {
-    for (let [typeUrl, messageClass] of knownTypesSubset) {
-      const actualTypeUrl = KnownTypes.typeUrlFor(messageClass);
-      assert.equal(actualTypeUrl, typeUrl);
+    for (let [typeUrl] of knownTypesSubset) {
+      const hasTypeUrl = KnownTypes.hasTypeUrl(typeUrl);
+      assert.ok(hasTypeUrl);
     }
   }
 });

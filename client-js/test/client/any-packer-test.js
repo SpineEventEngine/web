@@ -70,7 +70,6 @@ Given.TYPE = {
 
 describe('AnyPacker', function () {
 
-  registerKnownTypes();
   const timeoutDuration = new Duration({seconds: 5});
   this.timeout(timeoutDuration.inMs());
 

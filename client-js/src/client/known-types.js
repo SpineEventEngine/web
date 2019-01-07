@@ -57,6 +57,28 @@ export default class KnownTypes {
   static typeUrlFor(messageClass) {
     return messageClass.typeUrl();
   }
+
+  /**
+   * Registers the type as a known type.
+   *
+   * @param {!Class} type the classof a Protobuf message or enum
+   * @param {!string} typeUrl the URL of the type
+   */
+  static register(type, typeUrl) {
+    if (!types.has(typeUrl)) {
+      types.set(typeUrl, type);
+    }
+  }
+
+  /**
+   * Tells whether the specified type URL is present among known types.
+   *
+   * @param {!string} typeUrl the type URL to check
+   */
+  static hasTypeUrl(typeUrl) {
+    const result = types.has(typeUrl);
+    return result;
+  }
 }
 
 /**

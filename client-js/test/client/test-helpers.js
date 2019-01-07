@@ -56,11 +56,3 @@ export function fail(done, message = '') {
     }
   };
 }
-
-/**
- * Registers known types required for the tests.
- */
-export function registerKnownTypes() {
-  KnownTypes.with(webClientTypes);
-  KnownTypes.with(testTypes);
-}
