@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 
-import KnownTypes from './known-types';
+import KnownTypes from '../../src/client/known-types';
 import {types as webClientTypes} from 'spine-web-client-proto/known_types';
 import {types as testTypes} from '../../proto/test/js/known_types';
 
