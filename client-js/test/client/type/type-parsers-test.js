@@ -18,34 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-"use strict";
+import assert from 'assert';
 
-import {Message} from 'google-protobuf';
+import TypeParsers from '../../../src/client/type/type-parsers';
 
-/**
- * Parses a plain Javascript object to a Protobuf message.
- *
- * The class is abstract and should be implemented for every message type.
- */
-export default class ObjectParser {
+import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
 
-  /**
-   * Creates a new instance.
-   */
-  constructor() {
-    if (this.constructor === ObjectParser) {
-      throw new Error('Cannot instantiate abstract ObjectParser class.');
-    }
-  }
+describe('TypeParsers', () => {
 
-  /**
-   * Converts an object to a message.
-   *
-   * @abstract
-   * @param {!Object} object the object representing a Protobuf message
-   * @return {!Message} the parsed Protobuf message
-   */
-  fromObject(object) {
-    throw new Error('The method is abstract and should be implemented by a subclass');
-  }
-}
+  it('autoregisters parsers for standard Protobuf types', () => {
+    const anyParser = TypeParsers.parserFor(Any.typeUrl());
+    assert.ok(anyParser);
+  });
+
+  it('requires a parser to extend ObjectParser', () => {
+    assert.throws(
+      () => TypeParsers.register({}, Any.typeUrl())
+    );
+  })
+
+  //TODO:2019-01-07:dmitry.grankin: add tests to check parsing of standard types.
+});

@@ -21,6 +21,24 @@
 "use strict";
 
 import ObjectParser from './object-parser';
+import {
+  AnyParser,
+  BoolValueParser,
+  BytesValueParser,
+  DoubleValueParser,
+  DurationParser,
+  EmptyParser,
+  FieldMaskParser,
+  FloatValueParser,
+  Int32ValueParser,
+  Int64ValueParser,
+  ListValueParser,
+  StringValueParser,
+  TimestampParser,
+  UInt32ValueParser,
+  UInt64ValueParser,
+  ValueParser
+} from "./well-known-parsers";
 
 /**
  * The registry of parsers for known Protobuf types.
@@ -38,6 +56,9 @@ export default class TypeParsers {
    * @param {!string} typeUrl the URL of the type to register the parser for
    */
   static register(parser, typeUrl) {
+    if (!(parser instanceof ObjectParser)) {
+      throw new Error('Unable to register a parsers, which does not extend ObjectParser.');
+    }
     if (!parsers.has(typeUrl)) {
       parsers.set(typeUrl, parser);
     }
@@ -67,3 +88,23 @@ export default class TypeParsers {
  * @private
  */
 const parsers = new Map();
+
+/**
+ * Register parsers for standard Protobuf types.
+ */
+TypeParsers.register(new BoolValueParser(), 'type.googleapis.com/google.protobuf.BoolValue');
+TypeParsers.register(new BytesValueParser(), 'type.googleapis.com/google.protobuf.BytesValue');
+TypeParsers.register(new DoubleValueParser(), 'type.googleapis.com/google.protobuf.DoubleValue');
+TypeParsers.register(new FloatValueParser(), 'type.googleapis.com/google.protobuf.FloatValue');
+TypeParsers.register(new StringValueParser(), 'type.googleapis.com/google.protobuf.StringValue');
+TypeParsers.register(new Int32ValueParser(), 'type.googleapis.com/google.protobuf.Int32Value');
+TypeParsers.register(new Int64ValueParser(), 'type.googleapis.com/google.protobuf.Int64Value');
+TypeParsers.register(new UInt32ValueParser(), 'type.googleapis.com/google.protobuf.UInt32Value');
+TypeParsers.register(new UInt64ValueParser(), 'type.googleapis.com/google.protobuf.UInt64Value');
+TypeParsers.register(new ValueParser(), 'type.googleapis.com/google.protobuf.Value');
+TypeParsers.register(new ListValueParser(), 'type.googleapis.com/google.protobuf.ListValue');
+TypeParsers.register(new EmptyParser(), 'type.googleapis.com/google.protobuf.Empty');
+TypeParsers.register(new TimestampParser(),'type.googleapis.com/google.protobuf.Timestamp');
+TypeParsers.register(new DurationParser(), 'type.googleapis.com/google.protobuf.Duration');
+TypeParsers.register(new FieldMaskParser(), 'type.googleapis.com/google.protobuf.FieldMask');
+TypeParsers.register(new AnyParser(), 'type.googleapis.com/google.protobuf.Any');
