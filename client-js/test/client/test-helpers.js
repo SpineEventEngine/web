@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import KnownTypes from '../../src/client/known_types';
+import KnownTypes from './known-types';
 import {types as webClientTypes} from 'spine-web-client-proto/known_types';
 import {types as testTypes} from '../../proto/test/js/known_types';
 

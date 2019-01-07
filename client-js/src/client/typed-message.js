@@ -35,7 +35,7 @@ import {
 import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
 import {Subscription, Topic} from 'spine-web-client-proto/spine/client/subscription_pb';
 import {Command} from 'spine-web-client-proto/spine/core/command_pb';
-import KnownTypes from './known_types'
+import KnownTypes from './known-types'
 
 
 /**
