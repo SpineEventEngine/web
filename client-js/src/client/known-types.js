@@ -61,7 +61,7 @@ export default class KnownTypes {
   /**
    * Registers the type as a known type.
    *
-   * @param {!Class} type the classof a Protobuf message or enum
+   * @param {!Class} type the class of a Protobuf message or enum
    * @param {!string} typeUrl the URL of the type
    */
   static register(type, typeUrl) {
