@@ -41,7 +41,8 @@
     "google-protobuf": "^3.6.0",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
-    "webpack-merge": "^4.1.4"
+    "webpack-merge": "^4.1.4",
+    "babel-plugin-module-resolver": "^3.1.1"
   },
   "sideEffects": false,
   "main": "dist/bundle.umd.js"
