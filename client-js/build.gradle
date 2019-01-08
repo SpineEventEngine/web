@@ -21,6 +21,10 @@
 apply plugin: 'com.google.protobuf'
 
 dependencies {
+    protobuf project(':web')
+    protobuf project(':firebase-web')
+    protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
+
     testProtobuf project(":web-tests")
 }
 
@@ -71,14 +75,3 @@ buildJs.doLast {
     npm 'run', 'build'
     npm 'run', 'build-dev'
 }
-
-task linkClientProto {
-    doLast {
-        npm 'link', 'spine-web-client-proto'
-    }
-
-    dependsOn ':client-js-proto:link'
-}
-
-linkClientProto.dependsOn cleanOldDependencies
-installDependencies.dependsOn linkClientProto

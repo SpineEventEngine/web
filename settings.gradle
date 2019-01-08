@@ -24,7 +24,6 @@ include 'web'
 include 'firebase-web'
 
 include 'client-js'
-include 'client-js-proto'
 include 'web-tests'
 
 project(':web-tests').projectDir = "integration-tests/web-tests" as File

@@ -26,7 +26,6 @@
     "firebase": "^5.5.6",
     "isomorphic-fetch": "^2.2.1",
     "rxjs": "^6.3.3",
-    "spine-web-client-proto": "1.0.0-SNAPSHOT",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
