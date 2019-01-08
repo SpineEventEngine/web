@@ -18,10 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import KnownTypes from './known-types';
-import {types as webClientTypes} from 'spine-web-client-proto/known_types';
-import {types as testTypes} from '../../proto/test/js/known_types';
-
 /**
  * Can be used in callback-based async tests to fail them before waiting
  * of the full test timeout.
