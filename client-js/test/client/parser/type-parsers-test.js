@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 
-import TypeParsers from '../../../src/client/type/type-parsers';
+import TypeParsers from '../../../src/client/parser/type-parsers';
 
 import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
 
