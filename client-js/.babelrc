@@ -5,7 +5,7 @@
       "globals": ["Error"]
     }],
     ["module-resolver", {
-      "root": ["./src"],
+      "cwd": "babelrc",
       "alias": {
         "spine-web-client": "./src",
         "spine-web-client-proto": "./proto/main/js"

@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
     entry: './src/index.js',
     mode: 'none', // "production" | "development" | "none"
@@ -18,4 +20,12 @@ module.exports = {
             }
         }
     ],
+    resolve: {
+        alias: {
+            // Use Webpack aliasing when bundling files and
+            // use `babel-plugin-module-resolver` aliasing when running tests.
+            "spine-web-client": path.resolve(__dirname, "./src"),
+            "spine-web-client-proto": path.resolve(__dirname, "./proto/main/js")
+        }
+    }
 };
