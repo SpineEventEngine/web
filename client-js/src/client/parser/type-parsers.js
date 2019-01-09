@@ -35,7 +35,7 @@ export default class TypeParsers {
   /**
    * Registers the parser for a type.
    *
-   * @param {!ObjectParser} parser the parser to register
+   * @param {!ObjectParser} parser the parser instance to register
    * @param {!string} typeUrl the URL of the type to register the parser for
    */
   static register(parser, typeUrl) {
@@ -51,7 +51,7 @@ export default class TypeParsers {
    * Obtains a parser by the specified type URL.
    *
    * @param {!string} typeUrl the type URL to get the parser
-   * @returns {!ObjectParser} the parser for the type
+   * @returns {!ObjectParser} the parser instance for the type
    */
   static parserFor(typeUrl) {
     const parser = parsers.get(typeUrl);

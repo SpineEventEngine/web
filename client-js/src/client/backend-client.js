@@ -21,13 +21,17 @@
 "use strict";
 
 import {Observable, Subscription} from 'rxjs';
-import {TypedMessage} from './typed-message';
+import {
+  TypedMessage,
+  Type
+} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {SpineError, CommandHandlingError, CommandValidationError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
+import TypeParsers from './parser/type-parsers';
 import {
   Subscription as SpineSubscription,
   SubscriptionId
@@ -49,8 +53,9 @@ class ObjectToProto {
    * @param {Type} type a type of the corresponding Protobuf message
    */
   static convert(object, type) {
-    const messageClass = type.class();
-    const proto = messageClass.fromObject(object);
+    const typeUrl = type.url().value();
+    const parser = TypeParsers.parserFor(typeUrl);
+    const proto = parser.fromObject(object);
     return proto;
   }
 }
@@ -310,7 +315,7 @@ export class BackendClient {
     this._endpoint.command(command)
       .then(ack => {
         const responseStatus = ack.status;
-        const responseStatusProto = Status.fromObject(responseStatus);
+        const responseStatusProto = ObjectToProto.convert(responseStatus, Type.forClass(Status));
         const responseStatusCase = responseStatusProto.getStatusCase();
 
         switch (responseStatusCase) {
