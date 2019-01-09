@@ -32,22 +32,6 @@ export default class KnownTypes {
   }
 
   /**
-   * Registers the subset of known types.
-   *
-   * <p>Types are skipped if some of them were already registered.
-   *
-   * @param knownTypesSubset {!Map}
-   * @public
-   */
-  static with(knownTypesSubset) {
-    for (let [typeUrl, messageClass] of knownTypesSubset) {
-      if (!types.has(typeUrl)) {
-        types.set(typeUrl, messageClass);
-      }
-    }
-  }
-
-  /**
    * Obtains the type URL for the Protobuf type.
    *
    * @param {!Class} messageClass the class of a Protobuf message or enum
@@ -75,9 +59,18 @@ export default class KnownTypes {
    *
    * @param {!string} typeUrl the type URL to check
    */
-  static hasTypeUrl(typeUrl) {
+  static hasType(typeUrl) {
     const result = types.has(typeUrl);
     return result;
+  }
+
+  /**
+   * Removes all the types.
+   *
+   * The method is purposed for the testing.
+   */
+  static clear() {
+    types.clear();
   }
 }
 

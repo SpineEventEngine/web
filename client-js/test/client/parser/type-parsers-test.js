@@ -26,7 +26,11 @@ import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
 import {StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
 import {StringChange} from 'spine-web-client-proto/spine/change/change_pb';
 
+import {registerProtobufTypes} from './../test-helpers';
+
 describe('TypeParsers', () => {
+
+  registerProtobufTypes();
 
   it('autoregisters parsers for standard Protobuf types', () => {
     const parser = TypeParsers.parserFor(Any.typeUrl());

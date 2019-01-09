@@ -18,6 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import KnownTypes from '../../src/client/known-types';
+import TypeParsers from '../../src/client/parser/type-parsers';
+
+import * as testProtobuf from '../../proto/test/js/index';
+
 /**
  * Can be used in callback-based async tests to fail them before waiting
  * of the full test timeout.
@@ -51,4 +56,13 @@ export function fail(done, message = '') {
      done(new Error(`Test failed. Cause: ${cause ? JSON.stringify(cause) : 'not identified'}`));
     }
   };
+}
+
+export function registerProtobufTypes() {
+  for (let [typeUrl, type] of testProtobuf.types) {
+    KnownTypes.register(type, typeUrl);
+  }
+  for (let [typeUrl, parserType] of testProtobuf.parsers) {
+    TypeParsers.register(new parserType(), typeUrl);
+  }
 }
