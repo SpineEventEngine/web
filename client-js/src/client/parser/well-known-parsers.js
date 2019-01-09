@@ -23,14 +23,13 @@
 import TypeParsers from './type-parsers';
 import ObjectParser from './object-parser';
 
-//TODO:2019-01-07:dmitry.grankin: Use ES6 imports;
-let wrappers = require("google-protobuf/google/protobuf/wrappers_pb.js");
-let struct = require("google-protobuf/google/protobuf/struct_pb.js");
-let empty = require("google-protobuf/google/protobuf/empty_pb.js");
-let timestamp = require("google-protobuf/google/protobuf/timestamp_pb.js");
-let duration = require("google-protobuf/google/protobuf/duration_pb.js");
-let fieldMask = require("google-protobuf/google/protobuf/field_mask_pb.js");
-let any = require("google-protobuf/google/protobuf/any_pb.js");
+import wrappers from 'google-protobuf/google/protobuf/wrappers_pb';
+import struct from 'google-protobuf/google/protobuf/struct_pb';
+import empty from 'google-protobuf/google/protobuf/empty_pb';
+import timestamp from 'google-protobuf/google/protobuf/timestamp_pb';
+import duration from 'google-protobuf/google/protobuf/duration_pb';
+import fieldMask from 'google-protobuf/google/protobuf/field_mask_pb';
+import any from 'google-protobuf/google/protobuf/any_pb';
 
 /**
  * The parsers used to obtain Protobuf standard types from JSON.
@@ -209,13 +208,36 @@ export class FieldMaskParser extends ObjectParser {
 export class AnyParser extends ObjectParser {
 
   fromObject(object) {
-    let typeUrl = object["@type"];
-    let parser = TypeParsers.parserFor(typeUrl);
-    let messageValue = parser.fromObject(object);
-    let bytes = messageValue.serializeBinary();
-    let anyMsg = new any.Any;
+    const typeUrl = object["@type"];
+    const isWellKnown = wellKnownParsers.has(typeUrl);
+    const packedValue = isWellKnown
+      ? object["value"]
+      : object;
+    const parser = TypeParsers.parserFor(typeUrl);
+    const messageValue = parser.fromObject(packedValue);
+    const bytes = messageValue.serializeBinary();
+    const anyMsg = new any.Any;
     anyMsg.setTypeUrl(typeUrl);
     anyMsg.setValue(bytes);
     return anyMsg;
   }
 }
+
+export const wellKnownParsers = new Map([
+  ['type.googleapis.com/google.protobuf.BoolValue', new BoolValueParser()],
+  ['type.googleapis.com/google.protobuf.BytesValue', new BytesValueParser()],
+  ['type.googleapis.com/google.protobuf.DoubleValue', new DoubleValueParser()],
+  ['type.googleapis.com/google.protobuf.FloatValue', new FloatValueParser()],
+  ['type.googleapis.com/google.protobuf.StringValue', new StringValueParser()],
+  ['type.googleapis.com/google.protobuf.Int32Value', new Int32ValueParser()],
+  ['type.googleapis.com/google.protobuf.Int64Value', new Int64ValueParser()],
+  ['type.googleapis.com/google.protobuf.UInt32Value', new UInt32ValueParser()],
+  ['type.googleapis.com/google.protobuf.UInt64Value', new UInt64ValueParser()],
+  ['type.googleapis.com/google.protobuf.Value', new ValueParser()],
+  ['type.googleapis.com/google.protobuf.ListValue', new ListValueParser()],
+  ['type.googleapis.com/google.protobuf.Empty', new EmptyParser()],
+  ['type.googleapis.com/google.protobuf.Timestamp', new TimestampParser()],
+  ['type.googleapis.com/google.protobuf.Duration', new DurationParser()],
+  ['type.googleapis.com/google.protobuf.FieldMask', new FieldMaskParser()],
+  ['type.googleapis.com/google.protobuf.Any', new AnyParser()]
+]);
