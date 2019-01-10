@@ -23,8 +23,8 @@ import sinon from 'sinon';
 
 import {HttpEndpoint} from '../../src/client/http-endpoint';
 import {HttpClient} from '../../src/client/http-client';
-import {Type, TypedMessage} from '../../src/client/typed-message';
-import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
+import {TypedMessage} from '../../src/client/typed-message';
+import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {
   SpineError,
   ConnectionError,

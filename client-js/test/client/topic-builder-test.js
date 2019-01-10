@@ -26,7 +26,7 @@ import {Type, TypedMessage} from '../../src/client/typed-message';
 import {ActorRequestFactory, ColumnFilters} from '../../src/client/actor-request-factory';
 import {AnyPacker} from '../../src/client/any-packer';
 import {Duration} from '../../src/client/time-utils';
-import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
+import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {StringValue} from '@proto/google/protobuf/wrappers_pb';
 import {
   ColumnFilter,

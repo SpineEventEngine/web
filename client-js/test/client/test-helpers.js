@@ -21,7 +21,7 @@
 import KnownTypes from '../../src/client/known-types';
 import TypeParsers from '../../src/client/parser/type-parsers';
 
-import * as testProtobuf from '../../proto/test/js/index';
+import * as testProtobuf from '@testProto/index';
 
 /**
  * Can be used in callback-based async tests to fail them before waiting

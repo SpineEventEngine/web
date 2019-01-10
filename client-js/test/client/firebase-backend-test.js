@@ -22,14 +22,14 @@ import assert from 'assert';
 import uuid from 'uuid';
 
 import {devFirebaseApp} from './test-firebase-app';
-import {Type, TypedMessage} from '../../src/client/typed-message';
+import {Type} from '../../src/client/typed-message';
 import {Duration} from '../../src/client/time-utils';
 
-import {CreateTask, RenameTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
-import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
+import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
+import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {ColumnFilter, CompositeColumnFilter} from '@proto/spine/client/entities_pb';
-import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
-import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
+import {Topic} from '@testProto/spine/client/subscription_pb';
+import {Project} from '@testProto/spine/web/test/given/project_pb';
 import {BackendClient} from '../../src/client/backend-client';
 import {
  ServerError,
