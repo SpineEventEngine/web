@@ -21,7 +21,7 @@
 import assert from 'assert';
 
 import KnownTypes from '../../src/client/known-types';
-import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
+import {Any} from '@proto/google/protobuf/any_pb';
 
 describe('KnownTypes', () => {
 

@@ -8,7 +8,7 @@
       "cwd": "babelrc",
       "alias": {
         "spine-web-client": "./src",
-        "spine-web-client-proto": "./proto/main/js"
+        "@proto": "./proto/main/js"
       }
     }]
   ]

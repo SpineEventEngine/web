@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Subscription} from 'spine-web-client-proto/spine/client/subscription_pb';
+import {Subscription} from '@proto/spine/client/subscription_pb';
 import {Duration} from './time-utils';
 
 const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({seconds: 10});

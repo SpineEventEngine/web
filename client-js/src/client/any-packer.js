@@ -24,8 +24,8 @@ import {
   Int32Value,
   Int64Value,
   StringValue
-} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
-import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
+} from '@proto/google/protobuf/wrappers_pb';
+import {Any} from '@proto/google/protobuf/any_pb';
 
 /**
  * An packer of string, number, boolean, and message values from Protobuf `Any`.

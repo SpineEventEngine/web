@@ -27,12 +27,12 @@ import {ActorRequestFactory, ColumnFilters} from '../../src/client/actor-request
 import {AnyPacker} from '../../src/client/any-packer';
 import {Duration} from '../../src/client/time-utils';
 import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
-import {StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
+import {StringValue} from '@proto/google/protobuf/wrappers_pb';
 import {
   ColumnFilter,
   CompositeColumnFilter,
   EntityFilters
-} from 'spine-web-client-proto/spine/client/entities_pb';
+} from '@proto/spine/client/entities_pb';
 
 
 class Given {

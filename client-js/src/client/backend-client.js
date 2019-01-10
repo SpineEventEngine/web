@@ -35,8 +35,8 @@ import TypeParsers from './parser/type-parsers';
 import {
   Subscription as SpineSubscription,
   SubscriptionId
-} from 'spine-web-client-proto/spine/client/subscription_pb';
-import {Status} from 'spine-web-client-proto/spine/core/response_pb';
+} from '@proto/spine/client/subscription_pb';
+import {Status} from '@proto/spine/core/response_pb';
 
 /**
  * A utility which converts the JS object to its Protobuf counterpart.

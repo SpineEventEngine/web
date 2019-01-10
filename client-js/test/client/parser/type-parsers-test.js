@@ -22,9 +22,9 @@ import assert from 'assert';
 
 import TypeParsers from '../../../src/client/parser/type-parsers';
 
-import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
-import {StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
-import {StringChange} from 'spine-web-client-proto/spine/change/change_pb';
+import {Any} from '@proto/google/protobuf/any_pb';
+import {StringValue} from '@proto/google/protobuf/wrappers_pb';
+import {StringChange} from '@proto/spine/change/change_pb';
 
 import {registerProtobufTypes} from './../test-helpers';
 

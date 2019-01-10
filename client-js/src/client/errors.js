@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import 'spine-web-client-proto/spine/base/error_pb';
+import '@proto/spine/base/error_pb';
 // noinspection JSUnresolvedVariable
 /**
  * The class of errors that can be received from the server in response to the command sent.

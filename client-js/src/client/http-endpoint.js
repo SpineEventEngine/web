@@ -25,7 +25,7 @@ import {
   ServerError,
   ConnectionError
 } from './errors';
-import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
+import {WebQuery} from '@proto/spine/web/web_query_pb';
 
 class Endpoint {
 
