@@ -26,10 +26,10 @@
     "firebase": "^5.5.6",
     "isomorphic-fetch": "^2.2.1",
     "rxjs": "^6.3.3",
-    "spine-web-client-proto": "1.0.0-SNAPSHOT",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
+    "babel-loader": "^7.1.5",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
@@ -41,7 +41,8 @@
     "google-protobuf": "^3.6.0",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
-    "webpack-merge": "^4.1.4"
+    "webpack-merge": "^4.1.4",
+    "babel-plugin-module-resolver": "^3.1.1"
   },
   "sideEffects": false,
   "main": "dist/bundle.umd.js"

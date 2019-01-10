@@ -3,6 +3,13 @@
   "plugins": [
     ["babel-plugin-transform-builtin-extend", {
       "globals": ["Error"]
+    }],
+    ["module-resolver", {
+      "cwd": "babelrc",
+      "alias": {
+        "spine-web-client": "./src",
+        "spine-web-client-proto": "./proto/main/js"
+      }
     }]
   ]
 }

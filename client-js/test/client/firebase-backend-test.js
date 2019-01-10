@@ -37,7 +37,7 @@ import {
  CommandHandlingError,
  ConnectionError
 } from '../../src/client/errors';
-import {fail} from './test-helpers';
+import {fail, registerProtobufTypes} from './test-helpers';
 
 class Given {
 
@@ -150,6 +150,8 @@ Given.TYPE = {
 const backendClient = Given.backendClient();
 
 describe('FirebaseBackendClient', function () {
+
+  registerProtobufTypes();
 
   // Big timeout due to remote calls during tests.
   const timeoutDuration = new Duration({minutes: 2});

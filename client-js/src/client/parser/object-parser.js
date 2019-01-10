@@ -18,43 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.google.protobuf'
+"use strict";
 
-dependencies {
-    protobuf project(':web')
-    protobuf project(':firebase-web')
-    protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
+import {Message} from 'google-protobuf';
 
-    testProtobuf project(':web-tests')
-}
+/**
+ * Parses a plain Javascript object to a Protobuf message.
+ *
+ * The class is abstract and should be implemented for every message type.
+ */
+export default class ObjectParser {
 
-idea.module {
-    sourceDirs += file("${projectDir}/proto")
-    sourceDirs += file("$projectDir/src")
-    testSourceDirs += file("$projectDir/test")
-    excludeDirs += file("$projectDir/node_modules")
-
-    iml {
-        beforeMerged { module ->
-            module.dependencies.clear()
-        }
-        whenMerged { module ->
-            module.dependencies*.exported = true
-        }
+  /**
+   * Creates a new instance.
+   */
+  constructor() {
+    if (this.constructor === ObjectParser) {
+      throw new Error('Cannot instantiate abstract ObjectParser class.');
     }
+  }
+
+  /**
+   * Converts an object to a message.
+   *
+   * @abstract
+   * @param {!Object} object the object representing a Protobuf message
+   * @return {!Message} the parsed Protobuf message
+   */
+  fromObject(object) {
+    throw new Error('The method is abstract and should be implemented by a subclass');
+  }
 }
-
-clean {
-    delete "$projectDir/proto"
-}
-
-// Suppress building the JS project as a Java module.
-project.compileJava.enabled = false
-project.compileTestJava.enabled = false
-
-apply from: "$rootDir/scripts/js.gradle"
-
-testJs.enabled = false
-coverageJs.enabled = false
-
-link.dependsOn ':web:compileProtoToJs'

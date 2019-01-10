@@ -18,9 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import KnownTypes from './known-types';
-import {types as webClientTypes} from 'spine-web-client-proto/known_types';
-import {types as testTypes} from '../../proto/test/js/known_types';
+import KnownTypes from '../../src/client/known-types';
+import TypeParsers from '../../src/client/parser/type-parsers';
+
+import * as testProtobuf from '../../proto/test/js/index';
 
 /**
  * Can be used in callback-based async tests to fail them before waiting
@@ -57,10 +58,11 @@ export function fail(done, message = '') {
   };
 }
 
-/**
- * Registers known types required for the tests.
- */
-export function registerKnownTypes() {
-  KnownTypes.with(webClientTypes);
-  KnownTypes.with(testTypes);
+export function registerProtobufTypes() {
+  for (let [typeUrl, type] of testProtobuf.types) {
+    KnownTypes.register(type, typeUrl);
+  }
+  for (let [typeUrl, parserType] of testProtobuf.parsers) {
+    TypeParsers.register(new parserType(), typeUrl);
+  }
 }

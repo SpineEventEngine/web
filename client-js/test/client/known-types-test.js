@@ -21,32 +21,26 @@
 import assert from 'assert';
 
 import KnownTypes from '../../src/client/known-types';
-import {types as webClientTypes} from 'spine-web-client-proto/known_types';
-import {types as testTypes} from '../../proto/test/js/known_types';
+import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
 
 describe('KnownTypes', () => {
 
-  it('registers web-client types', () => {
-    KnownTypes.with(webClientTypes);
-    assertHasTypeUrls(webClientTypes);
+  beforeEach(() => {
+    KnownTypes.clear();
   });
 
-  it('registers test types', () => {
-    KnownTypes.with(testTypes);
-    assertHasTypeUrls(testTypes);
+  it('registers a type', () => {
+    let hasType = KnownTypes.hasType(Any.typeUrl());
+    assert.ok(hasType === false);
+    KnownTypes.register(Any, Any.typeUrl());
+    hasType = KnownTypes.hasType(Any.typeUrl());
+    assert.ok(hasType);
   });
 
   it('skips already registered types',() => {
-    KnownTypes.with(webClientTypes);
-    KnownTypes.with(testTypes);
-    assertHasTypeUrls(webClientTypes);
-    assertHasTypeUrls(testTypes);
+    KnownTypes.register(Any, Any.typeUrl());
+    KnownTypes.register(Any, Any.typeUrl());
+    const hasType = KnownTypes.hasType(Any.typeUrl());
+    assert.ok(hasType);
   });
-
-  function assertHasTypeUrls(knownTypesSubset) {
-    for (let [typeUrl] of knownTypesSubset) {
-      const isKnown = KnownTypes.contains(typeUrl);
-      assert.ok(isKnown);
-    }
-  }
 });
