@@ -25,11 +25,11 @@ import ObjectParser from './object-parser';
 
 import wrappers from 'google-protobuf/google/protobuf/wrappers_pb';
 import struct from 'google-protobuf/google/protobuf/struct_pb';
-import empty from 'google-protobuf/google/protobuf/empty_pb';
-import timestamp from 'google-protobuf/google/protobuf/timestamp_pb';
-import duration from 'google-protobuf/google/protobuf/duration_pb';
-import fieldMask from 'google-protobuf/google/protobuf/field_mask_pb';
-import any from 'google-protobuf/google/protobuf/any_pb';
+import {Empty} from 'google-protobuf/google/protobuf/empty_pb';
+import {Timestamp} from 'google-protobuf/google/protobuf/timestamp_pb';
+import {Duration} from 'google-protobuf/google/protobuf/duration_pb';
+import {FieldMask} from 'google-protobuf/google/protobuf/field_mask_pb';
+import {Any} from 'google-protobuf/google/protobuf/any_pb';
 
 /**
  * The parsers used to obtain Protobuf standard types from JSON.
@@ -160,7 +160,7 @@ export class ValueParser extends ObjectParser {
 export class EmptyParser extends ObjectParser {
 
   fromObject(object) {
-    let emptyValue = new empty.Empty();
+    let emptyValue = new Empty();
     return emptyValue;
   }
 }
@@ -169,7 +169,7 @@ export class TimestampParser extends ObjectParser {
 
   fromObject(object) {
     let date = new Date(object);
-    let result = new timestamp.Timestamp();
+    let result = new Timestamp();
     result.fromDate(date);
     return result;
   }
@@ -180,7 +180,7 @@ export class DurationParser extends ObjectParser {
   fromObject(object) {
     object = object.substring(0, object.length - 1);
     let values = object.split(".");
-    let result = new duration.Duration();
+    let result = new Duration();
     if (values.length === 1) {
       result.setSeconds(values[0]);
     } else if (values.length === 2) {
@@ -199,7 +199,7 @@ export class DurationParser extends ObjectParser {
 export class FieldMaskParser extends ObjectParser {
 
   fromObject(object) {
-    let fieldMask = new fieldMask.FieldMask();
+    let fieldMask = new FieldMask();
     fieldMask.setPathsList(object.split(","));
     return fieldMask;
   }
@@ -216,7 +216,7 @@ export class AnyParser extends ObjectParser {
     const parser = TypeParsers.parserFor(typeUrl);
     const messageValue = parser.fromObject(packedValue);
     const bytes = messageValue.serializeBinary();
-    const anyMsg = new any.Any;
+    const anyMsg = new Any();
     anyMsg.setTypeUrl(typeUrl);
     anyMsg.setValue(bytes);
     return anyMsg;
