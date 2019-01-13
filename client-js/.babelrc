@@ -7,7 +7,6 @@
     ["module-resolver", {
       "cwd": "babelrc",
       "alias": {
-        "spine-web-client": "./main",
         "@proto": "./main/proto",
         "@testProto": "./test/proto",
         "@lib": "./main"
