@@ -18,7 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+apply from: "$rootDir/scripts/js.gradle"
+
 apply plugin: 'com.google.protobuf'
+
+ext {
+    nycOutputDir = "$projectDir/.nyc_output"
+}
 
 dependencies {
     protobuf project(':web')
@@ -29,13 +35,12 @@ dependencies {
 }
 
 idea.module {
-    sourceDirs += file("$projectDir/src")
+    sourceDirs += file(srcDir)
+    testSourceDirs += file(testSrcDir)
 
-    testSourceDirs += file("$projectDir/test")
-
-    excludeDirs += file("$projectDir/.nyc_output")
-    excludeDirs += file("$projectDir/node_modules")
-    excludeDirs += file("$projectDir/proto")
+    excludeDirs += file(nycOutputDir)
+    excludeDirs += file(nodeModulesDir)
+    excludeDirs += file(genProtoBaseDir)
 
     iml {
         beforeMerged { module ->
@@ -59,17 +64,15 @@ sourceSets {
 }
 
 clean {
-    delete "$projectDir/.nyc_output"
+    delete nycOutputDir
     delete "$projectDir/dist"
-    delete "$projectDir/node_modules"
-    delete "$projectDir/proto"
+    delete nodeModulesDir
+    delete genProtoBaseDir
 }
 
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
-
-apply from: "$rootDir/scripts/js.gradle"
 
 buildJs.doLast {
     npm 'run', 'build'
