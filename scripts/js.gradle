@@ -51,7 +51,10 @@ ext {
     publicationDirectory = "$buildDir/npm-publication/"
     srcDir = "$projectDir/main"
     testSrcDir = "$projectDir/test"
-    genProtoBaseDir = "$projectDir/proto"
+    genProtoBaseDir = projectDir
+    genProtoSubDir = "proto"
+    genProtoMain = "$genProtoBaseDir/main/$genProtoSubDir"
+    genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
     nodeModulesDir = "$projectDir/node_modules"
 
     npm = { final String... command ->
@@ -84,6 +87,7 @@ protobuf {
                 // https://github.com/google/protobuf/blob/master/js/README.md
                 js {
                     option "import_style=commonjs"
+                    outputSubDir = genProtoSubDir
                 }
 
                 task.generateDescriptorSet = true
@@ -124,6 +128,9 @@ task installDependencies {
 }
 
 protoJs {
+    mainGenProtoDir = genProtoMain
+    testGenProtoDir = genProtoTest
+
     generateParsersTask().dependsOn compileProtoToJs
     installDependencies.dependsOn generateParsersTask()
 }
@@ -157,10 +164,6 @@ task prepareJsPublication(type: Copy) {
     }
 
     from srcDir, {
-        include '**'
-    }
-
-    from "$genProtoBaseDir/main/js", {
         include '**'
     }
 

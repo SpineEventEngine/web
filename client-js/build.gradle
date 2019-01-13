@@ -40,7 +40,8 @@ idea.module {
 
     excludeDirs += file(nycOutputDir)
     excludeDirs += file(nodeModulesDir)
-    excludeDirs += file(genProtoBaseDir)
+    excludeDirs += file(genProtoMain)
+    excludeDirs += file(genProtoTest)
 
     iml {
         beforeMerged { module ->
@@ -67,7 +68,8 @@ clean {
     delete nycOutputDir
     delete "$projectDir/dist"
     delete nodeModulesDir
-    delete genProtoBaseDir
+    delete genProtoMain
+    delete genProtoTest
 }
 
 // Suppress building the JS project as a Java module.
