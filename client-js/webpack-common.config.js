@@ -1,5 +1,5 @@
 module.exports = {
-    entry: './src/index.js',
+    entry: './main/index.js',
     mode: 'none', // "production" | "development" | "none"
     output: {
         library: 'spine-web-client', // the name of the exported library

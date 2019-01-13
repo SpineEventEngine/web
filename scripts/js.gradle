@@ -49,7 +49,7 @@ ext {
 
     workDirectory = "$projectDir"
     publicationDirectory = "$buildDir/npm-publication/"
-    srcDir = "$projectDir/src"
+    srcDir = "$projectDir/main"
     testSrcDir = "$projectDir/test"
     genProtoBaseDir = "$projectDir/proto"
     nodeModulesDir = "$projectDir/node_modules"
