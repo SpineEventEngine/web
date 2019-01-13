@@ -96,7 +96,9 @@ apply plugin: 'io.spine.tools.proto-js-plugin'
  * Cleans old module dependencies.
  */
 task cleanOldDependencies {
-    delete "$projectDir/node_modules"
+    doLast {
+        delete "$projectDir/node_modules"
+    }
 }
 
 /**
