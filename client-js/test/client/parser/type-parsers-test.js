@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 
-import TypeParsers from '../../../src/client/parser/type-parsers';
+import TypeParsers from '@lib/client/parser/type-parsers';
 
 import {Any} from '@proto/google/protobuf/any_pb';
 import {StringValue} from '@proto/google/protobuf/wrappers_pb';

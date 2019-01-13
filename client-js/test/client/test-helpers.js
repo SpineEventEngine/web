@@ -18,8 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import KnownTypes from '../../src/client/known-types';
-import TypeParsers from '../../src/client/parser/type-parsers';
+import KnownTypes from '@lib/client/known-types';
+import TypeParsers from '@lib/client/parser/type-parsers';
 
 import * as testProtobuf from '@testProto/index';
 

@@ -9,7 +9,8 @@
       "alias": {
         "spine-web-client": "./src",
         "@proto": "./proto/main/js",
-        "@testProto": "./proto/test/js"
+        "@testProto": "./proto/test/js",
+        "@lib": "./src"
       }
     }]
   ]

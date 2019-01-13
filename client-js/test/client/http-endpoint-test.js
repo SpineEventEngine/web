@@ -21,17 +21,17 @@
 import assert from 'assert';
 import sinon from 'sinon';
 
-import {HttpEndpoint} from '../../src/client/http-endpoint';
-import {HttpClient} from '../../src/client/http-client';
-import {TypedMessage} from '../../src/client/typed-message';
+import {HttpEndpoint} from '@lib/client/http-endpoint';
+import {HttpClient} from '@lib/client/http-client';
+import {TypedMessage} from '@lib/client/typed-message';
 import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {
   SpineError,
   ConnectionError,
   ClientError,
   ServerError
-} from '../../src/client/errors';
-import {Duration} from '../../src/client/time-utils';
+} from '@lib/client/errors';
+import {Duration} from '@lib/client/time-utils';
 import {fail} from './test-helpers';
 
 const MOCK_RESPONSE_STATUS_TEXT = 'Status text';

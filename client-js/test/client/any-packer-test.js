@@ -22,9 +22,9 @@ import uuid from 'uuid';
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
-import {AnyPacker} from '../../src/client/any-packer';
-import {Type, TypedMessage} from '../../src/client/typed-message';
-import {Duration} from '../../src/client/time-utils';
+import {AnyPacker} from '@lib/src/client/any-packer';
+import {Type, TypedMessage} from '@lib/client/typed-message';
+import {Duration} from '@lib/client/time-utils';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 
 class Given {
