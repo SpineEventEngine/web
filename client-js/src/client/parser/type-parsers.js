@@ -21,7 +21,7 @@
 "use strict";
 
 import ObjectParser from './object-parser';
-import {wellKnownParsers} from "./well-known-parsers";
+import {wellKnownParsers} from './well-known-parsers';
 
 /**
  * The registry of parsers for known Protobuf types.
