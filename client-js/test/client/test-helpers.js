@@ -18,10 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import KnownTypes from '@lib/client/known-types';
-import TypeParsers from '@lib/client/parser/type-parsers';
-
 import * as testProtobuf from '@testProto/index';
+import {BackendClient} from "../../main/client/backend-client";
 
 /**
  * Can be used in callback-based async tests to fail them before waiting
@@ -59,10 +57,5 @@ export function fail(done, message = '') {
 }
 
 export function registerProtobufTypes() {
-  for (let [typeUrl, type] of testProtobuf.types) {
-    KnownTypes.register(type, typeUrl);
-  }
-  for (let [typeUrl, parserType] of testProtobuf.parsers) {
-    TypeParsers.register(new parserType(), typeUrl);
-  }
+  BackendClient.registerTypes(testProtobuf);
 }
