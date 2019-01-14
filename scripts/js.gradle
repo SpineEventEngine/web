@@ -117,14 +117,13 @@ task installDependencies {
     description = 'Installs the JavaScript dependencies.'
 
     inputs.files "$projectDir/package.json"
+    outputs.files nodeModulesDir
 
     dependsOn compileProtoToJs
 
     doLast {
         npm 'install'
     }
-
-    dependsOn cleanOldDependencies
 }
 
 protoJs {
@@ -238,4 +237,5 @@ task coverageJs {
 rootProject.check.dependsOn coverageJs
 
 build.dependsOn buildJs
+clean.dependsOn cleanOldDependencies
 publish.dependsOn publishJs
