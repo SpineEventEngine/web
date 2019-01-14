@@ -22,9 +22,9 @@
 
 import uuid from 'uuid';
 
-import {Timestamp} from '@proto/google/protobuf/timestamp_pb';
-import {Query, QueryId} from '@proto/spine/client/query_pb';
-import {Topic, TopicId} from '@proto/spine/client/subscription_pb';
+import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
+import {Query, QueryId} from '../proto/spine/client/query_pb';
+import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
   ColumnFilter,
   CompositeColumnFilter,
@@ -32,12 +32,12 @@ import {
   EntityId,
   EntityIdFilter,
   Target
-} from '@proto/spine/client/entities_pb';
-import {ActorContext} from '@proto/spine/core/actor_context_pb';
-import {Command, CommandContext, CommandId} from '@proto/spine/core/command_pb';
-import {UserId} from '@proto/spine/core/user_id_pb';
-import {ZoneId, ZoneOffset} from '@proto/spine/time/time_pb';
-import {FieldMask} from '@proto/google/protobuf/field_mask_pb';
+} from '../proto/spine/client/entities_pb';
+import {ActorContext} from '../proto/spine/core/actor_context_pb';
+import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
+import {UserId} from '../proto/spine/core/user_id_pb';
+import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
+import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 

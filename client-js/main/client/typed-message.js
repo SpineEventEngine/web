@@ -21,7 +21,7 @@
 "use strict";
 
 import base64 from 'base64-js';
-import {Any} from '@proto/google/protobuf/any_pb';
+import {Any} from '../proto/google/protobuf/any_pb';
 import {
   BoolValue,
   DoubleValue,
@@ -31,10 +31,10 @@ import {
   StringValue,
   UInt32Value,
   UInt64Value,
-} from '@proto/google/protobuf/wrappers_pb';
-import {WebQuery} from '@proto/spine/web/web_query_pb';
-import {Subscription, Topic} from '@proto/spine/client/subscription_pb';
-import {Command} from '@proto/spine/core/command_pb';
+} from '../proto/google/protobuf/wrappers_pb';
+import {WebQuery} from '../proto/spine/web/web_query_pb';
+import {Subscription, Topic} from '../proto/spine/client/subscription_pb';
+import {Command} from '../proto/spine/core/command_pb';
 import KnownTypes from './known-types'
 
 

@@ -3,14 +3,6 @@
   "plugins": [
     ["babel-plugin-transform-builtin-extend", {
       "globals": ["Error"]
-    }],
-    ["module-resolver", {
-      "cwd": "babelrc",
-      "alias": {
-        "@proto": "./main/proto",
-        "@testProto": "./test/proto",
-        "@lib": "./main"
-      }
     }]
   ]
 }
