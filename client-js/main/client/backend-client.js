@@ -401,7 +401,7 @@ export class BackendClient {
   /**
    * Registers all Protobuf types provided by the specified modules.
    *
-   * After the registration, the types can be used and parsed correctly.
+   * <p>After the registration, the types can be used and parsed correctly.
    *
    * @example
    * import * as protobufs from './proto/index.js';

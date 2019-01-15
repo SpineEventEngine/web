@@ -34,7 +34,7 @@ import {Any} from 'google-protobuf/google/protobuf/any_pb';
 /**
  * The parsers for standard Protobuf types.
  *
- * For the details about how the parsers should work,
+ * <p>For the details about how the parsers should work,
  * see {@link https://developers.google.com/protocol-buffers/docs/proto3#json Protobuf documentation}.
  */
 
