@@ -29,7 +29,7 @@ import {wellKnownParsers} from './well-known-parsers';
 export default class TypeParsers {
 
   constructor() {
-    throw new Error('TypeParsers is not supposed to be instantiated.')
+    throw new Error('TypeParsers is not supposed to be instantiated.');
   }
 
   /**

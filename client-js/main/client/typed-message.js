@@ -35,7 +35,7 @@ import {
 import {WebQuery} from '../proto/spine/web/web_query_pb';
 import {Subscription, Topic} from '../proto/spine/client/subscription_pb';
 import {Command} from '../proto/spine/core/command_pb';
-import KnownTypes from './known-types'
+import KnownTypes from './known-types';
 
 
 /**
@@ -190,7 +190,7 @@ export class TypedMessage {
    */
   static of(message) {
     const type = Type.forMessage(message);
-    return new TypedMessage(message, type)
+    return new TypedMessage(message, type);
   }
 
   /**

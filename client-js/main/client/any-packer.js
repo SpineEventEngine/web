@@ -352,7 +352,7 @@ export class AnyPacker {
    */
   static packMessage(message) {
     if (!(message instanceof Message)) {
-      throw new Error('The `Message` type was expected by AnyPacker#packMessage().')
+      throw new Error('The `Message` type was expected by AnyPacker#packMessage().');
     }
     const typedMessage = TypedMessage.of(message);
     return this.packTyped(typedMessage);

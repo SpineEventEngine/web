@@ -28,7 +28,7 @@
 export default class KnownTypes {
 
   constructor() {
-    throw new Error('KnownTypes is not supposed to be instantiated.')
+    throw new Error('KnownTypes is not supposed to be instantiated.');
   }
 
   /**
