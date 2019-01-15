@@ -24,6 +24,27 @@ import ObjectParser from './object-parser';
 import {wellKnownParsers} from './well-known-parsers';
 
 /**
+ * Register parsers for standard Protobuf types.
+ */
+function registerWellKnownParsers() {
+  for (let [typeUrl, parser] of wellKnownParsers) {
+    TypeParsers.register(parser, typeUrl);
+  }
+}
+
+/**
+ * The map of all Protobuf parsers known to the application.
+ *
+ * <p>It is intended to be a static variable, but ES6 doesn't provide an easy way to do it.
+ *
+ * @type {Map<String, ObjectParser>}
+ * @private
+ */
+const parsers = new Map();
+
+registerWellKnownParsers();
+
+/**
  * The registry of parsers for known Protobuf types.
  */
 export default class TypeParsers {
@@ -59,26 +80,5 @@ export default class TypeParsers {
       throw new Error(`The parser for ${typeUrl} was not found.`);
     }
     return parser;
-  }
-}
-
-/**
- * The map of all Protobuf parsers known to the application.
- *
- * <p>It is intended to be a static variable, but ES6 doesn't provide an easy way to do it.
- *
- * @type {Map<String, ObjectParser>}
- * @private
- */
-const parsers = new Map();
-
-registerWellKnownParsers();
-
-/**
- * Register parsers for standard Protobuf types.
- */
-function registerWellKnownParsers() {
-  for (let [typeUrl, parser] of wellKnownParsers) {
-    TypeParsers.register(parser, typeUrl);
   }
 }
