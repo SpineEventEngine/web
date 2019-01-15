@@ -2,7 +2,7 @@ module.exports = {
     entry: './main/index.js',
     mode: 'none', // "production" | "development" | "none"
     output: {
-        library: 'spine-web-client', // the name of the exported library
+        library: 'spine-web', // the name of the exported library
         libraryTarget: 'umd', // the type of the exported library,
         umdNamedDefine: true,
         globalObject: "typeof window !== 'undefined' ? window : this" // https://github.com/webpack/webpack/issues/6522

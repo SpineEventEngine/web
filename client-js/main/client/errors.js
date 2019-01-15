@@ -28,7 +28,7 @@ import '../proto/spine/base/error_pb';
 const SpineBaseError = proto.spine.base.Error;
 
 /**
- * The base `spine-web-client` error type. This error type is only used directly when a
+ * The base error type of Spine Web. This error type is only used directly when a
  * more appropriate category is not defined for the offending error.
  *
  * @extends Error

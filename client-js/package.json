@@ -1,5 +1,5 @@
 {
-  "name": "spine-web-client",
+  "name": "spine-web",
   "version": "1.0.0-SNAPSHOT",
   "license": "Apache-2.0",
   "description": "A JS client for interacting with Spine applications.",

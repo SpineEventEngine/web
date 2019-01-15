@@ -107,7 +107,7 @@ Given.TYPE = {
   TASK_ID: Type.forClass(TaskId),
   TASK: Type.forClass(Task),
 };
-Given.ACTOR = 'spine-web-client-test-actor';
+Given.ACTOR = 'spine-web-test-actor';
 
 describe('TopicBuilder', function () {
 
