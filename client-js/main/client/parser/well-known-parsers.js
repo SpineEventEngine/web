@@ -32,13 +32,13 @@ import {FieldMask} from 'google-protobuf/google/protobuf/field_mask_pb';
 import {Any} from 'google-protobuf/google/protobuf/any_pb';
 
 /**
- * The parsers used to obtain Protobuf standard types from JSON.
+ * The parsers for standard Protobuf types.
  *
- * For the details about how the parsers work, see
- * https://developers.google.com/protocol-buffers/docs/proto3#json.
+ * For the details about how the parsers should work,
+ * see {@link https://developers.google.com/protocol-buffers/docs/proto3#json Protobuf documentation}.
  */
 
-export class BoolValueParser extends ObjectParser {
+class BoolValueParser extends ObjectParser {
 
   fromObject(object) {
     let boolValue = new wrappers.BoolValue();
@@ -47,7 +47,7 @@ export class BoolValueParser extends ObjectParser {
   }
 }
 
-export class BytesValueParser extends ObjectParser {
+class BytesValueParser extends ObjectParser {
 
   fromObject(object) {
     let bytesValue = new wrappers.BytesValue();
@@ -56,7 +56,7 @@ export class BytesValueParser extends ObjectParser {
   }
 }
 
-export class DoubleValueParser extends ObjectParser {
+class DoubleValueParser extends ObjectParser {
 
   fromObject(object) {
     let doubleValue = new wrappers.DoubleValue();
@@ -65,7 +65,7 @@ export class DoubleValueParser extends ObjectParser {
   }
 }
 
-export class FloatValueParser extends ObjectParser {
+class FloatValueParser extends ObjectParser {
 
   fromObject(object) {
     let floatValue = new wrappers.FloatValue();
@@ -74,7 +74,7 @@ export class FloatValueParser extends ObjectParser {
   }
 }
 
-export class Int32ValueParser extends ObjectParser {
+class Int32ValueParser extends ObjectParser {
 
   fromObject(object) {
     let int32Value = new wrappers.Int32Value();
@@ -83,7 +83,7 @@ export class Int32ValueParser extends ObjectParser {
   }
 }
 
-export class Int64ValueParser extends ObjectParser {
+class Int64ValueParser extends ObjectParser {
 
   fromObject(object) {
     let int64Value = new wrappers.Int64Value();
@@ -92,7 +92,7 @@ export class Int64ValueParser extends ObjectParser {
   }
 }
 
-export class StringValueParser extends ObjectParser {
+class StringValueParser extends ObjectParser {
 
   fromObject(object) {
     let stringValue = new wrappers.StringValue();
@@ -101,7 +101,7 @@ export class StringValueParser extends ObjectParser {
   }
 }
 
-export class UInt32ValueParser extends ObjectParser {
+class UInt32ValueParser extends ObjectParser {
 
   fromObject(object) {
     let uInt32Value = new wrappers.UInt32Value();
@@ -110,7 +110,7 @@ export class UInt32ValueParser extends ObjectParser {
   }
 }
 
-export class UInt64ValueParser extends ObjectParser {
+class UInt64ValueParser extends ObjectParser {
 
   fromObject(object) {
     let uInt64Value = new wrappers.UInt64Value();
@@ -119,7 +119,7 @@ export class UInt64ValueParser extends ObjectParser {
   }
 }
 
-export class ListValueParser extends ObjectParser {
+class ListValueParser extends ObjectParser {
 
   fromObject(object) {
     let listValue = new struct.ListValue;
@@ -134,7 +134,7 @@ export class ListValueParser extends ObjectParser {
   }
 }
 
-export class ValueParser extends ObjectParser {
+class ValueParser extends ObjectParser {
 
   fromObject(object) {
     let result = new struct.Value();
@@ -157,7 +157,7 @@ export class ValueParser extends ObjectParser {
   }
 }
 
-export class EmptyParser extends ObjectParser {
+class EmptyParser extends ObjectParser {
 
   fromObject(object) {
     let emptyValue = new Empty();
@@ -165,7 +165,7 @@ export class EmptyParser extends ObjectParser {
   }
 }
 
-export class TimestampParser extends ObjectParser {
+class TimestampParser extends ObjectParser {
 
   fromObject(object) {
     let date = new Date(object);
@@ -175,7 +175,7 @@ export class TimestampParser extends ObjectParser {
   }
 }
 
-export class DurationParser extends ObjectParser {
+class DurationParser extends ObjectParser {
 
   fromObject(object) {
     object = object.substring(0, object.length - 1);
@@ -196,7 +196,7 @@ export class DurationParser extends ObjectParser {
   }
 }
 
-export class FieldMaskParser extends ObjectParser {
+class FieldMaskParser extends ObjectParser {
 
   fromObject(object) {
     let fieldMask = new FieldMask();
@@ -205,7 +205,7 @@ export class FieldMaskParser extends ObjectParser {
   }
 }
 
-export class AnyParser extends ObjectParser {
+class AnyParser extends ObjectParser {
 
   fromObject(object) {
     const typeUrl = object["@type"];
@@ -223,6 +223,11 @@ export class AnyParser extends ObjectParser {
   }
 }
 
+/**
+ * The map of parsers for standard Protobuf types.
+ *
+ * @type {Map<string, ObjectParser>}
+ */
 export const wellKnownParsers = new Map([
   ['type.googleapis.com/google.protobuf.BoolValue', new BoolValueParser()],
   ['type.googleapis.com/google.protobuf.BytesValue', new BytesValueParser()],
