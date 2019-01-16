@@ -3,6 +3,8 @@ This module is a JS library that communicates with Spine Web server. It’s a fa
 domain commands, querying data and subscribing to entity states.  
 
 The latest published version can be found on [NPM](https://www.npmjs.com/package/spine-web).
+ 
+The NPM artifact provides sources transpiled into ES5 along with theirs source maps.
 
 ## Usage
 
