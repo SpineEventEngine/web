@@ -18,6 +18,7 @@
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build-dev": "webpack --config webpack-dev.config.js",
+    "transpile-before-publish": "babel main --out-dir build/npm-publication --source-maps",
     "coverage": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
     "test": "mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test"
   },
@@ -34,6 +35,8 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-module-resolver": "^3.1.1",
     "codecov": "^3.0.0",

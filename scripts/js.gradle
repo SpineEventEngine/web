@@ -149,6 +149,18 @@ task buildJs {
 }
 
 /**
+ * Transpiles sources before publishing them to NPM.
+ */
+task transpileSources {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = "Transpiles sources before publishing."
+
+    doLast {
+        npm 'run', 'transpile-before-publish'
+    }
+}
+
+/**
  * Copies the NPM publication files into a temporary directory which they are published from.
  */
 task prepareJsPublication(type: Copy) {
@@ -162,14 +174,11 @@ task prepareJsPublication(type: Copy) {
         include 'dist/**'
     }
 
-    from srcDir, {
-        include '**'
-    }
-
     into publicationDirectory
     exclude testSrcDir
 
     dependsOn buildJs
+    dependsOn transpileSources
 }
 
 /**
