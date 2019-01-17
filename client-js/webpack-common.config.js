@@ -1,5 +1,10 @@
+let glob = require("glob");
+
+let allProtoFiles = glob.sync('./main/proto/**/*.js');
+let entries = allProtoFiles.concat(['./main/index.js']);
+
 module.exports = {
-    entry: './main/index.js',
+    entry: entries,
     mode: 'none', // "production" | "development" | "none"
     output: {
         library: 'spine-web', // the name of the exported library
