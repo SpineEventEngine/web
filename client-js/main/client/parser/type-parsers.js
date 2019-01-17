@@ -45,9 +45,7 @@ export default class TypeParsers {
    * @param {!string} typeUrl the URL of the type to register the parser for
    */
   static register(parser, typeUrl) {
-    if (!(parser instanceof ObjectParser)) {
-      throw new Error('Unable to register a parsers, which does not extend ObjectParser.');
-    }
+    this._checkParser(parser, typeUrl);
     if (!parsers.has(typeUrl)) {
       parsers.set(typeUrl, parser);
     }
@@ -65,6 +63,12 @@ export default class TypeParsers {
       throw new Error(`The parser for ${typeUrl} was not found.`);
     }
     return parser;
+  }
+
+  static _checkParser(parser, typeUrl) {
+    if (!ObjectParser.isParser(parser)) {
+      throw new Error(`Unable to register parser for ${typeUrl}. Should extend ObjectParser.`);
+    }
   }
 }
 

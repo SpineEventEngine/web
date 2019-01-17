@@ -48,4 +48,19 @@ export default class ObjectParser {
   fromObject(object) {
     throw new Error('The method is abstract and should be implemented by a subclass');
   }
+
+  /**
+   * Checks if the parser extends {@link ObjectParser}.
+   *
+   * <p>The implementation doesn't use `instanceof` check and check on prototypes
+   * since they may fail if different versions of the file are used at the same time
+   * (e.g. bundled and the original one).
+   *
+   * @param object the object to check
+   */
+  static isParser(object) {
+    const abstractMethod = object.fromObject;
+    const methodDefined = typeof abstractMethod === 'function';
+    return methodDefined;
+  }
 }
