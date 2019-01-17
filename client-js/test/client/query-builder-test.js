@@ -22,17 +22,17 @@
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
-import {Type, TypedMessage} from '../../src/client/typed-message';
-import {ActorRequestFactory, ColumnFilters} from '../../src/client/actor-request-factory';
-import {AnyPacker} from '../../src/client/any-packer';
-import {Duration} from '../../src/client/time-utils';
-import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
-import {StringValue} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
+import {Type, TypedMessage} from '@lib/client/typed-message';
+import {ActorRequestFactory, ColumnFilters} from '@lib/client/actor-request-factory';
+import {AnyPacker} from '@lib/client/any-packer';
+import {Duration} from '@lib/client/time-utils';
+import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
+import {StringValue} from '@proto/google/protobuf/wrappers_pb';
 import {
   ColumnFilter,
   CompositeColumnFilter,
   EntityFilters
-} from 'spine-web-client-proto/spine/client/entities_pb';
+} from '@proto/spine/client/entities_pb';
 
 class Given {
 
@@ -103,10 +103,10 @@ class Given {
 }
 
 Given.TYPE = {
-  TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
-  TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
+  TASK_ID: Type.forClass(TaskId),
+  TASK: Type.forClass(Task),
 };
-Given.ACTOR = 'spine-web-client-test-actor';
+Given.ACTOR = 'spine-web-test-actor';
 
 describe('QueryBuilder', function () {
 

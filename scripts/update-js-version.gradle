@@ -23,8 +23,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 /**
- * This script updates the package.json version and {@code spine-web-client-proto} dependency
- * version for JS modules.
+ * This script updates the package.json version for JS modules.
  */
 
 ext.JS_PACKAGE_FILE_LOCATION = "$projectDir/package.json"
@@ -54,12 +53,6 @@ void updatePackageJsonVersion() {
     def final packageJsonObject = readJsonFile(packageFile)
 
     packageJsonObject['version'] = JS_PACKAGES_VERSION
-
-    def final dependencies = packageJsonObject['dependencies']
-    if (dependencies.containsKey('spine-web-client-proto')) {
-        dependencies['spine-web-client-proto'] = JS_PACKAGES_VERSION
-    }
-
     updatePackageJson(packageJsonObject, packageFile)
 }
 

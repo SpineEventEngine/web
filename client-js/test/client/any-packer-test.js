@@ -22,10 +22,10 @@ import uuid from 'uuid';
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
-import {AnyPacker} from "../../src/client/any-packer";
-import {Type, TypedMessage} from "../../src/client/typed-message";
-import {Duration} from "../../src/client/time-utils";
-import {Task, TaskId} from "../../proto/test/js/spine/web/test/given/task_pb";
+import {AnyPacker} from '@lib/client/any-packer';
+import {Type, TypedMessage} from '@lib/client/typed-message';
+import {Duration} from '@lib/client/time-utils';
+import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 
 class Given {
   constructor() {
@@ -63,8 +63,8 @@ class Given {
 }
 
 Given.TYPE = {
-  TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
-  TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
+  TASK_ID: Type.forClass(TaskId),
+  TASK: Type.forClass(Task),
 };
 
 describe('AnyPacker', function () {
@@ -88,6 +88,17 @@ describe('AnyPacker', function () {
     const typedTask = new TypedMessage(task, Given.TYPE.TASK);
 
     const any = AnyPacker.packTyped(typedTask);
+    assert.ok(any);
+    Given.assertTypeUrlForType(any.getTypeUrl(), Given.TYPE.TASK);
+
+    const message = AnyPacker.unpack(any).as(Given.TYPE.TASK);
+    Given.assertMessagesEqual(task, message);
+  });
+
+  it ('packs an untyped message', () => {
+    const task = Given.newTask();
+
+    const any = AnyPacker.packMessage(task);
     assert.ok(any);
     Given.assertTypeUrlForType(any.getTypeUrl(), Given.TYPE.TASK);
 

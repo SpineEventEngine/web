@@ -18,20 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+apply from: "$rootDir/scripts/js.gradle"
+
 apply plugin: 'com.google.protobuf'
 
+ext {
+    nycOutputDir = "$projectDir/.nyc_output"
+}
+
 dependencies {
+    protobuf project(':web')
+    protobuf project(':firebase-web')
+    protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
+
     testProtobuf project(":web-tests")
 }
 
 idea.module {
-    sourceDirs += file("$projectDir/src")
+    sourceDirs += file(srcDir)
+    testSourceDirs += file(testSrcDir)
 
-    testSourceDirs += file("$projectDir/test")
-
-    excludeDirs += file("$projectDir/.nyc_output")
-    excludeDirs += file("$projectDir/node_modules")
-    excludeDirs += file("$projectDir/proto")
+    excludeDirs += file(nycOutputDir)
+    excludeDirs += file(nodeModulesDir)
+    excludeDirs += file(genProtoMain)
+    excludeDirs += file(genProtoTest)
 
     iml {
         beforeMerged { module ->
@@ -55,30 +65,18 @@ sourceSets {
 }
 
 clean {
-    delete "$projectDir/.nyc_output"
+    delete nycOutputDir
     delete "$projectDir/dist"
-    delete "$projectDir/node_modules"
-    delete "$projectDir/proto"
+    delete nodeModulesDir
+    delete genProtoMain
+    delete genProtoTest
 }
 
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
 
-apply from: "$rootDir/scripts/js.gradle"
-
 buildJs.doLast {
     npm 'run', 'build'
     npm 'run', 'build-dev'
 }
-
-task linkClientProto {
-    doLast {
-        npm 'link', 'spine-web-client-proto'
-    }
-
-    dependsOn ':client-js-proto:link'
-}
-
-linkClientProto.dependsOn cleanOldDependencies
-installDependencies.dependsOn linkClientProto

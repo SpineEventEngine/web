@@ -49,6 +49,13 @@ ext {
 
     workDirectory = "$projectDir"
     publicationDirectory = "$buildDir/npm-publication/"
+    srcDir = "$projectDir/main"
+    testSrcDir = "$projectDir/test"
+    genProtoBaseDir = projectDir
+    genProtoSubDir = "proto"
+    genProtoMain = "$genProtoBaseDir/main/$genProtoSubDir"
+    genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
+    nodeModulesDir = "$projectDir/node_modules"
 
     npm = { final String... command ->
         ext.executeNpm(workDirectory as File, command)
@@ -66,7 +73,7 @@ task compileProtoToJs {
 }
 
 protobuf {
-    generatedFilesBaseDir = "$projectDir/proto"
+    generatedFilesBaseDir = genProtoBaseDir
     protoc {
         artifact = deps.build.protoc
     }
@@ -80,6 +87,7 @@ protobuf {
                 // https://github.com/google/protobuf/blob/master/js/README.md
                 js {
                     option "import_style=commonjs"
+                    outputSubDir = genProtoSubDir
                 }
 
                 task.generateDescriptorSet = true
@@ -96,7 +104,9 @@ apply plugin: 'io.spine.tools.proto-js-plugin'
  * Cleans old module dependencies.
  */
 task cleanOldDependencies {
-    delete "$projectDir/node_modules"
+    doLast {
+        delete nodeModulesDir
+    }
 }
 
 /**
@@ -107,17 +117,19 @@ task installDependencies {
     description = 'Installs the JavaScript dependencies.'
 
     inputs.files "$projectDir/package.json"
+    outputs.files nodeModulesDir
 
     dependsOn compileProtoToJs
 
     doLast {
         npm 'install'
     }
-
-    dependsOn cleanOldDependencies
 }
 
 protoJs {
+    mainGenProtoDir = genProtoMain
+    testGenProtoDir = genProtoTest
+
     generateParsersTask().dependsOn compileProtoToJs
     installDependencies.dependsOn generateParsersTask()
 }
@@ -137,6 +149,18 @@ task buildJs {
 }
 
 /**
+ * Transpiles sources before publishing them to NPM.
+ */
+task transpileSources {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = "Transpiles sources before publishing."
+
+    doLast {
+        npm 'run', 'transpile-before-publish'
+    }
+}
+
+/**
  * Copies the NPM publication files into a temporary directory which they are published from.
  */
 task prepareJsPublication(type: Copy) {
@@ -150,18 +174,11 @@ task prepareJsPublication(type: Copy) {
         include 'dist/**'
     }
 
-    from "$projectDir/src", {
-        include '**'
-    }
-
-    from "$projectDir/proto/main/js", {
-        include '**'
-    }
-
     into publicationDirectory
-    exclude "test"
+    exclude testSrcDir
 
     dependsOn buildJs
+    dependsOn transpileSources
 }
 
 /**
@@ -229,4 +246,5 @@ task coverageJs {
 rootProject.check.dependsOn coverageJs
 
 build.dependsOn buildJs
+clean.dependsOn cleanOldDependencies
 publish.dependsOn publishJs

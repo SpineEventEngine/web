@@ -18,43 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.google.protobuf'
+import assert from 'assert';
 
-dependencies {
-    protobuf project(':web')
-    protobuf project(':firebase-web')
-    protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
+import KnownTypes from '@lib/client/known-types';
+import {Any} from '@proto/google/protobuf/any_pb';
 
-    testProtobuf project(':web-tests')
-}
+describe('KnownTypes', () => {
 
-idea.module {
-    sourceDirs += file("${projectDir}/proto")
-    sourceDirs += file("$projectDir/src")
-    testSourceDirs += file("$projectDir/test")
-    excludeDirs += file("$projectDir/node_modules")
+  beforeEach(() => {
+    KnownTypes.clear();
+  });
 
-    iml {
-        beforeMerged { module ->
-            module.dependencies.clear()
-        }
-        whenMerged { module ->
-            module.dependencies*.exported = true
-        }
-    }
-}
+  it('registers a type', () => {
+    let hasType = KnownTypes.hasType(Any.typeUrl());
+    assert.ok(hasType === false);
+    KnownTypes.register(Any, Any.typeUrl());
+    hasType = KnownTypes.hasType(Any.typeUrl());
+    assert.ok(hasType);
+  });
 
-clean {
-    delete "$projectDir/proto"
-}
-
-// Suppress building the JS project as a Java module.
-project.compileJava.enabled = false
-project.compileTestJava.enabled = false
-
-apply from: "$rootDir/scripts/js.gradle"
-
-testJs.enabled = false
-coverageJs.enabled = false
-
-link.dependsOn ':web:compileProtoToJs'
+  it('skips already registered types',() => {
+    KnownTypes.register(Any, Any.typeUrl());
+    KnownTypes.register(Any, Any.typeUrl());
+    const hasType = KnownTypes.hasType(Any.typeUrl());
+    assert.ok(hasType);
+  });
+});

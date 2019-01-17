@@ -22,22 +22,22 @@ import assert from 'assert';
 import uuid from 'uuid';
 
 import {devFirebaseApp} from './test-firebase-app';
-import {Type, TypedMessage} from '../../src/client/typed-message';
-import {Duration} from '../../src/client/time-utils';
+import {Type} from '@lib/client/typed-message';
+import {Duration} from '@lib/client/time-utils';
 
-import {CreateTask, RenameTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
-import {Task, TaskId} from '../../proto/test/js/spine/web/test/given/task_pb';
-import {ColumnFilter, CompositeColumnFilter} from 'spine-web-client-proto/spine/client/entities_pb';
-import {Topic} from '../../proto/test/js/spine/client/subscription_pb';
-import {Project} from '../../proto/test/js/spine/web/test/given/project_pb';
-import {BackendClient} from '../../src/client/backend-client';
+import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
+import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
+import {ColumnFilter, CompositeColumnFilter} from '@proto/spine/client/entities_pb';
+import {Topic} from '@testProto/spine/client/subscription_pb';
+import {Project} from '@testProto/spine/web/test/given/project_pb';
+import {BackendClient} from '@lib/client/backend-client';
 import {
  ServerError,
  CommandValidationError,
  CommandHandlingError,
  ConnectionError
-} from '../../src/client/errors';
-import {fail} from './test-helpers';
+} from '@lib/client/errors';
+import {fail, registerProtobufTypes} from './test-helpers';
 
 class Given {
 
@@ -59,7 +59,7 @@ class Given {
    * @param {?String} named
    * @param {?String} describedAs
    *
-   * @return {TypedMessage<CreateTask>}
+   * @return {CreateTask}
    */
   static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
     const taskId = this._taskId({value: id, withPrefix: idPrefix});
@@ -72,14 +72,14 @@ class Given {
     command.setName(name);
     command.setDescription(description);
 
-    return new TypedMessage(command, this.TYPE.OF_COMMAND.CREATE_TASK);
+    return command;
   }
 
   /**
    * @param {!String[]} named
    * @param {?String} withPrefix
    *
-   * @return {TypedMessage<CreateTask>[]}
+   * @return {CreateTask[]}
    */
   static createTaskCommands({named: names, withPrefix: idPrefix}) {
     const commands = [];
@@ -97,7 +97,7 @@ class Given {
    * @param {!String} withId
    * @param {!String} to
    *
-   * @return {TypedMessage<RenameTask>}
+   * @return {RenameTask}
    */
   static renameTaskCommand({withId: id, to: newName}) {
     const taskId = this._taskId({value: id});
@@ -106,7 +106,7 @@ class Given {
     command.setId(taskId);
     command.setName(newName);
 
-    return new TypedMessage(command, this.TYPE.OF_COMMAND.RENAME_TASK);
+    return command;
 
   }
 
@@ -141,15 +141,8 @@ Given.defaultTaskName = 'Get to Mount Doom';
 Given.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
 Given.TYPE = {
   OF_ENTITY: {
-    TASK: Type.of(Task, 'type.spine.io/spine.web.test.given.Task'),
-    PROJECT: Type.of(Project, 'type.spine.io/spine.web.test.given.Project'),
-  },
-  OF_IDENTIFIER: {
-    TASK_ID: Type.of(TaskId, 'type.spine.io/spine.web.test.given.TaskId'),
-  },
-  OF_COMMAND: {
-    CREATE_TASK: Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'),
-    RENAME_TASK: Type.of(RenameTask, 'type.spine.io/spine.web.test.given.RenameTask'),
+    TASK: Type.forClass(Task),
+    PROJECT: Type.forClass(Project),
   },
   MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
@@ -157,6 +150,8 @@ Given.TYPE = {
 const backendClient = Given.backendClient();
 
 describe('FirebaseBackendClient', function () {
+
+  registerProtobufTypes();
 
   // Big timeout due to remote calls during tests.
   const timeoutDuration = new Duration({minutes: 2});
@@ -170,16 +165,14 @@ describe('FirebaseBackendClient', function () {
       describedAs: 'Spine Web need integration tests'
     });
 
-    const taskId = command.message.getId();
+    const taskId = command.getId();
 
     backendClient.sendCommand(command, () => {
 
-      const typedId = new TypedMessage(taskId, Given.TYPE.OF_IDENTIFIER.TASK_ID);
-
-      backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, typedId, data => {
-        assert.equal(data.getId().getValue(), taskId.getValue());
-        assert.equal(data.getName(), command.message.getName());
-        assert.equal(data.getDescription(), command.message.getDescription());
+      backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
+        assert.equal(data.getId().getValue(), taskId);
+        assert.equal(data.getName(), command.getName());
+        assert.equal(data.getDescription(), command.getDescription());
 
         done();
 
@@ -232,7 +225,7 @@ describe('FirebaseBackendClient', function () {
 
   it('fetches all the existing entities of Given type one by one', done => {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
-    const taskId = command.message.getId();
+    const taskId = command.getId();
 
     backendClient.sendCommand(command, () => {
 
@@ -257,7 +250,7 @@ describe('FirebaseBackendClient', function () {
 
   it('fetches all the existing entities of Given type at once', done => {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
-    const taskId = command.message.getId();
+    const taskId = command.getId();
 
     backendClient.sendCommand(command, () => {
 
@@ -336,7 +329,7 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: names
     });
-    taskIds = commands.map(command => command.message.getId().getValue());
+    taskIds = commands.map(command => command.getId().getValue());
     commands.forEach(command => {
       backendClient.sendCommand(command, Given.noop, fail(done), fail(done));
     });
@@ -389,14 +382,14 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskNames
     });
-    taskIds = createCommands.map(command => command.message.getId().getValue());
+    taskIds = createCommands.map(command => command.getId().getValue());
     const createPromises = [];
     createCommands.forEach(command => {
       const promise = new Promise(resolve => {
         backendClient.sendCommand(
           command,
           () => {
-            console.log(`Task '${command.message.getId().getValue()}' created.`);
+            console.log(`Task '${command.getId().getValue()}' created.`);
             resolve();
           },
           fail(done, 'Unexpected error while creating a task.'),
@@ -438,8 +431,8 @@ describe('FirebaseBackendClient', function () {
       withPrefix: 'spine-web-test-subscribe',
       named: initialTaskName
     });
-    const taskId = new TypedMessage(createCommand.message.getId(), Given.TYPE.OF_IDENTIFIER.TASK_ID);
-    const taskIdValue = createCommand.message.getId().getValue();
+    const taskId = createCommand.getId();
+    const taskIdValue = createCommand.getId().getValue();
 
     const promise = new Promise(resolve => {
       backendClient.sendCommand(

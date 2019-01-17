@@ -1,0 +1,13 @@
+{
+  "extends": "../.babelrc",
+  "plugins": [
+    ["module-resolver", {
+      "cwd": "babelrc",
+      "alias": {
+        "@proto": "../main/proto",
+        "@testProto": "./proto",
+        "@lib": "./../main"
+      }
+    }]
+  ]
+}

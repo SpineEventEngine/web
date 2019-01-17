@@ -1,8 +1,13 @@
+let glob = require("glob");
+
+let allProtoFiles = glob.sync('./main/proto/**/*.js');
+let entries = allProtoFiles.concat(['./main/index.js']);
+
 module.exports = {
-    entry: './src/index.js',
+    entry: entries,
     mode: 'none', // "production" | "development" | "none"
     output: {
-        library: 'spine-web-client', // the name of the exported library
+        library: 'spine-web', // the name of the exported library
         libraryTarget: 'umd', // the type of the exported library,
         umdNamedDefine: true,
         globalObject: "typeof window !== 'undefined' ? window : this" // https://github.com/webpack/webpack/issues/6522
@@ -18,4 +23,11 @@ module.exports = {
             }
         }
     ],
+    module: {
+        rules: [{
+            test: /\.jsx?$/,
+            exclude: /(node_modules|bower_components)/,
+            loader: 'babel-loader'
+        }]
+    }
 };

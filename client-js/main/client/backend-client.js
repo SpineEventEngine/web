@@ -21,18 +21,23 @@
 "use strict";
 
 import {Observable, Subscription} from 'rxjs';
-import {TypedMessage} from './typed-message';
+import {
+  TypedMessage,
+  Type
+} from './typed-message';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {SpineError, CommandHandlingError, CommandValidationError} from './errors';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
+import KnownTypes from './known-types';
+import TypeParsers from './parser/type-parsers';
 import {
   Subscription as SpineSubscription,
   SubscriptionId
-} from 'spine-web-client-proto/spine/client/subscription_pb';
-import {Status} from 'spine-web-client-proto/spine/core/response_pb';
+} from '../proto/spine/client/subscription_pb';
+import {Status} from '../proto/spine/core/response_pb';
 
 /**
  * A utility which converts the JS object to its Protobuf counterpart.
@@ -49,8 +54,9 @@ class ObjectToProto {
    * @param {Type} type a type of the corresponding Protobuf message
    */
   static convert(object, type) {
-    const messageClass = type.class();
-    const proto = messageClass.fromObject(object);
+    const typeUrl = type.url().value();
+    const parser = TypeParsers.parserFor(typeUrl);
+    const proto = parser.fromObject(object);
     return proto;
   }
 }
@@ -194,6 +200,8 @@ class Fetch {
  * `.sendCommand(...)`, etc.), also providing factory methods for creating Backend Client
  * instances (`.usingFirebase(...)`).
  *
+ * Protobuf types that will be used with the client should be registered via `registerTypes(...)`.
+ *
  * @abstract
  */
 export class BackendClient {
@@ -247,7 +255,7 @@ export class BackendClient {
    * Fetches a single entity of the given type.
    *
    * @param {!Type<T>} type a type URL of the target entity
-   * @param {!TypedMessage} id an ID of the target entity
+   * @param {!Message} id an ID of the target entity
    * @param {!consumerCallback<Object>} dataCallback
    *        a callback receiving a single data item as a JS object
    * @param {?consumerCallback<SpineError>} errorCallback
@@ -256,7 +264,8 @@ export class BackendClient {
    * @template <T>
    */
   fetchById(type, id, dataCallback, errorCallback) {
-    const query = this._requestFactory.query().select(type).byIds([id]).build();
+    const typedId = TypedMessage.of(id);
+    const query = this._requestFactory.query().select(type).byIds([typedId]).build();
     const typedQuery = new TypedQuery(query, type);
 
     // noinspection JSCheckFunctionSignatures
@@ -294,7 +303,7 @@ export class BackendClient {
    * The occurrence of an error does not guarantee that the command is not accepted by the server
    * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
    *
-   * @param {!TypedMessage} commandMessage a typed command message
+   * @param {!Message} commandMessage a Protobuf message representing the comand
    * @param {!voidCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<CommandHandlingError>} errorCallback
@@ -309,7 +318,7 @@ export class BackendClient {
     this._endpoint.command(command)
       .then(ack => {
         const responseStatus = ack.status;
-        const responseStatusProto = Status.fromObject(responseStatus);
+        const responseStatusProto = ObjectToProto.convert(responseStatus, Type.forClass(Status));
         const responseStatusCase = responseStatusProto.getStatusCase();
 
         switch (responseStatusCase) {
@@ -343,8 +352,8 @@ export class BackendClient {
    * The entities that already exist will be initially passed to the `itemAdded` observer. 
    *
    * @param {!Type} ofType a type URL of entities to observe changes
-   * @param {?TypedMessage[]} byIds an array of ids of entities to observe changes
-   * @param {?TypedMessage} byId an id of a single entity to observe changes
+   * @param {?Message[]} byIds an array of ids of entities to observe changes
+   * @param {?Message} byId an id of a single entity to observe changes
    * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes 
    *                                             and unsubscribe from the updated 
    */
@@ -357,7 +366,8 @@ export class BackendClient {
     }
     let topic;
     if (ids) {
-      topic = this._requestFactory.topic().all({of: type, withIds: ids});
+      const typedIds = ids.map(TypedMessage.of);
+      topic = this._requestFactory.topic().all({of: type, withIds: typedIds});
     } else {
       topic = this._requestFactory.topic().all({of: type});
     }
@@ -385,6 +395,34 @@ export class BackendClient {
     const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
     return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory, subscriptionService);
+  }
+
+
+  /**
+   * Registers all Protobuf types provided by the specified modules.
+   *
+   * <p>After the registration, the types can be used and parsed correctly.
+   *
+   * @example
+   * import * as protobufs from './proto/index.js';
+   * BackendClient.registerTypes(protobufs);
+   *
+   * @param protoIndexFiles the index.js files generated by
+   * {@link https://github.com/SpineEventEngine/base/tree/master/tools/proto-js-plugin the Protobuf plugin for JS}
+   */
+  static registerTypes(...protoIndexFiles) {
+    for (let indexFile of protoIndexFiles) {
+      this._registerTypes(indexFile);
+    }
+  }
+
+  static _registerTypes(indexFile) {
+    for (let [typeUrl, type] of indexFile.types) {
+      KnownTypes.register(type, typeUrl);
+    }
+    for (let [typeUrl, parserType] of indexFile.parsers) {
+      TypeParsers.register(new parserType(), typeUrl);
+    }
   }
 
   /**
@@ -700,4 +738,3 @@ class FirebaseBackendClient extends BackendClient {
  * @type FetchClass
  */
 FirebaseBackendClient.Fetch = FirebaseFetch;
-

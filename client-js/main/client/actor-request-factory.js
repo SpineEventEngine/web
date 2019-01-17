@@ -22,9 +22,9 @@
 
 import uuid from 'uuid';
 
-import {Timestamp} from 'spine-web-client-proto/google/protobuf/timestamp_pb';
-import {Query, QueryId} from 'spine-web-client-proto/spine/client/query_pb';
-import {Topic, TopicId} from 'spine-web-client-proto/spine/client/subscription_pb';
+import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
+import {Query, QueryId} from '../proto/spine/client/query_pb';
+import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
   ColumnFilter,
   CompositeColumnFilter,
@@ -32,12 +32,12 @@ import {
   EntityId,
   EntityIdFilter,
   Target
-} from 'spine-web-client-proto/spine/client/entities_pb';
-import {ActorContext} from 'spine-web-client-proto/spine/core/actor_context_pb';
-import {Command, CommandContext, CommandId} from 'spine-web-client-proto/spine/core/command_pb';
-import {UserId} from 'spine-web-client-proto/spine/core/user_id_pb';
-import {ZoneId, ZoneOffset} from 'spine-web-client-proto/spine/time/time_pb';
-import {FieldMask} from 'spine-web-client-proto/google/protobuf/field_mask_pb';
+} from '../proto/spine/client/entities_pb';
+import {ActorContext} from '../proto/spine/core/actor_context_pb';
+import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
+import {UserId} from '../proto/spine/core/user_id_pb';
+import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
+import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 
@@ -665,19 +665,19 @@ class CommandFactory {
   /**
    * Creates a `Command` from the given command message.
    *
-   * @param {!TypedMessage} message a typed command message
+   * @param {!Message} message a command message
    * @return {TypedMessage<Command>} a typed representation of the Spine Command
    */
   create(message) {
     const id = CommandFactory._newCommandId();
-    const messageAny = AnyPacker.packTyped(message);
+    const messageAny = AnyPacker.packMessage(message);
     const context = this._commandContext();
 
     const result = new Command();
     result.setId(id);
     result.setMessage(messageAny);
     result.setContext(context);
-    return new TypedMessage(result, Type.COMMAND);
+    return TypedMessage.of(result);
   }
 
   _commandContext() {

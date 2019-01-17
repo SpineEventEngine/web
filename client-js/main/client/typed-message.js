@@ -21,7 +21,7 @@
 "use strict";
 
 import base64 from 'base64-js';
-import {Any} from 'spine-web-client-proto/google/protobuf/any_pb';
+import {Any} from '../proto/google/protobuf/any_pb';
 import {
   BoolValue,
   DoubleValue,
@@ -31,10 +31,11 @@ import {
   StringValue,
   UInt32Value,
   UInt64Value,
-} from 'spine-web-client-proto/google/protobuf/wrappers_pb';
-import {WebQuery} from 'spine-web-client-proto/spine/web/web_query_pb';
-import {Subscription, Topic} from 'spine-web-client-proto/spine/client/subscription_pb';
-import {Command} from 'spine-web-client-proto/spine/core/command_pb';
+} from '../proto/google/protobuf/wrappers_pb';
+import {WebQuery} from '../proto/spine/web/web_query_pb';
+import {Subscription, Topic} from '../proto/spine/client/subscription_pb';
+import {Command} from '../proto/spine/core/command_pb';
+import KnownTypes from './known-types';
 
 
 /**
@@ -129,27 +130,36 @@ export class Type {
     }
     return new Type(cls, typeUrl);
   }
+
+  /**
+   * Creates a new `Type` for the passed `Message` class.
+   *
+   * @param cls {!Class<T>} cls a class of the `Message`
+   */
+  static forClass(cls) {
+    const typeUrl = KnownTypes.typeUrlFor(cls);
+    return this.of(cls, typeUrl);
+  }
+
+  /**
+   * Creates a new `Type` for the passed `Message`.
+   *
+   * @param {!Message} message a Protobuf message
+   */
+  static forMessage(message) {
+    return this.forClass(message.constructor);
+  }
 }
 
 // PRIMITIVE WRAPPERS
-Type.STRING = Type.of(StringValue, 'type.googleapis.com/proto.google.protobuf.StringValue');
-Type.INT32 = Type.of(Int32Value, 'type.googleapis.com/proto.google.protobuf.Int32Value');
-Type.UINT32 = Type.of(UInt32Value, 'type.googleapis.com/proto.google.protobuf.Int32Value');
-Type.INT64 = Type.of(Int64Value, 'type.googleapis.com/proto.google.protobuf.Int64Value');
-Type.UINT64 = Type.of(UInt64Value, 'type.googleapis.com/proto.google.protobuf.Int64Value');
-Type.BOOL = Type.of(BoolValue, 'type.googleapis.com/proto.google.protobuf.BoolValue');
-Type.DOUBLE = Type.of(DoubleValue, 'type.googleapis.com/proto.google.protobuf.DoubleValue');
-Type.FLOAT = Type.of(FloatValue, 'type.googleapis.com/proto.google.protobuf.FloatValue');
-
-// SPINE WEB
-Type.WEB_QUERY = Type.of(WebQuery, 'type.spine.io/spine.web.WebQuery');
-
-// SPINE CLIENT
-Type.SUBSCRIPTION = Type.of(Subscription, 'type.spine.io/spine.client.Subscription');
-Type.TOPIC = Type.of(Topic, 'type.spine.io/spine.client.Topic');
-
-// SPINE CORE
-Type.COMMAND = Type.of(Command, 'type.spine.io/spine.core.Command');
+Type.STRING = Type.forClass(StringValue);
+Type.INT32 = Type.forClass(Int32Value);
+Type.UINT32 = Type.forClass(UInt32Value);
+Type.INT64 = Type.forClass(Int64Value);
+Type.UINT64 = Type.forClass(UInt64Value);
+Type.BOOL = Type.forClass(BoolValue);
+Type.DOUBLE = Type.forClass(DoubleValue);
+Type.FLOAT = Type.forClass(FloatValue);
 
 /**
  * A Protobuf message with a {@link TypeUrl}.
@@ -173,6 +183,17 @@ export class TypedMessage {
   }
 
   /**
+   * Creates a new instance of TypedMessage from the given Protobuf message.
+   *
+   * @param {!Message} message a Protobuf message
+   * @returns {!TypedMessage} the created typed message
+   */
+  static of(message) {
+    const type = Type.forMessage(message);
+    return new TypedMessage(message, type);
+  }
+
+  /**
    * Converts this message into a Base64-encoded byte string.
    *
    * @return the string representing this message
@@ -189,7 +210,8 @@ export class TypedMessage {
    * @return {TypedMessage<StringValue>} a new `TypedMessage` instance with provided value
    */
   static string(value) {
-    return new TypedMessage(new StringValue([value.toString()]), Type.STRING);
+    const message = new StringValue([value.toString()]);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -202,7 +224,7 @@ export class TypedMessage {
    */
   static int32(value) {
     const message = new Int32Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.INT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -215,7 +237,7 @@ export class TypedMessage {
    */
   static uint32(value) {
     const message = new UInt32Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.UINT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -228,7 +250,7 @@ export class TypedMessage {
    */
   static int64(value) {
     const message = new Int64Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.INT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -241,7 +263,7 @@ export class TypedMessage {
    */
   static uint64(value) {
     const message = new UInt64Value([Math.floor(value.valueOf())]);
-    return new TypedMessage(message, Type.UINT64);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -252,7 +274,7 @@ export class TypedMessage {
    */
   static float(value) {
     const message = new FloatValue([value.valueOf()]);
-    return new TypedMessage(message, Type.FLOAT);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -263,7 +285,7 @@ export class TypedMessage {
    */
   static double(value) {
     const message = new DoubleValue([value.valueOf()]);
-    return new TypedMessage(message, Type.DOUBLE);
+    return TypedMessage.of(message);
   }
 
   /**
@@ -273,6 +295,7 @@ export class TypedMessage {
    * @return {TypedMessage<BoolValue>} a new `TypedMessage` instance with provided value
    */
   static bool(value) {
-    return new TypedMessage(new BoolValue([value]), Type.BOOL);
+    const message = new BoolValue([value]);
+    return TypedMessage.of(message);
   }
 }

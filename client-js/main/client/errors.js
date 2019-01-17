@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import 'spine-web-client-proto/spine/base/error_pb';
+import '../proto/spine/base/error_pb';
 // noinspection JSUnresolvedVariable
 /**
  * The class of errors that can be received from the server in response to the command sent.
@@ -28,7 +28,7 @@ import 'spine-web-client-proto/spine/base/error_pb';
 const SpineBaseError = proto.spine.base.Error;
 
 /**
- * The base `spine-web-client` error type. This error type is only used directly when a
+ * The base error type of Spine Web. This error type is only used directly when a
  * more appropriate category is not defined for the offending error.
  *
  * @extends Error

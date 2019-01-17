@@ -18,6 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as testProtobuf from '@testProto/index';
+import {BackendClient} from "../../main/client/backend-client";
+
 /**
  * Can be used in callback-based async tests to fail them before waiting
  * of the full test timeout.
@@ -51,4 +54,8 @@ export function fail(done, message = '') {
      done(new Error(`Test failed. Cause: ${cause ? JSON.stringify(cause) : 'not identified'}`));
     }
   };
+}
+
+export function registerProtobufTypes() {
+  BackendClient.registerTypes(testProtobuf);
 }

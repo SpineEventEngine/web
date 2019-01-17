@@ -21,17 +21,17 @@
 import assert from 'assert';
 import sinon from 'sinon';
 
-import {HttpEndpoint} from '../../src/client/http-endpoint';
-import {HttpClient} from '../../src/client/http-client';
-import {Type, TypedMessage} from '../../src/client/typed-message';
-import {CreateTask} from '../../proto/test/js/spine/web/test/given/commands_pb';
+import {HttpEndpoint} from '@lib/client/http-endpoint';
+import {HttpClient} from '@lib/client/http-client';
+import {TypedMessage} from '@lib/client/typed-message';
+import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {
   SpineError,
   ConnectionError,
   ClientError,
   ServerError
-} from '../../src/client/errors';
-import {Duration} from '../../src/client/time-utils';
+} from '@lib/client/errors';
+import {Duration} from '@lib/client/time-utils';
 import {fail} from './test-helpers';
 
 const MOCK_RESPONSE_STATUS_TEXT = 'Status text';
@@ -95,9 +95,7 @@ class Given {
 
 Given.FAKE_ENDPOINT_URL = 'https://fake-endpoint.url';
 Given.CONNECTION_ERROR = new Error('Failed to fetch');
-Given.MOCK_COMMAND = new TypedMessage(
-  new CreateTask(),
-  Type.of(CreateTask, 'type.spine.io/spine.web.test.given.CreateTask'));
+Given.MOCK_COMMAND = TypedMessage.of(new CreateTask);
 
 Given.HTTP_RESPONSE = {
   STATUS: {

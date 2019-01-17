@@ -30,7 +30,6 @@ import io.spine.web.firebase.FirebaseCredentials;
 import java.io.InputStream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.DatabaseUrl.from;
 import static io.spine.web.firebase.FirebaseClientFactory.restClient;
 
 /**
@@ -38,7 +37,7 @@ import static io.spine.web.firebase.FirebaseClientFactory.restClient;
  */
 final class Application {
 
-    private static final DatabaseUrl DATABASE_URL = from("https://spine-dev.firebaseio.com/");
+    private static final DatabaseUrl DATABASE_URL = DatabaseUrl.from("https://spine-dev.firebaseio.com/");
     private static final String SERVICE_ACCOUNT_FILE = "/spine-dev.json";
 
     private final CommandService commandService;
