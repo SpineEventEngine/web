@@ -23,16 +23,17 @@
 import uuid from 'uuid';
 
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
+import {FieldPath} from '../proto/spine/base/field_path_pb';
 import {Query, QueryId} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
+import {EntityId} from '../proto/spine/client/entities_pb'
 import {
-  ColumnFilter,
-  CompositeColumnFilter,
-  EntityFilters,
-  EntityId,
-  EntityIdFilter,
+  Filter,
+  CompositeFilter,
+  TargetFilters,
+  IdFilter,
   Target
-} from '../proto/spine/client/entities_pb';
+} from '../proto/spine/client/filters_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
 import {UserId} from '../proto/spine/core/user_id_pb';
@@ -41,11 +42,20 @@ import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 
+class FieldPaths {
+
+  static parse(stringPath) {
+    const fieldPath = new FieldPath();
+    const pathElements = stringPath.split('.');
+    fieldPath.setFieldNameList(pathElements);
+    return fieldPath;
+  }
+}
 
 /**
- * A factory for `ColumnFilter` and `CompositeColumnFilter` instances.
+ * A factory for `Filter` and `CompositeFilter` instances.
  */
-export class ColumnFilters {
+export class Filters {
 
   /**
    * Instantiation not allowed and will throw an error.
@@ -55,119 +65,119 @@ export class ColumnFilters {
   }
 
   /**
-   * Creates a new filter for the value of named column to be equal to the provided value.
+   * Creates a new filter for the value of an object field to be equal to the provided value.
    *
-   * @param {!String} columnName a string name of the entity column
-   * @param {!TypedMessage} value a value to compare the column value to
+   * @param {!String} fieldPath a path to the object field
+   * @param {!TypedMessage} value a value to compare with
    *
-   * @return {ColumnFilter} a new column filter
+   * @return {Filter} a new filter instance
    */
-  static eq(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilter.Operator.EQUAL, value);
+  static eq(fieldPath, value) {
+    return Filters.with(fieldPath, Filter.Operator.EQUAL, value);
   }
 
   /**
-   * Creates a new filter for the value of named column to be less than the provided value.
+   * Creates a new filter for the value of an object field to be less than the provided value.
    *
-   * @param {!String} columnName a string name of the entity column
-   * @param {!TypedMessage} value a value to compare the column value to
+   * @param {!String} fieldPath a path to the object field
+   * @param {!TypedMessage} value a value to compare with
    *
-   * @return {ColumnFilter} a new column filter
+   * @return {Filter} a new filter instance
    */
-  static lt(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilter.Operator.LESS_THAN, value);
+  static lt(fieldPath, value) {
+    return Filters.with(fieldPath, Filter.Operator.LESS_THAN, value);
   }
 
   /**
-   * Creates a new filter for the value of named column to be greater than the provided value.
+   * Creates a new filter for the value an object field to be greater than the provided value.
    *
-   * @param {!String} columnName a string name of the entity column
-   * @param {!TypedMessage} value a value to compare the column value to
+   * @param {!String} fieldPath a path to the object field
+   * @param {!TypedMessage} value a value to compare with
    *
-   * @return {ColumnFilter} a new column filter
+   * @return {Filter} a new filter instance
    */
-  static gt(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilter.Operator.GREATER_THAN, value);
+  static gt(fieldPath, value) {
+    return Filters.with(fieldPath, Filter.Operator.GREATER_THAN, value);
   }
 
   /**
-   * Creates a new filter for the value of named column to be less or equal compared to
+   * Creates a new filter for the value of an object field to be less or equal compared to
    * the provided value.
    *
-   * @param {!String} columnName a string name of the entity column
-   * @param {!TypedMessage} value a value to compare the column value to
+   * @param {!String} fieldPath a path to the object field
+   * @param {!TypedMessage} value a value to compare with
    *
-   * @return {ColumnFilter} a new column filter
+   * @return {Filter} a new filter instance
    */
-  static le(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilter.Operator.LESS_OR_EQUAL, value);
+  static le(fieldPath, value) {
+    return Filters.with(fieldPath, Filter.Operator.LESS_OR_EQUAL, value);
   }
 
   /**
-   * Creates a new filter for the value of named column to be greater or equal compared to
+   * Creates a new filter for the value of an object field to be greater or equal compared to
    * the provided value.
    *
-   * @param {!String} columnName a string name of the entity column
-   * @param {!TypedMessage} value a value to compare the column value to
+   * @param {!String} fieldPath a path to the object field
+   * @param {!TypedMessage} value a value to compare with
    *
-   * @return {ColumnFilter} a new column filter
+   * @return {Filter} a new filter instance
    */
-  static ge(columnName, value) {
-    return ColumnFilters.with(columnName, ColumnFilter.Operator.GREATER_OR_EQUAL, value);
+  static ge(fieldPath, value) {
+    return Filters.with(fieldPath, Filter.Operator.GREATER_OR_EQUAL, value);
   }
 
   /**
-   * Creates a filter for a column by name to match the provided value according to an operator.
+   * Creates a filter for an object field to match the provided value according to an operator.
    *
-   * @param {!String} columnName a string name of the entity column
-   * @param {!ColumnFilter.Operator} operator an operator to check column value to filter
-   * @param {!TypedMessage} value a value to compare the column value to
+   * @param {!String} fieldPath a path to the object field
+   * @param {!Filter.Operator} operator an operator to check the field value upon
+   * @param {!TypedMessage} value a value to compare the field value to
    *
-   * @return {ColumnFilter} a new column filter
+   * @return {Filter} a new filter instance
    */
-  static with(columnName, operator, value) {
+  static with(fieldPath, operator, value) {
     const wrappedValue = AnyPacker.packTyped(value);
-    const filter = new ColumnFilter();
-    filter.setColumnName(columnName);
+    const filter = new Filter();
+    filter.setFieldPath(FieldPaths.parse(fieldPath));
     filter.setValue(wrappedValue);
     filter.setOperator(operator);
     return filter;
   }
 
   /**
-   * Creates a new composite filter which matches entities that fit every provided filter.
+   * Creates a new composite filter which matches objects that fit every provided filter.
    *
-   * @param {!ColumnFilter[]} filters an array of column filters
+   * @param {!Filter[]} filters an array of simple filters
    *
-   * @return {CompositeColumnFilter} a new composite filter with `ALL` operator
+   * @return {CompositeFilter} a new composite filter with `ALL` operator
    */
   static all(filters) {
-    return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.ALL);
+    return Filters.compose(filters, CompositeFilter.CompositeOperator.ALL);
   }
 
   /**
-   * Creates a new composite filter which matches entities that fit at least one
+   * Creates a new composite filter which matches objects that fit at least one
    * of the provided filters.
    *
-   * @param {!ColumnFilter[]} filters an array of column filters
+   * @param {!Filter[]} filters an array of simple filters
    *
-   * @return {CompositeColumnFilter} a new composite filter with `EITHER` operator
+   * @return {CompositeFilter} a new composite filter with `EITHER` operator
    */
   static either(filters) {
-    return ColumnFilters.compose(filters, CompositeColumnFilter.CompositeOperator.EITHER);
+    return Filters.compose(filters, CompositeFilter.CompositeOperator.EITHER);
   }
 
   /**
-   * Creates a new composite filter which matches entities according to an array of filters with a
+   * Creates a new composite filter which matches objects according to an array of filters with a
    * specified logical operator.
    *
-   * @param {!ColumnFilter[]} filters an array of column filters
-   * @param {!CompositeColumnFilter.CompositeOperator} operator a logical operator for `filters`
+   * @param {!Filter[]} filters an array of simple filters
+   * @param {!CompositeFilter.CompositeOperator} operator a logical operator for `filters`
    *
-   * @return {CompositeColumnFilter} a new composite filter
+   * @return {CompositeFilter} a new composite filter
    */
   static compose(filters, operator) {
-    const compositeFilter = new CompositeColumnFilter();
+    const compositeFilter = new CompositeFilter();
     compositeFilter.setFilterList(filters);
     compositeFilter.setOperator(operator);
     return compositeFilter;
@@ -187,36 +197,37 @@ class Targets {
   }
 
   /**
-   * Composes a new target for entities of specified type, optionally with specified IDs and
-   * columnFilters.
+   * Composes a new target for objects of specified type, optionally with specified IDs and
+   * filters.
    *
-   * @param {!Type} forType a Type URL for all target entities to match
-   * @param {?TypedMessage[]} withIds an array of IDs one of which must be matched by each target entity
-   * @param {?CompositeColumnFilter[]} filteredBy an array of filters target
+   * @param {!Type} forType a Type URL of target objects
+   * @param {?TypedMessage[]} withIds an array of IDs one of which must be matched by each target
+   *                                  object
+   * @param {?CompositeFilter[]} filteredBy an array of filters target
    *
-   * @return {Target} a newly created target for entities with specified filters
+   * @return {Target} a newly created target for objects matching the specified filters
    */
-  static compose({forType: type, withIds: ids, filteredBy: columnFilters}) {
-    const includeAll = !ids && !columnFilters;
+  static compose({forType: type, withIds: ids, filteredBy: filters}) {
+    const includeAll = !ids && !filters;
 
     if (includeAll) {
       return Targets._all(type);
     }
 
-    const filters = new EntityFilters();
+    const targetFilters = new TargetFilters();
 
-    const entityIds = Targets._nullToEmpty(ids);
-    if (entityIds.length) {
-      const idFilter = Targets._assembleIdFilter(entityIds);
-      filters.setIdFilter(idFilter);
+    const idList = Targets._nullToEmpty(ids);
+    if (idList.length) {
+      const idFilter = Targets._assembleIdFilter(idList);
+      targetFilters.setIdFilter(idFilter);
     }
 
-    const entityColumnValues = Targets._nullToEmpty(columnFilters);
-    if (entityColumnValues) {
-      filters.setFilterList(entityColumnValues);
+    const filterList = Targets._nullToEmpty(filters);
+    if (filterList) {
+      targetFilters.setFilterList(filterList);
     }
 
-    return Targets._filtered(type, filters);
+    return Targets._filtered(type, targetFilters);
   }
 
   /**
@@ -234,10 +245,10 @@ class Targets {
   }
 
   /**
-   * Creates a new target including only entities of the specified type that pass filtering.
+   * Creates a new target including only items of the specified type that pass filtering.
    *
    * @param {!Type} type
-   * @param {!EntityFilters} filters
+   * @param {!TargetFilters} filters
    * @return {Target}
    * @private
    */
@@ -249,19 +260,17 @@ class Targets {
   }
 
   /**
-   * Creates an targets ID filter including only items which are included in the provided ID list.
+   * Creates a targets ID filter including only items which are included in the provided ID list.
    *
-   * @param {!TypedMessage[]} entityIds an array of IDs for entities matching target to be included in
-   * @return {EntityIdFilter}
+   * @param {!TypedMessage[]} ids an array of IDs for items matching target to be included in
+   * @return {IdFilter}
    * @private
    */
-  static _assembleIdFilter(entityIds) {
-    const idFilter = new EntityIdFilter();
-    entityIds.forEach(rawId => {
+  static _assembleIdFilter(ids) {
+    const idFilter = new IdFilter();
+    ids.forEach(rawId => {
       const packedId = AnyPacker.packTyped(rawId);
-      const entityId = new EntityId();
-      entityId.setId(packedId);
-      idFilter.addIds(entityId);
+      idFilter.addIds(packedId);
     });
     return idFilter;
   }
@@ -283,7 +292,7 @@ class Targets {
 
 const INVALID_FILTER_TYPE =
   'All filters passed to QueryFilter#where() must be of a single type: ' +
-  'either ColumnFilter or CompositeColumnFilter.';
+  'either Filter or CompositeFilter.';
 
 /**
  * An abstract base for builders that create `Message` instances which have a `Target`
@@ -298,9 +307,9 @@ const INVALID_FILTER_TYPE =
  *         .byIds(getWestCoastCustomerIds())
  *         .withMask(["name", "address", "email"])
  *         .where([
- *             ColumnFilters.eq("type", "permanent"),
- *             ColumnFilters.eq("discountPercent", 10),
- *             ColumnFilters.eq("companySize", Company.Size.SMALL)
+ *             Filters.eq("type", "permanent"),
+ *             Filters.eq("discountPercent", 10),
+ *             Filters.eq("companySize", Company.Size.SMALL)
  *         ])
  *         .build()
  * ```
@@ -323,10 +332,10 @@ class AbstractTargetBuilder {
      */
     this._ids = null;
     /**
-     * @type {CompositeColumnFilter[]}
+     * @type {CompositeFilter[]}
      * @private
      */
-    this._columns = null;
+    this._filters = null;
     /**
      * @type {FieldMask}
      * @private
@@ -337,14 +346,14 @@ class AbstractTargetBuilder {
   /**
    * Sets an ID predicate of the `Query#getTarget()`.
    *
-   * Makes the query return only the entities identified by the provided IDs.
+   * Makes the query return only the items identified by the provided IDs.
    *
    * Supported ID types are string, number, and `TypedMessage`. To use other primitive types
    * wrap them in type message using Protobuf primitive wrappers (e.g. StringValue, BytesValue).
    *
    * If number IDs are passed they are assumed to be of `int64` Protobuf type.
    *
-   * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers of entities to query
+   * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers to query
    * @return {this} the current builder instance
    * @throws if this method is executed more than once
    * @throws if the provided IDs are not an instance of `Array`
@@ -375,23 +384,23 @@ class AbstractTargetBuilder {
   }
 
   /**
-   * Sets an Entity Column predicate of the `Query#getTarget()`.
+   * Sets a field value predicate of the `Query#getTarget()`.
    *
-   * <p>If there are no `ColumnFilter`s (i.e. the provided array is empty), all
+   * <p>If there are no `Filter`s (i.e. the provided array is empty), all
    * the records will be returned by executing the `Query`.
    *
    * <p>An array of predicates provided to this method are considered to be joined in
-   * a conjunction (using `CompositeColumnFilter.CompositeOperator#ALL`). This means
+   * a conjunction (using `CompositeFilter.CompositeOperator#ALL`). This means
    * a record would match this query only if it matches all of the predicates.
    *
-   * @param {!ColumnFilter[]|CompositeColumnFilter[]} predicates
-   * the predicates to filter the requested entities by
+   * @param {!Filter[]|CompositeFilter[]} predicates
+   * the predicates to filter the requested items by
    * @return {this} self for method chaining
    * @throws if this method is executed more than once
-   * @see ColumnFilters a convenient way to create `ColumnFilter`s
+   * @see Filters a convenient way to create `Filter` instances
    */
   where(predicates) {
-    if (this._columns !== null) {
+    if (this._filters !== null) {
       throw new Error('Can not set filters more than once for QueryBuilder.');
     }
     if (!(predicates instanceof Array)) {
@@ -400,13 +409,13 @@ class AbstractTargetBuilder {
     if (!predicates.length) {
       return this;
     }
-    if (predicates[0] instanceof ColumnFilter) {
-      AbstractTargetBuilder._checkAllOfType(predicates, ColumnFilter, INVALID_FILTER_TYPE);
-      const aggregatingFilter = ColumnFilters.all(predicates);
-      this._columns = [aggregatingFilter];
+    if (predicates[0] instanceof Filter) {
+      AbstractTargetBuilder._checkAllOfType(predicates, Filter, INVALID_FILTER_TYPE);
+      const aggregatingFilter = Filters.all(predicates);
+      this._filters = [aggregatingFilter];
     } else {
-      AbstractTargetBuilder._checkAllOfType(predicates, CompositeColumnFilter, INVALID_FILTER_TYPE);
-      this._columns = predicates.slice();
+      AbstractTargetBuilder._checkAllOfType(predicates, CompositeFilter, INVALID_FILTER_TYPE);
+      this._filters = predicates.slice();
     }
     return this;
   }
@@ -454,7 +463,7 @@ class AbstractTargetBuilder {
    * @return {Target} a new target
    */
   _buildTarget() {
-    return Targets.compose({forType: this._type, withIds: this._ids, filteredBy: this._columns});
+    return Targets.compose({forType: this._type, withIds: this._ids, filteredBy: this._filters});
   }
 
   /**
@@ -760,9 +769,9 @@ class TopicFactory {
   }
 
   /**
-   * Creates a `Topic` for all of the specified entity states.
+   * Creates a `Topic` for all items within IDs of interest.
    *
-   * @param {!Type} of the class of a target entity
+   * @param {!Type} of the class of a target event/entity
    * @param {?TypedMessage[]} withIds the IDs of interest
    * @return {Topic} an instance of `Topic` assembled according to the parameters
    */
