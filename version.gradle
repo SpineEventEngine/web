@@ -25,6 +25,7 @@ ext {
     spineBaseVersion = '1.0.0-SNAPSHOT'
     
     versionToPublish = '1.0.0-SNAPSHOT'
+    versionToPublishJs = '0.12.0'
 
     servletApiVersion = '4.0.0'
 }
