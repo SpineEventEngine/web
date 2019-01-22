@@ -19,7 +19,11 @@
  */
 
 import {Message} from 'google-protobuf';
-import {Type, TypedMessage} from './typed-message';
+import {
+  Type,
+  TypedMessage,
+  isProtobufMessage
+} from './typed-message';
 import {
   Int32Value,
   Int64Value,
@@ -351,7 +355,7 @@ export class AnyPacker {
    * @return {Any} a new Any with the provided message inside
    */
   static packMessage(message) {
-    if (!(message instanceof Message)) {
+    if (!isProtobufMessage(message)) {
       throw new Error('The `Message` type was expected by AnyPacker#packMessage().');
     }
     const typedMessage = TypedMessage.of(message);
