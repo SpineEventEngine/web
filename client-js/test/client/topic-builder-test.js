@@ -23,16 +23,16 @@ import assert from 'assert';
 
 import {Message} from 'google-protobuf';
 import {Type, TypedMessage} from '@lib/client/typed-message';
-import {ActorRequestFactory, ColumnFilters} from '@lib/client/actor-request-factory';
+import {ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {StringValue} from '@proto/google/protobuf/wrappers_pb';
 import {
-  ColumnFilter,
-  CompositeColumnFilter,
-  EntityFilters
-} from '@proto/spine/client/entities_pb';
+  Filter,
+  CompositeFilter,
+  TargetFilters
+} from '@proto/spine/client/filters_pb';
 
 
 class Given {
@@ -178,7 +178,6 @@ describe('TopicBuilder', function () {
     assert.ok(idFilter);
 
     const targetIds = idFilter.getIdsList()
-      .map(entityId => entityId.getId())
       .map(any => AnyPacker.unpack(any).as(Given.TYPE.TASK_ID))
       .map(taskId => taskId.getValue());
 
@@ -211,7 +210,6 @@ describe('TopicBuilder', function () {
     assert.ok(idFilter);
 
     const targetIds = idFilter.getIdsList()
-      .map(entityId => entityId.getId())
       .map(any => AnyPacker.unpack(any).asString());
 
     Given.assertUnorderedEqual(targetIds, values);
@@ -243,7 +241,6 @@ describe('TopicBuilder', function () {
     assert.ok(idFilter);
 
     const targetIds = idFilter.getIdsList()
-      .map(entityId => entityId.getId())
       .map(any => AnyPacker.unpack(any).asInt64());
 
     Given.assertUnorderedEqual(targetIds, values);
@@ -309,8 +306,8 @@ describe('TopicBuilder', function () {
     done();
   });
 
-  it('creates a Topic with a single ColumnFilter', done => {
-    const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
+  it('creates a Topic with a single filter', done => {
+    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
     const topic = Given.requestFactory()
       .topic()
       .select(Given.TYPE.TASK)
@@ -325,17 +322,17 @@ describe('TopicBuilder', function () {
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    const expectedFilters = new EntityFilters();
-    expectedFilters.setFilterList([ColumnFilters.all([nameFilter])]);
+    const expectedFilters = new TargetFilters();
+    expectedFilters.setFilterList([Filters.all([nameFilter])]);
 
     Given.assertMessagesEqual(target.getFilters(), expectedFilters);
 
     done();
   });
 
-  it('creates a Topic with a multiple ColumnFilter', done => {
-    const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
-    const descriptionFilter = ColumnFilters.eq(
+  it('creates a Topic with a multiple filters', done => {
+    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const descriptionFilter = Filters.eq(
       'description', TypedMessage.string('Web needs tests, eh?')
     );
     const topic = Given.requestFactory()
@@ -352,22 +349,22 @@ describe('TopicBuilder', function () {
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    const expectedFilters = new EntityFilters();
-    expectedFilters.setFilterList([ColumnFilters.all([nameFilter, descriptionFilter])]);
+    const expectedFilters = new TargetFilters();
+    expectedFilters.setFilterList([Filters.all([nameFilter, descriptionFilter])]);
 
     Given.assertMessagesEqual(target.getFilters(), expectedFilters);
 
     done();
   });
 
-  it('creates a Topic with a single CompositeColumnFilter', done => {
-    const nameFilter1 = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = ColumnFilters.eq('name', TypedMessage.string('Create a PR'));
-    const compositeColumnFilter = ColumnFilters.either([nameFilter1, nameFilter2]);
+  it('creates a Topic with a single CompositeFilter', done => {
+    const nameFilter1 = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter2 = Filters.eq('name', TypedMessage.string('Create a PR'));
+    const compositeFilter = Filters.either([nameFilter1, nameFilter2]);
     const topic = Given.requestFactory()
       .topic()
       .select(Given.TYPE.TASK)
-      .where([compositeColumnFilter])
+      .where([compositeFilter])
       .build();
 
     assert.ok(topic.getId());
@@ -378,20 +375,20 @@ describe('TopicBuilder', function () {
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    const expectedFilters = new EntityFilters();
-    expectedFilters.setFilterList([compositeColumnFilter]);
+    const expectedFilters = new TargetFilters();
+    expectedFilters.setFilterList([compositeFilter]);
 
     Given.assertMessagesEqual(target.getFilters(), expectedFilters);
 
     done();
   });
 
-  it('creates a Topic with a multiple CompositeColumnFilters', done => {
-    const nameFilter1 = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = ColumnFilters.eq('name', TypedMessage.string('Create a PR'));
-    const nameFilter = ColumnFilters.either([nameFilter1, nameFilter2]);
-    const descriptionFilter = ColumnFilters.all([
-      ColumnFilters.eq('description', TypedMessage.string('Web needs tests, eh?')),
+  it('creates a Topic with a multiple CompositeFilters', done => {
+    const nameFilter1 = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter2 = Filters.eq('name', TypedMessage.string('Create a PR'));
+    const nameFilter = Filters.either([nameFilter1, nameFilter2]);
+    const descriptionFilter = Filters.all([
+      Filters.eq('description', TypedMessage.string('Web needs tests, eh?')),
     ]);
 
     const topic = Given.requestFactory()
@@ -408,7 +405,7 @@ describe('TopicBuilder', function () {
     assert.ok(!target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    const expectedFilters = new EntityFilters();
+    const expectedFilters = new TargetFilters();
     expectedFilters.setFilterList([nameFilter, descriptionFilter]);
 
     Given.assertMessagesEqual(target.getFilters(), expectedFilters);
@@ -417,7 +414,7 @@ describe('TopicBuilder', function () {
   });
 
   it('throws an error if #where() is invoked with non-Array value', done => {
-    const nameFilter = ColumnFilters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
 
     try {
       const topic = Given.requestFactory()
@@ -442,13 +439,13 @@ describe('TopicBuilder', function () {
     }
   });
 
-  it('throws an error if #where() is invoked with mixed ColumnFilter and CompositeColumnFilter values', done => {
+  it('throws an error if #where() is invoked with mixed Filter and CompositeFilter values', done => {
     try {
       const topic = Given.requestFactory()
         .topic()
         .select(Given.TYPE.TASK)
-        .where([new ColumnFilter(), new CompositeColumnFilter()]);
-      done(new Error('An error was expected due to mixed column filter types.'));
+        .where([new Filter(), new CompositeFilter()]);
+      done(new Error('An error was expected due to mixed filter types.'));
     } catch (e) {
       done();
     }
@@ -459,8 +456,8 @@ describe('TopicBuilder', function () {
       const topic = Given.requestFactory()
         .topic()
         .select(Given.TYPE.TASK)
-        .where([new ColumnFilter()])
-        .where([new ColumnFilter()]);
+        .where([new Filter()])
+        .where([new Filter()]);
       done(new Error('An error was expected due to multiple #where() invocations.'));
     } catch (e) {
       done();

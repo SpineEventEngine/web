@@ -26,7 +26,6 @@ import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
 import {FieldPath} from '../proto/spine/base/field_path_pb';
 import {Query, QueryId} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
-import {EntityId} from '../proto/spine/client/entities_pb'
 import {
   Filter,
   CompositeFilter,
