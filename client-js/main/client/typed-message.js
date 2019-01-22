@@ -20,6 +20,7 @@
 
 "use strict";
 
+import {Message} from 'google-protobuf';
 import base64 from 'base64-js';
 import {Any} from '../proto/google/protobuf/any_pb';
 import {
@@ -37,6 +38,18 @@ import {Subscription, Topic} from '../proto/spine/client/subscription_pb';
 import {Command} from '../proto/spine/core/command_pb';
 import KnownTypes from './known-types';
 
+/**
+ * Checks if the object extends {@link Message}.
+ *
+ * <p>The implementation doesn't use `instanceof` check and check on prototypes
+ * since they may fail if different versions of the file are used at the same time
+ * (e.g. bundled and the original one).
+ *
+ * @param object the object to check
+ */
+export function isProtobufMessage(object) {
+  return typeof object.constructor.typeUrl === 'function';
+}
 
 /**
  * A URL of a Protobuf type.
