@@ -27,7 +27,7 @@ import groovy.json.JsonSlurper
  */
 
 ext.JS_PACKAGE_FILE_LOCATION = "$projectDir/package.json"
-ext.JS_PACKAGES_VERSION = versionToPublish
+ext.JS_PACKAGES_VERSION = versionToPublishJs
 
 Object readJsonFile(final String sourcePath) {
     def final packageJsonFile = file(sourcePath)
