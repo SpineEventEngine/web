@@ -25,6 +25,15 @@ import {fail} from './test-helpers';
 
 describe('FieldPaths', () => {
 
+  it('throws an Error on construction', done => {
+    try {
+      new FieldPaths();
+      fail(done, "FieldPaths utility constructor didn't throw an error")
+    } catch (ignored) {
+    }
+    done();
+  });
+
   it('creates a FieldPath from a simple path string', () => {
     const pathStr = "fieldPath";
     const fieldPath = FieldPaths.parse(pathStr);
