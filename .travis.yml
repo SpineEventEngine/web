@@ -3,6 +3,11 @@ language: java
 jdk:
   - oraclejdk8
 
+env:
+  global:
+    #Encrypted `NPM_TOKEN` variable to enable JS publishing.
+    secure: kvg85udsH9a515YPHTh87LfyZhkL41HSvz4x+Q2OPoB9R3Irf+6HuaQCWSNNfPXIeqQefK+WuEG/kDBPOmm/JO7jVzMnt3p3mroDIYxod1uyea1sVlM+Jv23qe9J1txh0YsI9s0mrOJy/7X3IGBwpiGZGSM54J4l/mMheIG1GCmXp9abrkkkzzXKD8cn6p2P4/qoDF65SIe+GgHmhHJjxOCioIEwTlHd5UQxzkomCKMxPIzh15f4CppVbpVDSELcl8F9PLiS3zH3YOiBITMVA5IW6DHMbzipMQzBAzzAAFLnmkt30apqandsZzlIHJFKzNdlZrWcIrsiWTEqy9kYuvr6bszWtRjdDDu/GpaVytTlXquYE3u8vlpK5ngR0w2CTu0RQRPWli4zJ/bH81Ps9eNa8LVRTr3Og2ebUoibWk5YKksxSOedBUPu4HXs/v2CPxBfLwPnKd1OKgZK7O5/NtDHeoJLp+0jSXp6GpTybYY3WesB4YAz++DXGkcYha0isUvtM3LuDiHduFvWlB3JMgsq0MJ5WiWZMTDxJsXhK8tQvRfKxvkBiiigHQ5PvumOva/7xzy8GoZybQrh5m6j8SJcdNcbabLrkCl0yv0fMgrF5+aIhNMAU04FruSKH5k59SqKQwuyi7++Om8/NEuJfzZJ2YtF5AHwlIXv5gyygOk=
+
 before_install:
   - chmod +x gradlew
 
