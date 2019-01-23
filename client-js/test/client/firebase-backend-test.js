@@ -27,7 +27,7 @@ import {Duration} from '@lib/client/time-utils';
 
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {ColumnFilter, CompositeColumnFilter} from '@proto/spine/client/entities_pb';
+import {Filter, CompositeFilter} from '@proto/spine/client/filters_pb';
 import {Topic} from '@testProto/spine/client/subscription_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
 import {BackendClient} from '@lib/client/backend-client';
