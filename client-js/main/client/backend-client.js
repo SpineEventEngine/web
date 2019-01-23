@@ -270,7 +270,7 @@ export class BackendClient {
    *
    * @param {!Type<T>} type a type URL of the target entity
    * @param {!Message} id an ID of the target entity
-   * @param {!Function} dataCallback
+   * @param {!consumerCallback<Message>>} dataCallback
    *        a callback receiving a single data item as a Protobuf message of a given type; receives `null` if an
    *        entity with a given ID is missing
    * @param {?consumerCallback<SpineError>} errorCallback
