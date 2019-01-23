@@ -39,7 +39,7 @@ import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
 import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
-import {FieldPaths} from './field-paths'
+import {FieldPaths} from './field-paths';
 
 /**
  * A factory for `Filter` and `CompositeFilter` instances.

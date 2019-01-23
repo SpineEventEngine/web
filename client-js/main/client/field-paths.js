@@ -37,6 +37,9 @@ export class FieldPaths {
      * String examples: "owner.userId", "employeeCount".
      */
     static parse(stringPath) {
+        if (!stringPath) {
+            throw new Error('Constructing FieldPath from the invalid string');
+        }
         const fieldPath = new FieldPath();
         const pathElements = stringPath.split('.');
         fieldPath.setFieldNameList(pathElements);

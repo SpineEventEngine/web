@@ -21,6 +21,7 @@
 import assert from 'assert';
 
 import {FieldPaths} from '@lib/client/field-paths';
+import {fail} from './test-helpers';
 
 describe('FieldPaths', () => {
 
@@ -37,8 +38,22 @@ describe('FieldPaths', () => {
     assert.equal(fieldPath.getFieldNameList()[1], "field2");
   });
 
-  it('creates an empty FieldPath from an empty string', () => {
-    const fieldPath = FieldPaths.parse("");
-    assert.equal(fieldPath.getFieldNameList().length, 0);
+  it('throws on parsing invalid string', done => {
+    try {
+      FieldPaths.parse("");
+      fail(done, "Parsing an empty string should cause an error")
+    } catch (ignored) {
+    }
+    try {
+      FieldPaths.parse(null);
+      fail(done, "Parsing a null string should cause an error")
+    } catch (ignored) {
+    }
+    try {
+      FieldPaths.parse(undefined);
+      fail(done, "Parsing an undefined string should cause an error")
+    } catch (ignored) {
+    }
+    done();
   });
 });
