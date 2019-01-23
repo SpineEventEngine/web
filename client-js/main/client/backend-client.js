@@ -181,6 +181,20 @@ class Fetch {
 }
 
 /**
+ * The callback that doesn't accept arguments.
+ * @callback voidCallback
+ */
+
+/**
+ * The callback that accepts single argument.
+ *
+ * @callback consumerCallback
+ * @param {T} the value the callback function accepts
+ *
+ * @template <T>
+ */
+
+/**
  * @typedef {Object} EntitySubscriptionObject
  *
  * @property {Observable<T>} itemAdded
@@ -252,12 +266,27 @@ export class BackendClient {
   }
 
   /**
+   * The callback that doesn't accept arguments.
+   * @callback voidCallback
+   */
+
+    /**
+     * The callback that accepts single argument.
+     *
+     * @callback consumerCallback
+     * @param {T} the value the callback function accepts
+     *
+     * @template <T>
+     */
+
+  /**
    * Fetches a single entity of the given type.
    *
    * @param {!Type<T>} type a type URL of the target entity
    * @param {!Message} id an ID of the target entity
-   * @param {!consumerCallback<Object>} dataCallback
-   *        a callback receiving a single data item as a JS object
+   * @param {!Function} dataCallback
+   *        a callback receiving a single data item as a Protobuf message of a given type; receives `null` if an
+   *        entity with a given ID is missing
    * @param {?consumerCallback<SpineError>} errorCallback
    *        a callback receiving an error
    *
@@ -268,8 +297,20 @@ export class BackendClient {
     const query = this._requestFactory.query().select(type).byIds([typedId]).build();
     const typedQuery = new TypedQuery(query, type);
 
-    // noinspection JSCheckFunctionSignatures
-    const observer = {next: dataCallback};
+    let itemReceived = false;
+
+    const observer = {
+      next: item => {
+        itemReceived = true;
+          dataCallback(item);
+      },
+      complete: () => {
+        if (!itemReceived) {
+          dataCallback(null);
+        }
+      }
+    };
+
     if (errorCallback) {
       observer.error = errorCallback;
     }
