@@ -181,12 +181,12 @@ class Fetch {
 }
 
 /**
- * The callback that doesn't accept arguments.
- * @callback voidCallback
+ * The callback that doesn't accept any parameters.
+ * @callback parameterlessCallback
  */
 
 /**
- * The callback that accepts single argument.
+ * The callback that accepts single parameter.
  *
  * @callback consumerCallback
  * @param {T} the value the callback function accepts
@@ -200,7 +200,7 @@ class Fetch {
  * @property {Observable<T>} itemAdded
  * @property {Observable<T>} itemChanged
  * @property {Observable<T>} itemRemoved
- * @property {voidCallback} unsubscribe a method to be called to cancel the subscription, stopping 
+ * @property {parameterlessCallback} unsubscribe a method to be called to cancel the subscription, stopping
  *                                      the subscribers from receiving new entities
  *
  * @template <T>
@@ -331,7 +331,7 @@ export class BackendClient {
    * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
    *
    * @param {!Message} commandMessage a Protobuf message representing the comand
-   * @param {!voidCallback} acknowledgedCallback
+   * @param {!parameterlessCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<CommandHandlingError>} errorCallback
    *        a callback receiving the errors executed if an error occurred when sending command
