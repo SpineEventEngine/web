@@ -266,20 +266,6 @@ export class BackendClient {
   }
 
   /**
-   * The callback that doesn't accept arguments.
-   * @callback voidCallback
-   */
-
-    /**
-     * The callback that accepts single argument.
-     *
-     * @callback consumerCallback
-     * @param {T} the value the callback function accepts
-     *
-     * @template <T>
-     */
-
-  /**
    * Fetches a single entity of the given type.
    *
    * @param {!Type<T>} type a type URL of the target entity
