@@ -49,11 +49,6 @@ describe('FieldPaths', () => {
       fail(done, "Parsing a null string should cause an error");
     } catch (ignored) {
     }
-    try {
-      FieldPaths.parse(undefined);
-      fail(done, "Parsing an undefined string should cause an error");
-    } catch (ignored) {
-    }
     done();
   });
 });
