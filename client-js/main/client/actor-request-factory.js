@@ -23,7 +23,6 @@
 import uuid from 'uuid';
 
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
-import {FieldPath} from '../proto/spine/base/field_path_pb';
 import {Query, QueryId} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
@@ -40,16 +39,7 @@ import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
 import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
-
-class FieldPaths {
-
-  static parse(stringPath) {
-    const fieldPath = new FieldPath();
-    const pathElements = stringPath.split('.');
-    fieldPath.setFieldNameList(pathElements);
-    return fieldPath;
-  }
-}
+import {FieldPaths} from './field-paths'
 
 /**
  * A factory for `Filter` and `CompositeFilter` instances.
