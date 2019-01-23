@@ -18,28 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-"use strict";
+import assert from 'assert';
 
-import {FieldPath} from "../proto/spine/base/field_path_pb";
+import FieldPaths from '@lib/client/field-paths';
 
-/**
- * A utility for working with `FieldPath` instances.
- */
-export class FieldPaths {
+describe('FieldPaths', () => {
 
-    constructor() {
-        throw new Error('Instantiating utility FieldPaths class.');
-    }
+  it('creates a FieldPath from a simple path string', () => {
+    const pathStr = "fieldPath";
+    const fieldPath = FieldPaths.parse(pathStr);
+    assert.equal(fieldPath.getFieldNameList()[0], pathStr);
+  });
 
-    /**
-     * Creates a new `FieldPath` from the given string.
-     *
-     * String examples: "owner.userId", "employeeCount".
-     */
-    static parse(stringPath) {
-        const fieldPath = new FieldPath();
-        const pathElements = stringPath.split('.');
-        fieldPath.setFieldNameList(pathElements);
-        return fieldPath;
-    }
-}
+  it('creates a FieldPath from a composite path string', () => {
+    const pathStr = "field1.field2";
+    const fieldPath = FieldPaths.parse(pathStr);
+    assert.equal(fieldPath.getFieldNameList()[0], "field1");
+    assert.equal(fieldPath.getFieldNameList()[1], "field2");
+  });
+
+  it('creates an empty FieldPath from an empty string', () => {
+    const fieldPath = FieldPaths.parse("");
+    assert.equal(fieldPath.getFieldNameList().length, 0);
+  });
+});
