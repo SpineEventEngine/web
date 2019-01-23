@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 
-import FieldPaths from '@lib/client/field-paths';
+import {FieldPaths} from '@lib/client/field-paths';
 
 describe('FieldPaths', () => {
 
