@@ -18,14 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-def final SPINE_VERSION = '1.0.0-SNAPSHOT'
+"use strict";
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = '1.0.0-SNAPSHOT'
-    
-    versionToPublish = '1.0.0-SNAPSHOT'
-    versionToPublishJs = '0.12.1'
+import {FieldPath} from "../proto/spine/base/field_path_pb";
 
-    servletApiVersion = '4.0.0'
+/**
+ * A utility for working with `FieldPath` instances.
+ */
+export class FieldPaths {
+
+    constructor() {
+        throw new Error('Instantiating utility FieldPaths class.');
+    }
+
+    /**
+     * Creates a new `FieldPath` from the given string.
+     *
+     * String examples: "owner.userId", "employeeCount".
+     */
+    static parse(stringPath) {
+        if (!stringPath) {
+            throw new Error('Constructing FieldPath from the invalid string');
+        }
+        const fieldPath = new FieldPath();
+        const pathElements = stringPath.split('.');
+        fieldPath.setFieldNameList(pathElements);
+        return fieldPath;
+    }
 }
