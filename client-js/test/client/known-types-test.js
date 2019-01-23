@@ -37,7 +37,7 @@ describe('KnownTypes', () => {
     assert.ok(hasType);
   });
 
-  it('skips already registered types',() => {
+  it('skips already registered types', () => {
     KnownTypes.register(Any, Any.typeUrl());
     KnownTypes.register(Any, Any.typeUrl());
     const hasType = KnownTypes.hasType(Any.typeUrl());
