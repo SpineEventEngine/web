@@ -181,12 +181,26 @@ class Fetch {
 }
 
 /**
+ * The callback that doesn't accept any parameters.
+ * @callback parameterlessCallback
+ */
+
+/**
+ * The callback that accepts single parameter.
+ *
+ * @callback consumerCallback
+ * @param {T} the value the callback function accepts
+ *
+ * @template <T>
+ */
+
+/**
  * @typedef {Object} EntitySubscriptionObject
  *
  * @property {Observable<T>} itemAdded
  * @property {Observable<T>} itemChanged
  * @property {Observable<T>} itemRemoved
- * @property {voidCallback} unsubscribe a method to be called to cancel the subscription, stopping 
+ * @property {parameterlessCallback} unsubscribe a method to be called to cancel the subscription, stopping
  *                                      the subscribers from receiving new entities
  *
  * @template <T>
@@ -256,8 +270,9 @@ export class BackendClient {
    *
    * @param {!Type<T>} type a type URL of the target entity
    * @param {!Message} id an ID of the target entity
-   * @param {!consumerCallback<Object>} dataCallback
-   *        a callback receiving a single data item as a JS object
+   * @param {!consumerCallback<Message>>} dataCallback
+   *        a callback receiving a single data item as a Protobuf message of a given type; receives `null` if an
+   *        entity with a given ID is missing
    * @param {?consumerCallback<SpineError>} errorCallback
    *        a callback receiving an error
    *
@@ -268,8 +283,20 @@ export class BackendClient {
     const query = this._requestFactory.query().select(type).byIds([typedId]).build();
     const typedQuery = new TypedQuery(query, type);
 
-    // noinspection JSCheckFunctionSignatures
-    const observer = {next: dataCallback};
+    let itemReceived = false;
+
+    const observer = {
+      next: item => {
+        itemReceived = true;
+          dataCallback(item);
+      },
+      complete: () => {
+        if (!itemReceived) {
+          dataCallback(null);
+        }
+      }
+    };
+
     if (errorCallback) {
       observer.error = errorCallback;
     }
@@ -304,7 +331,7 @@ export class BackendClient {
    * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
    *
    * @param {!Message} commandMessage a Protobuf message representing the comand
-   * @param {!voidCallback} acknowledgedCallback
+   * @param {!parameterlessCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<CommandHandlingError>} errorCallback
    *        a callback receiving the errors executed if an error occurred when sending command

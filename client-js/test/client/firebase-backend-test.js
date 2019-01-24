@@ -62,7 +62,7 @@ class Given {
    * @return {CreateTask}
    */
   static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
-    const taskId = this._taskId({value: id, withPrefix: idPrefix});
+    const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
     name = typeof name === 'undefined' ? this.defaultTaskName : name;
     description = typeof description === 'undefined' ? this.defaultTaskDescription : description;
@@ -100,7 +100,7 @@ class Given {
    * @return {RenameTask}
    */
   static renameTaskCommand({withId: id, to: newName}) {
-    const taskId = this._taskId({value: id});
+    const taskId = this.taskId({value: id});
 
     const command = new RenameTask();
     command.setId(taskId);
@@ -115,9 +115,8 @@ class Given {
    * @param withPrefix
    *
    * @return {TaskId}
-   * @private
    */
-  static _taskId({value, withPrefix: prefix}) {
+  static taskId({value, withPrefix: prefix}) {
     if (typeof value === 'undefined') {
       value = uuid.v4();
     }
@@ -221,6 +220,19 @@ describe('FirebaseBackendClient', function () {
         done();
       },
       fail(done, 'A command was rejected when an error was expected.'));
+  });
+
+  it('returns `null` as a value when fetches entity by ID that is missing', done => {
+
+    const taskId = Given.taskId({});
+
+    backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
+      assert.equal(data, null);
+
+      done();
+
+    }, fail(done));
+
   });
 
   it('fetches all the existing entities of Given type one by one', done => {
