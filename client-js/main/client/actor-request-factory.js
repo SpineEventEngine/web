@@ -22,6 +22,7 @@
 
 import uuid from 'uuid';
 
+import {Message} from 'google-protobuf';
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
 import {Query, QueryId} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
@@ -812,7 +813,8 @@ export class ActorProvider {
   }
 
   /**
-   * Sets the new actor ID value if it is different from the current.
+   * Sets the new actor ID value if it is different from the current, sets the
+   * anonymous actor value if actor ID not specified or `null`.
    *
    * @param actorId
    */
@@ -822,7 +824,7 @@ export class ActorProvider {
     } else {
       ActorProvider._checkUserIdMessage(actorId);
 
-      if (this._actor !== actorId) {
+      if (!Message.equals(this._actor, actorId)) {
         this._actor = actorId;
       }
     }
@@ -852,7 +854,7 @@ export class ActorProvider {
    * @param object the object to check
    */
   static _checkUserIdMessage(object) {
-    if (!(isProtobufMessage(object) && object.constructor.getValue === 'function')) {
+    if (!(isProtobufMessage(object) && typeof object.getValue === 'function')) {
       throw new Error('The `spine.core.UserId` type was expected by `ActorProvider`.');
     }
   }
