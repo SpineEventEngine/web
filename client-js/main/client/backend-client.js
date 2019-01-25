@@ -107,8 +107,6 @@ export class Fetch {
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
  *
- * Protobuf types that will be used with the client should be registered via `registerTypes(...)`.
- *
  * @abstract
  */
 export class BackendClient {

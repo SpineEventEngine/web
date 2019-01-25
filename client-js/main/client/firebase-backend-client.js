@@ -224,16 +224,16 @@ export class FirebaseBackendClient extends AbstractBackendClient {
    * @param {!string} atEndpoint a Spine web backend endpoint URL
    * @param {!firebase.app.App} withFirebaseStorage
    *        a Firebase Application that will be used to retrieve data from
-   * @param {!string} forActor an id of the user interacting with Spine
+   * @param {!ActorProvider} forActor a provider of the user interacting with Spine
    * @return {BackendClient} a new backend client instance which will send the requests on behalf
    *                          of the provided actor to the provided endpoint, retrieving the data
    *                          from the provided Firebase storage
    */
-  static usingFirebase({atEndpoint: endpointUrl, withFirebaseStorage: firebaseApp, forActor: actor}) {
+  static usingFirebase({atEndpoint: endpointUrl, withFirebaseStorage: firebaseApp, forActor: actorProvider}) {
     const httpClient = new HttpClient(endpointUrl);
     const endpoint = new HttpEndpoint(httpClient);
     const firebaseClient = new FirebaseClient(firebaseApp);
-    const requestFactory = new ActorRequestFactory(actor);
+    const requestFactory = new ActorRequestFactory(actorProvider);
     const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
     return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory, subscriptionService);

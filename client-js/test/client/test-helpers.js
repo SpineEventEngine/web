@@ -57,5 +57,5 @@ export function fail(done, message = '') {
 }
 
 export function registerProtobufTypes() {
-    FirebaseBackendClient.registerTypes(testProtobuf);
+    FirebaseBackendClient.forProtobufTypes(testProtobuf);
 }

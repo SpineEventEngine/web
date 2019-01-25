@@ -27,17 +27,20 @@ import {Duration} from '@lib/client/time-utils';
 
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
+import * as testProtobuf from '@testProto/index';
 import {Filter, CompositeFilter} from '@proto/spine/client/filters_pb';
 import {Topic} from '@testProto/spine/client/subscription_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
 import {FirebaseBackendClient} from '@lib/client/firebase-backend-client';
+import {ActorProvider} from '@lib/client/actor-request-factory';
+import {UserId} from '@proto/spine/core/user_id_pb';
 import {
  ServerError,
  CommandValidationError,
  CommandHandlingError,
  ConnectionError
 } from '@lib/client/errors';
-import {fail, registerProtobufTypes} from './test-helpers';
+import {fail} from './test-helpers';
 
 class Given {
 
@@ -46,11 +49,13 @@ class Given {
   }
 
   static backendClient(endpoint = 'https://spine-dev.appspot.com') {
-    return FirebaseBackendClient.usingFirebase({
-      atEndpoint: endpoint,
-      withFirebaseStorage: devFirebaseApp,
-      forActor: 'web-test-actor'
-    });
+    return FirebaseBackendClient
+      .forProtobufTypes(testProtobuf)
+      .usingFirebase({
+        atEndpoint: endpoint,
+        withFirebaseStorage: devFirebaseApp,
+        forActor: new ActorProvider()
+      });
   }
 
   /**
@@ -64,8 +69,8 @@ class Given {
   static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
     const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
-    name = typeof name === 'undefined' ? this.defaultTaskName : name;
-    description = typeof description === 'undefined' ? this.defaultTaskDescription : description;
+    name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
+    description = typeof description === 'undefined' ? this.DEFAULT_TASK_DESCRIPTION : description;
 
     const command = new CreateTask();
     command.setId(taskId);
@@ -136,8 +141,8 @@ class Given {
   }
 }
 
-Given.defaultTaskName = 'Get to Mount Doom';
-Given.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
+Given.DEFAULT_TASK_NAME = 'Get to Mount Doom';
+Given.DEFAULT_TASK_DESCRIPTION = 'There seems to be a bug with the rings that needs to be fixed';
 Given.TYPE = {
   OF_ENTITY: {
     TASK: Type.forClass(Task),
@@ -146,11 +151,9 @@ Given.TYPE = {
   MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
 
-const backendClient = Given.backendClient();
-
 describe('FirebaseBackendClient', function () {
 
-  registerProtobufTypes();
+  const backendClient = Given.backendClient();
 
   // Big timeout due to remote calls during tests.
   const timeoutDuration = new Duration({minutes: 2});

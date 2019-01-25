@@ -37,7 +37,7 @@ import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb
 import {UserId} from '../proto/spine/core/user_id_pb';
 import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
 import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
-import {Type, TypedMessage} from './typed-message';
+import {Type, TypedMessage, isProtobufMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
 
@@ -798,6 +798,78 @@ class TopicFactory {
 }
 
 /**
+ * A provider of the actor that is used to associate requests to the backend
+ * with an application user.
+ */
+export class ActorProvider {
+
+  /**
+   * @param {?UserId} actor an optional actor to be used for identifying requests to the backend;
+   *                        if not specified, the anonymous actor is used
+   */
+  constructor(actor) {
+    this.setActor(actor);
+  }
+
+  /**
+   * Sets the new actor ID value if it is different from the current.
+   *
+   * @param actorId
+   */
+  setActor(actorId) {
+    if (typeof actorId === 'undefined' || actorId === null) {
+      this._actor = ActorProvider.ANONYMOUS_ACTOR;
+    } else {
+      ActorProvider._checkUserIdMessage(actorId);
+
+      if (this._actor !== actorId) {
+        this._actor = actorId;
+      }
+    }
+  }
+
+  /**
+   * @return {UserId} the current actor value
+   */
+  getActor() {
+    return this._actor;
+  }
+
+  /**
+   * Sets the anonymous actor value.
+   */
+  clearActor() {
+    this._actor = ActorProvider.ANONYMOUS_ACTOR;
+  }
+
+  /**
+   * Checks if the object extends {@link UserId}.
+   *
+   * <p>The implementation doesn't use `instanceof` check and check on prototypes
+   * since they may fail if different versions of the file are used at the same time
+   * (e.g. bundled and the original one).
+   *
+   * @param object the object to check
+   */
+  static _checkUserIdMessage(object) {
+    if (!(isProtobufMessage(object) && object.constructor.getValue === 'function')) {
+      throw new Error('The `spine.core.UserId` type was expected by `ActorProvider`.');
+    }
+  }
+}
+
+/**
+ * The anonymous backend actor.
+ *
+ * It is needed for requests to the backend when the particular user is undefined.
+ */
+ActorProvider.ANONYMOUS_ACTOR = function () {
+  const actor = new UserId();
+  actor.setValue('ANONYMOUS_ACTOR');
+  return actor;
+}();
+
+/**
  * A factory for the various requests fired from the client-side by an actor.
  */
 export class ActorRequestFactory {
@@ -805,11 +877,10 @@ export class ActorRequestFactory {
   /**
    * Creates a new instance of ActorRequestFactory for the given actor.
    *
-   * @param {!string} actor a string identifier of an actor
+   * @param {!ActorProvider} actorProvider a provider of an actor
    */
-  constructor(actor) {
-    this._actor = new UserId();
-    this._actor.setValue(actor);
+  constructor(actorProvider) {
+    this._actorProvider = actorProvider;
   }
 
   /**
@@ -844,7 +915,7 @@ export class ActorRequestFactory {
 
   _actorContext() {
     const result = new ActorContext();
-    result.setActor(this._actor);
+    result.setActor(this._actorProvider.getActor());
     const seconds = Math.round(new Date().getTime() / 1000);
     const time = new Timestamp();
     time.setSeconds(seconds);
