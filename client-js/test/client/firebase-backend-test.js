@@ -30,7 +30,7 @@ import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {Filter, CompositeFilter} from '@proto/spine/client/filters_pb';
 import {Topic} from '@testProto/spine/client/subscription_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
-import {AbstractBackendClient} from '@lib/client/backend-client';
+import {FirebaseBackendClient} from '@lib/client/firebase-backend-client';
 import {
  ServerError,
  CommandValidationError,
@@ -46,7 +46,7 @@ class Given {
   }
 
   static backendClient(endpoint = 'https://spine-dev.appspot.com') {
-    return AbstractBackendClient.usingFirebase({
+    return FirebaseBackendClient.usingFirebase({
       atEndpoint: endpoint,
       withFirebaseStorage: devFirebaseApp,
       forActor: 'web-test-actor'
