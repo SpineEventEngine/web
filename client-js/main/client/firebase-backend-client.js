@@ -198,6 +198,23 @@ class EntitySubscription extends Subscription {
  * An implementation of a client connecting to the application backend retrieving data
  * through Firebase.
  *
+ * To initialize a new instance do the following:
+ * ```
+ *  import * as protobufs from './proto/index.js';
+ *
+ *  const firebaseApp = Firebase.initializeApp({...Firebase options});
+ *
+ *  // The backend client will receive updates of the current actor through this instance
+ *  const actorProvider = new ActorProvider();
+ *
+ *  const backendClient = FirebaseBackendClient.forProtobufTypes(protobufs)
+ *                                             .usingFirebase({
+ *                                               atEndpoint: 'http://example.appspot.com',
+ *                                               withFirebaseStorage: firebaseApp,
+ *                                               forActor: actorProvider}
+ *                                             })
+ * ```
+ *
  * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
  */
 export class FirebaseBackendClient extends AbstractBackendClient {
