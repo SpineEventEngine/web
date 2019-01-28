@@ -28,25 +28,25 @@ import KnownTypes from './known-types';
  */
 export default class ObjectToProto {
 
-    constructor() {
-        throw new Error('ObjectToProto is not supposed to be instantiated.');
-    }
+  constructor() {
+    throw new Error('ObjectToProto is not supposed to be instantiated.');
+  }
 
-    /**
-     * Converts the object to the corresponding Protobuf message.
-     *
-     * The input object is supposed to be a Protobuf message representation, i.e. all its attributes should correspond to
-     * the fields of the specified message type.
-     *
-     * @param {Object} object an object to convert
-     * @param {string} typeUrl a type URL of the corresponding Protobuf message
-     */
-    static convert(object, typeUrl) {
-        if (!KnownTypes.hasType(typeUrl)) {
-            throw new Error(`Unable to convert object of unknown type ${typeUrl}`);
-        }
-        const parser = TypeParsers.parserFor(typeUrl);
-        const proto = parser.fromObject(object);
-        return proto;
+  /**
+   * Converts the object to the corresponding Protobuf message.
+   *
+   * The input object is supposed to be a Protobuf message representation, i.e. all of its attributes should
+   * correspond to the fields of the specified message type.
+   *
+   * @param {Object} object an object to convert
+   * @param {string} typeUrl a type URL of the corresponding Protobuf message
+   */
+  static convert(object, typeUrl) {
+    if (!KnownTypes.hasType(typeUrl)) {
+      throw new Error(`Unable to convert object of unknown type ${typeUrl}`);
     }
+    const parser = TypeParsers.parserFor(typeUrl);
+    const proto = parser.fromObject(object);
+    return proto;
+  }
 }
