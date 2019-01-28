@@ -152,15 +152,18 @@ class FirebaseFetch extends Fetch {
  */
 class EntitySubscription extends Subscription {
 
+  /**
+   * @param {Function} unsubscribe
+   * @param {{itemAdded: Observable, itemChanged: Observable, itemRemoved: Observable}} observables
+   * @param {SpineSubscription} subscription
+   */
   constructor({
                 unsubscribedBy: unsubscribe,
                 withObservables: observables,
-                forSubscription: subscription
+                forInternal: subscription
               }) {
     super(unsubscribe);
-    this.itemAdded = observables.add;
-    this.itemChanged = observables.change;
-    this.itemRemoved = observables.remove;
+    this._observables = observables;
     this._subscription = subscription;
   }
 
@@ -174,7 +177,7 @@ class EntitySubscription extends Subscription {
   }
 
   /**
-   * @return {String} a string value of the `internal` subscription id.
+   * @return {String} a string value of the `internal` subscription ID.
    */
   id() {
     return this.internal().getId().getValue();
@@ -184,12 +187,7 @@ class EntitySubscription extends Subscription {
    * @return {EntitySubscriptionObject} a plain object with observables and unsubscribe method
    */
   toObject() {
-    return {
-      itemAdded: this.itemAdded,
-      itemChanged: this.itemChanged,
-      itemRemoved: this.itemRemoved,
-      unsubscribe: () => this.unsubscribe()
-    };
+    return Object.assign({}, this._observables, {unsubscribe: () => this.unsubscribe()})
   }
 }
 
@@ -295,11 +293,11 @@ export class FirebaseClient extends AbstractClient {
               FirebaseClient._unsubscribe(pathSubscriptions);
             },
             withObservables: {
-              add: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
-              change: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
-              remove: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
+              itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
+              itemChanged: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
+              itemRemoved: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
             },
-            forSubscription: internalSubscription
+            forInternal: internalSubscription
           });
           resolve(entitySubscription.toObject());
           this._subscriptionService.add(entitySubscription);
