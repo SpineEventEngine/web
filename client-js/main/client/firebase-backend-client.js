@@ -28,7 +28,7 @@ import {
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {Fetch} from './client';
-import {AbstractBackendClient} from './abstract-backend-client';
+import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
@@ -216,7 +216,7 @@ class EntitySubscription extends Subscription {
  *
  * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
  */
-export class FirebaseBackendClient extends AbstractBackendClient {
+export class FirebaseBackendClient extends AbstractClient {
 
   /**
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands

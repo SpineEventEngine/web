@@ -36,7 +36,7 @@ import {Client} from './client';
  *
  * @abstract
  */
-export class AbstractBackendClient extends Client {
+export class AbstractClient extends Client {
 
   /**
    * @param {!Endpoint} endpoint an endpoint to send requests to
