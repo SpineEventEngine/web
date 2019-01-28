@@ -32,7 +32,7 @@ class Given {
   }
 
   static assertProvidesActor(actorProvider, expectedActor) {
-    const providedActor = actorProvider.getActor();
+    const providedActor = actorProvider.get();
 
     assert.ok(Message.equals(providedActor, expectedActor),
       `Expected actor with ID '${expectedActor.getValue()}', actual ${providedActor.getValue()}`);
@@ -43,15 +43,15 @@ class Given {
   }
 }
 
-Given.ACTOR_1 = function() {
+Given.ACTOR_BOB = function() {
   const actor = new UserId();
-  actor.setValue('test-spine-web-actor');
+  actor.setValue('bob@example.com');
   return actor;
 }();
 
-Given.ACTOR_2 = function() {
+Given.ACTOR_MIKE = function() {
   const actor = new UserId();
-  actor.setValue('actor-web-spine-test');
+  actor.setValue('mike@acme.org');
   return actor;
 }();
 
@@ -66,44 +66,44 @@ describe('ActorProvider', function () {
   });
 
   it('provides custom actor', () => {
-    const actorProvider = new ActorProvider(Given.ACTOR_1);
-    Given.assertProvidesActor(actorProvider, Given.ACTOR_1);
+    const actorProvider = new ActorProvider(Given.ACTOR_BOB);
+    Given.assertProvidesActor(actorProvider, Given.ACTOR_BOB);
   });
 
   it('provides anonymous actor when `null` actor set', () => {
-    const actorProvider = new ActorProvider(Given.ACTOR_1);
-    actorProvider.setActor(null);
+    const actorProvider = new ActorProvider(Given.ACTOR_BOB);
+    actorProvider.update(null);
     Given.assertProvidesAnonymousActor(actorProvider);
   });
 
   it('provides anonymous actor when undefined actor set', () => {
-    const actorProvider = new ActorProvider(Given.ACTOR_1);
-    actorProvider.setActor();
+    const actorProvider = new ActorProvider(Given.ACTOR_BOB);
+    actorProvider.update();
     Given.assertProvidesAnonymousActor(actorProvider);
   });
 
   it('provides correct actor when actor value changed', () => {
-    const actorProvider = new ActorProvider(Given.ACTOR_1);
-    actorProvider.setActor(Given.ACTOR_2);
-    Given.assertProvidesActor(actorProvider, Given.ACTOR_2);
+    const actorProvider = new ActorProvider(Given.ACTOR_BOB);
+    actorProvider.update(Given.ACTOR_MIKE);
+    Given.assertProvidesActor(actorProvider, Given.ACTOR_MIKE);
   });
 
   it('provides correct actor when actor hasn`t changed', () => {
-    const actorProvider = new ActorProvider(Given.ACTOR_1);
-    actorProvider.setActor(Given.ACTOR_1);
-    Given.assertProvidesActor(actorProvider, Given.ACTOR_1);
+    const actorProvider = new ActorProvider(Given.ACTOR_BOB);
+    actorProvider.update(Given.ACTOR_BOB);
+    Given.assertProvidesActor(actorProvider, Given.ACTOR_BOB);
   });
 
   it('provides anonymous actor when cleared', () => {
-    const actorProvider = new ActorProvider(Given.ACTOR_1);
-    actorProvider.clearActor();
+    const actorProvider = new ActorProvider(Given.ACTOR_BOB);
+    actorProvider.clear();
     Given.assertProvidesAnonymousActor(actorProvider);
   });
 
   it('throws an error when the object of not `UserId` type is passed', done => {
     const actorProvider = new ActorProvider();
     try {
-      actorProvider.setActor({value: 'invalid-identifier'});
+      actorProvider.update({value: 'invalid-identifier'});
     } catch (e) {
       done();
     }

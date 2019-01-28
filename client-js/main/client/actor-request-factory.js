@@ -809,20 +809,20 @@ export class ActorProvider {
    *                        if not specified, the anonymous actor is used
    */
   constructor(actor) {
-    this.setActor(actor);
+    this.update(actor);
   }
 
   /**
-   * Sets the new actor ID value if it is different from the current, sets the
+   * Updates the actor ID value if it is different from the current, sets the
    * anonymous actor value if actor ID not specified or `null`.
    *
    * @param actorId
    */
-  setActor(actorId) {
+  update(actorId) {
     if (typeof actorId === 'undefined' || actorId === null) {
       this._actor = ActorProvider.ANONYMOUS_ACTOR;
     } else {
-      ActorProvider._checkUserIdMessage(actorId);
+      ActorProvider._ensureUserId(actorId);
 
       if (!Message.equals(this._actor, actorId)) {
         this._actor = actorId;
@@ -833,27 +833,27 @@ export class ActorProvider {
   /**
    * @return {UserId} the current actor value
    */
-  getActor() {
+  get() {
     return this._actor;
   }
 
   /**
    * Sets the anonymous actor value.
    */
-  clearActor() {
+  clear() {
     this._actor = ActorProvider.ANONYMOUS_ACTOR;
   }
 
   /**
-   * Checks if the object extends {@link UserId}.
+   * Ensures if the object extends {@link UserId}.
    *
-   * <p>The implementation doesn't use `instanceof` check and check on prototypes
+   * The implementation doesn't use `instanceof` check and check on prototypes
    * since they may fail if different versions of the file are used at the same time
    * (e.g. bundled and the original one).
    *
    * @param object the object to check
    */
-  static _checkUserIdMessage(object) {
+  static _ensureUserId(object) {
     if (!(isProtobufMessage(object) && typeof object.getValue === 'function')) {
       throw new Error('The `spine.core.UserId` type was expected by `ActorProvider`.');
     }
@@ -917,7 +917,7 @@ export class ActorRequestFactory {
 
   _actorContext() {
     const result = new ActorContext();
-    result.setActor(this._actorProvider.getActor());
+    result.setActor(this._actorProvider.get());
     const seconds = Math.round(new Date().getTime() / 1000);
     const time = new Timestamp();
     time.setSeconds(seconds);
