@@ -19,7 +19,7 @@
  */
 
 import * as testProtobuf from '@testProto/index';
-import {FirebaseBackendClient} from "@lib/client/firebase-backend-client";
+import {FirebaseClient} from "@lib/client/firebase-client";
 
 /**
  * Can be used in callback-based async tests to fail them before waiting
@@ -57,5 +57,5 @@ export function fail(done, message = '') {
 }
 
 export function registerProtobufTypes() {
-    FirebaseBackendClient.forProtobufTypes(testProtobuf);
+    FirebaseClient.forProtobufTypes(testProtobuf);
 }

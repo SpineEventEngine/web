@@ -59,11 +59,11 @@ export class Fetch {
 
   /**
    * @param {!spine.client.Query} query a request to the read-side
-   * @param {!Client} backend the backend which is used to fetch the query results
+   * @param {!Client} client the client which is used to fetch the query results
    */
-  constructor({of: query, using: backend}) {
+  constructor({of: query, using: client}) {
     this._query = query;
-    this._backend = backend;
+    this._client = client;
   }
 
   /**

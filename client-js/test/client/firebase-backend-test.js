@@ -31,7 +31,7 @@ import * as testProtobuf from '@testProto/index';
 import {Filter, CompositeFilter} from '@proto/spine/client/filters_pb';
 import {Topic} from '@testProto/spine/client/subscription_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
-import {FirebaseBackendClient} from '@lib/client/firebase-backend-client';
+import {FirebaseClient} from '@lib/client/firebase-client';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 import {UserId} from '@proto/spine/core/user_id_pb';
 import {
@@ -49,7 +49,7 @@ class Given {
   }
 
   static client(endpoint = 'https://spine-dev.appspot.com') {
-    return FirebaseBackendClient
+    return FirebaseClient
       .forProtobufTypes(testProtobuf)
       .usingFirebase({
         atEndpoint: endpoint,
@@ -151,7 +151,7 @@ Given.TYPE = {
   MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
 
-describe('FirebaseBackendClient', function () {
+describe('FirebaseClient', function () {
 
   const client = Given.client();
 

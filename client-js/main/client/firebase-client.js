@@ -36,7 +36,7 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
 
 /**
- * Fetch implementation using `FirebaseBackendClient` as value storage.
+ * Fetch implementation using `FirebaseClient` as value storage.
  *
  * @see Fetch
  * @see Client#fetchAll()
@@ -45,10 +45,10 @@ class FirebaseFetch extends Fetch {
 
   /**
    * @param {!spine.client.Query} query a request to the read-side
-   * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
+   * @param {!FirebaseClient} client a client used to execute requests
    */
-  constructor({of: query, using: backend}) {
-    super({of: query, using: backend});
+  constructor({of: query, using: client}) {
+    super({of: query, using: client});
   }
 
   /**
@@ -78,7 +78,7 @@ class FirebaseFetch extends Fetch {
       let promisedCount = null;
       let dbSubscription = null;
 
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
+      this._client._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
           if (typeof count === 'undefined') {
             count = 0;
@@ -92,7 +92,7 @@ class FirebaseFetch extends Fetch {
           if (receivedCount === promisedCount) {
             FirebaseFetch._complete(observer);
           }
-          dbSubscription = this._backend._firebase.onChildAdded(path, value => {
+          dbSubscription = this._client._firebase.onChildAdded(path, value => {
             const typeUrl = this._query.getTarget().getType();
             const message = ObjectToProto.convert(value, typeUrl);
 
@@ -136,8 +136,8 @@ class FirebaseFetch extends Fetch {
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
-      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
-        .then(({path}) => this._backend._firebase.getValues(path, values => {
+      this._client._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
+        .then(({path}) => this._client._firebase.getValues(path, values => {
           const typeUrl = this._query.getTarget().getType();
           const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
           resolve(messages);
@@ -206,7 +206,7 @@ class EntitySubscription extends Subscription {
  *  // The backend client will receive updates of the current actor through this instance
  *  const actorProvider = new ActorProvider();
  *
- *  const client = FirebaseBackendClient.forProtobufTypes(protobufs)
+ *  const client = FirebaseClient.forProtobufTypes(protobufs)
  *                                      .usingFirebase({
  *                                          atEndpoint: 'http://example.appspot.com',
  *                                          withFirebaseStorage: firebaseApp,
@@ -216,7 +216,7 @@ class EntitySubscription extends Subscription {
  *
  * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
  */
-export class FirebaseBackendClient extends AbstractClient {
+export class FirebaseClient extends AbstractClient {
 
   /**
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
@@ -224,7 +224,7 @@ export class FirebaseBackendClient extends AbstractClient {
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
    * @param {!FirebaseSubscriptionService} subscriptionService a service handling the subscriptions
    *
-   * @protected use `FirebaseBackendClient#usingFirebase()` for instantiation
+   * @protected use `FirebaseClient#usingFirebase()` for instantiation
    */
   constructor(endpoint, firebaseDatabase, actorRequestFactory, subscriptionService) {
     super(endpoint, actorRequestFactory);
@@ -252,7 +252,7 @@ export class FirebaseBackendClient extends AbstractClient {
     const requestFactory = new ActorRequestFactory(actorProvider);
     const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
-    return new FirebaseBackendClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
+    return new FirebaseClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
   }
 
   /**
@@ -262,7 +262,7 @@ export class FirebaseBackendClient extends AbstractClient {
    */
   _fetchOf(query) {
     // noinspection JSValidateTypes A static member class type is not resolved properly.
-    return new FirebaseBackendClient.Fetch({of: query, using: this});
+    return new FirebaseClient.Fetch({of: query, using: this});
   }
 
   /**
@@ -295,10 +295,10 @@ export class FirebaseBackendClient extends AbstractClient {
               observer.next(message);
             });
           });
-          const subscriptionProto = FirebaseBackendClient.subscriptionProto(path, topic);
+          const subscriptionProto = FirebaseClient.subscriptionProto(path, topic);
           const entitySubscription = new EntitySubscription({
             unsubscribedBy: () => {
-              FirebaseBackendClient._tearDownSubscriptions(subscriptions);
+              FirebaseClient._tearDownSubscriptions(subscriptions);
             },
             withObservables: {add, change, remove},
             forSubscription: subscriptionProto
@@ -348,4 +348,4 @@ export class FirebaseBackendClient extends AbstractClient {
  * @inheritDoc
  * @type FetchClass
  */
-FirebaseBackendClient.Fetch = FirebaseFetch;
+FirebaseClient.Fetch = FirebaseFetch;
