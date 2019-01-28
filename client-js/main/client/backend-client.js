@@ -58,7 +58,7 @@
 export class Fetch {
 
   /**
-   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
+   * @param {!spine.client.Query} query a request to the read-side
    * @param {!BackendClient} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {

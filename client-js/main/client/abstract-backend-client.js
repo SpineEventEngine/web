@@ -30,7 +30,7 @@ import {BackendClient} from './backend-client';
 /**
  * A utility which converts the JS object to its Protobuf counterpart.
  */
-class ObjectToProto {
+export class ObjectToProto {
 
   /**
    * Converts the object to the corresponding Protobuf message.
@@ -39,75 +39,12 @@ class ObjectToProto {
    * the fields of the specified message type.
    *
    * @param {Object} object an object to convert
-   * @param {Type} type a type of the corresponding Protobuf message
+   * @param {string} typeUrl a type URL of the corresponding Protobuf message
    */
-  static convert(object, type) {
-    const typeUrl = type.url().value();
+  static convert(object, typeUrl) {
     const parser = TypeParsers.parserFor(typeUrl);
     const proto = parser.fromObject(object);
     return proto;
-  }
-}
-
-/**
- * Matches the static information about the query with the queried entity type gathered at runtime.
- */
-class TypedQuery {
-
-  /**
-   * @param {!spine.client.Query} query an underlying proto message representing the query
-   * @param {!Type} type a type of the entity this query is targeted on
-   */
-  constructor(query, type) {
-    this._query = query;
-    this._type = type;
-  }
-
-  /**
-   * Retrieves the underlying proto message.
-   */
-  raw() {
-    return this._query;
-  }
-
-  /**
-   * Converts a query response sent by the server to the corresponding proto message.
-   *
-   * @param {!Object} response an object representing the response for the query
-   */
-  convert(response) {
-    return ObjectToProto.convert(response, this._type);
-  }
-}
-
-/**
- * Matches the static information about the topic with the subscribed entity type gathered at runtime.
- */
-class TypedTopic {
-
-  /**
-   * @param {!spine.client.Topic} topic an underlying proto message representing the topic
-   * @param {!Type} type a type of the subscription target
-   */
-  constructor(topic, type) {
-    this._topic = topic;
-    this._type = type;
-  }
-
-  /**
-   * Retrieves the underlying proto message.
-   */
-  raw() {
-    return this._topic;
-  }
-
-  /**
-   * Converts an object which represents the observed entity update to the corresponding proto message.
-   *
-   * @param {!Object} update an object representing the entity update
-   */
-  convert(update) {
-    return ObjectToProto.convert(update, this._type);
   }
 }
 
@@ -137,8 +74,7 @@ export class AbstractBackendClient extends BackendClient {
    */
   fetchAll({ofType: type}) {
     const query = this._requestFactory.query().select(type).build();
-    const typedQuery = new TypedQuery(query, type);
-    return this._fetchOf(typedQuery);
+    return this._fetchOf(query);
   }
 
   /**
@@ -147,7 +83,6 @@ export class AbstractBackendClient extends BackendClient {
   fetchById(type, id, dataCallback, errorCallback) {
     const typedId = TypedMessage.of(id);
     const query = this._requestFactory.query().select(type).byIds([typedId]).build();
-    const typedQuery = new TypedQuery(query, type);
 
     let itemReceived = false;
 
@@ -166,7 +101,7 @@ export class AbstractBackendClient extends BackendClient {
     if (errorCallback) {
       observer.error = errorCallback;
     }
-    this._fetchOf(typedQuery).oneByOne().subscribe(observer);
+    this._fetchOf(query).oneByOne().subscribe(observer);
   }
 
   /**
@@ -255,7 +190,7 @@ export class AbstractBackendClient extends BackendClient {
   /**
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
-   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
+   * @param {!spine.client.Query} query a request to the read-side
    * @return {BackendClient.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected

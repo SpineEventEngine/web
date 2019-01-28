@@ -28,7 +28,7 @@ import {
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {Fetch} from './backend-client';
-import {AbstractBackendClient} from './abstract-backend-client';
+import {AbstractBackendClient, ObjectToProto} from './abstract-backend-client';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -43,7 +43,7 @@ import {FirebaseSubscriptionService} from './firebase-subscription-service';
 class FirebaseFetch extends Fetch {
 
   /**
-   * @param {!TypedQuery} query a typed query which contains runtime information about the queried entity type
+   * @param {!spine.client.Query} query a request to the read-side
    * @param {!FirebaseBackendClient} backend a Firebase backend client used to execute requests
    */
   constructor({of: query, using: backend}) {
@@ -77,8 +77,7 @@ class FirebaseFetch extends Fetch {
       let promisedCount = null;
       let dbSubscription = null;
 
-      const query = this._query.raw();
-      this._backend._endpoint.query(query, QUERY_STRATEGY.oneByOne)
+      this._backend._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
         .then(({path, count}) => {
           if (typeof count === 'undefined') {
             count = 0;
@@ -93,7 +92,9 @@ class FirebaseFetch extends Fetch {
             FirebaseFetch._complete(observer);
           }
           dbSubscription = this._backend._firebase.onChildAdded(path, value => {
-            const message = this._query.convert(value);
+            const typeUrl = this._query.getTarget().getType();
+            const message = ObjectToProto.convert(value, typeUrl);
+
             observer.next(message);
             receivedCount++;
             if (receivedCount === promisedCount) {
@@ -134,13 +135,10 @@ class FirebaseFetch extends Fetch {
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
-      const query = this._query.raw();
-      this._backend._endpoint.query(query, QUERY_STRATEGY.allAtOnce)
+      this._backend._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
         .then(({path}) => this._backend._firebase.getValues(path, values => {
-          let messages = values.map(value => {
-            const message = this._query.convert(value);
-            return message;
-          });
+          const typeUrl = this._query.getTarget().getType();
+          const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
           resolve(messages);
         }))
         .catch(error => reject(error));
