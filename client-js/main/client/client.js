@@ -50,7 +50,7 @@
  * An abstract Fetch that can fetch the data of a provided query in one of two ways
  * (one-by-one or all-at-once) using the provided backend.
  *
- * Fetch is a static member of the `BackendClient`.
+ * Fetch is a static member of the `Client`.
  *
  * @template <T>
  * @abstract
@@ -59,7 +59,7 @@ export class Fetch {
 
   /**
    * @param {!spine.client.Query} query a request to the read-side
-   * @param {!BackendClient} backend the backend which is used to fetch the query results
+   * @param {!Client} backend the backend which is used to fetch the query results
    */
   constructor({of: query, using: backend}) {
     this._query = query;
@@ -109,7 +109,7 @@ export class Fetch {
  *
  * @abstract
  */
-export class BackendClient {
+export class Client {
 
   /**
    * Defines a fetch query of all entities matching the filters provided as arguments.
@@ -135,7 +135,7 @@ export class BackendClient {
    * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
    *
    * @param {!Type<T>} ofType a type of the entities to be queried
-   * @return {BackendClient.Fetch<T>} a fetch object allowing to specify additional remote
+   * @return {Client.Fetch<T>} a fetch object allowing to specify additional remote
    *                                call parameters and executed the query.
    *
    * @template <T>
@@ -229,8 +229,8 @@ export class BackendClient {
 /**
  * Fetches the results of the query from the server using the provided backend.
  *
- * Fetch is a static member of the `BackendClient`.
+ * Fetch is a static member of the `Client`.
  *
  * @type FetchClass
  */
-BackendClient.Fetch = Fetch;
+Client.Fetch = Fetch;

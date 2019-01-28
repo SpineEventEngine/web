@@ -27,7 +27,7 @@ import {
   Subscription as SpineSubscription,
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
-import {Fetch} from './backend-client';
+import {Fetch} from './client';
 import {AbstractBackendClient} from './abstract-backend-client';
 import ObjectToProto from './object-to-proto';
 import {HttpClient} from './http-client';
@@ -39,7 +39,7 @@ import {FirebaseSubscriptionService} from './firebase-subscription-service';
  * Fetch implementation using `FirebaseBackendClient` as value storage.
  *
  * @see Fetch
- * @see BackendClient#fetchAll()
+ * @see Client#fetchAll()
  */
 class FirebaseFetch extends Fetch {
 
@@ -206,12 +206,12 @@ class EntitySubscription extends Subscription {
  *  // The backend client will receive updates of the current actor through this instance
  *  const actorProvider = new ActorProvider();
  *
- *  const backendClient = FirebaseBackendClient.forProtobufTypes(protobufs)
- *                                             .usingFirebase({
- *                                               atEndpoint: 'http://example.appspot.com',
- *                                               withFirebaseStorage: firebaseApp,
- *                                               forActor: actorProvider}
- *                                             })
+ *  const client = FirebaseBackendClient.forProtobufTypes(protobufs)
+ *                                      .usingFirebase({
+ *                                          atEndpoint: 'http://example.appspot.com',
+ *                                          withFirebaseStorage: firebaseApp,
+ *                                          forActor: actorProvider}
+ *                                      })
  * ```
  *
  * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
@@ -234,14 +234,14 @@ export class FirebaseBackendClient extends AbstractBackendClient {
   }
 
   /**
-   * A static factory method that creates a new `BackendClient` instance using Firebase as
+   * A static factory method that creates a new `Client` instance using Firebase as
    * underlying implementation.
    *
    * @param {!string} atEndpoint a Spine web backend endpoint URL
    * @param {!firebase.app.App} withFirebaseStorage
    *        a Firebase Application that will be used to retrieve data from
    * @param {!ActorProvider} forActor a provider of the user interacting with Spine
-   * @return {BackendClient} a new backend client instance which will send the requests on behalf
+   * @return {Client} a new backend client instance which will send the requests on behalf
    *                          of the provided actor to the provided endpoint, retrieving the data
    *                          from the provided Firebase storage
    */
@@ -257,7 +257,7 @@ export class FirebaseBackendClient extends AbstractBackendClient {
 
   /**
    * @inheritDoc
-   * @return {BackendClient.Fetch<T>}
+   * @return {Client.Fetch<T>}
    * @template <T>
    */
   _fetchOf(query) {

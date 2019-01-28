@@ -26,17 +26,17 @@ import TypeParsers from './parser/type-parsers';
 import KnownTypes from './known-types';
 import ObjectToProto from './object-to-proto';
 import {Status} from '../proto/spine/core/response_pb';
-import {BackendClient} from './backend-client';
+import {Client} from './client';
 
 /**
- * A mediate abstract `BackendClient` for Spine application backend. Defines operations that client is able
+ * A mediate abstract `Client` for Spine application backend. Defines operations that client is able
  * to perform (`.fetchAll(...)`, `.sendCommand(...)`, etc.) without reference to the particular data provider.
  *
  * Protobuf types that will be used with the client should be registered via `forProtobufTypes(...)`.
  *
  * @abstract
  */
-export class AbstractBackendClient extends BackendClient {
+export class AbstractBackendClient extends Client {
 
   /**
    * @param {!Endpoint} endpoint an endpoint to send requests to
@@ -170,7 +170,7 @@ export class AbstractBackendClient extends BackendClient {
    * Creates a new Fetch object specifying the target of fetch and its parameters.
    *
    * @param {!spine.client.Query} query a request to the read-side
-   * @return {BackendClient.Fetch<T>} an object that performs the fetch
+   * @return {Client.Fetch<T>} an object that performs the fetch
    * @template <T> type of Fetch results
    * @protected
    * @abstract
