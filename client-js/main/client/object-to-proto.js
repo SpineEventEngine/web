@@ -20,6 +20,9 @@
 
 "use strict";
 
+import {Message} from 'google-protobuf';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import TypeParsers from './parser/type-parsers';
 import KnownTypes from './known-types';
 
@@ -38,8 +41,8 @@ export default class ObjectToProto {
    * The input object is supposed to be a Protobuf message representation, i.e. all of its attributes should
    * correspond to the fields of the specified message type.
    *
-   * @param {Object} object an object to convert
-   * @param {string} typeUrl a type URL of the corresponding Protobuf message
+   * @param {!Object} object an object to convert
+   * @param {!string} typeUrl a type URL of the corresponding Protobuf message
    */
   static convert(object, typeUrl) {
     if (!KnownTypes.hasType(typeUrl)) {
@@ -48,5 +51,19 @@ export default class ObjectToProto {
     const parser = TypeParsers.parserFor(typeUrl);
     const proto = parser.fromObject(object);
     return proto;
+  }
+
+  /**
+   * Convert the given observable of objects to the observable of the
+   * corresponding Protobuf messages.
+   *
+   * @param {!Observable<Object>} observable an observable to convert
+   * @param {!string} typeUrl a type URL of the corresponding Protobuf message
+   * @return {Observable<Message>} an observable of converted Protobuf messages
+   */
+  static map(observable, typeUrl) {
+    return observable.pipe(
+      map(object => ObjectToProto.convert(object, typeUrl))
+    );
   }
 }

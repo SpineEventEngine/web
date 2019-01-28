@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {Observable, Subscription} from 'rxjs';
+import {Observable, Subscription, Subject, Observer} from 'rxjs';
 import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
 import {SpineError} from './errors';
 import {
@@ -167,7 +167,7 @@ class EntitySubscription extends Subscription {
   /**
    * An internal Spine subscription which includes the topic the updates are received for.
    *
-   * @return {SpineSubscription} a `spine.client.Subscription` instane
+   * @return {SpineSubscription} a `spine.client.Subscription` instance
    */
   internal() {
     return this._subscription;
@@ -237,10 +237,10 @@ export class FirebaseClient extends AbstractClient {
    * A static factory method that creates a new `Client` instance using Firebase as
    * underlying implementation.
    *
-   * @param {!string} atEndpoint a Spine web backend endpoint URL
-   * @param {!firebase.database.Database} withFirebaseStorage
+   * @param {!string} endpointUrl a Spine web backend endpoint URL
+   * @param {!firebase.database.Database} firebaseDatabase
    *        a Firebase Database that will be used to retrieve data from
-   * @param {!ActorProvider} forActor a provider of the user interacting with Spine
+   * @param {!ActorProvider} actorProvider a provider of the user interacting with Spine
    * @return {Client} a new backend client instance which will send the requests on behalf
    *                          of the provided actor to the provided endpoint, retrieving the data
    *                          from the provided Firebase storage
@@ -268,40 +268,38 @@ export class FirebaseClient extends AbstractClient {
   /**
    * @inheritDoc
    */
-  _subscribeToTopic(topic) {
+  _subscribeTo(topic) {
     return new Promise((resolve, reject) => {
       const typeUrl = topic.getTarget().getType();
 
-
       this._endpoint.subscribeTo(topic)
-        .then(subscription => {
-          const path = subscription.id.value;
-          const subscriptions = {add: null, remove: null, change: null};
-          const add = Observable.create(observer => {
-            subscriptions.add = this._firebase.onChildAdded(path, value => {
-              const message = ObjectToProto.convert(value, typeUrl);
-              observer.next(message);
-            });
-          });
-          const change = Observable.create(observer => {
-            subscriptions.change = this._firebase.onChildChanged(path, value => {
-              const message = ObjectToProto.convert(value, typeUrl);
-              observer.next(message);
-            });
-          });
-          const remove = Observable.create(observer => {
-            subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              const message = ObjectToProto.convert(value, typeUrl);
-              observer.next(message);
-            });
-          });
-          const subscriptionProto = FirebaseClient.subscriptionProto(path, topic);
+        .then(response => {
+          const path = response.id.value;
+
+          const itemAdded = new Subject();
+          const itemChanged = new Subject();
+          const itemRemoved = new Subject();
+
+          const pathSubscriptions = [
+            this._firebase
+                .onChildAdded(path, itemAdded.next.bind(itemAdded)),
+            this._firebase
+                .onChildChanged(path, itemChanged.next.bind(itemChanged)),
+            this._firebase
+                .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
+          ];
+
+          const internalSubscription = FirebaseClient.internalSubscription(path, topic);
           const entitySubscription = new EntitySubscription({
             unsubscribedBy: () => {
-              FirebaseClient._tearDownSubscriptions(subscriptions);
+              FirebaseClient._unsubscribe(pathSubscriptions);
             },
-            withObservables: {add, change, remove},
-            forSubscription: subscriptionProto
+            withObservables: {
+              add: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
+              change: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
+              remove: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
+            },
+            forSubscription: internalSubscription
           });
           resolve(entitySubscription.toObject());
           this._subscriptionService.add(entitySubscription);
@@ -313,28 +311,25 @@ export class FirebaseClient extends AbstractClient {
   /**
    * Unsubscribes the provided Firebase subscriptions.
    *
-   * @param {{add: Subscription, remove: Subscription, change: Subscription}} subscriptions
+   * @param {Array<Subscription>} subscriptions
    * @private
    */
-  static _tearDownSubscriptions(subscriptions) {
-    if (!subscriptions.add.closed) {
-      subscriptions.add.unsubscribe();
-    }
-    if (!subscriptions.remove.closed) {
-      subscriptions.remove.unsubscribe();
-    }
-    if (!subscriptions.change.closed) {
-      subscriptions.change.unsubscribe();
-    }
+  static _unsubscribe(subscriptions) {
+    subscriptions.forEach(subscription => {
+      if (!subscription.closed) {
+        subscription.unsubscribe();
+      }
+    });
   }
 
   /**
-   * Creates a Protobuf `Subscription` instance to communicate with Spine server.
+   * Creates a `SpineSubscription` instance to communicate with Spine server.
    *
-   * @param {String} path a path to object which gets updated in Firebase
-   * @param {spine.client.Topic} topic a topic for which the Subscription gets updates
+   * @param {!String} path a path to object which gets updated in Firebase
+   * @param {!spine.client.Topic} topic a topic for which the Subscription gets updates
+   * @return {SpineSubscription} a `SpineSubscription` instance to communicate with Spine server
    */
-  static subscriptionProto(path, topic) {
+  static internalSubscription(path, topic) {
     const subscription = new SpineSubscription();
     const id = new SubscriptionId();
     id.setValue(path);

@@ -123,7 +123,9 @@ export class AbstractClient extends Client {
    */
   subscribeToEntities({ofType: type, byIds: ids, byId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
-      throw new Error('You can specify only one of ids or id as a parameter to subscribeToEntities');
+      throw new Error('No entity IDs set. Specify either a single entity ID or' +
+          ' multiple entity IDs to subscribe to the entity state updates.');
+
     }
     if (typeof id !== 'undefined') {
       ids = [id];
@@ -135,7 +137,7 @@ export class AbstractClient extends Client {
     } else {
       topic = this._requestFactory.topic().all({of: type});
     }
-    return this._subscribeToTopic(topic);
+    return this._subscribeTo(topic);
   }
 
   /**
@@ -187,7 +189,7 @@ export class AbstractClient extends Client {
    * @protected
    * @abstract
    */
-  _subscribeToTopic(topic) {
+  _subscribeTo(topic) {
     throw new Error('Not implemented in abstract base.');
   }
 }
