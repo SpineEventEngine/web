@@ -28,7 +28,8 @@ import {
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {Fetch} from './backend-client';
-import {AbstractBackendClient, ObjectToProto} from './abstract-backend-client';
+import {AbstractBackendClient} from './abstract-backend-client';
+import ObjectToProto from './object-to-proto';
 import {HttpClient} from './http-client';
 import {FirebaseClient} from './firebase-client';
 import {ActorRequestFactory} from './actor-request-factory';
@@ -269,26 +270,28 @@ export class FirebaseBackendClient extends AbstractBackendClient {
    */
   _subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
-      const spineTopic = topic.raw();
-      this._endpoint.subscribeTo(spineTopic)
+      const typeUrl = topic.getTarget().getType();
+
+
+      this._endpoint.subscribeTo(topic)
         .then(subscription => {
           const path = subscription.id.value;
           const subscriptions = {add: null, remove: null, change: null};
           const add = Observable.create(observer => {
             subscriptions.add = this._firebase.onChildAdded(path, value => {
-              const message = topic.convert(value);
+              const message = ObjectToProto.convert(value, typeUrl);
               observer.next(message);
             });
           });
           const change = Observable.create(observer => {
             subscriptions.change = this._firebase.onChildChanged(path, value => {
-              const message = topic.convert(value);
+              const message = ObjectToProto.convert(value, typeUrl);
               observer.next(message);
             });
           });
           const remove = Observable.create(observer => {
             subscriptions.remove = this._firebase.onChildRemoved(path, value => {
-              const message = topic.convert(value);
+              const message = ObjectToProto.convert(value, typeUrl);
               observer.next(message);
             });
           });
@@ -329,15 +332,14 @@ export class FirebaseBackendClient extends AbstractBackendClient {
    * Creates a Protobuf `Subscription` instance to communicate with Spine server.
    *
    * @param {String} path a path to object which gets updated in Firebase
-   * @param {TypedTopic} topic a topic for which the Subscription gets updates
+   * @param {spine.client.Topic} topic a topic for which the Subscription gets updates
    */
   static subscriptionProto(path, topic) {
     const subscription = new SpineSubscription();
     const id = new SubscriptionId();
     id.setValue(path);
     subscription.setId(id);
-    const spineTopic = topic.raw();
-    subscription.setTopic(spineTopic);
+    subscription.setTopic(topic);
     return subscription;
   }
 }

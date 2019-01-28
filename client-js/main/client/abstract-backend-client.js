@@ -20,33 +20,13 @@
 
 "use strict";
 
-import {Type, TypedMessage} from './typed-message';
+import {TypedMessage} from './typed-message';
 import {CommandHandlingError, CommandValidationError, SpineError} from './errors';
 import TypeParsers from './parser/type-parsers';
 import KnownTypes from './known-types';
+import ObjectToProto from './object-to-proto';
 import {Status} from '../proto/spine/core/response_pb';
 import {BackendClient} from './backend-client';
-
-/**
- * A utility which converts the JS object to its Protobuf counterpart.
- */
-export class ObjectToProto {
-
-  /**
-   * Converts the object to the corresponding Protobuf message.
-   *
-   * The input object is supposed to be a Protobuf message representation, i.e. all its attributes should correspond to
-   * the fields of the specified message type.
-   *
-   * @param {Object} object an object to convert
-   * @param {string} typeUrl a type URL of the corresponding Protobuf message
-   */
-  static convert(object, typeUrl) {
-    const parser = TypeParsers.parserFor(typeUrl);
-    const proto = parser.fromObject(object);
-    return proto;
-  }
-}
 
 /**
  * A mediate abstract `BackendClient` for Spine application backend. Defines operations that client is able
@@ -112,7 +92,7 @@ export class AbstractBackendClient extends BackendClient {
     this._endpoint.command(command)
       .then(ack => {
         const responseStatus = ack.status;
-        const responseStatusProto = ObjectToProto.convert(responseStatus, Type.forClass(Status));
+        const responseStatusProto = ObjectToProto.convert(responseStatus, KnownTypes.typeUrlFor(Status));
         const responseStatusCase = responseStatusProto.getStatusCase();
 
         switch (responseStatusCase) {
@@ -155,8 +135,7 @@ export class AbstractBackendClient extends BackendClient {
     } else {
       topic = this._requestFactory.topic().all({of: type});
     }
-    const typedTopic = new TypedTopic(topic, type);
-    return this._subscribeToTopic(typedTopic);
+    return this._subscribeToTopic(topic);
   }
 
   /**
@@ -203,7 +182,7 @@ export class AbstractBackendClient extends BackendClient {
   /**
    * Creates a subscription to the topic which is updated with backend changes.
    *
-   * @param {!TypedTopic} topic a typed topic which contains runtime information about the subscribed entity type
+   * @param {!spine.client.Topic} topic a topic of a subscription
    * @return {Promise<EntitySubscriptionObject>}
    * @protected
    * @abstract
