@@ -21,7 +21,7 @@
 import assert from 'assert';
 import uuid from 'uuid';
 
-import {devFirebaseApp} from './test-firebase-app';
+import {devFirebaseDatabase} from './test-firebase-database';
 import {Type} from '@lib/client/typed-message';
 import {Duration} from '@lib/client/time-utils';
 
@@ -53,7 +53,7 @@ class Given {
       .forProtobufTypes(testProtobuf)
       .usingFirebase({
         atEndpoint: endpoint,
-        withFirebaseStorage: devFirebaseApp,
+        withFirebaseStorage: devFirebaseDatabase,
         forActor: new ActorProvider()
       });
   }

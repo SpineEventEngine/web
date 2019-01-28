@@ -29,4 +29,5 @@ const config = {
     messagingSenderId: '165066236051'
 };
 
-export const devFirebaseApp = firebase.initializeApp(config, 'spine-dev');
+export const devFirebaseDatabase = firebase.initializeApp(config, 'spine-dev')
+                                           .database();

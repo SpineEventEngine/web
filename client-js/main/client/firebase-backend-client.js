@@ -31,7 +31,7 @@ import {Fetch} from './client';
 import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
 import {HttpClient} from './http-client';
-import {FirebaseClient} from './firebase-client';
+import {FirebaseDatabaseClient} from './firebase-database-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
 
@@ -220,15 +220,15 @@ export class FirebaseBackendClient extends AbstractClient {
 
   /**
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
-   * @param {!FirebaseClient} firebaseClient the client to read the query results from
+   * @param {!FirebaseDatabaseClient} firebaseDatabase the client to read the query results from
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
    * @param {!FirebaseSubscriptionService} subscriptionService a service handling the subscriptions
    *
    * @protected use `FirebaseBackendClient#usingFirebase()` for instantiation
    */
-  constructor(endpoint, firebaseClient, actorRequestFactory, subscriptionService) {
+  constructor(endpoint, firebaseDatabase, actorRequestFactory, subscriptionService) {
     super(endpoint, actorRequestFactory);
-    this._firebase = firebaseClient;
+    this._firebase = firebaseDatabase;
     this._subscriptionService = subscriptionService;
     this._subscriptionService.run();
   }
@@ -238,21 +238,21 @@ export class FirebaseBackendClient extends AbstractClient {
    * underlying implementation.
    *
    * @param {!string} atEndpoint a Spine web backend endpoint URL
-   * @param {!firebase.app.App} withFirebaseStorage
-   *        a Firebase Application that will be used to retrieve data from
+   * @param {!firebase.database.Database} withFirebaseStorage
+   *        a Firebase Database that will be used to retrieve data from
    * @param {!ActorProvider} forActor a provider of the user interacting with Spine
    * @return {Client} a new backend client instance which will send the requests on behalf
    *                          of the provided actor to the provided endpoint, retrieving the data
    *                          from the provided Firebase storage
    */
-  static usingFirebase({atEndpoint: endpointUrl, withFirebaseStorage: firebaseApp, forActor: actorProvider}) {
+  static usingFirebase({atEndpoint: endpointUrl, withFirebaseStorage: firebaseDatabase, forActor: actorProvider}) {
     const httpClient = new HttpClient(endpointUrl);
     const endpoint = new HttpEndpoint(httpClient);
-    const firebaseClient = new FirebaseClient(firebaseApp);
+    const firebaseDatabaseClient = new FirebaseDatabaseClient(firebaseDatabase);
     const requestFactory = new ActorRequestFactory(actorProvider);
     const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
-    return new FirebaseBackendClient(endpoint, firebaseClient, requestFactory, subscriptionService);
+    return new FirebaseBackendClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
   }
 
   /**

@@ -25,15 +25,15 @@ import {Subscription} from 'rxjs';
 /**
  * The client of a Firebase Realtime database.
  */
-export class FirebaseClient {
+export class FirebaseDatabaseClient {
 
   /**
-   * Creates a new FirebaseClient.
+   * Creates a new FirebaseDatabaseClient.
    *
-   * @param {!firebase.app.App} firebaseApp an initialized Firebase app
+   * @param {!firebase.database.Database} database a database of the initialized Firebase application
    */
-  constructor(firebaseApp) {
-    this._firebaseApp = firebaseApp;
+  constructor(database) {
+    this._database = database;
   }
 
   /**
@@ -79,7 +79,7 @@ export class FirebaseClient {
   }
 
   _subscribeToChildEvent(childEvent, path, dataCallback) {
-    const dbRef = this._firebaseApp.database().ref(path);
+    const dbRef = this._database.ref(path);
     const callback = dbRef.on(childEvent, response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
@@ -98,7 +98,7 @@ export class FirebaseClient {
    *                                                   entities at path
    */
   getValues(path, dataCallback) {
-    const dbRef = this._firebaseApp.database().ref(path);
+    const dbRef = this._database.ref(path);
     dbRef.once('value', response => {
       const data = response.val(); // an Object mapping Firebase ids to objects is returned
       if (data == null) {
