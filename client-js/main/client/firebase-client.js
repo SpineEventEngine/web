@@ -21,7 +21,7 @@
 "use strict";
 
 import {Observable, Subscription, Subject, Observer} from 'rxjs';
-import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {QUERY_STRATEGY} from './http-endpoint';
 import {SpineError} from './errors';
 import {
   Subscription as SpineSubscription,
@@ -30,10 +30,6 @@ import {
 import {Fetch} from './client';
 import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
-import {HttpClient} from './http-client';
-import {FirebaseDatabaseClient} from './firebase-database-client';
-import {ActorRequestFactory} from './actor-request-factory';
-import {FirebaseSubscriptionService} from './firebase-subscription-service';
 
 /**
  * Fetch implementation using `FirebaseClient` as value storage.
@@ -192,25 +188,8 @@ class EntitySubscription extends Subscription {
 }
 
 /**
- * An implementation of a client connecting to the application backend retrieving data
+ * An implementation of an `AbstractClient` connecting to the application backend retrieving data
  * through Firebase.
- *
- * To initialize a new instance do the following:
- * ```
- *  import * as protobufs from './proto/index.js';
- *
- *  const firebaseApp = Firebase.initializeApp({...Firebase options});
- *
- *  // The backend client will receive updates of the current actor through this instance
- *  const actorProvider = new ActorProvider();
- *
- *  const client = FirebaseClient.forProtobufTypes(protobufs)
- *                                      .usingFirebase({
- *                                          atEndpoint: 'http://example.appspot.com',
- *                                          withFirebaseStorage: firebaseApp,
- *                                          forActor: actorProvider}
- *                                      })
- * ```
  *
  * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
  */
@@ -229,28 +208,6 @@ export class FirebaseClient extends AbstractClient {
     this._firebase = firebaseDatabase;
     this._subscriptionService = subscriptionService;
     this._subscriptionService.run();
-  }
-
-  /**
-   * A static factory method that creates a new `Client` instance using Firebase as
-   * underlying implementation.
-   *
-   * @param {!string} endpointUrl a Spine web backend endpoint URL
-   * @param {!firebase.database.Database} firebaseDatabase
-   *        a Firebase Database that will be used to retrieve data from
-   * @param {!ActorProvider} actorProvider a provider of the user interacting with Spine
-   * @return {Client} a new backend client instance which will send the requests on behalf
-   *                          of the provided actor to the provided endpoint, retrieving the data
-   *                          from the provided Firebase storage
-   */
-  static usingFirebase({atEndpoint: endpointUrl, withFirebaseStorage: firebaseDatabase, forActor: actorProvider}) {
-    const httpClient = new HttpClient(endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient);
-    const firebaseDatabaseClient = new FirebaseDatabaseClient(firebaseDatabase);
-    const requestFactory = new ActorRequestFactory(actorProvider);
-    const subscriptionService = new FirebaseSubscriptionService(endpoint);
-
-    return new FirebaseClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
   }
 
   /**

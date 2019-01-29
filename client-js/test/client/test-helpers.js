@@ -19,7 +19,8 @@
  */
 
 import * as testProtobuf from '@testProto/index';
-import {FirebaseClient} from "@lib/client/firebase-client";
+import {Client} from "@lib/client/client";
+import {initializeClient} from '@lib/client/client-factory';
 
 /**
  * Can be used in callback-based async tests to fail them before waiting
@@ -56,6 +57,14 @@ export function fail(done, message = '') {
   };
 }
 
+class MockClient extends Client {
+    // There is no need to implement `Client` for tests
+    // which don't use its API
+}
+
 export function registerProtobufTypes() {
-    FirebaseClient.forProtobufTypes(testProtobuf);
+    initializeClient({
+       protoIndexFiles: [testProtobuf],
+       implementation: new MockClient()
+    });
 }

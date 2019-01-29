@@ -31,7 +31,7 @@ import * as testProtobuf from '@testProto/index';
 import {Filter, CompositeFilter} from '@proto/spine/client/filters_pb';
 import {Topic} from '@testProto/spine/client/subscription_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
-import {FirebaseClient} from '@lib/client/firebase-client';
+import {initializeClient} from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 import {UserId} from '@proto/spine/core/user_id_pb';
 import {
@@ -49,13 +49,12 @@ class Given {
   }
 
   static client(endpoint = 'https://spine-dev.appspot.com') {
-    return FirebaseClient
-      .forProtobufTypes(testProtobuf)
-      .usingFirebase({
-        atEndpoint: endpoint,
-        withFirebaseStorage: devFirebaseDatabase,
-        forActor: new ActorProvider()
-      });
+    return initializeClient({
+      protoIndexFiles: [testProtobuf],
+      endpointUrl: endpoint,
+      firebaseDatabase: devFirebaseDatabase,
+      actorProvider: new ActorProvider()
+    });
   }
 
   /**
