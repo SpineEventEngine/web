@@ -19,8 +19,8 @@
  */
 
 import * as testProtobuf from '@testProto/index';
-import {Client} from "@lib/client/client";
-import {initializeClient} from '@lib/client/client-factory';
+import {Client} from '@lib/client/client';
+import * as spineWeb from '@lib/index';
 
 /**
  * Can be used in callback-based async tests to fail them before waiting
@@ -57,13 +57,13 @@ export function fail(done, message = '') {
   };
 }
 
-class MockClient extends Client {
+export class MockClient extends Client {
     // There is no need to implement `Client` for tests
     // which don't use its API
 }
 
 export function registerProtobufTypes() {
-    initializeClient({
+    spineWeb.initializeClient({
        protoIndexFiles: [testProtobuf],
        implementation: new MockClient()
     });
