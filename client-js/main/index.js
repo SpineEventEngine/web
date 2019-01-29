@@ -23,6 +23,6 @@ export {ActorRequestFactory, ActorProvider} from './client/actor-request-factory
 export {FirebaseDatabaseClient} from './client/firebase-database-client';
 export {HttpClient} from './client/http-client';
 export {Client} from './client/client';
-export {initializeClient} from './client/client-factory';
+export {initializeClient} from './client/spine';
 export {FirebaseClient} from './client/firebase-client'
 export * from './client/errors';

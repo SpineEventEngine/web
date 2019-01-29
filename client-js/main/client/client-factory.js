@@ -1,11 +1,5 @@
 import KnownTypes from './known-types';
 import TypeParsers from './parser/type-parsers';
-import {HttpClient} from './http-client';
-import {HttpEndpoint} from './http-endpoint';
-import {FirebaseDatabaseClient} from './firebase-database-client';
-import {ActorRequestFactory} from './actor-request-factory';
-import {FirebaseSubscriptionService} from './firebase-subscription-service';
-import {FirebaseClient} from './firebase-client';
 import {Client} from './client';
 
 /**
@@ -29,7 +23,7 @@ import {Client} from './client';
  *
  * Creation of the concrete implementation of `Client` instances is delegated to inheritors.
  */
-class AbstractClientFactory {
+export class AbstractClientFactory {
 
   /**
    * Creates a new instance of `Client` implementation in accordance with given options.
@@ -103,57 +97,10 @@ class AbstractClientFactory {
 }
 
 /**
- * An implementation of the `AbstractClientFactory` that creates instances of `FirebaseClient`.
- */
-class FirebaseClientFactory extends AbstractClientFactory {
-
-  /**
-   * Creates a new `FirebaseClient` instance which will send the requests on behalf of the provided
-   * actor to the provided endpoint, retrieving the data from the provided Firebase storage.
-   *
-   * Expects that given options contain backend endpoint URL, firebase Database instance and
-   * the actor provider.
-   *
-   * @param {ClientOptions} options
-   * @return {Client} a new backend client instance which will send the requests on behalf
-   *                  of the provided actor to the provided endpoint, retrieving the data
-   *                  from the provided Firebase storage
-   * @override
-   */
-  static _clientFor(options) {
-    const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient);
-    const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
-    const requestFactory = new ActorRequestFactory(options.actorProvider);
-    const subscriptionService = new FirebaseSubscriptionService(endpoint);
-
-    return new FirebaseClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
-  }
-
-  /**
-   * @override
-   */
-  static _ensureOptionsSufficient(options) {
-    super._ensureOptionsSufficient(options);
-    const messageForMissing = (option) =>
-        `Unable to initialize Client with Firebase storage. The ClientOptions.${option} not specified.`;
-    if (!options.endpointUrl) {
-      throw new Error(messageForMissing('endpointUrl'));
-    }
-    if (!options.firebaseDatabase) {
-      throw new Error(messageForMissing('firebaseDatabase'));
-    }
-    if (!options.actorProvider) {
-      throw new Error(messageForMissing('endpointUrl'));
-    }
-  }
-}
-
-/**
  * An implementation of the `AbstractClientFactory` that returns a client instance
  * provided in `ClientOptions` parameter.
  */
-class CustomClientFactory extends AbstractClientFactory {
+export class CustomClientFactory extends AbstractClientFactory {
 
   /**
    * Returns a custom Client implementation provided in options. Expects that the
@@ -180,54 +127,4 @@ class CustomClientFactory extends AbstractClientFactory {
         ' The `ClientOptions.implementation` should extend Client.');
     }
   }
-}
-
-/**
- * The main entry point of the `spine-web` JS library. Serves for initialization
- * of the `Client` instances to interact with Spine-based backend.
- *
- * To initialize a new instance of client that uses Firebase as a storage do the following:
- * ```
- *  import * as protobufs from './proto/index.js';
- *  import * as spineWeb from 'spine-web';
- *
- *  const firebaseApp = Firebase.initializeApp({...Firebase options});
- *
- *  // The backend client will receive updates of the current actor through this instance
- *  const actorProvider = new ActorProvider();
- *
- *  const client = spineWeb.initializeClient({
- *      protoIndexFiles: [protobufs],
- *      endpointUrl: 'http://example.appspot.com',
- *      firebaseDatabase: firebaseApp.database(),
- *      actorProvider: actorProvider
- *  });
- * ```
- *
- * To substitute a custom implementation of `Client` for tests do the following:
- * ```
- *  // An instance of class extending `spineWeb.Client`
- *  const mockClientImpl = new MockClient();
- *
- *  const mockClient = spineWeb.initializeClient({
- *      protoIndexFiles: [protobufs],
- *      implementation: mockClientImpl
- *  });
- * ```
- * Note, when using of custom `Client` implementation protobuf index files
- * registration is still required.
- *
- * @param {ClientOptions} options
- * @return {Client}
- */
-export function initializeClient(options) {
-  let clientFactory;
-
-  if (!!options.firebaseDatabase) {
-    clientFactory = FirebaseClientFactory;
-  } else {
-    clientFactory = CustomClientFactory;
-  }
-
-  return clientFactory.createClient(options);
 }

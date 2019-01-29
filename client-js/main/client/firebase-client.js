@@ -21,15 +21,20 @@
 "use strict";
 
 import {Observable, Subscription, Subject, Observer} from 'rxjs';
-import {QUERY_STRATEGY} from './http-endpoint';
 import {SpineError} from './errors';
 import {
   Subscription as SpineSubscription,
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {Fetch} from './client';
+import {AbstractClientFactory} from './client-factory';
 import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
+import {HttpClient} from './http-client';
+import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {FirebaseDatabaseClient} from './firebase-database-client';
+import {ActorRequestFactory} from './actor-request-factory';
+import {FirebaseSubscriptionService} from './firebase-subscription-service';
 
 /**
  * Fetch implementation using `FirebaseClient` as value storage.
@@ -299,3 +304,51 @@ export class FirebaseClient extends AbstractClient {
  * @type FetchClass
  */
 FirebaseClient.Fetch = FirebaseFetch;
+
+/**
+ * An implementation of the `AbstractClientFactory` that creates instances of `FirebaseClient`.
+ */
+export class FirebaseClientFactory extends AbstractClientFactory {
+
+  /**
+   * Creates a new `FirebaseClient` instance which will send the requests on behalf of the provided
+   * actor to the provided endpoint, retrieving the data from the provided Firebase storage.
+   *
+   * Expects that given options contain backend endpoint URL, firebase Database instance and
+   * the actor provider.
+   *
+   * @param {ClientOptions} options
+   * @return {Client} a new backend client instance which will send the requests on behalf
+   *                  of the provided actor to the provided endpoint, retrieving the data
+   *                  from the provided Firebase storage
+   * @override
+   */
+  static _clientFor(options) {
+    const httpClient = new HttpClient(options.endpointUrl);
+    const endpoint = new HttpEndpoint(httpClient);
+    const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
+    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+
+    return new FirebaseClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
+  }
+
+  /**
+   * @override
+   */
+  static _ensureOptionsSufficient(options) {
+    super._ensureOptionsSufficient(options);
+    const messageForMissing = (option) =>
+        `Unable to initialize Client with Firebase storage. The ClientOptions.${option} not specified.`;
+    if (!options.endpointUrl) {
+      throw new Error(messageForMissing('endpointUrl'));
+    }
+    if (!options.firebaseDatabase) {
+      throw new Error(messageForMissing('firebaseDatabase'));
+    }
+    if (!options.actorProvider) {
+      throw new Error(messageForMissing('endpointUrl'));
+    }
+  }
+}
+
