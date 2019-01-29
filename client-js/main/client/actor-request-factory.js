@@ -820,7 +820,7 @@ export class ActorProvider {
    */
   update(actorId) {
     if (typeof actorId === 'undefined' || actorId === null) {
-      this._actor = ActorProvider.ANONYMOUS_ACTOR;
+      this._actor = ActorProvider.ANONYMOUS;
     } else {
       ActorProvider._ensureUserId(actorId);
 
@@ -841,7 +841,7 @@ export class ActorProvider {
    * Sets the anonymous actor value.
    */
   clear() {
-    this._actor = ActorProvider.ANONYMOUS_ACTOR;
+    this._actor = ActorProvider.ANONYMOUS;
   }
 
   /**
@@ -865,9 +865,9 @@ export class ActorProvider {
  *
  * It is needed for requests to the backend when the particular user is undefined.
  */
-ActorProvider.ANONYMOUS_ACTOR = function () {
+ActorProvider.ANONYMOUS = function () {
   const actor = new UserId();
-  actor.setValue('ANONYMOUS_ACTOR');
+  actor.setValue('ANONYMOUS');
   return actor;
 }();
 

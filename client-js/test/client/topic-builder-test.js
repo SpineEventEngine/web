@@ -66,7 +66,7 @@ class Given {
   static assertActorContextCorrect(context) {
     assert.ok(context);
     assert.ok(context.getTimestamp().getSeconds() <= new Date().getTime());
-    assert.equal(context.getActor().getValue(), ActorProvider.ANONYMOUS_ACTOR);
+    assert.equal(context.getActor().getValue(), ActorProvider.ANONYMOUS);
   }
 
   /**

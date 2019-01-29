@@ -39,7 +39,7 @@ class Given {
   }
 
   static assertProvidesAnonymousActor(actorProvider) {
-    Given.assertProvidesActor(actorProvider, ActorProvider.ANONYMOUS_ACTOR);
+    Given.assertProvidesActor(actorProvider, ActorProvider.ANONYMOUS);
   }
 }
 
