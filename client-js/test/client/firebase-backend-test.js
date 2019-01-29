@@ -49,7 +49,7 @@ class Given {
   }
 
   static client(endpoint = 'https://spine-dev.appspot.com') {
-    return spineWeb.initializeClient({
+    return spineWeb.init({
       protoIndexFiles: [testProtobuf],
       endpointUrl: endpoint,
       firebaseDatabase: devFirebaseDatabase,

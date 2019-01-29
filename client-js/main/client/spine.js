@@ -15,7 +15,7 @@ import {CustomClientFactory} from './client-factory';
  *  // The backend client will receive updates of the current actor through this instance
  *  const actorProvider = new ActorProvider();
  *
- *  const client = spineWeb.initializeClient({
+ *  const client = spineWeb.init({
  *      protoIndexFiles: [protobufs],
  *      endpointUrl: 'http://example.appspot.com',
  *      firebaseDatabase: firebaseApp.database(),
@@ -28,7 +28,7 @@ import {CustomClientFactory} from './client-factory';
  *  // An instance of class extending `spineWeb.Client`
  *  const mockClientImpl = new MockClient();
  *
- *  const mockClient = spineWeb.initializeClient({
+ *  const mockClient = spineWeb.init({
  *      protoIndexFiles: [protobufs],
  *      implementation: mockClientImpl
  *  });
@@ -39,7 +39,7 @@ import {CustomClientFactory} from './client-factory';
  * @param {ClientOptions} options
  * @return {Client}
  */
-export function initializeClient(options) {
+export function init(options) {
   let clientFactory;
 
   if (!!options.firebaseDatabase) {

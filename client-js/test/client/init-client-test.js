@@ -23,7 +23,7 @@ import assert from 'assert';
 import {devFirebaseDatabase} from './test-firebase-database';
 
 import * as testProtobuf from '@testProto/index';
-import {initializeClient} from '@lib/index';
+import {init} from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 import {UserId} from '@proto/spine/core/user_id_pb';
 import {MockClient} from './test-helpers';
@@ -91,51 +91,51 @@ Given.ENDPOINT_URL = 'http://no-reply-server.appspot.com';
 Given.ACTOR_PROVIDER = new ActorProvider();
 Given.MOCK_CLIENT = new MockClient();
 
-describe('`initializeClient`', function () {
+describe('`init` function', function () {
 
   it('should register types defined in proto files', () => {
     KnownTypes.clear();
     assert.ok(!Given.protoFilesRegistered());
-    initializeClient(Given.customClientOptions());
+    init(Given.customClientOptions());
 
     assert.ok(Given.protoFilesRegistered());
   });
 
   it('should create a FirebaseClient instance for the correct options', () => {
-    const client = initializeClient(Given.firebaseClientOptions());
+    const client = init(Given.firebaseClientOptions());
     assert.ok(client instanceof FirebaseClient);
   });
 
   it('should return the provided `Client` implementation for the correct options', () => {
-    const client = initializeClient(Given.customClientOptions());
+    const client = init(Given.customClientOptions());
     assert.ok(client === Given.MOCK_CLIENT);
   });
 
   it('should throw an error when provided `Client` implementation does not extend `Client` ', () => {
     const optionsWithMalformedClient = Object.assign(Given.customClientOptions(), {implementation: {}});
     assert.throws(() => {
-      initializeClient(optionsWithMalformedClient);
+      init(optionsWithMalformedClient);
     });
   });
 
   it('should throw an error when proto files missing', () => {
     const optionsWithNoProtoFiles = Object.assign(Given.firebaseClientOptions(), {protoIndexFiles: []});
     assert.throws(() => {
-      initializeClient(optionsWithNoProtoFiles);
+      init(optionsWithNoProtoFiles);
     });
   });
 
   it('should throw an error when endpoint URL missing', () => {
     const optionsWithNoEndpointUrl = Object.assign(Given.firebaseClientOptions(), {endpointUrl: undefined});
     assert.throws(() => {
-      initializeClient(optionsWithNoEndpointUrl);
+      init(optionsWithNoEndpointUrl);
     });
   });
 
   it('should throw an error when actor provider missing', () => {
     const optionsWithNoActorProvider = Object.assign(Given.firebaseClientOptions(), {actorProvider: undefined});
       assert.throws(() => {
-        initializeClient(optionsWithNoActorProvider);
+        init(optionsWithNoActorProvider);
       });
   });
 });

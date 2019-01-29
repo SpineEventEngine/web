@@ -63,7 +63,7 @@ export class MockClient extends Client {
 }
 
 export function registerProtobufTypes() {
-    spineWeb.initializeClient({
+    spineWeb.init({
        protoIndexFiles: [testProtobuf],
        implementation: new MockClient()
     });
