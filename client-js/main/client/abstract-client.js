@@ -28,8 +28,10 @@ import {Status} from '../proto/spine/core/response_pb';
 import {Client} from './client';
 
 /**
- * A mediate abstract `Client` for Spine application backend. Defines operations that client is able
- * to perform (`.fetchAll(...)`, `.sendCommand(...)`, etc.) without reference to the particular data provider.
+ * A mediate abstract `Client` for Spine application backend.
+ *
+ * Defines operations that client is able to perform (`.fetchAll(...)`, `.sendCommand(...)`, etc.)
+ * without reference to the particular data provider.
  *
  * @abstract
  */
