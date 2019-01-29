@@ -19,8 +19,10 @@
  */
 
 export {Type, TypedMessage, TypeUrl} from './client/typed-message';
-export {ActorRequestFactory} from './client/actor-request-factory';
-export {FirebaseClient} from './client/firebase-client';
+export {ActorRequestFactory, ActorProvider} from './client/actor-request-factory';
+export {FirebaseDatabaseClient} from './client/firebase-database-client';
 export {HttpClient} from './client/http-client';
-export {BackendClient} from './client/backend-client';
+export {Client} from './client/client';
+export {init} from './client/spine';
+export {FirebaseClient} from './client/firebase-client'
 export * from './client/errors';

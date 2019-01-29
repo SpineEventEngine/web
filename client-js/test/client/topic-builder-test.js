@@ -23,11 +23,12 @@ import assert from 'assert';
 
 import {Message} from 'google-protobuf';
 import {Type, TypedMessage} from '@lib/client/typed-message';
-import {ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
+import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {StringValue} from '@proto/google/protobuf/wrappers_pb';
+import {UserId} from '@proto/spine/core/user_id_pb';
 import {
   Filter,
   CompositeFilter,
@@ -65,7 +66,7 @@ class Given {
   static assertActorContextCorrect(context) {
     assert.ok(context);
     assert.ok(context.getTimestamp().getSeconds() <= new Date().getTime());
-    assert.equal(context.getActor().getValue(), Given.ACTOR);
+    assert.equal(context.getActor().getValue(), ActorProvider.ANONYMOUS);
   }
 
   /**
@@ -99,7 +100,7 @@ class Given {
    * @return {ActorRequestFactory}
    */
   static requestFactory() {
-    return new ActorRequestFactory(Given.ACTOR);
+    return new ActorRequestFactory(new ActorProvider());
   }
 }
 
@@ -107,7 +108,6 @@ Given.TYPE = {
   TASK_ID: Type.forClass(TaskId),
   TASK: Type.forClass(Task),
 };
-Given.ACTOR = 'spine-web-test-actor';
 
 describe('TopicBuilder', function () {
 

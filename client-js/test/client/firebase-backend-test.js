@@ -21,23 +21,26 @@
 import assert from 'assert';
 import uuid from 'uuid';
 
-import {devFirebaseApp} from './test-firebase-app';
+import {devFirebaseDatabase} from './test-firebase-database';
 import {Type} from '@lib/client/typed-message';
 import {Duration} from '@lib/client/time-utils';
 
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
+import * as testProtobuf from '@testProto/index';
 import {Filter, CompositeFilter} from '@proto/spine/client/filters_pb';
 import {Topic} from '@testProto/spine/client/subscription_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
-import {BackendClient} from '@lib/client/backend-client';
+import * as spineWeb from '@lib/index';
+import {ActorProvider} from '@lib/client/actor-request-factory';
+import {UserId} from '@proto/spine/core/user_id_pb';
 import {
  ServerError,
  CommandValidationError,
  CommandHandlingError,
  ConnectionError
 } from '@lib/client/errors';
-import {fail, registerProtobufTypes} from './test-helpers';
+import {fail} from './test-helpers';
 
 class Given {
 
@@ -45,11 +48,12 @@ class Given {
     throw new Error('A utility Given class cannot be instantiated.');
   }
 
-  static backendClient(endpoint = 'https://spine-dev.appspot.com') {
-    return BackendClient.usingFirebase({
-      atEndpoint: endpoint,
-      withFirebaseStorage: devFirebaseApp,
-      forActor: 'web-test-actor'
+  static client(endpoint = 'https://spine-dev.appspot.com') {
+    return spineWeb.init({
+      protoIndexFiles: [testProtobuf],
+      endpointUrl: endpoint,
+      firebaseDatabase: devFirebaseDatabase,
+      actorProvider: new ActorProvider()
     });
   }
 
@@ -64,8 +68,8 @@ class Given {
   static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
     const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
-    name = typeof name === 'undefined' ? this.defaultTaskName : name;
-    description = typeof description === 'undefined' ? this.defaultTaskDescription : description;
+    name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
+    description = typeof description === 'undefined' ? this.DEFAULT_TASK_DESCRIPTION : description;
 
     const command = new CreateTask();
     command.setId(taskId);
@@ -136,8 +140,8 @@ class Given {
   }
 }
 
-Given.defaultTaskName = 'Get to Mount Doom';
-Given.defaultTaskDescription = 'There seems to be a bug with the rings that needs to be fixed';
+Given.DEFAULT_TASK_NAME = 'Get to Mount Doom';
+Given.DEFAULT_TASK_DESCRIPTION = 'There seems to be a bug with the rings that needs to be fixed';
 Given.TYPE = {
   OF_ENTITY: {
     TASK: Type.forClass(Task),
@@ -146,11 +150,9 @@ Given.TYPE = {
   MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
 
-const backendClient = Given.backendClient();
+describe('FirebaseClient', function () {
 
-describe('FirebaseBackendClient', function () {
-
-  registerProtobufTypes();
+  const client = Given.client();
 
   // Big timeout due to remote calls during tests.
   const timeoutDuration = new Duration({minutes: 2});
@@ -166,9 +168,9 @@ describe('FirebaseBackendClient', function () {
 
     const taskId = command.getId();
 
-    backendClient.sendCommand(command, () => {
+    client.sendCommand(command, () => {
 
-      backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
+      client.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
         assert.equal(data.getId().getValue(), taskId);
         assert.equal(data.getName(), command.getName());
         assert.equal(data.getDescription(), command.getDescription());
@@ -182,7 +184,7 @@ describe('FirebaseBackendClient', function () {
 
   it('fails command sending when wrong server endpoint specified', done => {
     const fakeBaseUrl = 'https://malformed-server-endpoint.com';
-    const malformedBackendClient = Given.backendClient(fakeBaseUrl);
+    const malformedBackendClient = Given.client(fakeBaseUrl);
     const command = Given.createTaskCommand({
       withIdPrefix: 'spine-web-test-send-command',
       named: 'Implement Spine Web JS client tests',
@@ -205,7 +207,7 @@ describe('FirebaseBackendClient', function () {
   it('fails with `CommandValidationError` for invalid command', done => {
     const command = Given.createTaskCommand({withId: null});
 
-    backendClient.sendCommand(
+    client.sendCommand(
       command,
       fail(done, 'A command was acknowledged when it was expected to fail.'),
       error => {
@@ -226,7 +228,7 @@ describe('FirebaseBackendClient', function () {
 
     const taskId = Given.taskId({});
 
-    backendClient.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
+    client.fetchById(Given.TYPE.OF_ENTITY.TASK, taskId, data => {
       assert.equal(data, null);
 
       done();
@@ -239,11 +241,11 @@ describe('FirebaseBackendClient', function () {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
     const taskId = command.getId();
 
-    backendClient.sendCommand(command, () => {
+    client.sendCommand(command, () => {
 
       let itemFound = false;
 
-      backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
+      client.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
         next(data) {
           // Ordering is not guaranteed by fetch and
           // the list of entities cannot be cleaned for tests,
@@ -264,9 +266,9 @@ describe('FirebaseBackendClient', function () {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
     const taskId = command.getId();
 
-    backendClient.sendCommand(command, () => {
+    client.sendCommand(command, () => {
 
-      backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).atOnce()
+      client.fetchAll({ofType: Given.TYPE.OF_ENTITY.TASK}).atOnce()
         .then(data => {
           const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
           assert.ok(targetObject);
@@ -277,7 +279,7 @@ describe('FirebaseBackendClient', function () {
   });
 
   it('fetches an empty list for entity that does not get created at once', done => {
-    backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.PROJECT}).atOnce()
+    client.fetchAll({ofType: Given.TYPE.OF_ENTITY.PROJECT}).atOnce()
       .then(data => {
         assert.ok(data.length === 0);
         done();
@@ -285,7 +287,7 @@ describe('FirebaseBackendClient', function () {
   });
 
   it('fetches an empty list for entity that does not get created one-by-one', done => {
-    backendClient.fetchAll({ofType: Given.TYPE.OF_ENTITY.PROJECT}).oneByOne()
+    client.fetchAll({ofType: Given.TYPE.OF_ENTITY.PROJECT}).oneByOne()
       .subscribe({
         next: fail(done),
         error: fail(done),
@@ -296,9 +298,9 @@ describe('FirebaseBackendClient', function () {
   it('fails a malformed query', done => {
     const command = Given.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
 
-    backendClient.sendCommand(command, () => {
+    client.sendCommand(command, () => {
 
-      backendClient.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
+      client.fetchAll({ofType: Given.TYPE.MALFORMED}).atOnce()
         .then(fail(done), error => {
           assert.ok(error instanceof ServerError);
           assert.equal(error.message, 'Internal Server Error');
@@ -313,7 +315,7 @@ describe('FirebaseBackendClient', function () {
     const tasksToBeCreated = names.length;
     let taskIds;
     let count = 0;
-    backendClient.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK})
+    client.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: task => {
@@ -343,7 +345,7 @@ describe('FirebaseBackendClient', function () {
     });
     taskIds = commands.map(command => command.getId().getValue());
     commands.forEach(command => {
-      backendClient.sendCommand(command, Given.noop, fail(done), fail(done));
+      client.sendCommand(command, Given.noop, fail(done), fail(done));
     });
   });
 
@@ -353,7 +355,7 @@ describe('FirebaseBackendClient', function () {
     let countChanged = 0;
     const initialTaskNames = ['Created task #1', 'Created task #2', 'Created task #3'];
 
-    backendClient.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK})
+    client.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {
@@ -398,7 +400,7 @@ describe('FirebaseBackendClient', function () {
     const createPromises = [];
     createCommands.forEach(command => {
       const promise = new Promise(resolve => {
-        backendClient.sendCommand(
+        client.sendCommand(
           command,
           () => {
             console.log(`Task '${command.getId().getValue()}' created.`);
@@ -422,7 +424,7 @@ describe('FirebaseBackendClient', function () {
             withId: taskId,
             to: `Renamed '${taskId}'`
           });
-          backendClient.sendCommand(
+          client.sendCommand(
             renameCommand,
             () => console.log(`Task '${taskId}' renamed.`),
             fail(done, 'Unexpected error while renaming a task.'),
@@ -447,7 +449,7 @@ describe('FirebaseBackendClient', function () {
     const taskIdValue = createCommand.getId().getValue();
 
     const promise = new Promise(resolve => {
-      backendClient.sendCommand(
+      client.sendCommand(
         createCommand,
         () => {
           console.log(`Task '${taskIdValue}' created.`);
@@ -459,7 +461,7 @@ describe('FirebaseBackendClient', function () {
     });
 
     let changesCount = 0;
-    backendClient.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK, byId: taskId})
+    client.subscribeToEntities({ofType: Given.TYPE.OF_ENTITY.TASK, byId: taskId})
       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         itemAdded.subscribe({
           next: item => {
@@ -507,7 +509,7 @@ describe('FirebaseBackendClient', function () {
             withId: taskIdValue,
             to: 'Renamed once'
           });
-          backendClient.sendCommand(
+          client.sendCommand(
             renameCommand,
             () => {
               resolve();
@@ -524,7 +526,7 @@ describe('FirebaseBackendClient', function () {
           withId: taskIdValue,
           to: 'Renamed twice'
         });
-        backendClient.sendCommand(
+        client.sendCommand(
           renameCommand,
           () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
           fail(done, 'Unexpected error while renaming a task.'),
@@ -535,7 +537,7 @@ describe('FirebaseBackendClient', function () {
   });
 
   it('fails a malformed subscription', done => {
-    backendClient.subscribeToEntities({ofType: Given.TYPE.MALFORMED})
+    client.subscribeToEntities({ofType: Given.TYPE.MALFORMED})
       .then(() => {
         done(new Error('A malformed subscription should not yield results.'));
       })

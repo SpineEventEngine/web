@@ -22,6 +22,7 @@
 
 import uuid from 'uuid';
 
+import {Message} from 'google-protobuf';
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
 import {Query, QueryId} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
@@ -37,7 +38,7 @@ import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb
 import {UserId} from '../proto/spine/core/user_id_pb';
 import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
 import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
-import {Type, TypedMessage} from './typed-message';
+import {Type, TypedMessage, isProtobufMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
 
@@ -798,6 +799,79 @@ class TopicFactory {
 }
 
 /**
+ * A provider of the actor that is used to associate requests to the backend
+ * with an application user.
+ */
+export class ActorProvider {
+
+  /**
+   * @param {?UserId} actor an optional actor to be used for identifying requests to the backend;
+   *                        if not specified, the anonymous actor is used
+   */
+  constructor(actor) {
+    this.update(actor);
+  }
+
+  /**
+   * Updates the actor ID value if it is different from the current, sets the
+   * anonymous actor value if actor ID not specified or `null`.
+   *
+   * @param {?UserId} actorId
+   */
+  update(actorId) {
+    if (typeof actorId === 'undefined' || actorId === null) {
+      this._actor = ActorProvider.ANONYMOUS;
+    } else {
+      ActorProvider._ensureUserId(actorId);
+
+      if (!Message.equals(this._actor, actorId)) {
+        this._actor = actorId;
+      }
+    }
+  }
+
+  /**
+   * @return {UserId} the current actor value
+   */
+  get() {
+    return this._actor;
+  }
+
+  /**
+   * Sets the anonymous actor value.
+   */
+  clear() {
+    this._actor = ActorProvider.ANONYMOUS;
+  }
+
+  /**
+   * Ensures if the object extends {@link UserId}.
+   *
+   * The implementation doesn't use `instanceof` check and check on prototypes
+   * since they may fail if different versions of the file are used at the same time
+   * (e.g. bundled and the original one).
+   *
+   * @param object the object to check
+   */
+  static _ensureUserId(object) {
+    if (!(isProtobufMessage(object) && typeof object.getValue === 'function')) {
+      throw new Error('The `spine.core.UserId` type was expected by `ActorProvider`.');
+    }
+  }
+}
+
+/**
+ * The anonymous backend actor.
+ *
+ * It is needed for requests to the backend when the particular user is undefined.
+ */
+ActorProvider.ANONYMOUS = function () {
+  const actor = new UserId();
+  actor.setValue('ANONYMOUS');
+  return actor;
+}();
+
+/**
  * A factory for the various requests fired from the client-side by an actor.
  */
 export class ActorRequestFactory {
@@ -805,11 +879,10 @@ export class ActorRequestFactory {
   /**
    * Creates a new instance of ActorRequestFactory for the given actor.
    *
-   * @param {!string} actor a string identifier of an actor
+   * @param {!ActorProvider} actorProvider a provider of an actor
    */
-  constructor(actor) {
-    this._actor = new UserId();
-    this._actor.setValue(actor);
+  constructor(actorProvider) {
+    this._actorProvider = actorProvider;
   }
 
   /**
@@ -844,7 +917,7 @@ export class ActorRequestFactory {
 
   _actorContext() {
     const result = new ActorContext();
-    result.setActor(this._actor);
+    result.setActor(this._actorProvider.get());
     const seconds = Math.round(new Date().getTime() / 1000);
     const time = new Timestamp();
     time.setSeconds(seconds);
