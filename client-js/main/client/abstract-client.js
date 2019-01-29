@@ -138,7 +138,7 @@ export class AbstractClient extends Client {
   }
 
   /**
-   * Creates a new Fetch object specifying the target of fetch and its parameters.
+   * Creates a new `Fetch` object specifying the target of fetch and its parameters.
    *
    * @param {!spine.client.Query} query a request to the read-side
    * @return {Client.Fetch<T>} an object that performs the fetch

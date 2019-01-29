@@ -816,7 +816,7 @@ export class ActorProvider {
    * Updates the actor ID value if it is different from the current, sets the
    * anonymous actor value if actor ID not specified or `null`.
    *
-   * @param actorId
+   * @param {?UserId} actorId
    */
   update(actorId) {
     if (typeof actorId === 'undefined' || actorId === null) {
