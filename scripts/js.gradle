@@ -1,3 +1,5 @@
+import java.util.stream.Collectors
+
 /*
  * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
@@ -189,6 +191,12 @@ task link {
     description = "Publishes the NPM package locally."
 
     doLast {
+        def names = []
+        fileTree(publicationDirectory).visit { final details ->
+            names << details.file.path
+        }
+        final def collectedPaths = names.stream().collect(Collectors.joining('\n'))
+        println("===== Before execution of `:link` publication directory contains: \n ${collectedPaths}")
         executeNpm(publicationDirectory as File, 'link')
     }
 
