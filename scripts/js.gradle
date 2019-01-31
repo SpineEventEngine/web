@@ -56,6 +56,7 @@ ext {
     genProtoMain = "$genProtoBaseDir/main/$genProtoSubDir"
     genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
     nodeModulesDir = "$projectDir/node_modules"
+    nycOutputDir = "$projectDir/.nyc_output"
 
     npm = { final String... command ->
         ext.executeNpm(workDirectory as File, command)
@@ -101,11 +102,18 @@ protobuf {
 apply plugin: 'io.spine.tools.proto-js-plugin'
 
 /**
- * Cleans old module dependencies.
+ * Cleans old module dependencies and build outputs.
  */
-task cleanOldDependencies {
+task deleteCompiled {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = 'Cleans old module dependencies and build outputs.'
+
     doLast {
-        delete nodeModulesDir
+        delete buildJs.outputs
+        delete installDependencies.outputs
+        delete genProtoMain
+        delete genProtoTest
+        delete coverageJs.outputs
     }
 }
 
@@ -135,7 +143,7 @@ protoJs {
 }
 
 /**
- * Assembles the JS sources.
+ * Assembles the bundled version of JS sources.
  *
  * This task is an analog of `build` for JS.
  *
@@ -145,39 +153,63 @@ task buildJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = "Assembles the JavaScript source files."
 
+    outputs.files "$projectDir/dist"
+    
+    doLast {
+        npm 'run', 'build'
+        npm 'run', 'build-dev'
+    }
+
     dependsOn installDependencies
 }
 
 /**
- * Transpiles sources before publishing them to NPM.
+ * Copies bundled JS sources to the temporary NPM publication directory.
+ */
+task copyBundeledJs(type: Copy) {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = 'Copies assembled JavaScript sources to the NPM publication directory.'
+
+    from buildJs.outputs
+    into "$publicationDirectory/dist"
+
+    dependsOn buildJs
+}
+
+/**
+ * Transpiles JS sources before publishing them to NPM.
+ *
+ * Puts the resulting files to the temporary NPM publication directory.
  */
 task transpileSources {
     group = JAVA_SCRIPT_TASK_GROUP
     description = "Transpiles sources before publishing."
 
     doLast {
-        executeNpm(projectDir as File, 'run', 'transpile-before-publish')
+        npm 'run', 'transpile-before-publish'
     }
 }
 
 /**
- * Copies the NPM publication files into a temporary directory which they are published from.
+ * Copies all remaining files into a temporary NPM publication directory.
+ * 
+ * This task finalizes assembling of files in the temporary NPM publication
+ * directory which they are published from.
  */
 task prepareJsPublication(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Prepares the NPM package for publish.'
 
-    from projectDir, {
+    from (projectDir) {
         include 'index.js'
         include 'package.json'
         include '.npmrc'
-        include 'dist/**'
     }
 
     into publicationDirectory
-    exclude testSrcDir
 
     dependsOn buildJs
+    dependsOn copyBundeledJs
     dependsOn transpileSources
 }
 
@@ -236,6 +268,8 @@ task coverageJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Runs the JS tests and collects the code coverage info.'
 
+    outputs.files nycOutputDir
+    
     doLast {
         npm 'run', 'coverage'
     }
@@ -246,5 +280,5 @@ task coverageJs {
 rootProject.check.dependsOn coverageJs
 
 build.dependsOn buildJs
-clean.dependsOn cleanOldDependencies
+clean.dependsOn deleteCompiled
 publish.dependsOn publishJs
