@@ -107,7 +107,7 @@ apply plugin: 'io.spine.tools.proto-js-plugin'
 task deleteCompiled {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Cleans old module dependencies and build outputs.'
-    
+
     doLast {
         delete buildJs.outputs
         delete installDependencies.outputs
@@ -143,7 +143,7 @@ protoJs {
 }
 
 /**
- * Assembles the JS sources.
+ * Assembles the bundled version of JS sources.
  *
  * This task is an analog of `build` for JS.
  *
@@ -164,9 +164,9 @@ task buildJs {
 }
 
 /**
- * Copies assembled JS sources to the temporary NPM publication directory.
+ * Copies bundled JS sources to the temporary NPM publication directory.
  */
-task copyJsBuildOutputs(type: Copy) {
+task copyBundeledJs(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Copies assembled JavaScript sources to the NPM publication directory.'
 
@@ -177,7 +177,7 @@ task copyJsBuildOutputs(type: Copy) {
 }
 
 /**
- * Transpiles sources before publishing them to NPM.
+ * Transpiles JS sources before publishing them to NPM.
  *
  * Puts the resulting files to the temporary NPM publication directory.
  */
@@ -191,7 +191,10 @@ task transpileSources {
 }
 
 /**
- * Copies the NPM publication files into a temporary directory which they are published from.
+ * Copies all remaining files into a temporary NPM publication directory.
+ * 
+ * This task finalizes assembling of files in the temporary NPM publication
+ * directory which they are published from.
  */
 task prepareJsPublication(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
@@ -206,7 +209,7 @@ task prepareJsPublication(type: Copy) {
     into publicationDirectory
 
     dependsOn buildJs
-    dependsOn copyJsBuildOutputs
+    dependsOn copyBundeledJs
     dependsOn transpileSources
 }
 
