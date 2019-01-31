@@ -162,6 +162,19 @@ task transpileSources {
     }
 }
 
+task checkNpmDirectoryAfterTranspine {
+    doLast {
+        def names = []
+        fileTree(publicationDirectory).visit { final details ->
+            names << details.file.path
+        }
+        final def collectedPaths = names.stream().collect(Collectors.joining('\n'))
+        println("===== After execution `:transpileSources` publication directory contains: \n ${collectedPaths}")
+    }
+
+    dependsOn transpileSources
+}
+
 /**
  * Copies the NPM publication files into a temporary directory which they are published from.
  */
@@ -180,7 +193,7 @@ task prepareJsPublication(type: Copy) {
     exclude testSrcDir
 
     dependsOn buildJs
-    dependsOn transpileSources
+    dependsOn checkNpmDirectoryAfterTranspine
 }
 
 /**
