@@ -22,10 +22,6 @@ apply from: "$rootDir/scripts/js.gradle"
 
 apply plugin: 'com.google.protobuf'
 
-ext {
-    nycOutputDir = "$projectDir/.nyc_output"
-}
-
 dependencies {
     protobuf project(':web')
     protobuf project(':firebase-web')
@@ -64,19 +60,6 @@ sourceSets {
     }
 }
 
-clean {
-    delete nycOutputDir
-    delete "$projectDir/dist"
-    delete nodeModulesDir
-    delete genProtoMain
-    delete genProtoTest
-}
-
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
-
-buildJs.doLast {
-    npm 'run', 'build'
-    npm 'run', 'build-dev'
-}
