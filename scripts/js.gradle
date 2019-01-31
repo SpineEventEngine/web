@@ -156,7 +156,22 @@ task buildJs {
 }
 
 /**
+ * Copies assembled JS sources to the temporary NPM publication directory.
+ */
+task copyJsBuildOutputs(type: Copy) {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = 'Copies assembled JavaScript sources to the NPM publication directory.'
+
+    from buildJs.outputs
+    into "$publicationDirectory/dist"
+
+    dependsOn buildJs
+}
+
+/**
  * Transpiles sources before publishing them to NPM.
+ *
+ * Puts the resulting files to the temporary NPM publication directory.
  */
 task transpileSources {
     group = JAVA_SCRIPT_TASK_GROUP
@@ -174,17 +189,16 @@ task prepareJsPublication(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Prepares the NPM package for publish.'
 
-    from projectDir, {
+    from (projectDir) {
         include 'index.js'
         include 'package.json'
         include '.npmrc'
-        include 'dist/**'
     }
 
     into publicationDirectory
-    exclude testSrcDir
 
     dependsOn buildJs
+    dependsOn copyJsBuildOutputs
     dependsOn transpileSources
 }
 
