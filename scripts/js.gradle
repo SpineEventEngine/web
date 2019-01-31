@@ -186,7 +186,7 @@ task transpileSources {
     description = "Transpiles sources before publishing."
 
     doLast {
-        executeNpm(projectDir as File, 'run', 'transpile-before-publish')
+        npm 'run', 'transpile-before-publish'
     }
 }
 
