@@ -145,6 +145,13 @@ task buildJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = "Assembles the JavaScript source files."
 
+    outputs.files "$projectDir/dist"
+    
+    doLast {
+        npm 'run', 'build'
+        npm 'run', 'build-dev'
+    }
+
     dependsOn installDependencies
 }
 

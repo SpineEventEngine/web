@@ -75,8 +75,3 @@ clean {
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
-
-buildJs.doLast {
-    npm 'run', 'build'
-    npm 'run', 'build-dev'
-}
