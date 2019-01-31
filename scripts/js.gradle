@@ -147,6 +147,13 @@ task buildJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = "Assembles the JavaScript source files."
 
+    outputs.files "$projectDir/dist"
+
+    doLast {
+        npm 'run', 'build'
+        npm 'run', 'build-dev'
+    }
+
     dependsOn installDependencies
 }
 
@@ -175,21 +182,33 @@ task checkNpmDirectoryAfterTranspine {
     dependsOn transpileSources
 }
 
+task copyBuildOutputs(type: Copy) {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = 'Prepares the NPM package for publish.'
+
+    from buildJs.outputs
+    into "$publicationDirectory/dist"
+
+    dependsOn buildJs
+}
+
 /**
  * Copies the NPM publication files into a temporary directory which they are published from.
  */
-task prepareJsPublication {
-//    group = JAVA_SCRIPT_TASK_GROUP
-//    description = 'Prepares the NPM package for publish.'
-//
-//    from projectDir
-//    into publicationDirectory
-//    include 'index.js'
-//    include 'package.json'
-//    include '.npmrc'
-//    include 'dist/**'
+task prepareJsPublication(type: Copy) {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = 'Prepares the NPM package for publish.'
+
+    from (projectDir) {
+        include 'index.js'
+        include 'package.json'
+        include '.npmrc'
+    }
+
+    into publicationDirectory
 
     dependsOn buildJs
+    dependsOn copyBuildOutputs
     dependsOn checkNpmDirectoryAfterTranspine
 }
 
