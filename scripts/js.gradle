@@ -182,14 +182,12 @@ task prepareJsPublication(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Prepares the NPM package for publish.'
 
-    from projectDir, {
-        include 'index.js'
-        include 'package.json'
-        include '.npmrc'
-        include 'dist/**'
-    }
-
+    from projectDir
     into publicationDirectory
+    include 'index.js'
+    include 'package.json'
+    include '.npmrc'
+    include 'dist/**'
 
     dependsOn buildJs
     dependsOn checkNpmDirectoryAfterTranspine
