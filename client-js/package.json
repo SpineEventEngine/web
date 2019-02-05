@@ -18,7 +18,7 @@
   "scripts": {
     "build": "webpack --config webpack-prod.config.js",
     "build-dev": "webpack --config webpack-dev.config.js",
-    "transpile-before-publish": "babel main --out-dir build/npm-publication --source-maps --ignore main/index.js",
+    "transpile-before-publish": "babel main --out-dir build/npm-publication --source-maps",
     "coverage": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
     "test": "mocha --require babel-polyfill --require babel-register --recursive --exit --full-trace ./test"
   },
@@ -48,5 +48,5 @@
     "webpack-merge": "^4.1.4"
   },
   "sideEffects": false,
-  "main": "dist/bundle.umd.js"
+  "main": "main/index.js"
 }
