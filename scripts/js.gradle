@@ -24,7 +24,7 @@
  * <p>Extends and configures tasks from `config` submodule.
  */
 
-apply from: deps.scripts.js
+apply from: deps.scripts.npmPublishTasks
 
 ext {
     srcDir = "$projectDir/main"

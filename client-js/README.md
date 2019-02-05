@@ -3,8 +3,13 @@ This module is a JS library that communicates with Spine Web server. It’s a fa
 domain commands, querying data and subscribing to entity states.  
 
 The latest published version can be found on [NPM](https://www.npmjs.com/package/spine-web).
- 
-The NPM artifact provides sources transpiled into ES5 along with theirs source maps.
+
+The NPM artifact:
+* Provides `spine-web` files along with used Protobuf definitions.
+* Provides types from [google-protobuf](https://www.npmjs.com/package/google-protobuf) NPM package.
+ These types should be used since they are additionally processed by Spine's Protobuf plugin for JS.
+* Provides sources transpiled into ES5 along with theirs source maps.
+* Does **not** provide a bundled version assuming that a library user does bundling on its own.
 
 ## Usage
 
