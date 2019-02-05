@@ -41,36 +41,16 @@
  * the NPM execution process, which is sufficient for the local development.
  */
 
-apply from: "$rootDir/scripts/js-cli.gradle"
-apply from: "$rootDir/scripts/update-js-version.gradle"
+apply from: deps.scripts.js
 
 ext {
-    JAVA_SCRIPT_TASK_GROUP = 'JavaScript'
-
-    workDirectory = "$projectDir"
-    publicationDirectory = "$buildDir/npm-publication/"
     srcDir = "$projectDir/main"
     testSrcDir = "$projectDir/test"
     genProtoBaseDir = projectDir
     genProtoSubDir = "proto"
     genProtoMain = "$genProtoBaseDir/main/$genProtoSubDir"
     genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
-    nodeModulesDir = "$projectDir/node_modules"
     nycOutputDir = "$projectDir/.nyc_output"
-
-    npm = { final String... command ->
-        ext.executeNpm(workDirectory as File, command)
-    }
-}
-
-/**
- * Compiles Protobuf sources into JavaScript.
- *
- * <p>This is a lifecycle task. It performs no action but triggers all the tasks which perform
- * the compilation.
- */
-task compileProtoToJs {
-    description = "Compiles Protobuf sources into JavaScript."
 }
 
 protobuf {
@@ -108,29 +88,12 @@ task deleteCompiled {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Cleans old module dependencies and build outputs.'
 
+    clean.dependsOn deleteCompiled
+
     doLast {
-        delete buildJs.outputs
-        delete installDependencies.outputs
         delete genProtoMain
         delete genProtoTest
         delete coverageJs.outputs
-    }
-}
-
-/**
- * Installs the module dependencies using the `npm install` command.
- */
-task installDependencies {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Installs the JavaScript dependencies.'
-
-    inputs.files "$projectDir/package.json"
-    outputs.files nodeModulesDir
-
-    dependsOn compileProtoToJs
-
-    doLast {
-        npm 'install'
     }
 }
 
@@ -139,19 +102,12 @@ protoJs {
     testGenProtoDir = genProtoTest
 
     generateParsersTask().dependsOn compileProtoToJs
-    installDependencies.dependsOn generateParsersTask()
 }
 
 /**
- * Assembles the bundled version of JS sources.
- *
- * This task is an analog of `build` for JS.
- *
- * To include a task into the JS build, depend `buildJs` onto that task.
+ * Customize already defined task to run Webpack build.
  */
-task buildJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Assembles the JavaScript source files."
+buildJs {
 
     outputs.files "$projectDir/dist"
     
@@ -159,8 +115,6 @@ task buildJs {
         npm 'run', 'build'
         npm 'run', 'build-dev'
     }
-
-    dependsOn installDependencies
 }
 
 /**
@@ -191,14 +145,9 @@ task transpileSources {
 }
 
 /**
- * Copies all remaining files into a temporary NPM publication directory.
- * 
- * This task finalizes assembling of files in the temporary NPM publication
- * directory which they are published from.
+ * Defines files to copy by the task.
  */
-task prepareJsPublication(type: Copy) {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Prepares the NPM package for publish.'
+prepareJsPublication {
 
     from (projectDir) {
         include 'index.js'
@@ -206,39 +155,9 @@ task prepareJsPublication(type: Copy) {
         include '.npmrc'
     }
 
-    into publicationDirectory
-
     dependsOn buildJs
     dependsOn copyBundeledJs
     dependsOn transpileSources
-}
-
-/**
- * Publishes the NPM package locally with `npm link`.
- */
-task link {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Publishes the NPM package locally."
-
-    doLast {
-        executeNpm(publicationDirectory as File, 'link')
-    }
-
-    dependsOn prepareJsPublication
-}
-
-/**
- * Publishes the NPM package with `npm publish`.
- */
-task publishJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Publishes the NPM package.'
-
-    doLast {
-        executeNpm(publicationDirectory as File, 'publish')
-    }
-
-    dependsOn prepareJsPublication
 }
 
 /**
@@ -275,10 +194,5 @@ task coverageJs {
     }
 
     dependsOn buildJs
+    rootProject.check.dependsOn coverageJs
 }
-
-rootProject.check.dependsOn coverageJs
-
-build.dependsOn buildJs
-clean.dependsOn deleteCompiled
-publish.dependsOn publishJs
