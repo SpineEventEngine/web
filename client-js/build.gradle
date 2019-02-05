@@ -35,7 +35,6 @@ idea.module {
     testSourceDirs += file(testSrcDir)
 
     excludeDirs += file(nycOutputDir)
-    excludeDirs += file(nodeModulesDir)
     excludeDirs += file(genProtoMain)
     excludeDirs += file(genProtoTest)
 

@@ -19,26 +19,9 @@
  */
 
 /**
- * This build script contains a Gradle plugin for JavaScript modules.
- *
- * <p>The plugin configures NPM tools execution and connects the JS assembly and test routines
- * with the Gradle execution process.
- *
- * <p>The plugin defines tasks for:
- * <ul>
- *     <li>downloading NPM dependencies -                   {@code installDependencies};
- *     <li>compile Protobuf into JavaScript -               {@code compileProtoToJs};
- *     <li>running tests NPM dependencies -                 {@code testJs} and {@code coverageJs};
- *     <li>publishing NPM artifacts into the NPM registry - {@code publishJs};
- *     <li>linking the module to the local NPM registry -   {@code link}
- * </ul>
- *
- * <p>Most of the tasks launch a separate process which runs an NPM CLI command, so it's necessary
- * that the NPM command line tool is installed.
- *
- * <p>In order to publish the NPM module, it is required that the {@code NPM_TOKEN} environment
- * variable is set to a valid NPM auth token. If the token is not set, a dummy value is added to
- * the NPM execution process, which is sufficient for the local development.
+ * The script declares tasks required to build a JavaScript module.
+ * 
+ * <p>Extends and configures tasks from `config` submodule.
  */
 
 apply from: deps.scripts.js
@@ -52,34 +35,6 @@ ext {
     genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
     nycOutputDir = "$projectDir/.nyc_output"
 }
-
-protobuf {
-    generatedFilesBaseDir = genProtoBaseDir
-    protoc {
-        artifact = deps.build.protoc
-    }
-    generateProtoTasks {
-        all().each { final task ->
-            task.builtins {
-                // Do not use java builtin output in this project.
-                remove java
-
-                // For information on JavaScript code generation please see
-                // https://github.com/google/protobuf/blob/master/js/README.md
-                js {
-                    option "import_style=commonjs"
-                    outputSubDir = genProtoSubDir
-                }
-
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
-            }
-            compileProtoToJs.dependsOn task
-        }
-    }
-}
-
-apply plugin: 'io.spine.tools.proto-js-plugin'
 
 /**
  * Cleans old module dependencies and build outputs.
@@ -95,13 +50,6 @@ task deleteCompiled {
         delete genProtoTest
         delete coverageJs.outputs
     }
-}
-
-protoJs {
-    mainGenProtoDir = genProtoMain
-    testGenProtoDir = genProtoTest
-
-    generateParsersTask().dependsOn compileProtoToJs
 }
 
 /**
@@ -195,4 +143,39 @@ task coverageJs {
 
     dependsOn buildJs
     rootProject.check.dependsOn coverageJs
+}
+
+protobuf {
+    generatedFilesBaseDir = genProtoBaseDir
+    protoc {
+        artifact = deps.build.protoc
+    }
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                // Do not use java builtin output in this project.
+                remove java
+
+                // For information on JavaScript code generation please see
+                // https://github.com/google/protobuf/blob/master/js/README.md
+                js {
+                    option "import_style=commonjs"
+                    outputSubDir = genProtoSubDir
+                }
+
+                task.generateDescriptorSet = true
+                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
+            }
+            compileProtoToJs.dependsOn task
+        }
+    }
+}
+
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
+protoJs {
+    mainGenProtoDir = genProtoMain
+    testGenProtoDir = genProtoTest
+
+    generateParsersTask().dependsOn compileProtoToJs
 }
