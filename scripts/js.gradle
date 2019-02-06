@@ -98,7 +98,6 @@ task transpileSources {
 prepareJsPublication {
 
     from (projectDir) {
-        include 'main/index.js'
         include 'package.json'
         include '.npmrc'
     }

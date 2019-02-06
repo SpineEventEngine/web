@@ -48,5 +48,5 @@
     "webpack-merge": "^4.1.4"
   },
   "sideEffects": false,
-  "main": "main/index.js"
+  "main": "index.js"
 }
