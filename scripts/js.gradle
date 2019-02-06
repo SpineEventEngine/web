@@ -57,7 +57,7 @@ task deleteCompiled {
  */
 buildJs {
 
-    outputs.files "$projectDir/dist"
+    outputs.dir "$projectDir/dist"
     
     doLast {
         npm 'run', 'build'
