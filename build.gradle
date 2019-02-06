@@ -18,19 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
+buildscript { final scriptHandler ->
     apply from: "$rootDir/config/gradle/dependencies.gradle"
     apply from: "$rootDir/version.gradle"
 
-    repositories {
-        jcenter()
-        google()
-        mavenCentral()
-        mavenLocal()
-        maven { url = repos.gradlePlugins }
-        maven { url = repos.spine }
-        maven { url = repos.spineSnapshots }
-    }
+    defaultRepositories(scriptHandler)
 
     dependencies {
         classpath deps.build.guava
@@ -71,18 +63,10 @@ allprojects {
 }
 
 subprojects {
-    buildscript {
+    buildscript { final scriptHandler ->
         apply from: "$rootDir/version.gradle"
 
-        repositories {
-            jcenter()
-            google()
-            mavenCentral()
-            mavenLocal()
-            maven { url = repos.gradlePlugins }
-            maven { url = repos.spine }
-            maven { url = repos.spineSnapshots }
-        }
+        defaultRepositories(scriptHandler)
 
         dependencies {
             classpath deps.build.guava
@@ -123,16 +107,7 @@ subprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    repositories {
-        jcenter()
-
-        google()
-        mavenCentral()
-        mavenLocal()
-        maven { url = repos.gradlePlugins }
-        maven { url = repos.spine }
-        maven { url = repos.spineSnapshots }
-    }
+    defaultRepositories(project)
 
     dependencies {
         errorprone deps.build.errorProneCore
@@ -151,7 +126,6 @@ subprojects {
         testImplementation deps.test.hamcrest
         testImplementation "io.spine:spine-testutil-client:$spineVersion"
     }
-
 
     configurations.all({
         resolutionStrategy {
@@ -180,17 +154,17 @@ subprojects {
 
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
-        classifier "sources"
+        archiveClassifier.set("sources")
     }
 
     task testOutputJar(type: Jar) {
         from sourceSets.test.output
-        classifier "test"
+        archiveClassifier.set("test")
     }
 
     task javadocJar(type: Jar, dependsOn: 'javadoc') {
         from "$projectDir/build/docs/javadoc"
-        classifier "javadoc"
+        archiveClassifier.set("javadoc")
     }
 
     test {
