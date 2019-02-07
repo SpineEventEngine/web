@@ -102,7 +102,6 @@ prepareJsPublication {
         include '.npmrc'
     }
 
-    dependsOn buildJs
     //TODO:2019-02-05:dmytro.grankin: temporarily don't publish a bundle, see https://github.com/SpineEventEngine/web/issues/61
     //dependsOn copyBundeledJs
     dependsOn transpileSources
