@@ -9,7 +9,7 @@ The NPM artifact:
 * Provides types from [google-protobuf](https://www.npmjs.com/package/google-protobuf) NPM package.
  These types should be used since they are additionally processed by Spine's Protobuf plugin for JS.
 * Provides sources transpiled into ES5 along with theirs source maps.
-* Does **not** provide a bundled version assuming that a library user does bundling on its own.
+* Does **not** provide a bundled version assuming that library users perform bundling themselves.
 
 ## Usage
 
