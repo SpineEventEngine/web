@@ -106,9 +106,14 @@ task transpileSources {
  */
 prepareJsPublication {
 
-    from (projectDir) {
-        include 'package.json'
-        include '.npmrc'
+    doLast {
+        copy {
+            from (projectDir) {
+                include 'package.json'
+                include '.npmrc'
+            }
+            into publicationDirectory
+        }
     }
 
     //TODO:2019-02-05:dmytro.grankin: temporarily don't publish a bundle, see https://github.com/SpineEventEngine/web/issues/61
