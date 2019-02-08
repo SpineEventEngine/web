@@ -19,87 +19,31 @@
  */
 
 /**
- * This build script contains a Gradle plugin for JavaScript modules.
+ * A script configuring the build of a JavaScript module, which is going to be published to NPM.
  *
- * <p>The plugin configures NPM tools execution and connects the JS assembly and test routines
- * with the Gradle execution process.
+ * <p>In particular, the script brings tasks to:
+ * <ol>
+ *     <li>Install NPM dependencies. 
+ *     <li>Compile Protobuf sources to JavaScript.
+ *     <li>Test and generate coverage reports for JavaScript sources. 
+ *     <li>Update the version in `package.json` depending on the `versionToPublishJs` property. 
+ *     <li>Clean up the build output of a JavaScript module. 
+ * </ol>
  *
- * <p>The plugin defines tasks for:
- * <ul>
- *     <li>downloading NPM dependencies -                   {@code installDependencies};
- *     <li>compile Protobuf into JavaScript -               {@code compileProtoToJs};
- *     <li>running tests NPM dependencies -                 {@code testJs} and {@code coverageJs};
- *     <li>publishing NPM artifacts into the NPM registry - {@code publishJs};
- *     <li>linking the module to the local NPM registry -   {@code link}
- * </ul>
- *
- * <p>Most of the tasks launch a separate process which runs an NPM CLI command, so it's necessary
- * that the NPM command line tool is installed.
- *
- * <p>In order to publish the NPM module, it is required that the {@code NPM_TOKEN} environment
- * variable is set to a valid NPM auth token. If the token is not set, a dummy value is added to
- * the NPM execution process, which is sufficient for the local development.
+ * <p>The script is based on other scripts from `config` submodule.
  */
 
-apply from: "$rootDir/scripts/js-cli.gradle"
-apply from: "$rootDir/scripts/update-js-version.gradle"
+apply from: deps.scripts.npmPublishTasks
 
 ext {
-    JAVA_SCRIPT_TASK_GROUP = 'JavaScript'
-
-    workDirectory = "$projectDir"
-    publicationDirectory = "$buildDir/npm-publication/"
     srcDir = "$projectDir/main"
     testSrcDir = "$projectDir/test"
     genProtoBaseDir = projectDir
     genProtoSubDir = "proto"
     genProtoMain = "$genProtoBaseDir/main/$genProtoSubDir"
     genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
-    nodeModulesDir = "$projectDir/node_modules"
     nycOutputDir = "$projectDir/.nyc_output"
-
-    npm = { final String... command ->
-        ext.executeNpm(workDirectory as File, command)
-    }
 }
-
-/**
- * Compiles Protobuf sources into JavaScript.
- *
- * <p>This is a lifecycle task. It performs no action but triggers all the tasks which perform
- * the compilation.
- */
-task compileProtoToJs {
-    description = "Compiles Protobuf sources into JavaScript."
-}
-
-protobuf {
-    generatedFilesBaseDir = genProtoBaseDir
-    protoc {
-        artifact = deps.build.protoc
-    }
-    generateProtoTasks {
-        all().each { final task ->
-            task.builtins {
-                // Do not use java builtin output in this project.
-                remove java
-
-                // For information on JavaScript code generation please see
-                // https://github.com/google/protobuf/blob/master/js/README.md
-                js {
-                    option "import_style=commonjs"
-                    outputSubDir = genProtoSubDir
-                }
-
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
-            }
-            compileProtoToJs.dependsOn task
-        }
-    }
-}
-
-apply plugin: 'io.spine.tools.proto-js-plugin'
 
 /**
  * Cleans old module dependencies and build outputs.
@@ -108,9 +52,9 @@ task deleteCompiled {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Cleans old module dependencies and build outputs.'
 
+    clean.dependsOn deleteCompiled
+
     doLast {
-        delete buildJs.outputs
-        delete installDependencies.outputs
         delete genProtoMain
         delete genProtoTest
         delete coverageJs.outputs
@@ -118,49 +62,16 @@ task deleteCompiled {
 }
 
 /**
- * Installs the module dependencies using the `npm install` command.
+ * Customize already defined task to run Webpack build.
  */
-task installDependencies {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Installs the JavaScript dependencies.'
+buildJs {
 
-    inputs.files "$projectDir/package.json"
-    outputs.files nodeModulesDir
-
-    dependsOn compileProtoToJs
-
-    doLast {
-        npm 'install'
-    }
-}
-
-protoJs {
-    mainGenProtoDir = genProtoMain
-    testGenProtoDir = genProtoTest
-
-    generateParsersTask().dependsOn compileProtoToJs
-    installDependencies.dependsOn generateParsersTask()
-}
-
-/**
- * Assembles the bundled version of JS sources.
- *
- * This task is an analog of `build` for JS.
- *
- * To include a task into the JS build, depend `buildJs` onto that task.
- */
-task buildJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Assembles the JavaScript source files."
-
-    outputs.files "$projectDir/dist"
+    outputs.dir "$projectDir/dist"
     
     doLast {
         npm 'run', 'build'
         npm 'run', 'build-dev'
     }
-
-    dependsOn installDependencies
 }
 
 /**
@@ -191,54 +102,18 @@ task transpileSources {
 }
 
 /**
- * Copies all remaining files into a temporary NPM publication directory.
- * 
- * This task finalizes assembling of files in the temporary NPM publication
- * directory which they are published from.
+ * Defines files to copy by the task.
  */
-task prepareJsPublication(type: Copy) {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Prepares the NPM package for publish.'
+prepareJsPublication {
 
     from (projectDir) {
-        include 'index.js'
         include 'package.json'
         include '.npmrc'
     }
 
-    into publicationDirectory
-
-    dependsOn buildJs
-    dependsOn copyBundeledJs
+    //TODO:2019-02-05:dmytro.grankin: temporarily don't publish a bundle, see https://github.com/SpineEventEngine/web/issues/61
+    //dependsOn copyBundeledJs
     dependsOn transpileSources
-}
-
-/**
- * Publishes the NPM package locally with `npm link`.
- */
-task link {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Publishes the NPM package locally."
-
-    doLast {
-        executeNpm(publicationDirectory as File, 'link')
-    }
-
-    dependsOn prepareJsPublication
-}
-
-/**
- * Publishes the NPM package with `npm publish`.
- */
-task publishJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Publishes the NPM package.'
-
-    doLast {
-        executeNpm(publicationDirectory as File, 'publish')
-    }
-
-    dependsOn prepareJsPublication
 }
 
 /**
@@ -275,10 +150,41 @@ task coverageJs {
     }
 
     dependsOn buildJs
+    rootProject.check.dependsOn coverageJs
 }
 
-rootProject.check.dependsOn coverageJs
+protobuf {
+    generatedFilesBaseDir = genProtoBaseDir
+    protoc {
+        artifact = deps.build.protoc
+    }
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                // Do not use java builtin output in this project.
+                remove java
 
-build.dependsOn buildJs
-clean.dependsOn deleteCompiled
-publish.dependsOn publishJs
+                // For information on JavaScript code generation please see
+                // https://github.com/google/protobuf/blob/master/js/README.md
+                js {
+                    option "import_style=commonjs"
+                    outputSubDir = genProtoSubDir
+                }
+
+                task.generateDescriptorSet = true
+                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
+            }
+            compileProtoToJs.dependsOn task
+        }
+    }
+}
+
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
+protoJs {
+    mainGenProtoDir = genProtoMain
+    testGenProtoDir = genProtoTest
+
+    generateParsersTask().dependsOn compileProtoToJs
+    buildJs.dependsOn generateParsersTask()
+}

@@ -3,17 +3,30 @@ This module is a JS library that communicates with Spine Web server. It’s a fa
 domain commands, querying data and subscribing to entity states.  
 
 The latest published version can be found on [NPM](https://www.npmjs.com/package/spine-web).
- 
-The NPM artifact provides sources transpiled into ES5 along with theirs source maps.
+
+The NPM artifact:
+* Provides `spine-web` files along with used Protobuf definitions.
+* Provides types from [google-protobuf](https://www.npmjs.com/package/google-protobuf) NPM package.
+ These types should be used since they are additionally processed by Spine's Protobuf plugin for JS.
+* Provides sources transpiled into ES5 along with theirs source maps.
+* Does **not** provide a bundled version assuming that library users perform bundling themselves.
 
 ## Usage
 
-To use the library install following modules:
+To use the library execute the command:
 
 ```
 npm i spine-web --save
-npm i isomorphic-fetch --save
 ```
+
+Also, the library has [peer dependencies](https://docs.npmjs.com/files/package.json#peerdependencies),
+which you need to install:
+
+```
+npm i rxjs --save
+```
+
+For the full list of peer dependencies see [package.json](./package.json).
 
 ## Testing
 
