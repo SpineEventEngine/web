@@ -13,12 +13,20 @@ The NPM artifact:
 
 ## Usage
 
-To use the library install following modules:
+To use the library execute the command:
 
 ```
 npm i spine-web --save
-npm i isomorphic-fetch --save
 ```
+
+Also, the library has [peer dependencies](https://docs.npmjs.com/files/package.json#peerdependencies),
+which you need to install:
+
+```
+npm i rxjs --save
+```
+
+For the full list of peer dependencies see [package.json](./package.json).
 
 ## Testing
 
