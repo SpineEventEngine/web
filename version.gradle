@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-def final SPINE_VERSION = '1.0.0-SNAPSHOT'
+def final SPINE_VERSION = '1.0.0-pre4'
 
 ext {
     spineVersion = SPINE_VERSION
-    spineBaseVersion = '1.0.0-SNAPSHOT'
+    spineBaseVersion = SPINE_VERSION
     
-    versionToPublish = '1.0.0-SNAPSHOT'
-    versionToPublishJs = '0.12.8'
+    versionToPublish = SPINE_VERSION
+    versionToPublishJs = '0.13.0'
 
     servletApiVersion = '4.0.0'
 }
