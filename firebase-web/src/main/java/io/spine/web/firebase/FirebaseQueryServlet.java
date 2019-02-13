@@ -28,7 +28,7 @@ import io.spine.web.query.QueryServlet;
  * @see QueryServlet
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class FirebaseQueryServlet extends QueryServlet {
+public class FirebaseQueryServlet extends QueryServlet {
 
     protected FirebaseQueryServlet(FirebaseQueryBridge bridge) {
         super(bridge);

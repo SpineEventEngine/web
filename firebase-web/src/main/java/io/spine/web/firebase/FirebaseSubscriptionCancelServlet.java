@@ -21,7 +21,6 @@
 package io.spine.web.firebase;
 
 import io.spine.client.Subscription;
-import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
 
 /**
@@ -33,7 +32,7 @@ import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
 @SuppressWarnings("serial") // Java serialization is not supported.
 public class FirebaseSubscriptionCancelServlet extends SubscriptionCancelServlet {
 
-    protected FirebaseSubscriptionCancelServlet(SubscriptionBridge bridge) {
+    protected FirebaseSubscriptionCancelServlet(FirebaseSubscriptionBridge bridge) {
         super(bridge);
     }
 }

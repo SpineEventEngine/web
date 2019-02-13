@@ -39,7 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} to enable testing mocks.
  */
-class HttpRequestExecutor {
+final class HttpRequestExecutor {
 
     /**
      * The header which enables correct parsing of query parameters in request.
