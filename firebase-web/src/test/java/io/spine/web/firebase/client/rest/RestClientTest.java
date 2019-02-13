@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.web.firebase.client.rest.FirebaseRestClient.NULL_ENTRY;
+import static io.spine.web.firebase.client.rest.RestClient.NULL_ENTRY;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,23 +43,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DisplayName("FirebaseRestClient should")
-class FirebaseRestClientTest {
+@DisplayName("RestClient should")
+class RestClientTest {
 
     private static final String NODE_ACCESS_FORMAT = "https://database.com/%s.json";
 
     private static final String PATH = "node/path";
     private static final String DATA = "{\"a\":\"b\"}";
 
-    private HttpRequestExecutor requestExecutor;
-    private FirebaseRestClient client;
+    private HttpClient requestExecutor;
+    private RestClient client;
     private DatabasePath path;
     private NodeValue value;
 
     @BeforeEach
     void setUp() {
-        requestExecutor = mock(HttpRequestExecutor.class);
-        client = new FirebaseRestClient(NODE_ACCESS_FORMAT, requestExecutor);
+        requestExecutor = mock(HttpClient.class);
+        client = new RestClient(NODE_ACCESS_FORMAT, requestExecutor);
         path = DatabasePath.fromString(PATH);
         value = NodeValue.from(DATA);
     }

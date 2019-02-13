@@ -40,8 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Calling methods to throw.
-@DisplayName("HttpRequestExecutor should")
-class HttpRequestExecutorTest {
+@DisplayName("HttpClient should")
+class HttpClientTest {
 
     private static final GenericUrl URL = new GenericUrl("https://localhost:8080");
     private static final String RESPONSE = "{\"error\":\"not found\"}";
@@ -51,7 +51,7 @@ class HttpRequestExecutorTest {
     @DisplayName("execute GET request")
     void executeGetRequest() {
         HttpRequestFactory transport = mockRequestFactory(RESPONSE);
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
+        HttpClient requestExecutor = HttpClient.using(transport);
         String content = requestExecutor.get(URL);
         assertEquals(RESPONSE, content);
     }
@@ -60,7 +60,7 @@ class HttpRequestExecutorTest {
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on GET request")
     void throwIfErrorOnGet() throws IOException {
         HttpRequestFactory transport = throwingRequestFactory();
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
+        HttpClient requestExecutor = HttpClient.using(transport);
         assertThrows(RequestToFirebaseFailedException.class, () -> requestExecutor.get(URL));
     }
 
@@ -68,7 +68,7 @@ class HttpRequestExecutorTest {
     @DisplayName("execute PUT request")
     void executePutRequest() {
         HttpRequestFactory transport = mockRequestFactory(RESPONSE);
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
+        HttpClient requestExecutor = HttpClient.using(transport);
         String content = requestExecutor.put(URL, CONTENT);
         assertEquals(RESPONSE, content);
     }
@@ -77,7 +77,7 @@ class HttpRequestExecutorTest {
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PUT request")
     void throwIfErrorOnPut() throws IOException {
         HttpRequestFactory transport = throwingRequestFactory();
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
+        HttpClient requestExecutor = HttpClient.using(transport);
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.put(URL, CONTENT));
     }
@@ -86,7 +86,7 @@ class HttpRequestExecutorTest {
     @DisplayName("execute PATCH request")
     void executePatchRequest() {
         HttpRequestFactory transport = mockRequestFactory(RESPONSE);
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
+        HttpClient requestExecutor = HttpClient.using(transport);
         String content = requestExecutor.patch(URL, CONTENT);
         assertEquals(RESPONSE, content);
     }
@@ -95,7 +95,7 @@ class HttpRequestExecutorTest {
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PATCH request")
     void throwIfErrorOnPatch() throws IOException {
         HttpRequestFactory transport = throwingRequestFactory();
-        HttpRequestExecutor requestExecutor = HttpRequestExecutor.using(transport);
+        HttpClient requestExecutor = HttpClient.using(transport);
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.patch(URL, CONTENT));
     }

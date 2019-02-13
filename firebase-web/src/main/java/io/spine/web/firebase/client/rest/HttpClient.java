@@ -39,7 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} to enable testing mocks.
  */
-class HttpRequestExecutor {
+class HttpClient {
 
     /**
      * The header which enables correct parsing of query parameters in request.
@@ -52,20 +52,20 @@ class HttpRequestExecutor {
 
     private final HttpRequestFactory requestFactory;
 
-    private HttpRequestExecutor(HttpRequestFactory requestFactory) {
+    private HttpClient(HttpRequestFactory requestFactory) {
         this.requestFactory = requestFactory;
     }
 
     /**
-     * Creates a new {@code HttpRequestExecutor} which will use the specified HTTP request factory.
+     * Creates a new {@code HttpClient} which will use the specified HTTP request factory.
      *
      * @param requestFactory
      *         the {@code HttpRequestFactory} to use for HTTP requests execution
-     * @return the new instance of {@code HttpRequestExecutor}
+     * @return the new instance of {@code HttpClient}
      */
-    static HttpRequestExecutor using(HttpRequestFactory requestFactory) {
+    static HttpClient using(HttpRequestFactory requestFactory) {
         checkNotNull(requestFactory);
-        return new HttpRequestExecutor(requestFactory);
+        return new HttpClient(requestFactory);
     }
 
     /**

@@ -25,7 +25,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryId;
 import io.spine.core.TenantId;
 import io.spine.core.UserId;
-import io.spine.web.firebase.client.rest.FirebaseRestClient;
+import io.spine.web.firebase.client.rest.RestClient;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -36,7 +36,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * A path in a Firebase Realtime Database.
  *
  * <p>The path is not aware of the database per se. See
- * {@link FirebaseRestClient} for how the path is bound to the database.
+ * {@link RestClient} for how the path is bound to the database.
  */
 public final class DatabasePath {
 
