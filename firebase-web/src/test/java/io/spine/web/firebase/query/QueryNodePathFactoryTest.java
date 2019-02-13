@@ -41,14 +41,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.spine.time.ZoneIds.systemDefault;
-import static io.spine.web.firebase.query.QueryDatabasePathFactory.allocateForQuery;
+import static io.spine.web.firebase.query.QueryNodePathFactory.allocateForQuery;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("QueryDatabasePathFactory should")
+@DisplayName("QueryNodePathFactory should")
 class QueryNodePathFactoryTest {
 
     private static final QueryFactory queryFactory =
@@ -95,7 +95,7 @@ class QueryNodePathFactoryTest {
                                        firstValueTenant,
                                        secondValueTenant)
                                    .map(QueryNodePathFactoryTest::tenantAwareQuery)
-                                   .map(QueryDatabasePathFactory::allocateForQuery)
+                                   .map(QueryNodePathFactory::allocateForQuery)
                                    .map(NodePath::toString)
                                    .collect(toList());
         new EqualsTester()

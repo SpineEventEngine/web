@@ -12,7 +12,10 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-public class QueryDatabasePathFactory {
+/**
+ * A factory creating {@link NodePath}s where query results are placed.
+ */
+public class QueryNodePathFactory {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";

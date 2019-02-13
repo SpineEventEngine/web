@@ -46,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.web.firebase.query.QueryDatabasePathFactory.allocateForQuery;
+import static io.spine.web.firebase.query.QueryNodePathFactory.allocateForQuery;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
