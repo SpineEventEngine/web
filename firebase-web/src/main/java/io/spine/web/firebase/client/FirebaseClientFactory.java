@@ -113,10 +113,10 @@ public final class FirebaseClientFactory {
     private static FirebaseClient createWithTransport(HttpTransport httpTransport,
                                                       DatabaseUrl url,
                                                       FirebaseCredentials credentials) {
-        if (!credentials.isEmpty()) {
-            return createAuthorized(httpTransport, url, credentials);
+        if (credentials.isEmpty()) {
+            return createUnauthorized(httpTransport, url);
         }
-        return createUnauthorized(httpTransport, url);
+        return createAuthorized(httpTransport, url, credentials);
     }
 
     /**
