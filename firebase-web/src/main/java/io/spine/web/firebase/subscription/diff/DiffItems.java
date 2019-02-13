@@ -23,7 +23,7 @@ package io.spine.web.firebase.subscription.diff;
 /**
  * The records that get stored to Firebase database upon subscription updates.
  */
-final class DiffItems {
+public final class DiffItems {
 
     /**
      * An empty constructor preventing instantiation.
