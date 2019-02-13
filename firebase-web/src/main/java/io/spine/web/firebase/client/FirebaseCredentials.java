@@ -123,7 +123,7 @@ public final class FirebaseCredentials {
      *         {@linkplain #isEmpty() empty}
      */
     @Nullable
-    public GoogleCredential credentials() {
+    GoogleCredential credentials() {
         return credentials;
     }
 
