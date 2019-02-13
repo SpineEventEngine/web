@@ -42,11 +42,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DisplayName("FirebaseQueryProcessingResult should")
-class FirebaseQueryProcessingResultTest {
+@DisplayName("FirebaseQueryResult should")
+class FirebaseQueryResultTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseQueryProcessingResultTest.class)
+            TestActorRequestFactory.newInstance(FirebaseQueryResultTest.class)
                                    .query();
 
     private DatabasePath databasePath;
@@ -54,7 +54,7 @@ class FirebaseQueryProcessingResultTest {
     @BeforeEach
     void setUp() {
         Query query = queryFactory.all(Any.class);
-        databasePath = DatabasePath.allocateForQuery(query);
+        databasePath = QueryDatabasePathFactory.allocateForQuery(query);
     }
 
     @Test
@@ -66,8 +66,8 @@ class FirebaseQueryProcessingResultTest {
         when(response.getWriter()).thenReturn(writer);
 
         int count = 2;
-        FirebaseQueryProcessingResult queryResult =
-                new FirebaseQueryProcessingResult(databasePath, count);
+        FirebaseQueryResult queryResult =
+                new FirebaseQueryResult(databasePath, count);
         queryResult.writeTo(response);
         verify(response).getWriter();
 

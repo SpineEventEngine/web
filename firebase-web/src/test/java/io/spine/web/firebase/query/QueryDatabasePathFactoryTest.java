@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase.query;
 
 import com.google.common.testing.EqualsTester;
 import com.google.protobuf.Any;
@@ -33,6 +33,7 @@ import io.spine.net.EmailAddressVBuilder;
 import io.spine.net.InternetDomain;
 import io.spine.net.InternetDomainVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
+import io.spine.web.firebase.client.DatabasePath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,17 +41,18 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.spine.time.ZoneIds.systemDefault;
+import static io.spine.web.firebase.query.QueryDatabasePathFactory.allocateForQuery;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("DatabasePath should")
-class DatabasePathTest {
+@DisplayName("QueryDatabasePathFactory should")
+class QueryDatabasePathFactoryTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(DatabasePathTest.class)
+            TestActorRequestFactory.newInstance(QueryDatabasePathFactoryTest.class)
                                    .query();
 
     @Test
@@ -59,8 +61,8 @@ class DatabasePathTest {
         Query firstQuery = queryFactory.all(Empty.class);
         Query secondQuery = queryFactory.all(Timestamp.class);
 
-        DatabasePath firstPath = DatabasePath.allocateForQuery(firstQuery);
-        DatabasePath secondPath = DatabasePath.allocateForQuery(secondQuery);
+        DatabasePath firstPath = allocateForQuery(firstQuery);
+        DatabasePath secondPath = allocateForQuery(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -92,8 +94,8 @@ class DatabasePathTest {
                                        emailTenant,
                                        firstValueTenant,
                                        secondValueTenant)
-                                   .map(DatabasePathTest::tenantAwareQuery)
-                                   .map(DatabasePath::allocateForQuery)
+                                   .map(QueryDatabasePathFactoryTest::tenantAwareQuery)
+                                   .map(QueryDatabasePathFactory::allocateForQuery)
                                    .map(DatabasePath::toString)
                                    .collect(toList());
         new EqualsTester()
@@ -113,8 +115,7 @@ class DatabasePathTest {
         );
         Query query = requestFactory.query()
                                     .all(Any.class);
-        String path = DatabasePath.allocateForQuery(query)
-                                  .toString();
+        String path = allocateForQuery(query).toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -127,7 +128,7 @@ class DatabasePathTest {
 
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(DatabasePathTest.class, tenantId);
+                TestActorRequestFactory.newInstance(QueryDatabasePathFactoryTest.class, tenantId);
         Query query = requestFactory.query()
                                     .all(Any.class);
         return query;

@@ -71,7 +71,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
     public QueryProcessingResult send(WebQuery webQuery) {
         Query query = webQuery.getQuery();
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseQueryRecord record = new FirebaseQueryRecord(query, queryResponse);
+        QueryRecord record = new QueryRecord(query, queryResponse);
 
         if (webQuery.getDeliveredTransactionally()) {
             record.storeTransactionallyVia(firebaseClient);
@@ -80,7 +80,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
         }
 
         QueryProcessingResult result =
-                new FirebaseQueryProcessingResult(record.path(), record.getCount());
+                new FirebaseQueryResult(record.path(), record.getCount());
         return result;
     }
 

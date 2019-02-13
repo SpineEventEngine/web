@@ -46,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.web.firebase.client.DatabasePath.allocateForQuery;
+import static io.spine.web.firebase.query.QueryDatabasePathFactory.allocateForQuery;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -70,8 +70,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         DatabasePath path = allocateForQuery(query);
-        StoredRecord record =
-                new StoredRecord(path, queryResponse);
+        SubscriptionRecord record =
+                new SubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
         SubscriptionId id = newSubscriptionId(record.path());
         Subscription subscription = newSubscription(id, topic);
@@ -107,8 +107,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         DatabasePath path = DatabasePath.fromString(id.getValue());
-        StoredRecord record =
-                new StoredRecord(path, queryResponse);
+        SubscriptionRecord record =
+                new SubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }

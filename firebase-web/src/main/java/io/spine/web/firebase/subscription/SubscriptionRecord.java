@@ -42,13 +42,13 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>Supports both an initial store and consequent updates of the stored data.
  */
-final class StoredRecord {
+final class SubscriptionRecord {
 
     private final DatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
-    StoredRecord(DatabasePath path,
-                 CompletionStage<QueryResponse> queryResponse) {
+    SubscriptionRecord(DatabasePath path,
+                       CompletionStage<QueryResponse> queryResponse) {
         this.path = path;
         this.queryResponse = queryResponse;
     }

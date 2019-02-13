@@ -41,13 +41,13 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>A single record represents a {@linkplain QueryResponse response to a single query}.
  */
-final class FirebaseQueryRecord {
+final class QueryRecord {
 
     private final DatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
-    FirebaseQueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
-        this.path = DatabasePath.allocateForQuery(query);
+    QueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
+        this.path = QueryDatabasePathFactory.allocateForQuery(query);
         this.queryResponse = queryResponse;
     }
 
