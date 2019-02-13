@@ -24,8 +24,8 @@ import com.google.protobuf.Message;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
+import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.subscription.diff.Diff;
 
@@ -44,10 +44,10 @@ import static java.util.stream.Collectors.toList;
  */
 final class SubscriptionRecord {
 
-    private final DatabasePath path;
+    private final NodePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
-    SubscriptionRecord(DatabasePath path,
+    SubscriptionRecord(NodePath path,
                        CompletionStage<QueryResponse> queryResponse) {
         this.path = path;
         this.queryResponse = queryResponse;
@@ -56,7 +56,7 @@ final class SubscriptionRecord {
     /**
      * Retrieves the database path to this record.
      */
-    DatabasePath path() {
+    NodePath path() {
         return path;
     }
 

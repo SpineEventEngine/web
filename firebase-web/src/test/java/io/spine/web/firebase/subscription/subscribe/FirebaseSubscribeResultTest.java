@@ -23,7 +23,7 @@ package io.spine.web.firebase.subscription.subscribe;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
-import io.spine.web.firebase.client.DatabasePath;
+import io.spine.web.firebase.client.NodePath;
 import io.spine.web.subscription.result.SubscribeResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class FirebaseSubscribeResultTest {
 
         TopicFactory topicFactory = topicFactory();
         Topic topic = topicFactory.forTarget(newTarget("test-type"));
-        DatabasePath path = DatabasePath.fromString("test-database-path");
+        NodePath path = NodePath.fromString("test-database-path");
         Subscription subscription = newSubscription(topic, path.toString());
         SubscribeResult result = new FirebaseSubscribeResult(subscription);
         result.writeTo(response);

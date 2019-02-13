@@ -23,7 +23,8 @@ package io.spine.web.firebase.client.rest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
-import io.spine.web.firebase.client.DatabasePath;
+import io.spine.web.firebase.client.DatabaseUrl;
+import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.client.NodeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,6 @@ import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.web.firebase.client.rest.RestClient.NULL_ENTRY;
-import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,21 +46,26 @@ import static org.mockito.Mockito.when;
 @DisplayName("RestClient should")
 class RestClientTest {
 
-    private static final String NODE_ACCESS_FORMAT = "https://database.com/%s.json";
 
     private static final String PATH = "node/path";
     private static final String DATA = "{\"a\":\"b\"}";
+    private static final String DATABASE_URL_STRING = "https://database.com";
+    private static final DatabaseUrl DATABASE_URL = DatabaseUrl.from(DATABASE_URL_STRING);
+    private static final RestNodeUrl.Template URL_TEMPLATE = new RestNodeUrl.Template(DATABASE_URL);
+
+    private static final GenericUrl EXPECTED_NODE_URL =
+            new GenericUrl(DATABASE_URL_STRING + "/" + PATH + ".json");
 
     private HttpClient requestExecutor;
     private RestClient client;
-    private DatabasePath path;
+    private NodePath path;
     private NodeValue value;
 
     @BeforeEach
     void setUp() {
         requestExecutor = mock(HttpClient.class);
-        client = new RestClient(NODE_ACCESS_FORMAT, requestExecutor);
-        path = DatabasePath.fromString(PATH);
+        client = new RestClient(RestClientTest.URL_TEMPLATE, requestExecutor);
+        path = NodePath.fromString(PATH);
         value = NodeValue.from(DATA);
     }
 
@@ -68,7 +73,7 @@ class RestClientTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
-                .setDefault(DatabasePath.class, path)
+                .setDefault(NodePath.class, path)
                 .setDefault(NodeValue.class, value)
                 .testAllPublicInstanceMethods(client);
     }
@@ -101,7 +106,7 @@ class RestClientTest {
         when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
 
         client.merge(path, value);
-        verify(requestExecutor).put(eq(expectedUrl()), any(ByteArrayContent.class));
+        verify(requestExecutor).put(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
     }
 
     @Test
@@ -110,12 +115,6 @@ class RestClientTest {
         when(requestExecutor.get(any())).thenReturn(DATA);
 
         client.merge(path, value);
-        verify(requestExecutor).patch(eq(expectedUrl()), any(ByteArrayContent.class));
-    }
-
-    private static GenericUrl expectedUrl() {
-        String fullPath = format(NODE_ACCESS_FORMAT, PATH);
-        GenericUrl result = new GenericUrl(fullPath);
-        return result;
+        verify(requestExecutor).patch(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
     }
 }

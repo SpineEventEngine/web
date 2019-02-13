@@ -29,8 +29,8 @@ import io.spine.client.SubscriptionIdVBuilder;
 import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
-import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
+import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.subscription.cancel.FirebaseSubscriptionCancelResult;
 import io.spine.web.firebase.subscription.keepup.FirebaseSubscriptionKeepUpResult;
 import io.spine.web.firebase.subscription.subscribe.FirebaseSubscribeResult;
@@ -69,7 +69,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     public SubscribeResult subscribe(Topic topic) {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        DatabasePath path = allocateForQuery(query);
+        NodePath path = allocateForQuery(query);
         SubscriptionRecord record =
                 new SubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
@@ -94,7 +94,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                                    .build();
     }
 
-    private static SubscriptionId newSubscriptionId(DatabasePath path) {
+    private static SubscriptionId newSubscriptionId(NodePath path) {
         return SubscriptionIdVBuilder.newBuilder()
                                      .setValue(path.toString())
                                      .build();
@@ -106,7 +106,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
-        DatabasePath path = DatabasePath.fromString(id.getValue());
+        NodePath path = NodePath.fromString(id.getValue());
         SubscriptionRecord record =
                 new SubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);

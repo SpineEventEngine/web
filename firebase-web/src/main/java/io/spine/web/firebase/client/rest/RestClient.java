@@ -25,15 +25,14 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.DatabaseUrl;
 import io.spine.web.firebase.client.FirebaseClient;
+import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.client.NodeValue;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 
 /**
  * A {@code FirebaseClient} which operates via the Firebase REST API.
@@ -44,13 +43,6 @@ import static java.lang.String.format;
 public class RestClient implements FirebaseClient {
 
     /**
-     * The format by which Firebase database nodes are accessible via REST API.
-     *
-     * <p>The first placeholder is the database URL and the second one is a node path.
-     */
-    private static final String NODE_URL_FORMAT = "%s/%s.json";
-
-    /**
      * The representation of the database {@code null} entry.
      *
      * <p>In Firebase the {@code null} node is deemed nonexistent.
@@ -59,12 +51,12 @@ public class RestClient implements FirebaseClient {
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
-    private final String nodeAccessFormat;
+    private final RestNodeUrl.Template nodeUrlTemplate;
     private final HttpClient httpClient;
 
     @VisibleForTesting
-    RestClient(String nodeAccessFormat, HttpClient httpClient) {
-        this.nodeAccessFormat = nodeAccessFormat;
+    RestClient(RestNodeUrl.Template nodeUrlTemplate, HttpClient httpClient) {
+        this.nodeUrlTemplate = nodeUrlTemplate;
         this.httpClient = httpClient;
     }
 
@@ -78,28 +70,18 @@ public class RestClient implements FirebaseClient {
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
     public static RestClient create(DatabaseUrl url, HttpRequestFactory requestFactory) {
-        String nodeAccessFormat = nodeAccessFormat(url);
+        RestNodeUrl.Template nodeUrlTemplate = new RestNodeUrl.Template(url);
         HttpClient requestExecutor = HttpClient.using(requestFactory);
-        return new RestClient(nodeAccessFormat, requestExecutor);
-    }
-
-    /**
-     * Returns format in which the individual nodes are accessed for the given database.
-     *
-     * <p>The format is a string with one placeholder which should be substituted by the node path.
-     */
-    private static String nodeAccessFormat(DatabaseUrl databaseUrl) {
-        String nodePathPlaceholder = "%s";
-        String result = format(NODE_URL_FORMAT, databaseUrl, nodePathPlaceholder);
-        return result;
+        return new RestClient(nodeUrlTemplate, requestExecutor);
     }
 
     @Override
-    public Optional<NodeValue> get(DatabasePath nodePath) {
+    public Optional<NodeValue> get(NodePath nodePath) {
         checkNotNull(nodePath);
 
-        GenericUrl url = toNodeUrl(nodePath);
-        String data = httpClient.get(url);
+        GenericUrl nodeUrl = nodeUrlTemplate.with(nodePath)
+                                            .asGenericUrl();
+        String data = httpClient.get(nodeUrl);
         if (isNullData(data)) {
             return Optional.empty();
         }
@@ -109,17 +91,18 @@ public class RestClient implements FirebaseClient {
     }
 
     @Override
-    public void merge(DatabasePath nodePath, NodeValue value) {
+    public void merge(NodePath nodePath, NodeValue value) {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl url = toNodeUrl(nodePath);
+        GenericUrl nodeUrl = nodeUrlTemplate.with(nodePath)
+                                            .asGenericUrl();
         ByteArrayContent byteArrayContent = value.toByteArray();
         Optional<NodeValue> existingValue = get(nodePath);
         if (!existingValue.isPresent()) {
-            create(url, byteArrayContent);
+            create(nodeUrl, byteArrayContent);
         } else {
-            update(url, byteArrayContent);
+            update(nodeUrl, byteArrayContent);
         }
     }
 
@@ -137,11 +120,6 @@ public class RestClient implements FirebaseClient {
      */
     private void update(GenericUrl nodeUrl, HttpContent value) {
         httpClient.patch(nodeUrl, value);
-    }
-
-    private GenericUrl toNodeUrl(DatabasePath nodePath) {
-        String url = format(nodeAccessFormat, nodePath);
-        return new GenericUrl(url);
     }
 
     private static boolean isNullData(String data) {

@@ -33,7 +33,7 @@ import io.spine.net.EmailAddressVBuilder;
 import io.spine.net.InternetDomain;
 import io.spine.net.InternetDomainVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.client.DatabasePath;
+import io.spine.web.firebase.client.NodePath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("QueryDatabasePathFactory should")
-class QueryDatabasePathFactoryTest {
+class QueryNodePathFactoryTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(QueryDatabasePathFactoryTest.class)
+            TestActorRequestFactory.newInstance(QueryNodePathFactoryTest.class)
                                    .query();
 
     @Test
@@ -61,8 +61,8 @@ class QueryDatabasePathFactoryTest {
         Query firstQuery = queryFactory.all(Empty.class);
         Query secondQuery = queryFactory.all(Timestamp.class);
 
-        DatabasePath firstPath = allocateForQuery(firstQuery);
-        DatabasePath secondPath = allocateForQuery(secondQuery);
+        NodePath firstPath = allocateForQuery(firstQuery);
+        NodePath secondPath = allocateForQuery(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -94,9 +94,9 @@ class QueryDatabasePathFactoryTest {
                                        emailTenant,
                                        firstValueTenant,
                                        secondValueTenant)
-                                   .map(QueryDatabasePathFactoryTest::tenantAwareQuery)
+                                   .map(QueryNodePathFactoryTest::tenantAwareQuery)
                                    .map(QueryDatabasePathFactory::allocateForQuery)
-                                   .map(DatabasePath::toString)
+                                   .map(NodePath::toString)
                                    .collect(toList());
         new EqualsTester()
                 .addEqualityGroup(paths.get(0))
@@ -128,7 +128,7 @@ class QueryDatabasePathFactoryTest {
 
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(QueryDatabasePathFactoryTest.class, tenantId);
+                TestActorRequestFactory.newInstance(QueryNodePathFactoryTest.class, tenantId);
         Query query = requestFactory.query()
                                     .all(Any.class);
         return query;

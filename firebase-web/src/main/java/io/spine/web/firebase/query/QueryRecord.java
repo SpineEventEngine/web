@@ -25,8 +25,8 @@ import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
+import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.client.NodeValue;
 
 import java.util.List;
@@ -43,7 +43,7 @@ import static java.util.stream.Collectors.toList;
  */
 final class QueryRecord {
 
-    private final DatabasePath path;
+    private final NodePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
     QueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
@@ -54,7 +54,7 @@ final class QueryRecord {
     /**
      * Retrieves the database path to this record.
      */
-    DatabasePath path() {
+    NodePath path() {
         return path;
     }
 

@@ -26,7 +26,7 @@ import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseQueryResponse;
 import io.spine.web.firebase.FirebaseQueryResponseVBuilder;
-import io.spine.web.firebase.client.DatabasePath;
+import io.spine.web.firebase.client.NodePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,12 +49,12 @@ class FirebaseQueryResultTest {
             TestActorRequestFactory.newInstance(FirebaseQueryResultTest.class)
                                    .query();
 
-    private DatabasePath databasePath;
+    private NodePath nodePath;
 
     @BeforeEach
     void setUp() {
         Query query = queryFactory.all(Any.class);
-        databasePath = QueryDatabasePathFactory.allocateForQuery(query);
+        nodePath = QueryDatabasePathFactory.allocateForQuery(query);
     }
 
     @Test
@@ -67,18 +67,18 @@ class FirebaseQueryResultTest {
 
         int count = 2;
         FirebaseQueryResult queryResult =
-                new FirebaseQueryResult(databasePath, count);
+                new FirebaseQueryResult(nodePath, count);
         queryResult.writeTo(response);
         verify(response).getWriter();
 
-        FirebaseQueryResponse expected = toQueryResponse(databasePath, count);
+        FirebaseQueryResponse expected = toQueryResponse(nodePath, count);
         FirebaseQueryResponse actual = fromJson(stringWriter.toString(),
                                                 FirebaseQueryResponse.class);
 
         assertEquals(expected, actual);
     }
 
-    private static FirebaseQueryResponse toQueryResponse(DatabasePath path, long count) {
+    private static FirebaseQueryResponse toQueryResponse(NodePath path, long count) {
         FirebaseQueryResponse response =
                 FirebaseQueryResponseVBuilder.newBuilder()
                                              .setPath(path.toString())

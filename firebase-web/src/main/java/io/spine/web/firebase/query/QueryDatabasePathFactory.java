@@ -5,7 +5,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryId;
 import io.spine.core.TenantId;
 import io.spine.core.UserId;
-import io.spine.web.firebase.client.DatabasePath;
+import io.spine.web.firebase.client.NodePath;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -21,16 +21,16 @@ public class QueryDatabasePathFactory {
     private static final String DEFAULT_TENANT = "common";
 
     /**
-     * Creates an instance of {@code DatabasePath} which points to a database node storing
+     * Creates an instance of {@code NodePath} which points to a database node storing
      * the {@link io.spine.client.QueryResponse QueryResponse} to the given {@link Query}.
      *
      * @param query
      *         the query to host the response of
-     * @return new {@code DatabasePath}
+     * @return new {@code NodePath}
      */
-    public static DatabasePath allocateForQuery(Query query) {
+    public static NodePath allocateForQuery(Query query) {
         String path = constructPath(query);
-        return DatabasePath.fromString(path);
+        return NodePath.fromString(path);
     }
 
     private static String constructPath(Query query) {

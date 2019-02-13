@@ -28,16 +28,16 @@ import io.spine.web.firebase.client.rest.RestClient;
  * <p>The path is not aware of the database per se. See
  * {@link RestClient} for how the path is bound to the database.
  */
-public class DatabasePath {
+public class NodePath {
 
     private final String path;
 
-    private DatabasePath(String path) {
+    private NodePath(String path) {
         this.path = path;
     }
 
-    public static DatabasePath fromString(String pathString) {
-        return new DatabasePath(pathString);
+    public static NodePath fromString(String pathString) {
+        return new NodePath(pathString);
     }
 
     /**
