@@ -29,8 +29,8 @@ import io.spine.client.SubscriptionIdVBuilder;
 import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
+import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
-import io.spine.web.firebase.client.FirebaseDatabasePath;
 import io.spine.web.firebase.subscription.cancel.FirebaseSubscriptionCancelResult;
 import io.spine.web.firebase.subscription.keepup.FirebaseSubscriptionKeepUpResult;
 import io.spine.web.firebase.subscription.subscribe.FirebaseSubscribeResult;
@@ -46,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.web.firebase.client.FirebaseDatabasePath.allocateForQuery;
+import static io.spine.web.firebase.client.DatabasePath.allocateForQuery;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -69,7 +69,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     public SubscribeResult subscribe(Topic topic) {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        FirebaseDatabasePath path = allocateForQuery(query);
+        DatabasePath path = allocateForQuery(query);
         FirebaseSubscriptionRecord record =
                 new FirebaseSubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
@@ -94,7 +94,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                                    .build();
     }
 
-    private static SubscriptionId newSubscriptionId(FirebaseDatabasePath path) {
+    private static SubscriptionId newSubscriptionId(DatabasePath path) {
         return SubscriptionIdVBuilder.newBuilder()
                                      .setValue(path.toString())
                                      .build();
@@ -106,7 +106,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
-        FirebaseDatabasePath path = FirebaseDatabasePath.fromString(id.getValue());
+        DatabasePath path = DatabasePath.fromString(id.getValue());
         FirebaseSubscriptionRecord record =
                 new FirebaseSubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);

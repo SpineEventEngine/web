@@ -26,7 +26,7 @@ import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseQueryResponse;
 import io.spine.web.firebase.FirebaseQueryResponseVBuilder;
-import io.spine.web.firebase.client.FirebaseDatabasePath;
+import io.spine.web.firebase.client.DatabasePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,12 +49,12 @@ class FirebaseQueryProcessingResultTest {
             TestActorRequestFactory.newInstance(FirebaseQueryProcessingResultTest.class)
                                    .query();
 
-    private FirebaseDatabasePath databasePath;
+    private DatabasePath databasePath;
 
     @BeforeEach
     void setUp() {
         Query query = queryFactory.all(Any.class);
-        databasePath = FirebaseDatabasePath.allocateForQuery(query);
+        databasePath = DatabasePath.allocateForQuery(query);
     }
 
     @Test
@@ -78,7 +78,7 @@ class FirebaseQueryProcessingResultTest {
         assertEquals(expected, actual);
     }
 
-    private static FirebaseQueryResponse toQueryResponse(FirebaseDatabasePath path, long count) {
+    private static FirebaseQueryResponse toQueryResponse(DatabasePath path, long count) {
         FirebaseQueryResponse response =
                 FirebaseQueryResponseVBuilder.newBuilder()
                                              .setPath(path.toString())

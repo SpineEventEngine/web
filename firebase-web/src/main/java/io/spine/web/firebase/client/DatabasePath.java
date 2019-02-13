@@ -38,7 +38,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * <p>The path is not aware of the database per se. See
  * {@link FirebaseRestClient} for how the path is bound to the database.
  */
-public final class FirebaseDatabasePath {
+public final class DatabasePath {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
@@ -49,24 +49,24 @@ public final class FirebaseDatabasePath {
 
     private final String path;
 
-    private FirebaseDatabasePath(String path) {
+    private DatabasePath(String path) {
         this.path = path;
     }
 
     /**
-     * Creates an instance of {@code FirebaseDatabasePath} which points to a database node storing
+     * Creates an instance of {@code DatabasePath} which points to a database node storing
      * the {@link io.spine.client.QueryResponse QueryResponse} to the given {@link Query}.
      *
      * @param query the query to host the response of
-     * @return new {@code FirebaseDatabasePath}
+     * @return new {@code DatabasePath}
      */
-    public static FirebaseDatabasePath allocateForQuery(Query query) {
+    public static DatabasePath allocateForQuery(Query query) {
         String path = constructPath(query);
-        return new FirebaseDatabasePath(path);
+        return new DatabasePath(path);
     }
 
-    public static FirebaseDatabasePath fromString(String pathString) {
-        return new FirebaseDatabasePath(pathString);
+    public static DatabasePath fromString(String pathString) {
+        return new DatabasePath(pathString);
     }
 
     private static String constructPath(Query query) {

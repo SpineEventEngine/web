@@ -23,7 +23,7 @@ package io.spine.web.firebase.client.rest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
-import io.spine.web.firebase.client.FirebaseDatabasePath;
+import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseNodeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,14 +53,14 @@ class FirebaseRestClientTest {
 
     private HttpRequestExecutor requestExecutor;
     private FirebaseRestClient client;
-    private FirebaseDatabasePath path;
+    private DatabasePath path;
     private FirebaseNodeValue value;
 
     @BeforeEach
     void setUp() {
         requestExecutor = mock(HttpRequestExecutor.class);
         client = new FirebaseRestClient(NODE_ACCESS_FORMAT, requestExecutor);
-        path = FirebaseDatabasePath.fromString(PATH);
+        path = DatabasePath.fromString(PATH);
         value = FirebaseNodeValue.from(DATA);
     }
 
@@ -68,7 +68,7 @@ class FirebaseRestClientTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
-                .setDefault(FirebaseDatabasePath.class, path)
+                .setDefault(DatabasePath.class, path)
                 .setDefault(FirebaseNodeValue.class, value)
                 .testAllPublicInstanceMethods(client);
     }

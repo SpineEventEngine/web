@@ -25,9 +25,9 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.DatabaseUrl;
 import io.spine.web.firebase.client.FirebaseClient;
-import io.spine.web.firebase.client.FirebaseDatabasePath;
 import io.spine.web.firebase.client.FirebaseNodeValue;
 
 import java.util.Optional;
@@ -95,7 +95,7 @@ public class FirebaseRestClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<FirebaseNodeValue> get(FirebaseDatabasePath nodePath) {
+    public Optional<FirebaseNodeValue> get(DatabasePath nodePath) {
         checkNotNull(nodePath);
 
         GenericUrl url = toNodeUrl(nodePath);
@@ -109,7 +109,7 @@ public class FirebaseRestClient implements FirebaseClient {
     }
 
     @Override
-    public void merge(FirebaseDatabasePath nodePath, FirebaseNodeValue value) {
+    public void merge(DatabasePath nodePath, FirebaseNodeValue value) {
         checkNotNull(nodePath);
         checkNotNull(value);
 
@@ -139,7 +139,7 @@ public class FirebaseRestClient implements FirebaseClient {
         requestExecutor.patch(nodeUrl, value);
     }
 
-    private GenericUrl toNodeUrl(FirebaseDatabasePath nodePath) {
+    private GenericUrl toNodeUrl(DatabasePath nodePath) {
         String url = format(nodeAccessFormat, nodePath);
         return new GenericUrl(url);
     }

@@ -46,11 +46,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FirebaseDatabasePath should")
-class FirebaseDatabasePathTest {
+@DisplayName("DatabasePath should")
+class DatabasePathTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseDatabasePathTest.class)
+            TestActorRequestFactory.newInstance(DatabasePathTest.class)
                                    .query();
 
     @Test
@@ -59,8 +59,8 @@ class FirebaseDatabasePathTest {
         Query firstQuery = queryFactory.all(Empty.class);
         Query secondQuery = queryFactory.all(Timestamp.class);
 
-        FirebaseDatabasePath firstPath = FirebaseDatabasePath.allocateForQuery(firstQuery);
-        FirebaseDatabasePath secondPath = FirebaseDatabasePath.allocateForQuery(secondQuery);
+        DatabasePath firstPath = DatabasePath.allocateForQuery(firstQuery);
+        DatabasePath secondPath = DatabasePath.allocateForQuery(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -92,9 +92,9 @@ class FirebaseDatabasePathTest {
                                        emailTenant,
                                        firstValueTenant,
                                        secondValueTenant)
-                                   .map(FirebaseDatabasePathTest::tenantAwareQuery)
-                                   .map(FirebaseDatabasePath::allocateForQuery)
-                                   .map(FirebaseDatabasePath::toString)
+                                   .map(DatabasePathTest::tenantAwareQuery)
+                                   .map(DatabasePath::allocateForQuery)
+                                   .map(DatabasePath::toString)
                                    .collect(toList());
         new EqualsTester()
                 .addEqualityGroup(paths.get(0))
@@ -113,8 +113,8 @@ class FirebaseDatabasePathTest {
         );
         Query query = requestFactory.query()
                                     .all(Any.class);
-        String path = FirebaseDatabasePath.allocateForQuery(query)
-                                          .toString();
+        String path = DatabasePath.allocateForQuery(query)
+                                  .toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -127,7 +127,7 @@ class FirebaseDatabasePathTest {
 
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(FirebaseDatabasePathTest.class, tenantId);
+                TestActorRequestFactory.newInstance(DatabasePathTest.class, tenantId);
         Query query = requestFactory.query()
                                     .all(Any.class);
         return query;

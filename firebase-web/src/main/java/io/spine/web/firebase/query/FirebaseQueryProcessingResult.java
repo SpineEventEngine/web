@@ -22,7 +22,7 @@ package io.spine.web.firebase.query;
 
 import io.spine.web.firebase.FirebaseQueryResponse;
 import io.spine.web.firebase.FirebaseQueryResponseVBuilder;
-import io.spine.web.firebase.client.FirebaseDatabasePath;
+import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.query.QueryProcessingResult;
 
 import javax.servlet.ServletResponse;
@@ -41,10 +41,10 @@ final class FirebaseQueryProcessingResult implements QueryProcessingResult {
 
     private static final String JSON_MIME_TYPE = JSON_UTF_8.toString();
 
-    private final FirebaseDatabasePath path;
+    private final DatabasePath path;
     private final long count;
 
-    FirebaseQueryProcessingResult(FirebaseDatabasePath path, long count) {
+    FirebaseQueryProcessingResult(DatabasePath path, long count) {
         this.path = path;
         this.count = count;
     }
