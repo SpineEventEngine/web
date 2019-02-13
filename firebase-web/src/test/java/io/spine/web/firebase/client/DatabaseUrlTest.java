@@ -18,26 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test.given;
+package io.spine.web.firebase.client;
 
-import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
-import io.spine.web.firebase.subscription.cancel.FirebaseSubscriptionCancelServlet;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import javax.servlet.annotation.WebServlet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static io.spine.web.test.given.Server.application;
+@DisplayName("DatabaseUrl should")
+class DatabaseUrlTest {
 
-/**
- * An endpoint canceling the client entity change subscriptions.
- */
-@WebServlet("/subscription/cancel")
-@SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelServlet {
+    private static final String VALID_URL = "https://spine-dev.appspot.com/";
+    private static final String INVALID_URL = "invalid_url";
 
-    public TestSubscriptionCancelServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+    @Test
+    @DisplayName("be successfully created from valid URL")
+    void acceptValidUrl() {
+        DatabaseUrl url = DatabaseUrl.from(VALID_URL);
+        assertEquals(VALID_URL, url.value());
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
+    @Test
+    @DisplayName("throw IAE when invalid URL passed on construction")
+    void rejectInvalidUrl() {
+        assertThrows(IllegalArgumentException.class, () -> DatabaseUrl.from(INVALID_URL));
     }
 }

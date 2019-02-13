@@ -18,26 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test.given;
+package io.spine.web.firebase.subscription.subscribe;
 
-import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
-import io.spine.web.firebase.subscription.cancel.FirebaseSubscriptionCancelServlet;
+import io.spine.client.Subscription;
+import io.spine.web.subscription.result.SubscribeResult;
 
-import javax.servlet.annotation.WebServlet;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
-import static io.spine.web.test.given.Server.application;
+import static io.spine.json.Json.toCompactJson;
 
 /**
- * An endpoint canceling the client entity change subscriptions.
+ * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
+ * to be written to the {@link ServletResponse}.
+ *
+ * <p>The result is a JSON formatted {@link Subscription} message.
  */
-@WebServlet("/subscription/cancel")
-@SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelServlet {
+public final class FirebaseSubscribeResult implements SubscribeResult {
 
-    public TestSubscriptionCancelServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+    private final Subscription subscription;
+
+    public FirebaseSubscribeResult(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    @Override
+    public void writeTo(ServletResponse response) throws IOException {
+        response.getWriter()
+                .write(toCompactJson(subscription));
     }
 }

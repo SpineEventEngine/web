@@ -20,8 +20,8 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.firebase.FirebaseSubscribeServlet;
-import io.spine.web.firebase.FirebaseSubscriptionBridge;
+import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
+import io.spine.web.firebase.subscription.subscribe.FirebaseSubscribeServlet;
 
 import javax.servlet.annotation.WebServlet;
 

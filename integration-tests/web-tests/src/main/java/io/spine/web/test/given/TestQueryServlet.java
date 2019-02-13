@@ -20,8 +20,8 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.firebase.FirebaseQueryBridge;
-import io.spine.web.firebase.FirebaseQueryServlet;
+import io.spine.web.firebase.query.FirebaseQueryBridge;
+import io.spine.web.firebase.query.FirebaseQueryServlet;
 
 import javax.servlet.annotation.WebServlet;
 

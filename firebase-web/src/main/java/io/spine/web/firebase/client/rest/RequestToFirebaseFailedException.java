@@ -18,26 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test.given;
-
-import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
-import io.spine.web.firebase.subscription.cancel.FirebaseSubscriptionCancelServlet;
-
-import javax.servlet.annotation.WebServlet;
-
-import static io.spine.web.test.given.Server.application;
+package io.spine.web.firebase.client.rest;
 
 /**
- * An endpoint canceling the client entity change subscriptions.
+ * The exception which signalises about an issue when working with Firebase REST API.
  */
-@WebServlet("/subscription/cancel")
-@SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelServlet {
+class RequestToFirebaseFailedException extends RuntimeException {
 
-    public TestSubscriptionCancelServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+    private static final long serialVersionUID = 0L;
+
+    RequestToFirebaseFailedException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

@@ -18,26 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test.given;
+package io.spine.web.firebase.subscription.subscribe;
 
+import io.spine.client.Topic;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
-import io.spine.web.firebase.subscription.cancel.FirebaseSubscriptionCancelServlet;
-
-import javax.servlet.annotation.WebServlet;
-
-import static io.spine.web.test.given.Server.application;
+import io.spine.web.subscription.servlet.SubscribeServlet;
 
 /**
- * An endpoint canceling the client entity change subscriptions.
+ * A {@link SubscribeServlet} which uses a {@link FirebaseSubscriptionBridge} to send off
+ * the requests to subscribe to topic.
+ *
+ * @see FirebaseSubscriptionBridge#subscribe(Topic)
  */
-@WebServlet("/subscription/cancel")
-@SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelServlet {
+@SuppressWarnings("serial") // Java serialization is not supported.
+public class FirebaseSubscribeServlet extends SubscribeServlet {
 
-    public TestSubscriptionCancelServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+    protected FirebaseSubscribeServlet(FirebaseSubscriptionBridge bridge) {
+        super(bridge);
     }
 }
