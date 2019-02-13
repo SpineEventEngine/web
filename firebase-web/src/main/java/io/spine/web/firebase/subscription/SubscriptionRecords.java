@@ -23,12 +23,12 @@ package io.spine.web.firebase.subscription;
 /**
  * The records that get stored to Firebase database upon subscription updates.
  */
-final class FirebaseSubscriptionRecords {
+final class SubscriptionRecords {
 
     /**
      * An empty constructor preventing instantiation.
      */
-    private FirebaseSubscriptionRecords() {
+    private SubscriptionRecords() {
     }
 
     /**

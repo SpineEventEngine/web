@@ -28,19 +28,19 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionDiff.computeDiff;
+import static io.spine.web.firebase.subscription.SubscriptionDiff.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FirebaseSubscriptionDiff should")
-class FirebaseSubscriptionDiffTest {
+@DisplayName("SubscriptionDiff should")
+class SubscriptionDiffTest {
 
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
         NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
-        FirebaseSubscriptionDiff diff = computeDiff(
+        SubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 value
         );
@@ -54,7 +54,7 @@ class FirebaseSubscriptionDiffTest {
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
         NodeValue value = NodeValue.empty();
-        FirebaseSubscriptionDiff diff = computeDiff(
+        SubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 value
         );
@@ -69,7 +69,7 @@ class FirebaseSubscriptionDiffTest {
     void createRemovedDiff() {
         NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
-        FirebaseSubscriptionDiff diff = computeDiff(
+        SubscriptionDiff diff = computeDiff(
                 newArrayList(),
                 value
         );
@@ -88,7 +88,7 @@ class FirebaseSubscriptionDiffTest {
                 "{\"pass\":true}",
                 "{\"id\":{\"value\": \"passed\"}}"
         );
-        FirebaseSubscriptionDiff diff = computeDiff(
+        SubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 
                              "{\"a\":1,\"b\":3}", // added
                              "{\"id\":{\"value\": \"passed\"}}", // passed

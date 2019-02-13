@@ -52,8 +52,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ConstantConditions") // Passing `null` to mocked methods.
-@DisplayName("FirebaseSubscriptionRecord should")
-class FirebaseSubscriptionRecordTest {
+@DisplayName("SubscriptionRecord should")
+class SubscriptionRecordTest {
 
     private final FirebaseClient firebaseClient = mock(FirebaseClient.class);
 
@@ -69,8 +69,8 @@ class FirebaseSubscriptionRecordTest {
         mockQueryResponse(queryResponse, aliceInWonderland, donQuixote);
 
         DatabasePath queryResponsePath = fromString(dbPath);
-        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
-                                                                           queryResponse);
+        SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
+                                                           queryResponse);
         record.storeAsInitial(firebaseClient);
 
         Map<String, String> expected = new HashMap<>();
@@ -100,8 +100,8 @@ class FirebaseSubscriptionRecordTest {
         mockQueryResponse(queryResponse, aliceInWonderland, donQuixote, designPatternsWithAuthors);
 
         DatabasePath queryResponsePath = fromString(dbPath);
-        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
-                                                                           queryResponse);
+        SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
+                                                           queryResponse);
         NodeValue existingValue = NodeValue.empty();
         existingValue.addChild(toCompactJson(aliceInWonderland));
         String patternsKey = existingValue.addChild(toCompactJson(designPatterns));
@@ -129,8 +129,8 @@ class FirebaseSubscriptionRecordTest {
         mockQueryResponse(queryResponse, aliceInWonderland);
 
         DatabasePath queryResponsePath = fromString(dbPath);
-        FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
-                                                                           queryResponse);
+        SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
+                                                           queryResponse);
         record.storeAsUpdate(firebaseClient);
 
         Map<String, String> expected = new HashMap<>();

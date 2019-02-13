@@ -30,12 +30,12 @@ import java.util.Map;
 /**
  * Data classes for processing of entries retrieved from both Spine and Firebase storage.
  */
-final class FirebaseSubscriptionEntries {
+final class SubscriptionEntries {
 
     /**
      * An empty constructor preventing instantiation.
      */
-    private FirebaseSubscriptionEntries() {
+    private SubscriptionEntries() {
     }
 
     /**

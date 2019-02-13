@@ -21,36 +21,36 @@
 package io.spine.web.firebase.subscription;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.ExistingEntry;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.UpToDateEntry;
+import io.spine.web.firebase.subscription.SubscriptionEntries.Entry;
+import io.spine.web.firebase.subscription.SubscriptionEntries.ExistingEntry;
+import io.spine.web.firebase.subscription.SubscriptionEntries.UpToDateEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.ADD;
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.PASS;
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.REMOVE;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.ADD;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.CHANGE;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.PASS;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.REMOVE;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 /**
  * A matcher of the up-to-date subscription state to the one stored in one Firebase database.
  */
-final class FirebaseSubscriptionEntriesMatcher {
+final class SubscriptionEntriesMatcher {
 
     private final List<ExistingEntry> unmatchedEntries;
 
-    FirebaseSubscriptionEntriesMatcher(List<ExistingEntry> entries) {
+    SubscriptionEntriesMatcher(List<ExistingEntry> entries) {
         this.unmatchedEntries = new ArrayList<>(entries);
     }
 
     /**
      * Matches up-to-date entries retrieved from Spine to the entries from the Firebase storage.
      * Each {@link UpToDateEntry up-to-date entry} is mapped to an {@link Entry entry} specifying
-     * {@link FirebaseSubscriptionEntries.Entry.Operation operation}
+     * {@link SubscriptionEntries.Entry.Operation operation}
      * to be formed, along with data for this operation.
      *
      * @param entries a list of new entries with latest subscription state

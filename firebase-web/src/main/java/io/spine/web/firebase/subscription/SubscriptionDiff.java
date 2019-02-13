@@ -22,34 +22,34 @@ package io.spine.web.firebase.subscription;
 
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.client.NodeValue;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.ExistingEntry;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.UpToDateEntry;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionRecords.AddedRecord;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionRecords.ChangedRecord;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionRecords.RemovedRecord;
+import io.spine.web.firebase.subscription.SubscriptionEntries.Entry;
+import io.spine.web.firebase.subscription.SubscriptionEntries.ExistingEntry;
+import io.spine.web.firebase.subscription.SubscriptionEntries.UpToDateEntry;
+import io.spine.web.firebase.subscription.SubscriptionRecords.AddedRecord;
+import io.spine.web.firebase.subscription.SubscriptionRecords.ChangedRecord;
+import io.spine.web.firebase.subscription.SubscriptionRecords.RemovedRecord;
 
 import java.util.List;
 
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.ADD;
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry.Operation.REMOVE;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.ADD;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.CHANGE;
+import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.REMOVE;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A diff of the Firebase storage state to an actual state of entities, used to execute updates on
- * Firebase storage.
+ * A diff of the Firebase storage state to an actual state of entities, 
+ * used to execute updates on Firebase storage.
  */
-final class FirebaseSubscriptionDiff {
+final class SubscriptionDiff {
 
     private final List<AddedRecord> added;
     private final List<ChangedRecord> changed;
     private final List<RemovedRecord> removed;
 
-    private FirebaseSubscriptionDiff(List<AddedRecord> added,
-                                     List<ChangedRecord> changed,
-                                     List<RemovedRecord> removed) {
+    private SubscriptionDiff(List<AddedRecord> added,
+                             List<ChangedRecord> changed,
+                             List<RemovedRecord> removed) {
         this.added = unmodifiableList(added);
         this.changed = unmodifiableList(changed);
         this.removed = unmodifiableList(removed);
@@ -77,17 +77,17 @@ final class FirebaseSubscriptionDiff {
      *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    static FirebaseSubscriptionDiff
+    static SubscriptionDiff
     computeDiff(List<String> newEntries, NodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject);
-        FirebaseSubscriptionEntriesMatcher matcher =
-                new FirebaseSubscriptionEntriesMatcher(existingEntries);
+        SubscriptionEntriesMatcher matcher =
+                new SubscriptionEntriesMatcher(existingEntries);
         List<UpToDateEntry> entries = upToDateEntries(newEntries);
         List<Entry> entryUpdates = matcher.match(entries);
-        return new FirebaseSubscriptionDiff(entriesToAdd(entryUpdates),
-                                            entriesToChange(entryUpdates),
-                                            entriesToRemove(entryUpdates));
+        return new SubscriptionDiff(entriesToAdd(entryUpdates),
+                                    entriesToChange(entryUpdates),
+                                    entriesToRemove(entryUpdates));
     }
 
     private static List<ExistingEntry> existingEntries(JsonObject object) {
