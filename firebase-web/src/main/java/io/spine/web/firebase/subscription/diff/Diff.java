@@ -20,22 +20,17 @@
 
 package io.spine.web.firebase.subscription.diff;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.subscription.diff.DiffItems.AddedItem;
 import io.spine.web.firebase.subscription.diff.DiffItems.ChangedItem;
 import io.spine.web.firebase.subscription.diff.DiffItems.RemovedItem;
-import io.spine.web.firebase.subscription.diff.Entries.Entry;
-import io.spine.web.firebase.subscription.diff.Entries.ExistingEntry;
-import io.spine.web.firebase.subscription.diff.Entries.UpToDateEntry;
 
 import java.util.List;
 
-import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.ADD;
-import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.REMOVE;
+import static com.google.common.collect.ImmutableList.builder;
 import static java.util.Collections.unmodifiableList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A diff of the Firebase storage state to an actual state of entities, 
@@ -56,15 +51,15 @@ public final class Diff {
     }
 
     public List<AddedItem> added() {
-        return unmodifiableList(added);
+        return added;
     }
 
     public List<ChangedItem> changed() {
-        return unmodifiableList(changed);
+        return changed;
     }
 
     public List<RemovedItem> removed() {
-        return unmodifiableList(removed);
+        return removed;
     }
 
     /**
@@ -77,50 +72,36 @@ public final class Diff {
      *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    public static Diff
-    computeDiff(List<String> newEntries, NodeValue currentData) {
+    public static Diff computeDiff(List<String> newEntries, NodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
-        List<ExistingEntry> existingEntries = existingEntries(jsonObject);
-        EntriesMatcher matcher =
-                new EntriesMatcher(existingEntries);
-        List<UpToDateEntry> entries = upToDateEntries(newEntries);
-        List<Entry> entryUpdates = matcher.match(entries);
-        return new Diff(entriesToAdd(entryUpdates),
-                        entriesToChange(entryUpdates),
-                        entriesToRemove(entryUpdates));
+        List<ExistingEntry> existingEntries = ExistingEntry.fromJson(jsonObject);
+        List<UpToDateEntry> entries = UpToDateEntry.parse(newEntries);
+        EntriesMatcher matcher = new EntriesMatcher(existingEntries);
+        List<EntryUpdate> updates = matcher.match(entries);
+        return toDiff(updates);
     }
 
-    private static List<ExistingEntry> existingEntries(JsonObject object) {
-        return object.entrySet()
-                     .stream()
-                     .map(ExistingEntry::fromJsonObjectEntry)
-                     .collect(toList());
-    }
-
-    private static List<UpToDateEntry> upToDateEntries(List<String> newEntries) {
-        return newEntries.stream()
-                         .map(UpToDateEntry::new)
-                         .collect(toList());
-    }
-
-    private static List<RemovedItem> entriesToRemove(List<Entry> entries) {
-        return entries.stream()
-                      .filter(entry -> entry.operation() == REMOVE)
-                      .map(entry -> new RemovedItem(entry.key()))
-                      .collect(toList());
-    }
-
-    private static List<ChangedItem> entriesToChange(List<Entry> entries) {
-        return entries.stream()
-                      .filter(entry -> entry.operation() == CHANGE)
-                      .map(entry -> new ChangedItem(entry.key(), entry.data()))
-                      .collect(toList());
-    }
-
-    private static List<AddedItem> entriesToAdd(List<Entry> entries) {
-        return entries.stream()
-                      .filter(entry -> entry.operation() == ADD)
-                      .map(entry -> new AddedItem(entry.data()))
-                      .collect(toList());
+    private static Diff toDiff(List<EntryUpdate> updates) {
+        ImmutableList.Builder<AddedItem> added = builder();
+        ImmutableList.Builder<ChangedItem> changed = builder();
+        ImmutableList.Builder<RemovedItem> removed = builder();
+        updates.forEach(update -> {
+            switch (update.operation()) {
+                case ADD:
+                    added.add(new AddedItem(update.data()));
+                    break;
+                case REMOVE:
+                    removed.add(new RemovedItem(update.key()));
+                    break;
+                case CHANGE:
+                    changed.add(new ChangedItem(update.key(), update.data()));
+                    break;
+                case PASS:
+                    break;
+            }
+        });
+        return new Diff(added.build(),
+                        changed.build(),
+                        removed.build());
     }
 }
