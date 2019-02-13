@@ -24,8 +24,6 @@ import io.spine.web.RequestResult;
 
 /**
  * An interface for a result of a request to keep up a subscription.
- *
- * @author Mykhailo Drachuk
  */
 public interface SubscriptionKeepUpResult extends RequestResult {
 

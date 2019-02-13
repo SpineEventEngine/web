@@ -24,8 +24,6 @@ import io.spine.web.RequestResult;
 
 /**
  * An interface for a result of a request to subscribe to some topic and receive its updates.
- *
- * @author Mykhailo Drachuk
  */
 public interface SubscribeResult extends RequestResult {
 

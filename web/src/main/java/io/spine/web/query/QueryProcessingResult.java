@@ -33,8 +33,6 @@ import javax.servlet.ServletResponse;
  *
  * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
  * a {@link ServletResponse} in order to be sent to a client.
- *
- * @author Dmytro Dashenkov
  */
 public interface QueryProcessingResult extends RequestResult {
 }
