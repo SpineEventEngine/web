@@ -46,7 +46,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("RestClient should")
 class RestClientTest {
 
-
     private static final String PATH = "node/path";
     private static final String DATA = "{\"a\":\"b\"}";
     private static final String DATABASE_URL_STRING = "https://database.com";
@@ -56,15 +55,15 @@ class RestClientTest {
     private static final GenericUrl EXPECTED_NODE_URL =
             new GenericUrl(DATABASE_URL_STRING + "/" + PATH + ".json");
 
-    private HttpClient requestExecutor;
+    private HttpClient httpClient;
     private RestClient client;
     private NodePath path;
     private NodeValue value;
 
     @BeforeEach
     void setUp() {
-        requestExecutor = mock(HttpClient.class);
-        client = new RestClient(RestClientTest.URL_TEMPLATE, requestExecutor);
+        httpClient = mock(HttpClient.class);
+        client = new RestClient(URL_TEMPLATE, httpClient);
         path = NodePath.fromString(PATH);
         value = NodeValue.from(DATA);
     }
@@ -81,7 +80,7 @@ class RestClientTest {
     @Test
     @DisplayName("retrieve data from given database path")
     void getData() {
-        when(requestExecutor.get(any())).thenReturn(DATA);
+        when(httpClient.get(any())).thenReturn(DATA);
 
         Optional<NodeValue> result = client.get(path);
         assertTrue(result.isPresent());
@@ -94,7 +93,7 @@ class RestClientTest {
     @Test
     @DisplayName("return empty Optional in case of null data")
     void getNullData() {
-        when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
+        when(httpClient.get(any())).thenReturn(NULL_ENTRY);
 
         Optional<NodeValue> result = client.get(path);
         assertFalse(result.isPresent());
@@ -103,18 +102,18 @@ class RestClientTest {
     @Test
     @DisplayName("store data via PUT method when node is not present")
     void storeNewViaPut() {
-        when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
+        when(httpClient.get(any())).thenReturn(NULL_ENTRY);
 
         client.merge(path, value);
-        verify(requestExecutor).put(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
+        verify(httpClient).put(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
     }
 
     @Test
     @DisplayName("store data via PATCH method when node already exists")
     void updateExistingViaPatch() {
-        when(requestExecutor.get(any())).thenReturn(DATA);
+        when(httpClient.get(any())).thenReturn(DATA);
 
         client.merge(path, value);
-        verify(requestExecutor).patch(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
+        verify(httpClient).patch(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
     }
 }
