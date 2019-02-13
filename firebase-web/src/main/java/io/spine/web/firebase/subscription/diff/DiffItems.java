@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.subscription.diff;
 
 /**
  * The records that get stored to Firebase database upon subscription updates.
@@ -34,7 +34,7 @@ final class DiffItems {
     /**
      * A record marking a subscription update with newly added entity.
      */
-    static class AddedItem {
+    public static class AddedItem {
 
         private final String data;
 
@@ -45,7 +45,7 @@ final class DiffItems {
         /**
          * JSON serialized entity data.
          */
-        String data() {
+        public String data() {
             return data;
         }
     }
@@ -53,7 +53,7 @@ final class DiffItems {
     /**
      * A record marking a subscription update with an entity that was removed.
      */
-    static class RemovedItem {
+    public static class RemovedItem {
 
         private final String key;
 
@@ -64,7 +64,7 @@ final class DiffItems {
         /**
          * A Firebase key of an entity relative to the subscription root.
          */
-        String key() {
+        public String key() {
             return key;
         }
     }
@@ -72,7 +72,7 @@ final class DiffItems {
     /**
      * A record marking a subscription update with an entity change.
      */
-    static class ChangedItem {
+    public static class ChangedItem {
 
         private final String key;
         private final String data;
@@ -85,14 +85,14 @@ final class DiffItems {
         /**
          * A Firebase key of an entity relative to the subscription root.
          */
-        String key() {
+        public String key() {
             return key;
         }
 
         /**
          * JSON serialized entity data.
          */
-        String data() {
+        public String data() {
             return data;
         }
     }

@@ -27,13 +27,14 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
 import io.spine.web.firebase.client.NodeValue;
+import io.spine.web.firebase.subscription.diff.Diff;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static io.spine.web.firebase.subscription.Diff.computeDiff;
+import static io.spine.web.firebase.subscription.diff.Diff.computeDiff;
 import static java.util.stream.Collectors.toList;
 
 /**

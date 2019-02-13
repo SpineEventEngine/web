@@ -18,22 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.subscription.diff;
 
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.client.NodeValue;
-import io.spine.web.firebase.subscription.DiffItems.AddedItem;
-import io.spine.web.firebase.subscription.DiffItems.ChangedItem;
-import io.spine.web.firebase.subscription.DiffItems.RemovedItem;
-import io.spine.web.firebase.subscription.Entries.Entry;
-import io.spine.web.firebase.subscription.Entries.ExistingEntry;
-import io.spine.web.firebase.subscription.Entries.UpToDateEntry;
+import io.spine.web.firebase.subscription.diff.DiffItems.AddedItem;
+import io.spine.web.firebase.subscription.diff.DiffItems.ChangedItem;
+import io.spine.web.firebase.subscription.diff.DiffItems.RemovedItem;
+import io.spine.web.firebase.subscription.diff.Entries.Entry;
+import io.spine.web.firebase.subscription.diff.Entries.ExistingEntry;
+import io.spine.web.firebase.subscription.diff.Entries.UpToDateEntry;
 
 import java.util.List;
 
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.ADD;
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.REMOVE;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.ADD;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.CHANGE;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.REMOVE;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toList;
  * A diff of the Firebase storage state to an actual state of entities, 
  * used to execute updates on Firebase storage.
  */
-final class Diff {
+public final class Diff {
 
     private final List<AddedItem> added;
     private final List<ChangedItem> changed;
@@ -55,15 +55,15 @@ final class Diff {
         this.removed = unmodifiableList(removed);
     }
 
-    List<AddedItem> added() {
+    public List<AddedItem> added() {
         return unmodifiableList(added);
     }
 
-    List<ChangedItem> changed() {
+    public List<ChangedItem> changed() {
         return unmodifiableList(changed);
     }
 
-    List<RemovedItem> removed() {
+    public List<RemovedItem> removed() {
         return unmodifiableList(removed);
     }
 
@@ -77,7 +77,7 @@ final class Diff {
      *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    static Diff
+    public static Diff
     computeDiff(List<String> newEntries, NodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject);

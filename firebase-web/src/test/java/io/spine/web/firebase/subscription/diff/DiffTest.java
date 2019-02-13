@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.subscription.diff;
 
 import io.spine.web.firebase.client.NodeValue;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.web.firebase.subscription.Diff.computeDiff;
+import static io.spine.web.firebase.subscription.diff.Diff.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

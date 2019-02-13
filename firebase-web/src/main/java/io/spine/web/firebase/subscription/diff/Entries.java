@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.subscription.diff;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +52,7 @@ final class Entries {
         UpToDateEntry(String data) {
             this.data = data;
             this.json = toJson(data);
-            this.id = this.json.get("id");
+            this.id = json.get("id");
             this.containsId = id != null;
         }
 
@@ -101,7 +101,7 @@ final class Entries {
             this.key = key;
             this.data = data;
             this.json = toJson(data);
-            this.id = this.json.get("id");
+            this.id = json.get("id");
             this.containsId = id != null;
         }
 

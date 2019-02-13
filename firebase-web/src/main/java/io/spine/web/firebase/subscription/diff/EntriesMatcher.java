@@ -18,21 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.subscription.diff;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.spine.web.firebase.subscription.Entries.Entry;
-import io.spine.web.firebase.subscription.Entries.ExistingEntry;
-import io.spine.web.firebase.subscription.Entries.UpToDateEntry;
+import io.spine.web.firebase.subscription.diff.Entries.Entry;
+import io.spine.web.firebase.subscription.diff.Entries.ExistingEntry;
+import io.spine.web.firebase.subscription.diff.Entries.UpToDateEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.ADD;
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.PASS;
-import static io.spine.web.firebase.subscription.Entries.Entry.Operation.REMOVE;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.ADD;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.CHANGE;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.PASS;
+import static io.spine.web.firebase.subscription.diff.Entries.Entry.Operation.REMOVE;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
