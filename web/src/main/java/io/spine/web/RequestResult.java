@@ -26,10 +26,8 @@ import java.io.IOException;
 /**
  * A result of a request to Spine Web that can be written to a 
  * {@link ServletResponse servlet response}.
- * 
- * @author Mykhailo Drachuk
  */
-public interface RequestsResult {
+public interface RequestResult {
 
     /**
      * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.

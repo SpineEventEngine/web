@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.RequestsResult;
+import io.spine.web.RequestResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +44,7 @@ class FirebaseSubscriptionKeepUpResultTest {
         ServletResponse response = mock(ServletResponse.class);
         StringWriter writer = mockWriter(response);
 
-        RequestsResult result = new FirebaseSubscriptionKeepUpResult(statusOk());
+        RequestResult result = new FirebaseSubscriptionKeepUpResult(statusOk());
         result.writeTo(response);
         verify(response).getWriter();
 
