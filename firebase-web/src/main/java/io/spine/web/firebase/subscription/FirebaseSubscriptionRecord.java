@@ -26,7 +26,7 @@ import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +74,7 @@ final class FirebaseSubscriptionRecord {
     private void flushNewVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
+            NodeValue nodeValue = NodeValue.empty();
             newEntries.forEach(nodeValue::addChild);
             firebaseClient.merge(path(), nodeValue);
         });
@@ -94,9 +94,9 @@ final class FirebaseSubscriptionRecord {
     private void flushDiffVia(FirebaseClient firebaseClient) {
         queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            Optional<FirebaseNodeValue> existingValue = firebaseClient.get(path());
+            Optional<NodeValue> existingValue = firebaseClient.get(path());
             if (!existingValue.isPresent()) {
-                FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
+                NodeValue nodeValue = NodeValue.empty();
                 newEntries.forEach(nodeValue::addChild);
                 firebaseClient.merge(path(), nodeValue);
             } else {
@@ -108,7 +108,7 @@ final class FirebaseSubscriptionRecord {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private void updateWithDiff(FirebaseSubscriptionDiff diff, FirebaseClient firebaseClient) {
-        FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
+        NodeValue nodeValue = NodeValue.empty();
         diff.changed()
             .forEach(record -> nodeValue.addChild(record.key(), record.data()));
         diff.removed()

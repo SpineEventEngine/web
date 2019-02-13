@@ -23,7 +23,7 @@ package io.spine.web.firebase.subscription.given;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 import org.mockito.ArgumentMatcher;
 
 import java.util.List;
@@ -33,7 +33,7 @@ import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A checker of {@code FirebaseNodeValue} instances used in Firebase requests.
+ * A checker of {@code NodeValue} instances used in Firebase requests.
  *
  * <p>By default checks that the value contains all the {@linkplain #expected expected} entries
  * under the specified keys.
@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toList;
  * <p>If {@link #ANY_KEY} is specified as entry key then the checker verifies that corresponding
  * value is present under any of the keys in the tested object.
  */
-public class HasChildren implements ArgumentMatcher<FirebaseNodeValue> {
+public class HasChildren implements ArgumentMatcher<NodeValue> {
 
     public static final String ANY_KEY = "any_key";
 
@@ -58,8 +58,8 @@ public class HasChildren implements ArgumentMatcher<FirebaseNodeValue> {
     }
 
     @Override
-    public boolean matches(FirebaseNodeValue firebaseNodeValue) {
-        JsonObject actual = firebaseNodeValue.underlyingJson();
+    public boolean matches(NodeValue nodeValue) {
+        JsonObject actual = nodeValue.underlyingJson();
         for (Map.Entry<String, String> entry : expected.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();

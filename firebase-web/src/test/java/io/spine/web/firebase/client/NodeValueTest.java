@@ -31,8 +31,8 @@ import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FirebaseNodeValue should")
-class FirebaseNodeValueTest {
+@DisplayName("NodeValue should")
+class NodeValueTest {
 
     private static final String KEY = "theKey";
     private static final String VALUE = "theValue";
@@ -41,7 +41,7 @@ class FirebaseNodeValueTest {
     @Test
     @DisplayName("be empty when created via the default constructor")
     void beCreatedEmpty() {
-        FirebaseNodeValue value = FirebaseNodeValue.empty();
+        NodeValue value = NodeValue.empty();
         JsonObject underlyingJson = value.underlyingJson();
         assertEmpty(underlyingJson.entrySet());
     }
@@ -49,21 +49,21 @@ class FirebaseNodeValueTest {
     @Test
     @DisplayName("allow creation from the existing JSON string")
     void beCreatedFromString() {
-        FirebaseNodeValue value = FirebaseNodeValue.from(DATA);
+        NodeValue value = NodeValue.from(DATA);
         assertSingleChild(value, KEY, VALUE);
     }
 
     @Test
     @DisplayName("allow creation with single child")
     void beCreatedWithSingleChild() {
-        FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(VALUE);
+        NodeValue value = NodeValue.withSingleChild(VALUE);
         assertSingleChild(value, VALUE);
     }
 
     @Test
     @DisplayName("add a new child under the generated key")
     void pushChild() {
-        FirebaseNodeValue value = FirebaseNodeValue.empty();
+        NodeValue value = NodeValue.empty();
         value.addChild(VALUE);
         assertSingleChild(value, VALUE);
     }
@@ -71,12 +71,12 @@ class FirebaseNodeValueTest {
     @Test
     @DisplayName("add a new child with a predefined key")
     void addChildWithKey() {
-        FirebaseNodeValue value = FirebaseNodeValue.empty();
+        NodeValue value = NodeValue.empty();
         value.addChild(KEY, VALUE);
         assertSingleChild(value, KEY, VALUE);
     }
 
-    private static void assertSingleChild(FirebaseNodeValue value, String childValue) {
+    private static void assertSingleChild(NodeValue value, String childValue) {
         JsonObject underlyingJson = value.underlyingJson();
         assertEquals(1, underlyingJson.entrySet()
                                       .size());
@@ -89,7 +89,7 @@ class FirebaseNodeValueTest {
     }
 
     private static void
-    assertSingleChild(FirebaseNodeValue value, String childKey, String childValue) {
+    assertSingleChild(NodeValue value, String childKey, String childValue) {
         JsonObject underlyingJson = value.underlyingJson();
         assertTrue(underlyingJson.has(childKey));
         String actual = underlyingJson.get(childKey)

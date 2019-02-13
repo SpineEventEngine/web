@@ -21,7 +21,7 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.gson.JsonObject;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.Entry;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.ExistingEntry;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionEntries.UpToDateEntry;
@@ -69,7 +69,7 @@ final class FirebaseSubscriptionDiff {
 
     /**
      * Compares the actual state represented by {@code newEntries} to the state of the Firebase
-     * database represented by a {@link FirebaseNodeValue}.
+     * database represented by a {@link NodeValue}.
      *
      * @param newEntries
      *         a list of JSON serialized entries retrieved from Spine
@@ -78,7 +78,7 @@ final class FirebaseSubscriptionDiff {
      * @return a diff between Spine and Firebase data states
      */
     static FirebaseSubscriptionDiff
-    computeDiff(List<String> newEntries, FirebaseNodeValue currentData) {
+    computeDiff(List<String> newEntries, NodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject);
         FirebaseSubscriptionEntriesMatcher matcher =

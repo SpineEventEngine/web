@@ -23,7 +23,7 @@ package io.spine.web.firebase.subscription;
 import io.spine.client.QueryResponse;
 import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.subscription.given.HasChildren;
 import org.junit.jupiter.api.DisplayName;
@@ -102,7 +102,7 @@ class FirebaseSubscriptionRecordTest {
         DatabasePath queryResponsePath = fromString(dbPath);
         FirebaseSubscriptionRecord record = new FirebaseSubscriptionRecord(queryResponsePath,
                                                                            queryResponse);
-        FirebaseNodeValue existingValue = FirebaseNodeValue.empty();
+        NodeValue existingValue = NodeValue.empty();
         existingValue.addChild(toCompactJson(aliceInWonderland));
         String patternsKey = existingValue.addChild(toCompactJson(designPatterns));
         String guideKey = existingValue.addChild(toCompactJson(guideToTheGalaxy));

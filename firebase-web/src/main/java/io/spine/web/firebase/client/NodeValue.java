@@ -35,46 +35,46 @@ import static com.google.firebase.database.utilities.PushIdGenerator.generatePus
 /**
  * The Firebase database node value.
  */
-public final class FirebaseNodeValue {
+public final class NodeValue {
 
     private final JsonObject value;
 
-    private FirebaseNodeValue(JsonObject value) {
+    private NodeValue(JsonObject value) {
         this.value = value;
     }
 
-    private FirebaseNodeValue() {
+    private NodeValue() {
         this(new JsonObject());
     }
 
     /**
-     * Creates an empty {@code FirebaseNodeValue}.
+     * Creates an empty {@code NodeValue}.
      *
      * <p>This is not equivalent to the {@code null} value, an empty value is supposed to be
      * filled with entries at some point after the creation.
      */
-    public static FirebaseNodeValue empty() {
-        return new FirebaseNodeValue();
+    public static NodeValue empty() {
+        return new NodeValue();
     }
 
     /**
-     * Creates a {@code FirebaseNodeValue} whose underlying {@link com.google.gson.JsonObject} is
+     * Creates a {@code NodeValue} whose underlying {@link com.google.gson.JsonObject} is
      * parsed from the given {@code String}.
      */
-    public static FirebaseNodeValue from(String json) {
+    public static NodeValue from(String json) {
         JsonParser parser = new JsonParser();
         JsonObject value = parser.parse(json)
                                  .getAsJsonObject();
-        return new FirebaseNodeValue(value);
+        return new NodeValue(value);
     }
 
     /**
-     * Creates a {@code FirebaseNodeValue} which has a single entry under a generated key.
+     * Creates a {@code NodeValue} which has a single entry under a generated key.
      *
      * @see ChildKeyGenerator
      */
-    public static FirebaseNodeValue withSingleChild(String childValue) {
-        FirebaseNodeValue nodeValue = new FirebaseNodeValue();
+    public static NodeValue withSingleChild(String childValue) {
+        NodeValue nodeValue = new NodeValue();
         nodeValue.addChild(childValue);
         return nodeValue;
     }

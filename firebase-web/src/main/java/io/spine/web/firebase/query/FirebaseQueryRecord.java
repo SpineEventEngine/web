@@ -27,7 +27,7 @@ import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.FirebaseClient;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -116,7 +116,7 @@ final class FirebaseQueryRecord {
         queryResponse.thenAccept(
                 response -> mapMessagesToJson(response)
                         .forEach(json -> {
-                            FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(json);
+                            NodeValue value = NodeValue.withSingleChild(json);
                             firebaseClient.merge(path(), value);
                         })
         );
@@ -130,7 +130,7 @@ final class FirebaseQueryRecord {
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
-                        FirebaseNodeValue value = FirebaseNodeValue.withSingleChild(item);
+                        NodeValue value = NodeValue.withSingleChild(item);
                         firebaseClient.merge(path(), value);
                     });
                 }

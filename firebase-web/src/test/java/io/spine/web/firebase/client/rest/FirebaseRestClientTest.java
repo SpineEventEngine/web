@@ -24,7 +24,7 @@ import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
 import io.spine.web.firebase.client.DatabasePath;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,14 +54,14 @@ class FirebaseRestClientTest {
     private HttpRequestExecutor requestExecutor;
     private FirebaseRestClient client;
     private DatabasePath path;
-    private FirebaseNodeValue value;
+    private NodeValue value;
 
     @BeforeEach
     void setUp() {
         requestExecutor = mock(HttpRequestExecutor.class);
         client = new FirebaseRestClient(NODE_ACCESS_FORMAT, requestExecutor);
         path = DatabasePath.fromString(PATH);
-        value = FirebaseNodeValue.from(DATA);
+        value = NodeValue.from(DATA);
     }
 
     @Test
@@ -69,7 +69,7 @@ class FirebaseRestClientTest {
     void passNullToleranceCheck() {
         new NullPointerTester()
                 .setDefault(DatabasePath.class, path)
-                .setDefault(FirebaseNodeValue.class, value)
+                .setDefault(NodeValue.class, value)
                 .testAllPublicInstanceMethods(client);
     }
 
@@ -78,9 +78,9 @@ class FirebaseRestClientTest {
     void getData() {
         when(requestExecutor.get(any())).thenReturn(DATA);
 
-        Optional<FirebaseNodeValue> result = client.get(path);
+        Optional<NodeValue> result = client.get(path);
         assertTrue(result.isPresent());
-        FirebaseNodeValue value = result.get();
+        NodeValue value = result.get();
         String contentString = value.underlyingJson()
                                     .toString();
         assertEquals(DATA, contentString);
@@ -91,7 +91,7 @@ class FirebaseRestClientTest {
     void getNullData() {
         when(requestExecutor.get(any())).thenReturn(NULL_ENTRY);
 
-        Optional<FirebaseNodeValue> result = client.get(path);
+        Optional<NodeValue> result = client.get(path);
         assertFalse(result.isPresent());
     }
 

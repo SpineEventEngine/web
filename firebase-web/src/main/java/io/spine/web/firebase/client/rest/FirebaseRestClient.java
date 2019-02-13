@@ -28,7 +28,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.web.firebase.client.DatabasePath;
 import io.spine.web.firebase.client.DatabaseUrl;
 import io.spine.web.firebase.client.FirebaseClient;
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 
 import java.util.Optional;
 
@@ -95,7 +95,7 @@ public class FirebaseRestClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<FirebaseNodeValue> get(DatabasePath nodePath) {
+    public Optional<NodeValue> get(DatabasePath nodePath) {
         checkNotNull(nodePath);
 
         GenericUrl url = toNodeUrl(nodePath);
@@ -103,19 +103,19 @@ public class FirebaseRestClient implements FirebaseClient {
         if (isNullData(data)) {
             return Optional.empty();
         }
-        FirebaseNodeValue value = FirebaseNodeValue.from(data);
-        Optional<FirebaseNodeValue> result = Optional.of(value);
+        NodeValue value = NodeValue.from(data);
+        Optional<NodeValue> result = Optional.of(value);
         return result;
     }
 
     @Override
-    public void merge(DatabasePath nodePath, FirebaseNodeValue value) {
+    public void merge(DatabasePath nodePath, NodeValue value) {
         checkNotNull(nodePath);
         checkNotNull(value);
 
         GenericUrl url = toNodeUrl(nodePath);
         ByteArrayContent byteArrayContent = value.toByteArray();
-        Optional<FirebaseNodeValue> existingValue = get(nodePath);
+        Optional<NodeValue> existingValue = get(nodePath);
         if (!existingValue.isPresent()) {
             create(url, byteArrayContent);
         } else {

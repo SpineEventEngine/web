@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase.subscription;
 
-import io.spine.web.firebase.client.FirebaseNodeValue;
+import io.spine.web.firebase.client.NodeValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
-        FirebaseNodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
@@ -53,7 +53,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
-        FirebaseNodeValue value = FirebaseNodeValue.empty();
+        NodeValue value = NodeValue.empty();
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 value
@@ -67,7 +67,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge a removed object")
     void createRemovedDiff() {
-        FirebaseNodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
+        NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
         FirebaseSubscriptionDiff diff = computeDiff(
                 newArrayList(),
@@ -82,7 +82,7 @@ class FirebaseSubscriptionDiffTest {
     @Test
     @DisplayName("acknowledge changes spanning multiple objects")
     void createComplexDiff() {
-        FirebaseNodeValue value = nodeValue(
+        NodeValue value = nodeValue(
                 "{\"id\":\"1\",\"a\":1,\"b\":3}",
                 "{\"x\":\"asd\",\"y\":3}",
                 "{\"pass\":true}",
@@ -108,12 +108,12 @@ class FirebaseSubscriptionDiffTest {
     void throwOnIncorrectEntries() {
         String invalidJson = "invalidJson";
         List<String> newEntries = Collections.singletonList(invalidJson);
-        FirebaseNodeValue stubValue = FirebaseNodeValue.empty();
+        NodeValue stubValue = NodeValue.empty();
         assertThrows(RuntimeException.class, () -> computeDiff(newEntries, stubValue));
     }
 
-    private static FirebaseNodeValue nodeValue(String... entries) {
-        FirebaseNodeValue nodeValue = FirebaseNodeValue.empty();
+    private static NodeValue nodeValue(String... entries) {
+        NodeValue nodeValue = NodeValue.empty();
         for (String entry : entries) {
             nodeValue.addChild(entry);
         }
