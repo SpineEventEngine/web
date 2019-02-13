@@ -23,22 +23,22 @@ package io.spine.web.firebase.subscription;
 /**
  * The records that get stored to Firebase database upon subscription updates.
  */
-final class SubscriptionRecords {
+final class DiffItems {
 
     /**
      * An empty constructor preventing instantiation.
      */
-    private SubscriptionRecords() {
+    private DiffItems() {
     }
 
     /**
      * A record marking a subscription update with newly added entity.
      */
-    static class AddedRecord {
+    static class AddedItem {
 
         private final String data;
 
-        AddedRecord(String data) {
+        AddedItem(String data) {
             this.data = data;
         }
 
@@ -53,11 +53,11 @@ final class SubscriptionRecords {
     /**
      * A record marking a subscription update with an entity that was removed.
      */
-    static class RemovedRecord {
+    static class RemovedItem {
 
         private final String key;
 
-        RemovedRecord(String key) {
+        RemovedItem(String key) {
             this.key = key;
         }
 
@@ -72,12 +72,12 @@ final class SubscriptionRecords {
     /**
      * A record marking a subscription update with an entity change.
      */
-    static class ChangedRecord {
+    static class ChangedItem {
 
         private final String key;
         private final String data;
 
-        ChangedRecord(String key, String data) {
+        ChangedItem(String key, String data) {
             this.key = key;
             this.data = data;
         }

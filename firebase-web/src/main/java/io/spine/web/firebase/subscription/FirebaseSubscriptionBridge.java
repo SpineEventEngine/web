@@ -70,8 +70,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         DatabasePath path = allocateForQuery(query);
-        SubscriptionRecord record =
-                new SubscriptionRecord(path, queryResponse);
+        StoredRecord record =
+                new StoredRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
         SubscriptionId id = newSubscriptionId(record.path());
         Subscription subscription = newSubscription(id, topic);
@@ -107,8 +107,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         DatabasePath path = DatabasePath.fromString(id.getValue());
-        SubscriptionRecord record =
-                new SubscriptionRecord(path, queryResponse);
+        StoredRecord record =
+                new StoredRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }

@@ -28,19 +28,19 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.web.firebase.subscription.SubscriptionDiff.computeDiff;
+import static io.spine.web.firebase.subscription.Diff.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("SubscriptionDiff should")
-class SubscriptionDiffTest {
+@DisplayName("Diff should")
+class DiffTest {
 
     @Test
     @DisplayName("acknowledge a changed object")
     void createChangedDiff() {
         NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
-        SubscriptionDiff diff = computeDiff(
+        Diff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 value
         );
@@ -54,7 +54,7 @@ class SubscriptionDiffTest {
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
         NodeValue value = NodeValue.empty();
-        SubscriptionDiff diff = computeDiff(
+        Diff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
                 value
         );
@@ -69,7 +69,7 @@ class SubscriptionDiffTest {
     void createRemovedDiff() {
         NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
-        SubscriptionDiff diff = computeDiff(
+        Diff diff = computeDiff(
                 newArrayList(),
                 value
         );
@@ -88,7 +88,7 @@ class SubscriptionDiffTest {
                 "{\"pass\":true}",
                 "{\"id\":{\"value\": \"passed\"}}"
         );
-        SubscriptionDiff diff = computeDiff(
+        Diff diff = computeDiff(
                 newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 
                              "{\"a\":1,\"b\":3}", // added
                              "{\"id\":{\"value\": \"passed\"}}", // passed

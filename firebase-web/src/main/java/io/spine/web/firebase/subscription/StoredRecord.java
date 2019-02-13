@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static io.spine.web.firebase.subscription.SubscriptionDiff.computeDiff;
+import static io.spine.web.firebase.subscription.Diff.computeDiff;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -41,13 +41,13 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>Supports both an initial store and consequent updates of the stored data.
  */
-final class SubscriptionRecord {
+final class StoredRecord {
 
     private final DatabasePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
-    SubscriptionRecord(DatabasePath path,
-                       CompletionStage<QueryResponse> queryResponse) {
+    StoredRecord(DatabasePath path,
+                 CompletionStage<QueryResponse> queryResponse) {
         this.path = path;
         this.queryResponse = queryResponse;
     }
@@ -100,14 +100,14 @@ final class SubscriptionRecord {
                 newEntries.forEach(nodeValue::addChild);
                 firebaseClient.merge(path(), nodeValue);
             } else {
-                SubscriptionDiff diff = computeDiff(newEntries, existingValue.get());
+                Diff diff = computeDiff(newEntries, existingValue.get());
                 updateWithDiff(diff, firebaseClient);
             }
         });
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
-    private void updateWithDiff(SubscriptionDiff diff, FirebaseClient firebaseClient) {
+    private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
         NodeValue nodeValue = NodeValue.empty();
         diff.changed()
             .forEach(record -> nodeValue.addChild(record.key(), record.data()));

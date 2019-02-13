@@ -22,18 +22,18 @@ package io.spine.web.firebase.subscription;
 
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.client.NodeValue;
-import io.spine.web.firebase.subscription.SubscriptionEntries.Entry;
-import io.spine.web.firebase.subscription.SubscriptionEntries.ExistingEntry;
-import io.spine.web.firebase.subscription.SubscriptionEntries.UpToDateEntry;
-import io.spine.web.firebase.subscription.SubscriptionRecords.AddedRecord;
-import io.spine.web.firebase.subscription.SubscriptionRecords.ChangedRecord;
-import io.spine.web.firebase.subscription.SubscriptionRecords.RemovedRecord;
+import io.spine.web.firebase.subscription.DiffItems.AddedItem;
+import io.spine.web.firebase.subscription.DiffItems.ChangedItem;
+import io.spine.web.firebase.subscription.DiffItems.RemovedItem;
+import io.spine.web.firebase.subscription.Entries.Entry;
+import io.spine.web.firebase.subscription.Entries.ExistingEntry;
+import io.spine.web.firebase.subscription.Entries.UpToDateEntry;
 
 import java.util.List;
 
-import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.ADD;
-import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.SubscriptionEntries.Entry.Operation.REMOVE;
+import static io.spine.web.firebase.subscription.Entries.Entry.Operation.ADD;
+import static io.spine.web.firebase.subscription.Entries.Entry.Operation.CHANGE;
+import static io.spine.web.firebase.subscription.Entries.Entry.Operation.REMOVE;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
@@ -41,29 +41,29 @@ import static java.util.stream.Collectors.toList;
  * A diff of the Firebase storage state to an actual state of entities, 
  * used to execute updates on Firebase storage.
  */
-final class SubscriptionDiff {
+final class Diff {
 
-    private final List<AddedRecord> added;
-    private final List<ChangedRecord> changed;
-    private final List<RemovedRecord> removed;
+    private final List<AddedItem> added;
+    private final List<ChangedItem> changed;
+    private final List<RemovedItem> removed;
 
-    private SubscriptionDiff(List<AddedRecord> added,
-                             List<ChangedRecord> changed,
-                             List<RemovedRecord> removed) {
+    private Diff(List<AddedItem> added,
+                 List<ChangedItem> changed,
+                 List<RemovedItem> removed) {
         this.added = unmodifiableList(added);
         this.changed = unmodifiableList(changed);
         this.removed = unmodifiableList(removed);
     }
 
-    List<AddedRecord> added() {
+    List<AddedItem> added() {
         return unmodifiableList(added);
     }
 
-    List<ChangedRecord> changed() {
+    List<ChangedItem> changed() {
         return unmodifiableList(changed);
     }
 
-    List<RemovedRecord> removed() {
+    List<RemovedItem> removed() {
         return unmodifiableList(removed);
     }
 
@@ -77,17 +77,17 @@ final class SubscriptionDiff {
      *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    static SubscriptionDiff
+    static Diff
     computeDiff(List<String> newEntries, NodeValue currentData) {
         JsonObject jsonObject = currentData.underlyingJson();
         List<ExistingEntry> existingEntries = existingEntries(jsonObject);
-        SubscriptionEntriesMatcher matcher =
-                new SubscriptionEntriesMatcher(existingEntries);
+        EntriesMatcher matcher =
+                new EntriesMatcher(existingEntries);
         List<UpToDateEntry> entries = upToDateEntries(newEntries);
         List<Entry> entryUpdates = matcher.match(entries);
-        return new SubscriptionDiff(entriesToAdd(entryUpdates),
-                                    entriesToChange(entryUpdates),
-                                    entriesToRemove(entryUpdates));
+        return new Diff(entriesToAdd(entryUpdates),
+                        entriesToChange(entryUpdates),
+                        entriesToRemove(entryUpdates));
     }
 
     private static List<ExistingEntry> existingEntries(JsonObject object) {
@@ -103,24 +103,24 @@ final class SubscriptionDiff {
                          .collect(toList());
     }
 
-    private static List<RemovedRecord> entriesToRemove(List<Entry> entries) {
+    private static List<RemovedItem> entriesToRemove(List<Entry> entries) {
         return entries.stream()
                       .filter(entry -> entry.operation() == REMOVE)
-                      .map(entry -> new RemovedRecord(entry.key()))
+                      .map(entry -> new RemovedItem(entry.key()))
                       .collect(toList());
     }
 
-    private static List<ChangedRecord> entriesToChange(List<Entry> entries) {
+    private static List<ChangedItem> entriesToChange(List<Entry> entries) {
         return entries.stream()
                       .filter(entry -> entry.operation() == CHANGE)
-                      .map(entry -> new ChangedRecord(entry.key(), entry.data()))
+                      .map(entry -> new ChangedItem(entry.key(), entry.data()))
                       .collect(toList());
     }
 
-    private static List<AddedRecord> entriesToAdd(List<Entry> entries) {
+    private static List<AddedItem> entriesToAdd(List<Entry> entries) {
         return entries.stream()
                       .filter(entry -> entry.operation() == ADD)
-                      .map(entry -> new AddedRecord(entry.data()))
+                      .map(entry -> new AddedItem(entry.data()))
                       .collect(toList());
     }
 }
