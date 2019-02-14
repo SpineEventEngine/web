@@ -38,10 +38,8 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * An abstract servlet for a client request to keep up an existing {@link Subscription}.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
- * to process. After, {@link SubscriptionKeepUpResult the processing result} is written to
+ * to process. After, {@linkplain SubscriptionKeepUpResult the processing result} is written to
  * the servlet response.
- *
- * @author Mykhailo Drachuk
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscriptionKeepUpServlet extends NonSerializableServlet {

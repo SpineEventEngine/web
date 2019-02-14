@@ -26,7 +26,7 @@ import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.PASS
 import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.REMOVE;
 
 /**
- * Static factory for {@link EntryUpdate Entry Update} instance.
+ * Static factory for {@linkplain EntryUpdate Entry Update} instance.
  */
 class EntryUpdates {
 

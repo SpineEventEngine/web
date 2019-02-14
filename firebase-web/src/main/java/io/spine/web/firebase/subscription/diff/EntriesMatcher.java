@@ -45,9 +45,9 @@ final class EntriesMatcher {
 
     /**
      * Matches up-to-date entries retrieved from Spine to the entries from the Firebase storage.
-     * Each {@link UpToDateEntry up-to-date entry} is mapped to an {@link EntryUpdate entry} specifying
-     * {@link EntryUpdate.Operation operation}
-     * to be formed, along with data for this operation.
+     * Each {@linkplain UpToDateEntry up-to-date entry} is mapped to an {@linkplain EntryUpdate 
+     * entry} specifying {@linkplain EntryUpdate.Operation operation} to be formed, along with 
+     * data for this operation.
      *
      * @param entries a list of new entries with latest subscription state
      * @return a list of entries with operation appropriate to them

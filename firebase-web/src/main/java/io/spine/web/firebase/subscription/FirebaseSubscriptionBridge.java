@@ -51,9 +51,9 @@ import static io.spine.web.firebase.query.QueryNodePathFactory.allocateForQuery;
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
  *
- * <p>The bridge allows to {@link #subscribe(Topic) subscribe} to some {@link Topic topic},
- * {@link #keepUp(Subscription) keep up} the created {@link Subscription subscription},
- * and {@link #cancel(Subscription) cancel} the created subscription.
+ * <p>The bridge allows to {@link #subscribe(Topic) subscribe} to some {@linkplain Topic topic},
+ * {@linkplain #keepUp(Subscription) keep up} the created {@linkplain Subscription subscription},
+ * and {@linkplain #cancel(Subscription) cancel} the created subscription.
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 

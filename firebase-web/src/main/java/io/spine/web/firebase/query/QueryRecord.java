@@ -87,7 +87,7 @@ final class QueryRecord {
     }
 
     /**
-     * A consumer that counts the number of messages in {@link QueryResponse Query Response}.
+     * A consumer that counts the number of messages in {@linkplain QueryResponse Query Response}.
      */
     private static class CountConsumer implements Consumer<QueryResponse> {
 

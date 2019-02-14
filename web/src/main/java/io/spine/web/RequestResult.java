@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * A result of a request to Spine Web that can be written to a 
- * {@link ServletResponse servlet response}.
+ * {@linkplain ServletResponse servlet response}.
  */
 public interface RequestResult {
 

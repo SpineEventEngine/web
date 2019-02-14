@@ -7,7 +7,7 @@ import io.spine.web.firebase.client.NodePath;
 /**
  * A URL of a single Firebase node accessed via REST.
  * 
- * <p>Instances of REST node URL are created from it’s {@link Template template}.
+ * <p>Instances of REST node URL are created from it’s {@linkplain Template template}.
  */
 @SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // instantiated via Template 
 class RestNodeUrl {
@@ -23,8 +23,8 @@ class RestNodeUrl {
     }
 
     /**
-     * A template to create {@link RestNodeUrl REST Node URLs} in the Firebase database at
-     * specified {@link DatabaseUrl url}.
+     * A template to create {@linkplain RestNodeUrl REST Node URLs} in the Firebase database at
+     * specified {@linkplain DatabaseUrl url}.
      */
     static class Template {
 
