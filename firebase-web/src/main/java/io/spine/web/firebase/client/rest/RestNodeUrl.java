@@ -9,6 +9,7 @@ import io.spine.web.firebase.client.NodePath;
  * 
  * <p>Instances of REST node URL are created from it’s {@link Template template}.
  */
+@SuppressWarnings("pmd:MissingStaticMethodInNonInstantiatableClass") // instantiated via Template 
 class RestNodeUrl {
 
     private final String url;
