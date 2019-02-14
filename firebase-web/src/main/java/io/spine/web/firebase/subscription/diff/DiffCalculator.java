@@ -29,12 +29,27 @@ import java.util.List;
 import static com.google.common.collect.ImmutableList.builder;
 
 /**
- * A diff of the Firebase storage state to an actual state of entities, 
+ * Calculates a diff of the Firebase storage state to an actual state of entities, 
  * used to execute updates on Firebase storage.
  */
-public final class EntriesDiffCalculator {
+public final class DiffCalculator {
 
-    private EntriesDiffCalculator() {
+    private final List<ExistingEntry> existingEntries;
+
+    private DiffCalculator(List<ExistingEntry> existingEntries) {
+        this.existingEntries = existingEntries;
+    }
+
+    /**
+     * Create a new {@code DiffCalculator} with state current in Firebase.
+     *
+     * @param currentData
+     *         the current node data to match new data to
+     */
+    public static DiffCalculator from(NodeValue currentData) {
+        JsonObject jsonObject = currentData.underlyingJson();
+        List<ExistingEntry> existingEntries = ExistingEntry.fromJson(jsonObject);
+        return new DiffCalculator(existingEntries);
     }
 
     /**
@@ -43,13 +58,9 @@ public final class EntriesDiffCalculator {
      *
      * @param newEntries
      *         a list of JSON serialized entries retrieved from Spine
-     * @param currentData
-     *         the current node data to match new data to
      * @return a diff between Spine and Firebase data states
      */
-    public static Diff computeDiff(List<String> newEntries, NodeValue currentData) {
-        JsonObject jsonObject = currentData.underlyingJson();
-        List<ExistingEntry> existingEntries = ExistingEntry.fromJson(jsonObject);
+    public Diff compareWith(List<String> newEntries) {
         List<UpToDateEntry> entries = UpToDateEntry.parse(newEntries);
         EntriesMatcher matcher = new EntriesMatcher(existingEntries);
         List<EntryUpdate> updates = matcher.match(entries);

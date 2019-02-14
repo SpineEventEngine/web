@@ -28,11 +28,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.web.firebase.subscription.diff.EntriesDiffCalculator.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("EntriesDiffCalculator should")
+@DisplayName("DiffCalculator should")
 class EntityEntryUpdatesDiffTest {
 
     @Test
@@ -40,10 +39,9 @@ class EntityEntryUpdatesDiffTest {
     void createChangedDiff() {
         NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
-        Diff diff = computeDiff(
-                newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
-                value
-        );
+        Diff diff = DiffCalculator
+                .from(value)
+                .compareWith(newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"));
 
         assertEquals(1, diff.getChangedCount());
         assertEquals(0, diff.getAddedCount());
@@ -54,10 +52,10 @@ class EntityEntryUpdatesDiffTest {
     @DisplayName("acknowledge an added object")
     void createAddedDiff() {
         NodeValue value = NodeValue.empty();
-        Diff diff = computeDiff(
-                newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"),
-                value
-        );
+
+        Diff diff = DiffCalculator
+                .from(value)
+                .compareWith(newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"));
 
         assertEquals(0, diff.getChangedCount());
         assertEquals(1, diff.getAddedCount());
@@ -69,10 +67,9 @@ class EntityEntryUpdatesDiffTest {
     void createRemovedDiff() {
         NodeValue value = nodeValue("{\"id\":\"1\",\"a\":1,\"b\":3}");
 
-        Diff diff = computeDiff(
-                newArrayList(),
-                value
-        );
+        Diff diff = DiffCalculator
+                .from(value)
+                .compareWith(newArrayList());
 
         assertEquals(0, diff.getChangedCount());
         assertEquals(0, diff.getAddedCount());
@@ -88,15 +85,13 @@ class EntityEntryUpdatesDiffTest {
                 "{\"pass\":true}",
                 "{\"id\":{\"value\": \"passed\"}}"
         );
-        Diff diff = computeDiff(
-                newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 
-                             "{\"a\":1,\"b\":3}", // added
-                             "{\"id\":{\"value\": \"passed\"}}", // passed
-                             "{\"id\":\"2\",\"added\":1}", // added
-                             "{\"pass\": true}"), // passed
-                value
-        );
-
+        Diff diff = DiffCalculator
+                .from(value)
+                .compareWith(newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 
+                                          "{\"a\":1,\"b\":3}", // added
+                                          "{\"id\":{\"value\": \"passed\"}}", // passed
+                                          "{\"id\":\"2\",\"added\":1}", // added
+                                          "{\"pass\": true}"));
         assertEquals(1, diff.getChangedCount());
         assertEquals(2, diff.getAddedCount());
         assertEquals(1, diff.getRemovedCount());
@@ -109,7 +104,8 @@ class EntityEntryUpdatesDiffTest {
         String invalidJson = "invalidJson";
         List<String> newEntries = Collections.singletonList(invalidJson);
         NodeValue stubValue = NodeValue.empty();
-        assertThrows(RuntimeException.class, () -> computeDiff(newEntries, stubValue));
+        assertThrows(RuntimeException.class, () -> DiffCalculator.from(stubValue)
+                                                                 .compareWith(newEntries));
     }
 
     private static NodeValue nodeValue(String... entries) {

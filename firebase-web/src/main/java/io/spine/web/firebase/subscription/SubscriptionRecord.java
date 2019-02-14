@@ -28,13 +28,13 @@ import io.spine.web.firebase.client.FirebaseClient;
 import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.subscription.diff.Diff;
+import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static io.spine.web.firebase.subscription.diff.EntriesDiffCalculator.computeDiff;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -101,7 +101,8 @@ final class SubscriptionRecord {
                 newEntries.forEach(nodeValue::addChild);
                 firebaseClient.merge(path(), nodeValue);
             } else {
-                Diff diff = computeDiff(newEntries, existingValue.get());
+                DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
+                Diff diff = diffCalculator.compareWith(newEntries);
                 updateWithDiff(diff, firebaseClient);
             }
         });
