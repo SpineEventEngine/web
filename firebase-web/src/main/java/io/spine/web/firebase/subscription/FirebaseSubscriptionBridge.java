@@ -70,8 +70,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         NodePath path = allocateForQuery(query);
-        SubscriptionRecord record =
-                new SubscriptionRecord(path, queryResponse);
+        SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
         SubscriptionId id = newSubscriptionId(record.path());
         Subscription subscription = newSubscription(id, topic);
@@ -79,25 +78,28 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     }
 
     private static Query newQueryForTopic(Topic topic) {
-        return QueryVBuilder.newBuilder()
-                            .setId(generateId())
-                            .setTarget(topic.getTarget())
-                            .setFieldMask(topic.getFieldMask())
-                            .setContext(topic.getContext())
-                            .build();
+        return QueryVBuilder
+                .newBuilder()
+                .setId(generateId())
+                .setTarget(topic.getTarget())
+                .setFieldMask(topic.getFieldMask())
+                .setContext(topic.getContext())
+                .build();
     }
 
     private static Subscription newSubscription(SubscriptionId subscriptionId, Topic topic) {
-        return SubscriptionVBuilder.newBuilder()
-                                   .setId(subscriptionId)
-                                   .setTopic(topic)
-                                   .build();
+        return SubscriptionVBuilder
+                .newBuilder()
+                .setId(subscriptionId)
+                .setTopic(topic)
+                .build();
     }
 
     private static SubscriptionId newSubscriptionId(NodePath path) {
-        return SubscriptionIdVBuilder.newBuilder()
-                                     .setValue(path.toString())
-                                     .build();
+        return SubscriptionIdVBuilder
+                .newBuilder()
+                .setValue(path.toString())
+                .build();
     }
 
     @Override
@@ -107,8 +109,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         NodePath path = NodePath.fromString(id.getValue());
-        SubscriptionRecord record =
-                new SubscriptionRecord(path, queryResponse);
+        SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
