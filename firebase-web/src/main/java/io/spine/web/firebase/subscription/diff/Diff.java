@@ -97,6 +97,7 @@ public final class Diff {
                     changed.add(new ChangedItem(update.key(), update.data()));
                     break;
                 case PASS:
+                default:
                     break;
             }
         });
