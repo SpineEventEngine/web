@@ -23,6 +23,10 @@ package io.spine.web.firebase.subscription.diff;
 /**
  * The records that get stored to Firebase database upon subscription updates.
  */
+@SuppressWarnings(
+        "pmd:MissingStaticMethodInNonInstantiatableClass"
+        /* A namespace for AddedItem, RemovedItem, and ChangedItem. */
+)
 public final class DiffItems {
 
     /**
