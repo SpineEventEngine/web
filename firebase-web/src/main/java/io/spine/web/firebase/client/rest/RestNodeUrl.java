@@ -6,6 +6,8 @@ import io.spine.web.firebase.client.NodePath;
 
 /**
  * A URL of a single Firebase node accessed via REST.
+ * 
+ * <p>Instances of REST node URL are created from it’s {@link Template template}.
  */
 class RestNodeUrl {
 
