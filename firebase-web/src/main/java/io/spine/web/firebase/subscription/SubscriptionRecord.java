@@ -47,8 +47,7 @@ final class SubscriptionRecord {
     private final NodePath path;
     private final CompletionStage<QueryResponse> queryResponse;
 
-    SubscriptionRecord(NodePath path,
-                       CompletionStage<QueryResponse> queryResponse) {
+    SubscriptionRecord(NodePath path, CompletionStage<QueryResponse> queryResponse) {
         this.path = path;
         this.queryResponse = queryResponse;
     }
@@ -127,10 +126,11 @@ final class SubscriptionRecord {
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
     private static Stream<String> mapMessagesToJson(QueryResponse response) {
-        return response.getMessagesList()
-                       .stream()
-                       .unordered()
-                       .map(AnyPacker::<Message>unpack)
-                       .map(Json::toCompactJson);
+        return response
+                .getMessagesList()
+                .stream()
+                .unordered()
+                .map(AnyPacker::<Message>unpack)
+                .map(Json::toCompactJson);
     }
 }
