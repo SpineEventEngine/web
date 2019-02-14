@@ -19,7 +19,7 @@ class JsonParser {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(jsonString);
         } catch (IOException e) {
-            throw new RuntimeException("Could not parse JSON.", e);
+            throw new InvalidJsonException("Could not parse JSON.", e);
         }
     }
 }
