@@ -20,7 +20,6 @@
 
 package io.spine.web.query;
 
-import io.spine.client.Query;
 import io.spine.web.WebQuery;
 
 /**
@@ -39,8 +38,9 @@ import io.spine.web.WebQuery;
 public interface QueryBridge {
 
     /**
-     * Sends the given {@link Query} to the {@link io.spine.server.QueryService QueryService} and
-     * dispatches the query response to the query response processor.
+     * Sends the given {@link io.spine.client.Query Query} to the 
+     * {@link io.spine.server.QueryService QueryService} and dispatches the query response 
+     * to the query response processor.
      *
      * <p>Returns the result of query processing.
      *
