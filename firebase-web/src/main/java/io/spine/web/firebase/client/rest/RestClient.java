@@ -47,7 +47,6 @@ public class RestClient implements FirebaseClient {
      *
      * <p>In Firebase the {@code null} node is deemed nonexistent.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
