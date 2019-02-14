@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static io.spine.web.firebase.subscription.diff.Diff.computeDiff;
+import static io.spine.web.firebase.subscription.diff.EntriesDiffCalculator.computeDiff;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -107,15 +107,14 @@ final class SubscriptionRecord {
         });
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
         NodeValue nodeValue = NodeValue.empty();
-        diff.changed()
-            .forEach(record -> nodeValue.addChild(record.key(), record.data()));
-        diff.removed()
-            .forEach(record -> nodeValue.addChild(record.key(), "null"));
-        diff.added()
-            .forEach(record -> nodeValue.addChild(record.data()));
+        diff.getChangedList()
+            .forEach(record -> nodeValue.addChild(record.getKey(), record.getData()));
+        diff.getRemovedList()
+            .forEach(record -> nodeValue.addChild(record.getKey(), "null"));
+        diff.getAddedList()
+            .forEach(record -> nodeValue.addChild(record.getData()));
         firebaseClient.merge(path(), nodeValue);
     }
 

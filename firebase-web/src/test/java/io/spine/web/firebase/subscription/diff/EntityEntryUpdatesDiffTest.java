@@ -28,12 +28,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.web.firebase.subscription.diff.Diff.computeDiff;
+import static io.spine.web.firebase.subscription.diff.EntriesDiffCalculator.computeDiff;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Diff should")
-class DiffTest {
+@DisplayName("EntriesDiffCalculator should")
+class EntityEntryUpdatesDiffTest {
 
     @Test
     @DisplayName("acknowledge a changed object")
@@ -45,9 +45,9 @@ class DiffTest {
                 value
         );
 
-        assertEquals(1, diff.changed().size());
-        assertEquals(0, diff.added().size());
-        assertEquals(0, diff.removed().size());
+        assertEquals(1, diff.getChangedCount());
+        assertEquals(0, diff.getAddedCount());
+        assertEquals(0, diff.getRemovedCount());
     }
 
     @Test
@@ -59,9 +59,9 @@ class DiffTest {
                 value
         );
 
-        assertEquals(0, diff.changed().size());
-        assertEquals(1, diff.added().size());
-        assertEquals(0, diff.removed().size());
+        assertEquals(0, diff.getChangedCount());
+        assertEquals(1, diff.getAddedCount());
+        assertEquals(0, diff.getRemovedCount());
     }
 
     @Test
@@ -74,9 +74,9 @@ class DiffTest {
                 value
         );
 
-        assertEquals(0, diff.changed().size());
-        assertEquals(0, diff.added().size());
-        assertEquals(1, diff.removed().size());
+        assertEquals(0, diff.getChangedCount());
+        assertEquals(0, diff.getAddedCount());
+        assertEquals(1, diff.getRemovedCount());
     }
 
     @Test
@@ -97,9 +97,9 @@ class DiffTest {
                 value
         );
 
-        assertEquals(1, diff.changed().size());
-        assertEquals(2, diff.added().size());
-        assertEquals(1, diff.removed().size());
+        assertEquals(1, diff.getChangedCount());
+        assertEquals(2, diff.getAddedCount());
+        assertEquals(1, diff.getRemovedCount());
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.

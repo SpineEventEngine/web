@@ -23,43 +23,18 @@ package io.spine.web.firebase.subscription.diff;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.client.NodeValue;
-import io.spine.web.firebase.subscription.diff.DiffItems.AddedItem;
-import io.spine.web.firebase.subscription.diff.DiffItems.ChangedItem;
-import io.spine.web.firebase.subscription.diff.DiffItems.RemovedItem;
 
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.builder;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * A diff of the Firebase storage state to an actual state of entities, 
  * used to execute updates on Firebase storage.
  */
-public final class Diff {
+public final class EntriesDiffCalculator {
 
-    private final List<AddedItem> added;
-    private final List<ChangedItem> changed;
-    private final List<RemovedItem> removed;
-
-    private Diff(List<AddedItem> added,
-                 List<ChangedItem> changed,
-                 List<RemovedItem> removed) {
-        this.added = unmodifiableList(added);
-        this.changed = unmodifiableList(changed);
-        this.removed = unmodifiableList(removed);
-    }
-
-    public List<AddedItem> added() {
-        return added;
-    }
-
-    public List<ChangedItem> changed() {
-        return changed;
-    }
-
-    public List<RemovedItem> removed() {
-        return removed;
+    private EntriesDiffCalculator() {
     }
 
     /**
@@ -86,23 +61,40 @@ public final class Diff {
         ImmutableList.Builder<ChangedItem> changed = builder();
         ImmutableList.Builder<RemovedItem> removed = builder();
         updates.forEach(update -> {
-            switch (update.operation()) {
+            switch (update.getOperation()) {
                 case ADD:
-                    added.add(new AddedItem(update.data()));
+                    added.add(AddedItem.newBuilder()
+                                       .setData(update.getData())
+                                       .build());
                     break;
                 case REMOVE:
-                    removed.add(new RemovedItem(update.key()));
+                    removed.add(RemovedItem.newBuilder()
+                                           .setKey(update.getKey())
+                                           .build());
                     break;
                 case CHANGE:
-                    changed.add(new ChangedItem(update.key(), update.data()));
+                    changed.add(ChangedItem.newBuilder()
+                                           .setKey(update.getKey())
+                                           .setData(update.getData())
+                                           .build());
                     break;
                 case PASS:
+                case UNRECOGNIZED:
                 default:
                     break;
             }
         });
-        return new Diff(added.build(),
-                        changed.build(),
-                        removed.build());
+        return diff(added.build(), changed.build(), removed.build());
+    }
+
+    private static Diff diff(Iterable<AddedItem> added,
+                             Iterable<ChangedItem> changed,
+                             Iterable<RemovedItem> removed) {
+        return Diff
+                .newBuilder()
+                .addAllAdded(added)
+                .addAllChanged(changed)
+                .addAllRemoved(removed)
+                .build();
     }
 }

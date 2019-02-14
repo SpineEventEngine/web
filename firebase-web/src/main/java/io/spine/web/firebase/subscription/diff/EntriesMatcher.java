@@ -26,10 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.ADD;
-import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.CHANGE;
-import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.PASS;
-import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.REMOVE;
+import static io.spine.web.firebase.subscription.diff.EntryUpdates.addEntry;
+import static io.spine.web.firebase.subscription.diff.EntryUpdates.changeEntry;
+import static io.spine.web.firebase.subscription.diff.EntryUpdates.passEntry;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
@@ -74,33 +73,32 @@ final class EntriesMatcher {
             unmatchedEntries.remove(matchingEntry);
             JsonNode matchingJson = matchingEntry.json();
             if (matchingJson.equals(entry.json())) {
-                return new EntryUpdate(matchingEntry.key(), entry.data(), PASS);
+                return passEntry(entry, matchingEntry);
             } else {
-                return new EntryUpdate(matchingEntry.key(), entry.data(), CHANGE);
+                return changeEntry(entry, matchingEntry);
             }
         } else {
-            return new EntryUpdate(entry.data(), ADD);
+            return addEntry(entry);
         }
     }
 
     private EntryUpdate shallowMatch(UpToDateEntry entry) {
         Optional<ExistingEntry> optionalMatchingEntry =
                 unmatchedEntries.stream()
-                                .filter(existing -> entry.json()
-                                                         .equals(existing.json()))
+                                .filter(existing -> entry.json().equals(existing.json()))
                                 .findFirst();
         if (optionalMatchingEntry.isPresent()) {
             ExistingEntry matchingEntry = optionalMatchingEntry.get();
             unmatchedEntries.remove(matchingEntry);
-            return new EntryUpdate(matchingEntry.key(), entry.data(), PASS);
+            return passEntry(entry, matchingEntry);
         }
-        return new EntryUpdate(entry.data(), ADD);
+        return addEntry(entry);
     }
 
     private List<EntryUpdate> unmatched() {
         return this.unmatchedEntries
                 .stream()
-                .map(existing -> new EntryUpdate(existing.key(), existing.data(), REMOVE))
+                .map(EntryUpdates::removeEntry)
                 .collect(toList());
     }
 }
