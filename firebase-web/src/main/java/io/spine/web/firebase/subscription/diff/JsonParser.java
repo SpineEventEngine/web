@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+
 /**
  * Parses JSON string to a {@link JsonNode} throwing a runtime exception in case of an error.
  */
@@ -19,7 +21,7 @@ class JsonParser {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(jsonString);
         } catch (IOException e) {
-            throw new InvalidJsonException("Could not parse JSON.", e);
+            throw newIllegalArgumentException("Could not parse JSON.", e);
         }
     }
 }
