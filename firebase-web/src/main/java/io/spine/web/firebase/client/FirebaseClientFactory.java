@@ -37,7 +37,7 @@ import static io.spine.web.firebase.client.rest.RestClient.create;
  */
 public final class FirebaseClientFactory {
 
-    /** Prevents instantiation of this utility class. */
+    /** Prevents instantiation of this static factory. */
     private FirebaseClientFactory() {
     }
 

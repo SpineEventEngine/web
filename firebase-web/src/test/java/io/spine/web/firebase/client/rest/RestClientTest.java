@@ -52,7 +52,7 @@ class RestClientTest {
     private static final String DATA = "{\"a\":\"b\"}";
     private static final String DATABASE_URL_STRING = "https://database.com";
     private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from(DATABASE_URL_STRING);
-    private static final RestNodeUrl.Template URL_TEMPLATE = new RestNodeUrl.Template(DATABASE_URL);
+    private static final RestNodeUrls NODE_FACTORY = new RestNodeUrls(DATABASE_URL);
 
     private static final GenericUrl EXPECTED_NODE_URL =
             new GenericUrl(DATABASE_URL_STRING + '/' + PATH + ".json");
@@ -65,7 +65,7 @@ class RestClientTest {
     @BeforeEach
     void setUp() {
         httpClient = mock(HttpClient.class);
-        client = new RestClient(URL_TEMPLATE, httpClient);
+        client = new RestClient(NODE_FACTORY, httpClient);
         path = NodePaths.of(PATH);
         value = NodeValue.from(DATA);
     }

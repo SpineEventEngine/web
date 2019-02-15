@@ -33,6 +33,7 @@ import io.spine.web.firebase.client.NodeValue;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.web.firebase.client.rest.RestNodeUrls.asGenericUrl;
 
 /**
  * A {@code FirebaseClient} which operates via the Firebase REST API.
@@ -50,12 +51,12 @@ public class RestClient implements FirebaseClient {
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
-    private final RestNodeUrl.Template nodeUrlTemplate;
+    private final RestNodeUrls factory;
     private final HttpClient httpClient;
 
     @VisibleForTesting
-    RestClient(RestNodeUrl.Template nodeUrlTemplate, HttpClient httpClient) {
-        this.nodeUrlTemplate = nodeUrlTemplate;
+    RestClient(RestNodeUrls factory, HttpClient httpClient) {
+        this.factory = factory;
         this.httpClient = httpClient;
     }
 
@@ -64,7 +65,7 @@ public class RestClient implements FirebaseClient {
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
     public static RestClient create(DatabaseUrl url, HttpRequestFactory requestFactory) {
-        RestNodeUrl.Template nodeUrlTemplate = new RestNodeUrl.Template(url);
+        RestNodeUrls nodeUrlTemplate = new RestNodeUrls(url);
         HttpClient requestExecutor = HttpClient.using(requestFactory);
         return new RestClient(nodeUrlTemplate, requestExecutor);
     }
@@ -73,8 +74,7 @@ public class RestClient implements FirebaseClient {
     public Optional<NodeValue> get(NodePath nodePath) {
         checkNotNull(nodePath);
 
-        GenericUrl nodeUrl = nodeUrlTemplate.with(nodePath)
-                                            .asGenericUrl();
+        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         String data = httpClient.get(nodeUrl);
         if (isNullData(data)) {
             return Optional.empty();
@@ -89,8 +89,7 @@ public class RestClient implements FirebaseClient {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = nodeUrlTemplate.with(nodePath)
-                                            .asGenericUrl();
+        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         ByteArrayContent byteArrayContent = value.toByteArray();
         Optional<NodeValue> existingValue = get(nodePath);
         if (!existingValue.isPresent()) {

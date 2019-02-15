@@ -19,30 +19,19 @@
 //
 syntax = "proto3";
 
-package spine.web.firebase;
+package spine.web.firebase.rest;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.web.firebase.client";
+option java_package = "io.spine.web.firebase.client.rest";
 option java_multiple_files = true;
-option java_outer_classname = "FirebaseClientProto";
+option java_outer_classname = "FirebaseRestClientProto";
 
 import "spine/net/url.proto";
 
-// A Firebase database URL.
+// A URL of a single Firebase node accessed via REST.
 //
-message DatabaseUrl {
+message RestNodeUrl {
     spine.net.Url url = 1 [(required) = true];
-}
-
-// A path in a Firebase Realtime Database.
-//
-// The path is not aware of the database per se. See {@link RestClient} for how the path is bound
-// to the database.
-//
-message NodePath {
-
-    // A path in a Firebase Realtime Database.
-    string value = 1 [(required) = true];
 }

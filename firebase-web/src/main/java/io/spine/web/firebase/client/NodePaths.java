@@ -25,6 +25,10 @@ package io.spine.web.firebase.client;
  */
 public class NodePaths {
 
+    /** Prevents instantiation of this static factory. */
+    private NodePaths() {
+    }
+
     public static NodePath of(String path) {
         return NodePath
                 .newBuilder()
