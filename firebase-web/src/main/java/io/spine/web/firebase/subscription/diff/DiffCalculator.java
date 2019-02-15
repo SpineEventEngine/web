@@ -72,20 +72,23 @@ public final class DiffCalculator {
         updates.forEach(update -> {
             switch (update.getOperation()) {
                 case ADD:
-                    added.add(AddedItem.newBuilder()
-                                       .setData(update.getData())
-                                       .build());
+                    added.add(AddedItemVBuilder
+                                      .newBuilder()
+                                      .setData(update.getData())
+                                      .build());
                     break;
                 case REMOVE:
-                    removed.add(RemovedItem.newBuilder()
-                                           .setKey(update.getKey())
-                                           .build());
+                    removed.add(RemovedItemVBuilder
+                                        .newBuilder()
+                                        .setKey(update.getKey())
+                                        .build());
                     break;
                 case CHANGE:
-                    changed.add(ChangedItem.newBuilder()
-                                           .setKey(update.getKey())
-                                           .setData(update.getData())
-                                           .build());
+                    changed.add(ChangedItemVBuilder
+                                        .newBuilder()
+                                        .setKey(update.getKey())
+                                        .setData(update.getData())
+                                        .build());
                     break;
                 case PASS:
                 case UNRECOGNIZED:
@@ -96,10 +99,10 @@ public final class DiffCalculator {
         return diff(added.build(), changed.build(), removed.build());
     }
 
-    private static Diff diff(Iterable<AddedItem> added,
-                             Iterable<ChangedItem> changed,
-                             Iterable<RemovedItem> removed) {
-        return Diff
+    private static Diff diff(List<AddedItem> added,
+                             List<ChangedItem> changed,
+                             List<RemovedItem> removed) {
+        return DiffVBuilder
                 .newBuilder()
                 .addAllAdded(added)
                 .addAllChanged(changed)

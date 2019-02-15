@@ -51,9 +51,10 @@ public class FirebaseSubscriptionCancelResult implements SubscriptionCancelResul
      * @return a new {@link Response}
      */
     private static Response newResponseWithStatus(Status status) {
-        return ResponseVBuilder.newBuilder()
-                               .setStatus(status)
-                               .build();
+        return ResponseVBuilder
+                .newBuilder()
+                .setStatus(status)
+                .build();
     }
 
     @Override

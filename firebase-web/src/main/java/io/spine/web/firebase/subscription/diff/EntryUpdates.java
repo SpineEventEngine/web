@@ -37,7 +37,7 @@ class EntryUpdates {
     }
 
     static EntryUpdate changeEntry(UpToDateEntry entry, ExistingEntry matchingEntry) {
-        return EntryUpdate
+        return EntryUpdateVBuilder
                 .newBuilder()
                 .setKey(matchingEntry.key())
                 .setData(entry.data())
@@ -46,7 +46,7 @@ class EntryUpdates {
     }
 
     static EntryUpdate passEntry(UpToDateEntry entry, ExistingEntry matchingEntry) {
-        return EntryUpdate
+        return EntryUpdateVBuilder
                 .newBuilder()
                 .setKey(matchingEntry.key())
                 .setData(entry.data())
@@ -55,7 +55,7 @@ class EntryUpdates {
     }
 
     static EntryUpdate addEntry(UpToDateEntry entry) {
-        return EntryUpdate
+        return EntryUpdateVBuilder
                 .newBuilder()
                 .setData(entry.data())
                 .setOperation(ADD)
@@ -63,7 +63,7 @@ class EntryUpdates {
     }
 
     static EntryUpdate removeEntry(ExistingEntry existing) {
-        return EntryUpdate
+        return EntryUpdateVBuilder
                 .newBuilder()
                 .setKey(existing.key())
                 .setData(existing.data())

@@ -21,6 +21,7 @@
 package io.spine.web.firebase;
 
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.client.NodePathVBuilder;
 
 /**
  * A static factory for {@link NodePath}.
@@ -32,7 +33,7 @@ public class NodePaths {
     }
 
     public static NodePath of(String path) {
-        return NodePath
+        return NodePathVBuilder
                 .newBuilder()
                 .setValue(path)
                 .build();

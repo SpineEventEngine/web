@@ -45,9 +45,10 @@ public class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResul
     }
 
     private static Response newResponseWithStatus(Status status) {
-        return ResponseVBuilder.newBuilder()
-                               .setStatus(status)
-                               .build();
+        return ResponseVBuilder
+                .newBuilder()
+                .setStatus(status)
+                .build();
     }
 
     @Override
