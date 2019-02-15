@@ -24,18 +24,25 @@ package spine.web.firebase;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.web.firebase";
+option java_package = "io.spine.web.firebase.client";
 option java_multiple_files = true;
-option java_outer_classname = "FirebaseQueryResponseProto";
+option java_outer_classname = "NodeProto";
 
-// A response to the Spine `Query` that contains a path to the actual results
-// in Firebase Realtime Database.
+import "spine/net/url.proto";
+
+// A Firebase database URL.
 //
-message FirebaseQueryResponse {
+message DatabaseUrl {
+    spine.net.Url url = 1 [(required) = true];
+}
 
-    // A datapase path to the requested data.
-    string path = 1 [(required) = true];
+// A path in a Firebase Realtime Database.
+//
+// The path is not aware of the database per se. See {@link RestClient} for how the path is bound
+// to the database.
+//
+message NodePath {
 
-    // A number of records.
-    uint64 count = 2;
+    // A path in a Firebase Realtime Database.
+    string value = 1 [(required) = true];
 }

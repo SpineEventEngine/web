@@ -26,10 +26,8 @@ import io.spine.web.firebase.client.NodeValue;
 
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.builder;
-
 /**
- * Calculates a diff of the Firebase storage state to an actual state of entities, 
+ * Calculates a diff of the Firebase storage state to an actual state of entities,
  * used to execute updates on Firebase storage.
  */
 public final class DiffCalculator {
@@ -68,9 +66,9 @@ public final class DiffCalculator {
     }
 
     private static Diff toDiff(List<EntryUpdate> updates) {
-        ImmutableList.Builder<AddedItem> added = builder();
-        ImmutableList.Builder<ChangedItem> changed = builder();
-        ImmutableList.Builder<RemovedItem> removed = builder();
+        ImmutableList.Builder<AddedItem> added = ImmutableList.builder();
+        ImmutableList.Builder<ChangedItem> changed = ImmutableList.builder();
+        ImmutableList.Builder<RemovedItem> removed = ImmutableList.builder();
         updates.forEach(update -> {
             switch (update.getOperation()) {
                 case ADD:

@@ -20,8 +20,6 @@
 
 package io.spine.web.firebase.query;
 
-import io.spine.web.firebase.FirebaseQueryResponse;
-import io.spine.web.firebase.FirebaseQueryResponseVBuilder;
 import io.spine.web.firebase.client.NodePath;
 import io.spine.web.query.QueryProcessingResult;
 

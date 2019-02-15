@@ -42,7 +42,7 @@ message Diff {
 message AddedItem {
 
     // JSON serialized entity data.
-    string data = 1;
+    string data = 1 [(required) = true];
 }
 
 // A record marking a subscription update with an entity that was removed.
@@ -50,7 +50,7 @@ message AddedItem {
 message RemovedItem {
 
     // A Firebase key of an entity relative to the subscription root.
-    string key = 1;
+    string key = 1 [(required) = true];
 }
 
 // A record marking a subscription update with an entity change.
@@ -58,10 +58,10 @@ message RemovedItem {
 message ChangedItem {
 
     // A Firebase key of an entity relative to the subscription root.
-    string key = 1;
+    string key = 1 [(required) = true];
 
     // JSON serialized entity data.
-    string data = 2;
+    string data = 2 [(required) = true];
 }
 
 // An update of a single entry in Firebase database to be performed.
@@ -69,10 +69,10 @@ message ChangedItem {
 message EntryUpdate {
 
     // A Firebase key of an entity relative to the subscription root.
-    string key = 1;
+    string key = 1 [(required) = true];
 
     // JSON serialized entity data.
-    string data = 2;
+    string data = 2 [(required) = true];
 
     // An operation to be performed with this entry in the Firebase storage.
     Operation operation = 3;

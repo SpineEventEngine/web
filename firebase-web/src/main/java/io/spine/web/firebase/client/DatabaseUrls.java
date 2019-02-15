@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase.client;
 
+import io.spine.net.Urls;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -27,39 +28,33 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * A Firebase database URL.
  */
-public class DatabaseUrl {
+public class DatabaseUrls {
 
-    private final String url;
-
-    private DatabaseUrl(String url) {
-        this.url = url;
+    private DatabaseUrls() {
     }
 
     /**
-     * Creates a {@code DatabaseUrl} instance from the given string.
+     * Creates a {@code DatabaseUrls} instance from the given string.
      *
      * <p>The given string should be a valid URL by the Apache
      * {@link org.apache.commons.validator.routines.UrlValidator} standards.
      *
      * @param url
      *         a {@code String} containing database URL
-     * @return a new instance of {@code DatabaseUrl}
+     * @return a new instance of {@code DatabaseUrls}
      */
     public static DatabaseUrl from(String url) {
         validate(url);
-        return new DatabaseUrl(url);
+        return DatabaseUrlVBuilder
+                .newBuilder()
+                .setUrl(Urls.create(url))
+                .build();
     }
 
-    /**
-     * Returns the underlying {@code String}.
-     */
-    public String value() {
-        return url;
-    }
-
-    @Override
-    public String toString() {
-        return url;
+    public static void checkSpec(DatabaseUrl url) {
+        String spec = url.getUrl()
+                         .getSpec();
+        validate(spec);
     }
 
     private static void validate(String url) {

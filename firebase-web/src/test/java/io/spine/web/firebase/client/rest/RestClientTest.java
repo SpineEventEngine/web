@@ -24,6 +24,7 @@ import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
 import io.spine.web.firebase.client.DatabaseUrl;
+import io.spine.web.firebase.client.DatabaseUrls;
 import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.client.NodePaths;
 import io.spine.web.firebase.client.NodeValue;
@@ -50,7 +51,7 @@ class RestClientTest {
     private static final String PATH = "node/path";
     private static final String DATA = "{\"a\":\"b\"}";
     private static final String DATABASE_URL_STRING = "https://database.com";
-    private static final DatabaseUrl DATABASE_URL = DatabaseUrl.from(DATABASE_URL_STRING);
+    private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from(DATABASE_URL_STRING);
     private static final RestNodeUrl.Template URL_TEMPLATE = new RestNodeUrl.Template(DATABASE_URL);
 
     private static final GenericUrl EXPECTED_NODE_URL =

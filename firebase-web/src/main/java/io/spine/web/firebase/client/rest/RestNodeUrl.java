@@ -2,6 +2,7 @@ package io.spine.web.firebase.client.rest;
 
 import com.google.api.client.http.GenericUrl;
 import io.spine.web.firebase.client.DatabaseUrl;
+import io.spine.web.firebase.client.DatabaseUrls;
 import io.spine.web.firebase.client.NodePath;
 
 import static java.lang.String.format;
@@ -26,14 +27,16 @@ class RestNodeUrl {
 
     /**
      * A template to create {@linkplain RestNodeUrl REST Node URLs} in the Firebase database at
-     * specified {@linkplain DatabaseUrl url}.
+     * specified {@linkplain DatabaseUrls url}.
      */
     static class Template {
 
         private final String template;
 
         Template(DatabaseUrl url) {
-            this.template = url + "/%s.json";
+            DatabaseUrls.checkSpec(url);
+            this.template = url.getUrl()
+                               .getSpec() + "/%s.json";
         }
 
         /**

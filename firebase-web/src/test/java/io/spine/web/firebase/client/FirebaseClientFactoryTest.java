@@ -28,7 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.web.firebase.client.DatabaseUrl.from;
+import static io.spine.web.firebase.client.DatabaseUrls.from;
 import static io.spine.web.firebase.client.FirebaseCredentials.fromGoogleCredentials;
 
 @DisplayName("FirebaseClientFactory should")
