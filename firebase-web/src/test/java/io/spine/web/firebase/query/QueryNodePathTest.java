@@ -33,7 +33,7 @@ import io.spine.net.EmailAddressVBuilder;
 import io.spine.net.InternetDomain;
 import io.spine.net.InternetDomainVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.NodePath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

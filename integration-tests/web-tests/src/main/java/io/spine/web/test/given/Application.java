@@ -23,10 +23,10 @@ package io.spine.web.test.given;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.FirebaseCredentials;
-import io.spine.web.firebase.client.DatabaseUrl;
 
 import java.io.InputStream;
 

@@ -23,7 +23,6 @@ package io.spine.web.firebase;
 import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
-import io.spine.web.firebase.client.DatabaseUrl;
 import io.spine.web.firebase.rest.RestClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

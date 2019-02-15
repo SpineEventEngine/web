@@ -25,10 +25,10 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
-import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.client.NodePath;
 
 import java.util.Optional;
 

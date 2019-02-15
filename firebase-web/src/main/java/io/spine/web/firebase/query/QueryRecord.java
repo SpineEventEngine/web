@@ -26,8 +26,8 @@ import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
-import io.spine.web.firebase.client.NodePath;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;

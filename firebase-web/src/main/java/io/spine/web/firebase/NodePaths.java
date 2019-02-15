@@ -20,9 +20,6 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.firebase.client.NodePath;
-import io.spine.web.firebase.client.NodePathVBuilder;
-
 /**
  * A static factory for {@link NodePath}.
  */

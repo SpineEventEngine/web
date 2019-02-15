@@ -20,8 +20,6 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.firebase.client.NodePath;
-
 import java.util.Optional;
 
 /**

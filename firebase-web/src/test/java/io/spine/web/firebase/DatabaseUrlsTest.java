@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import io.spine.web.firebase.client.DatabaseUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

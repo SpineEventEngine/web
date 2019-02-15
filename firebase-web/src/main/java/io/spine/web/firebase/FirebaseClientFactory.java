@@ -27,7 +27,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.ServerEnvironment;
-import io.spine.web.firebase.client.DatabaseUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.rest.RestClient.create;

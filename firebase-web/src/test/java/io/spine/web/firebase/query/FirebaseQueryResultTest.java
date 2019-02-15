@@ -24,7 +24,7 @@ import com.google.protobuf.Any;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.NodePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

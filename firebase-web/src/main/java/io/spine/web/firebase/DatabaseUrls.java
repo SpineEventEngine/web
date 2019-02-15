@@ -21,8 +21,6 @@
 package io.spine.web.firebase;
 
 import io.spine.net.Urls;
-import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.client.DatabaseUrlVBuilder;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import static com.google.common.base.Preconditions.checkArgument;

@@ -22,9 +22,9 @@ package io.spine.web.firebase.subscription;
 
 import io.spine.client.QueryResponse;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
-import io.spine.web.firebase.client.NodePath;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.subscription.given.HasChildren;
 import org.junit.jupiter.api.DisplayName;

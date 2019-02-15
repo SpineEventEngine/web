@@ -3,9 +3,9 @@ package io.spine.web.firebase.rest;
 import com.google.api.client.http.GenericUrl;
 import io.spine.net.Url;
 import io.spine.net.Urls;
+import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
-import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.NodePath;
 
 import static java.lang.String.format;
 
