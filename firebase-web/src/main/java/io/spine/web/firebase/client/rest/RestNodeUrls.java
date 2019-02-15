@@ -10,8 +10,8 @@ import io.spine.web.firebase.client.NodePath;
 import static java.lang.String.format;
 
 /**
- * A factory creating {@linkplain RestNodeUrls REST Node URLs} of the Firebase database at
- * specified {@linkplain DatabaseUrls url}.
+ * A factory creating {@linkplain RestNodeUrl REST Node URLs} of the Firebase database at
+ * specified {@linkplain DatabaseUrl url}.
  */
 class RestNodeUrls {
 
