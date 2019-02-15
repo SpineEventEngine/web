@@ -18,7 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
+
+import io.spine.web.firebase.client.NodePath;
 
 import java.util.Optional;
 

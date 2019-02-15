@@ -24,9 +24,9 @@ import com.google.protobuf.Message;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
-import io.spine.web.firebase.client.FirebaseClient;
+import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.client.NodePath;
-import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.subscription.diff.Diff;
 import io.spine.web.firebase.subscription.diff.DiffCalculator;
 

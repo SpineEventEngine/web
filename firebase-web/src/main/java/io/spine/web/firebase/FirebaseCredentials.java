@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 
@@ -41,8 +41,7 @@ import static java.util.Arrays.asList;
  */
 public final class FirebaseCredentials {
 
-    private static final String AUTH_DATABASE =
-            "https://www.googleapis.com/auth/firebase.database";
+    private static final String AUTH_DATABASE = "https://www.googleapis.com/auth/firebase.database";
     private static final String AUTH_USER_EMAIL = "https://www.googleapis.com/auth/userinfo.email";
 
     /**

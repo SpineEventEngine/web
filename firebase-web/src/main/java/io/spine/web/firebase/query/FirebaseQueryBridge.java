@@ -24,7 +24,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.WebQuery;
-import io.spine.web.firebase.client.FirebaseClient;
+import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.query.service.AsyncQueryService;

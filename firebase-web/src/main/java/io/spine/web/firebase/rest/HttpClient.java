@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client.rest;
+package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;

@@ -18,16 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client.rest;
-
 /**
- * The exception which signalises about an issue when working with Firebase REST API.
+ * This package contains a REST implementation of a
+ * {@link io.spine.web.firebase.FirebaseClient Firebase client}.
  */
-class RequestToFirebaseFailedException extends RuntimeException {
 
-    private static final long serialVersionUID = 0L;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.firebase.rest;
 
-    RequestToFirebaseFailedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

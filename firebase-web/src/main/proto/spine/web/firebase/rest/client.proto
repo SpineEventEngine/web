@@ -24,7 +24,7 @@ package spine.web.firebase.rest;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.web.firebase.client.rest";
+option java_package = "io.spine.web.firebase.rest";
 option java_multiple_files = true;
 option java_outer_classname = "FirebaseRestClientProto";
 

@@ -18,16 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client.rest;
+package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
+import io.spine.web.firebase.DatabaseUrls;
+import io.spine.web.firebase.NodePaths;
+import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.client.DatabaseUrls;
 import io.spine.web.firebase.client.NodePath;
-import io.spine.web.firebase.client.NodePaths;
-import io.spine.web.firebase.client.NodeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.web.firebase.client.rest.RestClient.NULL_ENTRY;
+import static io.spine.web.firebase.rest.RestClient.NULL_ENTRY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

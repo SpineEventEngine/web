@@ -5,8 +5,8 @@ import io.spine.client.Query;
 import io.spine.client.QueryId;
 import io.spine.core.TenantId;
 import io.spine.core.UserId;
+import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.client.NodePath;
-import io.spine.web.firebase.client.NodePaths;
 
 import java.util.Collection;
 import java.util.regex.Pattern;

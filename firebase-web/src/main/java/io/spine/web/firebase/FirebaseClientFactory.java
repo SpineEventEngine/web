@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -27,10 +27,11 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.ServerEnvironment;
-import io.spine.web.firebase.client.rest.RestClient;
+import io.spine.web.firebase.client.DatabaseUrl;
+import io.spine.web.firebase.rest.RestClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.client.rest.RestClient.create;
+import static io.spine.web.firebase.rest.RestClient.create;
 
 /**
  * A tool for {@link FirebaseClient} instances creation.

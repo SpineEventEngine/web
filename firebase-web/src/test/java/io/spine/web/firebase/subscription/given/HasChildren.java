@@ -23,7 +23,7 @@ package io.spine.web.firebase.subscription.given;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.spine.web.firebase.client.NodeValue;
+import io.spine.web.firebase.NodeValue;
 import org.mockito.ArgumentMatcher;
 
 import java.util.List;

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client.rest;
+package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
@@ -58,7 +58,7 @@ class HttpClientTest {
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on GET request")
-    void throwIfErrorOnGet() throws IOException {
+    void throwIfErrorOnGet() {
         HttpRequestFactory transport = throwingRequestFactory();
         HttpClient requestExecutor = HttpClient.using(transport);
         assertThrows(RequestToFirebaseFailedException.class, () -> requestExecutor.get(URL));
@@ -75,7 +75,7 @@ class HttpClientTest {
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PUT request")
-    void throwIfErrorOnPut() throws IOException {
+    void throwIfErrorOnPut() {
         HttpRequestFactory transport = throwingRequestFactory();
         HttpClient requestExecutor = HttpClient.using(transport);
         assertThrows(RequestToFirebaseFailedException.class,
@@ -93,7 +93,7 @@ class HttpClientTest {
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PATCH request")
-    void throwIfErrorOnPatch() throws IOException {
+    void throwIfErrorOnPatch() {
         HttpRequestFactory transport = throwingRequestFactory();
         HttpClient requestExecutor = HttpClient.using(transport);
         assertThrows(RequestToFirebaseFailedException.class,
@@ -114,7 +114,7 @@ class HttpClientTest {
      * Returns an {@code HttpRequestFactory} mock which throws {@link java.io.IOException} on every
      * request.
      */
-    private static HttpRequestFactory throwingRequestFactory() throws IOException {
+    private static HttpRequestFactory throwingRequestFactory() {
         HttpRequestFactory result = throwingHttpTransport().createRequestFactory();
         return result;
     }
@@ -136,7 +136,7 @@ class HttpClientTest {
         };
     }
 
-    private static MockHttpTransport throwingHttpTransport() throws IOException {
+    private static MockHttpTransport throwingHttpTransport() {
         return new MockHttpTransport() {
             @Override
             public LowLevelHttpRequest

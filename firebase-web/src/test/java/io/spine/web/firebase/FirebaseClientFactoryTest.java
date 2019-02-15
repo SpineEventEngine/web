@@ -18,18 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
 
 import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
-import io.spine.web.firebase.client.rest.RestClient;
+import io.spine.web.firebase.client.DatabaseUrl;
+import io.spine.web.firebase.rest.RestClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.web.firebase.client.DatabaseUrls.from;
-import static io.spine.web.firebase.client.FirebaseCredentials.fromGoogleCredentials;
+import static io.spine.web.firebase.DatabaseUrls.from;
+import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 @DisplayName("FirebaseClientFactory should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {

@@ -1,10 +1,10 @@
-package io.spine.web.firebase.client.rest;
+package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.GenericUrl;
 import io.spine.net.Url;
 import io.spine.net.Urls;
+import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.client.DatabaseUrls;
 import io.spine.web.firebase.client.NodePath;
 
 import static java.lang.String.format;

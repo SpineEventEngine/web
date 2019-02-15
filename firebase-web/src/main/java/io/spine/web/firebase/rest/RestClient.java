@@ -18,22 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client.rest;
+package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.client.FirebaseClient;
 import io.spine.web.firebase.client.NodePath;
-import io.spine.web.firebase.client.NodeValue;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.client.rest.RestNodeUrls.asGenericUrl;
+import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
 /**
  * A {@code FirebaseClient} which operates via the Firebase REST API.

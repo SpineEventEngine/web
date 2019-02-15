@@ -18,32 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.web.firebase.client.NodePath;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+/**
+ * A static factory for {@link NodePath}.
+ */
+public class NodePaths {
 
-@DisplayName("DatabaseUrls should")
-class DatabaseUrlsTest {
-
-    private static final String VALID_URL = "https://spine-dev.appspot.com/";
-    private static final String INVALID_URL = "invalid_url";
-
-    @Test
-    @DisplayName("be successfully created from valid URL")
-    void acceptValidUrl() {
-        DatabaseUrl url = DatabaseUrls.from(VALID_URL);
-        assertEquals(VALID_URL, url.getUrl()
-                                   .getSpec());
+    /** Prevents instantiation of this static factory. */
+    private NodePaths() {
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
-    @Test
-    @DisplayName("throw IAE when invalid URL passed on construction")
-    void rejectInvalidUrl() {
-        assertThrows(IllegalArgumentException.class, () -> DatabaseUrls.from(INVALID_URL));
+    public static NodePath of(String path) {
+        return NodePath
+                .newBuilder()
+                .setValue(path)
+                .build();
     }
 }

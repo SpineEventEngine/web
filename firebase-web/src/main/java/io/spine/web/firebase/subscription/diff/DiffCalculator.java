@@ -22,7 +22,7 @@ package io.spine.web.firebase.subscription.diff;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import io.spine.web.firebase.client.NodeValue;
+import io.spine.web.firebase.NodeValue;
 
 import java.util.List;
 

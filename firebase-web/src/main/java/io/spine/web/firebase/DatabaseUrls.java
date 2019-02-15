@@ -18,9 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
 
 import io.spine.net.Urls;
+import io.spine.web.firebase.client.DatabaseUrl;
+import io.spine.web.firebase.client.DatabaseUrlVBuilder;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import static com.google.common.base.Preconditions.checkArgument;

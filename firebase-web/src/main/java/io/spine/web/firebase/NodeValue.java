@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.client;
+package io.spine.web.firebase;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;

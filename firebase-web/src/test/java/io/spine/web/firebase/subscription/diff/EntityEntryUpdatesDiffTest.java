@@ -20,7 +20,7 @@
 
 package io.spine.web.firebase.subscription.diff;
 
-import io.spine.web.firebase.client.NodeValue;
+import io.spine.web.firebase.NodeValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
