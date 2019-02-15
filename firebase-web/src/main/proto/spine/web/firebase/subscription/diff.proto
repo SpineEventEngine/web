@@ -69,10 +69,10 @@ message ChangedItem {
 message EntryUpdate {
 
     // A Firebase key of an entity relative to the subscription root.
-    string key = 1 [(required) = true];
+    string key = 1;
 
     // JSON serialized entity data.
-    string data = 2 [(required) = true];
+    string data = 2;
 
     // An operation to be performed with this entry in the Firebase storage.
     Operation operation = 3;
