@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription.keepup;
+package io.spine.web.firebase.subscription;
 
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
 import io.spine.core.Status;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
+import io.spine.web.subscription.result.SubscriptionCancelResult;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -31,19 +31,25 @@ import java.io.IOException;
 import static io.spine.json.Json.toCompactJson;
 
 /**
- * A result of a request to keep up the subscription (i.e. not close it yet)
- * to be written to the {@link ServletResponse}.
+ * A result of a request to cancel a subscription to be written to the {@link ServletResponse}.
  *
  * <p>The result is a JSON formatted {@linkplain Response Spine Response} message.
  */
-public class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResult {
+public class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
 
     private final Response response;
 
-    public FirebaseSubscriptionKeepUpResult(Status status) {
+    public FirebaseSubscriptionCancelResult(Status status) {
         this.response = newResponseWithStatus(status);
     }
 
+    /**
+     * Creates a response with a given status.
+     *
+     * @param status
+     *         the status of a response to be created
+     * @return a new {@link Response}
+     */
     private static Response newResponseWithStatus(Status status) {
         return ResponseVBuilder.newBuilder()
                                .setStatus(status)

@@ -18,10 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription.subscribe;
+package io.spine.web.firebase.subscription;
 
-import io.spine.client.Subscription;
-import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.core.Response;
+import io.spine.core.ResponseVBuilder;
+import io.spine.core.Status;
+import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -29,22 +31,28 @@ import java.io.IOException;
 import static io.spine.json.Json.toCompactJson;
 
 /**
- * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
+ * A result of a request to keep up the subscription (i.e. not close it yet)
  * to be written to the {@link ServletResponse}.
  *
- * <p>The result is a JSON formatted {@link Subscription} message.
+ * <p>The result is a JSON formatted {@linkplain Response Spine Response} message.
  */
-public final class FirebaseSubscribeResult implements SubscribeResult {
+public class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResult {
 
-    private final Subscription subscription;
+    private final Response response;
 
-    public FirebaseSubscribeResult(Subscription subscription) {
-        this.subscription = subscription;
+    public FirebaseSubscriptionKeepUpResult(Status status) {
+        this.response = newResponseWithStatus(status);
+    }
+
+    private static Response newResponseWithStatus(Status status) {
+        return ResponseVBuilder.newBuilder()
+                               .setStatus(status)
+                               .build();
     }
 
     @Override
     public void writeTo(ServletResponse response) throws IOException {
         response.getWriter()
-                .write(toCompactJson(subscription));
+                .write(toCompactJson(this.response));
     }
 }

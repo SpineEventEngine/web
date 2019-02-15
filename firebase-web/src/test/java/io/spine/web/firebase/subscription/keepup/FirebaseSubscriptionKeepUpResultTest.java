@@ -21,6 +21,7 @@
 package io.spine.web.firebase.subscription.keepup;
 
 import io.spine.web.RequestResult;
+import io.spine.web.firebase.subscription.FirebaseSubscriptionKeepUpResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

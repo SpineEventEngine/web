@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase.subscription.cancel;
 
+import io.spine.web.firebase.subscription.FirebaseSubscriptionCancelResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

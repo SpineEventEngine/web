@@ -18,14 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.web.firebase.subscription;
+
+import io.spine.client.Subscription;
+import io.spine.web.subscription.result.SubscribeResult;
+
+import javax.servlet.ServletResponse;
+import java.io.IOException;
+
+import static io.spine.json.Json.toCompactJson;
+
 /**
- * This package contains an implementation of keeping up an existing subscription via Firebase.
+ * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
+ * to be written to the {@link ServletResponse}.
+ *
+ * <p>The result is a JSON formatted {@link Subscription} message.
  */
+public final class FirebaseSubscribeResult implements SubscribeResult {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.web.firebase.subscription.keepup;
+    private final Subscription subscription;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    public FirebaseSubscribeResult(Subscription subscription) {
+        this.subscription = subscription;
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    public void writeTo(ServletResponse response) throws IOException {
+        response.getWriter()
+                .write(toCompactJson(subscription));
+    }
+}

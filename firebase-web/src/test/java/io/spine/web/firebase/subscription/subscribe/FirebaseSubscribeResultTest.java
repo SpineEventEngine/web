@@ -24,6 +24,7 @@ import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.subscription.FirebaseSubscribeResult;
 import io.spine.web.subscription.result.SubscribeResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
