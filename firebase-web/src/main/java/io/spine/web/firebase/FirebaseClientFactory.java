@@ -28,7 +28,6 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.ServerEnvironment;
 import io.spine.web.firebase.client.DatabaseUrl;
-import io.spine.web.firebase.rest.RestClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.rest.RestClient.create;
@@ -43,7 +42,7 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@linkplain RestClient firebase client} which
+     * Creates a {@linkplain io.spine.web.firebase.rest.RestClient firebase client} which
      * operates via the Firebase REST API.
      *
      * <p>The client created with this method is suitable only for databases whose read/write side
@@ -60,7 +59,7 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@link RestClient} which uses given credentials to
+     * Creates a {@link io.spine.web.firebase.rest.RestClient} which uses given credentials to
      * authorize its requests to the Firebase database.
      *
      * @param url
@@ -76,7 +75,7 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@link RestClient} for the current environment.
+     * Creates a {@link io.spine.web.firebase.rest.RestClient} for the current environment.
      *
      * <p>Different environments require different {@linkplain HttpTransport HTTP transport}
      * to operate.
