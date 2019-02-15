@@ -77,8 +77,8 @@ public final class FirebaseClientFactory {
     /**
      * Creates a {@link RestClient} for the current environment.
      *
-     * <p>Different environments require different {@linkplain
-     * com.google.api.client.http.HttpTransport HTTP transport} to operate.
+     * <p>Different environments require different {@linkplain HttpTransport HTTP transport}
+     * to operate.
      *
      * <p>For more information on this, see
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
