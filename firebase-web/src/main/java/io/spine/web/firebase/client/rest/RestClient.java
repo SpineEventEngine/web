@@ -59,11 +59,6 @@ public class RestClient implements FirebaseClient {
         this.httpClient = httpClient;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
     /**
      * Creates a {@code RestClient} which operates on the database located at the given
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
