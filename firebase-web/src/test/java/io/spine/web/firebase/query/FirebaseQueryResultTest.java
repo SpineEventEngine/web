@@ -54,7 +54,7 @@ class FirebaseQueryResultTest {
     @BeforeEach
     void setUp() {
         Query query = queryFactory.all(Any.class);
-        nodePath = QueryNodePathFactory.allocateForQuery(query);
+        nodePath = QueryNodePath.of(query);
     }
 
     @Test

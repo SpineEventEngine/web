@@ -41,18 +41,18 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.spine.time.ZoneIds.systemDefault;
-import static io.spine.web.firebase.query.QueryNodePathFactory.allocateForQuery;
+import static io.spine.web.firebase.query.QueryNodePath.of;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("QueryNodePathFactory should")
-class QueryNodePathFactoryTest {
+@DisplayName("QueryNodePath should")
+class QueryNodePathTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(QueryNodePathFactoryTest.class)
+            TestActorRequestFactory.newInstance(QueryNodePathTest.class)
                                    .query();
 
     @Test
@@ -61,8 +61,8 @@ class QueryNodePathFactoryTest {
         Query firstQuery = queryFactory.all(Empty.class);
         Query secondQuery = queryFactory.all(Timestamp.class);
 
-        NodePath firstPath = allocateForQuery(firstQuery);
-        NodePath secondPath = allocateForQuery(secondQuery);
+        NodePath firstPath = of(firstQuery);
+        NodePath secondPath = of(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -94,8 +94,8 @@ class QueryNodePathFactoryTest {
                                        emailTenant,
                                        firstValueTenant,
                                        secondValueTenant)
-                                   .map(QueryNodePathFactoryTest::tenantAwareQuery)
-                                   .map(QueryNodePathFactory::allocateForQuery)
+                                   .map(QueryNodePathTest::tenantAwareQuery)
+                                   .map(QueryNodePath::of)
                                    .map(NodePath::toString)
                                    .collect(toList());
         new EqualsTester()
@@ -115,7 +115,7 @@ class QueryNodePathFactoryTest {
         );
         Query query = requestFactory.query()
                                     .all(Any.class);
-        String path = allocateForQuery(query).toString();
+        String path = of(query).toString();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -128,7 +128,7 @@ class QueryNodePathFactoryTest {
 
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(QueryNodePathFactoryTest.class, tenantId);
+                TestActorRequestFactory.newInstance(QueryNodePathTest.class, tenantId);
         Query query = requestFactory.query()
                                     .all(Any.class);
         return query;

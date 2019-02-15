@@ -47,7 +47,7 @@ final class QueryRecord {
     private final CompletionStage<QueryResponse> queryResponse;
 
     QueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
-        this.path = QueryNodePathFactory.allocateForQuery(query);
+        this.path = QueryNodePath.of(query);
         this.queryResponse = queryResponse;
     }
 

@@ -15,13 +15,17 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * A factory creating {@link NodePath}s where query results are placed.
  */
-public class QueryNodePathFactory {
+public class QueryNodePath {
 
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
     private static final String PATH_DELIMITER = "/";
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String DEFAULT_TENANT = "common";
+
+    /** Prevents instantiation of this static factory. */
+    private QueryNodePath() {
+    }
 
     /**
      * Creates an instance of {@code NodePath} which points to a database node storing
@@ -31,7 +35,7 @@ public class QueryNodePathFactory {
      *         the query to host the response of
      * @return new {@code NodePath}
      */
-    public static NodePath allocateForQuery(Query query) {
+    public static NodePath of(Query query) {
         String path = constructPath(query);
         return NodePath.fromString(path);
     }

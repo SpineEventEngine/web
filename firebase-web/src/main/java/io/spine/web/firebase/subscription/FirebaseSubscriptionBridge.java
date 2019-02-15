@@ -31,6 +31,7 @@ import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.web.firebase.client.FirebaseClient;
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.query.QueryNodePath;
 import io.spine.web.query.service.AsyncQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscribeResult;
@@ -43,7 +44,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.web.firebase.query.QueryNodePathFactory.allocateForQuery;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -66,7 +66,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     public SubscribeResult subscribe(Topic topic) {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
-        NodePath path = allocateForQuery(query);
+        NodePath path = QueryNodePath.of(query);
         SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
         SubscriptionId id = newSubscriptionId(record.path());
