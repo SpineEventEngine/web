@@ -6,6 +6,7 @@ import io.spine.client.QueryId;
 import io.spine.core.TenantId;
 import io.spine.core.UserId;
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.client.NodePaths;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class QueryNodePath {
      */
     public static NodePath of(Query query) {
         String path = constructPath(query);
-        return NodePath.fromString(path);
+        return NodePaths.of(path);
     }
 
     private static String constructPath(Query query) {

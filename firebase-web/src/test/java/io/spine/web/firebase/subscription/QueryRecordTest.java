@@ -23,6 +23,7 @@ package io.spine.web.firebase.subscription;
 import io.spine.client.QueryResponse;
 import io.spine.web.firebase.client.FirebaseClient;
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.client.NodePaths;
 import io.spine.web.firebase.client.NodeValue;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.subscription.given.HasChildren;
@@ -35,7 +36,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static io.spine.json.Json.toCompactJson;
-import static io.spine.web.firebase.client.NodePath.fromString;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Authors.gangOfFour;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.aliceInWonderland;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.designPatterns;
@@ -68,9 +68,8 @@ class QueryRecordTest {
         Book donQuixote = donQuixote();
         mockQueryResponse(queryResponse, aliceInWonderland, donQuixote);
 
-        NodePath queryResponsePath = fromString(dbPath);
-        SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
-                                                           queryResponse);
+        NodePath queryResponsePath = NodePaths.of(dbPath);
+        SubscriptionRecord record = new SubscriptionRecord(queryResponsePath, queryResponse);
         record.storeAsInitial(firebaseClient);
 
         Map<String, String> expected = new HashMap<>();
@@ -99,7 +98,7 @@ class QueryRecordTest {
         CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
         mockQueryResponse(queryResponse, aliceInWonderland, donQuixote, designPatternsWithAuthors);
 
-        NodePath queryResponsePath = fromString(dbPath);
+        NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
                                                            queryResponse);
         NodeValue existingValue = NodeValue.empty();
@@ -128,7 +127,7 @@ class QueryRecordTest {
         Book aliceInWonderland = aliceInWonderland();
         mockQueryResponse(queryResponse, aliceInWonderland);
 
-        NodePath queryResponsePath = fromString(dbPath);
+        NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
                                                            queryResponse);
         record.storeAsUpdate(firebaseClient);

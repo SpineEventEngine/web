@@ -53,7 +53,7 @@ final class FirebaseQueryResult implements QueryProcessingResult {
     public void writeTo(ServletResponse response) throws IOException {
         FirebaseQueryResponse queryResponse =
                 FirebaseQueryResponseVBuilder.newBuilder()
-                                             .setPath(path.toString())
+                                             .setPath(path.getValue())
                                              .setCount(count)
                                              .build();
         response.getWriter().append(toCompactJson(queryResponse));

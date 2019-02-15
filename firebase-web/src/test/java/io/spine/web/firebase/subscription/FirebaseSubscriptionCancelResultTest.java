@@ -18,10 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription.keepup;
+package io.spine.web.firebase.subscription;
 
-import io.spine.web.RequestResult;
-import io.spine.web.firebase.subscription.FirebaseSubscriptionKeepUpResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@DisplayName("FirebaseSubscriptionKeepUpResult should")
-class FirebaseSubscriptionKeepUpResultTest {
+@DisplayName("FirebaseSubscriptionCancelResult should")
+class FirebaseSubscriptionCancelResultTest {
 
     @Test
     @DisplayName("write DB path to servlet response")
@@ -45,7 +43,7 @@ class FirebaseSubscriptionKeepUpResultTest {
         ServletResponse response = mock(ServletResponse.class);
         StringWriter writer = mockWriter(response);
 
-        RequestResult result = new FirebaseSubscriptionKeepUpResult(statusOk());
+        FirebaseSubscriptionCancelResult result = new FirebaseSubscriptionCancelResult(statusOk());
         result.writeTo(response);
         verify(response).getWriter();
 

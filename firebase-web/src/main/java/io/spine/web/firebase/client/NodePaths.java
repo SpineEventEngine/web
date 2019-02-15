@@ -20,33 +20,15 @@
 
 package io.spine.web.firebase.client;
 
-import io.spine.web.firebase.client.rest.RestClient;
-
 /**
- * A path in a Firebase Realtime Database.
- *
- * <p>The path is not aware of the database per se. See
- * {@link RestClient} for how the path is bound to the database.
+ * A static factory for {@link NodePath}.
  */
-public class NodePath {
+public class NodePaths {
 
-    private final String path;
-
-    private NodePath(String path) {
-        this.path = path;
-    }
-
-    public static NodePath fromString(String pathString) {
-        return new NodePath(pathString);
-    }
-
-    /**
-     * Retrieves the string value of this path.
-     *
-     * @return the database path
-     */
-    @Override
-    public String toString() {
-        return path;
+    public static NodePath of(String path) {
+        return NodePath
+                .newBuilder()
+                .setValue(path)
+                .build();
     }
 }

@@ -4,6 +4,8 @@ import com.google.api.client.http.GenericUrl;
 import io.spine.web.firebase.client.DatabaseUrl;
 import io.spine.web.firebase.client.NodePath;
 
+import static java.lang.String.format;
+
 /**
  * A URL of a single Firebase node accessed via REST.
  * 
@@ -15,7 +17,7 @@ class RestNodeUrl {
     private final String url;
 
     private RestNodeUrl(Template template, NodePath path) {
-        this.url = String.format(template.template, path);
+        this.url = format(template.template, path.getValue());
     }
 
     GenericUrl asGenericUrl() {

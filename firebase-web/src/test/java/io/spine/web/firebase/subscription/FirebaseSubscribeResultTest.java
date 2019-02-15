@@ -18,9 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription.cancel;
+package io.spine.web.firebase.subscription;
 
-import io.spine.web.firebase.subscription.FirebaseSubscriptionCancelResult;
+import io.spine.client.Subscription;
+import io.spine.client.Topic;
+import io.spine.client.TopicFactory;
+import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.client.NodePaths;
+import io.spine.web.subscription.result.SubscribeResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,15 +33,17 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import static io.spine.core.Responses.statusOk;
+import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.given.FirebaseResultTestEnv.mockWriter;
-import static io.spine.web.firebase.given.FirebaseResultTestEnv.okCancelSubscriptionResult;
+import static io.spine.web.firebase.given.FirebaseSubscribeResultTestEnv.newSubscription;
+import static io.spine.web.firebase.given.FirebaseSubscribeResultTestEnv.newTarget;
+import static io.spine.web.firebase.given.FirebaseSubscribeResultTestEnv.topicFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@DisplayName("FirebaseSubscriptionCancelResult should")
-class FirebaseSubscriptionCancelResultTest {
+@DisplayName("FirebaseSubscribeResult should")
+class FirebaseSubscribeResultTest {
 
     @Test
     @DisplayName("write DB path to servlet response")
@@ -44,11 +51,15 @@ class FirebaseSubscriptionCancelResultTest {
         ServletResponse response = mock(ServletResponse.class);
         StringWriter writer = mockWriter(response);
 
-        FirebaseSubscriptionCancelResult result = new FirebaseSubscriptionCancelResult(statusOk());
+        TopicFactory topicFactory = topicFactory();
+        Topic topic = topicFactory.forTarget(newTarget("test-type"));
+        NodePath path = NodePaths.of("test-database-path");
+        Subscription subscription = newSubscription(topic, path.getValue());
+        SubscribeResult result = new FirebaseSubscribeResult(subscription);
         result.writeTo(response);
         verify(response).getWriter();
 
-        String expected = okCancelSubscriptionResult();
+        String expected = toCompactJson(subscription);
         assertEquals(expected, writer.toString());
     }
 }

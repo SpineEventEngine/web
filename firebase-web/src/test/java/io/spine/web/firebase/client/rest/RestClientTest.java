@@ -25,6 +25,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
 import io.spine.web.firebase.client.DatabaseUrl;
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.client.NodePaths;
 import io.spine.web.firebase.client.NodeValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +54,7 @@ class RestClientTest {
     private static final RestNodeUrl.Template URL_TEMPLATE = new RestNodeUrl.Template(DATABASE_URL);
 
     private static final GenericUrl EXPECTED_NODE_URL =
-            new GenericUrl(DATABASE_URL_STRING + "/" + PATH + ".json");
+            new GenericUrl(DATABASE_URL_STRING + '/' + PATH + ".json");
 
     private HttpClient httpClient;
     private RestClient client;
@@ -64,7 +65,7 @@ class RestClientTest {
     void setUp() {
         httpClient = mock(HttpClient.class);
         client = new RestClient(URL_TEMPLATE, httpClient);
-        path = NodePath.fromString(PATH);
+        path = NodePaths.of(PATH);
         value = NodeValue.from(DATA);
     }
 

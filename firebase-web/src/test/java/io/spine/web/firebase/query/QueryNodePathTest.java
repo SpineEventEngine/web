@@ -61,12 +61,12 @@ class QueryNodePathTest {
         Query firstQuery = queryFactory.all(Empty.class);
         Query secondQuery = queryFactory.all(Timestamp.class);
 
-        NodePath firstPath = of(firstQuery);
-        NodePath secondPath = of(secondQuery);
+        NodePath firstPath = QueryNodePath.of(firstQuery);
+        NodePath secondPath = QueryNodePath.of(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
-        assertNotEquals(firstPath.toString(), secondPath.toString());
+        assertNotEquals(firstPath.getValue(), secondPath.getValue());
     }
 
     @Test
@@ -96,7 +96,7 @@ class QueryNodePathTest {
                                        secondValueTenant)
                                    .map(QueryNodePathTest::tenantAwareQuery)
                                    .map(QueryNodePath::of)
-                                   .map(NodePath::toString)
+                                   .map(NodePath::getValue)
                                    .collect(toList());
         new EqualsTester()
                 .addEqualityGroup(paths.get(0))
@@ -115,7 +115,7 @@ class QueryNodePathTest {
         );
         Query query = requestFactory.query()
                                     .all(Any.class);
-        String path = of(query).toString();
+        String path = of(query).getValue();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));

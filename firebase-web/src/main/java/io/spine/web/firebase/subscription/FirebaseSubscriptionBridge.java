@@ -31,6 +31,7 @@ import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.web.firebase.client.FirebaseClient;
 import io.spine.web.firebase.client.NodePath;
+import io.spine.web.firebase.client.NodePaths;
 import io.spine.web.firebase.query.QueryNodePath;
 import io.spine.web.query.service.AsyncQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
@@ -95,7 +96,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     private static SubscriptionId newSubscriptionId(NodePath path) {
         return SubscriptionIdVBuilder
                 .newBuilder()
-                .setValue(path.toString())
+                .setValue(path.getValue())
                 .build();
     }
 
@@ -105,7 +106,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Query query = newQueryForTopic(topic);
         CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
-        NodePath path = NodePath.fromString(id.getValue());
+        NodePath path = NodePaths.of(id.getValue());
         SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
         record.storeAsUpdate(firebaseClient);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
