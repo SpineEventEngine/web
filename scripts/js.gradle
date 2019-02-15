@@ -156,8 +156,7 @@ task coverageJs {
 
     dependsOn buildJs
     
-    // Disable coverage for a while.
-    // rootProject.check.dependsOn coverageJs
+    rootProject.check.dependsOn coverageJs
 }
 
 protobuf {
@@ -179,7 +178,8 @@ protobuf {
                 }
 
                 task.generateDescriptorSet = true
-                final def descriptorName = "${project.group}_${project.name}_${project.version}.desc"
+                final def testClassifier = task.sourceSet.name == "test" ? "_test" : ""
+                final def descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
                 task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}"
             }
             compileProtoToJs.dependsOn task
