@@ -43,7 +43,7 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Book
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.guideToTheGalaxy;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.mockQueryResponse;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.updateAuthors;
-import static io.spine.web.firebase.subscription.given.HasChildren.ANY_KEY;
+import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,7 +51,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SuppressWarnings("ConstantConditions") // Passing `null` to mocked methods.
 @DisplayName("SubscriptionRecord should")
 class QueryRecordTest {
 
@@ -73,8 +72,8 @@ class QueryRecordTest {
         record.storeAsInitial(firebaseClient);
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(ANY_KEY, toCompactJson(aliceInWonderland));
-        expected.put(ANY_KEY, toCompactJson(donQuixote));
+        expected.put(anyKey(), toCompactJson(aliceInWonderland));
+        expected.put(anyKey(), toCompactJson(donQuixote));
         verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 
@@ -111,7 +110,7 @@ class QueryRecordTest {
         record.storeAsUpdate(firebaseClient);
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(ANY_KEY, toCompactJson(donQuixote));
+        expected.put(anyKey(), toCompactJson(donQuixote));
         expected.put(patternsKey, toCompactJson(designPatternsWithAuthors));
         expected.put(guideKey, "null");
         verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
@@ -133,7 +132,7 @@ class QueryRecordTest {
         record.storeAsUpdate(firebaseClient);
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(ANY_KEY, toCompactJson(aliceInWonderland));
+        expected.put(anyKey(), toCompactJson(aliceInWonderland));
         verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 }

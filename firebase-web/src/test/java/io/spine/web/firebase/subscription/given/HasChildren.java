@@ -28,7 +28,9 @@ import org.mockito.ArgumentMatcher;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.stream.Collectors.toList;
 
@@ -43,7 +45,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class HasChildren implements ArgumentMatcher<NodeValue> {
 
-    public static final String ANY_KEY = "any_key";
+    private static final String ANY_KEY = "any_key";
 
     private final ImmutableMap<String, String> expected;
 
@@ -71,7 +73,9 @@ public class HasChildren implements ArgumentMatcher<NodeValue> {
     }
 
     private static boolean hasKeyAndValue(JsonObject json, String key, String value) {
-        if (ANY_KEY.equals(key)) {
+        checkNotNull(json);
+        checkNotNull(key);
+        if (key.startsWith(ANY_KEY)) {
             List<Map.Entry<String, JsonElement>> containingValue = json
                     .entrySet()
                     .stream()
@@ -85,5 +89,9 @@ public class HasChildren implements ArgumentMatcher<NodeValue> {
                                                                .getAsString());
             return result;
         }
+    }
+
+    public static String anyKey() {
+        return ANY_KEY + UUID.randomUUID().toString();
     }
 }

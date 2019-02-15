@@ -42,7 +42,7 @@ import java.util.Map;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
 import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
-import static io.spine.web.firebase.subscription.given.HasChildren.ANY_KEY;
+import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,7 +51,6 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@SuppressWarnings("ConstantConditions") // Passing `null` to mocked methods.
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
 
@@ -116,7 +115,7 @@ class FirebaseQueryBridgeTest {
         QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(ANY_KEY, toCompactJson(dataElement));
+        expected.put(anyKey(), toCompactJson(dataElement));
         verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 
@@ -132,7 +131,7 @@ class FirebaseQueryBridgeTest {
         bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(ANY_KEY, EMPTY_JSON);
+        expected.put(anyKey(), EMPTY_JSON);
         verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 
@@ -148,7 +147,7 @@ class FirebaseQueryBridgeTest {
         bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(ANY_KEY, EMPTY_JSON);
+        expected.put(anyKey(), EMPTY_JSON);
         verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 }
