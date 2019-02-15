@@ -23,7 +23,6 @@ package io.spine.web.subscription.servlet;
 import io.spine.client.Subscription;
 import io.spine.web.NonSerializableServlet;
 import io.spine.web.parser.HttpMessages;
-import io.spine.web.query.QueryBridge;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 
@@ -48,9 +47,10 @@ public abstract class SubscriptionCancelServlet extends NonSerializableServlet {
     private final SubscriptionBridge bridge;
 
     /**
-     * Creates a new instance of {@link SubscriptionCancelServlet} with the given {@link QueryBridge}.
+     * Creates a new instance of {@code SubscriptionCancelServlet} with the given 
+     * {@link SubscriptionBridge}.
      *
-     * @param bridge the query bridge to be used in this query servlet
+     * @param bridge the subscription bridge to be used in to cancel the subscription
      */
     protected SubscriptionCancelServlet(SubscriptionBridge bridge) {
         super();

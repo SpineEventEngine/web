@@ -51,7 +51,7 @@ public abstract class SubscriptionKeepUpServlet extends NonSerializableServlet {
      * {@link SubscriptionBridge}.
      *
      * @param bridge
-     *         the query bridge to be used in this query servlet
+     *         the subscription bridge to be used to keep-up subscriptions
      */
     protected SubscriptionKeepUpServlet(SubscriptionBridge bridge) {
         super();

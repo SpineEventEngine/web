@@ -47,6 +47,13 @@ public abstract class SubscribeServlet extends NonSerializableServlet {
 
     private final SubscriptionBridge bridge;
 
+    /**
+     * Creates a new instance of {@code SubscribeServlet} with the given
+     * {@link SubscriptionBridge}.
+     *
+     * @param bridge
+     *         the subscription bridge to be used to create subscriptions
+     */
     protected SubscribeServlet(SubscriptionBridge bridge) {
         super();
         this.bridge = bridge;
