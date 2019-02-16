@@ -26,10 +26,11 @@ import org.apache.commons.validator.routines.UrlValidator;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A Firebase database URL.
+ * Utilities and static factories dealing with {@link DatabaseUrl}.
  */
 public class DatabaseUrls {
 
+    /** Prevents instantiation of this utility class. */
     private DatabaseUrls() {
     }
 
