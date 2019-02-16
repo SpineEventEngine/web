@@ -18,37 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.firebase.subscription.diff;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("DatabaseUrls should")
-class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
+class JsonParserTest extends UtilityClassTest<JsonParser> {
 
-    private static final String VALID_URL = "https://spine-dev.appspot.com/";
-    private static final String INVALID_URL = "invalid_url";
-
-    DatabaseUrlsTest() {
-        super(DatabaseUrls.class);
+    JsonParserTest() {
+        super(JsonParser.class);
     }
 
     @Test
-    @DisplayName("be successfully created from valid URL")
-    void acceptValidUrl() {
-        DatabaseUrl url = DatabaseUrls.from(VALID_URL);
-        assertEquals(VALID_URL, url.getUrl()
-                                   .getSpec());
-    }
-
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
-    @Test
-    @DisplayName("throw IAE when invalid URL passed on construction")
-    void rejectInvalidUrl() {
-        assertThrows(IllegalArgumentException.class, () -> DatabaseUrls.from(INVALID_URL));
+    void parses() {
+        JsonNode node = JsonParser.parse("{\"foo\": \"bar\"}");
+        assertEquals("bar", node.get("foo").asText());
     }
 }

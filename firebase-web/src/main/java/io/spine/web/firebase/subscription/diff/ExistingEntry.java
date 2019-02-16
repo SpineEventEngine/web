@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * An entry retrieved from Firebase database to check the {@link UpToDateEntry} against.
  */
-class ExistingEntry {
+final class ExistingEntry {
 
     private final String key;
     private final String data;

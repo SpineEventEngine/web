@@ -13,7 +13,7 @@ import static java.lang.String.format;
  * A factory creating {@linkplain RestNodeUrl REST Node URLs} of the Firebase database at
  * specified {@linkplain DatabaseUrl url}.
  */
-class RestNodeUrls {
+final class RestNodeUrls {
 
     private final String template;
 

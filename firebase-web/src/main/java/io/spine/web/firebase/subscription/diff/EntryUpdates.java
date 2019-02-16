@@ -28,7 +28,7 @@ import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.REMO
 /**
  * Static factory for {@linkplain EntryUpdate Entry Update} instance.
  */
-class EntryUpdates {
+final class EntryUpdates {
 
     /**
      * Prevents instantiation of this static factory.

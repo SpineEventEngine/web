@@ -20,16 +20,19 @@
 
 package io.spine.web.firebase;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A static factory for {@link NodePath}.
  */
-public class NodePaths {
+public final class NodePaths {
 
     /** Prevents instantiation of this static factory. */
     private NodePaths() {
     }
 
     public static NodePath of(String path) {
+        checkNotNull(path);
         return NodePathVBuilder
                 .newBuilder()
                 .setValue(path)

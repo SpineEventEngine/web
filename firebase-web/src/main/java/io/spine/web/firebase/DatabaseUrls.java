@@ -24,11 +24,12 @@ import io.spine.net.Urls;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities and static factories dealing with {@link DatabaseUrl}.
  */
-public class DatabaseUrls {
+public final class DatabaseUrls {
 
     /** Prevents instantiation of this utility class. */
     private DatabaseUrls() {
@@ -45,6 +46,7 @@ public class DatabaseUrls {
      * @return a new instance of {@code DatabaseUrls}
      */
     public static DatabaseUrl from(String url) {
+        checkNotNull(url);
         validate(url);
         return DatabaseUrlVBuilder
                 .newBuilder()
@@ -53,6 +55,7 @@ public class DatabaseUrls {
     }
 
     public static void checkSpec(DatabaseUrl url) {
+        checkNotNull(url);
         String spec = url.getUrl()
                          .getSpec();
         validate(spec);
