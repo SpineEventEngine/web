@@ -23,23 +23,16 @@ package io.spine.web.query.given;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.json.Json;
+import io.spine.web.WebQuery;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.query.QueryServlet;
-import io.spine.web.WebQuery;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
-/**
- * @author Dmytro Dashenkov
- */
 public final class QueryServletTestEnv {
-
-    // This duplication verifies that the parameter was not changed in production code by accident.
-    @SuppressWarnings("DuplicateStringLiteralInspection") 
-    public static final String TRANSACTIONAL_PARAMETER = "transactional";
 
     /**
      * A private constructor stopping this utility class from instantiation.

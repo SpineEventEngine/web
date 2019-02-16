@@ -52,8 +52,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for {@link io.spine.web.parser.HttpMessages HttpMessages}.
- *
- * @author Dmytro Dashenkov
  */
 @DisplayName("HttpMessages should")
 class HttpMessagesTest {

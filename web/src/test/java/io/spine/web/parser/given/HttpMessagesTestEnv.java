@@ -44,8 +44,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Test environment for {@link io.spine.web.parser.HttpMessagesTest HttpMessages Tests}.
- *
- * @author Mykhailo Drachuk
  */
 public final class HttpMessagesTestEnv {
 

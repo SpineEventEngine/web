@@ -25,7 +25,6 @@ import io.spine.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,8 +36,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * The factory of mock servlet API objects, such as requests and responses.
- *
- * @author Dmytro Dashenkov
  */
 public final class Servlets {
 
