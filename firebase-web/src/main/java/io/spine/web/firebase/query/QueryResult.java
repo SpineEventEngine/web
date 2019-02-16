@@ -35,14 +35,14 @@ import static io.spine.json.Json.toCompactJson;
  * <p>This result represents a database path to the requested data.
  * See {@link FirebaseQueryBridge} for more details.
  */
-final class FirebaseQueryResult implements QueryProcessingResult {
+final class QueryResult implements QueryProcessingResult {
 
     private static final String JSON_MIME_TYPE = JSON_UTF_8.toString();
 
     private final NodePath path;
     private final long count;
 
-    FirebaseQueryResult(NodePath path, long count) {
+    QueryResult(NodePath path, long count) {
         this.path = path;
         this.count = count;
     }

@@ -36,11 +36,11 @@ import static io.spine.json.Json.toCompactJson;
  *
  * <p>The result is a JSON formatted {@linkplain Response Spine Response} message.
  */
-public class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResult {
+final class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResult {
 
     private final Response response;
 
-    public FirebaseSubscriptionKeepUpResult(Status status) {
+    FirebaseSubscriptionKeepUpResult(Status status) {
         this.response = newResponseWithStatus(status);
     }
 

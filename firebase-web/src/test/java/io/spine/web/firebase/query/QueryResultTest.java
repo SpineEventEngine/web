@@ -40,11 +40,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DisplayName("FirebaseQueryResult should")
-class FirebaseQueryResultTest {
+@DisplayName("QueryResult should")
+class QueryResultTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseQueryResultTest.class)
+            TestActorRequestFactory.newInstance(QueryResultTest.class)
                                    .query();
 
     private NodePath nodePath;
@@ -64,8 +64,8 @@ class FirebaseQueryResultTest {
         when(response.getWriter()).thenReturn(writer);
 
         int count = 2;
-        FirebaseQueryResult queryResult =
-                new FirebaseQueryResult(nodePath, count);
+        QueryResult queryResult =
+                new QueryResult(nodePath, count);
         queryResult.writeTo(response);
         verify(response).getWriter();
 

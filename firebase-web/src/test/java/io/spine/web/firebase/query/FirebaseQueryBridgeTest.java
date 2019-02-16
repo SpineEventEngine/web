@@ -98,7 +98,7 @@ class FirebaseQueryBridgeTest {
         Query query = queryFactory.all(Empty.class);
         QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
 
-        assertThat(result, instanceOf(FirebaseQueryResult.class));
+        assertThat(result, instanceOf(QueryResult.class));
     }
 
     @Test

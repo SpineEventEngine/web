@@ -35,11 +35,11 @@ import static io.spine.json.Json.toCompactJson;
  *
  * <p>The result is a JSON formatted {@linkplain Response Spine Response} message.
  */
-public class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
+final class FirebaseSubscriptionCancelResult implements SubscriptionCancelResult {
 
     private final Response response;
 
-    public FirebaseSubscriptionCancelResult(Status status) {
+    FirebaseSubscriptionCancelResult(Status status) {
         this.response = newResponseWithStatus(status);
     }
 

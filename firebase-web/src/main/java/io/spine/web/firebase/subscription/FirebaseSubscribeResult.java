@@ -34,11 +34,11 @@ import static io.spine.json.Json.toCompactJson;
  *
  * <p>The result is a JSON formatted {@link Subscription} message.
  */
-public final class FirebaseSubscribeResult implements SubscribeResult {
+final class FirebaseSubscribeResult implements SubscribeResult {
 
     private final Subscription subscription;
 
-    public FirebaseSubscribeResult(Subscription subscription) {
+    FirebaseSubscribeResult(Subscription subscription) {
         this.subscription = subscription;
     }
 
