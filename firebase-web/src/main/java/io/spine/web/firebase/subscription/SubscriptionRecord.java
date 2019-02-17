@@ -107,7 +107,6 @@ final class SubscriptionRecord {
         });
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
         NodeValue nodeValue = NodeValue.empty();
         diff.getChangedList()

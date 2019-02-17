@@ -77,7 +77,6 @@ class QueryRecordTest {
         verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     @DisplayName("store a subscription update")
     void storeUpdate() {
