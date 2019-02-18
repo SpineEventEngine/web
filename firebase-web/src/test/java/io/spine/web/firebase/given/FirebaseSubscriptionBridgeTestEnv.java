@@ -36,7 +36,7 @@ import io.spine.core.UserId;
 import io.spine.core.UserIdVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.FirebaseSubscriptionBridge;
+import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;

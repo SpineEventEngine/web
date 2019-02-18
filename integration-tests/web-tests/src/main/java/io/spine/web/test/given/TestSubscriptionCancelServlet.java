@@ -20,8 +20,8 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.firebase.FirebaseSubscriptionBridge;
-import io.spine.web.firebase.FirebaseSubscriptionCancelServlet;
+import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
+import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -32,12 +32,13 @@ import static io.spine.web.test.given.Server.application;
  */
 @WebServlet("/subscription/cancel")
 @SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends FirebaseSubscriptionCancelServlet {
+public class TestSubscriptionCancelServlet extends SubscriptionCancelServlet {
 
     public TestSubscriptionCancelServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+        super(FirebaseSubscriptionBridge
+                      .newBuilder()
+                      .setQueryService(application().queryService())
+                      .setFirebaseClient(application().firebaseClient())
+                      .build());
     }
 }

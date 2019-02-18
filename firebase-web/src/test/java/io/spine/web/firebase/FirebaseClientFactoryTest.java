@@ -23,11 +23,12 @@ package io.spine.web.firebase;
 import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
+import io.spine.web.firebase.rest.RestClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.web.firebase.DatabaseUrl.from;
+import static io.spine.web.firebase.DatabaseUrls.from;
 import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 @DisplayName("FirebaseClientFactory should")
@@ -55,27 +56,27 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
     @DisplayName("create a REST client without Firebase credentials")
     void createWithoutCredentials() {
         FirebaseClient client = FirebaseClientFactory.restClient(SOME_URL);
-        assertThat(client).isInstanceOf(FirebaseRestClient.class);
+        assertThat(client).isInstanceOf(RestClient.class);
     }
 
     @Test
     @DisplayName("create a REST client with the given Firebase credentials")
     void createWithCredentials() {
         FirebaseClient client = FirebaseClientFactory.restClient(SOME_URL, CREDENTIALS);
-        assertThat(client).isInstanceOf(FirebaseRestClient.class);
+        assertThat(client).isInstanceOf(RestClient.class);
     }
 
     @Test
     @DisplayName("create a REST client for the AppEngine environment")
     void createGaeRestClient() {
         FirebaseClient client = FirebaseClientFactory.gae(SOME_URL, CREDENTIALS);
-        assertThat(client).isInstanceOf(FirebaseRestClient.class);
+        assertThat(client).isInstanceOf(RestClient.class);
     }
 
     @Test
     @DisplayName("create a REST client for the non-GAE environment")
     void createNonGaeRestClient() {
         FirebaseClient client = FirebaseClientFactory.nonGae(SOME_URL, CREDENTIALS);
-        assertThat(client).isInstanceOf(FirebaseRestClient.class);
+        assertThat(client).isInstanceOf(RestClient.class);
     }
 }

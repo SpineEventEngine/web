@@ -41,8 +41,7 @@ import static java.util.Arrays.asList;
  */
 public final class FirebaseCredentials {
 
-    private static final String AUTH_DATABASE =
-            "https://www.googleapis.com/auth/firebase.database";
+    private static final String AUTH_DATABASE = "https://www.googleapis.com/auth/firebase.database";
     private static final String AUTH_USER_EMAIL = "https://www.googleapis.com/auth/userinfo.email";
 
     /**
@@ -112,7 +111,7 @@ public final class FirebaseCredentials {
      *
      * @return {@code true} if {@code FirebaseCredentials} are empty and {@code false} otherwise
      */
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return credentials == null;
     }
 

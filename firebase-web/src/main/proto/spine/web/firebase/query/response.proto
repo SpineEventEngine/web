@@ -1,0 +1,41 @@
+//
+// Copyright 2019, TeamDev. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+syntax = "proto3";
+
+package spine.web.firebase.query;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web.firebase.query";
+option java_multiple_files = true;
+option java_outer_classname = "FirebaseQueryResponseProto";
+
+// A response to the Spine `Query` that contains a path to the actual results
+// in Firebase Realtime Database.
+//
+message FirebaseQueryResponse {
+
+    // A datapase path to the requested data.
+    string path = 1 [(required) = true];
+
+    // A number of records.
+    uint64 count = 2;
+}

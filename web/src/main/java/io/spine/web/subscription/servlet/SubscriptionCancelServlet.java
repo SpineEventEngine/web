@@ -23,7 +23,6 @@ package io.spine.web.subscription.servlet;
 import io.spine.client.Subscription;
 import io.spine.web.NonSerializableServlet;
 import io.spine.web.parser.HttpMessages;
-import io.spine.web.query.QueryBridge;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 
@@ -39,10 +38,8 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * An abstract servlet for a client request to cancel an existing {@link Subscription}.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
- * to process. After, {@link SubscriptionCancelResult the processing result} is written to
+ * to process. After, {@linkplain SubscriptionCancelResult the processing result} is written to
  * the servlet response.
- *
- * @author Mykhailo Drachuk
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscriptionCancelServlet extends NonSerializableServlet {
@@ -50,9 +47,10 @@ public abstract class SubscriptionCancelServlet extends NonSerializableServlet {
     private final SubscriptionBridge bridge;
 
     /**
-     * Creates a new instance of {@link SubscriptionCancelServlet} with the given {@link QueryBridge}.
+     * Creates a new instance of {@code SubscriptionCancelServlet} with the given 
+     * {@link SubscriptionBridge}.
      *
-     * @param bridge the query bridge to be used in this query servlet
+     * @param bridge the subscription bridge to be used in to cancel the subscription
      */
     protected SubscriptionCancelServlet(SubscriptionBridge bridge) {
         super();

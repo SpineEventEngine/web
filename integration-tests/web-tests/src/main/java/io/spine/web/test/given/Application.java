@@ -24,6 +24,7 @@ import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
 import io.spine.web.firebase.DatabaseUrl;
+import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.FirebaseCredentials;
 
@@ -37,7 +38,8 @@ import static io.spine.web.firebase.FirebaseClientFactory.restClient;
  */
 final class Application {
 
-    private static final DatabaseUrl DATABASE_URL = DatabaseUrl.from("https://spine-dev.firebaseio.com/");
+    private static final DatabaseUrl DATABASE_URL =
+            DatabaseUrls.from("https://spine-dev.firebaseio.com/");
     private static final String SERVICE_ACCOUNT_FILE = "/spine-dev.json";
 
     private final CommandService commandService;

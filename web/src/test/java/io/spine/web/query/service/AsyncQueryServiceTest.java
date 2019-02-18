@@ -49,11 +49,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Dmytro Dashenkov
- */
 @DisplayName("AsyncQueryService should")
-@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic", "UtilityClassWithoutPrivateConstructor"})
+@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 class AsyncQueryServiceTest {
 
     private static final String EXIST_TEST_NAME = "exist";

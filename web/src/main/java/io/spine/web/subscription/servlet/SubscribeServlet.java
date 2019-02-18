@@ -39,16 +39,21 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * {@link Topic Topic}.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
- * to process. After, {@link SubscribeResult the processing result} is written to
+ * to process. After, {@linkplain SubscribeResult the processing result} is written to
  * the servlet response.
- *
- * @author Mykhailo Drachuk
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscribeServlet extends NonSerializableServlet {
 
     private final SubscriptionBridge bridge;
 
+    /**
+     * Creates a new instance of {@code SubscribeServlet} with the given
+     * {@link SubscriptionBridge}.
+     *
+     * @param bridge
+     *         the subscription bridge to be used to create subscriptions
+     */
     protected SubscribeServlet(SubscriptionBridge bridge) {
         super();
         this.bridge = bridge;

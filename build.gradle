@@ -99,10 +99,12 @@ subprojects {
     apply plugin: 'com.google.protobuf'
     apply plugin: 'net.ltgt.errorprone'
     apply plugin: 'maven-publish'
+    apply plugin: 'pmd'
 
     apply from: deps.scripts.testOutput
     apply from: deps.scripts.javadocOptions
     apply from: deps.scripts.javacArgs
+    apply from: deps.scripts.pmd
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8

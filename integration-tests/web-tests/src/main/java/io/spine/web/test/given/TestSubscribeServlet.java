@@ -20,8 +20,8 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.firebase.FirebaseSubscribeServlet;
-import io.spine.web.firebase.FirebaseSubscriptionBridge;
+import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
+import io.spine.web.subscription.servlet.SubscribeServlet;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -32,12 +32,13 @@ import static io.spine.web.test.given.Server.application;
  */
 @WebServlet("/subscription/create")
 @SuppressWarnings("serial")
-public class TestSubscribeServlet extends FirebaseSubscribeServlet {
+public class TestSubscribeServlet extends SubscribeServlet {
 
     public TestSubscribeServlet() {
-        super(FirebaseSubscriptionBridge.newBuilder()
-                                        .setQueryService(application().queryService())
-                                        .setFirebaseClient(application().firebaseClient())
-                                        .build());
+        super(FirebaseSubscriptionBridge
+                      .newBuilder()
+                      .setQueryService(application().queryService())
+                      .setFirebaseClient(application().firebaseClient())
+                      .build());
     }
 }

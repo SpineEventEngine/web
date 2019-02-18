@@ -29,19 +29,19 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.ServerEnvironment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.FirebaseRestClient.create;
+import static io.spine.web.firebase.rest.RestClient.create;
 
 /**
- * A tool for {@link io.spine.web.firebase.FirebaseClient} instances creation.
+ * A tool for {@link FirebaseClient} instances creation.
  */
 public final class FirebaseClientFactory {
 
-    /** Prevents instantiation of this utility class. */
+    /** Prevents instantiation of this static factory. */
     private FirebaseClientFactory() {
     }
 
     /**
-     * Creates a {@linkplain io.spine.web.firebase.FirebaseRestClient firebase client} which
+     * Creates a {@linkplain io.spine.web.firebase.rest.RestClient firebase client} which
      * operates via the Firebase REST API.
      *
      * <p>The client created with this method is suitable only for databases whose read/write side
@@ -50,7 +50,7 @@ public final class FirebaseClientFactory {
      *
      * @param url
      *         the URL of the database on which the client operates
-     * @return the new instance of {@code FirebaseRestClient}
+     * @return the new instance of {@code RestClient}
      */
     public static FirebaseClient restClient(DatabaseUrl url) {
         checkNotNull(url);
@@ -58,14 +58,14 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@link io.spine.web.firebase.FirebaseRestClient} which uses given credentials to
+     * Creates a {@link io.spine.web.firebase.rest.RestClient} which uses given credentials to
      * authorize its requests to the Firebase database.
      *
      * @param url
      *         the URL of the database on which the client operates
      * @param credentials
      *         the Firebase Database credentials to use
-     * @return the new instance of {@code FirebaseRestClient}
+     * @return the new instance of {@code RestClient}
      */
     public static FirebaseClient restClient(DatabaseUrl url, FirebaseCredentials credentials) {
         checkNotNull(url);
@@ -74,10 +74,10 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@link io.spine.web.firebase.FirebaseRestClient} for the current environment.
+     * Creates a {@link io.spine.web.firebase.rest.RestClient} for the current environment.
      *
-     * <p>Different environments require different {@linkplain
-     * com.google.api.client.http.HttpTransport HTTP transport} to operate.
+     * <p>Different environments require different {@linkplain HttpTransport HTTP transport}
+     * to operate.
      *
      * <p>For more information on this, see
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
@@ -112,10 +112,10 @@ public final class FirebaseClientFactory {
     private static FirebaseClient createWithTransport(HttpTransport httpTransport,
                                                       DatabaseUrl url,
                                                       FirebaseCredentials credentials) {
-        if (!credentials.isEmpty()) {
-            return createAuthorized(httpTransport, url, credentials);
+        if (credentials.isEmpty()) {
+            return createUnauthorized(httpTransport, url);
         }
-        return createUnauthorized(httpTransport, url);
+        return createAuthorized(httpTransport, url, credentials);
     }
 
     /**

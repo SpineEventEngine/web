@@ -21,7 +21,6 @@
 package io.spine.web;
 
 import javax.servlet.http.HttpServlet;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -32,7 +31,11 @@ import static io.spine.util.Exceptions.unsupported;
  *
  * @author Dmytro Dashenkov
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({
+        "serial" /* The goal of this class. */,
+        "PMD.UnusedFormalParameter"
+        /* Abstract implementations throwing errors do not use parameters. */
+})
 public abstract class NonSerializableServlet extends HttpServlet {
 
     // Disabled serialization.

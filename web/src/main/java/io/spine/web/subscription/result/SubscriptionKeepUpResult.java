@@ -20,13 +20,11 @@
 
 package io.spine.web.subscription.result;
 
-import io.spine.web.RequestsResult;
+import io.spine.web.RequestResult;
 
 /**
  * An interface for a result of a request to keep up a subscription.
- *
- * @author Mykhailo Drachuk
  */
-public interface SubscriptionKeepUpResult extends RequestsResult {
+public interface SubscriptionKeepUpResult extends RequestResult {
 
 }

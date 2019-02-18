@@ -20,7 +20,7 @@
 
 package io.spine.web.query;
 
-import io.spine.web.RequestsResult;
+import io.spine.web.RequestResult;
 
 import javax.servlet.ServletResponse;
 
@@ -33,8 +33,6 @@ import javax.servlet.ServletResponse;
  *
  * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
  * a {@link ServletResponse} in order to be sent to a client.
- *
- * @author Dmytro Dashenkov
  */
-public interface QueryProcessingResult extends RequestsResult {
+public interface QueryProcessingResult extends RequestResult {
 }

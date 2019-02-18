@@ -34,9 +34,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Dmytro Dashenkov
- */
 public final class CommandServletTestEnv {
 
     /**

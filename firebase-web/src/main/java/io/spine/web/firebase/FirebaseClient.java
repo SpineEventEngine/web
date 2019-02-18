@@ -39,7 +39,7 @@ public interface FirebaseClient {
      *         the path to the requested node in the database
      * @return the node value or empty {@code Optional} if the node is not present in the database
      */
-    Optional<FirebaseNodeValue> get(FirebaseDatabasePath nodePath);
+    Optional<NodeValue> get(NodePath nodePath);
 
     /**
      * Merges the specified value to the Firebase database node.
@@ -54,5 +54,5 @@ public interface FirebaseClient {
      * @param value
      *         the value to merge
      */
-    void merge(FirebaseDatabasePath nodePath, FirebaseNodeValue value);
+    void merge(NodePath nodePath, NodeValue value);
 }
