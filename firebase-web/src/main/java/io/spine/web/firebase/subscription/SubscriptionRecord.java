@@ -119,9 +119,10 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Creates a stream of response messages, mapping each each response message to JSON.
+     * Creates a stream of response messages, mapping each response message to JSON.
      *
-     * @param response Spines response to a query
+     * @param response
+     *         response to an entity query
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
