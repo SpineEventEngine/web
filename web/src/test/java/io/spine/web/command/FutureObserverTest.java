@@ -20,6 +20,7 @@
 
 package io.spine.web.command;
 
+import io.spine.web.future.FutureObserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

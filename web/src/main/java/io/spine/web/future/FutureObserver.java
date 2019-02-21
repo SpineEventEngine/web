@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command;
+package io.spine.web.future;
 
 import io.grpc.stub.StreamObserver;
 
@@ -34,8 +34,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>This implementation works only with the unary gRPC calls, i.e. {@link #onNext(Object)} cannot
  * be called more then once.
- *
- * @author Dmytro Dashenkov
  */
 public final class FutureObserver<T> implements StreamObserver<T> {
 
@@ -82,9 +80,6 @@ public final class FutureObserver<T> implements StreamObserver<T> {
         return new FutureObserver<>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onNext(T value) {
         if (future.isDone()) {
@@ -94,17 +89,11 @@ public final class FutureObserver<T> implements StreamObserver<T> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onError(Throwable t) {
         future.obtrudeException(t);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onCompleted() {
         if (!future.isDone()) {

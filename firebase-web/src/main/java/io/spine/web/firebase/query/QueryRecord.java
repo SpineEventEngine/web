@@ -34,6 +34,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static io.spine.web.future.Completion.dispose;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -82,7 +83,8 @@ final class QueryRecord {
      */
     long getCount() {
         CountConsumer countConsumer = new CountConsumer();
-        queryResponse.thenAccept(countConsumer);
+        CompletionStage<Void> stage = queryResponse.thenAccept(countConsumer);
+        dispose(stage);
         return countConsumer.getValue();
     }
 
@@ -113,20 +115,21 @@ final class QueryRecord {
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        queryResponse.thenAccept(
+        CompletionStage<Void> stage = queryResponse.thenAccept(
                 response -> mapMessagesToJson(response)
                         .forEach(json -> {
                             NodeValue value = NodeValue.withSingleChild(json);
                             firebaseClient.merge(path(), value);
                         })
         );
+        dispose(stage);
     }
 
     /**
      * Flushes the array response of the query to the Firebase in one go.
      */
     private void flushTransactionally(FirebaseClient firebaseClient) {
-        queryResponse.thenAccept(
+        CompletionStage<Void> stage = queryResponse.thenAccept(
                 response -> {
                     List<String> jsonItems = mapMessagesToJson(response).collect(toList());
                     jsonItems.forEach(item -> {
@@ -135,6 +138,7 @@ final class QueryRecord {
                     });
                 }
         );
+        dispose(stage);
     }
 
     /**
