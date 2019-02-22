@@ -25,6 +25,7 @@ import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.server.CommandService;
 import io.spine.web.NonSerializableServlet;
+import io.spine.web.future.FutureObserver;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;

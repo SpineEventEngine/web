@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command;
+package io.spine.web.future;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

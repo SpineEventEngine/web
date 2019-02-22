@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-def final SPINE_VERSION = '1.0.0-pre5'
+/**
+ * This package contains classes working with {@code Future}s.
+ */
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION
-    
-    versionToPublish = '1.0.0-SNAPSHOT'
-    versionToPublishJs = '0.14.0'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.future;
 
-    servletApiVersion = '4.0.0'
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

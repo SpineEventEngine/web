@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+import static io.spine.web.future.Completion.dispose;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -72,12 +73,13 @@ final class SubscriptionRecord {
      * transaction.
      */
     private void flushNewVia(FirebaseClient firebaseClient) {
-        queryResponse.thenAccept(response -> {
+        CompletionStage<Void> stage = queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
             NodeValue nodeValue = NodeValue.empty();
             newEntries.forEach(nodeValue::addChild);
             firebaseClient.merge(path(), nodeValue);
         });
+        dispose(stage);
     }
 
     /**
@@ -92,7 +94,7 @@ final class SubscriptionRecord {
      * already present in storage in a transaction.
      */
     private void flushDiffVia(FirebaseClient firebaseClient) {
-        queryResponse.thenAccept(response -> {
+        CompletionStage<Void> stage = queryResponse.thenAccept(response -> {
             List<String> newEntries = mapMessagesToJson(response).collect(toList());
             Optional<NodeValue> existingValue = firebaseClient.get(path());
             if (!existingValue.isPresent()) {
@@ -105,6 +107,7 @@ final class SubscriptionRecord {
                 updateWithDiff(diff, firebaseClient);
             }
         });
+        dispose(stage);
     }
 
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
@@ -119,9 +122,10 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Creates a stream of response messages, mapping each each response message to JSON.
+     * Creates a stream of response messages, mapping each response message to JSON.
      *
-     * @param response Spines response to a query
+     * @param response
+     *         response to an entity query
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.

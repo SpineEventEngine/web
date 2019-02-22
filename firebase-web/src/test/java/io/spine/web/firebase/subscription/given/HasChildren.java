@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -56,7 +55,7 @@ public class HasChildren implements ArgumentMatcher<NodeValue> {
      *         the expected entries in "nodeKey-nodeValue" format
      */
     public HasChildren(Map<String, String> expected) {
-        this.expected = copyOf(expected);
+        this.expected = ImmutableMap.copyOf(expected);
     }
 
     @Override

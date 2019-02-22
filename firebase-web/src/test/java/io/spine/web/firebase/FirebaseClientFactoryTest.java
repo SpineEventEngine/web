@@ -28,13 +28,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.web.firebase.DatabaseUrls.from;
 import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 @DisplayName("FirebaseClientFactory should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
 
-    private static final DatabaseUrl SOME_URL = from("https://someUrl.com");
+    private static final DatabaseUrl SOME_URL = DatabaseUrls.from("https://someUrl.com");
 
     private static final MockGoogleCredential GOOGLE_CREDENTIALS =
             new MockGoogleCredential.Builder().build();
