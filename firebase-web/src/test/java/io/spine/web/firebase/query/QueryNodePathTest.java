@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.spine.time.ZoneIds.systemDefault;
-import static io.spine.web.firebase.query.QueryNodePath.of;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -115,7 +114,7 @@ class QueryNodePathTest {
         );
         Query query = requestFactory.query()
                                     .all(Any.class);
-        String path = of(query).getValue();
+        String path = QueryNodePath.of(query).getValue();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));

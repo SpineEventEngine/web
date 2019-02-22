@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase.given;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
@@ -32,7 +33,6 @@ import io.spine.protobuf.AnyPacker;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.google.common.collect.ImmutableSet.copyOf;
 import static io.spine.core.Responses.ok;
 import static java.util.stream.Collectors.toSet;
 
@@ -50,9 +50,10 @@ public final class FirebaseQueryMediatorTestEnv {
 
         public TestQueryService(Message... messages) {
             super();
-            this.response = copyOf(messages).stream()
-                                            .map(AnyPacker::pack)
-                                            .collect(toSet());
+            this.response = ImmutableSet.copyOf(messages)
+                                        .stream()
+                                        .map(AnyPacker::pack)
+                                        .collect(toSet());
         }
 
         @Override
