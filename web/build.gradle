@@ -31,6 +31,7 @@ dependencies {
     api "javax.servlet:javax.servlet-api:$servletApiVersion"
 
     implementation deps.build.googleHttpClient
+    implementation deps.grpc.grpcProtobuf
 
     implementation "io.spine:spine-server:$spineVersion"
 }
