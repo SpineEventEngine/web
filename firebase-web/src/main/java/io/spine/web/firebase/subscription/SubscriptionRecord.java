@@ -21,6 +21,7 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Message;
+import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
@@ -134,6 +135,7 @@ final class SubscriptionRecord {
                 .getMessagesList()
                 .stream()
                 .unordered()
+                .map(EntityStateWithVersion::getState)
                 .map(AnyPacker::<Message>unpack)
                 .map(Json::toCompactJson);
     }
