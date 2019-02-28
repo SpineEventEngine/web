@@ -146,7 +146,7 @@ final class QueryRecord {
      * Creates a stream of response messages, mapping each each response message to JSON.
      *
      * @param response
-     *         response to a query
+     *         a query response
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
