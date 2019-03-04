@@ -21,6 +21,7 @@
 package io.spine.web.firebase.query;
 
 import com.google.protobuf.Message;
+import io.spine.client.EntityStateWithVersion;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.json.Json;
@@ -144,7 +145,8 @@ final class QueryRecord {
     /**
      * Creates a stream of response messages, mapping each each response message to JSON.
      *
-     * @param response Spines response to a query
+     * @param response
+     *         a response to a query
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
@@ -152,6 +154,7 @@ final class QueryRecord {
         return response.getMessagesList()
                        .stream()
                        .unordered()
+                       .map(EntityStateWithVersion::getState)
                        .map(AnyPacker::<Message>unpack)
                        .map(Json::toCompactJson);
     }

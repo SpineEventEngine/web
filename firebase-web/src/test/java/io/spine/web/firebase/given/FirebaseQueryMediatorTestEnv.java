@@ -21,18 +21,19 @@
 package io.spine.web.firebase.given;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
+import io.spine.client.EntityStateWithVersion;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.QueryResponseVBuilder;
 import io.spine.client.grpc.QueryServiceGrpc;
-import io.spine.protobuf.AnyPacker;
+import io.spine.core.Version;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.google.protobuf.Any.pack;
 import static io.spine.core.Responses.ok;
 import static java.util.stream.Collectors.toSet;
 
@@ -46,13 +47,13 @@ public final class FirebaseQueryMediatorTestEnv {
 
     public static final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBase {
 
-        private final Collection<Any> response;
+        private final Collection<EntityStateWithVersion> response;
 
         public TestQueryService(Message... messages) {
             super();
             this.response = ImmutableSet.copyOf(messages)
                                         .stream()
-                                        .map(AnyPacker::pack)
+                                        .map(TestQueryService::toEntityState)
                                         .collect(toSet());
         }
 
@@ -65,6 +66,15 @@ public final class FirebaseQueryMediatorTestEnv {
                                          .build();
             responseObserver.onNext(queryResponse);
             responseObserver.onCompleted();
+        }
+
+        private static EntityStateWithVersion toEntityState(Message message) {
+            EntityStateWithVersion result = EntityStateWithVersion
+                    .newBuilder()
+                    .setState(pack(message))
+                    .setVersion(Version.getDefaultInstance())
+                    .build();
+            return result;
         }
     }
 }

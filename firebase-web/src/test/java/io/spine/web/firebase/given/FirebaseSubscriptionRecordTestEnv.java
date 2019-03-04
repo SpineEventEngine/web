@@ -20,10 +20,12 @@
 
 package io.spine.web.firebase.given;
 
+import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
 import io.spine.client.QueryResponseVBuilder;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
+import io.spine.core.Version;
 import io.spine.people.PersonName;
 import io.spine.people.PersonNameVBuilder;
 
@@ -35,6 +37,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.core.Responses.statusOk;
 import static io.spine.protobuf.AnyPacker.pack;
+import static java.util.Arrays.stream;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -63,13 +66,22 @@ public final class FirebaseSubscriptionRecordTestEnv {
             Consumer<QueryResponse> consumer = (Consumer<QueryResponse>) arguments[0];
             QueryResponseVBuilder responseBuilder = QueryResponseVBuilder.newBuilder()
                                                                          .setResponse(okResponse());
-            for (Book book : books) {
-                responseBuilder.addMessages(pack(book));
-            }
+            stream(books)
+                    .map(FirebaseSubscriptionRecordTestEnv::toEntityState)
+                    .forEach(responseBuilder::addMessages);
             consumer.accept(responseBuilder.build());
             return mock(CompletionStage.class);
         }).when(queryResponse)
           .thenAccept(any());
+    }
+
+    private static EntityStateWithVersion toEntityState(Book book) {
+        EntityStateWithVersion result = EntityStateWithVersion
+                .newBuilder()
+                .setState(pack(book))
+                .setVersion(Version.getDefaultInstance())
+                .build();
+        return result;
     }
 
     public static final class Books {
