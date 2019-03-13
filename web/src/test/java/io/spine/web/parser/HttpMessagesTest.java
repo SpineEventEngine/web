@@ -83,7 +83,7 @@ class HttpMessagesTest {
     void testParseJsonWithoutCharset() throws IOException {
         testJsonWithContentType(JSON_TYPE);
     }
-    
+
     @Test
     @DisplayName("message parsing is accepting case-insensitive Content-Type")
     void testParseCaseInsensitive() throws IOException {
@@ -144,7 +144,7 @@ class HttpMessagesTest {
     @Test
     @DisplayName("parse to parse wrong type of message from bytes into unknown fields")
     void testBase64WrongType() throws IOException {
-        Timestamp message = Time.getCurrentTime();
+        Timestamp message = Time.currentTime();
         String content = base64(message);
         Optional<Empty> parsed = parse(request(content, PROTOBUF_TYPE), Empty.class);
         assertTrue(parsed.isPresent());

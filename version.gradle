@@ -22,10 +22,10 @@ def final SPINE_VERSION = '1.0.0-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
-    spineBaseVersion = '1.0.0-pre6'
+    spineBaseVersion = SPINE_VERSION
     
     versionToPublish = SPINE_VERSION
-    versionToPublishJs = '0.15.0'
+    versionToPublishJs = '0.15.1'
 
     servletApiVersion = '4.0.0'
 }

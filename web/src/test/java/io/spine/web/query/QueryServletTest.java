@@ -21,7 +21,6 @@
 package io.spine.web.query;
 
 import com.google.protobuf.Timestamp;
-import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.json.Json;
@@ -39,6 +38,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
+import static io.spine.base.Time.currentTime;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +64,7 @@ class QueryServletTest {
     @Test
     @DisplayName("handle query POST requests")
     void testHandle() throws IOException {
-        Timestamp expectedData = Time.getCurrentTime();
+        Timestamp expectedData = currentTime();
         QueryServlet servlet = new TestQueryServlet(expectedData);
         StringWriter response = new StringWriter();
         Query query = queryFactory.all(Timestamp.class);
@@ -86,7 +86,7 @@ class QueryServletTest {
     void testInvalidCommand() throws IOException {
         QueryServlet servlet = new TestQueryServlet();
         HttpServletResponse response = response(new StringWriter());
-        servlet.doPost(request(Time.getCurrentTime()), response);
+        servlet.doPost(request(currentTime()), response);
         verify(response).sendError(400);
     }
 }

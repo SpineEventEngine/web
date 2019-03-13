@@ -75,7 +75,8 @@ class CommandServletTest {
         Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);
-        assertEquals(OK, ack.getStatus().getStatusCase());
+        assertEquals(OK, ack.getStatus()
+                            .getStatusCase());
         assertEquals(command.getId(), AnyPacker.unpack(ack.getMessageId()));
     }
 
@@ -84,7 +85,7 @@ class CommandServletTest {
     void testInvalidCommand() throws IOException {
         CommandServlet servlet = new TestCommandServlet();
         HttpServletResponse response = response(new StringWriter());
-        servlet.doPost(request(Time.getCurrentTime()), response);
+        servlet.doPost(request(Time.currentTime()), response);
         verify(response).sendError(400);
     }
 }

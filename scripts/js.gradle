@@ -77,7 +77,7 @@ buildJs {
 /**
  * Copies bundled JS sources to the temporary NPM publication directory.
  */
-task copyBundeledJs(type: Copy) {
+task copyBundledJs(type: Copy) {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Copies assembled JavaScript sources to the NPM publication directory.'
 
@@ -117,7 +117,7 @@ prepareJsPublication {
     }
 
     //TODO:2019-02-05:dmytro.grankin: temporarily don't publish a bundle, see https://github.com/SpineEventEngine/web/issues/61
-    //dependsOn copyBundeledJs
+    //dependsOn copyBundledJs
     dependsOn transpileSources
 }
 
@@ -127,7 +127,7 @@ prepareJsPublication {
  * <p>The tests connect to the `spine-dev` GAE application and perform networking. Avoid running
  * the JS tests when not necessary.
  */
-task testJs {
+task testLibraryJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Runs the JS tests.'
 

@@ -57,8 +57,7 @@ class FirebaseQueryBridgeTest {
     private static final String EMPTY_JSON = "{}";
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(FirebaseQueryBridgeTest.class)
-                                   .query();
+            new TestActorRequestFactory(FirebaseQueryBridgeTest.class).query();
 
     private FirebaseClient firebaseClient;
 
@@ -104,7 +103,7 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("write query results to the database")
     void testWriteData() {
-        Message dataElement = Time.getCurrentTime();
+        Message dataElement = Time.currentTime();
         TestQueryService queryService = new TestQueryService(dataElement);
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)

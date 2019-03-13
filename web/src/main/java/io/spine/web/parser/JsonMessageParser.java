@@ -22,8 +22,7 @@ package io.spine.web.parser;
 
 import com.google.protobuf.Message;
 import io.spine.json.Json;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.spine.logging.Logging;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -41,10 +40,11 @@ import static java.util.regex.Pattern.compile;
  * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf documentation
  * </a> for the detailed description of the message format.
  *
- * @param <M> the type of messages to parse
+ * @param <M>
+ *         the type of messages to parse
  * @author Dmytro Dashenkov
  */
-final class JsonMessageParser<M extends Message> implements MessageParser<M> {
+final class JsonMessageParser<M extends Message> implements MessageParser<M>, Logging {
 
     private final Class<M> type;
 
@@ -95,7 +95,7 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
         })
         LINE_FEED("\\n", "\n"),
         @SuppressWarnings("unused") // Used via `values()`.
-        QUOTATION_MARK("\\\"", "\"");
+                QUOTATION_MARK("\\\"", "\"");
 
         private final Pattern escapedPattern;
         private final String raw;
@@ -118,15 +118,5 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M> {
             }
             return json;
         }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JsonMessageParser.class);
     }
 }
