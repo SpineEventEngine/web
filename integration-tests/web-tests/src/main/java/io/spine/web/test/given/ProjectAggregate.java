@@ -43,6 +43,6 @@ public class ProjectAggregate extends Aggregate<ProjectId, Project, ProjectVBuil
 
     @Apply
     private void on(ProjectCreated event) {
-        getBuilder().setId(event.getId());
+        builder().setId(event.getId());
     }
 }
