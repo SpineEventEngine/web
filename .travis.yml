@@ -18,6 +18,7 @@ before_install:
 script:
   - ./gradlew check --stacktrace
 
+  - npm install -g npm@~6.1.0
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
   - chmod +x ./config/scripts/publish-artifacts.sh
