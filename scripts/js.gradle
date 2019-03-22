@@ -75,6 +75,19 @@ buildJs {
 }
 
 /**
+ * Customize already defined task to run the JavaScript tests.
+ *
+ * <p>The tests connect to the `spine-dev` GAE application and perform networking. Avoid running
+ * the JS tests when not necessary.
+ */
+testJs {
+
+    doLast {
+        npm 'run', 'test'
+    }
+}
+
+/**
  * Copies bundled JS sources to the temporary NPM publication directory.
  */
 task copyBundledJs(type: Copy) {
@@ -119,23 +132,6 @@ prepareJsPublication {
     //TODO:2019-02-05:dmytro.grankin: temporarily don't publish a bundle, see https://github.com/SpineEventEngine/web/issues/61
     //dependsOn copyBundledJs
     dependsOn transpileSources
-}
-
-/**
- * Runs the JavaScript tests.
- *
- * <p>The tests connect to the `spine-dev` GAE application and perform networking. Avoid running
- * the JS tests when not necessary.
- */
-task testLibraryJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Runs the JS tests.'
-
-    doLast {
-        npm 'run', 'test'
-    }
-
-    dependsOn buildJs
 }
 
 /**
@@ -195,4 +191,5 @@ protoJs {
 
     generateParsersTask().dependsOn compileProtoToJs
     buildJs.dependsOn generateParsersTask()
+    testJs.dependsOn generateParsersTask()
 }
