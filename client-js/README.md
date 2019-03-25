@@ -56,8 +56,3 @@ To publish a new version to NPM:
  ```bash
     ./gradlew publishJs
  ``` 
-
-## Requirements
-To 
-
-
