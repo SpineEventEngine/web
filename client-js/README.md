@@ -11,6 +11,12 @@ The NPM artifact:
 * Provides sources transpiled into ES5 along with theirs source maps.
 * Does **not** provide a bundled version assuming that library users perform bundling themselves.
 
+## Environment installation
+
+First, make sure that Node.js is installed and the npm version is `v.6.1.0` or higher. See the
+[Downloading and installing Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+section for the respective installation instructions.
+
 ## Usage
 
 To use the library execute the command:
@@ -50,3 +56,8 @@ To publish a new version to NPM:
  ```bash
     ./gradlew publishJs
  ``` 
+
+## Requirements
+To 
+
+
