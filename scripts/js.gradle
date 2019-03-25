@@ -192,5 +192,5 @@ protoJs {
 
     generateParsersTask().dependsOn compileProtoToJs
     buildJs.dependsOn generateParsersTask()
-    testJs.dependsOn generateParsersTask()
+    testJs.dependsOn buildJs
 }
