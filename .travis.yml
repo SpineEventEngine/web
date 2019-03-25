@@ -11,6 +11,8 @@ env:
 before_install:
   - chmod +x gradlew
 
+  # the following explicit npm upgrade can be removed when Travis has a fresh npm by default:
+  # https://github.com/SpineEventEngine/config/issues/53
   - npm install -g npm@latest
 
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
