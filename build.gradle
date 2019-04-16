@@ -105,6 +105,7 @@ subprojects {
     apply from: deps.scripts.javadocOptions
     apply from: deps.scripts.javacArgs
     apply from: deps.scripts.pmd
+    apply from: deps.scripts.projectLicenseReport
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -197,3 +198,4 @@ subprojects {
 
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
+apply from: deps.scripts.repoLicenseReport

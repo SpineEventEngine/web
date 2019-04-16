@@ -156,6 +156,21 @@ task coverageJs {
     rootProject.check.dependsOn coverageJs
 }
 
+/**
+ * Generates the report on NPM dependencies and their licenses.
+ */
+task npmLicenseReport {
+    
+    doLast {
+        npm 'run', 'license-report'
+    }
+}
+
+/**
+ * Runs NPM license report straight after the Gradle license report.
+ */
+generateLicenseReport.finalizedBy npmLicenseReport
+
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
