@@ -56,7 +56,7 @@ const libraryVersion = process.env.npm_package_version;
 // Open the file for appending.
 const appending = {'flags': 'a'};
 const stream = fs.createWriteStream(folder + "license-report.md", appending);
-stream.once('open', function (fd) {
+stream.once('open', function () {
 
     checker.init({
         start: './',
