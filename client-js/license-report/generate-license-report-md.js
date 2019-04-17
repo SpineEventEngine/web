@@ -53,7 +53,9 @@ const folder = './build/reports/dependency-license/dependency/';
 const libraryName = process.env.npm_package_name;
 const libraryVersion = process.env.npm_package_version;
 
-const stream = fs.createWriteStream(folder + "license-report.md", {'flags': 'a'});
+// Open the file for appending.
+const appending = {'flags': 'a'};
+const stream = fs.createWriteStream(folder + "license-report.md", appending);
 stream.once('open', function (fd) {
 
     checker.init({
