@@ -65,7 +65,7 @@ stream.once('open', function () {
         if (err) {
             console.log("Error searching for production dependencies: " + err);
         } else {
-            stream.write("\n\n\n#NPM dependencies of `" + libraryName + "@" + libraryVersion +"`");
+            stream.write("\n\n\n#NPM dependencies of `" + libraryName + "@" + libraryVersion + "`");
             stream.write("\n\n## `Production` dependencies:\n\n");
             printDependencies(packages, stream);
 
@@ -81,7 +81,8 @@ stream.once('open', function () {
 
                     const now = new Date();
                     stream.write("\n\nThis report was generated on **" + now + "** using " +
-                        "[NPM License Checker](https://github.com/davglass/license-checker) library.");
+                        "[NPM License Checker](https://github.com/davglass/license-checker) " +
+                        "library.");
 
                     stream.end();
                 }
