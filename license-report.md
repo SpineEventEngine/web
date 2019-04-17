@@ -644,10 +644,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Apr 16 20:21:29 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Apr 17 16:21:34 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@0.15.2`
+#NPM dependencies of `spine-web@0.15.3`
 
 ## `Production` dependencies:
 
@@ -963,7 +963,7 @@ This report was generated on **Tue Apr 16 20:21:29 EEST 2019** using [Gradle-Lic
 1. **signal-exit@3.0.1**
    * Licenses: ISC
    * Repository: https://github.com/tapjs/signal-exit
-1. **spine-web@0.15.2**
+1. **spine-web@0.15.3**
    * Licenses: Apache-2.0
    * Repository: https://github.com/SpineEventEngine/web
 1. **string-width@1.0.2**
@@ -1029,7 +1029,7 @@ This report was generated on **Tue Apr 16 20:21:29 EEST 2019** using [Gradle-Lic
 
 
 
-## NPM `Development` dependencies:
+## `Development` dependencies:
 
 1. **@babel/code-frame@7.0.0**
    * Licenses: MIT
@@ -2822,7 +2822,7 @@ This report was generated on **Tue Apr 16 20:21:29 EEST 2019** using [Gradle-Lic
 1. **spdx-satisfies@4.0.1**
    * Licenses: MIT
    * Repository: https://github.com/kemitchell/spdx-satisfies.js
-1. **spine-web@0.15.2**
+1. **spine-web@0.15.3**
    * Licenses: Apache-2.0
    * Repository: https://github.com/SpineEventEngine/web
 1. **split-string@3.1.0**
@@ -3085,7 +3085,7 @@ This report was generated on **Tue Apr 16 20:21:29 EEST 2019** using [Gradle-Lic
    * Repository: https://github.com/yargs/yargs
 
 
-This report was generated on **Tue Apr 16 2019 20:21:33 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Wed Apr 17 2019 16:21:40 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
