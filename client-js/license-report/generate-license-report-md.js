@@ -76,7 +76,7 @@ stream.once('open', function (fd) {
                 if (err) {
                     console.log("Error searching for development dependencies: " + err);
                 } else {
-                    stream.write("\n\n\n## NPM `Development` dependencies:\n\n");
+                    stream.write("\n\n\n## `Development` dependencies:\n\n");
                     printDependencies(packages, stream);
 
                     const now = new Date();
