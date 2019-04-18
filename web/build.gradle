@@ -26,6 +26,7 @@ configurations {
 }
 
 apply plugin: spineProtobufPluginId
+apply from: deps.scripts.modelCompiler
 
 dependencies {
     api "javax.servlet:javax.servlet-api:$servletApiVersion"
