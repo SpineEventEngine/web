@@ -48,13 +48,14 @@ public final class CommandServletTestEnv {
         doAnswer(invocation -> {
             StreamObserver<Ack> observer = invocation.getArgument(1);
             Command command = invocation.getArgument(0);
-            observer.onNext(AckVBuilder.newBuilder()
-                                       .setMessageId(pack(command.getId()))
-                                       .setStatus(statusOk())
-                                       .build());
+            observer.onNext(Ack.vBuilder()
+                               .setMessageId(pack(command.getId()))
+                               .setStatus(statusOk())
+                               .build());
             observer.onCompleted();
             return nullRef();
-        }).when(commandService).post(any(Command.class), any(StreamObserver.class));
+        }).when(commandService)
+          .post(any(Command.class), any(StreamObserver.class));
         return commandService;
     }
 

@@ -68,8 +68,8 @@ class CommandServletTest {
     void testHandle() throws IOException {
         CommandServlet servlet = new TestCommandServlet();
         StringWriter response = new StringWriter();
-        TestCommandMessage createTask = TestCommandMessageVBuilder
-                .newBuilder()
+        TestCommandMessage createTask = TestCommandMessage
+                .vBuilder()
                 .setId(newUuid())
                 .build();
         Command command = commandFactory.create(createTask);

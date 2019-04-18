@@ -36,26 +36,28 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
     @Assign
     TaskCreated handle(CreateTask command) {
-        return TaskCreatedVBuilder.newBuilder()
-                                  .setId(command.getId())
-                                  .setName(command.getName())
-                                  .setDescription(command.getDescription())
-                                  .build();
+        return TaskCreated
+                .vBuilder()
+                .setId(command.getId())
+                .setName(command.getName())
+                .setDescription(command.getDescription())
+                .build();
     }
 
     @Assign
     TaskRenamed handle(RenameTask command) {
-        return TaskRenamedVBuilder.newBuilder()
-                                  .setId(command.getId())
-                                  .setName(command.getName())
-                                  .build();
+        return TaskRenamed
+                .vBuilder()
+                .setId(command.getId())
+                .setName(command.getName())
+                .build();
     }
 
     @Apply
     private void on(TaskCreated event) {
         builder().setId(event.getId())
-                    .setName(event.getName())
-                    .setDescription(event.getDescription());
+                 .setName(event.getName())
+                 .setDescription(event.getDescription());
     }
 
     @Apply

@@ -75,10 +75,11 @@ class QueryServletTest {
     }
 
     private static WebQuery newTransactionalQuery(Query query) {
-        return WebQueryVBuilder.newBuilder()
-                               .setQuery(query)
-                               .setDeliveredTransactionally(false)
-                               .build();
+        return WebQuery
+                .vBuilder()
+                .setQuery(query)
+                .setDeliveredTransactionally(false)
+                .build();
     }
 
     @Test
