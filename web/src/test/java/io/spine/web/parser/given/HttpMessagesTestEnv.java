@@ -67,10 +67,11 @@ public final class HttpMessagesTestEnv {
     }
 
     public static Ack newAck(int id) {
-        return AckVBuilder.newBuilder()
-                          .setMessageId(pack(Int32Value.of(id)))
-                          .setStatus(statusOk())
-                          .build();
+        return Ack
+                .vBuilder()
+                .setMessageId(pack(Int32Value.of(id)))
+                .setStatus(statusOk())
+                .build();
     }
 
     public static String base64(Message message) {
