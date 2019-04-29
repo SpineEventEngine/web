@@ -33,8 +33,8 @@ dependencies {
     api(deps.build.firebaseAdmin) {
         exclude group: 'com.google.guava', module: 'guava'
     }
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
-
+    
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.8"
     implementation deps.build.googleHttpClient
     implementation deps.build.googleHttpClientApache
     implementation deps.build.appengineApi
