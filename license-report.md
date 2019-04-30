@@ -623,7 +623,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Apr 29 18:12:28 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 30 16:42:57 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.16.0`
@@ -1799,7 +1799,7 @@ This report was generated on **Mon Apr 29 18:12:28 EEST 2019** using [Gradle-Lic
 1. **fs.realpath@1.0.0**
    * Licenses: ISC
    * Repository: https://github.com/isaacs/fs.realpath
-1. **fsevents@1.2.8**
+1. **fsevents@1.2.9**
    * Licenses: MIT
    * Repository: https://github.com/strongloop/fsevents
 1. **gauge@2.7.4**
@@ -1838,7 +1838,7 @@ This report was generated on **Mon Apr 29 18:12:28 EEST 2019** using [Gradle-Lic
 1. **global-prefix@1.0.2**
    * Licenses: MIT
    * Repository: https://github.com/jonschlinkert/global-prefix
-1. **globals@11.11.0**
+1. **globals@11.12.0**
    * Licenses: MIT
    * Repository: https://github.com/sindresorhus/globals
 1. **globals@9.18.0**
@@ -2953,7 +2953,7 @@ This report was generated on **Mon Apr 29 18:12:28 EEST 2019** using [Gradle-Lic
    * Repository: https://github.com/yargs/yargs
 
 
-This report was generated on **Mon Apr 29 2019 18:12:31 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Tue Apr 30 2019 16:42:59 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3937,7 +3937,7 @@ This report was generated on **Mon Apr 29 2019 18:12:31 GMT+0300 (EEST)** using 
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Apr 29 18:12:34 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 30 16:43:01 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4570,7 +4570,7 @@ This report was generated on **Mon Apr 29 18:12:34 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Apr 29 18:12:34 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 30 16:43:02 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5572,4 +5572,4 @@ This report was generated on **Mon Apr 29 18:12:34 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Apr 29 18:12:36 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 30 16:43:03 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
