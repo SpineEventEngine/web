@@ -41,8 +41,7 @@ public final class FirebaseSubscribeResultTestEnv {
     }
 
     public static TopicFactory topicFactory() {
-        return TestActorRequestFactory.newInstance(testUser())
-                                      .topic();
+        return new TestActorRequestFactory(testUser()).topic();
     }
 
     private static UserId testUser() {

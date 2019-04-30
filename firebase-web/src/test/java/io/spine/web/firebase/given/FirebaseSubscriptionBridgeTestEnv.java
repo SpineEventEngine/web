@@ -123,8 +123,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
         UserId userId = UserIdVBuilder.newBuilder()
                                       .setValue("test-user")
                                       .build();
-        return TestActorRequestFactory.newInstance(userId)
-                                      .topic();
+        return new TestActorRequestFactory(userId).topic();
     }
 
     private static SubscriptionId subscriptionId() {

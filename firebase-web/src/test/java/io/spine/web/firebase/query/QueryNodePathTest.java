@@ -51,8 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class QueryNodePathTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(QueryNodePathTest.class)
-                                   .query();
+            new TestActorRequestFactory(QueryNodePathTest.class).query();
 
     @Test
     @DisplayName("construct self for a Query")
@@ -108,7 +107,7 @@ class QueryNodePathTest {
     @Test
     @DisplayName("construct into a valid path")
     void testEscaped() {
-        TestActorRequestFactory requestFactory = TestActorRequestFactory.newInstance(
+        TestActorRequestFactory requestFactory = new TestActorRequestFactory(
                 "a.aa#@)?$0[abb-ab",
                 systemDefault()
         );

@@ -52,8 +52,7 @@ import static org.mockito.Mockito.verify;
 class CommandServletTest {
 
     private static final CommandFactory commandFactory =
-            TestActorRequestFactory.newInstance(CommandServletTest.class)
-                                   .command();
+            new TestActorRequestFactory(CommandServletTest.class).command();
 
     @Test
     @DisplayName("fail to serialize")

@@ -44,8 +44,7 @@ import static org.mockito.Mockito.when;
 class QueryResultTest {
 
     private static final QueryFactory queryFactory =
-            TestActorRequestFactory.newInstance(QueryResultTest.class)
-                                   .query();
+            new TestActorRequestFactory(QueryResultTest.class).query();
 
     private NodePath nodePath;
 
