@@ -70,8 +70,6 @@ public final class NodeValue {
 
     /**
      * Creates a {@code NodeValue} which has a single entry under a generated key.
-     *
-     * @see ChildKeyGenerator
      */
     public static NodeValue withSingleChild(String childValue) {
         NodeValue nodeValue = new NodeValue();
@@ -96,7 +94,6 @@ public final class NodeValue {
      * generation mechanism}.
      *
      * @return the generated key under which the data was stored
-     * @see ChildKeyGenerator
      */
     @CanIgnoreReturnValue
     public String addChild(String data) {

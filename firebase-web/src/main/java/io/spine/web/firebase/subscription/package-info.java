@@ -19,8 +19,7 @@
  */
 
 /**
- * This package contains a Firebase implementation of {@link io.spine.web.subscription Spine Web
- * Subscription behaviour}.
+ * This package contains a Firebase implementation of the Spine web subscription API.
  */
 
 @CheckReturnValue

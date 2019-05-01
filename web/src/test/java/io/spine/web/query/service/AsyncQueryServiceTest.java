@@ -145,7 +145,7 @@ class AsyncQueryServiceTest {
 
         private QueryServiceBlockingStub remoteQueryService() {
             Channel channel = forAddress("127.0.0.1", TEST_GRPC_PORT)
-                    .usePlaintext(true)
+                    .usePlaintext()
                     .directExecutor()
                     .build();
             QueryServiceBlockingStub result = QueryServiceGrpc.newBlockingStub(channel);

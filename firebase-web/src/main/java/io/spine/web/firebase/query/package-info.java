@@ -19,7 +19,7 @@
  */
 
 /**
- * This package contains an implementation of {@link io.spine.web.query Spine Web Query behaviour}.
+ * This package contains an implementation of the Spine web query API.
  */
 
 @CheckReturnValue

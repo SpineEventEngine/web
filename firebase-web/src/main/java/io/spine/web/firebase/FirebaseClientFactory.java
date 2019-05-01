@@ -26,9 +26,12 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.server.DeploymentType;
 import io.spine.server.ServerEnvironment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.server.DeploymentType.APPENGINE_CLOUD;
+import static io.spine.server.DeploymentType.APPENGINE_EMULATOR;
 import static io.spine.web.firebase.rest.RestClient.create;
 
 /**
@@ -84,11 +87,12 @@ public final class FirebaseClientFactory {
      * HttpTransport docs</a>.
      */
     private static FirebaseClient forCurrentEnv(DatabaseUrl url, FirebaseCredentials credentials) {
-        ServerEnvironment environment = ServerEnvironment.getInstance();
-        if (environment.isAppEngine()) {
+        DeploymentType deploymentType = ServerEnvironment.getDeploymentType();
+        if (deploymentType == APPENGINE_CLOUD || deploymentType == APPENGINE_EMULATOR) {
             return gae(url, credentials);
+        } else {
+            return nonGae(url, credentials);
         }
-        return nonGae(url, credentials);
     }
 
     /**
