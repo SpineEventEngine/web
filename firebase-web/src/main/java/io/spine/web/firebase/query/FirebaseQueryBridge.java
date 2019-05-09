@@ -23,7 +23,6 @@ package io.spine.web.firebase.query;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-import io.spine.web.WebQuery;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.query.BlockingQueryService;
 import io.spine.web.query.QueryBridge;
@@ -62,12 +61,11 @@ public final class FirebaseQueryBridge implements QueryBridge {
      *
      * <p>Returns the path in the database, under which the query response is stored.
      *
-     * @param webQuery the query to send
+     * @param query the query to send
      * @return a path in the database
      */
     @Override
-    public QueryProcessingResult send(WebQuery webQuery) {
-        Query query = webQuery.getQuery();
+    public QueryProcessingResult send(Query query) {
         QueryResponse queryResponse = queryService.execute(query);
         QueryRecord record = new QueryRecord(query, queryResponse);
         record.storeVia(firebaseClient);

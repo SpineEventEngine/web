@@ -18,31 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.given;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.query.given;
 
-import io.spine.client.Query;
-import io.spine.web.WebQuery;
-import io.spine.web.WebQueryVBuilder;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-public final class FirebaseQueryBridgeTestEnv {
-
-    /**
-     * Prevents instantiation of this test environment.
-     */
-    private FirebaseQueryBridgeTestEnv() {
-    }
-
-    public static WebQuery transactionalQuery(Query query) {
-        return WebQueryVBuilder.newBuilder()
-                               .setQuery(query)
-                               .setDeliveredTransactionally(true)
-                               .build();
-    }
-
-    public static WebQuery nonTransactionalQuery(Query query) {
-        return WebQueryVBuilder.newBuilder()
-                               .setQuery(query)
-                               .setDeliveredTransactionally(false)
-                               .build();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

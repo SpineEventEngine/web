@@ -40,8 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.spine.json.Json.toCompactJson;
-import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.nonTransactionalQuery;
-import static io.spine.web.firebase.given.FirebaseQueryBridgeTestEnv.transactionalQuery;
 import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -53,8 +51,6 @@ import static org.mockito.Mockito.verify;
 
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
-
-    private static final String EMPTY_JSON = "{}";
 
     private static final QueryFactory queryFactory =
             new TestActorRequestFactory(FirebaseQueryBridgeTest.class).query();
@@ -95,7 +91,7 @@ class FirebaseQueryBridgeTest {
                                                         .setFirebaseClient(firebaseClient)
                                                         .build();
         Query query = queryFactory.all(Empty.class);
-        QueryProcessingResult result = bridge.send(nonTransactionalQuery(query));
+        QueryProcessingResult result = bridge.send(query);
 
         assertThat(result, instanceOf(QueryResult.class));
     }
@@ -111,42 +107,10 @@ class FirebaseQueryBridgeTest {
                                                         .build();
         Query query = queryFactory.all(Timestamp.class);
         @SuppressWarnings("unused")
-        QueryProcessingResult ignored = bridge.send(nonTransactionalQuery(query));
+        QueryProcessingResult ignored = bridge.send(query);
 
         Map<String, String> expected = new HashMap<>();
         expected.put(anyKey(), toCompactJson(dataElement));
-        verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
-    }
-
-    @Test
-    @DisplayName("use transactional store call")
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testTransactionalQuery() {
-        TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
-        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                        .setQueryService(queryService)
-                                                        .setFirebaseClient(firebaseClient)
-                                                        .build();
-        bridge.send(transactionalQuery(queryFactory.all(Empty.class)));
-
-        Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), EMPTY_JSON);
-        verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
-    }
-
-    @Test
-    @DisplayName("use non-transactional store call")
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testNonTransactionalQuery() {
-        TestQueryService queryService = new TestQueryService(Empty.getDefaultInstance());
-        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                        .setQueryService(queryService)
-                                                        .setFirebaseClient(firebaseClient)
-                                                        .build();
-        bridge.send(nonTransactionalQuery(queryFactory.all(Empty.class)));
-
-        Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), EMPTY_JSON);
         verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
     }
 }

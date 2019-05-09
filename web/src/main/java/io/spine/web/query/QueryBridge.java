@@ -20,7 +20,7 @@
 
 package io.spine.web.query;
 
-import io.spine.web.WebQuery;
+import io.spine.client.Query;
 
 /**
  * An {@linkplain io.spine.client.Query entity query} bridge.
@@ -32,8 +32,6 @@ import io.spine.web.WebQuery;
  * <p>No constrains are applied to the contents of the query. Neither any guaranties are made for
  * the query result. Refer to the concrete implementations to find out the details of their
  * behaviour.
- *
- * @author Dmytro Dashenkov
  */
 public interface QueryBridge {
 
@@ -47,5 +45,5 @@ public interface QueryBridge {
      * @param query the query to send
      * @return the query result
      */
-    QueryProcessingResult send(WebQuery query);
+    QueryProcessingResult send(Query query);
 }

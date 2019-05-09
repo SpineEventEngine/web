@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {Observable, Subscription, Subject, Observer} from 'rxjs';
+import {Observable, Observer, Subject, Subscription} from 'rxjs';
 import {SpineError} from './errors';
 import {
   Subscription as SpineSubscription,
@@ -31,7 +31,7 @@ import {AbstractClientFactory} from './client-factory';
 import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
 import {HttpClient} from './http-client';
-import {HttpEndpoint, QUERY_STRATEGY} from './http-endpoint';
+import {HttpEndpoint} from './http-endpoint';
 import {FirebaseDatabaseClient} from './firebase-database-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
@@ -79,7 +79,7 @@ class FirebaseFetch extends Fetch {
       let promisedCount = null;
       let dbSubscription = null;
 
-      this._client._endpoint.query(this._query, QUERY_STRATEGY.oneByOne)
+      this._client._endpoint.query(this._query)
         .then(({path, count}) => {
           if (typeof count === 'undefined') {
             count = 0;
@@ -137,7 +137,7 @@ class FirebaseFetch extends Fetch {
    */
   _fetchManyAtOnce() {
     return new Promise((resolve, reject) => {
-      this._client._endpoint.query(this._query, QUERY_STRATEGY.allAtOnce)
+      this._client._endpoint.query(this._query)
         .then(({path}) => this._client._firebase.getValues(path, values => {
           const typeUrl = this._query.getTarget().getType();
           const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
