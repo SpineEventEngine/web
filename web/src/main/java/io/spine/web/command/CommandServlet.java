@@ -23,9 +23,9 @@ package io.spine.web.command;
 import com.google.common.net.MediaType;
 import io.spine.core.Ack;
 import io.spine.core.Command;
+import io.spine.grpc.MemoizingObserver;
 import io.spine.server.CommandService;
 import io.spine.web.NonSerializableServlet;
-import io.spine.web.future.FutureObserver;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -36,7 +36,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.json.Json.toCompactJson;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
@@ -68,10 +70,10 @@ public abstract class CommandServlet extends NonSerializableServlet {
             resp.sendError(SC_BAD_REQUEST);
         } else {
             Command command = parsed.get();
-            FutureObserver<Ack> ack = FutureObserver.withDefault(Ack.getDefaultInstance());
+            MemoizingObserver<Ack> ack = memoizingObserver();
             commandService.post(command, ack);
-            Ack result = ack.toFuture()
-                            .join();
+            checkState(ack.isCompleted());
+            Ack result = ack.firstResponse();
             writeToResponse(result, resp);
         }
     }

@@ -623,7 +623,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 09 16:49:45 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.16.1`
@@ -752,7 +752,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **@firebase/performance-types@0.0.1**
    * Licenses: Apache-2.0
    * Repository: https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance-types
-1. **@firebase/performance@0.2.0**
+1. **@firebase/performance@0.2.1**
    * Licenses: Apache-2.0
    * Repository: https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance
 1. **@firebase/polyfill@0.3.13**
@@ -935,9 +935,9 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **asn1.js@4.10.1**
    * Licenses: MIT
    * Repository: https://github.com/indutny/asn1.js
-1. **assert@1.4.1**
+1. **assert@1.5.0**
    * Licenses: MIT
-   * Repository: https://github.com/defunctzombie/commonjs-assert
+   * Repository: https://github.com/browserify/commonjs-assert
 1. **assign-symbols@1.0.0**
    * Licenses: MIT
    * Repository: https://github.com/jonschlinkert/assign-symbols
@@ -1205,7 +1205,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **camelcase@5.3.1**
    * Licenses: MIT
    * Repository: https://github.com/sindresorhus/camelcase
-1. **caniuse-lite@1.0.30000963**
+1. **caniuse-lite@1.0.30000967**
    * Licenses: CC-BY-4.0
    * Repository: https://github.com/ben-eb/caniuse-lite
 1. **chalk@1.1.3**
@@ -1241,7 +1241,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **code-point-at@1.1.0**
    * Licenses: MIT
    * Repository: https://github.com/sindresorhus/code-point-at
-1. **codecov@3.3.0**
+1. **codecov@3.4.0**
    * Licenses: MIT
    * Repository: https://github.com/codecov/codecov-node
 1. **collection-visit@1.0.0**
@@ -1397,7 +1397,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **duplexify@3.7.1**
    * Licenses: MIT
    * Repository: https://github.com/mafintosh/duplexify
-1. **electron-to-chromium@1.3.129**
+1. **electron-to-chromium@1.3.133**
    * Licenses: ISC
    * Repository: https://github.com/kilian/electron-to-chromium
 1. **elliptic@6.4.1**
@@ -1520,7 +1520,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **findup-sync@2.0.0**
    * Licenses: MIT
    * Repository: https://github.com/js-cli/node-findup-sync
-1. **firebase@5.11.0**
+1. **firebase@5.11.1**
    * Licenses: Apache-2.0
    * Repository: https://github.com/firebase/firebase-js-sdk
 1. **flush-write-stream@1.1.1**
@@ -1584,6 +1584,9 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
    * Licenses: ISC
    * Repository: https://github.com/isaacs/node-glob
 1. **glob@7.1.3**
+   * Licenses: ISC
+   * Repository: https://github.com/isaacs/node-glob
+1. **glob@7.1.4**
    * Licenses: ISC
    * Repository: https://github.com/isaacs/node-glob
 1. **global-modules@1.0.0**
@@ -2645,7 +2648,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **typedarray@0.0.6**
    * Licenses: MIT
    * Repository: https://github.com/substack/typedarray
-1. **uglify-js@3.5.10**
+1. **uglify-js@3.5.11**
    * Licenses: BSD-2-Clause
    * Repository: https://github.com/mishoo/UglifyJS2
 1. **union-value@1.0.0**
@@ -2708,7 +2711,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **watchpack@1.6.0**
    * Licenses: MIT
    * Repository: https://github.com/webpack/watchpack
-1. **webpack-cli@3.3.1**
+1. **webpack-cli@3.3.2**
    * Licenses: MIT
    * Repository: https://github.com/webpack/webpack-cli
 1. **webpack-merge@4.2.1**
@@ -2717,7 +2720,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **webpack-sources@1.3.0**
    * Licenses: MIT
    * Repository: https://github.com/webpack/webpack-sources
-1. **webpack@4.30.0**
+1. **webpack@4.31.0**
    * Licenses: MIT
    * Repository: https://github.com/webpack/webpack
 1. **websocket-driver@0.7.0**
@@ -2744,7 +2747,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **wordwrap@0.0.3**
    * Licenses: MIT
    * Repository: https://github.com/substack/node-wordwrap
-1. **worker-farm@1.6.0**
+1. **worker-farm@1.7.0**
    * Licenses: MIT
    * Repository: https://github.com/rvagg/node-worker-farm
 1. **wrap-ansi@2.1.0**
@@ -2777,7 +2780,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
 1. **yargs-parser@11.1.1**
    * Licenses: ISC
    * Repository: https://github.com/yargs/yargs-parser
-1. **yargs-parser@13.0.0**
+1. **yargs-parser@13.1.0**
    * Licenses: ISC
    * Repository: https://github.com/yargs/yargs-parser
 1. **yargs@12.0.5**
@@ -2791,7 +2794,7 @@ This report was generated on **Thu May 02 19:55:27 EEST 2019** using [Gradle-Lic
    * Repository: https://github.com/bcoe/yargs
 
 
-This report was generated on **Thu May 02 2019 19:55:29 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Thu May 09 2019 16:49:47 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3775,7 +3778,7 @@ This report was generated on **Thu May 02 2019 19:55:29 GMT+0300 (EEST)** using 
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu May 02 19:55:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 09 16:49:50 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4408,7 +4411,7 @@ This report was generated on **Thu May 02 19:55:31 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu May 02 19:55:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 09 16:49:51 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5410,4 +5413,4 @@ This report was generated on **Thu May 02 19:55:31 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu May 02 19:55:32 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu May 09 16:49:52 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
