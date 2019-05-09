@@ -37,44 +37,36 @@ import static com.google.protobuf.Any.pack;
 import static io.spine.core.Responses.ok;
 import static java.util.stream.Collectors.toSet;
 
-public final class FirebaseQueryMediatorTestEnv {
+public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBase {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private FirebaseQueryMediatorTestEnv() {
+    private final Collection<EntityStateWithVersion> response;
+
+    public TestQueryService(Message... messages) {
+        super();
+        this.response = ImmutableSet
+                .copyOf(messages)
+                .stream()
+                .map(TestQueryService::toEntityState)
+                .collect(toSet());
     }
 
-    public static final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBase {
+    @Override
+    public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
+        QueryResponse queryResponse =
+                QueryResponseVBuilder.newBuilder()
+                                     .setResponse(ok())
+                                     .addAllMessages(new ArrayList<>(response))
+                                     .build();
+        responseObserver.onNext(queryResponse);
+        responseObserver.onCompleted();
+    }
 
-        private final Collection<EntityStateWithVersion> response;
-
-        public TestQueryService(Message... messages) {
-            super();
-            this.response = ImmutableSet.copyOf(messages)
-                                        .stream()
-                                        .map(TestQueryService::toEntityState)
-                                        .collect(toSet());
-        }
-
-        @Override
-        public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
-            QueryResponse queryResponse =
-                    QueryResponseVBuilder.newBuilder()
-                                         .setResponse(ok())
-                                         .addAllMessages(new ArrayList<>(response))
-                                         .build();
-            responseObserver.onNext(queryResponse);
-            responseObserver.onCompleted();
-        }
-
-        private static EntityStateWithVersion toEntityState(Message message) {
-            EntityStateWithVersion result = EntityStateWithVersion
-                    .newBuilder()
-                    .setState(pack(message))
-                    .setVersion(Version.getDefaultInstance())
-                    .build();
-            return result;
-        }
+    private static EntityStateWithVersion toEntityState(Message message) {
+        EntityStateWithVersion result = EntityStateWithVersion
+                .newBuilder()
+                .setState(pack(message))
+                .setVersion(Version.getDefaultInstance())
+                .build();
+        return result;
     }
 }

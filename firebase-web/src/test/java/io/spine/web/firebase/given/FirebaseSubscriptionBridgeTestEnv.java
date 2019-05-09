@@ -29,6 +29,7 @@ import io.spine.client.Target;
 import io.spine.client.TargetVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
+import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;
@@ -113,10 +114,11 @@ public final class FirebaseSubscriptionBridgeTestEnv {
 
     public static FirebaseSubscriptionBridge newBridge(FirebaseClient firebaseClient,
                                                        QueryServiceImplBase queryService) {
-        return FirebaseSubscriptionBridge.newBuilder()
-                                         .setQueryService(queryService)
-                                         .setFirebaseClient(firebaseClient)
-                                         .build();
+        return FirebaseSubscriptionBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(firebaseClient)
+                .build();
     }
 
     public static TopicFactory topicFactory() {

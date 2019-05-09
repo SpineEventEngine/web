@@ -58,21 +58,14 @@ public final class FirebaseSubscriptionRecordTestEnv {
                       .build();
     }
 
-    public static void mockQueryResponse(CompletionStage<QueryResponse> queryResponse,
-                                         Book... books) {
-        doAnswer(invocation -> {
-            Object[] arguments = invocation.getArguments();
-            @SuppressWarnings("unchecked")
-            Consumer<QueryResponse> consumer = (Consumer<QueryResponse>) arguments[0];
-            QueryResponseVBuilder responseBuilder = QueryResponseVBuilder.newBuilder()
-                                                                         .setResponse(okResponse());
-            stream(books)
-                    .map(FirebaseSubscriptionRecordTestEnv::toEntityState)
-                    .forEach(responseBuilder::addMessages);
-            consumer.accept(responseBuilder.build());
-            return mock(CompletionStage.class);
-        }).when(queryResponse)
-          .thenAccept(any());
+    public static QueryResponse mockQueryResponse(Book... books) {
+        QueryResponseVBuilder responseBuilder = QueryResponse
+                .vBuilder()
+                .setResponse(okResponse());
+        stream(books)
+                .map(FirebaseSubscriptionRecordTestEnv::toEntityState)
+                .forEach(responseBuilder::addMessages);
+        return responseBuilder.build();
     }
 
     private static EntityStateWithVersion toEntityState(Book book) {

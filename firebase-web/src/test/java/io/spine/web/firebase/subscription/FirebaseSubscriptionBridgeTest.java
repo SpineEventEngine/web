@@ -25,7 +25,9 @@ import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
+import io.spine.server.QueryService;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.given.TestQueryService;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
@@ -58,7 +60,7 @@ class FirebaseSubscriptionBridgeTest {
 
     @BeforeEach
     void setUp() {
-        QueryServiceImplBase queryService = mock(QueryServiceImplBase.class);
+        QueryServiceImplBase queryService = new TestQueryService();
         FirebaseClient firebaseClient = mock(FirebaseClient.class);
         bridge = newBridge(firebaseClient, queryService);
         topicFactory = topicFactory();
@@ -80,7 +82,7 @@ class FirebaseSubscriptionBridgeTest {
     void requireFirebaseClient() {
         FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
                 .newBuilder()
-                .setQueryService(mock(QueryServiceImplBase.class));
+                .setQueryService(mock(QueryService.class));
         assertThrows(IllegalStateException.class, builder::build);
     }
 
