@@ -29,7 +29,6 @@ import io.spine.client.Target;
 import io.spine.client.TargetVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
-import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.ResponseVBuilder;

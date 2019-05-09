@@ -30,17 +30,12 @@ import io.spine.people.PersonName;
 import io.spine.people.PersonNameVBuilder;
 
 import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Consumer;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.core.Responses.statusOk;
 import static io.spine.protobuf.AnyPacker.pack;
 import static java.util.Arrays.stream;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 
 public final class FirebaseSubscriptionRecordTestEnv {
 
