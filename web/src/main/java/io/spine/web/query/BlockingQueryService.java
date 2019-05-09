@@ -18,40 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.query.service;
+package io.spine.web.query;
 
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-import io.spine.web.future.FutureObserver;
+import io.spine.grpc.MemoizingObserver;
 
-import java.util.concurrent.CompletableFuture;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static io.spine.grpc.StreamObservers.memoizingObserver;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
-/**
- * An {@link AsyncQueryService} which dispatches calls to a local
- * {@link QueryServiceImplBase QueryService}.
- *
- * @author Dmytro Dashenkov
- * @see AsyncQueryService#local(QueryServiceImplBase) AsyncQueryService.local(...)
- */
-final class Local implements AsyncQueryService {
+public final class BlockingQueryService {
 
-    private final QueryServiceImplBase service;
+    private final QueryServiceImplBase queryService;
 
-    Local(QueryServiceImplBase service) {
-        this.service = service;
+    public BlockingQueryService(QueryServiceImplBase service) {
+        queryService = checkNotNull(service);
     }
 
-    @Override
-    public CompletableFuture<QueryResponse> execute(Query query) {
-        FutureObserver<QueryResponse> observer =
-                FutureObserver.withDefault(QueryResponse.getDefaultInstance());
-        service.read(query, observer);
-        return observer.toFuture();
-    }
-
-    @Override
-    public String toString() {
-        return "AsyncQueryService.local(...)";
+    public QueryResponse execute(Query query) {
+        MemoizingObserver<QueryResponse> observer = memoizingObserver();
+        queryService.read(query, observer);
+        Throwable error = observer.getError();
+        if (error != null) {
+            throw illegalStateWithCauseOf(error);
+        }
+        checkState(observer.isCompleted());
+        QueryResponse response = observer.firstResponse();
+        return response;
     }
 }

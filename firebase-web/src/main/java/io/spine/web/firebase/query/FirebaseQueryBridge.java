@@ -25,11 +25,9 @@ import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.WebQuery;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.query.BlockingQueryService;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.query.QueryProcessingResult;
-import io.spine.web.query.service.AsyncQueryService;
-
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -50,7 +48,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public final class FirebaseQueryBridge implements QueryBridge {
 
-    private final AsyncQueryService queryService;
+    private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
 
     private FirebaseQueryBridge(Builder builder) {
@@ -70,16 +68,12 @@ public final class FirebaseQueryBridge implements QueryBridge {
     @Override
     public QueryProcessingResult send(WebQuery webQuery) {
         Query query = webQuery.getQuery();
-        CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
+        QueryResponse queryResponse = queryService.execute(query);
         QueryRecord record = new QueryRecord(query, queryResponse);
+        record.storeVia(firebaseClient);
 
-        if (webQuery.getDeliveredTransactionally()) {
-            record.storeTransactionallyVia(firebaseClient);
-        } else {
-            record.storeVia(firebaseClient);
-        }
-
-        QueryProcessingResult result = new QueryResult(record.path(), record.getCount());
+        QueryProcessingResult result = new QueryResult(record.path(),
+                                                       queryResponse.getMessagesCount());
         return result;
     }
 
@@ -97,7 +91,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
      */
     public static final class Builder {
 
-        private AsyncQueryService queryService;
+        private BlockingQueryService queryService;
         private FirebaseClient firebaseClient;
 
         /**
@@ -108,7 +102,7 @@ public final class FirebaseQueryBridge implements QueryBridge {
 
         public Builder setQueryService(QueryServiceImplBase service) {
             checkNotNull(service);
-            this.queryService = AsyncQueryService.local(service);
+            this.queryService = new BlockingQueryService(service);
             return this;
         }
 
