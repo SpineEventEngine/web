@@ -33,10 +33,8 @@ import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import static io.spine.web.future.Completion.dispose;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -47,9 +45,9 @@ import static java.util.stream.Collectors.toList;
 final class SubscriptionRecord {
 
     private final NodePath path;
-    private final CompletionStage<QueryResponse> queryResponse;
+    private final QueryResponse queryResponse;
 
-    SubscriptionRecord(NodePath path, CompletionStage<QueryResponse> queryResponse) {
+    SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
         this.path = path;
         this.queryResponse = queryResponse;
     }
@@ -74,13 +72,7 @@ final class SubscriptionRecord {
      * transaction.
      */
     private void flushNewVia(FirebaseClient firebaseClient) {
-        CompletionStage<Void> stage = queryResponse.thenAccept(response -> {
-            List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            NodeValue nodeValue = NodeValue.empty();
-            newEntries.forEach(nodeValue::addChild);
-            firebaseClient.merge(path(), nodeValue);
-        });
-        dispose(stage);
+        flushEntries(mapMessagesToJson(), firebaseClient);
     }
 
     /**
@@ -95,20 +87,22 @@ final class SubscriptionRecord {
      * already present in storage in a transaction.
      */
     private void flushDiffVia(FirebaseClient firebaseClient) {
-        CompletionStage<Void> stage = queryResponse.thenAccept(response -> {
-            List<String> newEntries = mapMessagesToJson(response).collect(toList());
-            Optional<NodeValue> existingValue = firebaseClient.get(path());
-            if (!existingValue.isPresent()) {
-                NodeValue nodeValue = NodeValue.empty();
-                newEntries.forEach(nodeValue::addChild);
-                firebaseClient.merge(path(), nodeValue);
-            } else {
-                DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
-                Diff diff = diffCalculator.compareWith(newEntries);
-                updateWithDiff(diff, firebaseClient);
-            }
-        });
-        dispose(stage);
+        Optional<NodeValue> existingValue = firebaseClient.get(path);
+        Stream<String> newEntries = mapMessagesToJson();
+        if (existingValue.isPresent()) {
+            DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
+            List<String> entriesList = newEntries.collect(toList());
+            Diff diff = diffCalculator.compareWith(entriesList);
+            updateWithDiff(diff, firebaseClient);
+        } else {
+            flushEntries(newEntries, firebaseClient);
+        }
+    }
+
+    private void flushEntries(Stream<String> jsonEntries, FirebaseClient client) {
+        NodeValue nodeValue = NodeValue.empty();
+        jsonEntries.forEach(nodeValue::addChild);
+        client.merge(path, nodeValue);
     }
 
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
@@ -119,19 +113,15 @@ final class SubscriptionRecord {
             .forEach(record -> nodeValue.addChild(record.getKey(), "null"));
         diff.getAddedList()
             .forEach(record -> nodeValue.addChild(record.getData()));
-        firebaseClient.merge(path(), nodeValue);
+        firebaseClient.merge(path, nodeValue);
     }
 
     /**
      * Creates a stream of response messages, mapping each response message to JSON.
-     *
-     * @param response
-     *         response to an entity query
-     * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
-    private static Stream<String> mapMessagesToJson(QueryResponse response) {
-        return response
+    private Stream<String> mapMessagesToJson() {
+        return queryResponse
                 .getMessagesList()
                 .stream()
                 .unordered()

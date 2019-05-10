@@ -19,13 +19,7 @@
  */
 
 import {TypedMessage} from './typed-message';
-import {
-  SpineError,
-  ClientError,
-  ServerError,
-  ConnectionError
-} from './errors';
-import {WebQuery} from '../proto/spine/web/web_query_pb';
+import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
 
 class Endpoint {
 
@@ -44,13 +38,11 @@ class Endpoint {
    * Sends off a query to the endpoint.
    *
    * @param {!spine.client.Query} query a Query to Spine server to retrieve some domain entities
-   * @param {!QUERY_STRATEGY} strategy a strategy for query results delivery
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
-  query(query, strategy) {
-    const webQuery = Endpoint._newWebQuery({of: query, delivered: strategy});
-    const typedQuery = TypedMessage.of(webQuery);
+  query(query) {
+    const typedQuery = TypedMessage.of(query);
     return this._performQuery(typedQuery);
   }
 
@@ -92,19 +84,6 @@ class Endpoint {
     return this._cancel(typedSubscription);
   }
 
-  /**
-   * Builds a new WebQuery from Query and client delivery strategy.
-   *
-   * @param {!spine.client.Query} of a Query to be executed by Spine server
-   * @param {!QUERY_STRATEGY} delivered the strategy for query results delivery
-   * @private
-   */
-  static _newWebQuery({of: query, delivered: transactionally}) {
-    const webQuery = new WebQuery();
-    webQuery.setQuery(query);
-    webQuery.setDeliveredTransactionally(transactionally);
-    return webQuery;
-  }
 
   /**
    * @param {!TypedMessage<Command>} command a Command send to Spine server
@@ -118,7 +97,7 @@ class Endpoint {
   }
 
   /**
-   * @param {!TypedMessage<WebQuery>} query a Query to Spine server to retrieve some domain entities
+   * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    * @protected
@@ -191,13 +170,13 @@ export class HttpEndpoint extends Endpoint {
   /**
    * Sends off a query to the endpoint.
    *
-   * @param {!TypedMessage<WebQuery>} webQuery a Query to Spine server to retrieve some domain entities
+   * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data, rejected if
    *                                      the client response is not 2xx or a connection error occurs
    * @protected
    */
-  _performQuery(webQuery) {
-    return this._sendMessage('/query', webQuery);
+  _performQuery(query) {
+    return this._sendMessage('/query', query);
   }
 
   /**
@@ -330,17 +309,3 @@ export class HttpEndpoint extends Endpoint {
     return 500 <= statusCode;
   }
 }
-
-/**
- * Enum of WebQuery transactional delivery attribute values.
- *
- * Specifies the strategy for delivering Query results, sending message to client all-at-once or
- * one-by-one.
- *
- * @readonly
- * @enum boolean
- */
-export const QUERY_STRATEGY = Object.freeze({
-  allAtOnce: true,
-  oneByOne: false
-});

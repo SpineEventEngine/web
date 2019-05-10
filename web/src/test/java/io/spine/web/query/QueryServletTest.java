@@ -25,7 +25,6 @@ import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.WebQuery;
 import io.spine.web.query.given.QueryServletTestEnv.TestQueryServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,18 +65,10 @@ class QueryServletTest {
         QueryServlet servlet = new TestQueryServlet(expectedData);
         StringWriter response = new StringWriter();
         Query query = queryFactory.all(Timestamp.class);
-        HttpServletRequest request = request(newTransactionalQuery(query));
+        HttpServletRequest request = request(query);
         servlet.doPost(request, response(response));
         Timestamp actualData = Json.fromJson(response.toString(), Timestamp.class);
         assertEquals(expectedData, actualData);
-    }
-
-    private static WebQuery newTransactionalQuery(Query query) {
-        return WebQuery
-                .vBuilder()
-                .setQuery(query)
-                .setDeliveredTransactionally(false)
-                .build();
     }
 
     @Test

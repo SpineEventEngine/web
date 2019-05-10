@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Authors.gangOfFour;
@@ -61,11 +60,9 @@ class QueryRecordTest {
     void storeInitial() {
         String dbPath = "subscription-create-db-path";
 
-        @SuppressWarnings("unchecked")
-        CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
         Book aliceInWonderland = aliceInWonderland();
         Book donQuixote = donQuixote();
-        mockQueryResponse(queryResponse, aliceInWonderland, donQuixote);
+        QueryResponse queryResponse = mockQueryResponse(aliceInWonderland, donQuixote);
 
         NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath, queryResponse);
@@ -92,10 +89,9 @@ class QueryRecordTest {
         Book guideToTheGalaxy = guideToTheGalaxy();
         String dbPath = "subscription-update-db-path";
 
-        @SuppressWarnings("unchecked")
-        CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
-        mockQueryResponse(queryResponse, aliceInWonderland, donQuixote, designPatternsWithAuthors);
-
+        QueryResponse queryResponse = mockQueryResponse(aliceInWonderland,
+                                                        donQuixote,
+                                                        designPatternsWithAuthors);
         NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
                                                            queryResponse);
@@ -120,10 +116,8 @@ class QueryRecordTest {
     void storeUpdateWhenNoInitialPresent() {
         String dbPath = "subscription-update-no-initial";
 
-        @SuppressWarnings("unchecked")
-        CompletionStage<QueryResponse> queryResponse = mock(CompletionStage.class);
         Book aliceInWonderland = aliceInWonderland();
-        mockQueryResponse(queryResponse, aliceInWonderland);
+        QueryResponse queryResponse = mockQueryResponse(aliceInWonderland);
 
         NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
