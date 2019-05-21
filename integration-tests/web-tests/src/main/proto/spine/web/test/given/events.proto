@@ -3,6 +3,7 @@ syntax = "proto3";
 package spine.web.test.given;
 
 import "spine/options.proto";
+import "spine/core/user_id.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.web.test.given";
@@ -19,7 +20,9 @@ message TaskCreated {
 
     string name = 2 [(required) = true];
 
-    string description = 3;
+    spine.core.UserId assignee = 3;
+
+    string description = 4;
 }
 
 message TaskRenamed {
@@ -28,6 +31,14 @@ message TaskRenamed {
 
     string name = 2 [(required) = true];
 }
+
+message TaskReassigned {
+
+    TaskId id = 1;
+
+    spine.core.UserId assignee = 3 [(required) = true];
+}
+
 
 message ProjectCreated {
     

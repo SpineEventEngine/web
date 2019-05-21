@@ -3,6 +3,7 @@ syntax = "proto3";
 package spine.web.test.given;
 
 import "spine/options.proto";
+import "spine/core/user_id.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.web.test.given";
@@ -21,7 +22,9 @@ message Task {
 
     TaskId id = 1;
 
-    string name = 2;
+    spine.core.UserId assignee = 2;
 
-    string description = 3;
+    string name = 3;
+
+    string description = 4;
 }

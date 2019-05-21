@@ -41,6 +41,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
                 .setId(command.getId())
                 .setName(command.getName())
                 .setDescription(command.getDescription())
+                .setAssignee(command.getAssignee())
                 .build();
     }
 
@@ -53,15 +54,30 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
                 .build();
     }
 
+    @Assign
+    TaskReassigned handle(ReassignTask command) {
+        return TaskReassigned
+                .vBuilder()
+                .setId(command.getId())
+                .setAssignee(command.getAssignee())
+                .build();
+    }
+
     @Apply
     private void on(TaskCreated event) {
         builder().setId(event.getId())
                  .setName(event.getName())
-                 .setDescription(event.getDescription());
+                 .setDescription(event.getDescription())
+                 .setAssignee(event.getAssignee());
     }
 
     @Apply
     private void on(TaskRenamed event) {
         builder().setName(event.getName());
+    }
+
+    @Apply
+    private void on(TaskReassigned event) {
+        builder().setAssignee(event.getAssignee());
     }
 }
