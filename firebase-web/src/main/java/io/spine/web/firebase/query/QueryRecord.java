@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase.query;
 
-import com.google.protobuf.Message;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
@@ -30,14 +29,6 @@ import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
-import static io.spine.web.future.Completion.dispose;
-import static java.util.stream.Collectors.toList;
-
 /**
  * A record which can be stored into a Firebase database.
  *
@@ -46,9 +37,9 @@ import static java.util.stream.Collectors.toList;
 final class QueryRecord {
 
     private final NodePath path;
-    private final CompletionStage<QueryResponse> queryResponse;
+    private final QueryResponse queryResponse;
 
-    QueryRecord(Query query, CompletionStage<QueryResponse> queryResponse) {
+    QueryRecord(Query query, QueryResponse queryResponse) {
         this.path = QueryNodePath.of(query);
         this.queryResponse = queryResponse;
     }
@@ -70,92 +61,19 @@ final class QueryRecord {
     }
 
     /**
-     * Writes this record to the Firebase database in a single transaction
-     * (i.e. in a single batch).
-     */
-    void storeTransactionallyVia(FirebaseClient firebaseClient) {
-        flushTransactionally(firebaseClient);
-    }
-
-    /**
-     * Synchronously retrieves a count of records that will be supplied to the client.
-     *
-     * @return an integer number of records
-     */
-    long getCount() {
-        CountConsumer countConsumer = new CountConsumer();
-        CompletionStage<Void> stage = queryResponse.thenAccept(countConsumer);
-        dispose(stage);
-        return countConsumer.getValue();
-    }
-
-    /**
-     * A consumer that counts the number of messages in {@linkplain QueryResponse Query Response}.
-     */
-    private static class CountConsumer implements Consumer<QueryResponse> {
-
-        private long value;
-
-        @Override
-        public void accept(QueryResponse response) {
-            this.value = response.getMessagesCount();
-        }
-
-        /**
-         * Returns the count of messages in the consumed response.
-         */
-        public long getValue() {
-            return value;
-        }
-    }
-
-    /**
      * Flushes the array response of the query to the Firebase, adding array items to storage one
      * by one.
      *
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        CompletionStage<Void> stage = queryResponse.thenAccept(
-                response -> mapMessagesToJson(response)
-                        .forEach(json -> {
-                            NodeValue value = NodeValue.withSingleChild(json);
-                            firebaseClient.merge(path(), value);
-                        })
-        );
-        dispose(stage);
-    }
-
-    /**
-     * Flushes the array response of the query to the Firebase in one go.
-     */
-    private void flushTransactionally(FirebaseClient firebaseClient) {
-        CompletionStage<Void> stage = queryResponse.thenAccept(
-                response -> {
-                    List<String> jsonItems = mapMessagesToJson(response).collect(toList());
-                    jsonItems.forEach(item -> {
-                        NodeValue value = NodeValue.withSingleChild(item);
-                        firebaseClient.merge(path(), value);
-                    });
-                }
-        );
-        dispose(stage);
-    }
-
-    /**
-     * Creates a stream of response messages, mapping each each response message to JSON.
-     *
-     * @param response
-     *         a response to a query
-     * @return a stream of messages represented by JSON strings
-     */
-    @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
-    private static Stream<String> mapMessagesToJson(QueryResponse response) {
-        return response.getMessagesList()
-                       .stream()
-                       .unordered()
-                       .map(EntityStateWithVersion::getState)
-                       .map(AnyPacker::<Message>unpack)
-                       .map(Json::toCompactJson);
+        queryResponse.getMessagesList()
+                     .stream()
+                     .unordered()
+                     .map(EntityStateWithVersion::getState)
+                     .map(AnyPacker::unpack)
+                     .map(Json::toCompactJson)
+                     .map(NodeValue::withSingleChild)
+                     .forEach(node -> firebaseClient.merge(path, node));
     }
 }

@@ -17,6 +17,7 @@ message ProjectId {
 
 message Project {
     option (entity).kind = AGGREGATE;
+    option (entity).visibility = QUERY;
 
     ProjectId id = 1;
 }

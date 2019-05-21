@@ -113,10 +113,11 @@ public final class FirebaseSubscriptionBridgeTestEnv {
 
     public static FirebaseSubscriptionBridge newBridge(FirebaseClient firebaseClient,
                                                        QueryServiceImplBase queryService) {
-        return FirebaseSubscriptionBridge.newBuilder()
-                                         .setQueryService(queryService)
-                                         .setFirebaseClient(firebaseClient)
-                                         .build();
+        return FirebaseSubscriptionBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(firebaseClient)
+                .build();
     }
 
     public static TopicFactory topicFactory() {
