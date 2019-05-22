@@ -37,7 +37,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
     @Assign
     TaskCreated handle(CreateTask command) {
         return TaskCreated
-                .vBuilder()
+                .newBuilder()
                 .setId(command.getId())
                 .setName(command.getName())
                 .setDescription(command.getDescription())
@@ -48,7 +48,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
     @Assign
     TaskRenamed handle(RenameTask command) {
         return TaskRenamed
-                .vBuilder()
+                .newBuilder()
                 .setId(command.getId())
                 .setName(command.getName())
                 .build();
@@ -57,7 +57,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
     @Assign
     TaskReassigned handle(ReassignTask command) {
         return TaskReassigned
-                .vBuilder()
+                .newBuilder()
                 .setId(command.getId())
                 .setAssignee(command.getAssignee())
                 .build();

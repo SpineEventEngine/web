@@ -37,7 +37,7 @@ public class ProjectAggregate extends Aggregate<ProjectId, Project, ProjectVBuil
     @Assign
     ProjectCreated handle(CreateProject command) {
         return ProjectCreated
-                .vBuilder()
+                .newBuilder()
                 .setId(command.getId())
                 .build();
     }
