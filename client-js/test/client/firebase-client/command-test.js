@@ -38,7 +38,7 @@ describe('FirebaseClient command sending', function () {
     it('completes with success', done => {
 
         const command = TestEnvironment.createTaskCommand({
-            withIdPrefix: 'spine-web-test-send-command',
+            withPrefix: 'spine-web-test-send-command',
             named: 'Implement Spine Web JS client tests',
             describedAs: 'Spine Web need integration tests'
         });
@@ -63,7 +63,7 @@ describe('FirebaseClient command sending', function () {
         const fakeBaseUrl = 'https://malformed-server-endpoint.com';
         const malformedBackendClient = initClient(fakeBaseUrl);
         const command = TestEnvironment.createTaskCommand({
-            withIdPrefix: 'spine-web-test-send-command',
+            withPrefix: 'spine-web-test-send-command',
             named: 'Implement Spine Web JS client tests',
             describedAs: 'Spine Web need integration tests'
         });
