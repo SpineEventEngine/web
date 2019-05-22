@@ -44,7 +44,7 @@ npm run test
 You can also run tests from IntelliJ IDEA. To do so:
 1. Install [NodeJs Plugin](https://plugins.jetbrains.com/plugin/6098-nodejs). The plugin adds `Mocha` configuration.
 2. Update `Mocha` configuration template:
-  * Add `--require babel-register` to `node options`. It is required to support all ES6 features in Node.js environment.
+  * Add `--require @babel/register` to `node options`. It is required to support all ES6 features in Node.js environment.
   * Specify the path to `Mocha` package: `~\IdeaProjects\Spine\web\client-js\node_modules\mocha`.
 
 ## Publishing
