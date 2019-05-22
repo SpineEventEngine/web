@@ -2,7 +2,7 @@
 
 ## `web-tests`
 
-The `web-tests` module contains a simplistic Spine application.
+The `web-tests` module contains a simplified Spine application.
 
 The application uses the Spine `web` API (with the `firebase-web` library).
  
