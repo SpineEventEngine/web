@@ -39,5 +39,8 @@ dependencies {
 gretty {
     contextPath = '/'
     httpPort = 8080
+    debugPort = 5005
+    debugSuspend = true
+    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
     servletContainer = 'jetty9'
 }
