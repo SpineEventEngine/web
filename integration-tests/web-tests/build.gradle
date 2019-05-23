@@ -1,3 +1,5 @@
+import com.google.protobuf.compiler.PluginProtos
+
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -18,20 +20,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.appengine
-    }
+plugins {
+    id 'com.github.psxpaul.execfork' version '0.1.10'
+    id "org.gretty" version "2.3.1"
 }
 
-apply from: "$rootDir/version.gradle"
-apply from: "$projectDir/scripts/appengine-descriptor.gradle"
+apply plugin: 'io.spine.tools.gradle.bootstrap'
 
-apply plugin: 'java'
-apply plugin: 'war'
-apply plugin: 'com.google.cloud.tools.appengine'
-apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: "$rootDir/config/gradle/model-compiler.gradle"
+spine.enableJava().server()
 
 dependencies {
     implementation project(":firebase-web")
@@ -40,6 +36,8 @@ dependencies {
     implementation "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
 }
 
-appengine {
-    deploy.project = 'spine-dev'
+gretty {
+    contextPath = '/'
+    httpPort = 8080
+    servletContainer = 'jetty9'
 }
