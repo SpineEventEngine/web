@@ -20,14 +20,13 @@
 
 import firebase from 'firebase';
 
+/**
+ * The configuration of the emulated Firebase application. For details
+ * see `web-tests/README.MD`
+ */
 const config = {
-    apiKey: 'AIzaSyD8Nr2zrW9QFLbNS5Kg-Ank-QIZP_jo5pU',
-    authDomain: 'spine-dev.firebaseapp.com',
-    databaseURL: 'https://spine-dev.firebaseio.com',
-    projectId: 'spine-dev',
-    storageBucket: '',
-    messagingSenderId: '165066236051'
+    databaseURL: 'ws://localhost:5000/',
+    authDomain: 'ws://localhost:5000/'
 };
 
-export const devFirebaseDatabase = firebase.initializeApp(config, 'spine-dev')
-                                           .database();
+export const devFirebaseDatabase = firebase.initializeApp(config).database();

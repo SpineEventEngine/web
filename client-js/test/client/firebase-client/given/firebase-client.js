@@ -24,14 +24,15 @@ import * as spineWeb from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 
 /**
- * Initializes the {@link FirebaseClient client} that interacts with a development backend
- * server deployed to AppEngine. See `web-tests/README.MD` for details.
+ * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
+ * local backend server and the emulated Firebase application.
+ * See `web-tests/README.MD` for details.
  *
  * @param endpointUrl the URL of a backend to interact with; has the default value
- *                    of a development application deployed to AppEngine.
+ *                    of a local backend server;
  * @return {FirebaseClient} the Firebase client instance
  */
-export function initClient(endpointUrl = 'https://spine-dev.appspot.com') {
+export function initClient(endpointUrl = 'http://localhost:8080') {
     return spineWeb.init({
         protoIndexFiles: [testProtobuf],
         endpointUrl: endpointUrl,
