@@ -1,5 +1,3 @@
-import com.google.protobuf.compiler.PluginProtos
-
 /*
  * Copyright 2019, TeamDev. All rights reserved.
  *
@@ -36,15 +34,6 @@ dependencies {
     implementation "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
 }
 
-gretty {
-    contextPath = '/'
-    httpPort = 8080
-    debugPort = 5005
-    debugSuspend = true
-    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
-    servletContainer = 'jetty9'
-}
-
 task runFirebaseEmulator(type: com.github.psxpaul.task.ExecFork) {
     final def clientDir = project(':client-js').projectDir
     workingDir = "$clientDir/node_modules/.bin"
@@ -54,12 +43,32 @@ task runFirebaseEmulator(type: com.github.psxpaul.task.ExecFork) {
 
     executable = "$workingDir/firebase-server$extension"
 
-    final def rulesFile = "$projectDir/firebase-rules.json" as File
+    final def rulesFile = file("$projectDir/firebase-rules.json")
     args = ['-e', '-r', rulesFile.getPath()]
 
     waitForPort = 5000
 }
 
 task runServer {
-    dependsOn runFirebaseEmulator, project.getTasksByName('appStart', false)
+    description = "Runs the example application"
+}
+
+task stopServer {
+    description = "Stops the example application"
+}
+
+gretty {
+    contextPath = '/'
+    httpPort = 8080
+    debugPort = 5005
+    debugSuspend = true
+    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
+    servletContainer = 'jetty9'
+
+    afterEvaluate {
+        appStart.dependsOn runFirebaseEmulator
+        
+        runServer.dependsOn appStart
+        stopServer.dependsOn appStop
+    }
 }
