@@ -22,8 +22,8 @@ package io.spine.web.query.given;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.spine.client.Query;
 import io.spine.json.Json;
-import io.spine.web.WebQuery;
 import io.spine.web.query.QueryBridge;
 import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.query.QueryServlet;
@@ -65,7 +65,7 @@ public final class QueryServletTestEnv {
         }
 
         @Override
-        public QueryProcessingResult send(@Nonnull WebQuery query) {
+        public QueryProcessingResult send(Query query) {
             return new TestQueryProcessingResult(response);
         }
     }

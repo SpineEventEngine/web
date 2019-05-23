@@ -28,18 +28,16 @@ import io.spine.client.SubscriptionId;
 import io.spine.client.SubscriptionIdVBuilder;
 import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Topic;
-import io.spine.client.grpc.QueryServiceGrpc;
+import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.query.QueryNodePath;
-import io.spine.web.query.service.AsyncQueryService;
+import io.spine.web.query.BlockingQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
-
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -55,7 +53,7 @@ import static io.spine.core.Responses.statusOk;
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
-    private final AsyncQueryService queryService;
+    private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
 
     private FirebaseSubscriptionBridge(Builder builder) {
@@ -66,7 +64,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     @Override
     public SubscribeResult subscribe(Topic topic) {
         Query query = newQueryForTopic(topic);
-        CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
+        QueryResponse queryResponse = queryService.execute(query);
         NodePath path = QueryNodePath.of(query);
         SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
@@ -104,7 +102,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     public SubscriptionKeepUpResult keepUp(Subscription subscription) {
         Topic topic = subscription.getTopic();
         Query query = newQueryForTopic(topic);
-        CompletableFuture<QueryResponse> queryResponse = queryService.execute(query);
+        QueryResponse queryResponse = queryService.execute(query);
         SubscriptionId id = subscription.getId();
         NodePath path = NodePaths.of(id.getValue());
         SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
@@ -131,7 +129,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
      */
     public static final class Builder {
 
-        private AsyncQueryService queryService;
+        private BlockingQueryService queryService;
         private FirebaseClient firebaseClient;
 
         /**
@@ -140,10 +138,9 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         private Builder() {
         }
 
-        public Builder setQueryService(
-                QueryServiceGrpc.QueryServiceImplBase service) {
+        public Builder setQueryService(QueryServiceImplBase service) {
             checkNotNull(service);
-            this.queryService = AsyncQueryService.local(service);
+            this.queryService = new BlockingQueryService(service);
             return this;
         }
 

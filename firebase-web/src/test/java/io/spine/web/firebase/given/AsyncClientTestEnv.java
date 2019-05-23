@@ -18,39 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.query.service;
+package io.spine.web.firebase.given;
 
-import io.spine.client.Query;
-import io.spine.client.QueryResponse;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceBlockingStub;
+import java.time.Duration;
 
-import java.util.concurrent.CompletableFuture;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+public final class AsyncClientTestEnv {
 
-/**
- * A {@link AsyncQueryService} which dispatches calls to a remote
- * {@link QueryServiceBlockingStub QueryService} via gRPC.
- *
- * @author Dmytro Dashenkov
- * @see AsyncQueryService#remote(QueryServiceBlockingStub) AsyncQueryService.remote(...)
- */
-final class Remote implements AsyncQueryService {
-
-    private final QueryServiceBlockingStub service;
-
-    Remote(QueryServiceBlockingStub service) {
-        this.service = service;
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private AsyncClientTestEnv() {
     }
 
-    @Override
-    public CompletableFuture<QueryResponse> execute(Query query) {
-        CompletableFuture<QueryResponse> result = supplyAsync(() -> service.read(query));
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AsyncQueryService.remote(...)";
+    public static void sleepFor(Duration time) {
+        long millis = time.abs().toMillis();
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            fail(e);
+        }
     }
 }
