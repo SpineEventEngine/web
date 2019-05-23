@@ -62,7 +62,7 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Writes this record to the Firebase database as initial data, without checking what is
+     * Writes this record to the Firebase database as initial data without checking what is
      * already stored in database at given location.
      */
     void storeAsInitial(FirebaseClient firebaseClient) {
@@ -70,7 +70,7 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Flushes an array response of the query to the Firebase, adding array items to storage in a
+     * Flushes an array response of the query to the Firebase adding array items to storage in a
      * transaction.
      */
     private void flushNewVia(FirebaseClient firebaseClient) {
@@ -84,14 +84,14 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Stores the data to the Firebase, updating only the data that has changed.
+     * Stores the data to the Firebase updating only the data that has changed.
      */
     void storeAsUpdate(FirebaseClient firebaseClient) {
         flushDiffVia(firebaseClient);
     }
 
     /**
-     * Flushes an array response of the query to the Firebase, adding, removing and updating items
+     * Flushes an array response of the query to the Firebase, adding, removing, and updating items
      * already present in storage in a transaction.
      */
     private void flushDiffVia(FirebaseClient firebaseClient) {
@@ -123,7 +123,7 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Creates a stream of response messages, mapping each response message to JSON.
+     * Creates a stream of response messages mapping each response message to JSON.
      *
      * @param response
      *         response to an entity query

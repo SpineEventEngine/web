@@ -21,7 +21,7 @@
 package io.spine.web.firebase.rest;
 
 /**
- * The exception which signalises about an issue when working with Firebase REST API.
+ * The exception which signals about an issue when working with Firebase REST API.
  */
 class RequestToFirebaseFailedException extends RuntimeException {
 

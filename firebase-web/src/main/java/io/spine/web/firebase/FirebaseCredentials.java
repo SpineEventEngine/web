@@ -91,7 +91,7 @@ public final class FirebaseCredentials {
      * <p>Typically the stream will contain a service account JSON file data.
      *
      * <p>See <a href="https://firebase.google.com/docs/admin/setup#add_firebase_to_your_app">docs
-     * </a> for how to obtain the file.
+     * </a> for details on how to obtain the file.
      *
      * @param credentialStream
      *         the stream containing credentials data
