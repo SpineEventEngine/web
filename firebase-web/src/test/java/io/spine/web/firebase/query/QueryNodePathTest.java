@@ -126,7 +126,7 @@ class QueryNodePathTest {
 
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(QueryNodePathTest.class, tenantId);
+                new TestActorRequestFactory(QueryNodePathTest.class, tenantId);
         Query query = requestFactory.query()
                                     .all(Any.class);
         return query;

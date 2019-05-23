@@ -25,7 +25,6 @@ import {devFirebaseDatabase} from './test-firebase-database';
 import * as testProtobuf from '@testProto/index';
 import {init} from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
-import {UserId} from '@proto/spine/core/user_id_pb';
 import {MockClient} from './test-helpers';
 import {FirebaseClient} from '@lib/client/firebase-client';
 import KnownTypes from '@lib/client/known-types';

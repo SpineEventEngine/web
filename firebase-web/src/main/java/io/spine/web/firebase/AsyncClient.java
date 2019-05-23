@@ -1,0 +1,76 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.web.firebase;
+
+import java.util.Optional;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * A {@link FirebaseClient} which executes write operations asynchronously.
+ *
+ * <p>Read operations are considered less frequent and less costly, thus are executed synchronously.
+ */
+public final class AsyncClient implements FirebaseClient {
+
+    private final FirebaseClient delegate;
+    private final Executor executor;
+
+    /**
+     * Creates a new async client with the given delegate and the given executor.
+     *
+     * <p>It is a responsibility of the user to shut down the executor gracefully.
+     *
+     * @param delegate the firebase client which performs the requests
+     * @param executor the {@link Executor} which executes the write requests
+     */
+    public AsyncClient(FirebaseClient delegate, Executor executor) {
+        this.delegate = checkNotNull(delegate);
+        this.executor = checkNotNull(executor);
+    }
+
+    /**
+     * Creates a new async client with the given delegate.
+     *
+     * <p>The resulting client uses the {@link ForkJoinPool#commonPool()} to execute the write
+     * operations. Note that this is the same {@code Executor} which is used by default in the Java
+     * concurrency API, such as {@link java.util.concurrent.CompletableFuture} and the conventional
+     * implementations of {@link java.util.stream.Stream}.
+     *
+     * @param delegate the firebase client which performs the requests
+     * @see #AsyncClient(FirebaseClient, Executor)
+     */
+    public AsyncClient(FirebaseClient delegate) {
+        this(delegate, ForkJoinPool.commonPool());
+    }
+
+    @Override
+    public Optional<NodeValue> get(NodePath nodePath) {
+        return delegate.get(nodePath);
+    }
+
+    @Override
+    public void merge(NodePath nodePath, NodeValue value) {
+        executor.execute(() -> delegate.merge(nodePath, value));
+    }
+}

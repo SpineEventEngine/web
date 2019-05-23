@@ -18,14 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains the {@link io.spine.web.query.service.AsyncQueryService
- * AsyncQueryService} interface and its implementations.
- */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.web.query.service;
+package io.spine.web.firebase.subscription.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

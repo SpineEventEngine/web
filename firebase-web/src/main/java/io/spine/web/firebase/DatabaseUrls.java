@@ -63,6 +63,6 @@ public final class DatabaseUrls {
 
     private static void validate(String url) {
         UrlValidator urlValidator = UrlValidator.getInstance();
-        checkArgument(urlValidator.isValid(url), "The specified database URL %s is invalid");
+        checkArgument(urlValidator.isValid(url), "The specified database URL %s is invalid", url);
     }
 }

@@ -20,8 +20,8 @@
 
 package io.spine.web.query;
 
+import io.spine.client.Query;
 import io.spine.web.NonSerializableServlet;
-import io.spine.web.WebQuery;
 import io.spine.web.parser.HttpMessages;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * An {@link HttpServlet} which receives {@linkplain WebQuery web query requests}, passes them
+ * An {@link HttpServlet} which receives {@linkplain Query query requests}, passes them
  * into a {@link QueryBridge} and writes the {@linkplain QueryProcessingResult sending result} into
  * the response.
  *
@@ -41,12 +41,7 @@ import java.util.Optional;
  *
  * <p>In order to perform a {@linkplain io.spine.client.Query query}, a client should send an HTTP
  * {@code POST} request to this servlet. The request body should be a {@linkplain io.spine.json.Json
- * JSON} representation of a {@link WebQuery io.spine.web.WebQuery}.
- * 
- * <p>{@link io.spine.client.Query Query to Spine} is wrapped into a {@link WebQuery WebQuery} 
- * specifying additional parameters handled by the web server. For example, 
- * {@link WebQuery#getDeliveredTransactionally()} specifies if the client should retrieve 
- * the response in a single transaction, or the collection contents should be sent one-by-one.
+ * JSON} representation of a {@link Query io.spine.client.Query}.
  *
  * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query 
  * Query}), the response will contain the {@linkplain QueryProcessingResult query sending result}. 
@@ -69,7 +64,7 @@ public abstract class QueryServlet extends NonSerializableServlet {
     private final QueryBridge bridge;
 
     /**
-     * Creates a new instance of {@link QueryServlet} with the given {@link QueryBridge}.
+     * Creates a new instance of {@code QueryServlet} with the given {@link QueryBridge}.
      *
      * @param bridge the query bridge to be used in this query servlet
      */
@@ -87,11 +82,11 @@ public abstract class QueryServlet extends NonSerializableServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        Optional<WebQuery> optionalQuery = HttpMessages.parse(req, WebQuery.class);
+        Optional<Query> optionalQuery = HttpMessages.parse(req, Query.class);
         if (!optionalQuery.isPresent()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            WebQuery query = optionalQuery.get();
+            Query query = optionalQuery.get();
             QueryProcessingResult result = bridge.send(query);
             result.writeTo(resp);
         }
