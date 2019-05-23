@@ -39,8 +39,7 @@ import static io.spine.web.firebase.FirebaseClientFactory.restClient;
 final class Application {
 
     private static final DatabaseUrl DATABASE_URL =
-            DatabaseUrls.from("https://spine-dev.firebaseio.com/");
-    private static final String SERVICE_ACCOUNT_FILE = "/spine-dev.json";
+            DatabaseUrls.from("http://127.0.0.1:5000/");
 
     private final CommandService commandService;
     private final QueryService queryService;
@@ -62,9 +61,7 @@ final class Application {
         QueryService queryService = QueryService.newBuilder()
                                                 .add(boundedContext)
                                                 .build();
-        InputStream credentialStream = Application.class.getResourceAsStream(SERVICE_ACCOUNT_FILE);
-        FirebaseCredentials credentials = FirebaseCredentials.fromStream(credentialStream);
-        FirebaseClient firebaseClient = restClient(DATABASE_URL, credentials);
+        FirebaseClient firebaseClient = restClient(DATABASE_URL);
         return new Application(commandService, queryService, firebaseClient);
     }
 
