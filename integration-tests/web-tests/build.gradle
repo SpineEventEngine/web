@@ -27,7 +27,7 @@ plugins {
 
 apply plugin: 'io.spine.tools.gradle.bootstrap'
 
-spine.enableJava().server()
+spine.enableJava()
 
 dependencies {
     implementation project(":firebase-web")
@@ -43,4 +43,23 @@ gretty {
     debugSuspend = true
     jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
     servletContainer = 'jetty9'
+}
+
+task runFirebaseEmulator(type: com.github.psxpaul.task.ExecFork) {
+    final def clientDir = project(':client-js').projectDir
+    workingDir = "$clientDir/node_modules/.bin"
+
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    final def extension = runsOnWindows ? '.cmd' : ''
+
+    executable = "$workingDir/firebase-server$extension"
+
+    final def rulesFile = "$projectDir/firebase-rules.json" as File
+    args = ['-e', '-r', rulesFile.getPath()]
+
+    waitForPort = 5000
+}
+
+task runServer {
+    dependsOn runFirebaseEmulator, project.getTasksByName('appStart', false)
 }
