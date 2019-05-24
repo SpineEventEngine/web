@@ -18,14 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+describe('integration tests', function () {
 
-include 'web'
-include 'firebase-web'
-
-include 'client-js'
-include 'test-app'
-include 'web-tests'
-
-project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    it('run', () => {
+    });
+});
