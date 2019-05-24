@@ -82,7 +82,7 @@ public final class FirebaseClientFactory {
      * <p>Different environments require different {@linkplain HttpTransport HTTP transport}
      * to operate.
      *
-     * <p>For more information on this, see
+     * <p>For more information, see
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
      * HttpTransport docs</a>.
      */

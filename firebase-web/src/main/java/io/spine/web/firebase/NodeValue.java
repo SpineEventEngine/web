@@ -50,7 +50,7 @@ public final class NodeValue {
     /**
      * Creates an empty {@code NodeValue}.
      *
-     * <p>This is not equivalent to the {@code null} value, an empty value is supposed to be
+     * <p>This is not equivalent to the {@code null} value. An empty value is supposed to be
      * filled with entries at some point after the creation.
      */
     public static NodeValue empty() {
