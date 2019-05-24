@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import firebase from 'firebase';
+import firebase from 'firebase/index';
 
 /**
  * The configuration of the emulated Firebase application. For details
