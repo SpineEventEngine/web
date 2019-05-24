@@ -33,7 +33,7 @@ option java_outer_classname = "FirebaseQueryResponseProto";
 //
 message FirebaseQueryResponse {
 
-    // A datapase path to the requested data.
+    // A database path to the requested data.
     string path = 1 [(required) = true];
 
     // A number of records.
