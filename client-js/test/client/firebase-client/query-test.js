@@ -113,7 +113,7 @@ describe('FirebaseClient', function () {
                 client.fetchAll({ofType: TestEnvironment.TYPE.MALFORMED}).atOnce()
                     .then(fail(done), error => {
                         assert.ok(error instanceof ServerError);
-                        assert.equal(error.message, 'Internal Server Error');
+                        assert.equal(error.message, 'Server Error');
                         done();
                     });
 
