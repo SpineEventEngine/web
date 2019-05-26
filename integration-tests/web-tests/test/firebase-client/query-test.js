@@ -19,17 +19,12 @@
  */
 
 import assert from 'assert';
-import {Duration} from '@lib/client/time-utils';
 import {ServerError} from '@lib/client/errors';
 import {fail} from '../test-helpers';
 import TestEnvironment from './given/test-environment';
 import {client} from './given/firebase-client';
 
 describe('FirebaseClient', function () {
-
-    // Big timeout due to remote calls during tests.
-    const timeoutDuration = new Duration({minutes: 2});
-    this.timeout(timeoutDuration.inMs());
 
     describe('"fetchById"', function () {
 

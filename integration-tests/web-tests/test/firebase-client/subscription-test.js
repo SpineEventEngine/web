@@ -19,16 +19,13 @@
  */
 
 import assert from 'assert';
-import {Duration} from '@lib/client/time-utils';
 import {fail} from '../test-helpers';
 import TestEnvironment from './given/test-environment';
 import {client} from './given/firebase-client';
 
 describe('FirebaseClient subscription', function () {
 
-    // Big timeout due to remote calls during tests.
-    const timeoutDuration = new Duration({minutes: 2});
-    this.timeout(timeoutDuration.inMs());
+    this.timeout(15000);
 
     it('retrieves new entities', done => {
         const names = ['Task #1', 'Task #2', 'Task #3'];
@@ -137,7 +134,7 @@ describe('FirebaseClient subscription', function () {
         Promise.all(createPromises).then(() => {
             // Rename tasks in a timeout after they are created to
             // allow for added subscriptions to be updated first.
-            const renameTimeout = new Duration({seconds: 30});
+            const renameTimeout = 500;
             setTimeout(() => {
                 taskIds.forEach(taskId => {
                     const renameCommand = TestEnvironment.renameTaskCommand({
@@ -151,7 +148,7 @@ describe('FirebaseClient subscription', function () {
                         fail(done, 'Unexpected rejection while renaming a task.')
                     );
                 });
-            }, renameTimeout.inMs());
+            }, renameTimeout);
         });
     });
 
@@ -220,7 +217,7 @@ describe('FirebaseClient subscription', function () {
             .catch(fail(done));
 
         // Rename created task.
-        const renameTimeout = new Duration({seconds: 20});
+        const renameTimeout = 500;
         promise.then(() => {
             // Tasks are renamed with a timeout after to allow for changes to show up in subscriptions.
             return new Promise(resolve => {
@@ -238,7 +235,7 @@ describe('FirebaseClient subscription', function () {
                         fail(done, 'Unexpected error while renaming a task.'),
                         fail(done, 'Unexpected rejection while renaming a task.')
                     );
-                }, renameTimeout.inMs());
+                }, renameTimeout);
             });
         }).then(() => {
             setTimeout(() => {
@@ -252,7 +249,7 @@ describe('FirebaseClient subscription', function () {
                     fail(done, 'Unexpected error while renaming a task.'),
                     fail(done, 'Unexpected rejection while renaming a task.')
                 );
-            }, renameTimeout.inMs());
+            }, renameTimeout);
         });
     });
 
