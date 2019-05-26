@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {devFirebaseDatabase} from "../../test-firebase-database";
+import {firebaseDatabase} from "./firebase-database";
 import * as testProtobuf from '@testProto/index';
 import * as spineWeb from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
@@ -26,7 +26,7 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
 /**
  * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
  * local backend server and the emulated Firebase application.
- * See `web-tests/README.MD` for details.
+ * See `test-app/README.MD` for details.
  *
  * @param endpointUrl the URL of a backend to interact with; has the default value
  *                    of a local backend server;
@@ -36,7 +36,7 @@ export function initClient(endpointUrl = 'http://localhost:8080') {
     return spineWeb.init({
         protoIndexFiles: [testProtobuf],
         endpointUrl: endpointUrl,
-        firebaseDatabase: devFirebaseDatabase,
+        firebaseDatabase: firebaseDatabase,
         actorProvider: new ActorProvider()
     });
 }

@@ -18,15 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import firebase from 'firebase/index';
+import firebase from 'firebase';
 
 /**
  * The configuration of the emulated Firebase application. For details
- * see `web-tests/README.MD`
+ * see `test-app/README.MD`.
  */
 const config = {
     databaseURL: 'ws://localhost:5000/',
     authDomain: 'ws://localhost:5000/'
 };
 
-export const devFirebaseDatabase = firebase.initializeApp(config).database();
+/**
+ * A Firebase Database used for tests.
+ */
+export const firebaseDatabase = firebase.initializeApp(config).database();
