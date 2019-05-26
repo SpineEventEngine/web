@@ -26,9 +26,6 @@ import io.spine.server.QueryService;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.FirebaseCredentials;
-
-import java.io.InputStream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.FirebaseClientFactory.restClient;

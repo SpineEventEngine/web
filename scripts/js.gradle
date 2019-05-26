@@ -145,7 +145,7 @@ task coverageJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Runs the JS tests and collects the code coverage info.'
 
-    outputs.files nycOutputDir
+    outputs.dir nycOutputDir
     
     doLast {
         npm 'run', 'coverage'
