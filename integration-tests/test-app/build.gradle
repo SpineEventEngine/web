@@ -34,8 +34,14 @@ dependencies {
     implementation "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
 }
 
+/**
+ * Runs the Firebase emulator locally for the tests purposes.
+ * 
+ * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
+ * module dependency.
+ */
 task runFirebaseEmulator(type: com.github.psxpaul.task.ExecFork) {
-    final def clientDir = project(':client-js').projectDir
+    final def clientDir = project(':web-tests').projectDir
     workingDir = "$clientDir/node_modules/.bin"
 
     final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
@@ -49,14 +55,6 @@ task runFirebaseEmulator(type: com.github.psxpaul.task.ExecFork) {
     waitForPort = 5000
 }
 
-task runServer {
-    description = "Runs the example application"
-}
-
-task stopServer {
-    description = "Stops the example application"
-}
-
 gretty {
     contextPath = '/'
     httpPort = 8080
@@ -67,8 +65,5 @@ gretty {
 
     afterEvaluate {
         appStart.dependsOn runFirebaseEmulator
-        
-        runServer.dependsOn appStart
-        stopServer.dependsOn appStop
     }
 }
