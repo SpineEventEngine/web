@@ -25,26 +25,53 @@ ext {
     testSrcDir = "$projectDir/test"
     genProtoBaseDir = projectDir
     genProtoSubDir = "proto"
-    genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
+    genProtoTestDir = "$testSrcDir/$genProtoSubDir"
     nycOutputDir = "$projectDir/.nyc_output"
+    packageLockFile = "$projectDir/package-lock.json"
 }
 
 dependencies {
-    protobuf project(':web')
-    protobuf project(':firebase-web')
-    protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
-
     testProtobuf project(":test-app")
 }
 
+/**
+ *
+ */
 task deleteCompiled {
     description = 'Cleans old module dependencies and build outputs.'
 
     clean.dependsOn deleteCompiled
 
     doLast {
-        delete genProtoTest
+        delete genProtoTestDir
+        delete packageLockFile
         delete nycOutputDir
+    }
+}
+
+/**
+ *
+ */
+task installUnpublishedLib {
+    description = 'Install unpublished artifact of `spine-web` library as a module dependency'
+
+    dependsOn build
+    
+    doLast {
+        npm 'run', 'installUnpublishedLib'
+    }
+}
+
+/**
+ *
+ */
+task integrationTests {
+    description = 'Runs tests of the `spine-web` libraty agains the test application.'
+
+    dependsOn installUnpublishedLib
+
+    doLast {
+        npm 'run', 'test'
     }
 }
 
@@ -79,7 +106,7 @@ protobuf {
 apply plugin: 'io.spine.tools.proto-js-plugin'
 
 protoJs {
-    testGenProtoDir = genProtoTest
+    testGenProtoDir = genProtoTestDir
 
     generateParsersTask().dependsOn compileProtoToJs
     buildJs.dependsOn generateParsersTask()
@@ -88,7 +115,7 @@ protoJs {
 idea.module {
     testSourceDirs += file(testSrcDir)
 
-    excludeDirs += file(genProtoTest)
+    excludeDirs += file(genProtoTestDir)
 
     iml {
         beforeMerged { module ->

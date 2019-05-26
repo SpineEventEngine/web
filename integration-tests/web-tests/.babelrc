@@ -1,0 +1,17 @@
+{
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "cwd": "babelrc",
+        "alias": {
+          "@testProto": "./test/proto",
+          "@lib": "spine-web"
+        }
+      }
+    ]
+  ]
+}
