@@ -28,7 +28,7 @@ option java_package = "io.spine.web.firebase.subscription.diff";
 option java_multiple_files = true;
 option java_outer_classname = "DiffProto";
 
-// A diff of the Firebase storage state to an actual state of entities, 
+// A diff of the Firebase storage state to an actual state of entities
 // used to execute updates on Firebase storage.
 //
 message Diff {

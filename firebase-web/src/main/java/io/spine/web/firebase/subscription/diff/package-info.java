@@ -19,8 +19,8 @@
  */
 
 /**
- * This package contents allow to perform a diff between query data from a Spine server and the
- * data stored in a Firebase database, picking items to add, to remove, and to update to keep-up
+ * This package contents allows to perform a diff between query data from a Spine server and the
+ * data stored in a Firebase database, picking items to add, remove, and update to keep up
  * the subscription.
  */
 
