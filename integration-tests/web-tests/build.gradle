@@ -55,8 +55,8 @@ task deleteCompiled {
 task installUnpublishedLib {
     description = 'Install unpublished artifact of `spine-web` library as a module dependency'
 
-    dependsOn build
-    
+    dependsOn ':client-js:link'
+
     doLast {
         npm 'run', 'installUnpublishedLib'
     }
@@ -65,10 +65,11 @@ task installUnpublishedLib {
 /**
  *
  */
-task integrationTests {
-    description = 'Runs tests of the `spine-web` library agains the test application.'
+task integrationTest {
+    description = 'Runs integration tests of the `spine-web` library agains the test application.'
 
-    dependsOn installUnpublishedLib
+    dependsOn build, installUnpublishedLib, ':test-app:appBeforeIntegrationTest'
+    finalizedBy ':test-app:appAfterIntegrationTest'
 
     doLast {
         npm 'run', 'test'
@@ -76,12 +77,13 @@ task integrationTests {
 }
 
 /**
- * 
+ *
  */
-task integrationTestsCoverage {
+task integrationTestCoverage {
     description = 'Runs tests of the `spine-web` library with coverage.'
 
-    dependsOn installUnpublishedLib
+    dependsOn build, installUnpublishedLib, ':test-app:appBeforeIntegrationTest'
+    finalizedBy ':test-app:appAfterIntegrationTest'
 
     final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
     final def coverageScript = runsOnWindows ? 'coverage:win' : 'coverage:unix'

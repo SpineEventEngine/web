@@ -48,7 +48,7 @@ export function fail(done, message = '') {
     if (message) {
      done(new Error(`Test failed. Cause: ${message}`));
     } else {
-     done(new Error(`Test failed. Cause: ${cause ? JSON.stringify(cause) : 'not identified'}`));
+     done(new Error(`Test failed. Cause: ${cause ? cause : 'not identified'}`));
     }
   };
 }

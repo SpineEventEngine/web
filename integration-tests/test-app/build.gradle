@@ -64,6 +64,6 @@ gretty {
     servletContainer = 'jetty9'
 
     afterEvaluate {
-        appStart.dependsOn runFirebaseEmulator
+        tasks.appBeforeIntegrationTest.dependsOn runFirebaseEmulator
     }
 }
