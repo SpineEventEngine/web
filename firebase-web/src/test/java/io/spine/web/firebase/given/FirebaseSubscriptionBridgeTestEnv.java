@@ -23,17 +23,12 @@ package io.spine.web.firebase.given;
 import com.google.common.base.Joiner;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
-import io.spine.client.SubscriptionIdVBuilder;
-import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Target;
-import io.spine.client.TargetVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.Response;
-import io.spine.core.ResponseVBuilder;
 import io.spine.core.UserId;
-import io.spine.core.UserIdVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
@@ -85,9 +80,10 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static Response newResponse() {
-        return ResponseVBuilder.newBuilder()
-                               .setStatus(statusOk())
-                               .build();
+        return Response
+                .newBuilder()
+                .setStatus(statusOk())
+                .vBuild();
     }
 
     public static StringWriter mockWriter(ServletResponse response) throws IOException {
@@ -98,17 +94,19 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static Subscription newSubscription(Topic topic) {
-        return SubscriptionVBuilder.newBuilder()
-                                   .setId(subscriptionId())
-                                   .setTopic(topic)
-                                   .build();
+        return Subscription
+                .newBuilder()
+                .setId(subscriptionId())
+                .setTopic(topic)
+                .vBuild();
     }
 
     public static Target newTarget() {
-        return TargetVBuilder.newBuilder()
-                             .setType("test-type")
-                             .setIncludeAll(true)
-                             .build();
+        return Target
+                .newBuilder()
+                .setType("test-type")
+                .setIncludeAll(true)
+                .vBuild();
     }
 
     public static FirebaseSubscriptionBridge newBridge(FirebaseClient firebaseClient,
@@ -121,15 +119,17 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static TopicFactory topicFactory() {
-        UserId userId = UserIdVBuilder.newBuilder()
-                                      .setValue("test-user")
-                                      .build();
+        UserId userId = UserId
+                .newBuilder()
+                .setValue("test-user")
+                .vBuild();
         return new TestActorRequestFactory(userId).topic();
     }
 
     private static SubscriptionId subscriptionId() {
-        return SubscriptionIdVBuilder.newBuilder()
-                                     .setValue("test-subscription")
-                                     .build();
+        return SubscriptionId
+                .newBuilder()
+                .setValue("test-subscription")
+                .vBuild();
     }
 }

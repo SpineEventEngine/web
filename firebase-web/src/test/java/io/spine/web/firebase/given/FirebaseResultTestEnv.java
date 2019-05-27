@@ -21,7 +21,6 @@
 package io.spine.web.firebase.given;
 
 import io.spine.core.Response;
-import io.spine.core.ResponseVBuilder;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -48,10 +47,10 @@ public final class FirebaseResultTestEnv {
     }
 
     public static String okCancelSubscriptionResult() {
-        Response response =
-                ResponseVBuilder.newBuilder()
-                                .setStatus(statusOk())
-                                .build();
+        Response response = Response
+                .newBuilder()
+                .setStatus(statusOk())
+                .vBuild();
         return toCompactJson(response);
     }
 }

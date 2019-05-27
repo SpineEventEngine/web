@@ -26,7 +26,6 @@ import io.grpc.stub.StreamObserver;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
-import io.spine.client.QueryResponseVBuilder;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.core.Version;
 
@@ -53,10 +52,11 @@ public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBas
     @Override
     public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
         QueryResponse queryResponse =
-                QueryResponseVBuilder.newBuilder()
-                                     .setResponse(ok())
-                                     .addAllMessages(new ArrayList<>(response))
-                                     .build();
+                QueryResponse
+                        .newBuilder()
+                        .setResponse(ok())
+                        .addAllMessages(new ArrayList<>(response))
+                        .vBuild();
         responseObserver.onNext(queryResponse);
         responseObserver.onCompleted();
     }

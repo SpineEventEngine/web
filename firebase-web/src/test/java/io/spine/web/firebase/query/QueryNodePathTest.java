@@ -27,11 +27,8 @@ import com.google.protobuf.Timestamp;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.core.TenantId;
-import io.spine.core.TenantIdVBuilder;
 import io.spine.net.EmailAddress;
-import io.spine.net.EmailAddressVBuilder;
 import io.spine.net.InternetDomain;
-import io.spine.net.InternetDomainVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.NodePath;
 import org.junit.jupiter.api.DisplayName;
@@ -70,24 +67,30 @@ class QueryNodePathTest {
     @Test
     @DisplayName("be tenant-aware")
     void testTenantAware() {
-        InternetDomain domain = InternetDomainVBuilder.newBuilder()
-                                                      .setValue("spine.io")
-                                                      .build();
-        TenantId domainTenant = TenantIdVBuilder.newBuilder()
-                                                .setDomain(domain)
-                                                .build();
-        EmailAddress email = EmailAddressVBuilder.newBuilder()
-                                                 .setValue("john@doe.org")
-                                                 .build();
-        TenantId emailTenant = TenantIdVBuilder.newBuilder()
-                                               .setEmail(email)
-                                               .build();
-        TenantId firstValueTenant = TenantIdVBuilder.newBuilder()
-                                                    .setValue("first tenant")
-                                                    .build();
-        TenantId secondValueTenant = TenantIdVBuilder.newBuilder()
-                                                     .setValue("second tenant")
-                                                     .build();
+        InternetDomain domain = InternetDomain
+                .newBuilder()
+                .setValue("spine.io")
+                .vBuild();
+        TenantId domainTenant = TenantId
+                .newBuilder()
+                .setDomain(domain)
+                .vBuild();
+        EmailAddress email = EmailAddress
+                .newBuilder()
+                .setValue("john@doe.org")
+                .vBuild();
+        TenantId emailTenant = TenantId
+                .newBuilder()
+                .setEmail(email)
+                .vBuild();
+        TenantId firstValueTenant = TenantId
+                .newBuilder()
+                .setValue("first tenant")
+                .vBuild();
+        TenantId secondValueTenant = TenantId
+                .newBuilder()
+                .setValue("second tenant")
+                .vBuild();
         List<String> paths = Stream.of(domainTenant,
                                        emailTenant,
                                        firstValueTenant,

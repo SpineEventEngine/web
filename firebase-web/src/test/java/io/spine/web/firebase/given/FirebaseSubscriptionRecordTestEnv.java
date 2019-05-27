@@ -22,12 +22,9 @@ package io.spine.web.firebase.given;
 
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
-import io.spine.client.QueryResponseVBuilder;
 import io.spine.core.Response;
-import io.spine.core.ResponseVBuilder;
 import io.spine.core.Version;
 import io.spine.people.PersonName;
-import io.spine.people.PersonNameVBuilder;
 
 import java.util.List;
 
@@ -54,8 +51,8 @@ public final class FirebaseSubscriptionRecordTestEnv {
     }
 
     public static QueryResponse mockQueryResponse(Book... books) {
-        QueryResponseVBuilder responseBuilder = QueryResponse
-                .vBuilder()
+        QueryResponse.Builder responseBuilder = QueryResponse
+                .newBuilder()
                 .setResponse(okResponse());
         stream(books)
                 .map(FirebaseSubscriptionRecordTestEnv::toEntityState)
@@ -134,10 +131,10 @@ public final class FirebaseSubscriptionRecordTestEnv {
         }
 
         private static Author literalGangOfFour() {
-            PersonName name =
-                    PersonNameVBuilder.newBuilder()
-                                      .setGivenName("Gang of Four")
-                                      .build();
+            PersonName name = PersonName
+                    .newBuilder()
+                    .setGivenName("Gang of Four")
+                    .vBuild();
             return author(name);
         }
 
@@ -159,22 +156,25 @@ public final class FirebaseSubscriptionRecordTestEnv {
         }
 
         private static Author author(PersonName name) {
-            return AuthorVBuilder.newBuilder()
-                                 .setName(name)
-                                 .build();
+            return Author
+                    .newBuilder()
+                    .setName(name)
+                    .vBuild();
         }
 
         private static PersonName name(String firstName, String lastName) {
-            return PersonNameVBuilder.newBuilder()
-                                     .setGivenName(firstName)
-                                     .setFamilyName(lastName)
-                                     .build();
+            return PersonName
+                    .newBuilder()
+                    .setGivenName(firstName)
+                    .setFamilyName(lastName)
+                    .vBuild();
         }
     }
 
     private static Response okResponse() {
-        return ResponseVBuilder.newBuilder()
-                               .setStatus(statusOk())
-                               .build();
+        return Response
+                .newBuilder()
+                .setStatus(statusOk())
+                .vBuild();
     }
 }
