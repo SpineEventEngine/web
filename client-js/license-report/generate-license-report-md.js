@@ -42,8 +42,8 @@ function printDependencies(report, stream) {
     for (let key in report) {
         const item = report[key];
         stream.write("1. **" + key + "**\n");
-        stream.write("   * Licenses: " + item.licenses + "\n");
-        stream.write("   * Repository: " + (item.repository ? item.repository : "unknown") + "\n");
+        stream.write("     * Licenses: " + item.licenses + "\n");
+        stream.write("     * Repository: " + (item.repository ? item.repository : "unknown") + "\n");
     }
 }
 
