@@ -77,9 +77,6 @@ buildJs {
 /**
  * Customizes the task already defined in `config` module by running
  * the JavaScript tests.
- *
- * <p>The tests connect to the `spine-dev` GAE application and perform networking. Avoid running
- * the JS tests when not necessary.
  */
 testJs {
 
@@ -137,18 +134,18 @@ prepareJsPublication {
 
 /**
  * Runs the JavaScript tests and collects the code coverage.
- *
- * <p>The tests connect to the `spine-dev` GAE application and perform networking. Avoid running
- * the JS tests when not necessary.
  */
 task coverageJs {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Runs the JS tests and collects the code coverage info.'
 
     outputs.dir nycOutputDir
-    
+
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    final def coverageScript = runsOnWindows ? 'coverage:win' : 'coverage:unix'
+
     doLast {
-        npm 'run', 'coverage'
+        npm 'run', coverageScript
     }
 
     dependsOn buildJs
