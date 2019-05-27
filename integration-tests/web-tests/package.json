@@ -7,7 +7,7 @@
     "test": "mocha --require @babel/polyfill --require @babel/register --recursive --exit --full-trace ./test",
     "coverage:unix": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
     "coverage:win": "nyc --reporter=text-lcov npm run test > build/coverage.lcov",
-    "installUnpublishedLib": "npm link spine-web"
+    "installLinkedLib": "npm link spine-web"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
