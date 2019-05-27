@@ -53,7 +53,7 @@ task deleteCompiled {
  * Installs unpublished artifact of `spine-web` library as a module dependency.
  * 
  * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
- * the current project. See [`npm link`](https://docs.npmjs.com/cli/link) for details.
+ * the current project. See https://docs.npmjs.com/cli/link for details.
  */ 
 task installLinkedLib {
     description = 'Install unpublished artifact of `spine-web` library as a module dependency'
@@ -80,10 +80,9 @@ task integrationTest {
     }
 }
 
-/**
- *
- */
-task integrationTestCoverage {
+task testCoverage {
+    // TODO:2019-05-27:yegor.udovchenko: Consider using `:client-js` as src to make
+    // code coverage applied correctly.
     description = 'Runs integration tests of the `spine-web` library with coverage.'
 
     dependsOn build, installLinkedLib, ':test-app:appBeforeIntegrationTest'
