@@ -5,6 +5,8 @@
   "description": "Tests of a `spine-web` JS library against the Spine-based application.",
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register --recursive --exit --full-trace ./test",
+    "coverage:unix": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
+    "coverage:win": "nyc --reporter=text-lcov npm run test > build/coverage.lcov",
     "installUnpublishedLib": "npm link spine-web"
   },
   "devDependencies": {
@@ -18,6 +20,7 @@
     "firebase-server": "^1.0.2",
     "google-protobuf": "^3.6.0",
     "mocha": "^5.2.0",
+    "nyc": "^14.0.0",
     "uuid": "^3.2.1"
   }
 }

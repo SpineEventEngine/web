@@ -66,12 +66,28 @@ task installUnpublishedLib {
  *
  */
 task integrationTests {
-    description = 'Runs tests of the `spine-web` libraty agains the test application.'
+    description = 'Runs tests of the `spine-web` library agains the test application.'
 
     dependsOn installUnpublishedLib
 
     doLast {
         npm 'run', 'test'
+    }
+}
+
+/**
+ * 
+ */
+task integrationTestsCoverage {
+    description = 'Runs tests of the `spine-web` library with coverage.'
+
+    dependsOn installUnpublishedLib
+
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    final def coverageScript = runsOnWindows ? 'coverage:win' : 'coverage:unix'
+
+    doLast {
+        npm 'run', coverageScript
     }
 }
 
