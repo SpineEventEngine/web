@@ -38,7 +38,7 @@ dependencies {
  * The path to the temporary file storing the identifier
  * of a currently running Firebase emulator process.
  */
-final pidFilePath = "$projectDir/scripts/firebase-emulator.pid"
+final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
 
 /**
  * Runs the Firebase emulator locally for the tests purposes.
@@ -78,7 +78,7 @@ task killFirebaseProcess {
         if (pidFile.exists()) {
             final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
             final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'
-            final def script = "$projectDir/scripts/kill-process.${scriptExtension}"
+            final def script = "$rootDir/scripts/kill-process.${scriptExtension}"
             final def params = " ${pidFile.text}"
 
             "${script}${params}".execute()

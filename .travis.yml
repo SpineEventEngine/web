@@ -10,6 +10,8 @@ env:
 
 before_install:
   - chmod +x gradlew
+  # Grant permissions to the task kill script.
+  - chmod +x ./scripts/kill-process.sh
 
   # Upgrade the `npm` version shipped with Travis to the latest.
   - npm install -g npm@latest
