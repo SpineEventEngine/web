@@ -80,7 +80,7 @@ task integrationTest {
  *
  */
 task integrationTestCoverage {
-    description = 'Runs tests of the `spine-web` library with coverage.'
+    description = 'Runs integration tests of the `spine-web` library with coverage.'
 
     dependsOn build, installUnpublishedLib, ':test-app:appBeforeIntegrationTest'
     finalizedBy ':test-app:appAfterIntegrationTest'
