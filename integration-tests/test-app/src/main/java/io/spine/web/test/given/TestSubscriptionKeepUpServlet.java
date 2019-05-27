@@ -20,7 +20,6 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 import io.spine.web.subscription.servlet.SubscriptionKeepUpServlet;
 
 import javax.servlet.annotation.WebServlet;
@@ -35,10 +34,6 @@ import static io.spine.web.test.given.Server.application;
 public class TestSubscriptionKeepUpServlet extends SubscriptionKeepUpServlet {
 
     public TestSubscriptionKeepUpServlet() {
-        super(FirebaseSubscriptionBridge
-                      .newBuilder()
-                      .setQueryService(application().queryService())
-                      .setFirebaseClient(application().firebaseClient())
-                      .build());
+        super(application().subscriptionBridge());
     }
 }

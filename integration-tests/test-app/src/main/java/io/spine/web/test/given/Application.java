@@ -26,6 +26,8 @@ import io.spine.server.QueryService;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.query.FirebaseQueryBridge;
+import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.FirebaseClientFactory.restClient;
@@ -39,15 +41,23 @@ final class Application {
             DatabaseUrls.from("http://127.0.0.1:5000/");
 
     private final CommandService commandService;
-    private final QueryService queryService;
-    private final FirebaseClient firebaseClient;
+    private final FirebaseQueryBridge queryBridge;
+    private final FirebaseSubscriptionBridge subscriptionBridge;
 
     private Application(CommandService commandService,
                         QueryService queryService,
                         FirebaseClient client) {
         this.commandService = commandService;
-        this.queryService = queryService;
-        this.firebaseClient = client;
+        this.queryBridge = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(client)
+                .build();
+        this.subscriptionBridge = FirebaseSubscriptionBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(client)
+                .build();
     }
 
     static Application create(BoundedContext boundedContext) {
@@ -66,11 +76,11 @@ final class Application {
         return commandService;
     }
 
-    QueryService queryService() {
-        return queryService;
+    FirebaseQueryBridge queryBridge() {
+        return this.queryBridge;
     }
 
-    FirebaseClient firebaseClient() {
-        return firebaseClient;
+    FirebaseSubscriptionBridge subscriptionBridge() {
+        return this.subscriptionBridge;
     }
 }
