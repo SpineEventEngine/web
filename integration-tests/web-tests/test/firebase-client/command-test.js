@@ -30,6 +30,9 @@ import {client, initClient} from './given/firebase-client';
 
 describe('FirebaseClient command sending', function () {
 
+    // Big timeout allows to await backend state changes.
+    this.timeout(5000);
+
     it('completes with success', done => {
 
         const command = TestEnvironment.createTaskCommand({
