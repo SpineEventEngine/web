@@ -26,7 +26,7 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
 /**
  * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
  * local backend server and the emulated Firebase application.
- * See `test-app/README.MD` for details.
+ * See `integration-tests/README.MD` for details.
  *
  * @param endpointUrl the URL of a backend to interact with; has the default value
  *                    of a local backend server;

@@ -22,7 +22,7 @@ import firebase from 'firebase';
 
 /**
  * The configuration of the emulated Firebase application. For details
- * see `test-app/README.MD`.
+ * see `integration-tests/README.MD`.
  */
 const config = {
     databaseURL: 'ws://localhost:5000/',
