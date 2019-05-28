@@ -48,16 +48,14 @@ final class Application {
                         QueryService queryService,
                         FirebaseClient client) {
         this.commandService = commandService;
-        this.queryBridge = FirebaseQueryBridge
-                .newBuilder()
-                .setQueryService(queryService)
-                .setFirebaseClient(client)
-                .build();
-        this.subscriptionBridge = FirebaseSubscriptionBridge
-                .newBuilder()
-                .setQueryService(queryService)
-                .setFirebaseClient(client)
-                .build();
+        this.queryBridge = FirebaseQueryBridge.newBuilder()
+                                              .setQueryService(queryService)
+                                              .setFirebaseClient(client)
+                                              .build();
+        this.subscriptionBridge = FirebaseSubscriptionBridge.newBuilder()
+                                                            .setQueryService(queryService)
+                                                            .setFirebaseClient(client)
+                                                            .build();
     }
 
     static Application create(BoundedContext boundedContext) {

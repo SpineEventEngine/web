@@ -36,7 +36,7 @@ message TaskReassigned {
 
     TaskId id = 1;
 
-    spine.core.UserId assignee = 3 [(required) = true];
+    spine.core.UserId assignee = 2 [(required) = true];
 }
 
 
