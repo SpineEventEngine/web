@@ -42,7 +42,9 @@ class Given {
     return {
       protoIndexFiles: Given.PROTO_FILES,
       endpointUrl: Given.ENDPOINT_URL,
-      firebaseDatabase: {},
+      firebaseDatabase: {
+        // There's no need to pass real Firebase database for these tests
+      },
       actorProvider: Given.ACTOR_PROVIDER
     };
   }
