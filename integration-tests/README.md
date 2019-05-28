@@ -1,13 +1,13 @@
 # Integration tests
 
-This module performs integration tests of the unpublished `spine-web` NPM library against
-the Spine-based backend server. The `test-app` module contains a simplified Spine application.
-The `web-tests` module defines tests which act as a client-side application where client-server
+This package contains modules for testing of the unpublished `spine-web` NPM library against
+the Spine-based server. The `test-app` module contains a simplified Spine application.
+The `web-tests` module defines tests acting as a client-side application where client-server
 interactions are carried out by `spine-web` NPM library.
 
 ## `test-app`
 
-The `web-tests` module contains a simplified Spine application. The `web-tests` tests use this
+The `test-app` module contains a simplified Spine application. The `web-tests` module uses this
 application as a test backend. The application uses the Spine `web` API (with the `firebase-web`
 library). The application model contains a minimal set of commands, events, and projections that
 allows to test functionality of the `spine-web` library.
@@ -16,6 +16,7 @@ The application uses Firebase application emulated locally with a [`firebase-ser
 tool. This tool is executed from the `web-tests` module `node_modules` folder.
 
 ### Running the application locally
+
 The application can be run locally by Gretty and Firebase emulators. To run the
 application do the following:
 1. Assemble the application:
@@ -43,5 +44,29 @@ Firebase emulators are stopped. When terminating a console process, Firebase emu
 
 ## `web-tests`
 
+The `web-tests` module performs tests of the unpublished artifact of the `spine-web` library. It
+defines tests acting as a client-side application that uses `spine-web` library for interactions
+with a backend.
+
+Performs tests using the unpublished artifact of the `spine-web` library. This approach allows to
+test not only the library functionality but also ensure it is properly built.
 
 ### Running integration test
+
+To run the integration tests do the following:
+1. Assemble the application:
+    ```bash
+    ./gradlew clean assemble
+    ```
+    
+2. Run tests:
+    ```bash
+    ./gradlew web-tests:integrationTest
+    ```
+    This command does the following:
+     - installs the unpublished artifact of the `spine-web` library form the `client-js` module 
+       as module NPM dependency by call to `npm link spine-web` command. For details about
+       two-step package linking see `npm-link` [documentation](https://docs.npmjs.com/cli/link);
+     - runs the local backend server from the `test-app` module;
+     - performs integration tests;
+     - stops the local server when test complete or fail;

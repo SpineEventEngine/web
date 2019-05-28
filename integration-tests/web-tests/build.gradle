@@ -68,7 +68,7 @@ task installLinkedLib {
 /**
  * Runs integration tests of the `spine-web` library against the sample Spine-based application.
  * 
- * Runs the sample Spine-based application defined in the `test-app` module before integration
+ * Runs the sample Spine-based application from the `test-app` module before integration
  * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
  */
 task integrationTest {
