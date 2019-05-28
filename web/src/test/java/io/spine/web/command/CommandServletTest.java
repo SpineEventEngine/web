@@ -28,7 +28,6 @@ import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.client.command.TestCommandMessage;
-import io.spine.testing.client.command.TestCommandMessageVBuilder;
 import io.spine.web.command.given.CommandServletTestEnv.TestCommandServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,9 +67,9 @@ class CommandServletTest {
         CommandServlet servlet = new TestCommandServlet();
         StringWriter response = new StringWriter();
         TestCommandMessage createTask = TestCommandMessage
-                .vBuilder()
+                .newBuilder()
                 .setId(newUuid())
-                .build();
+                .vBuild();
         Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);

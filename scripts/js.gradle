@@ -171,6 +171,18 @@ task npmLicenseReport {
  */
 generateLicenseReport.finalizedBy npmLicenseReport
 
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
+protoJs {
+    mainGenProtoDir = genProtoMain
+    testGenProtoDir = genProtoTest
+
+    generateParsersTask().dependsOn compileProtoToJs
+    buildJs.dependsOn generateParsersTask()
+    testJs.dependsOn buildJs
+}
+
+
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
@@ -199,13 +211,3 @@ protobuf {
     }
 }
 
-apply plugin: 'io.spine.tools.proto-js-plugin'
-
-protoJs {
-    mainGenProtoDir = genProtoMain
-    testGenProtoDir = genProtoTest
-
-    generateParsersTask().dependsOn compileProtoToJs
-    buildJs.dependsOn generateParsersTask()
-    testJs.dependsOn buildJs
-}

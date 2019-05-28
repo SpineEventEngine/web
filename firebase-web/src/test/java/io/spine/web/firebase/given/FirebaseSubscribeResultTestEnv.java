@@ -22,14 +22,10 @@ package io.spine.web.firebase.given;
 
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
-import io.spine.client.SubscriptionIdVBuilder;
-import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Target;
-import io.spine.client.TargetVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.core.UserId;
-import io.spine.core.UserIdVBuilder;
 import io.spine.testing.client.TestActorRequestFactory;
 
 public final class FirebaseSubscribeResultTestEnv {
@@ -45,29 +41,33 @@ public final class FirebaseSubscribeResultTestEnv {
     }
 
     private static UserId testUser() {
-        return UserIdVBuilder.newBuilder()
-                             .setValue("test-user")
-                             .build();
+        return UserId
+                .newBuilder()
+                .setValue("test-user")
+                .vBuild();
     }
 
     public static Target newTarget(String type) {
-        return TargetVBuilder.newBuilder()
-                             .setIncludeAll(true)
-                             .setType(type)
-                             .build();
+        return Target
+                .newBuilder()
+                .setIncludeAll(true)
+                .setType(type)
+                .vBuild();
     }
 
     public static Subscription newSubscription(Topic topic, String path) {
         SubscriptionId subscriptionId = newSubscriptionId(path);
-        return SubscriptionVBuilder.newBuilder()
-                                   .setTopic(topic)
-                                   .setId(subscriptionId)
-                                   .build();
+        return Subscription
+                .newBuilder()
+                .setTopic(topic)
+                .setId(subscriptionId)
+                .vBuild();
     }
 
     private static SubscriptionId newSubscriptionId(String path) {
-        return SubscriptionIdVBuilder.newBuilder()
-                                     .setValue(path)
-                                     .build();
+        return SubscriptionId
+                .newBuilder()
+                .setValue(path)
+                .vBuild();
     }
 }

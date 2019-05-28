@@ -22,11 +22,8 @@ package io.spine.web.firebase.subscription;
 
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
-import io.spine.client.QueryVBuilder;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
-import io.spine.client.SubscriptionIdVBuilder;
-import io.spine.client.SubscriptionVBuilder;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.firebase.FirebaseClient;
@@ -74,28 +71,28 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     }
 
     private static Query newQueryForTopic(Topic topic) {
-        return QueryVBuilder
+        return Query
                 .newBuilder()
                 .setId(generateId())
                 .setTarget(topic.getTarget())
                 .setFieldMask(topic.getFieldMask())
                 .setContext(topic.getContext())
-                .build();
+                .vBuild();
     }
 
     private static Subscription newSubscription(SubscriptionId subscriptionId, Topic topic) {
-        return SubscriptionVBuilder
+        return Subscription
                 .newBuilder()
                 .setId(subscriptionId)
                 .setTopic(topic)
-                .build();
+                .vBuild();
     }
 
     private static SubscriptionId newSubscriptionId(NodePath path) {
-        return SubscriptionIdVBuilder
+        return SubscriptionId
                 .newBuilder()
                 .setValue(path.getValue())
-                .build();
+                .vBuild();
     }
 
     @Override

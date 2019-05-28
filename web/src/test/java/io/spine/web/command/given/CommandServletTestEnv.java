@@ -22,7 +22,6 @@ package io.spine.web.command.given;
 
 import io.grpc.stub.StreamObserver;
 import io.spine.core.Ack;
-import io.spine.core.AckVBuilder;
 import io.spine.core.Command;
 import io.spine.server.CommandService;
 import io.spine.web.command.CommandServlet;
@@ -48,10 +47,10 @@ public final class CommandServletTestEnv {
         doAnswer(invocation -> {
             StreamObserver<Ack> observer = invocation.getArgument(1);
             Command command = invocation.getArgument(0);
-            observer.onNext(Ack.vBuilder()
+            observer.onNext(Ack.newBuilder()
                                .setMessageId(pack(command.getId()))
                                .setStatus(statusOk())
-                               .build());
+                               .vBuild());
             observer.onCompleted();
             return nullRef();
         }).when(commandService)

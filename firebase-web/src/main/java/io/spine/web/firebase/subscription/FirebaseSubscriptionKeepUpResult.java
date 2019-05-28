@@ -21,7 +21,6 @@
 package io.spine.web.firebase.subscription;
 
 import io.spine.core.Response;
-import io.spine.core.ResponseVBuilder;
 import io.spine.core.Status;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
@@ -45,10 +44,10 @@ final class FirebaseSubscriptionKeepUpResult implements SubscriptionKeepUpResult
     }
 
     private static Response newResponseWithStatus(Status status) {
-        return ResponseVBuilder
+        return Response
                 .newBuilder()
                 .setStatus(status)
-                .build();
+                .vBuild();
     }
 
     @Override

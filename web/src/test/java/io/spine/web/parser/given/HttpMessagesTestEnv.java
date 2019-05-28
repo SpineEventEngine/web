@@ -23,7 +23,6 @@ package io.spine.web.parser.given;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Message;
 import io.spine.core.Ack;
-import io.spine.core.AckVBuilder;
 import io.spine.web.parser.HttpMessages;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,10 +67,10 @@ public final class HttpMessagesTestEnv {
 
     public static Ack newAck(int id) {
         return Ack
-                .vBuilder()
+                .newBuilder()
                 .setMessageId(pack(Int32Value.of(id)))
                 .setStatus(statusOk())
-                .build();
+                .vBuild();
     }
 
     public static String base64(Message message) {
