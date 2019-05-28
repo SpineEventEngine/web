@@ -51,12 +51,12 @@ task deleteCompiled {
 
 /**
  * Installs unpublished artifact of `spine-web` library as a module dependency.
- * 
+ *
  * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
  * the current project. See https://docs.npmjs.com/cli/link for details.
- */ 
+ */
 task installLinkedLib {
-    description = 'Install unpublished artifact of `spine-web` library as a module dependency'
+    description = 'Install unpublished artifact of `spine-web` library as a module dependency.'
 
     dependsOn ':client-js:link'
 
@@ -66,33 +66,19 @@ task installLinkedLib {
 }
 
 /**
- * Runs integration tests that use emulated Spine-based application defined in the
- * `test-app` module as a remote backend server.
+ * Runs integration tests of the `spine-web` library against the sample Spine-based application.
+ * 
+ * Runs the sample Spine-based application defined in the `test-app` module before integration
+ * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
  */
 task integrationTest {
-    description = 'Runs integration tests of the `spine-web` library agains the test application.'
+    description = 'Runs integration tests of the `spine-web` library agains the sample application.'
 
     dependsOn build, installLinkedLib, ':test-app:appBeforeIntegrationTest'
     finalizedBy ':test-app:appAfterIntegrationTest'
 
     doLast {
         npm 'run', 'test'
-    }
-}
-
-task testCoverage {
-    // TODO:2019-05-27:yegor.udovchenko: Consider using `:client-js` as src to make
-    // code coverage applied correctly.
-    description = 'Runs integration tests of the `spine-web` library with coverage.'
-
-    dependsOn build, installLinkedLib, ':test-app:appBeforeIntegrationTest'
-    finalizedBy ':test-app:appAfterIntegrationTest'
-
-    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-    final def coverageScript = runsOnWindows ? 'coverage:win' : 'coverage:unix'
-
-    doLast {
-        npm 'run', coverageScript
     }
 }
 
