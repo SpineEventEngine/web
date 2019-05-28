@@ -44,14 +44,14 @@ final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
  * Runs the Firebase emulator locally for the tests purposes.
  * 
  * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
- * module dependency. Stores the PID of the started emulator process to the
- * "./scripts/firebase-emulator.pid" file.
+ * module dependency. Stores the PID of the newly started emulator process to the
+ * "web/scripts/firebase-emulator.pid" file.
  */
 task runFirebase(type: com.github.psxpaul.task.ExecFork) {
     description = "Starts local Firebase server emulator."
 
-    final def clientDir = project(':web-tests').projectDir
-    workingDir = "$clientDir/node_modules/.bin"
+    final def webTestsDir = project(':web-tests').projectDir
+    workingDir = "$webTestsDir/node_modules/.bin"
 
     final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
     final def extension = runsOnWindows ? '.cmd' : ''
@@ -67,7 +67,7 @@ task runFirebase(type: com.github.psxpaul.task.ExecFork) {
 /**
  * Stops the currently running Firebase emulator by killing its process by PID.
  *
- * The PID of a process to kill is taken from the "./scripts/firebase-emulator.pid". If the
+ * The PID of a process to kill is taken from the "web/scripts/firebase-emulator.pid". If the
  * file exists, kills the process specified, then deletes the file.
  */
 task killFirebaseProcess {
@@ -75,6 +75,7 @@ task killFirebaseProcess {
 
     doLast {
         final File pidFile = file(pidFilePath)
+        
         if (pidFile.exists()) {
             final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
             final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'
