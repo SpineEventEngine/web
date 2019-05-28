@@ -25,8 +25,8 @@ import {client} from './given/firebase-client';
 
 describe('FirebaseClient subscription', function () {
 
-    // Big timeout allows state changes to be delivered.
-    this.timeout(120000);
+    // Big timeout allows to receive model state changes during tests.
+    this.timeout(120 * 1000);
 
     it('retrieves new entities', done => {
         const names = ['Task #1', 'Task #2', 'Task #3'];
