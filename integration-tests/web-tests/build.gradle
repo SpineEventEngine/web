@@ -85,6 +85,15 @@ task integrationTest {
     }
 }
 
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
+protoJs {
+    testGenProtoDir = genProtoTestDir
+
+    generateParsersTask().dependsOn compileProtoToJs
+    buildJs.dependsOn generateParsersTask()
+}
+
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
@@ -111,15 +120,6 @@ protobuf {
             compileProtoToJs.dependsOn task
         }
     }
-}
-
-apply plugin: 'io.spine.tools.proto-js-plugin'
-
-protoJs {
-    testGenProtoDir = genProtoTestDir
-
-    generateParsersTask().dependsOn compileProtoToJs
-    buildJs.dependsOn generateParsersTask()
 }
 
 idea.module {
