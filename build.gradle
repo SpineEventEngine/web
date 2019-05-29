@@ -199,3 +199,4 @@ subprojects {
 apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
 apply from: deps.scripts.repoLicenseReport
+apply from: deps.scripts.generatePom
