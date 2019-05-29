@@ -36,12 +36,10 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     @Assign
     TaskCreated handle(CreateTask command) {
-        TaskCreated.Builder taskCreated = TaskCreated
-                .newBuilder()
-                .setId(command.getId())
-                .setName(command.getName())
-                .setDescription(command.getDescription());
-
+        TaskCreated.Builder taskCreated = TaskCreated.newBuilder()
+                                                     .setId(command.getId())
+                                                     .setName(command.getName())
+                                                     .setDescription(command.getDescription());
         if (command.hasAssignee()) {
             taskCreated.setAssignee(command.getAssignee());
         }
@@ -60,12 +58,9 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     @Assign
     TaskReassigned handle(ReassignTask command) {
-
-        TaskReassigned.Builder taskReassigned = TaskReassigned
-                .newBuilder()
-                .setId(command.getId())
-                .setTo(command.getAssignee());
-
+        TaskReassigned.Builder taskReassigned = TaskReassigned.newBuilder()
+                                                              .setId(command.getId())
+                                                              .setTo(command.getAssignee());
         if (state().hasAssignee()) {
             taskReassigned.setFrom(state().getAssignee());
         }

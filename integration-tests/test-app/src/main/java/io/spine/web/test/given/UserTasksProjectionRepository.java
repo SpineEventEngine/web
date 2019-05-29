@@ -21,8 +21,10 @@
 package io.spine.web.test.given;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import io.spine.core.UserId;
 import io.spine.server.projection.ProjectionRepository;
+import io.spine.server.route.EventRouting;
 
 import static io.spine.server.route.EventRoute.noTargets;
 import static io.spine.server.route.EventRoute.withId;
@@ -33,20 +35,18 @@ import static io.spine.server.route.EventRoute.withId;
 public class UserTasksProjectionRepository extends ProjectionRepository<UserId, UserTasksProjection, UserTasks> {
 
     /**
-     * {@inheritDoc}
-     *
-     * <p>Sets up the event routing for all the types of events handled by
-     * {@link UserTasksProjection}.
+     * Sets up the event routing for all the types of events handled by {@link UserTasksProjection}.
      */
+    @OverridingMethodsMustInvokeSuper
     @Override
-    public void onRegistered() {
-        super.onRegistered();
-        eventRouting().route(TaskCreated.class, (e, ctx) -> e.hasAssignee()
-                                                            ? withId(e.getAssignee())
-                                                            : noTargets())
-                      .route(TaskReassigned.class, (e, ctx) -> e.hasFrom()
-                                                               ? ImmutableSet.of(e.getFrom(),
-                                                                                 e.getTo())
-                                                               : withId(e.getTo()));
+    protected void setupEventRouting(EventRouting<UserId> routing) {
+        routing.route(TaskCreated.class, (e, ctx) -> e.hasAssignee()
+                                                     ? withId(e.getAssignee())
+                                                     : noTargets())
+               .route(TaskReassigned.class, (e, ctx) -> e.hasFrom()
+                                                        ? ImmutableSet.of(e.getFrom(),
+                                                                          e.getTo())
+                                                        : withId(e.getTo()));
+        super.setupEventRouting(routing);
     }
 }

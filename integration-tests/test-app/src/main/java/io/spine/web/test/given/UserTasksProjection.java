@@ -34,7 +34,7 @@ import java.util.List;
  * <p>Assigned tasks count and indication of several tasks assigned are exposed as
  * {@link EntityColumn} allowing ordering and filtering when user tasks are queried.
  */
-public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasksVBuilder> {
+public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks.Builder> {
 
     protected UserTasksProjection(UserId id) {
         super(id);
@@ -52,7 +52,7 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
             List<TaskId> tasks = state().getTasksList();
             final int reassigned = tasks.indexOf(event.getId());
             builder().removeTasks(reassigned);
-        } else {
+        } else if (reassignedToThisUser(event)){
             builder().setId(event.getTo())
                      .addTasks(event.getId());
         }
@@ -70,5 +70,9 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
 
     private boolean reassignedFromThisUser(TaskReassigned event) {
         return event.hasFrom() && event.getFrom().equals(id());
+    }
+
+    private boolean reassignedToThisUser(TaskReassigned event) {
+        return event.hasTo() && event.getTo().equals(id());
     }
 }
