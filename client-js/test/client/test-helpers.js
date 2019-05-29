@@ -23,6 +23,8 @@ import {Client} from '@lib/client/client';
 import * as spineWeb from '@lib/index';
 
 /**
+ * A helper functions to fail fast async tests.
+ *
  * Can be used in callback-based async tests to fail them before waiting
  * of the full test timeout.
  *
