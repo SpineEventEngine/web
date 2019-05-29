@@ -1,0 +1,23 @@
+{
+  "name": "client-js-tests",
+  "version": "0.16.3",
+  "license": "Apache-2.0",
+  "description": "Tests of a `spine-web` JS library against the Spine-based application.",
+  "scripts": {
+    "test": "mocha --require @babel/polyfill --require @babel/register --recursive --exit --full-trace ./test",
+    "installLinkedLib": "npm link spine-web"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "assert": "^2.0.0",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "firebase": "^5.5.6",
+    "firebase-server": "^1.0.2",
+    "google-protobuf": "^3.6.0",
+    "mocha": "^5.2.0",
+    "uuid": "^3.2.1"
+  }
+}

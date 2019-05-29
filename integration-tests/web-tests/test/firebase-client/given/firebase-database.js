@@ -18,14 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+import firebase from 'firebase';
 
-include 'web'
-include 'firebase-web'
+/**
+ * The configuration of the emulated Firebase application. For details
+ * see `integration-tests/README.MD`.
+ */
+const config = {
+    databaseURL: 'ws://localhost:5000/',
+    authDomain: 'ws://localhost:5000/'
+};
 
-include 'client-js'
-include 'test-app'
-include 'web-tests'
-
-project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * A Firebase Database used for tests.
+ */
+export const firebaseDatabase = firebase.initializeApp(config).database();
