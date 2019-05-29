@@ -26,53 +26,49 @@ import io.spine.server.entity.storage.Column;
 import io.spine.server.entity.storage.EntityColumn;
 import io.spine.server.projection.Projection;
 
-/**
- * An projection with the state of type {@code spine.web.test.given.TaskItem}.
- *
- * <p>Exposes task name, description, description length, and assignee as {@link EntityColumn}
- * allowing ordering and filtering when tasks are queried.
- */
-public class TaskItemProjection extends Projection<TaskId, TaskItem, TaskItemVBuilder> {
+import java.util.List;
 
-    protected TaskItemProjection(TaskId id) {
+/**
+ * A projection representing a user and a list of {@link TaskId tasks} assigned to him.
+ *
+ * <p>Assigned tasks count and indication of several tasks assigned are exposed as
+ * {@link EntityColumn} allowing ordering and filtering when user tasks are queried.
+ */
+public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasksVBuilder> {
+
+    protected UserTasksProjection(UserId id) {
         super(id);
     }
 
     @Subscribe
     void on(TaskCreated event) {
-        builder().setId(event.getId())
-                 .setName(event.getName())
-                 .setDescription(event.getDescription())
-                 .setAssignee(event.getAssignee());
-    }
-
-    @Subscribe
-    void on(TaskRenamed event) {
-        builder().setName(event.getName());
+        builder().setId(event.getAssignee())
+                 .addTasks(event.getId());
     }
 
     @Subscribe
     void on(TaskReassigned event) {
-        builder().setAssignee(event.getAssignee());
+        if (reassignedFromThisUser(event)) {
+            List<TaskId> tasks = state().getTasksList();
+            final int reassigned = tasks.indexOf(event.getId());
+            builder().removeTasks(reassigned);
+        } else {
+            builder().setId(event.getTo())
+                     .addTasks(event.getId());
+        }
     }
 
     @Column
-    public String getName() {
-        return state().getName();
+    public int getTasksCount() {
+        return state().getTasksCount();
     }
 
     @Column
-    public String getDescription() {
-        return state().getDescription();
+    public boolean hasSeveralTasks() {
+        return state().getTasksCount() > 1;
     }
 
-    @Column
-    public UserId getAssignee() {
-        return state().getAssignee();
-    }
-
-    @Column
-    public int getDescriptionLength() {
-        return state().getDescription().length();
+    private boolean reassignedFromThisUser(TaskReassigned event) {
+        return event.hasFrom() && event.getFrom().equals(id());
     }
 }

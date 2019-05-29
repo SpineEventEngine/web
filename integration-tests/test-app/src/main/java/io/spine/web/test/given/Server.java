@@ -56,7 +56,7 @@ final class Server {
                               .build();
         boundedContext.register(new TaskRepository());
         boundedContext.register(new ProjectRepository());
-        boundedContext.register(new TaskItemProjectionRepository());
+        boundedContext.register(new UserTasksProjectionRepository());
         Application app = Application.create(boundedContext);
         return app;
     }

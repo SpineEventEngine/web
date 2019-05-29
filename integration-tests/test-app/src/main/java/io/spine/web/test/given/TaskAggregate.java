@@ -36,13 +36,17 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
     @Assign
     TaskCreated handle(CreateTask command) {
-        return TaskCreated
+        TaskCreated.Builder taskCreated = TaskCreated
                 .newBuilder()
                 .setId(command.getId())
                 .setName(command.getName())
-                .setDescription(command.getDescription())
-                .setAssignee(command.getAssignee())
-                .build();
+                .setDescription(command.getDescription());
+
+        if (command.hasAssignee()) {
+            taskCreated.setAssignee(command.getAssignee());
+        }
+
+        return taskCreated.build();
     }
 
     @Assign
@@ -56,19 +60,28 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
     @Assign
     TaskReassigned handle(ReassignTask command) {
-        return TaskReassigned
+
+        TaskReassigned.Builder taskReassigned = TaskReassigned
                 .newBuilder()
                 .setId(command.getId())
-                .setAssignee(command.getAssignee())
-                .build();
+                .setTo(command.getAssignee());
+
+        if (state().hasAssignee()) {
+            taskReassigned.setFrom(state().getAssignee());
+        }
+
+        return taskReassigned.build();
     }
 
     @Apply
     private void on(TaskCreated event) {
         builder().setId(event.getId())
                  .setName(event.getName())
-                 .setDescription(event.getDescription())
-                 .setAssignee(event.getAssignee());
+                 .setDescription(event.getDescription());
+
+        if (event.hasAssignee()) {
+            builder().setAssignee(event.getAssignee());
+        }
     }
 
     @Apply
@@ -78,6 +91,6 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
 
     @Apply
     private void on(TaskReassigned event) {
-        builder().setAssignee(event.getAssignee());
+        builder().setAssignee(event.getTo());
     }
 }

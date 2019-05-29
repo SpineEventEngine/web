@@ -21,7 +21,6 @@
 import uuid from 'uuid';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {TaskItem} from '@testProto/spine/web/test/given/task_item_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
 import {Type} from '@lib/client/typed-message';
 
@@ -120,7 +119,6 @@ TestEnvironment.DEFAULT_TASK_DESCRIPTION = 'There seems to be a bug with the rin
 TestEnvironment.TYPE = {
     OF_ENTITY: {
         TASK: Type.forClass(Task),
-        TASK_ITEM: Type.forClass(TaskItem),
         PROJECT: Type.forClass(Project),
     },
     MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
