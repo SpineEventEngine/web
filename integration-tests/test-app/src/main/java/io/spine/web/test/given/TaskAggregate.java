@@ -28,7 +28,7 @@ import io.spine.server.command.Assign;
  * An aggregate with the state of type {@code spine.web.test.Task}.
  */
 @SuppressWarnings("unused") // Reflective access.
-public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
+public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     public TaskAggregate(TaskId id) {
         super(id);
@@ -46,7 +46,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
             taskCreated.setAssignee(command.getAssignee());
         }
 
-        return taskCreated.build();
+        return taskCreated.vBuild();
     }
 
     @Assign
@@ -55,7 +55,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
                 .newBuilder()
                 .setId(command.getId())
                 .setName(command.getName())
-                .build();
+                .vBuild();
     }
 
     @Assign
@@ -70,7 +70,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, TaskVBuilder> {
             taskReassigned.setFrom(state().getAssignee());
         }
 
-        return taskReassigned.build();
+        return taskReassigned.vBuild();
     }
 
     @Apply

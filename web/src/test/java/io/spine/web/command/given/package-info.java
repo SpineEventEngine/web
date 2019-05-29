@@ -18,32 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.test.given;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.command.given;
 
-import io.spine.server.aggregate.Aggregate;
-import io.spine.server.aggregate.Apply;
-import io.spine.server.command.Assign;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/**
- * An aggregate that is used to create projects.
- */
-@SuppressWarnings("unused") // Reflective access.
-public class ProjectAggregate extends Aggregate<ProjectId, Project, Project.Builder> {
-
-    public ProjectAggregate(ProjectId id) {
-        super(id);
-    }
-
-    @Assign
-    ProjectCreated handle(CreateProject command) {
-        return ProjectCreated
-                .newBuilder()
-                .setId(command.getId())
-                .vBuild();
-    }
-
-    @Apply
-    private void on(ProjectCreated event) {
-        builder().setId(event.getId());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
