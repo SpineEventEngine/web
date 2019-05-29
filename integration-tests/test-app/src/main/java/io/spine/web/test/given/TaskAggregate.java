@@ -60,7 +60,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
     TaskReassigned handle(ReassignTask command) {
         TaskReassigned.Builder taskReassigned = TaskReassigned.newBuilder()
                                                               .setId(command.getId())
-                                                              .setTo(command.getAssignee());
+                                                              .setTo(command.getNewAssignee());
         if (state().hasAssignee()) {
             taskReassigned.setFrom(state().getAssignee());
         }

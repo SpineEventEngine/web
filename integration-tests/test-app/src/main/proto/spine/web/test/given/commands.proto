@@ -36,7 +36,7 @@ message ReassignTask {
 
     TaskId id = 1;
 
-    spine.core.UserId assignee = 2 [(required) = true];
+    spine.core.UserId new_assignee = 2 [(required) = true];
 }
 
 message CreateProject {
