@@ -65,6 +65,9 @@ task installLinkedLib {
     }
 }
 
+// TODO:2019-05-29:yegor.udovchenko: Find a way to run the same tests against `spine-web`
+// source code in `client-js` module to recover coverage.
+// See https://github.com/SpineEventEngine/web/issues/96
 /**
  * Runs integration tests of the `spine-web` library against the sample Spine-based application.
  * 
