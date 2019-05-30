@@ -33,10 +33,11 @@ describe('FirebaseClient subscription', function () {
         const newTasksCount = names.length;
         let receivedCount = 0;
 
-        const commands = TestEnvironment.createTaskCommands({
+        const commands = names.map(name => TestEnvironment.createTaskCommand({
             withPrefix: 'spine-web-test-subscribe',
-            named: names
-        });
+            named: name
+        }));
+
         const taskIds = commands.map(command => command.getId().getValue());
         commands.forEach(command => {
             client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));

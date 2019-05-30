@@ -22,6 +22,8 @@ import uuid from 'uuid';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
+import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
+import {UserId} from '@testProto/spine/core/user_id_pb';
 import {Type} from '@lib/client/typed-message';
 
 export default class TestEnvironment {
@@ -31,14 +33,23 @@ export default class TestEnvironment {
     }
 
     /**
-     * @param {?String} withId
-     * @param {?String} withPrefix
-     * @param {?String} named
-     * @param {?String} describedAs
+     * @param {{
+     *     withId?: String,
+     *     withPrefix?: String,
+     *     named?: String,
+     *     describedAs: String,
+     *     assignedTo: UserId
+     * }}
      *
      * @return {CreateTask}
      */
-    static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
+    static createTaskCommand({
+                                 withId: id,
+                                 withPrefix: idPrefix,
+                                 named: name,
+                                 describedAs: description,
+                                 assignedTo: userId
+                             }) {
         const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
         name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
@@ -49,30 +60,18 @@ export default class TestEnvironment {
         command.setName(name);
         command.setDescription(description);
 
+        if (!!userId) {
+            command.setAssignee(userId);
+        }
+
         return command;
     }
 
     /**
-     * @param {!String[]} named
-     * @param {?String} withPrefix
-     *
-     * @return {CreateTask[]}
-     */
-    static createTaskCommands({named: names, withPrefix: idPrefix}) {
-        const commands = [];
-        for (let i = 0; i < names.length; i++) {
-            const command = this.createTaskCommand({
-                withPrefix: idPrefix,
-                named: names[i]
-            });
-            commands.push(command);
-        }
-        return commands;
-    }
-
-    /**
-     * @param {!String} withId
-     * @param {!String} to
+     * @param {{
+     *     withId!: String,
+     *     to!: String
+     * }}
      *
      * @return {RenameTask}
      */
@@ -106,6 +105,15 @@ export default class TestEnvironment {
     }
 
     /**
+     * @param {?String} withPrefix
+     */
+    static userId(withPrefix) {
+        const id = new UserId();
+        id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuid.v4()}`);
+        return id;
+    }
+
+    /**
      * A function that does nothing.
      */
     static noop() {
@@ -120,6 +128,7 @@ TestEnvironment.TYPE = {
     OF_ENTITY: {
         TASK: Type.forClass(Task),
         PROJECT: Type.forClass(Project),
+        USER_TASKS: Type.forClass(UserTasks)
     },
     MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
 };
