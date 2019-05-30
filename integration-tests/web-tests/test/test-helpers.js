@@ -54,3 +54,31 @@ export function fail(done, message = '') {
     }
   };
 }
+
+/**
+ * Ensures given lists contain the same task IDs.
+ *
+ * @param {TaskId[]} actual
+ * @param {TaskId[]} expected
+ */
+export function ensureTaskIds(actual, expected) {
+    return compareArraysDeep(actual, expected, (taskId1, taskId2) =>
+        taskId1.getValue() === taskId2.getValue());
+}
+
+/**
+ * Ensures given arrays have the same elements. Uses given function
+ * to compare arrays elements.
+ *
+ * @param {Object[]}arr1
+ * @param {Object[]} arr2
+ * @param {(o1, o2) => boolean} compare compares objects of type of arrays entries
+ * @return {boolean} `true` if arrays are equal; `false` otherwise;
+ */
+function compareArraysDeep(arr1, arr2, compare) {
+    const intersection = arr1.filter(value1 => {
+        return arr2.findIndex(value2 => compare(value1, value2)) > -1;
+    });
+
+    return intersection.length === arr1.length
+}

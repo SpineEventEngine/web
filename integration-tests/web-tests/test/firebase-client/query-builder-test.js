@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import {fail} from '../test-helpers';
+import {fail, ensureTaskIds} from '../test-helpers';
 import TestEnvironment from './given/test-environment';
 import {client} from './given/firebase-client';
 
@@ -37,9 +37,20 @@ describe('FirebaseClient query', function () {
         environmentPrepared = TestEnvironment.createTwoTasksFor([user1, user2], client);
     });
 
-    it('receives user tasks', done => {
+    it('test environment is initialized correctly', done => {
         environmentPrepared.then(() => {
-            done();
+            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.USER_TASKS}).atOnce()
+                .then(userTasksList => {
+                    let userTasksPresent = true;
+
+                    [user1, user2].forEach(user => {
+                        let userTasks = userTasksList.find(userTasks =>
+                            userTasks.getId().getValue() === user.id.getValue());
+                        userTasksPresent = !!userTasks && ensureTaskIds(userTasks.getTasksList(), user.tasks);
+                    });
+                    assert.ok(userTasksPresent);
+                    done();
+                }, fail(done));
         });
     });
 });
