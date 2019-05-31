@@ -34,6 +34,10 @@ import {Type} from '@lib/client/typed-message';
  * @property {TaskId[]} tasks
  */
 
+/**
+ * The class for preparation of a test environment using a sample application
+ * defined in `test-app` module. Allows to create and update tasks.
+ */
 export default class TestEnvironment {
 
     constructor() {
@@ -76,43 +80,6 @@ export default class TestEnvironment {
     }
 
     /**
-     * Creates two assigned tasks for each user in a given list.
-     *
-     * @param {User[]} users a list of users to create tasks for
-     * @param {Client} client a Spine client to send commands
-     * @return {Promise} a promise to be resolved when all `CreateTask` commands acknowledged;
-     *                   rejected if an error occurs;
-     */
-    static createTwoTasksFor(users, client) {
-        const createTaskPromises = [];
-        users.forEach(user => {
-            for (let i = 0; i < 2; i++) {
-                const command = TestEnvironment.createTaskCommand({
-                    named: `task#${i + 1}-for-${user.name}`,
-                    assignedTo: user.id
-                });
-                const taskId = command.getId();
-
-                let createTaskAcknowledged;
-                let createTaskFailed;
-
-                const promise = new Promise((resolve, reject) => {
-                    createTaskAcknowledged = resolve;
-                    createTaskFailed = reject;
-                });
-                createTaskPromises.push(promise);
-                client.sendCommand(command, () => {
-                    user.tasks.push(taskId);
-                    createTaskAcknowledged();
-
-                }, createTaskFailed);
-            }
-        });
-
-        return Promise.all(createTaskPromises);
-    }
-
-    /**
      * @param {{
      *     withId!: String,
      *     to!: String
@@ -147,28 +114,6 @@ export default class TestEnvironment {
         const taskId = new TaskId();
         taskId.setValue(value);
         return taskId;
-    }
-
-    /**
-     * @param {?String} withPrefix
-     * @return {UserId}
-     */
-    static userId(withPrefix) {
-        const id = new UserId();
-        id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuid.v4()}`);
-        return id;
-    }
-
-    /**
-     * @param {?String} withName
-     * @return {User}
-     */
-    static newUser(withName) {
-        return {
-            name: withName,
-            id: TestEnvironment.userId(withName),
-            tasks: []
-        }
     }
 
     /**

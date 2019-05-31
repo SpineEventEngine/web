@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 import {fail, ensureUserTasks} from '../../test-helpers';
-import TestEnvironment from '../given/test-environment';
+import {UserTasksTestEnvironment as TestEnvironment} from './given';
 import {client} from '../given/firebase-client';
 import {TypedMessage} from '@lib/index';
 
