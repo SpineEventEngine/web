@@ -77,4 +77,24 @@ describe('FirebaseClient query returns correct values', function () {
                 .catch(() => fail(done));
         });
     });
+
+    it('with inappropriate filter, at once', done => {
+        environmentPrepared.then(() => {
+            const query = client._requestFactory.query()
+                .select(TestEnvironment.TYPE.OF_ENTITY.USER_TASKS)
+                .byIds(typedUserIds())
+                .where([
+                    Filters.eq('tasksCount', TypedMessage.int32(100))
+                ])
+                .build();
+
+            client._fetchOf(query)
+                .atOnce()
+                .then(userTasksList => {
+                    assert.ok(ensureUserTasks(userTasksList, []));
+                    done();
+                })
+                .catch(() => fail(done));
+        });
+    });
 });
