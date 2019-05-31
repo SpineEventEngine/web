@@ -46,6 +46,9 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
                  .addTasks(event.getId());
     }
 
+    // TODO 5/31/2019[yegor.udovchenko]: Remove @CheckReturnValue suppression
+    // for `remove` operation
+    @SuppressWarnings("CheckReturnValue")
     @Subscribe
     void on(TaskReassigned event) {
         if (reassignedFromThisUser(event)) {
