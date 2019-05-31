@@ -62,8 +62,30 @@ export function fail(done, message = '') {
  * @param {TaskId[]} expected
  */
 export function ensureTaskIds(actual, expected) {
-    return compareArraysDeep(actual, expected, (taskId1, taskId2) =>
+    return arraysEqualDeep(actual, expected, (taskId1, taskId2) =>
         taskId1.getValue() === taskId2.getValue());
+}
+
+/**
+ * Ensures given lists contain the same user IDs.
+ *
+ * @param {UserId[]} actual
+ * @param {UserId[]} expected
+ */
+export function ensureUserIds(actual, expected) {
+    return arraysEqualDeep(actual, expected, (userId1, userId2) =>
+        userId1.getValue() === userId2.getValue());
+}
+
+/**
+ * Ensures given list of `UserTasks` contains items with expected IDs.
+ *
+ * @param {UserTasks[]} actualUserTasks
+ * @param {UserId[]} expectedUserIds
+ */
+export function ensureUserTasks(actualUserTasks, expectedUserIds) {
+    const actualUserIds = actualUserTasks.map(userTasks => userTasks.getId());
+    return ensureUserIds(actualUserIds, expectedUserIds);
 }
 
 /**
@@ -75,7 +97,7 @@ export function ensureTaskIds(actual, expected) {
  * @param {(o1, o2) => boolean} compare compares objects of type of arrays entries
  * @return {boolean} `true` if arrays are equal; `false` otherwise;
  */
-function compareArraysDeep(arr1, arr2, compare) {
+function arraysEqualDeep(arr1, arr2, compare) {
     const intersection = arr1.filter(value1 => {
         return arr2.findIndex(value2 => compare(value1, value2)) > -1;
     });
