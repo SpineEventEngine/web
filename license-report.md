@@ -634,7 +634,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jun 03 13:24:01 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.16.3`
@@ -647,7 +647,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **encoding@0.1.12**
      * Licenses: MIT
      * Repository: [https://github.com/andris9/encoding](https://github.com/andris9/encoding)
-1. **google-protobuf@3.7.1**
+1. **google-protobuf@3.8.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/protocolbuffers/protobuf/tree/master/js](https://github.com/protocolbuffers/protobuf/tree/master/js)
 1. **iconv-lite@0.4.24**
@@ -1177,7 +1177,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **binary-extensions@1.13.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/binary-extensions](https://github.com/sindresorhus/binary-extensions)
-1. **bluebird@3.5.4**
+1. **bluebird@3.5.5**
      * Licenses: MIT
      * Repository: [https://github.com/petkaantonov/bluebird](https://github.com/petkaantonov/bluebird)
 1. **bn.js@4.11.8**
@@ -1213,7 +1213,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **browserify-zlib@0.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/devongovett/browserify-zlib](https://github.com/devongovett/browserify-zlib)
-1. **browserslist@4.6.0**
+1. **browserslist@4.6.1**
      * Licenses: MIT
      * Repository: [https://github.com/browserslist/browserslist](https://github.com/browserslist/browserslist)
 1. **buffer-from@1.1.1**
@@ -1261,7 +1261,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **chownr@1.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/chownr](https://github.com/isaacs/chownr)
-1. **chrome-trace-event@1.0.0**
+1. **chrome-trace-event@1.0.2**
      * Licenses: MIT
      * Repository: [github.com:samccone/chrome-trace-event](github.com:samccone/chrome-trace-event)
 1. **cipher-base@1.0.4**
@@ -1333,19 +1333,19 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **copy-descriptor@0.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/copy-descriptor](https://github.com/jonschlinkert/copy-descriptor)
-1. **core-js-compat@3.1.2**
+1. **core-js-compat@3.1.3**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
-1. **core-js-pure@3.1.2**
+1. **core-js-pure@3.1.3**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
-1. **core-js@2.6.8**
+1. **core-js@2.6.9**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
 1. **core-js@3.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
-1. **core-js@3.1.2**
+1. **core-js@3.1.3**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
 1. **core-util-is@1.0.2**
@@ -1398,7 +1398,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/sindresorhus/decamelize](https://github.com/sindresorhus/decamelize)
 1. **decode-uri-component@0.2.0**
      * Licenses: MIT
-     * Repository: [https://github.com/SamVerschueren/decode-uri-component](https://github.com/SamVerschueren/decode-uri-component)
+     * Repository: [https://github.com/samverschueren/decode-uri-component](https://github.com/samverschueren/decode-uri-component)
 1. **deep-extend@0.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/unclechu/node-deep-extend](https://github.com/unclechu/node-deep-extend)
@@ -1444,7 +1444,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.136**
+1. **electron-to-chromium@1.3.143**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.4.1**
@@ -2035,7 +2035,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **node-pre-gyp@0.12.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/mapbox/node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
-1. **node-releases@1.1.20**
+1. **node-releases@1.1.22**
      * Licenses: MIT
      * Repository: [https://github.com/chicoxyzzy/node-releases](https://github.com/chicoxyzzy/node-releases)
 1. **nopt@4.0.1**
@@ -2392,7 +2392,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **semver@5.7.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
-1. **semver@6.0.0**
+1. **semver@6.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
 1. **serialize-javascript@1.7.0**
@@ -2409,7 +2409,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
 1. **setimmediate@1.0.5**
      * Licenses: MIT
-     * Repository: [https://github.com/YuzuJS/setImmediate](https://github.com/YuzuJS/setImmediate)
+     * Repository: [https://github.com/yuzujs/setImmediate](https://github.com/yuzujs/setImmediate)
 1. **sha.js@2.4.11**
      * Licenses: (MIT AND BSD-3-Clause)
      * Repository: [https://github.com/crypto-browserify/sha.js](https://github.com/crypto-browserify/sha.js)
@@ -2563,10 +2563,10 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **teeny-request@3.11.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/fhinkel/teeny-request](https://github.com/fhinkel/teeny-request)
-1. **terser-webpack-plugin@1.2.4**
+1. **terser-webpack-plugin@1.3.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack-contrib/terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
-1. **terser@3.17.0**
+1. **terser@4.0.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/fabiosantoscode/terser](https://github.com/fabiosantoscode/terser)
 1. **test-exclude@5.2.3**
@@ -2611,7 +2611,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **typedarray@0.0.6**
      * Licenses: MIT
      * Repository: [https://github.com/substack/typedarray](https://github.com/substack/typedarray)
-1. **uglify-js@3.5.15**
+1. **uglify-js@3.6.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/mishoo/UglifyJS2](https://github.com/mishoo/UglifyJS2)
 1. **unicode-canonical-property-names-ecmascript@1.0.4**
@@ -2689,7 +2689,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **webpack-sources@1.3.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-sources](https://github.com/webpack/webpack-sources)
-1. **webpack@4.32.1**
+1. **webpack@4.32.2**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack](https://github.com/webpack/webpack)
 1. **websocket-driver@0.7.0**
@@ -2728,7 +2728,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
 1. **wrappy@1.0.2**
      * Licenses: ISC
      * Repository: [https://github.com/npm/wrappy](https://github.com/npm/wrappy)
-1. **write-file-atomic@2.4.2**
+1. **write-file-atomic@2.4.3**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/write-file-atomic](https://github.com/iarna/write-file-atomic)
 1. **xmlhttprequest@1.8.0**
@@ -2766,7 +2766,7 @@ This report was generated on **Wed May 29 13:43:25 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Wed May 29 2019 13:43:27 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Mon Jun 03 2019 13:24:12 GMT+0300 (FLE Daylight Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3820,7 +3820,7 @@ This report was generated on **Wed May 29 2019 13:43:27 GMT+0300 (Eastern Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed May 29 13:43:44 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jun 03 13:24:39 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5817,7 +5817,7 @@ This report was generated on **Wed May 29 13:43:44 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed May 29 13:46:11 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jun 03 13:27:52 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6520,7 +6520,7 @@ This report was generated on **Wed May 29 13:46:11 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed May 29 13:46:19 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jun 03 13:28:13 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -7159,4 +7159,4 @@ This report was generated on **Wed May 29 13:46:19 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed May 29 13:46:27 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Jun 03 13:28:37 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
