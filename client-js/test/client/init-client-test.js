@@ -20,8 +20,6 @@
 
 import assert from 'assert';
 
-import {devFirebaseDatabase} from './test-firebase-database';
-
 import * as testProtobuf from '@testProto/index';
 import {init} from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
@@ -44,7 +42,9 @@ class Given {
     return {
       protoIndexFiles: Given.PROTO_FILES,
       endpointUrl: Given.ENDPOINT_URL,
-      firebaseDatabase: devFirebaseDatabase,
+      firebaseDatabase: {
+        // There's no need to pass real Firebase database for these tests
+      },
       actorProvider: Given.ACTOR_PROVIDER
     };
   }

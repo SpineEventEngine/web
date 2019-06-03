@@ -18,28 +18,125 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.appengine
+apply from: "$rootDir/config/gradle/js/build-tasks.gradle"
+apply plugin: 'com.google.protobuf'
+
+ext {
+    testSrcDir = "$projectDir/test"
+    genProtoBaseDir = projectDir
+    genProtoSubDir = "proto"
+    genProtoTestDir = "$testSrcDir/$genProtoSubDir"
+    nycOutputDir = "$projectDir/.nyc_output"
+    packageLockFile = "$projectDir/package-lock.json"
+}
+
+dependencies {
+    testProtobuf project(":test-app")
+}
+
+/**
+ * Cleans old module dependencies and build outputs.
+ */
+task deleteCompiled {
+    description = 'Cleans old module dependencies and build outputs.'
+
+    clean.dependsOn deleteCompiled
+
+    doLast {
+        delete genProtoTestDir
+        delete packageLockFile
+        delete nycOutputDir
     }
 }
 
-apply from: "$rootDir/version.gradle"
-apply from: "$projectDir/scripts/appengine-descriptor.gradle"
+/**
+ * Installs unpublished artifact of `spine-web` library as a module dependency.
+ *
+ * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
+ * the current project. See https://docs.npmjs.com/cli/link for details.
+ */
+task installLinkedLib {
+    description = 'Install unpublished artifact of `spine-web` library as a module dependency.'
 
-apply plugin: 'java'
-apply plugin: 'war'
-apply plugin: 'com.google.cloud.tools.appengine'
-apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: "$rootDir/config/gradle/model-compiler.gradle"
+    dependsOn ':client-js:link'
 
-dependencies {
-    implementation project(":firebase-web")
-    implementation "io.spine:spine-server:$spineVersion"
-
-    implementation "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
+    doLast {
+        npm 'run', 'installLinkedLib'
+    }
 }
 
-appengine {
-    deploy.project = 'spine-dev'
+// TODO:2019-05-29:yegor.udovchenko: Find a way to run the same tests against `spine-web`
+// source code in `client-js` module to recover coverage.
+// See https://github.com/SpineEventEngine/web/issues/96
+/**
+ * Runs integration tests of the `spine-web` library against the sample Spine-based application.
+ * 
+ * Runs the sample Spine-based application from the `test-app` module before integration
+ * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
+ */
+task integrationTest {
+    description = 'Runs integration tests of the `spine-web` library agains the sample application.'
+
+    dependsOn build, installLinkedLib, ':test-app:appBeforeIntegrationTest'
+    finalizedBy ':test-app:appAfterIntegrationTest'
+
+    doLast {
+        npm 'run', 'test'
+    }
 }
+
+apply plugin: 'io.spine.tools.proto-js-plugin'
+
+protoJs {
+    testGenProtoDir = genProtoTestDir
+
+    generateParsersTask().dependsOn compileProtoToJs
+    buildJs.dependsOn generateParsersTask()
+}
+
+protobuf {
+    generatedFilesBaseDir = genProtoBaseDir
+    protoc {
+        artifact = deps.build.protoc
+    }
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                // Do not use java builtin output in this project.
+                remove java
+
+                // For information on JavaScript code generation please see
+                // https://github.com/google/protobuf/blob/master/js/README.md
+                js {
+                    option "import_style=commonjs"
+                    outputSubDir = genProtoSubDir
+                }
+
+                task.generateDescriptorSet = true
+                final def testClassifier = task.sourceSet.name == "test" ? "_test" : ""
+                final def descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
+                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}"
+            }
+            compileProtoToJs.dependsOn task
+        }
+    }
+}
+
+idea.module {
+    testSourceDirs += file(testSrcDir)
+
+    excludeDirs += file(genProtoTestDir)
+
+    iml {
+        beforeMerged { module ->
+            module.dependencies.clear()
+        }
+        whenMerged { module ->
+            module.dependencies*.exported = true
+        }
+    }
+}
+
+// Suppress building the JS project as a Java module.
+project.compileJava.enabled = false
+project.compileTestJava.enabled = false

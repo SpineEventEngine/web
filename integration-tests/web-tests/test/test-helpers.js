@@ -18,10 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as testProtobuf from '@testProto/index';
-import {Client} from '@lib/client/client';
-import * as spineWeb from '@lib/index';
-
 /**
  * A helper functions to fail fast async tests.
  *
@@ -54,19 +50,7 @@ export function fail(done, message = '') {
     if (message) {
      done(new Error(`Test failed. Cause: ${message}`));
     } else {
-     done(new Error(`Test failed. Cause: ${cause ? JSON.stringify(cause) : 'not identified'}`));
+     done(new Error(`Test failed. Cause: ${cause ? cause : 'not identified'}`));
     }
   };
-}
-
-export class MockClient extends Client {
-    // There is no need to implement `Client` for tests
-    // which don't use its API
-}
-
-export function registerProtobufTypes() {
-    spineWeb.init({
-       protoIndexFiles: [testProtobuf],
-       implementation: new MockClient()
-    });
 }

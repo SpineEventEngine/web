@@ -1,5 +1,4 @@
 node_modules
-dist
-**/proto
 package-lock.json
 .nyc_output
+**/proto/**

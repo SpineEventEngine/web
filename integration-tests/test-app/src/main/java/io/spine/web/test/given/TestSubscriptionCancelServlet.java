@@ -18,14 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.test.given;
 
-include 'web'
-include 'firebase-web'
+import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
 
-include 'client-js'
-include 'test-app'
-include 'web-tests'
+import javax.servlet.annotation.WebServlet;
 
-project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+import static io.spine.web.test.given.Server.application;
+
+/**
+ * An endpoint canceling the client entity change subscriptions.
+ */
+@WebServlet("/subscription/cancel")
+@SuppressWarnings("serial")
+public class TestSubscriptionCancelServlet extends SubscriptionCancelServlet {
+
+    public TestSubscriptionCancelServlet() {
+        super(application().subscriptionBridge());
+    }
+}

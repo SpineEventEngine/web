@@ -18,14 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+package io.spine.web.test.given;
 
-include 'web'
-include 'firebase-web'
+import io.spine.web.subscription.servlet.SubscriptionKeepUpServlet;
 
-include 'client-js'
-include 'test-app'
-include 'web-tests'
+import javax.servlet.annotation.WebServlet;
 
-project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+import static io.spine.web.test.given.Server.application;
+
+/**
+ * An endpoint for client requests to keep subscription running.
+ */
+@WebServlet("/subscription/keep-up")
+@SuppressWarnings("serial")
+public class TestSubscriptionKeepUpServlet extends SubscriptionKeepUpServlet {
+
+    public TestSubscriptionKeepUpServlet() {
+        super(application().subscriptionBridge());
+    }
+}

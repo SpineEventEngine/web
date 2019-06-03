@@ -18,14 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'web'
+import {firebaseDatabase} from "./firebase-database";
+import * as testProtobuf from '@testProto/index';
+import * as spineWeb from '@lib/index';
+import {ActorProvider} from '@lib/client/actor-request-factory';
 
-include 'web'
-include 'firebase-web'
+/**
+ * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
+ * local backend server and the emulated Firebase application.
+ * See `integration-tests/README.MD` for details.
+ *
+ * @param endpointUrl the URL of a backend to interact with; has the default value
+ *                    of a local backend server;
+ * @return {FirebaseClient} the Firebase client instance
+ */
+export function initClient(endpointUrl = 'http://localhost:8080') {
+    return spineWeb.init({
+        protoIndexFiles: [testProtobuf],
+        endpointUrl: endpointUrl,
+        firebaseDatabase: firebaseDatabase,
+        actorProvider: new ActorProvider()
+    });
+}
 
-include 'client-js'
-include 'test-app'
-include 'web-tests'
-
-project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+/**
+ * A {@link FirebaseClient client} instance for tests.
+ *
+ * @type {FirebaseClient}
+ */
+export const client = initClient();
