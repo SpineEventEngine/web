@@ -46,6 +46,8 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
                  .addTasks(event.getId());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    // A false positive because `removeTasks` method should allow ignoring the return value.
     @Subscribe
     void on(TaskReassigned event) {
         if (reassignedFromThisUser(event)) {
