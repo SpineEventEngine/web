@@ -30,24 +30,6 @@ import TestEnvironment from '../given/test-environment';
 export class UserTasksTestEnvironment extends TestEnvironment {
 
     /**
-     * Creates two assigned tasks for each user in a given list.
-     *
-     * @param {User[]} users a list of users to create tasks for
-     * @param {Client} client a Spine client to send commands
-     * @return {Promise} a promise to be resolved when all `CreateTask` commands acknowledged;
-     *                   rejected if an error occurs;
-     */
-    static createTwoTasksFor(users, client) {
-        const createTaskPromises = [];
-        users.forEach(user => {
-            const promise = UserTasksTestEnvironment.createTaskFor(user, 2, client);
-            createTaskPromises.push(promise);
-        });
-
-        return Promise.all(createTaskPromises);
-    }
-
-    /**
      * Creates requested amount of tasks assigned to the given user.
      *
      * @param {User} user a user to create tasks for
@@ -76,7 +58,6 @@ export class UserTasksTestEnvironment extends TestEnvironment {
             client.sendCommand(command, () => {
                 user.tasks.push(taskId);
                 createTaskAcknowledged();
-
             }, createTaskFailed);
         }
 

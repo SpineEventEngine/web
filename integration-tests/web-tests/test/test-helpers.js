@@ -56,17 +56,6 @@ export function fail(done, message = '') {
 }
 
 /**
- * Ensures given lists contain the same task IDs.
- *
- * @param {TaskId[]} actual
- * @param {TaskId[]} expected
- */
-export function ensureTaskIds(actual, expected) {
-    return arraysEqualDeep(actual, expected, (taskId1, taskId2) =>
-        taskId1.getValue() === taskId2.getValue());
-}
-
-/**
  * Ensures given lists contain the same user IDs.
  *
  * @param {UserId[]} actual
@@ -81,10 +70,14 @@ export function ensureUserIds(actual, expected) {
  * Ensures given list of `UserTasks` contains items with expected IDs.
  *
  * @param {UserTasks[]} actualUserTasks
- * @param {UserId[]} expectedUserIds
+ * @param {{
+ *     id: UserId,
+ *     tasks: TaskId[]
+ * }[]} expectedUsers
  */
-export function ensureUserTasks(actualUserTasks, expectedUserIds) {
+export function ensureUserTasks(actualUserTasks, expectedUsers) {
     const actualUserIds = actualUserTasks.map(userTasks => userTasks.getId());
+    const expectedUserIds = expectedUsers.map(user => user.id);
     return ensureUserIds(actualUserIds, expectedUserIds);
 }
 
