@@ -152,46 +152,25 @@ describe('FirebaseClient executes query built', function () {
         }
     ];
 
-    /**
-     * Prepares query for the given test.
-     */
-    function queryFor(test) {
-        const queryBuilder = client._requestFactory.query()
-            .select(TestEnvironment.TYPE.OF_ENTITY.USER_TASKS)
-            .byIds(test.ids ? test.ids() : allUserIds());
-
-        if (!!test.filters) {
-            queryBuilder.where(test.filters)
-        }
-
-        return queryBuilder.build();
-    }
-
     tests.forEach(test => {
-        const message = `${test.message} and returns correct values`;
+        it(`${test.message} and returns correct values`, done => {
 
-        it(`${message} at once`, done => {
-            client._fetchOf(queryFor(test))
-                .atOnce()
+            const queryBuilder = client.newQuery()
+                .select(TestEnvironment.TYPE.OF_ENTITY.USER_TASKS)
+                .byIds(test.ids ? test.ids() : allUserIds());
+
+            if (!!test.filters) {
+                queryBuilder.where(test.filters)
+            }
+
+            const query = queryBuilder.build();
+
+            client.execute(query)
                 .then(userTasksList => {
                     assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
                     done();
                 })
                 .catch(() => fail(done));
-        });
-
-        it(`${message} one by one`, done => {
-            const receivedItems = [];
-            client._fetchOf(queryFor(test))
-                .oneByOne()
-                .subscribe({
-                    next: value => receivedItems.push(value),
-                    error: fail(done),
-                    complete: () => {
-                        assert.ok(ensureUserTasks(receivedItems, test.expectedUsers()));
-                        done();
-                    }
-                });
         });
     });
 });

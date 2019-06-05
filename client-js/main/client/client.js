@@ -47,63 +47,6 @@
  */
 
 /**
- * An abstract Fetch that can fetch the data of a provided query in one of two ways
- * (one-by-one or all-at-once) using the provided backend.
- *
- * Fetch is a static member of the `Client`.
- *
- * @template <T>
- * @abstract
- */
-export class Fetch {
-
-  /**
-   * @param {!spine.client.Query} query a request to the read-side
-   * @param {!Client} client the client which is used to fetch the query results
-   */
-  constructor({of: query, using: client}) {
-    this._query = query;
-    this._client = client;
-  }
-
-  /**
-   * Fetches entities one-by-one using an observable. Provides each entity as a new value for
-   * the subscribed Observer.
-   *
-   * This method is suitable for big collections of data where ordering is not essential.
-   *
-   * @example
-   * // To query all entities of developer-defined Task type one-by-one:
-   * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(task) { ... },
-   *   error(error) { ... },
-   *   complete() { ... }
-   * })
-   *
-   * @return {Observable<Object, SpineError>} an observable retrieving values one at a time.
-   * @abstract
-   */
-  oneByOne() {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
-   * Fetches all query results at once fulfilling a promise with an array of entities.
-   *
-   * @example
-   * // To query all entities of developer-defined Task type at once:
-   * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
-   *
-   * @return {Promise<Object[]>} a promise to be fulfilled with an array of entities matching query
-   *                             or to be rejected with a `SpineError`
-   * @abstract
-   */
-  atOnce() {
-    throw new Error('Not implemented in abstract base.');
-  }
-}
-
-/**
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
  *
@@ -112,31 +55,33 @@ export class Fetch {
 export class Client {
 
   /**
-   * Defines a fetch query of all entities matching the filters provided as arguments.
-   * This fetch is executed later upon calling the corresponding `.oneByOne()` and
-   * `.atOnce()` methods.
    *
-   * `fetchAll(...).oneByOne()` queries the entities returning them in asynchronous manner using
-   * an observable. A subscriber is added to an observable to process each next entity or handle
-   * the error during the operation.
+   */
+  newQuery() {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    *
-   * `fetchAll(...).atOnce()` queries all the entities at once fulfilling a returned promise
+   * @param query
+   */
+  execute(query) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Queries all the entities of the given type at once fulfilling a returned promise
    * with an array of objects.
    *
    * @example
-   * // Fetch all entities of a developer-defined Task type one-by-one using an observable.
-   * fetchAll({ofType: taskType}).oneByOne().subscribe({
-   *   next(task) { ... },
-   *   error(error) { ... },
-   *   complete() { ... }
-   * })
-   * @example
    * // Fetch all entities of a developer-defined Task type at once using a Promise.
-   * fetchAll({ofType: taskType}).atOnce().then(tasks => { ... })
+   * fetchAll({ofType: taskType}).then(tasks => { ... })
    *
    * @param {!Type<T>} ofType a type of the entities to be queried
-   * @return {Client.Fetch<T>} a fetch object allowing to specify additional remote
-   *                                call parameters and executed the query.
+   * @return {Promise<T[]>} a promise to be fulfilled with a a single data item as a
+   *        Protobuf message of a given type or `null` if an entity with a given ID is missing;
+   *        rejected with a `SpineError` if error occurs;
+   *
    *
    * @template <T>
    */
@@ -147,17 +92,15 @@ export class Client {
   /**
    * Fetches a single entity of the given type.
    *
-   * @param {!Type<T>} type a type URL of the target entity
+   * @param {!T} ofType a type of the target entity
    * @param {!Message} id an ID of the target entity
-   * @param {!consumerCallback<Message>>} dataCallback
-   *        a callback receiving a single data item as a Protobuf message of a given type; receives `null` if an
-   *        entity with a given ID is missing
-   * @param {?consumerCallback<SpineError>} errorCallback
-   *        a callback receiving an error
+   * @return {Promise<T>} a promise to be fulfilled with a a single data item as a
+   *        Protobuf message of a given type or `null` if an entity with a given ID is missing;
+   *        rejected with a `SpineError` if error occurs;
    *
    * @template <T>
    */
-  fetchById(type, id, dataCallback, errorCallback) {
+  fetchById({ofType: type, id: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -221,16 +164,3 @@ export class Client {
     throw new Error('Not implemented in abstract base.');
   }
 }
-
-/**
- * @typedef {Fetch} FetchClass
- */
-
-/**
- * Fetches the results of the query from the server using the provided backend.
- *
- * Fetch is a static member of the `Client`.
- *
- * @type FetchClass
- */
-Client.Fetch = Fetch;

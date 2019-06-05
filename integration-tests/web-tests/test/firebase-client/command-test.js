@@ -45,14 +45,15 @@ describe('FirebaseClient command sending', function () {
 
         client.sendCommand(command, () => {
 
-            client.fetchById(TestEnvironment.TYPE.OF_ENTITY.TASK, taskId, data => {
-                assert.equal(data.getId().getValue(), taskId);
-                assert.equal(data.getName(), command.getName());
-                assert.equal(data.getDescription(), command.getDescription());
+            client.fetchById({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK, id: taskId})
+                .then(data => {
+                    assert.equal(data.getId().getValue(), taskId);
+                    assert.equal(data.getName(), command.getName());
+                    assert.equal(data.getDescription(), command.getDescription());
 
-                done();
+                    done();
 
-            }, fail(done));
+                }, fail(done));
 
         }, fail(done), fail(done));
     });
@@ -93,6 +94,7 @@ describe('FirebaseClient command sending', function () {
                 try {
                     assert.ok(error instanceof CommandValidationError);
                     assert.ok(error.validationError());
+                    // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
                     // assert.ok(error.assuresCommandNeglected());
 
                     const cause = error.getCause();

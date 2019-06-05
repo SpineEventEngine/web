@@ -51,36 +51,27 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  fetchAll({ofType: type}) {
-    const query = this._requestFactory.query().select(type).build();
-    return this._fetchOf(query);
+  newQuery() {
+    return this._requestFactory.query();
   }
 
   /**
    * @inheritDoc
    */
-  fetchById(type, id, dataCallback, errorCallback) {
+  fetchAll({ofType: type}) {
+    const query = this.newQuery().select(type).build();
+    return this.execute(query);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  fetchById({ofType: type, id: id}) {
     const typedId = TypedMessage.of(id);
-    const query = this._requestFactory.query().select(type).byIds([typedId]).build();
+    const query = this.newQuery().select(type).byIds([typedId]).build();
 
-    let itemReceived = false;
-
-    const observer = {
-      next: item => {
-        itemReceived = true;
-        dataCallback(item);
-      },
-      complete: () => {
-        if (!itemReceived) {
-          dataCallback(null);
-        }
-      }
-    };
-
-    if (errorCallback) {
-      observer.error = errorCallback;
-    }
-    this._fetchOf(query).oneByOne().subscribe(observer);
+    return this.execute(query)
+          .then(items => !items.length ? null : items[0])
   }
 
   /**
@@ -137,19 +128,6 @@ export class AbstractClient extends Client {
       topic = this._requestFactory.topic().all({of: type});
     }
     return this._subscribeTo(topic);
-  }
-
-  /**
-   * Creates a new `Fetch` object specifying the target of fetch and its parameters.
-   *
-   * @param {!spine.client.Query} query a request to the read-side
-   * @return {Client.Fetch<T>} an object that performs the fetch
-   * @template <T> type of Fetch results
-   * @protected
-   * @abstract
-   */
-  _fetchOf(query) {
-    throw new Error('Not implemented in abstract base.');
   }
 
   /**

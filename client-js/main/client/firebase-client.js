@@ -20,13 +20,11 @@
 
 "use strict";
 
-import {Observable, Observer, Subject, Subscription} from 'rxjs';
-import {SpineError} from './errors';
+import {Observable, Subject, Subscription} from 'rxjs';
 import {
   Subscription as SpineSubscription,
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
-import {Fetch} from './client';
 import {AbstractClientFactory} from './client-factory';
 import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
@@ -35,118 +33,6 @@ import {HttpEndpoint} from './http-endpoint';
 import {FirebaseDatabaseClient} from './firebase-database-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
-
-/**
- * Fetch implementation using `FirebaseClient` as value storage.
- *
- * @see Fetch
- * @see Client#fetchAll()
- */
-class FirebaseFetch extends Fetch {
-
-  /**
-   * @param {!spine.client.Query} query a request to the read-side
-   * @param {!FirebaseClient} client a client used to execute requests
-   */
-  constructor({of: query, using: client}) {
-    super({of: query, using: client});
-  }
-
-  /**
-   * @inheritDoc
-   */
-  oneByOne() {
-    return this._fetchManyOneByOne();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  atOnce() {
-    return this._fetchManyAtOnce();
-  }
-
-  /**
-   * Executes a request to fetch many values from Firebase one-by-one.
-   *
-   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                             that be rejected with an `SpineError`
-   */
-  _fetchManyOneByOne() {
-    return Observable.create(observer => {
-
-      let receivedCount = 0;
-      let promisedCount = null;
-      let dbSubscription = null;
-
-      this._client._endpoint.query(this._query)
-        .then(({path, count}) => {
-          if (typeof count === 'undefined') {
-            count = 0;
-          } else if (isNaN(count)) {
-            throw new SpineError('Unexpected format of `count`');
-          }
-          promisedCount = parseInt(count);
-          return path;
-        })
-        .then(path => {
-          if (receivedCount === promisedCount) {
-            FirebaseFetch._complete(observer);
-          }
-          dbSubscription = this._client._firebase.onChildAdded(path, value => {
-            const typeUrl = this._query.getTarget().getType();
-            const message = ObjectToProto.convert(value, typeUrl);
-
-            observer.next(message);
-            receivedCount++;
-            if (receivedCount === promisedCount) {
-              FirebaseFetch._complete(observer, dbSubscription);
-            }
-          });
-        })
-        .catch(observer.error);
-
-      // Returning tear down logic.
-      return () => {
-        if (dbSubscription) {
-          dbSubscription.unsubscribe();
-        }
-      };
-    });
-  }
-
-  /**
-   * A method completing an observer unsubscribing the Firebase subscriptions
-   *
-   * @param {!Observer} observer an observer that resolves query values
-   * @param {?Subscription} dbSubscription a Firebase subscription
-   * @private
-   */
-  static _complete(observer, dbSubscription) {
-    if (dbSubscription) {
-      dbSubscription.unsubscribe();
-    }
-    observer.complete();
-  }
-
-  /**
-   * Executes a request to fetch many values from Firebase as an array of objects.
-   *
-   * @return {Promise<Object[]>} a promise resolving an array of entities matching query,
-   *                             that be rejected with an `SpineError`
-   */
-  _fetchManyAtOnce() {
-    return new Promise((resolve, reject) => {
-      this._client._endpoint.query(this._query)
-        .then(({path}) => this._client._firebase.getValues(path, values => {
-          const typeUrl = this._query.getTarget().getType();
-          const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
-          resolve(messages);
-        }))
-        .catch(error => reject(error));
-    });
-  }
-}
 
 /**
  * A subscription to entity changes on application backend.
@@ -217,12 +103,17 @@ export class FirebaseClient extends AbstractClient {
 
   /**
    * @inheritDoc
-   * @return {Client.Fetch<T>}
-   * @template <T>
    */
-  _fetchOf(query) {
-    // noinspection JSValidateTypes A static member class type is not resolved properly.
-    return new FirebaseClient.Fetch({of: query, using: this});
+  execute(query) {
+    return new Promise((resolve, reject) => {
+      this._endpoint.query(query)
+          .then(({path}) => this._firebase.getValues(path, values => {
+            const typeUrl = query.getTarget().getType();
+            const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
+            resolve(messages);
+          }))
+          .catch(error => reject(error));
+    });
   }
 
   /**
@@ -298,12 +189,6 @@ export class FirebaseClient extends AbstractClient {
     return subscription;
   }
 }
-
-/**
- * @inheritDoc
- * @type FetchClass
- */
-FirebaseClient.Fetch = FirebaseFetch;
 
 /**
  * An implementation of the `AbstractClientFactory` that creates instances of `FirebaseClient`.

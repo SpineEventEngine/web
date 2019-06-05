@@ -31,49 +31,23 @@ describe('FirebaseClient', function () {
         it('returns `null` as a value when fetches entity by ID that is missing', done => {
             const taskId = TestEnvironment.taskId({});
 
-            client.fetchById(TestEnvironment.TYPE.OF_ENTITY.TASK, taskId, data => {
-                assert.equal(data, null);
-
-                done();
-
-            }, fail(done));
+            client.fetchById({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK, id: taskId})
+                .then(data => {
+                    assert.equal(data, null);
+                    done();
+                }, fail(done));
         });
     });
 
     describe('"fetchAll"', function () {
 
-        it('retrieves the existing entities of given type one by one', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
+        it('retrieves the existing entities of given type', done => {
+            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-fetch-all'});
             const taskId = command.getId();
 
             client.sendCommand(command, () => {
 
-                let itemFound = false;
-
-                client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
-                    next(data) {
-                        // Ordering is not guaranteed by fetch and
-                        // the list of entities cannot be cleaned for tests,
-                        // thus at least one of entities should match the target one.
-                        itemFound = data.getId().getValue() === taskId.getValue() || itemFound;
-                    },
-                    error: fail(done),
-                    complete() {
-                        assert.ok(itemFound);
-                        done();
-                    }
-                });
-
-            }, fail(done), fail(done));
-        });
-
-        it('retrieves the existing entities of given type at once', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
-            const taskId = command.getId();
-
-            client.sendCommand(command, () => {
-
-                client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK}).atOnce()
+                client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK})
                     .then(data => {
                         const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
                         assert.ok(targetObject);
@@ -83,21 +57,12 @@ describe('FirebaseClient', function () {
             }, fail(done), fail(done));
         });
 
-        it('retrieves an empty list for entity that does not get created at once', done => {
-            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.PROJECT}).atOnce()
+        it('retrieves an empty list for entity that does not get created', done => {
+            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.PROJECT})
                 .then(data => {
                     assert.ok(data.length === 0);
                     done();
                 }, fail(done));
-        });
-
-        it('retrieves an empty list for entity that does not get created one-by-one', done => {
-            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.PROJECT}).oneByOne()
-                .subscribe({
-                    next: fail(done),
-                    error: fail(done),
-                    complete: () => done()
-                });
         });
 
         it('fails a malformed query', done => {
@@ -105,7 +70,7 @@ describe('FirebaseClient', function () {
 
             client.sendCommand(command, () => {
 
-                client.fetchAll({ofType: TestEnvironment.TYPE.MALFORMED}).atOnce()
+                client.fetchAll({ofType: TestEnvironment.TYPE.MALFORMED})
                     .then(fail(done), error => {
                         assert.ok(error instanceof ServerError);
                         assert.equal(error.message, 'Server Error');
