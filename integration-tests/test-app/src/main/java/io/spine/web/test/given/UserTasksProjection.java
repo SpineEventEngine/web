@@ -67,7 +67,7 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
     }
 
     @Column
-    public boolean hasSeveralTasks() {
+    public boolean isOverloaded() {
         return state().getTasksCount() > 1;
     }
 
