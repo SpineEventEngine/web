@@ -104,6 +104,11 @@ class Given {
   }
 }
 
+Given.ENTITY_CLASS = {
+  TASK_ID: TaskId,
+  TASK: Task,
+};
+
 Given.TYPE = {
   TASK_ID: Type.forClass(TaskId),
   TASK: Type.forClass(Task),
@@ -117,7 +122,7 @@ describe('TopicBuilder', function () {
   it('creates a Topic of topic for type', done => {
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .build();
 
     assert.ok(topic.getId());
@@ -137,7 +142,7 @@ describe('TopicBuilder', function () {
   it('creates a Topic for type with with no IDs', done => {
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds([])
       .build();
 
@@ -159,7 +164,7 @@ describe('TopicBuilder', function () {
 
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds(taskIds).build();
 
     assert.ok(topic.getId());
@@ -191,7 +196,7 @@ describe('TopicBuilder', function () {
 
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds(values).build();
 
     assert.ok(topic.getId());
@@ -222,7 +227,7 @@ describe('TopicBuilder', function () {
 
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds(values).build();
 
     assert.ok(topic.getId());
@@ -254,7 +259,7 @@ describe('TopicBuilder', function () {
     try {
       Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .byIds(firstIds)
         .byIds(secondIds);
       done(new Error('#byIds() multiple invocations did not result in error.'));
@@ -267,7 +272,7 @@ describe('TopicBuilder', function () {
     try {
       Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .byIds({error: true});
       done(new Error('#byIds() non-Array value did not result in error.'));
     } catch (error) {
@@ -278,7 +283,7 @@ describe('TopicBuilder', function () {
   it('throws an error if #byIds() is invoked with non-TypedMessage IDs', done => {
     try {
       Given.requestFactory().topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .byIds([{tinker: 'tailor'}, {soldier: 'sailor'}]);
       done(new Error('#byIds() non-TypedMessage IDs did not result in error.'));
     } catch (error) {
@@ -291,7 +296,7 @@ describe('TopicBuilder', function () {
   it('creates a Topic with a no filters', done => {
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([])
       .build();
 
@@ -310,7 +315,7 @@ describe('TopicBuilder', function () {
     const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([nameFilter])
       .build();
 
@@ -337,7 +342,7 @@ describe('TopicBuilder', function () {
     );
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([nameFilter, descriptionFilter])
       .build();
 
@@ -363,7 +368,7 @@ describe('TopicBuilder', function () {
     const compositeFilter = Filters.either([nameFilter1, nameFilter2]);
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([compositeFilter])
       .build();
 
@@ -393,7 +398,7 @@ describe('TopicBuilder', function () {
 
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([nameFilter, descriptionFilter])
       .build();
 
@@ -419,7 +424,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where(nameFilter);
       done(new Error('An error was expected due to invalid #where() parameter.'));
     } catch (e) {
@@ -431,7 +436,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where(['Duck', 'duck', 'goose']);
       done(new Error('An error was expected due to invalid #where() parameter.'));
     } catch (e) {
@@ -443,7 +448,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where([new Filter(), new CompositeFilter()]);
       done(new Error('An error was expected due to mixed filter types.'));
     } catch (e) {
@@ -455,7 +460,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where([new Filter()])
         .where([new Filter()]);
       done(new Error('An error was expected due to multiple #where() invocations.'));
@@ -470,7 +475,7 @@ describe('TopicBuilder', function () {
     const maskedFields = ['id', 'description'];
     const topic = Given.requestFactory()
       .topic()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .withMask(maskedFields)
       .build();
 
@@ -491,7 +496,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .withMask(['name'])
         .withMask(['description']);
       done(new Error('An error was expected due to multiple #withMask() invocations.'))
@@ -504,7 +509,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .withMask('name');
       done(new Error('An error was expected due to invalid #withMask() argument.'))
     } catch (e) {
@@ -516,7 +521,7 @@ describe('TopicBuilder', function () {
     try {
       const topic = Given.requestFactory()
         .topic()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .withMask([22]);
       done(new Error('An error was expected due to invalid #withMask() argument.'))
     } catch (e) {

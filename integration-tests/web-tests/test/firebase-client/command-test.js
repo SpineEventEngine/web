@@ -25,6 +25,7 @@ import {
     CommandHandlingError,
     ConnectionError
 } from '@lib/index';
+import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
 
@@ -45,7 +46,7 @@ describe('FirebaseClient command sending', function () {
 
         client.sendCommand(command, () => {
 
-            client.fetchById({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK, id: taskId})
+            client.fetchById({entityClass: Task, id: taskId})
                 .then(data => {
                     assert.equal(data.getId().getValue(), taskId);
                     assert.equal(data.getName(), command.getName());

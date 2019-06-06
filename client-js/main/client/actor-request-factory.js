@@ -310,12 +310,12 @@ const INVALID_FILTER_TYPE =
  */
 class AbstractTargetBuilder {
 
-  constructor(type) {
+  constructor(targetCls) {
     /**
      * @type {Type}
      * @private
      */
-    this._type = type;
+    this._type = Type.forClass(targetCls);
     /**
      * @type {TypedMessage[]}
      * @private

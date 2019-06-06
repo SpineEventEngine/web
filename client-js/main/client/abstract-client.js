@@ -58,17 +58,17 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  fetchAll({ofType: type}) {
-    const query = this.newQuery().select(type).build();
+  fetchAll({entityClass: cls}) {
+    const query = this.newQuery().select(cls).build();
     return this.execute(query);
   }
 
   /**
    * @inheritDoc
    */
-  fetchById({ofType: type, id: id}) {
+  fetchById({entityClass: cls, id: id}) {
     const typedId = TypedMessage.of(id);
-    const query = this.newQuery().select(type).byIds([typedId]).build();
+    const query = this.newQuery().select(cls).byIds([typedId]).build();
 
     return this.execute(query)
           .then(items => !items.length ? null : items[0])

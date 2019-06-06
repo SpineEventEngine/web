@@ -20,11 +20,8 @@
 
 import uuid from 'uuid';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
-import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {Project} from '@testProto/spine/web/test/given/project_pb';
-import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
+import {TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {UserId} from '@testProto/spine/core/user_id_pb';
-import {Type} from '@lib/client/typed-message';
 
 /**
  * @typedef {Object} User a type representing a user with his tasks for test purposes
@@ -126,12 +123,3 @@ export default class TestEnvironment {
 
 TestEnvironment.DEFAULT_TASK_NAME = 'Get to Mount Doom';
 TestEnvironment.DEFAULT_TASK_DESCRIPTION = 'There seems to be a bug with the rings that needs to be fixed';
-
-TestEnvironment.TYPE = {
-    OF_ENTITY: {
-        TASK: Type.forClass(Task),
-        PROJECT: Type.forClass(Project),
-        USER_TASKS: Type.forClass(UserTasks)
-    },
-    MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
-};

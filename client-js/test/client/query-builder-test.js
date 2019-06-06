@@ -103,6 +103,11 @@ class Given {
   }
 }
 
+Given.ENTITY_CLASS = {
+  TASK_ID: TaskId,
+  TASK: Task,
+};
+
 Given.TYPE = {
   TASK_ID: Type.forClass(TaskId),
   TASK: Type.forClass(Task),
@@ -116,7 +121,7 @@ describe('QueryBuilder', function () {
   it('creates a Query of query for type', done => {
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .build();
 
     assert.ok(query.getId());
@@ -136,7 +141,7 @@ describe('QueryBuilder', function () {
   it('creates a Query for type with with no IDs', done => {
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds([])
       .build();
 
@@ -158,7 +163,7 @@ describe('QueryBuilder', function () {
 
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds(taskIds).build();
 
     assert.ok(query.getId());
@@ -190,7 +195,7 @@ describe('QueryBuilder', function () {
 
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds(values).build();
 
     assert.ok(query.getId());
@@ -221,7 +226,7 @@ describe('QueryBuilder', function () {
 
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .byIds(values).build();
 
     assert.ok(query.getId());
@@ -253,7 +258,7 @@ describe('QueryBuilder', function () {
     try {
       Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .byIds(firstIds)
         .byIds(secondIds);
       done(new Error('#byIds() multiple invocations did not result in error.'));
@@ -266,7 +271,7 @@ describe('QueryBuilder', function () {
     try {
       Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .byIds({error: true});
       done(new Error('#byIds() non-Array value did not result in error.'));
     } catch (error) {
@@ -277,7 +282,7 @@ describe('QueryBuilder', function () {
   it('throws an error if #byIds() is invoked with non-TypedMessage IDs', done => {
     try {
       Given.requestFactory().query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .byIds([{tinker: 'tailor'}, {soldier: 'sailor'}]);
       done(new Error('#byIds() non-TypedMessage IDs did not result in error.'));
     } catch (error) {
@@ -290,7 +295,7 @@ describe('QueryBuilder', function () {
   it('creates a Query with a no filters', done => {
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([])
       .build();
 
@@ -309,7 +314,7 @@ describe('QueryBuilder', function () {
     const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([nameFilter])
       .build();
 
@@ -336,7 +341,7 @@ describe('QueryBuilder', function () {
     );
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([nameFilter, descriptionFilter])
       .build();
 
@@ -362,7 +367,7 @@ describe('QueryBuilder', function () {
     const compositeFilter = Filters.either([nameFilter1, nameFilter2]);
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([compositeFilter])
       .build();
 
@@ -392,7 +397,7 @@ describe('QueryBuilder', function () {
 
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .where([nameFilter, descriptionFilter])
       .build();
 
@@ -418,7 +423,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where(nameFilter);
       done(new Error('An error was expected due to invalid #where() parameter.'));
     } catch (e) {
@@ -430,7 +435,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where(['Duck', 'duck', 'goose']);
       done(new Error('An error was expected due to invalid #where() parameter.'));
     } catch (e) {
@@ -442,7 +447,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where([new Filter(), new CompositeFilter()]);
       done(new Error('An error was expected due to mixed filter types.'));
     } catch (e) {
@@ -454,7 +459,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .where([new Filter()])
         .where([new Filter()]);
       done(new Error('An error was expected due to multiple #where() invocations.'));
@@ -469,7 +474,7 @@ describe('QueryBuilder', function () {
     const maskedFields = ['id', 'description'];
     const query = Given.requestFactory()
       .query()
-      .select(Given.TYPE.TASK)
+      .select(Given.ENTITY_CLASS.TASK)
       .withMask(maskedFields)
       .build();
 
@@ -490,7 +495,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .withMask(['name'])
         .withMask(['description']);
       done(new Error('An error was expected due to multiple #withMask() invocations.'))
@@ -503,7 +508,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .withMask('name');
       done(new Error('An error was expected due to invalid #withMask() argument.'))
     } catch (e) {
@@ -515,7 +520,7 @@ describe('QueryBuilder', function () {
     try {
       const query = Given.requestFactory()
         .query()
-        .select(Given.TYPE.TASK)
+        .select(Given.ENTITY_CLASS.TASK)
         .withMask([22]);
       done(new Error('An error was expected due to invalid #withMask() argument.'))
     } catch (e) {

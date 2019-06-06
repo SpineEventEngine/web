@@ -24,6 +24,7 @@ import {UserTasksTestEnvironment as TestEnvironment} from './given';
 import {client} from '../given/firebase-client';
 import {TypedMessage} from '@lib/index';
 import {Filters} from '@lib/client/actor-request-factory';
+import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
 /**
  * @typedef {Object} QueryTest a type representing a query test input parameters
@@ -156,7 +157,7 @@ describe('FirebaseClient executes query built', function () {
         it(`${test.message} and returns correct values`, done => {
 
             const queryBuilder = client.newQuery()
-                .select(TestEnvironment.TYPE.OF_ENTITY.USER_TASKS)
+                .select(UserTasks)
                 .byIds(test.ids ? test.ids() : allUserIds());
 
             if (!!test.filters) {

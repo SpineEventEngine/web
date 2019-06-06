@@ -22,6 +22,8 @@ import assert from 'assert';
 import {ServerError} from '@lib/client/errors';
 import {fail} from '../test-helpers';
 import TestEnvironment from './given/test-environment';
+import {Task} from '@testProto/spine/web/test/given/task_pb';
+import {Project} from '@testProto/spine/web/test/given/project_pb';
 import {client} from './given/firebase-client';
 
 describe('FirebaseClient', function () {
@@ -31,7 +33,7 @@ describe('FirebaseClient', function () {
         it('returns `null` as a value when fetches entity by ID that is missing', done => {
             const taskId = TestEnvironment.taskId({});
 
-            client.fetchById({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK, id: taskId})
+            client.fetchById({entityClass: Task, id: taskId})
                 .then(data => {
                     assert.equal(data, null);
                     done();
@@ -47,7 +49,7 @@ describe('FirebaseClient', function () {
 
             client.sendCommand(command, () => {
 
-                client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK})
+                client.fetchAll({entityClass: Task})
                     .then(data => {
                         const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
                         assert.ok(targetObject);
@@ -58,7 +60,7 @@ describe('FirebaseClient', function () {
         });
 
         it('retrieves an empty list for entity that does not get created', done => {
-            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.PROJECT})
+            client.fetchAll({entityClass: Project})
                 .then(data => {
                     assert.ok(data.length === 0);
                     done();
@@ -68,9 +70,15 @@ describe('FirebaseClient', function () {
         it('fails a malformed query', done => {
             const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
 
+            const Unknown = class {
+                static typeUrl() {
+                    return 'spine.web/fails.malformed.type'
+                }
+            };
+
             client.sendCommand(command, () => {
 
-                client.fetchAll({ofType: TestEnvironment.TYPE.MALFORMED})
+                client.fetchAll({entityClass: Unknown})
                     .then(fail(done), error => {
                         assert.ok(error instanceof ServerError);
                         assert.equal(error.message, 'Server Error');

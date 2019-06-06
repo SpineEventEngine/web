@@ -40,8 +40,8 @@
  * @property {Observable<T>} itemAdded
  * @property {Observable<T>} itemChanged
  * @property {Observable<T>} itemRemoved
- * @property {parameterlessCallback} unsubscribe a method to be called to cancel the subscription, stopping
- *                                      the subscribers from receiving new entities
+ * @property {parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
+ *                                   stopping the subscribers from receiving new entities
  *
  * @template <T>
  */
@@ -70,29 +70,28 @@ export class Client {
   }
 
   /**
-   * Queries all the entities of the given type at once fulfilling a returned promise
+   * Queries all the entities of the given class type at once fulfilling a returned promise
    * with an array of objects.
    *
    * @example
    * // Fetch all entities of a developer-defined Task type at once using a Promise.
-   * fetchAll({ofType: taskType}).then(tasks => { ... })
+   * fetchAll({entityClass: Task}).then(tasks => { ... })
    *
-   * @param {!Type<T>} ofType a type of the entities to be queried
-   * @return {Promise<T[]>} a promise to be fulfilled with a a single data item as a
-   *        Protobuf message of a given type or `null` if an entity with a given ID is missing;
+   * @param {!Class<T>} entityClass a Protobuf class of the target entities to be queried
+   * @return {Promise<T[]>} a promise to be fulfilled with a list of Protobuf messages of a
+   *        given type or with an empty list if no entities matching given class were found;
    *        rejected with a `SpineError` if error occurs;
-   *
    *
    * @template <T>
    */
-  fetchAll({ofType: type}) {
+  fetchAll({entityClass: cls}) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
-   * Fetches a single entity of the given type.
+   * Fetches a single entity of the given class type.
    *
-   * @param {!T} ofType a type of the target entity
+   * @param {!Class<T>} entityClass a Protobuf class of the target entity to be queried
    * @param {!Message} id an ID of the target entity
    * @return {Promise<T>} a promise to be fulfilled with a a single data item as a
    *        Protobuf message of a given type or `null` if an entity with a given ID is missing;
@@ -100,7 +99,7 @@ export class Client {
    *
    * @template <T>
    */
-  fetchById({ofType: type, id: id}) {
+  fetchById({entityClass: cls, id: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -131,7 +130,7 @@ export class Client {
    * The occurrence of an error does not guarantee that the command is not accepted by the server
    * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
    *
-   * @param {!Message} commandMessage a Protobuf message representing the comand
+   * @param {!Message} commandMessage a Protobuf message representing the command
    * @param {!parameterlessCallback} acknowledgedCallback
    *        a no-argument callback invoked if the command is acknowledged
    * @param {?consumerCallback<CommandHandlingError>} errorCallback
