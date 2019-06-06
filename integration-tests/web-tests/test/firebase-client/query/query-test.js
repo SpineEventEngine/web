@@ -40,8 +40,8 @@ import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 describe('FirebaseClient executes query built', function () {
     let users;
 
-    function allUserIds() {
-        return users.map(user => TypedMessage.of(user.id));
+    function toUserIds(users) {
+        return users.map(user => user.id);
     }
 
     /**
@@ -78,18 +78,18 @@ describe('FirebaseClient executes query built', function () {
     const tests = [
         {
             message: 'by ID',
-            ids: () => users.slice(0, 1).map(user => TypedMessage.of(user.id)),
+            ids: () => toUserIds(users.slice(0, 1)),
             expectedUsers: () => users.slice(0, 1)
         },
         {
             message: 'by IDs',
-            ids: () => users.slice(0, 2).map(user => TypedMessage.of(user.id)),
+            ids: () => toUserIds(users.slice(0, 2)),
             expectedUsers: () => users.slice(0, 2)
         },
         {
             message: 'by missing ID',
             ids: () => [
-                TypedMessage.of(TestEnvironment.userId('user-without-tasks-assigned'))
+                TestEnvironment.userId('user-without-tasks-assigned')
             ],
             expectedUsers: () => users.slice(0, 2)
         },
@@ -158,7 +158,7 @@ describe('FirebaseClient executes query built', function () {
 
             const queryBuilder = client.newQuery()
                 .select(UserTasks)
-                .byIds(test.ids ? test.ids() : allUserIds());
+                .byIds(test.ids ? test.ids() : toUserIds(users));
 
             if (!!test.filters) {
                 queryBuilder.where(test.filters)

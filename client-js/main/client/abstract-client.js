@@ -67,8 +67,7 @@ export class AbstractClient extends Client {
    * @inheritDoc
    */
   fetchById({entityClass: cls, id: id}) {
-    const typedId = TypedMessage.of(id);
-    const query = this.newQuery().select(cls).byIds([typedId]).build();
+    const query = this.newQuery().select(cls).byIds([id]).build();
 
     return this.execute(query)
           .then(items => !items.length ? null : items[0])

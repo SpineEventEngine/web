@@ -338,16 +338,17 @@ class AbstractTargetBuilder {
    *
    * Makes the query return only the items identified by the provided IDs.
    *
-   * Supported ID types are string, number, and `TypedMessage`. To use other primitive types
-   * wrap them in type message using Protobuf primitive wrappers (e.g. StringValue, BytesValue).
+   * Supported ID types are string, number, and Protobuf messages. All of the passed
+   * IDs must be of the same type.
    *
    * If number IDs are passed they are assumed to be of `int64` Protobuf type.
    *
-   * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers to query
+   * @param {!<T extends Message>[]|Number[]|String[]} ids an array with identifiers to query
    * @return {this} the current builder instance
    * @throws if this method is executed more than once
    * @throws if the provided IDs are not an instance of `Array`
-   * @throws if any of provided IDs are not an instance of `TypedMessage`
+   * @throws if any of provided IDs are not an instance of supported types
+   * @throws if the provided IDs are not of the same type
    */
   byIds(ids) {
     if (this._ids !== null) {
@@ -359,16 +360,18 @@ class AbstractTargetBuilder {
     if (!ids.length) {
       return this;
     }
-    const invalidTypeMessage = 'Each provided ID must be a string, number or a TypedMessage.';
+    const invalidTypeMessage = 'Each provided ID must be a string, number or a Protobuf message.';
     if (ids[0] instanceof Number || typeof ids[0] === 'number') {
       AbstractTargetBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.int64);
     } else if (ids[0] instanceof String || typeof ids[0] === 'string') {
       AbstractTargetBuilder._checkAllOfType(ids, String, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.string);
+    } else if (!isProtobufMessage(ids[0])){
+      throw new Error(invalidTypeMessage);
     } else {
-      AbstractTargetBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
-      this._ids = ids.slice();
+      AbstractTargetBuilder._checkAllOfType(ids, ids[0].constructor, invalidTypeMessage);
+      this._ids = ids.map(id => TypedMessage.of(id));
     }
     return this;
   }

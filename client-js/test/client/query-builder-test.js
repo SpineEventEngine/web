@@ -27,8 +27,6 @@ import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-req
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {StringValue} from '@proto/google/protobuf/wrappers_pb';
-import {UserId} from '@proto/spine/core/user_id_pb';
 import {
   Filter,
   CompositeFilter,
@@ -43,17 +41,17 @@ class Given {
 
   /**
    * @param {String} value
-   * @return {TypedMessage}
+   * @return {TaskId}
    */
   static newTaskId(value) {
     const id = new TaskId();
     id.setValue(value);
-    return new TypedMessage(id, Given.TYPE.TASK_ID);
+    return id;
   }
 
   /**
    * @param {String[]} values
-   * @return {TypedMessage<TaskId>[]}
+   * @return {TaskId[]}
    */
   static newTaskIds(values) {
     return values.map(Given.newTaskId);
