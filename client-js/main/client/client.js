@@ -20,6 +20,9 @@
 
 "use strict";
 
+import {Message} from 'google-protobuf';
+import {Observable} from 'rxjs';
+
 /**
  * The callback that doesn't accept any parameters.
  * @callback parameterlessCallback
@@ -31,19 +34,30 @@
  * @callback consumerCallback
  * @param {T} the value the callback function accepts
  *
- * @template <T>
+ * @template <T> the type of value passed to the callback
  */
 
 /**
- * @typedef {Object} EntitySubscriptionObject
- *
+ * @typedef {Object} EntitySubscriptionObject an object representing a result of the subscription
+ *                                            to entities state changes
  * @property {Observable<T>} itemAdded
  * @property {Observable<T>} itemChanged
  * @property {Observable<T>} itemRemoved
  * @property {parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
  *                                   stopping the subscribers from receiving new entities
  *
- * @template <T>
+ * @template <T> a type of the subscription target entities
+ */
+
+/**
+ * @typedef {Object} TargetCriteria
+ *
+ * @property {!Class<T extends Message>} entity
+ * @property {?<I extends Message>[] | Number[] | String[]} byIds
+ * @property {?<I extends Message>[] | Number[] | String[]} byId
+ *
+ * @template <T> a type of the subscription target entities
+ * @template <I>
  */
 
 /**
@@ -88,36 +102,21 @@ export class Client {
   }
 
   /**
-   * Queries all the entities of the given class type at once fulfilling a returned promise
-   * with an array of objects.
+   * Fetches entities of the given class type fulfilling a returned promise
+   * with an array of received objects.
    *
    * @example
    * // Fetch all entities of a developer-defined Task type at once using a Promise.
-   * fetchAll({entityClass: Task}).then(tasks => { ... })
+   * fetch({entity: Task}).then(tasks => { ... })
    *
-   * @param {!Class<T>} entityClass a Protobuf class of the target entities to be queried
+   * @param {TargetCriteria}
    * @return {Promise<T[]>} a promise to be fulfilled with a list of Protobuf messages of a
    *        given type or with an empty list if no entities matching given class were found;
    *        rejected with a `SpineError` if error occurs;
    *
    * @template <T>
    */
-  fetchAll({entityClass: cls}) {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
-   * Fetches a single entity of the given class type.
-   *
-   * @param {!Class<T>} entityClass a Protobuf class of the target entity to be queried
-   * @param {!Message} id an ID of the target entity
-   * @return {Promise<T>} a promise to be fulfilled with a a single data item as a
-   *        Protobuf message of a given type or `null` if an entity with a given ID is missing;
-   *        rejected with a `SpineError` if error occurs;
-   *
-   * @template <T>
-   */
-  fetchById({entityClass: cls, id: id}) {
+  fetch({entity: cls, byIds: ids, byId: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 

@@ -26,66 +26,121 @@ import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
 import {client} from './given/firebase-client';
 
-describe('FirebaseClient', function () {
+describe('FirebaseClient "fetch"', function () {
+    let taskIds;
 
-    describe('"fetchById"', function () {
+    /**
+     * Prepares the environment for `FirebaseClient#fetch()` tests where
+     * two tasks are created.
+     */
+    before((done) => {
+        const createTaskCommands = [
+            TestEnvironment.createTaskCommand({withPrefix: 'spine-web-fetch-test-task-1'}),
+            TestEnvironment.createTaskCommand({withPrefix: 'spine-web-fetch-test-task-2'}),
+        ];
 
-        it('returns `null` as a value when fetches entity by ID that is missing', done => {
-            const taskId = TestEnvironment.taskId({});
+        taskIds = createTaskCommands.map(command => command.getId());
 
-            client.fetchById({entityClass: Task, id: taskId})
-                .then(data => {
-                    assert.equal(data, null);
-                    done();
-                }, fail(done));
+        const createTasksPromises = [];
+        createTaskCommands.forEach(command => {
+            let reportTaskCreated;
+            const promise = new Promise(resolve => reportTaskCreated = resolve);
+            createTasksPromises.push(promise);
+
+            client.sendCommand(command, () => reportTaskCreated(), fail(done), fail(done))
         });
+
+        Promise.all(createTasksPromises)
+            .then(() => {
+                // Gives time for the model state to be updated
+                setTimeout(() => done(), 100);
+            })
+            .catch(fail(done));
     });
 
-    describe('"fetchAll"', function () {
+    it('returns correct value by ID', done => {
+        const id = taskIds[0];
+        client.fetch({entity: Task, byId: id})
+            .then(item => {
+                assert.ok(!Array.isArray(item));
+                assert.ok(item.getId().getValue() === id.getValue());
+                done();
+            }, fail(done));
+    });
 
-        it('retrieves the existing entities of given type', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-fetch-all'});
-            const taskId = command.getId();
+    it('ignores `byIds` parameter when `byId` specified', done => {
+        const id = taskIds[0];
+        client.fetch({entity: Task, byId: id, byIds: ['one', 'two']})
+            .then(item => {
+                assert.ok(!Array.isArray(item));
+                assert.ok(item.getId().getValue() === id.getValue());
+                done();
+            }, fail(done));
+    });
 
-            client.sendCommand(command, () => {
+    it('returns `null` as a value when fetches entity by ID that is missing', done => {
+        const taskId = TestEnvironment.taskId({});
 
-                client.fetchAll({entityClass: Task})
-                    .then(data => {
-                        const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
-                        assert.ok(targetObject);
-                        done();
-                    }, fail(done));
+        client.fetch({entity: Task, byId: taskId})
+            .then(item => {
+                assert.ok(!Array.isArray(item));
+                assert.equal(item, null);
+                done();
+            }, fail(done));
+    });
 
-            }, fail(done), fail(done));
-        });
+    it('returns correct values by IDs', done => {
+        client.fetch({entity: Task, byIds: taskIds})
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.equal(data.length, taskIds.length);
+                taskIds.forEach(taskId => {
+                    const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
+                    assert.ok(targetObject);
+                });
 
-        it('retrieves an empty list for entity that does not get created', done => {
-            client.fetchAll({entityClass: Project})
-                .then(data => {
-                    assert.ok(data.length === 0);
+                done();
+            }, fail(done));
+    });
+
+    it('retrieves the existing entities of given type when no IDs specified', done => {
+        client.fetch({entity: Task})
+            .then(data => {
+                taskIds.forEach(taskId => {
+                    const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
+                    assert.ok(targetObject);
+                });
+
+                done();
+            }, fail(done));
+    });
+
+    it('retrieves an empty list for entity that does not get created', done => {
+        client.fetch({entity: Project})
+            .then(data => {
+                assert.ok(data.length === 0);
+                done();
+            }, fail(done));
+    });
+
+    it('fails a malformed query', done => {
+        const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
+
+        const Unknown = class {
+            static typeUrl() {
+                return 'spine.web/fails.malformed.type'
+            }
+        };
+
+        client.sendCommand(command, () => {
+
+            client.fetch({entity: Unknown})
+                .then(fail(done), error => {
+                    assert.ok(error instanceof ServerError);
+                    assert.equal(error.message, 'Server Error');
                     done();
-                }, fail(done));
-        });
+                });
 
-        it('fails a malformed query', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
-
-            const Unknown = class {
-                static typeUrl() {
-                    return 'spine.web/fails.malformed.type'
-                }
-            };
-
-            client.sendCommand(command, () => {
-
-                client.fetchAll({entityClass: Unknown})
-                    .then(fail(done), error => {
-                        assert.ok(error instanceof ServerError);
-                        assert.equal(error.message, 'Server Error');
-                        done();
-                    });
-
-            }, fail(done), fail(done));
-        });
+        }, fail(done), fail(done));
     });
 });
