@@ -116,21 +116,16 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  subscribeToEntities({entityClass: cls, byIds: ids, byId: id}) {
-    if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
-      throw new Error('No entity IDs set. Specify either a single entity ID or' +
-          ' multiple entity IDs to subscribe to the entity state updates.');
+  subscribe({entity: cls, byIds: ids, byId: id}) {
+    const topicBuilder = this.newTopic().select(cls);
 
+    if (!!id) {
+      topicBuilder.byIds([id]);
+    } else if (!!ids) {
+      topicBuilder.byIds(ids);
     }
-    if (typeof id !== 'undefined') {
-      ids = [id];
-    }
-    let topic;
-    if (ids) {
-      topic = this._requestFactory.topic().select(cls).byIds(ids).build();
-    } else {
-      topic = this._requestFactory.topic().select(cls).build();
-    }
+
+    const topic = topicBuilder.build();
     return this.subscribeTo(topic);
   }
 }

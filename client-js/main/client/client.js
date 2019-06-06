@@ -77,16 +77,16 @@ export class Client {
 
   /**
    *
+   * @param query
    */
-  newTopic() {
+  execute(query) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
    *
-   * @param query
    */
-  execute(query) {
+  newTopic() {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -98,25 +98,6 @@ export class Client {
    * @abstract
    */
   subscribeTo(topic) {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
-   * Fetches entities of the given class type fulfilling a returned promise
-   * with an array of received objects.
-   *
-   * @example
-   * // Fetch all entities of a developer-defined Task type at once using a Promise.
-   * fetch({entity: Task}).then(tasks => { ... })
-   *
-   * @param {TargetCriteria}
-   * @return {Promise<T[]>} a promise to be fulfilled with a list of Protobuf messages of a
-   *        given type or with an empty list if no entities matching given class were found;
-   *        rejected with a `SpineError` if error occurs;
-   *
-   * @template <T>
-   */
-  fetch({entity: cls, byIds: ids, byId: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -162,6 +143,25 @@ export class Client {
   }
 
   /**
+   * Fetches entities of the given class type fulfilling a returned promise
+   * with an array of received objects.
+   *
+   * @example
+   * // Fetch all entities of a developer-defined Task type at once using a Promise.
+   * fetch({entity: Task}).then(tasks => { ... })
+   *
+   * @param {TargetCriteria}
+   * @return {Promise<T[] | T | null>} a promise to be fulfilled with a list of Protobuf messages
+   *        of a given type or with an empty list if no entities matching given class were found;
+   *        rejected with a `SpineError` if error occurs;
+   *
+   * @template <T>
+   */
+  fetch({entity: cls, byIds: ids, byId: id}) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * Subscribes to entity changes on the backend, providing the changes via `itemAdded`,
    * `itemChanged`, and `itemRemoved` observers.
    *
@@ -170,14 +170,11 @@ export class Client {
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer.
    *
-   * @param {!Class<T>} entityClass a Protobuf class of the target entities to observe changes
-   * @param {?Message[]} byIds an array of ids of entities to observe changes
-   * @param {?Message} byId an id of a single entity to observe changes
+   * @param {TargetCriteria}
    * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes
    *                                             and unsubscribe from the updated
-   * @template <T>
    */
-  subscribeToEntities({entityClass: cls, byIds: ids, byId: id}) {
+  subscribe({entity: cls, byIds: ids, byId: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 }

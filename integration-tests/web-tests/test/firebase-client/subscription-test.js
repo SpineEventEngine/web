@@ -44,7 +44,7 @@ describe('FirebaseClient subscription', function () {
             client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
         });
 
-        client.subscribeToEntities({entityClass: Task})
+        client.subscribe({entity: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: task => {
@@ -76,7 +76,7 @@ describe('FirebaseClient subscription', function () {
         let reportItemAdded;
         const itemAddedPromise = new Promise(resolve => reportItemAdded = resolve);
 
-        client.subscribeToEntities({entityClass: Task})
+        client.subscribe({entity: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {
@@ -166,7 +166,7 @@ describe('FirebaseClient subscription', function () {
         const itemRenamedAtFirstPromise = new Promise(resolve =>
             reportItemRenamedAtFirst = resolve);
         let changesCount = 0;
-        client.subscribeToEntities({entityClass: Task, byId: taskId})
+        client.subscribe({entity: Task, byId: taskId})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {
@@ -236,7 +236,7 @@ describe('FirebaseClient subscription', function () {
             }
         };
 
-        client.subscribeToEntities({entityClass: Unknown})
+        client.subscribe({entity: Unknown})
             .then(() => {
                 done(new Error('A malformed subscription should not yield results.'));
             })
