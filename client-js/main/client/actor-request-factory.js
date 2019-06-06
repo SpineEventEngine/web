@@ -126,7 +126,24 @@ export class Filters {
    * @return {Filter} a new filter instance
    */
   static with(fieldPath, operator, value) {
-    const wrappedValue = AnyPacker.packTyped(value);
+    let typedValue;
+
+    if (value instanceof Number || typeof value === 'number') {
+      typedValue = TypedMessage.int32(value);
+    } else if (value instanceof String || typeof value === 'string') {
+      typedValue = TypedMessage.string(value);
+    } else if (value instanceof Boolean || typeof value === 'boolean') {
+      typedValue = TypedMessage.bool(value);
+    } else if (value instanceof TypedMessage) {
+      typedValue = value;
+    } else if(isProtobufMessage(value)) {
+      typedValue = TypedMessage.of(value);
+    } else {
+      throw new Error(`Unable to create filter.
+       Filter value type of ${typeof value} is not supported.`)
+    }
+
+    const wrappedValue = AnyPacker.packTyped(typedValue);
     const filter = new Filter();
     filter.setFieldPath(FieldPaths.parse(fieldPath));
     filter.setValue(wrappedValue);

@@ -310,7 +310,7 @@ describe('TopicBuilder', function () {
   });
 
   it('creates a Topic with a single filter', done => {
-    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter = Filters.eq('name', 'Implement tests');
     const topic = Given.requestFactory()
       .topic()
       .select(Given.ENTITY_CLASS.TASK)
@@ -334,10 +334,8 @@ describe('TopicBuilder', function () {
   });
 
   it('creates a Topic with a multiple filters', done => {
-    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
-    const descriptionFilter = Filters.eq(
-      'description', TypedMessage.string('Web needs tests, eh?')
-    );
+    const nameFilter = Filters.eq('name', 'Implement tests');
+    const descriptionFilter = Filters.eq('description', 'Web needs tests, eh?');
     const topic = Given.requestFactory()
       .topic()
       .select(Given.ENTITY_CLASS.TASK)
@@ -361,8 +359,8 @@ describe('TopicBuilder', function () {
   });
 
   it('creates a Topic with a single CompositeFilter', done => {
-    const nameFilter1 = Filters.eq('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = Filters.eq('name', TypedMessage.string('Create a PR'));
+    const nameFilter1 = Filters.eq('name', 'Implement tests');
+    const nameFilter2 = Filters.eq('name', 'Create a PR');
     const compositeFilter = Filters.either([nameFilter1, nameFilter2]);
     const topic = Given.requestFactory()
       .topic()
@@ -387,11 +385,11 @@ describe('TopicBuilder', function () {
   });
 
   it('creates a Topic with a multiple CompositeFilters', done => {
-    const nameFilter1 = Filters.eq('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = Filters.eq('name', TypedMessage.string('Create a PR'));
+    const nameFilter1 = Filters.eq('name', 'Implement tests');
+    const nameFilter2 = Filters.eq('name', 'Create a PR');
     const nameFilter = Filters.either([nameFilter1, nameFilter2]);
     const descriptionFilter = Filters.all([
-      Filters.eq('description', TypedMessage.string('Web needs tests, eh?')),
+      Filters.eq('description', 'Web needs tests, eh?'),
     ]);
 
     const topic = Given.requestFactory()
@@ -417,7 +415,7 @@ describe('TopicBuilder', function () {
   });
 
   it('throws an error if #where() is invoked with non-Array value', done => {
-    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter = Filters.eq('name', 'Implement tests');
 
     try {
       const topic = Given.requestFactory()

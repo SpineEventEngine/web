@@ -22,13 +22,12 @@ import assert from 'assert';
 import {fail, ensureUserTasks} from '../../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from './given';
 import {client} from '../given/firebase-client';
-import {TypedMessage} from '@lib/index';
 import {Filters} from '@lib/client/actor-request-factory';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
 /**
- * @typedef {Object} QueryTest a type representing a query test input parameters
- *                             and expected results
+ * @typedef {Object} QueryTest an object representing a FirebaseClient query test input
+ *                             parameters and expected results
  *
  * @property {string} message a message describing test
  * @property {UserId[]} ids a list of IDs for query
@@ -96,58 +95,58 @@ describe('FirebaseClient executes query built', function () {
         {
             message: 'with `eq` filter',
             filters: [
-                Filters.eq('tasksCount', TypedMessage.int32(3))
+                Filters.eq('tasksCount', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length === 3)
         },
         {
             message: 'with `lt` filter',
             filters: [
-                Filters.lt('tasksCount', TypedMessage.int32(3))
+                Filters.lt('tasksCount', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length < 3)
         },
         {
             message: 'with `gt` filter',
             filters: [
-                Filters.gt('tasksCount', TypedMessage.int32(3))
+                Filters.gt('tasksCount', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 3)
         },
         {
             message: 'with `le` filter',
             filters: [
-                Filters.le('tasksCount', TypedMessage.int32(3))
+                Filters.le('tasksCount', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length <= 3)
         },
         {
             message: 'with `ge` filter',
             filters: [
-                Filters.ge('tasksCount', TypedMessage.int32(3))
+                Filters.ge('tasksCount', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length >= 3)
         },
         {
             message: 'with several filters applied to the same column',
             filters: [
-                Filters.gt('tasksCount', TypedMessage.int32(1)),
-                Filters.lt('tasksCount', TypedMessage.int32(3))
+                Filters.gt('tasksCount', 1),
+                Filters.lt('tasksCount', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
         },
         {
             message: 'with several filters applied to different column',
             filters: [
-                Filters.gt('tasksCount', TypedMessage.int32(1)),
-                Filters.lt('overloaded', TypedMessage.bool(true))
+                Filters.gt('tasksCount', 1),
+                Filters.lt('overloaded', true)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 1)
         },
         {
             message: 'with inappropriate filter',
             filters: [
-                Filters.ge('tasksCount', TypedMessage.int32(100))
+                Filters.ge('tasksCount', 100)
             ],
             expectedUsers: () => []
         }

@@ -22,7 +22,7 @@
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
-import {Type, TypedMessage} from '@lib/client/typed-message';
+import {Type} from '@lib/client/typed-message';
 import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
@@ -309,7 +309,7 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a single filter', done => {
-    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter = Filters.eq('name', 'Implement tests');
     const query = Given.requestFactory()
       .query()
       .select(Given.ENTITY_CLASS.TASK)
@@ -333,10 +333,8 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a multiple filters', done => {
-    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
-    const descriptionFilter = Filters.eq(
-      'description', TypedMessage.string('Web needs tests, eh?')
-    );
+    const nameFilter = Filters.eq('name', 'Implement tests');
+    const descriptionFilter = Filters.eq('description', 'Web needs tests, eh?');
     const query = Given.requestFactory()
       .query()
       .select(Given.ENTITY_CLASS.TASK)
@@ -360,8 +358,8 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a single CompositeFilter', done => {
-    const nameFilter1 = Filters.eq('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = Filters.eq('name', TypedMessage.string('Create a PR'));
+    const nameFilter1 = Filters.eq('name', 'Implement tests');
+    const nameFilter2 = Filters.eq('name', 'Create a PR');
     const compositeFilter = Filters.either([nameFilter1, nameFilter2]);
     const query = Given.requestFactory()
       .query()
@@ -386,11 +384,11 @@ describe('QueryBuilder', function () {
   });
 
   it('creates a Query with a multiple CompositeFilters', done => {
-    const nameFilter1 = Filters.eq('name', TypedMessage.string('Implement tests'));
-    const nameFilter2 = Filters.eq('name', TypedMessage.string('Create a PR'));
+    const nameFilter1 = Filters.eq('name', 'Implement tests');
+    const nameFilter2 = Filters.eq('name', 'Create a PR');
     const nameFilter = Filters.either([nameFilter1, nameFilter2]);
     const descriptionFilter = Filters.all([
-      Filters.eq('description', TypedMessage.string('Web needs tests, eh?')),
+      Filters.eq('description', 'Web needs tests, eh?'),
     ]);
 
     const query = Given.requestFactory()
@@ -416,7 +414,7 @@ describe('QueryBuilder', function () {
   });
 
   it('throws an error if #where() is invoked with non-Array value', done => {
-    const nameFilter = Filters.eq('name', TypedMessage.string('Implement tests'));
+    const nameFilter = Filters.eq('name', 'Implement tests');
 
     try {
       const query = Given.requestFactory()
