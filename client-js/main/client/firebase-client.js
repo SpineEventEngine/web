@@ -119,7 +119,7 @@ export class FirebaseClient extends AbstractClient {
   /**
    * @inheritDoc
    */
-  _subscribeTo(topic) {
+  subscribeTo(topic) {
     return new Promise((resolve, reject) => {
       const typeUrl = topic.getTarget().getType();
 

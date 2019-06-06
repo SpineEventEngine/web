@@ -63,9 +63,27 @@ export class Client {
 
   /**
    *
+   */
+  newTopic() {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   *
    * @param query
    */
   execute(query) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Creates a subscription to the topic which is updated with backend changes.
+   *
+   * @param {!spine.client.Topic} topic a topic of a subscription
+   * @return {Promise<EntitySubscriptionObject>}
+   * @abstract
+   */
+  subscribeTo(topic) {
     throw new Error('Not implemented in abstract base.');
   }
 

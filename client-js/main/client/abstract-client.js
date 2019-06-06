@@ -20,7 +20,6 @@
 
 "use strict";
 
-import {Type, TypedMessage} from './typed-message';
 import {CommandHandlingError, CommandValidationError, SpineError} from './errors';
 import KnownTypes from './known-types';
 import ObjectToProto from './object-to-proto';
@@ -58,19 +57,8 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  fetchAll({entityClass: cls}) {
-    const query = this.newQuery().select(cls).build();
-    return this.execute(query);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  fetchById({entityClass: cls, id: id}) {
-    const query = this.newQuery().select(cls).byIds([id]).build();
-
-    return this.execute(query)
-          .then(items => !items.length ? null : items[0])
+  newTopic() {
+    return this._requestFactory.topic();
   }
 
   /**
@@ -110,6 +98,24 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
+  fetchAll({entityClass: cls}) {
+    const query = this.newQuery().select(cls).build();
+    return this.execute(query);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  fetchById({entityClass: cls, id: id}) {
+    const query = this.newQuery().select(cls).byIds([id]).build();
+
+    return this.execute(query)
+        .then(items => !items.length ? null : items[0])
+  }
+
+  /**
+   * @inheritDoc
+   */
   subscribeToEntities({entityClass: cls, byIds: ids, byId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
       throw new Error('No entity IDs set. Specify either a single entity ID or' +
@@ -120,25 +126,11 @@ export class AbstractClient extends Client {
       ids = [id];
     }
     let topic;
-    const targetType = Type.forClass(cls);
     if (ids) {
-      const typedIds = ids.map(TypedMessage.of);
-      topic = this._requestFactory.topic().all({of: targetType, withIds: typedIds});
+      topic = this._requestFactory.topic().select(cls).byIds(ids).build();
     } else {
-      topic = this._requestFactory.topic().all({of: targetType});
+      topic = this._requestFactory.topic().select(cls).build();
     }
-    return this._subscribeTo(topic);
-  }
-
-  /**
-   * Creates a subscription to the topic which is updated with backend changes.
-   *
-   * @param {!spine.client.Topic} topic a topic of a subscription
-   * @return {Promise<EntitySubscriptionObject>}
-   * @protected
-   * @abstract
-   */
-  _subscribeTo(topic) {
-    throw new Error('Not implemented in abstract base.');
+    return this.subscribeTo(topic);
   }
 }

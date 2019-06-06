@@ -766,18 +766,6 @@ class TopicFactory {
   }
 
   /**
-   * Creates a `Topic` for all items within IDs of interest.
-   *
-   * @param {!Type} of the class of a target event/entity
-   * @param {?TypedMessage[]} withIds the IDs of interest
-   * @return {Topic} an instance of `Topic` assembled according to the parameters
-   */
-  all({of: type, withIds: ids}) {
-    const target = Targets.compose({forType: type, withIds: ids});
-    return this.compose({forTarget: target});
-  }
-
-  /**
    * Creates a `Topic` for the specified `Target`.
    *
    * @param {!Target} forTarget a `Target` to create a topic for
