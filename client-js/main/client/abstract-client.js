@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {TypedMessage} from './typed-message';
+import {Type, TypedMessage} from './typed-message';
 import {CommandHandlingError, CommandValidationError, SpineError} from './errors';
 import KnownTypes from './known-types';
 import ObjectToProto from './object-to-proto';
@@ -110,7 +110,7 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  subscribeToEntities({ofType: type, byIds: ids, byId: id}) {
+  subscribeToEntities({entityClass: cls, byIds: ids, byId: id}) {
     if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
       throw new Error('No entity IDs set. Specify either a single entity ID or' +
           ' multiple entity IDs to subscribe to the entity state updates.');
@@ -120,11 +120,12 @@ export class AbstractClient extends Client {
       ids = [id];
     }
     let topic;
+    const targetType = Type.forClass(cls);
     if (ids) {
       const typedIds = ids.map(TypedMessage.of);
-      topic = this._requestFactory.topic().all({of: type, withIds: typedIds});
+      topic = this._requestFactory.topic().all({of: targetType, withIds: typedIds});
     } else {
-      topic = this._requestFactory.topic().all({of: type});
+      topic = this._requestFactory.topic().all({of: targetType});
     }
     return this._subscribeTo(topic);
   }

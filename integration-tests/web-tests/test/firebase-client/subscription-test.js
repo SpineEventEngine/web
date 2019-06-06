@@ -21,6 +21,7 @@
 import assert from 'assert';
 import {fail} from '../test-helpers';
 import TestEnvironment from './given/test-environment';
+import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {client} from './given/firebase-client';
 
 describe('FirebaseClient subscription', function () {
@@ -43,7 +44,7 @@ describe('FirebaseClient subscription', function () {
             client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
         });
 
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK})
+        client.subscribeToEntities({entityClass: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: task => {
@@ -75,7 +76,7 @@ describe('FirebaseClient subscription', function () {
         let reportItemAdded;
         const itemAddedPromise = new Promise(resolve => reportItemAdded = resolve);
 
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK})
+        client.subscribeToEntities({entityClass: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {
@@ -165,7 +166,7 @@ describe('FirebaseClient subscription', function () {
         const itemRenamedAtFirstPromise = new Promise(resolve =>
             reportItemRenamedAtFirst = resolve);
         let changesCount = 0;
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK, byId: taskId})
+        client.subscribeToEntities({entityClass: Task, byId: taskId})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {
@@ -229,7 +230,13 @@ describe('FirebaseClient subscription', function () {
     });
 
     it('fails for a malformed entity type', done => {
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.MALFORMED})
+        const Unknown = class {
+            static typeUrl() {
+                return 'spine.web/fails.malformed.type'
+            }
+        };
+
+        client.subscribeToEntities({entityClass: Unknown})
             .then(() => {
                 done(new Error('A malformed subscription should not yield results.'));
             })

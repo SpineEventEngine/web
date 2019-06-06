@@ -153,13 +153,14 @@ export class Client {
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer.
    *
-   * @param {!Type} ofType a type URL of entities to observe changes
+   * @param {!Class<T>} entityClass a Protobuf class of the target entities to observe changes
    * @param {?Message[]} byIds an array of ids of entities to observe changes
    * @param {?Message} byId an id of a single entity to observe changes
    * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes
    *                                             and unsubscribe from the updated
+   * @template <T>
    */
-  subscribeToEntities({ofType: type, byIds: ids, byId: id}) {
+  subscribeToEntities({entityClass: cls, byIds: ids, byId: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 }

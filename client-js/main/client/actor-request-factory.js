@@ -556,15 +556,16 @@ class AbstractTargetBuilder {
  * than using a `QueryFactory`.
  *
  * @extends {AbstractTargetBuilder<Query>}
+ * @template T
  */
 class QueryBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Type} type
+   * @param {!Class<T>} targetCls
    * @param {!QueryFactory} queryFactory
    */
-  constructor(type, queryFactory) {
-    super(type);
+  constructor(targetCls, queryFactory) {
+    super(targetCls);
     /**
      * @type {QueryFactory}
      * @private
@@ -588,6 +589,7 @@ class QueryBuilder extends AbstractTargetBuilder {
  * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
  *
  * @see ActorRequestFactory#query()
+ * @template T
  */
 class QueryFactory {
 
@@ -600,11 +602,11 @@ class QueryFactory {
 
   /**
    * Creates a new builder of `Query` instances of the provided type
-   * @param {!Type} type a type URL of the target type
+   * @param {!Class<T>} entityClass a target entity class type
    * @return {QueryBuilder}
    */
-  select(type) {
-    return new QueryBuilder(type, this);
+  select(entityClass) {
+    return new QueryBuilder(entityClass, this);
   }
 
   /**
@@ -705,15 +707,16 @@ class CommandFactory {
  * than using a `TopicFactory`.
  *
  * @extends {AbstractTargetBuilder<Topic>}
+ * @template T
  */
 class TopicBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Type} type
+   * @param {!Class<T>} targetCls
    * @param {!TopicFactory} topicFactory
    */
-  constructor(type, topicFactory) {
-    super(type);
+  constructor(targetCls, topicFactory) {
+    super(targetCls);
     /**
      * @type {TopicFactory}
      * @private
@@ -741,6 +744,7 @@ class TopicBuilder extends AbstractTargetBuilder {
  * such as the actor.
  *
  * @see ActorRequestFactory#topic()
+ * @template T
  */
 class TopicFactory {
 
@@ -753,12 +757,12 @@ class TopicFactory {
   }
 
   /**
-   * Creates a new builder of `Topic` instances of the provided type
-   * @param {!Type} type a type URL of the target type
+   * Creates a new builder of `Topic` instances of the provided entity class type
+   * @param {!Class<T>} entityClass a target entity class type
    * @return {TopicBuilder}
    */
-  select(type) {
-    return new TopicBuilder(type, this);
+  select(entityClass) {
+    return new TopicBuilder(entityClass, this);
   }
 
   /**
