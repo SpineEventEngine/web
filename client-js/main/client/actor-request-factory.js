@@ -231,10 +231,10 @@ class Targets {
    * Composes a new target for objects of specified type, optionally with specified IDs and
    * filters.
    *
-   * @param {!Type} forType a Type URL of target objects
-   * @param {?TypedMessage[]} withIds an array of IDs one of which must be matched by each target
-   *                                  object
-   * @param {?CompositeFilter[]} filteredBy an array of filters target
+   * @param {!Type} type a Type URL of target objects
+   * @param {?TypedMessage[]} ids an array of IDs one of which must be matched by each target
+   *                              object
+   * @param {?CompositeFilter[]} filters an array of filters target
    *
    * @return {Target} a newly created target for objects matching the specified filters
    */
@@ -351,12 +351,15 @@ const INVALID_FILTER_TYPE =
  */
 class AbstractTargetBuilder {
 
-  constructor(targetCls) {
+  /**
+   * @param {!Class<T extends Message>} entity a Protobuf type of the target entities
+   */
+  constructor(entity) {
     /**
-     * @type {Type}
+     * @type {Type} a type composed from the target entity class
      * @private
      */
-    this._type = Type.forClass(targetCls);
+    this._type = Type.forClass(entity);
     /**
      * @type {TypedMessage[]}
      * @private
@@ -597,16 +600,16 @@ class AbstractTargetBuilder {
  * than using a `QueryFactory`.
  *
  * @extends {AbstractTargetBuilder<Query>}
- * @template T
+ * @template <T> a Protobuf type of the query target entities
  */
 class QueryBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Class<T>} targetCls
+   * @param {!Class<T extends Message>} entity a Protobuf type of the query target entities
    * @param {!QueryFactory} queryFactory
    */
-  constructor(targetCls, queryFactory) {
-    super(targetCls);
+  constructor(entity, queryFactory) {
+    super(entity);
     /**
      * @type {QueryFactory}
      * @private
@@ -630,7 +633,7 @@ class QueryBuilder extends AbstractTargetBuilder {
  * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
  *
  * @see ActorRequestFactory#query()
- * @template T
+ * @template <T> a Protobuf type of the query target entities
  */
 class QueryFactory {
 
@@ -642,12 +645,13 @@ class QueryFactory {
   }
 
   /**
-   * Creates a new builder of `Query` instances of the provided type
-   * @param {!Class<T>} entityClass a target entity class type
+   * Creates a new builder of `Query` instances of the provided type.
+   *
+   * @param {!Class<T extend Message>} entity a Protobuf type of the query target entities
    * @return {QueryBuilder}
    */
-  select(entityClass) {
-    return new QueryBuilder(entityClass, this);
+  select(entity) {
+    return new QueryBuilder(entity, this);
   }
 
   /**
@@ -748,16 +752,16 @@ class CommandFactory {
  * than using a `TopicFactory`.
  *
  * @extends {AbstractTargetBuilder<Topic>}
- * @template T
+ * @template <T> a Protobuf type of the subscription target entities
  */
 class TopicBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Class<T>} targetCls
+   * @param {!Class<T extends Message>} entity a Protobuf type of the subscription target entities
    * @param {!TopicFactory} topicFactory
    */
-  constructor(targetCls, topicFactory) {
-    super(targetCls);
+  constructor(entity, topicFactory) {
+    super(entity);
     /**
      * @type {TopicFactory}
      * @private
@@ -785,7 +789,7 @@ class TopicBuilder extends AbstractTargetBuilder {
  * such as the actor.
  *
  * @see ActorRequestFactory#topic()
- * @template T
+ * @template <T> a Protobuf type of the subscription target entities
  */
 class TopicFactory {
 
@@ -798,12 +802,13 @@ class TopicFactory {
   }
 
   /**
-   * Creates a new builder of `Topic` instances of the provided entity class type
-   * @param {!Class<T>} entityClass a target entity class type
+   * Creates a new builder of `Topic` instances of the provided type.
+   *
+   * @param {!Class<T extend Message>} entity a Protobuf type of the subscription target entities
    * @return {TopicBuilder}
    */
-  select(entityClass) {
-    return new TopicBuilder(entityClass, this);
+  select(entity) {
+    return new TopicBuilder(entity, this);
   }
 
   /**
