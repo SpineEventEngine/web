@@ -23,6 +23,8 @@ import {fail, ensureUserTasks} from '../../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from './given';
 import {client} from '../given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
+import {TypedMessage} from '@lib/client/typed-message';
+import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
 /**
@@ -116,7 +118,7 @@ describe('FirebaseClient executes query built', function () {
         {
             message: 'with `le` filter',
             filters: [
-                Filters.le('tasksCount', 3)
+                Filters.le('tasksCount', TypedMessage.int32(3))
             ],
             expectedUsers: () => users.filter(user => user.tasks.length <= 3)
         },
@@ -139,7 +141,7 @@ describe('FirebaseClient executes query built', function () {
             message: 'with several filters applied to different column',
             filters: [
                 Filters.gt('tasksCount', 1),
-                Filters.lt('overloaded', true)
+                Filters.lt('overloaded', new BoolValue([true]))
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 1)
         },
