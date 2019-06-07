@@ -22,6 +22,8 @@
 
 import {Message} from 'google-protobuf';
 import {Observable} from 'rxjs';
+import {Query} from '../proto/spine/client/query_pb';
+import {Topic} from '../proto/spine/client/subscription_pb';
 
 /**
  * The callback that doesn't accept any parameters.
@@ -69,22 +71,75 @@ import {Observable} from 'rxjs';
 export class Client {
 
   /**
+   * Creates a new {@link QueryFactory} for creating `Query` instances specifying
+   * the data to be retrieved from Spine server.
    *
+   * @example
+   * // Build query specifying entities of a developer-defined `Task` type
+   * // by IDs
+   * newQuery().select(Task)
+   *           .byIds([taskId1, taskId2])
+   *           .build()
+   *
+   * @example
+   * // Build query specifying entities of a developer-defined `Task` type
+   * // assigned to the specific user
+   * newQuery().select(Task)
+   *           .where([Filters.eq('assignee', userId)])
+   *           .build()
+   *
+   * To execute the resulting `Query` instance pass it to the {@link Client#execute()}
+   * method.
+   *
+   * @return {QueryFactory} a factory for creating queries to the Spine server
+   *
+   * @see QueryFactory
+   * @see QueryBuilder
+   * @see AbstractTargetBuilder
    */
   newQuery() {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
+   * Executes the given `Query` instance specifying the data to be retrieved from
+   * Spine server fulfilling a returned promise with an array of received objects.
    *
-   * @param query
+   * @param {!Query} query a query instance to be executed
+   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   *        messages of a given type or with an empty list if no entities matching given query
+   *        were found; rejected with a `SpineError` if error occurs;
+   *
+   * @template <T> a Protobuf type of entities being the target of a query
    */
   execute(query) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
+   * Creates a new {@link TopicFactory} for building subscription topics specifying
+   * the state changes to be observed from Spine server.
    *
+   * @example
+   * // Build a subscription topic specifying all entities of a developer-defined `UserTasks` type
+   * newQuery().select(Task)
+   *           .build()
+   *
+   * @example
+   * // Build a subscription topic specifying entities of a developer-defined `UserTasks`
+   * // type where tasks count is greater than 3
+   * newTopic().select(UserTasks)
+   *           .where(Filters.gt('tasksCount', 3))
+   *           .build()
+   *
+   * To execute the resulting `Topic` instance pass it to the {@link Client#subscribeTo()}
+   * method.
+   *
+   * @return {TopicFactory} a factory for creating subscription topics to the Spine server
+   *
+   * @see TopicFactory
+   * @see TopicBuilder
+   * @see AbstractTargetBuilder
    */
   newTopic() {
     throw new Error('Not implemented in abstract base.');
@@ -92,10 +147,15 @@ export class Client {
 
   /**
    * Creates a subscription to the topic which is updated with backend changes.
+   * Fulfills a returning promise with an object representing a result of the
+   * subscription to entities state changes.
    *
-   * @param {!spine.client.Topic} topic a topic of a subscription
-   * @return {Promise<EntitySubscriptionObject>}
-   * @abstract
+   * @param {!Topic} topic a topic of a subscription
+   * @return {Promise<EntitySubscriptionObject<T>>} a promise to be resolved with an object
+   *        representing a result of the subscription to entities state changes; rejected with
+   *        a `SpineError` if error occurs;
+   *
+   * @template <T> a Protobuf type of entities being the target of a subscription
    */
   subscribeTo(topic) {
     throw new Error('Not implemented in abstract base.');
