@@ -40,26 +40,39 @@ import {Topic} from '../proto/spine/client/subscription_pb';
  */
 
 /**
- * @typedef {Object} EntitySubscriptionObject an object representing a result of the subscription
- *                                            to entities state changes
- * @property {Observable<T>} itemAdded
- * @property {Observable<T>} itemChanged
- * @property {Observable<T>} itemRemoved
- * @property {parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
+ * @typedef {Object} EntitySubscriptionObject
+ *
+ * An object representing a result of the subscription to entities state changes.
+ * The entities that already exist will be initially passed to the `itemAdded` observer.
+ *
+ * @property {!Observable<T>} itemAdded emits new items matching the subscription topic
+ * @property {!Observable<T>} itemChanged emits updated items matching the subscription topic
+ * @property {!Observable<T>} itemRemoved emits removed items matching the subscription topic
+ * @property {!parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
  *                                   stopping the subscribers from receiving new entities
  *
  * @template <T> a type of the subscription target entities
  */
 
 /**
- * @typedef {Object} TargetCriteria
+ * @typedef {Object} SimpleTarget
  *
- * @property {!Class<T extends Message>} entity
+ * An object representing a set of parameters for building a query or a subscription
+ * topic specifying only a type and identifiers of the target entities.
+ *
+ * Target built from this object point either:
+ *  - a single entity of a given type with a given ID;
+ *  - several entities of a given type with given IDs;
+ *  - all entities of a given type if no IDs specified;
+ *
+ * @property {!Class<T extends Message>} entity a class of target entities
  * @property {?<I extends Message>[] | Number[] | String[]} byIds
+ *      a list of target entities IDs
  * @property {?<I extends Message>[] | Number[] | String[]} byId
+ *      an ID of a target entity. If specified, the `byIds` property isn't taken.
  *
- * @template <T> a type of the subscription target entities
- * @template <I>
+ * @template <T> a class of a query or subscription target entities
+ * @template <I> a class of a query or subscription target entities identifiers
  */
 
 /**
@@ -150,7 +163,7 @@ export class Client {
    * Fulfills a returning promise with an object representing a result of the
    * subscription to entities state changes.
    *
-   * @param {!Topic} topic a topic of a subscription
+   * @param {!Topic} topic a topic to subscribe
    * @return {Promise<EntitySubscriptionObject<T>>} a promise to be resolved with an object
    *        representing a result of the subscription to entities state changes; rejected with
    *        a `SpineError` if error occurs;
@@ -203,36 +216,79 @@ export class Client {
   }
 
   /**
-   * Fetches entities of the given class type fulfilling a returned promise
-   * with an array of received objects.
+   * Fetches entities of the given class type from the Spine backend. Fetches
+   * single entity if the `byId` specified, several entities if `byIds` specified, and
+   * all entities of the given type when no IDs specified.
+   *
+   * Fulfills a returned promise with an array of received objects when fetches several
+   * or all entities of type and with a single entity when fetches by ID.
+   *
+   * This method shortens of a two step query execution with {@link Client#newQuery()}
+   * and {@link Client#execute()} methods. Should be used for common queries when there's no
+   * need in query with filters or masks applied.
    *
    * @example
-   * // Fetch all entities of a developer-defined Task type at once using a Promise.
+   * // Fetch all entities of a developer-defined `Task` type. Returning promise
+   * // resolves with a list of entities or with an empty list if no records of specified
+   * // type were found.
    * fetch({entity: Task}).then(tasks => { ... })
    *
-   * @param {TargetCriteria}
-   * @return {Promise<T[] | T | null>} a promise to be fulfilled with a list of Protobuf messages
-   *        of a given type or with an empty list if no entities matching given class were found;
-   *        rejected with a `SpineError` if error occurs;
+   * @example
+   * // Fetch a single entity of a developer-defined `Task` type by ID. Returning promise
+   * // resolves with a received entity or with `null` if no entity with specified
+   * // ID was found.
+   * fetch({entity: Task, byId: taskId}).then(task => { ... })
    *
-   * @template <T>
+   * @example
+   * // Fetch several entities of a developer-defined `Task` type by IDs. Returning promise
+   * // resolves with a list of entities or with an empty list if no records with specified
+   * // IDs were found.
+   * fetch({entity: Task, byIds: [taskId1, taskId2]}).then(tasks => { ... })
+   *
+   * @param {SimpleTarget<T>} object representing a set of parameters for building a query by target
+   *      entities type and IDs
+   * @return {Promise<T[] | T | null>} a promise to be fulfilled with a list of Protobuf messages
+   *        of a given type or with a single entity if fetched by ID; resolves with an empty list
+   *        if no entities matching given class or IDs were found; resolves with `null` if no
+   *        entity with a specified ID was found; rejected with a `SpineError` if error occurs;
+   *
+   * @template <T> a Protobuf type of entities being the fetch target
    */
   fetch({entity: cls, byIds: ids, byId: id}) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
-   * Subscribes to entity changes on the backend, providing the changes via `itemAdded`,
-   * `itemChanged`, and `itemRemoved` observers.
-   *
-   * The changes can be handled for a one or many entities by specifying the entity type
-   * and the ids.
+   * Creates a subscription to changes of entities of given type. Subscribes to changes of
+   * a single entity if the `byId` specified, several entities if `byIds` specified, and
+   * all entities of the given type when no IDs specified. Fulfills a returning promise with an
+   * object representing a result of the subscription to entities state changes.
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer.
    *
-   * @param {TargetCriteria}
-   * @return {Promise<EntitySubscriptionObject>} a promise of means to observe the changes
+   * This method shortens a two-step subscription to topic with {@link Client#newTopic()}
+   * and {@link Client#subscribeTo()} methods. Should be used for common subscriptions when there's
+   * no need to create subscription with filters or masks applied.
+   *
+   * @example
+   * // Subscribe to changes of all entities of a developer-defined `UserTasks` type. Returning
+   * // promise resolves with an object representing a result of the subscription.
+   * subscribe({entity: UserTasks}).then(subscriptionObject => { ... })
+   *
+   * @example
+   * // Subscribe to changes of a single entity of a developer-defined `UserTasks` type by ID.
+   * subscribe({entity: Task, byId: taskId}).then(subscriptionObject => { ... })
+   *
+   * @example
+   * // Subscribe to changes of several entities of a developer-defined `UserTasks` type by IDs.
+   * subscribe({entity: Task, byIds: [taskId1, taskId2]}).then(subscriptionObject => { ... })
+   *
+   * @param {SimpleTarget<T>} object representing a set of parameters for building a subscription
+   *    topic by target entities type and IDs
+   * @return {Promise<EntitySubscriptionObject<T>>} a promise of means to observe the changes
    *                                             and unsubscribe from the updated
+   *
+   * @template <T> a Protobuf type of entities being the subscription target
    */
   subscribe({entity: cls, byIds: ids, byId: id}) {
     throw new Error('Not implemented in abstract base.');
