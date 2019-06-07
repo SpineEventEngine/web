@@ -42,6 +42,8 @@ import {Type, TypedMessage, isProtobufMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
 
+// TODO:2019-06-07:yegor.udovchenko: Cover `Filters` class withunit tests
+// https://github.com/SpineEventEngine/web/issues/100
 /**
  * A factory for `Filter` and `CompositeFilter` instances.
  */
