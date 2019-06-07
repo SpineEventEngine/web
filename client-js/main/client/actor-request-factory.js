@@ -48,6 +48,14 @@ import {FieldPaths} from './field-paths';
 export class Filters {
 
   /**
+   * @typedef {string | number | boolean | TypedMessage<T> | <T extends Message>} FieldValue
+   *
+   * Represents all types acceptable as a value for filtering.
+   *
+   * @template <T> a type of the Protobuf message to compare with
+   */
+
+  /**
    * Instantiation not allowed and will throw an error.
    */
   constructor() {
@@ -58,7 +66,7 @@ export class Filters {
    * Creates a new filter for the value of an object field to be equal to the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -70,7 +78,7 @@ export class Filters {
    * Creates a new filter for the value of an object field to be less than the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -82,7 +90,7 @@ export class Filters {
    * Creates a new filter for the value an object field to be greater than the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -95,7 +103,7 @@ export class Filters {
    * the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -108,7 +116,7 @@ export class Filters {
    * the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -119,9 +127,25 @@ export class Filters {
   /**
    * Creates a filter for an object field to match the provided value according to an operator.
    *
+   * Accepts various types of {@link FieldValue field values}.
+   *
+   * @example
+   * // Create filters with primitive values to compare
+   * Filters.eq('description', 'Sample task description') // Wraps string in the Protobuf `StringValue`
+   * Filters.gt('length', 12) // Wraps number in the Protobuf `Int32Value`
+   * Filters.eq('multiline', false) // Wraps boolean in the Protobuf `BoolValue`
+   *
+   * @example
+   * // Create filter for the primitive value of a custom type
+   * Filters.gt('price', TypedMessage.float(7.41))
+   *
+   * @example
+   * // Create filter for the user-defined type
+   * Filters.eq('status', Task.Status.COMPLETED)
+   *
    * @param {!String} fieldPath a path to the object field
    * @param {!Filter.Operator} operator an operator to check the field value upon
-   * @param {!TypedMessage} value a value to compare the field value to
+   * @param {!FieldValue} value a value to compare the field value to
    *
    * @return {Filter} a new filter instance
    */
@@ -140,7 +164,7 @@ export class Filters {
       typedValue = TypedMessage.of(value);
     } else {
       throw new Error(`Unable to create filter.
-       Filter value type of ${typeof value} is not supported.`)
+       Filter value type of ${typeof value} is unsupported.`)
     }
 
     const wrappedValue = AnyPacker.packTyped(typedValue);
