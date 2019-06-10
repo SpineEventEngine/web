@@ -58,9 +58,9 @@ describe('FirebaseClient "fetch"', function () {
             .catch(fail(done));
     });
 
-    it('returns correct value by ID', done => {
+    it('returns correct value by single ID', done => {
         const id = taskIds[0];
-        client.fetch({entity: Task, byId: id})
+        client.fetch({entity: Task, byIds: id})
             .then(item => {
                 assert.ok(!Array.isArray(item));
                 assert.ok(item.getId().getValue() === id.getValue());
@@ -68,20 +68,37 @@ describe('FirebaseClient "fetch"', function () {
             }, fail(done));
     });
 
-    it('ignores `byIds` parameter when `byId` specified', done => {
-        const id = taskIds[0];
-        client.fetch({entity: Task, byId: id, byIds: ['one', 'two']})
-            .then(item => {
-                assert.ok(!Array.isArray(item));
-                assert.ok(item.getId().getValue() === id.getValue());
+    it('ignores `byIds` parameter when empty list specified', done => {
+        client.fetch({entity: Task, byIds: []})
+            .then(items => {
+                assert.ok(Array.isArray(items));
+                assert.ok(items.length >= taskIds.length);
                 done();
             }, fail(done));
     });
 
-    it('returns `null` as a value when fetches entity by ID that is missing', done => {
+    it('ignores `byIds` parameter when `null` value specified', done => {
+        client.fetch({entity: Task, byIds: null})
+            .then(items => {
+                assert.ok(Array.isArray(items));
+                assert.ok(items.length >= taskIds.length);
+                done();
+            }, fail(done));
+    });
+
+    it('ignores `byIds` parameter when empty list specified', done => {
+        client.fetch({entity: Task, byIds: []})
+            .then(items => {
+                assert.ok(Array.isArray(items));
+                done();
+            }, fail(done));
+    });
+
+
+    it('returns `null` as a value when fetches entity by single ID that is missing', done => {
         const taskId = TestEnvironment.taskId({});
 
-        client.fetch({entity: Task, byId: taskId})
+        client.fetch({entity: Task, byIds: taskId})
             .then(item => {
                 assert.ok(!Array.isArray(item));
                 assert.equal(item, null);
