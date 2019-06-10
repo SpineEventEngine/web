@@ -86,15 +86,14 @@ export class Client {
    * the data to be retrieved from Spine server.
    *
    * @example
-   * // Build query specifying entities of a developer-defined `Task` type
-   * // by IDs
+   * // Build a query for `Task` domain entity, specifying particular IDs.
    * newQuery().select(Task)
    *           .byIds([taskId1, taskId2])
    *           .build()
    *
    * @example
-   * // Build query specifying entities of a developer-defined `Task` type
-   * // assigned to the specific user
+   * // Build a query for `Task` domain entity, selecting the instances which assigned to the
+   * // particular user.
    * newQuery().select(Task)
    *           .where([Filters.eq('assignee', userId)])
    *           .build()
@@ -132,13 +131,13 @@ export class Client {
    * the state changes to be observed from Spine server.
    *
    * @example
-   * // Build a subscription topic specifying all entities of a developer-defined `UserTasks` type
-   * newQuery().select(Task)
+   * // Build a subscription topic for `UserTasks` domain entity.
+   * newTopic().select(Task)
    *           .build()
    *
    * @example
-   * // Build a subscription topic specifying entities of a developer-defined `UserTasks`
-   * // type where tasks count is greater than 3
+   * // Build a subscription topic for `UserTasks` domain entity, selecting the instances
+   * // which task count is greater than 3.
    * newTopic().select(UserTasks)
    *           .where(Filters.gt('tasksCount', 3))
    *           .build()
@@ -226,21 +225,18 @@ export class Client {
    * need in query with filters or masks applied.
    *
    * @example
-   * // Fetch all entities of a developer-defined `Task` type. Returning promise
-   * // resolves with a list of entities or with an empty list if no records of specified
-   * // type were found.
+   * // Fetch all `Task` domain entities. Returning promise resolves with a list of entities
+   * // or with an empty list if no records of specified type were found.
    * fetch({entity: Task}).then(tasks => { ... })
    *
    * @example
-   * // Fetch a single entity of a developer-defined `Task` type by ID. Returning promise
-   * // resolves with a received entity or with `null` if no entity with specified
-   * // ID was found.
+   * // Fetch a single `Task` domain entity by ID. Returning promise resolves with a received
+   * // entity or with `null` if no entity with specified ID was found.
    * fetch({entity: Task, byIds: taskId}).then(task => { ... })
    *
    * @example
-   * // Fetch several entities of a developer-defined `Task` type by IDs. Returning promise
-   * // resolves with a list of entities or with an empty list if no records with specified
-   * // IDs were found.
+   * // Fetch several `Task` domain entities by IDs. Returning promise resolves with a list of
+   * // entities or with an empty list if no records with specified IDs were found.
    * fetch({entity: Task, byIds: [taskId1, taskId2]}).then(tasks => { ... })
    *
    * @param {SimpleTarget<T>} object representing a set of parameters for building a query by target
@@ -269,16 +265,16 @@ export class Client {
    * no need to create subscription with filters or masks applied.
    *
    * @example
-   * // Subscribe to changes of all entities of a developer-defined `UserTasks` type. Returning
-   * // promise resolves with an object representing a result of the subscription.
+   * // Subscribe to changes of all `UserTasks` domain entities. Returning promise resolves with
+   * // an object representing a result of the subscription.
    * subscribe({entity: UserTasks}).then(subscriptionObject => { ... })
    *
    * @example
-   * // Subscribe to changes of a single entity of a developer-defined `UserTasks` type by ID.
+   * // Subscribe to changes of a single `UserTasks` domain entity by ID.
    * subscribe({entity: Task, byIds: taskId}).then(subscriptionObject => { ... })
    *
    * @example
-   * // Subscribe to changes of several entities of a developer-defined `UserTasks` type by IDs.
+   * // Subscribe to changes of several `UserTasks` domain entities by IDs.
    * subscribe({entity: Task, byIds: [taskId1, taskId2]}).then(subscriptionObject => { ... })
    *
    * @param {SimpleTarget<T>} object representing a set of parameters for building a subscription
