@@ -50,7 +50,7 @@ import {FieldPaths} from './field-paths';
 export class Filters {
 
   /**
-   * @typedef {string | number | boolean | TypedMessage<T> | <T extends Message>} FieldValue
+   * @typedef {string | number | boolean | Date | TypedMessage<T> | <T extends Message>} FieldValue
    *
    * Represents all types acceptable as a value for filtering.
    *
@@ -142,6 +142,10 @@ export class Filters {
    * Filters.gt('price', TypedMessage.float(7.41))
    *
    * @example
+   * // Create filter for the time-based value
+   * Filters.gt('whenCreated', new Date(2019, 5, 4)) // Converts the given date to the `Timestamp` message
+   *
+   * @example
    * // Create filter for the user-defined type
    * Filters.eq('status', Task.Status.COMPLETED)
    *
@@ -160,6 +164,8 @@ export class Filters {
       typedValue = TypedMessage.string(value);
     } else if (value instanceof Boolean || typeof value === 'boolean') {
       typedValue = TypedMessage.bool(value);
+    } else if (value instanceof Date) {
+      typedValue = TypedMessage.timestamp(value);
     } else if (value instanceof TypedMessage) {
       typedValue = value;
     } else if(isProtobufMessage(value)) {
