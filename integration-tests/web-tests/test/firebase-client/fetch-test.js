@@ -61,8 +61,10 @@ describe('FirebaseClient "fetch"', function () {
     it('returns correct value by single ID', done => {
         const id = taskIds[0];
         client.fetch({entity: Task, byIds: id})
-            .then(item => {
-                assert.ok(!Array.isArray(item));
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.ok(data.length === 1);
+                const item = data[0];
                 assert.ok(item.getId().getValue() === id.getValue());
                 done();
             }, fail(done));
@@ -70,38 +72,39 @@ describe('FirebaseClient "fetch"', function () {
 
     it('ignores `byIds` parameter when empty list specified', done => {
         client.fetch({entity: Task, byIds: []})
-            .then(items => {
-                assert.ok(Array.isArray(items));
-                assert.ok(items.length >= taskIds.length);
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.ok(data.length >= taskIds.length);
                 done();
             }, fail(done));
     });
 
     it('ignores `byIds` parameter when `null` value specified', done => {
         client.fetch({entity: Task, byIds: null})
-            .then(items => {
-                assert.ok(Array.isArray(items));
-                assert.ok(items.length >= taskIds.length);
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.ok(data.length >= taskIds.length);
                 done();
             }, fail(done));
     });
 
     it('ignores `byIds` parameter when empty list specified', done => {
         client.fetch({entity: Task, byIds: []})
-            .then(items => {
-                assert.ok(Array.isArray(items));
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.ok(data.length >= taskIds.length);
                 done();
             }, fail(done));
     });
 
 
-    it('returns `null` as a value when fetches entity by single ID that is missing', done => {
+    it('returns empty list when fetches entity by single ID that is missing', done => {
         const taskId = TestEnvironment.taskId({});
 
         client.fetch({entity: Task, byIds: taskId})
-            .then(item => {
-                assert.ok(!Array.isArray(item));
-                assert.equal(item, null);
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.ok(data.length === 0);
                 done();
             }, fail(done));
     });

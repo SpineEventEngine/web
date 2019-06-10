@@ -48,9 +48,11 @@ describe('FirebaseClient command sending', function () {
 
             client.fetch({entity: Task, byIds: taskId})
                 .then(data => {
-                    assert.equal(data.getId().getValue(), taskId);
-                    assert.equal(data.getName(), command.getName());
-                    assert.equal(data.getDescription(), command.getDescription());
+                    assert.ok(data.length === 1);
+                    const item = data[0];
+                    assert.equal(item.getId().getValue(), taskId);
+                    assert.equal(item.getName(), command.getName());
+                    assert.equal(item.getDescription(), command.getDescription());
 
                     done();
 

@@ -100,16 +100,7 @@ export class AbstractClient extends Client {
    */
   fetch({entity: cls, byIds: ids}) {
     const queryBuilder = this.newQuery().select(cls);
-
-    if (Array.isArray(ids)) {
-      queryBuilder.byIds(ids);
-    } else if (!!ids) {
-      const query = queryBuilder.byIds([ids]).build();
-      return this.execute(query)
-          .then(items => !items.length ? null : items[0])
-    }
-
-    const query = queryBuilder.build();
+    const query = AbstractClient._buildTarget(queryBuilder, ids);
     return this.execute(query);
   }
 
@@ -118,14 +109,35 @@ export class AbstractClient extends Client {
    */
   subscribe({entity: cls, byIds: ids}) {
     const topicBuilder = this.newTopic().select(cls);
+    const topic = AbstractClient._buildTarget(topicBuilder, ids);
 
+    return this.subscribeTo(topic);
+  }
+
+  /**
+   * Builds target from the given target builder specifying the set
+   * of target entities.
+   *
+   * The built target points to:
+   *  - the particular entities with the given IDs;
+   *  - the all entities if no IDs specified;
+   *
+   * @param {AbstractTargetBuilder<Query|Topic>} targetBuilder
+   *    a builder for creating `Query` or `Topic` instances.
+   * @param {?<T extends Message>[] | <T extends Message> | Number[] | Number | String[] | String} ids
+   *      a list of target entities IDs or an ID of a single target entity
+   * @return {Query|Topic} the built target
+   *
+   * @template <T> a class of a query or subscription target entities identifiers
+   * @private
+   */
+  static _buildTarget(targetBuilder, ids) {
     if (Array.isArray(ids)) {
-      topicBuilder.byIds(ids);
+      targetBuilder.byIds(ids);
     } else if (!!ids) {
-      topicBuilder.byIds([ids]);
+      targetBuilder.byIds([ids]);
     }
 
-    const topic = topicBuilder.build();
-    return this.subscribeTo(topic);
+    return targetBuilder.build();
   }
 }

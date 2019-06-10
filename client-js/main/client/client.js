@@ -98,8 +98,7 @@ export class Client {
    *           .where([Filters.eq('assignee', userId)])
    *           .build()
    *
-   * To execute the resulting `Query` instance pass it to the {@link Client#execute()}
-   * method.
+   * To execute the resulting `Query` instance pass it to the {@link Client#execute()}.
    *
    * @return {QueryFactory} a factory for creating queries to the Spine server
    *
@@ -142,8 +141,8 @@ export class Client {
    *           .where(Filters.gt('tasksCount', 3))
    *           .build()
    *
-   * To execute the resulting `Topic` instance pass it to the {@link Client#subscribeTo()}
-   * method.
+   * To turn the resulting `Topic` instance into a subscription pass it
+   * to the {@link Client#subscribeTo()}.
    *
    * @return {TopicFactory} a factory for creating subscription topics to the Spine server
    *
@@ -156,9 +155,8 @@ export class Client {
   }
 
   /**
-   * Creates a subscription to the topic which is updated with backend changes.
-   * Fulfills a returning promise with an object representing a result of the
-   * subscription to entities state changes.
+   * Creates a subscription to the topic which is updated with backend changes. Fulfills
+   * a returning promise with the created subscription.
    *
    * @param {!Topic} topic a topic to subscribe
    * @return {Promise<EntitySubscriptionObject<T>>} a promise to be resolved with an object
@@ -213,38 +211,37 @@ export class Client {
   }
 
   /**
-   * Fetches entities of the given class type from the Spine backend. Fetches
-   * single or several entities if `byIds` specified, and all entities of the given type
-   * when no IDs specified.
+   * Fetches entities of the given class type from the Spine backend.
    *
-   * Fulfills a returned promise with an array of received objects when fetches several
-   * or all entities of type and with a single entity when fetches by single ID.
+   * Optionally accepts entity identifiers targeting the objects to fetch. If no identifiers are
+   * passed, returns all entities of the selected type.
    *
-   * This method shortens a two-step query execution with {@link Client#newQuery()}
-   * and {@link Client#execute()} methods. Should be used for common queries when there's no
-   * need in query with filters or masks applied.
+   * The returned promise is fulfilled an array of objects, each representing an entity.
+   *
+   * This API call is a shortcut for {@link Client#newQuery()} followed by {@link Client#execute()}.
+   * It covers the most common use cases. If a more advanced fetch behaviour is required, the
+   * `Query` instance should be created and parameterized via {@link Client#newQuery()}.
    *
    * @example
    * // Fetch all `Task` domain entities. Returning promise resolves with a list of entities
-   * // or with an empty list if no records of specified type were found.
+   * // or with an empty list if no records of the specified type were found.
    * fetch({entity: Task}).then(tasks => { ... })
    *
    * @example
-   * // Fetch a single `Task` domain entity by ID. Returning promise resolves with a received
-   * // entity or with `null` if no entity with specified ID was found.
+   * // Fetch a single `Task` domain entity by ID. Returning promise resolves with a list containing
+   * // the target entity or with an empty list if no record with the specified ID was found.
    * fetch({entity: Task, byIds: taskId}).then(task => { ... })
    *
    * @example
    * // Fetch several `Task` domain entities by IDs. Returning promise resolves with a list of
-   * // entities or with an empty list if no records with specified IDs were found.
+   * // entities or with an empty list if no records with the specified IDs were found.
    * fetch({entity: Task, byIds: [taskId1, taskId2]}).then(tasks => { ... })
    *
    * @param {SimpleTarget<T>} object representing a set of parameters for building a query by target
-   *      entities type and IDs
+   *      entities class type and IDs
    * @return {Promise<T[] | T | null>} a promise to be fulfilled with a list of Protobuf messages
-   *        of a given type or with a single entity if fetched by ID; resolves with an empty list
-   *        if no entities matching given class or IDs were found; resolves with `null` if no
-   *        entity with a specified ID was found; rejected with a `SpineError` if error occurs;
+   *        of a given type or with an empty list if no entities matching given class or IDs were
+   *        found; rejected with a `SpineError` if error occurs;
    *
    * @template <T> a Protobuf type of entities being the fetch target
    */
@@ -253,16 +250,18 @@ export class Client {
   }
 
   /**
-   * Creates a subscription to changes of entities of given type. Subscribes to changes of
-   * a single or several entities if `byIds` specified, and all entities of the given type when
-   * no IDs specified. Fulfills a returning promise with an object representing a result of the
-   * subscription to entities state changes.
+   * Creates a subscription to changes of entities of given class type from the Spine backend.
+   *
+   * Optionally accepts entity identifiers targeting the objects. If no identifiers are
+   * passed, subscribes to changes of all entities of the selected type.
+   *
+   * Fulfills a returning promise with the created subscription.
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer.
    *
-   * This method shortens a two-step subscription to topic with {@link Client#newTopic()}
-   * and {@link Client#subscribeTo()} methods. Should be used for common subscriptions when there's
-   * no need to create subscription with filters or masks applied.
+   * This API call is a shortcut for {@link Client#newTopic()} followed by {@link Client#subscribeTo()}.
+   * It covers the most common use cases. If a more advanced subscription behaviour is required,
+   * the `Topic` instance should be created and parameterized via {@link Client#newTopic()}.
    *
    * @example
    * // Subscribe to changes of all `UserTasks` domain entities. Returning promise resolves with
@@ -278,7 +277,7 @@ export class Client {
    * subscribe({entity: Task, byIds: [taskId1, taskId2]}).then(subscriptionObject => { ... })
    *
    * @param {SimpleTarget<T>} object representing a set of parameters for building a subscription
-   *    topic by target entities type and IDs
+   *    topic by target entities class type and IDs
    * @return {Promise<EntitySubscriptionObject<T>>} a promise of means to observe the changes
    *                                             and unsubscribe from the updated
    *
