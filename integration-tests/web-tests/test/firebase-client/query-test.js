@@ -19,9 +19,9 @@
  */
 
 import assert from 'assert';
-import {fail, ensureUserTasks} from '../../test-helpers';
-import {UserTasksTestEnvironment as TestEnvironment} from './given';
-import {client} from '../given/firebase-client';
+import {fail, ensureUserTasks} from '../test-helpers';
+import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
+import {client} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
 import {TypedMessage} from '@lib/client/typed-message';
 import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';

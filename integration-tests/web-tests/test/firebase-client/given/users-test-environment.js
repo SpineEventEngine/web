@@ -20,7 +20,7 @@
 
 import uuid from 'uuid';
 import {UserId} from '@testProto/spine/core/user_id_pb';
-import TestEnvironment from '../given/test-environment';
+import TestEnvironment from './test-environment';
 
 /**
  * The class for preparation of a test environment using a sample application
