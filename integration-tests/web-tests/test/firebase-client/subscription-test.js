@@ -166,7 +166,7 @@ describe('FirebaseClient subscription', function () {
         const itemRenamedAtFirstPromise = new Promise(resolve =>
             reportItemRenamedAtFirst = resolve);
         let changesCount = 0;
-        client.subscribe({entity: Task, byId: taskId})
+        client.subscribe({entity: Task, byIds: taskId})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {

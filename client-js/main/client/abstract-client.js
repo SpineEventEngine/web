@@ -98,15 +98,15 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  fetch({entity: cls, byIds: ids, byId: id}) {
+  fetch({entity: cls, byIds: ids}) {
     const queryBuilder = this.newQuery().select(cls);
 
-    if (!!id) {
-      const query = queryBuilder.byIds([id]).build();
+    if (Array.isArray(ids)) {
+      queryBuilder.byIds(ids);
+    } else if (!!ids) {
+      const query = queryBuilder.byIds([ids]).build();
       return this.execute(query)
           .then(items => !items.length ? null : items[0])
-    } else if (!!ids) {
-      queryBuilder.byIds(ids);
     }
 
     const query = queryBuilder.build();
@@ -116,13 +116,13 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  subscribe({entity: cls, byIds: ids, byId: id}) {
+  subscribe({entity: cls, byIds: ids}) {
     const topicBuilder = this.newTopic().select(cls);
 
-    if (!!id) {
-      topicBuilder.byIds([id]);
-    } else if (!!ids) {
+    if (Array.isArray(ids)) {
       topicBuilder.byIds(ids);
+    } else if (!!ids) {
+      topicBuilder.byIds([ids]);
     }
 
     const topic = topicBuilder.build();

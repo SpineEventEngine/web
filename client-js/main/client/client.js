@@ -66,10 +66,8 @@ import {Topic} from '../proto/spine/client/subscription_pb';
  *  - all entities of a given type if no IDs specified;
  *
  * @property {!Class<T extends Message>} entity a class of target entities
- * @property {?<I extends Message>[] | Number[] | String[]} byIds
- *      a list of target entities IDs
- * @property {?<I extends Message>[] | Number[] | String[]} byId
- *      an ID of a target entity. If specified, the `byIds` property isn't taken.
+ * @property {?<I extends Message>[] | <I extends Message> | Number[] | Number | String[] | String} byIds
+ *      a list of target entities IDs or an ID of a single target entity
  *
  * @template <T> a class of a query or subscription target entities
  * @template <I> a class of a query or subscription target entities identifiers
@@ -217,13 +215,13 @@ export class Client {
 
   /**
    * Fetches entities of the given class type from the Spine backend. Fetches
-   * single entity if the `byId` specified, several entities if `byIds` specified, and
-   * all entities of the given type when no IDs specified.
+   * single or several entities if `byIds` specified, and all entities of the given type
+   * when no IDs specified.
    *
    * Fulfills a returned promise with an array of received objects when fetches several
-   * or all entities of type and with a single entity when fetches by ID.
+   * or all entities of type and with a single entity when fetches by single ID.
    *
-   * This method shortens of a two step query execution with {@link Client#newQuery()}
+   * This method shortens a two-step query execution with {@link Client#newQuery()}
    * and {@link Client#execute()} methods. Should be used for common queries when there's no
    * need in query with filters or masks applied.
    *
@@ -237,7 +235,7 @@ export class Client {
    * // Fetch a single entity of a developer-defined `Task` type by ID. Returning promise
    * // resolves with a received entity or with `null` if no entity with specified
    * // ID was found.
-   * fetch({entity: Task, byId: taskId}).then(task => { ... })
+   * fetch({entity: Task, byIds: taskId}).then(task => { ... })
    *
    * @example
    * // Fetch several entities of a developer-defined `Task` type by IDs. Returning promise
@@ -254,15 +252,15 @@ export class Client {
    *
    * @template <T> a Protobuf type of entities being the fetch target
    */
-  fetch({entity: cls, byIds: ids, byId: id}) {
+  fetch({entity: cls, byIds: ids}) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
    * Creates a subscription to changes of entities of given type. Subscribes to changes of
-   * a single entity if the `byId` specified, several entities if `byIds` specified, and
-   * all entities of the given type when no IDs specified. Fulfills a returning promise with an
-   * object representing a result of the subscription to entities state changes.
+   * a single or several entities if `byIds` specified, and all entities of the given type when
+   * no IDs specified. Fulfills a returning promise with an object representing a result of the
+   * subscription to entities state changes.
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer.
    *
@@ -277,7 +275,7 @@ export class Client {
    *
    * @example
    * // Subscribe to changes of a single entity of a developer-defined `UserTasks` type by ID.
-   * subscribe({entity: Task, byId: taskId}).then(subscriptionObject => { ... })
+   * subscribe({entity: Task, byIds: taskId}).then(subscriptionObject => { ... })
    *
    * @example
    * // Subscribe to changes of several entities of a developer-defined `UserTasks` type by IDs.
@@ -290,7 +288,7 @@ export class Client {
    *
    * @template <T> a Protobuf type of entities being the subscription target
    */
-  subscribe({entity: cls, byIds: ids, byId: id}) {
+  subscribe({entity: cls, byIds: ids}) {
     throw new Error('Not implemented in abstract base.');
   }
 }
