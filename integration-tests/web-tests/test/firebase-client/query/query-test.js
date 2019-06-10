@@ -71,7 +71,7 @@ describe('FirebaseClient executes query built', function () {
                 }, 500);
             })
             .catch(() => fail(done));
-        });
+    });
 
     /**
      * @type {QueryTest[]}
@@ -154,18 +154,23 @@ describe('FirebaseClient executes query built', function () {
         }
     ];
 
+    function buildQueryFor({ids, filters}) {
+        const queryBuilder = client.newQuery()
+            .select(UserTasks)
+            .byIds(ids ? ids : toUserIds(users));
+
+        if (!!filters) {
+            queryBuilder.where(filters)
+        }
+
+        return queryBuilder.build();
+    }
+
     tests.forEach(test => {
         it(`${test.message} and returns correct values`, done => {
-
-            const queryBuilder = client.newQuery()
-                .select(UserTasks)
-                .byIds(test.ids ? test.ids() : toUserIds(users));
-
-            if (!!test.filters) {
-                queryBuilder.where(test.filters)
-            }
-
-            const query = queryBuilder.build();
+            const ids = test.ids ? test.ids() : undefined;
+            const filters = test.filters;
+            const query = buildQueryFor({ids: ids, filters: filters});
 
             client.execute(query)
                 .then(userTasksList => {
@@ -174,5 +179,40 @@ describe('FirebaseClient executes query built', function () {
                 })
                 .catch(() => fail(done));
         });
+    });
+
+    it('with Date-based filter and returns correct values', (done) => {
+        const userIds = toUserIds(users);
+
+        client.fetch({entity: UserTasks, byIds: userIds})
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.equal(data.length, userIds.length);
+
+                const firstUserTasks = data[0];
+
+                const lastUpdatedTimestamp = firstUserTasks.getLastUpdated();
+                const seconds = lastUpdatedTimestamp.getSeconds();
+                const nanos = lastUpdatedTimestamp.getNanos();
+                const millis = seconds * 1000 + nanos / 1000000;
+                const whenFirstUserGotTask = new Date(millis);
+
+                const query = buildQueryFor({
+                    filters: [
+                        Filters.eq('lastUpdated', whenFirstUserGotTask),
+                    ]
+                });
+
+                client.execute(query)
+                    .then(userTasksList => {
+                        assert.ok(Array.isArray(userTasksList));
+                        assert.equal(userTasksList.length, 1);
+
+                        const actualUserId = userTasksList[0].getId();
+                        assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
+                        done();
+                    })
+                    .catch(() => fail(done));
+            });
     });
 });
