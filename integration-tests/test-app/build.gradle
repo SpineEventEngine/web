@@ -24,7 +24,6 @@ plugins {
 }
 
 apply plugin: 'io.spine.tools.gradle.bootstrap'
-apply from: "$rootDir/scripts/firebase-emulator.gradle"
 
 spine.enableJava()
 
@@ -35,60 +34,60 @@ dependencies {
     implementation deps.test.slf4j
 }
 
-///**
-// * The path to the temporary file storing the identifier
-// * of a currently running Firebase emulator process.
-// */
-//final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
+/**
+ * The path to the temporary file storing the identifier
+ * of a currently running Firebase emulator process.
+ */
+final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
 
-///**
-// * Runs the Firebase emulator locally for the tests purposes.
-// * 
-// * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
-// * module dependency. Stores the PID of the newly started emulator process to the
-// * "web/scripts/firebase-emulator.pid" file.
-// */
-//task runFirebase(type: com.github.psxpaul.task.ExecFork) {
-//    description = "Starts local Firebase server emulator."
-//
-//    final def webTestsDir = project(':web-tests').projectDir
-//    workingDir = "$webTestsDir/node_modules/.bin"
-//
-//    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-//    final def extension = runsOnWindows ? '.cmd' : ''
-//
-//    executable = "$workingDir/firebase-server$extension"
-//
-//    final def rulesFile = file("$projectDir/firebase-rules.json")
-//    args = ['--rules', rulesFile.getPath(), '--rest', '--pid', pidFilePath]
-//
-//    waitForPort = 5000
-//}
-//
-///**
-// * Stops the currently running Firebase emulator by killing its process by PID.
-// *
-// * The PID of a process to kill is taken from the "web/scripts/firebase-emulator.pid". If the
-// * file exists, kills the process specified, then deletes the file.
-// */
-//task killFirebaseProcess {
-//    description = "Stops local Firebase server emulator by killing its process by PID."
-//
-//    doLast {
-//        final File pidFile = file(pidFilePath)
-//        
-//        if (pidFile.exists()) {
-//            final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-//            final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'
-//            final def script = "$rootDir/scripts/kill-process.${scriptExtension}"
-//            final def params = " ${pidFile.text}"
-//
-//            "${script}${params}".execute()
-//
-//            delete pidFile
-//        }
-//    }
-//}
+/**
+ * Runs the Firebase emulator locally for the tests purposes.
+ * 
+ * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
+ * module dependency. Stores the PID of the newly started emulator process to the
+ * "web/scripts/firebase-emulator.pid" file.
+ */
+task runFirebase(type: com.github.psxpaul.task.ExecFork) {
+    description = "Starts local Firebase server emulator."
+
+    final def webTestsDir = project(':web-tests').projectDir
+    workingDir = "$webTestsDir/node_modules/.bin"
+
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    final def extension = runsOnWindows ? '.cmd' : ''
+
+    executable = "$workingDir/firebase-server$extension"
+
+    final def rulesFile = file("$projectDir/firebase-rules.json")
+    args = ['--rules', rulesFile.getPath(), '--rest', '--pid', pidFilePath]
+
+    waitForPort = 5000
+}
+
+/**
+ * Stops the currently running Firebase emulator by killing its process by PID.
+ *
+ * The PID of a process to kill is taken from the "web/scripts/firebase-emulator.pid". If the
+ * file exists, kills the process specified, then deletes the file.
+ */
+task killFirebaseProcess {
+    description = "Stops local Firebase server emulator by killing its process by PID."
+
+    doLast {
+        final File pidFile = file(pidFilePath)
+
+        if (pidFile.exists()) {
+            final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+            final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'
+            final def script = "$rootDir/scripts/kill-process.${scriptExtension}"
+            final def params = " ${pidFile.text}"
+
+            "${script}${params}".execute()
+
+            delete pidFile
+        }
+    }
+}
 
 gretty {
     contextPath = '/'
@@ -99,11 +98,11 @@ gretty {
     servletContainer = 'jetty9'
 
     afterEvaluate {
-        appStart.dependsOn startFirebase
-        appBeforeIntegrationTest.dependsOn startFirebase
-        appStartDebug.dependsOn startFirebase
+        appStart.dependsOn runFirebase
+        appBeforeIntegrationTest.dependsOn runFirebase
+        appStartDebug.dependsOn runFirebase
 
-        appStop.finalizedBy stopFirebase
-        appAfterIntegrationTest.finalizedBy stopFirebase
+        appStop.finalizedBy killFirebaseProcess
+        appAfterIntegrationTest.finalizedBy killFirebaseProcess
     }
 }
