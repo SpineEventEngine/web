@@ -82,6 +82,25 @@ export function ensureUserTasks(actualUserTasks, expectedUsers) {
 }
 
 /**
+ * Ensures given list of `UserTasks` contains items with expected IDs and with
+ * an expected tasks count.
+ *
+ * @param {UserTasks[]} actualUserTasks
+ * @param {{
+ *     id: UserId,
+ *     tasksCount: number
+ * }[]} expectedUsers
+ */
+export function ensureUserTasksCount(actualUserTasks, expectedUsers) {
+    return arraysEqualDeep(actualUserTasks,
+        expectedUsers,
+        (userTasks, expected) =>
+            userTasks.getId().getValue() === expected.id.getValue()
+            && userTasks.getTasksList().length === expected.tasksCount
+        );
+}
+
+/**
  * Ensures given arrays have the same elements. Uses given function
  * to compare arrays elements.
  *
