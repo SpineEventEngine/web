@@ -118,7 +118,7 @@ export class AbstractClient extends Client {
    * Builds target from the given target builder specifying the set
    * of target entities.
    *
-   * The built target points to:
+   * The resulting target points to:
    *  - the particular entities with the given IDs;
    *  - the all entities if no IDs specified;
    *
@@ -128,7 +128,7 @@ export class AbstractClient extends Client {
    *      a list of target entities IDs or an ID of a single target entity
    * @return {Query|Topic} the built target
    *
-   * @template <T> a class of a query or subscription target entities identifiers
+   * @template <T> a class of identifiers, corresponding to the query/subscription targets
    * @private
    */
   static _buildTarget(targetBuilder, ids) {
