@@ -13,6 +13,8 @@ before_install:
 
   # Upgrade the `npm` version shipped with Travis to the latest.
   - npm install -g npm@latest
+  # Install the `firebase-server` emulator globally to run integration tests.
+  - npm install -g firebase-server
 
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
   - openssl aes-256-cbc -K $encrypted_f5821d4f7269_key -iv $encrypted_f5821d4f7269_iv -in credentials.tar.enc -out credentials.tar -d
@@ -23,6 +25,8 @@ script:
   # Grant permissions to the script used to stop Firebase emulator process
   # after integration tests.
   - chmod +x ./scripts/kill-process.sh
+  - chmod +x ./scripts/start-firebase.sh
+
   # Run integration tests of `spine-web` library.
   - ./gradlew :web-tests:integrationTest
 
