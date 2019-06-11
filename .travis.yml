@@ -19,7 +19,7 @@ before_install:
   - tar xvf credentials.tar
 
 script:
-  - ./gradlew assemble check --stacktrace
+  - ./gradlew check --stacktrace
   # Grant permissions to the script used to stop Firebase emulator process
   # after integration tests.
   - chmod +x ./scripts/kill-process.sh
