@@ -50,6 +50,9 @@ describe('FirebaseClient executes query built', function () {
      * assigned respectively.
      */
     before((done) => {
+        // Big timeout allows complete environment setup.
+        this.timeout(10 * 1000);
+
         users = [
             TestEnvironment.newUser('query-tester1'),
             TestEnvironment.newUser('query-tester2'),
@@ -66,11 +69,8 @@ describe('FirebaseClient executes query built', function () {
         Promise.all(createTasksPromises)
             .then(() => {
                 // Gives time for the model state to be updated
-                setTimeout(() => {
-                    done();
-                }, 500);
-            })
-            .catch(() => fail(done));
+                setTimeout(done, 500);
+            });
     });
 
     /**

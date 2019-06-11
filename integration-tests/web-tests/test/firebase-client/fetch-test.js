@@ -33,7 +33,10 @@ describe('FirebaseClient "fetch"', function () {
      * Prepares the environment for `FirebaseClient#fetch()` tests where
      * two tasks are created.
      */
-    before((done) => {
+    before(function(done) {
+        // Big timeout allows complete environment setup.
+        this.timeout(20 * 1000);
+
         const createTaskCommands = [
             TestEnvironment.createTaskCommand({withPrefix: 'spine-web-fetch-test-task-1'}),
             TestEnvironment.createTaskCommand({withPrefix: 'spine-web-fetch-test-task-2'}),
@@ -53,9 +56,8 @@ describe('FirebaseClient "fetch"', function () {
         Promise.all(createTasksPromises)
             .then(() => {
                 // Gives time for the model state to be updated
-                setTimeout(() => done(), 100);
-            })
-            .catch(fail(done));
+                setTimeout(done, 500);
+            });
     });
 
     it('returns correct value by single ID', done => {

@@ -59,7 +59,7 @@ task runFirebase(type: com.github.psxpaul.task.ExecFork) {
     executable = "$workingDir/firebase-server$extension"
 
     final def rulesFile = file("$projectDir/firebase-rules.json")
-    args = ['--rules', rulesFile.getPath(), '--rest', '--verbose', '--pid', pidFilePath]
+    args = ['--rules', rulesFile.getPath(), '--rest', '--pid', pidFilePath]
 
     waitForPort = 5000
 }
