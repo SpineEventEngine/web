@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import assert from 'assert';
 import {BehaviorSubject, Subject, Observable} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {fail, ensureUserTasksCount} from '../test-helpers';
@@ -27,32 +26,16 @@ import {client} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
-class Given {
-
-    /**
-     * Prepares environment where two users have two tasks assigned each.
-     */
-    static prepareEnvironment() {
-        return new Promise(resolve => {
-            const users = [
-                TestEnvironment.newUser('subscribe-to-topic-tester-1'),
-                TestEnvironment.newUser('subscribe-to-topic-tester-2')
-            ];
-
-            const createTasksPromises = [];
-            users.forEach(user => {
-                const promise = TestEnvironment.createTaskFor(user, 2, client);
-                createTasksPromises.push(promise);
-            });
-            Promise.all(createTasksPromises)
-                .then(() => resolve(users));
-        })
-    }
+/**
+ * A utility class that allows to convert `UserTasks` subscription
+ * and to check the consistency of the state updates.
+ */
+class UserTasksSubscriptions {
 
     /**
      * Subscribes to the given user tasks list, compares each next state with
      * the next expected state. Fails the given `Done` test function if the state mismatch occurs,
-     * resolves `Done` function when the list of expected states reaches its end.
+     * resolves `Done` function when the list of expected states becomes empty.
      *
      * @param {Observable<UserTasks[]>} userTasksList$
      * @param {{
@@ -104,7 +87,8 @@ class Given {
         itemChanged.subscribe({
             next: changedItem => {
                 const currentUserTasks = userTasks$.getValue();
-                const changedItemIndex = Given._indexOf(changedItem, currentUserTasks);
+                const changedItemIndex =
+                    UserTasksSubscriptions._indexOf(changedItem, currentUserTasks);
                 const updatedUserTasks = currentUserTasks.slice();
                 updatedUserTasks[changedItemIndex] = changedItem;
                 userTasks$.next(updatedUserTasks);
@@ -114,7 +98,8 @@ class Given {
         itemRemoved.subscribe({
             next: removedItem => {
                 const currentUserTasks = userTasks$.getValue();
-                const removedItemIndex = Given._indexOf(removedItem, currentUserTasks);
+                const removedItemIndex =
+                    UserTasksSubscriptions._indexOf(removedItem, currentUserTasks);
                 const updatedUserTasks = [
                     ...currentUserTasks.slice(0, removedItemIndex),
                     ...currentUserTasks.slice(removedItemIndex + 1)
@@ -140,17 +125,21 @@ describe('FirebaseClient subscribes to topic', function () {
     let teardownSubscription = () => {
     };
 
-    before((done) => {
-        Given.prepareEnvironment()
-            .then(createdUsers => {
-                user1 = createdUsers[0];
-                user2 = createdUsers[1];
-                done();
-            })
-    });
-
-    beforeEach(() => {
+    /**
+     * Prepares environment where two users have two tasks assigned each.
+     */
+    beforeEach((done) => {
+        user1 = TestEnvironment.newUser('topic-tester-1');
+        user2 = TestEnvironment.newUser('topic-tester-2');
         teardownSubscription = () => {};
+
+        const createTasksPromises = [];
+        [user1, user2].forEach(user => {
+            const promise = TestEnvironment.createTaskFor(user, 2, client);
+            createTasksPromises.push(promise);
+        });
+        Promise.all(createTasksPromises)
+            .then(() => done());
     });
 
     afterEach(() => {
@@ -169,14 +158,14 @@ describe('FirebaseClient subscribes to topic', function () {
         return topicBuilder.build();
     }
 
-    it('built by IDs and returns items being newly created', (done) => {
+    it('built by IDs and retrieves correct data', (done) => {
         const topic = buildTopicFor({ids: [user1.id, user2.id]});
 
         client.subscribeTo(topic)
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
-                const userTasksList$ = Given.toListObservable(subscription);
-                Given.ensureStateUpdates(userTasksList$, [
+                const userTasksList$ = UserTasksSubscriptions.toListObservable(subscription);
+                UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
                     [],
                     null, // Don't perform state check on this step, there's no way to
                           // know what item will be received first
@@ -188,7 +177,31 @@ describe('FirebaseClient subscribes to topic', function () {
             })
     });
 
-    it('built by IDs and filters returns items being newly created', (done) => {
+    it('built by IDs and filters and retrieves correct data', (done) => {
+        const topic = buildTopicFor({
+            ids: [user1.id, user2.id],
+            filters: [
+                Filters.eq('tasksCount', 2)
+            ]
+        });
+
+        client.subscribeTo(topic)
+            .then(subscription => {
+                teardownSubscription = subscription.unsubscribe;
+                const userTasksList$ = UserTasksSubscriptions.toListObservable(subscription);
+                UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
+                    [],
+                    null, // Don't perform state check on this step, there's no way to
+                          // know what item will be received first
+                    [
+                        { id: user1.id, tasksCount: 2 },
+                        { id: user2.id, tasksCount: 2 }
+                    ]
+                ], done)
+            })
+    });
+
+    it('built by IDs and filters and updates data correctly when state changes', (done) => {
         const topic = buildTopicFor({
             ids: [user1.id, user2.id],
             filters: [
@@ -199,16 +212,23 @@ describe('FirebaseClient subscribes to topic', function () {
         client.subscribeTo(topic)
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
-                const userTasksList$ = Given.toListObservable(subscription);
-                Given.ensureStateUpdates(userTasksList$, [
+                const userTasksList$ = UserTasksSubscriptions.toListObservable(subscription);
+                UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
                     [],
                     null, // Don't perform state check on this step, there's no way to
                           // know what item will be received first
                     [
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
-                    ]
+                    ],
+                    null,
+                    [
+                        { id: user2.id, tasksCount: 3 }
+                    ],
                 ], done)
-            })
+            });
+
+            const taskToReassign = user1.tasks[0];
+            TestEnvironment.reassignTask(taskToReassign, user2.id, client);
     });
 });
