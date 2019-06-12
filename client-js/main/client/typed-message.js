@@ -32,6 +32,7 @@ import {
   UInt32Value,
   UInt64Value,
 } from '../proto/google/protobuf/wrappers_pb';
+import {convertDateToTimestamp} from './time-utils';
 import KnownTypes from './known-types';
 
 /**
@@ -305,6 +306,17 @@ export class TypedMessage {
    */
   static bool(value) {
     const message = new BoolValue([value]);
+    return TypedMessage.of(message);
+  }
+
+  /**
+   * Creates a new `TypedMessage` with a timestamp value composed from the given JavaScript date.
+   *
+   * @param {!Date} date a JavaScript `Date` value
+   * @return {TypedMessage<Timestamp>} a new `TypedMessage` instance with provided value
+   */
+  static timestamp(date) {
+    const message = convertDateToTimestamp(date);
     return TypedMessage.of(message);
   }
 }

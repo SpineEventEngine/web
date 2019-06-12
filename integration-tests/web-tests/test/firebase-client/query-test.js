@@ -19,100 +19,200 @@
  */
 
 import assert from 'assert';
-import {ServerError} from '@lib/client/errors';
-import {fail} from '../test-helpers';
-import TestEnvironment from './given/test-environment';
+import {fail, ensureUserTasks} from '../test-helpers';
+import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
 import {client} from './given/firebase-client';
+import {Filters} from '@lib/client/actor-request-factory';
+import {TypedMessage} from '@lib/client/typed-message';
+import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';
+import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
-describe('FirebaseClient', function () {
+/**
+ * @typedef {Object} QueryTest an object representing a FirebaseClient query test input
+ *                             parameters and expected results
+ *
+ * @property {string} message a message describing test
+ * @property {UserId[]} ids a list of IDs for query
+ * @property {Filter[]} filters a list of filters for query
+ * @property {User[]} expectedUsers a list of users expected to be received after
+ *                                  execution of query
+ */
 
-    describe('"fetchById"', function () {
+describe('FirebaseClient executes query built', function () {
+    let users;
 
-        it('returns `null` as a value when fetches entity by ID that is missing', done => {
-            const taskId = TestEnvironment.taskId({});
+    function toUserIds(users) {
+        return users.map(user => user.id);
+    }
 
-            client.fetchById(TestEnvironment.TYPE.OF_ENTITY.TASK, taskId, data => {
-                assert.equal(data, null);
+    /**
+     * Prepares environment, where four users have one, two, three, and four tasks
+     * assigned respectively.
+     */
+    before((done) => {
+        // Big timeout allows complete environment setup.
+        this.timeout(10 * 1000);
 
-                done();
+        users = [
+            TestEnvironment.newUser('query-tester1'),
+            TestEnvironment.newUser('query-tester2'),
+            TestEnvironment.newUser('query-tester3'),
+            TestEnvironment.newUser('query-tester4')
+        ];
 
-            }, fail(done));
+        const createTasksPromises = [];
+        users.forEach((user, index) => {
+            const tasksCount = index + 1;
+            const promise = TestEnvironment.createTaskFor(user, tasksCount, client);
+            createTasksPromises.push(promise);
+        });
+        Promise.all(createTasksPromises)
+            .then(() => {
+                // Gives time for the model state to be updated
+                setTimeout(done, 500);
+            });
+    });
+
+    /**
+     * @type {QueryTest[]}
+     */
+    const tests = [
+        {
+            message: 'by ID',
+            ids: () => toUserIds(users.slice(0, 1)),
+            expectedUsers: () => users.slice(0, 1)
+        },
+        {
+            message: 'by IDs',
+            ids: () => toUserIds(users.slice(0, 2)),
+            expectedUsers: () => users.slice(0, 2)
+        },
+        {
+            message: 'by missing ID',
+            ids: () => [
+                TestEnvironment.userId('user-without-tasks-assigned')
+            ],
+            expectedUsers: () => users.slice(0, 2)
+        },
+        {
+            message: 'with `eq` filter',
+            filters: [
+                Filters.eq('tasksCount', 3)
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length === 3)
+        },
+        {
+            message: 'with `lt` filter',
+            filters: [
+                Filters.lt('tasksCount', 3)
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length < 3)
+        },
+        {
+            message: 'with `gt` filter',
+            filters: [
+                Filters.gt('tasksCount', 3)
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length > 3)
+        },
+        {
+            message: 'with `le` filter',
+            filters: [
+                Filters.le('tasksCount', TypedMessage.int32(3))
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length <= 3)
+        },
+        {
+            message: 'with `ge` filter',
+            filters: [
+                Filters.ge('tasksCount', 3)
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length >= 3)
+        },
+        {
+            message: 'with several filters applied to the same column',
+            filters: [
+                Filters.gt('tasksCount', 1),
+                Filters.lt('tasksCount', 3)
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
+        },
+        {
+            message: 'with several filters applied to different column',
+            filters: [
+                Filters.gt('tasksCount', 1),
+                Filters.lt('overloaded', new BoolValue([true]))
+            ],
+            expectedUsers: () => users.filter(user => user.tasks.length > 1)
+        },
+        {
+            message: 'with inappropriate filter',
+            filters: [
+                Filters.ge('tasksCount', 100)
+            ],
+            expectedUsers: () => []
+        }
+    ];
+
+    function buildQueryFor({ids, filters}) {
+        const queryBuilder = client.newQuery()
+            .select(UserTasks)
+            .byIds(ids ? ids : toUserIds(users));
+
+        if (!!filters) {
+            queryBuilder.where(filters)
+        }
+
+        return queryBuilder.build();
+    }
+
+    tests.forEach(test => {
+        it(`${test.message} and returns correct values`, done => {
+            const ids = test.ids ? test.ids() : undefined;
+            const filters = test.filters;
+            const query = buildQueryFor({ids: ids, filters: filters});
+
+            client.execute(query)
+                .then(userTasksList => {
+                    assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
+                    done();
+                })
+                .catch(() => fail(done));
         });
     });
 
-    describe('"fetchAll"', function () {
+    it('with Date-based filter and returns correct values', (done) => {
+        const userIds = toUserIds(users);
 
-        it('retrieves the existing entities of given type one by one', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-one-by-one'});
-            const taskId = command.getId();
+        client.fetch({entity: UserTasks, byIds: userIds})
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.equal(data.length, userIds.length);
 
-            client.sendCommand(command, () => {
+                const firstUserTasks = data[0];
 
-                let itemFound = false;
+                const lastUpdatedTimestamp = firstUserTasks.getLastUpdated();
+                const seconds = lastUpdatedTimestamp.getSeconds();
+                const nanos = lastUpdatedTimestamp.getNanos();
+                const millis = seconds * 1000 + nanos / 1000000;
+                const whenFirstUserGotTask = new Date(millis);
 
-                client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK}).oneByOne().subscribe({
-                    next(data) {
-                        // Ordering is not guaranteed by fetch and
-                        // the list of entities cannot be cleaned for tests,
-                        // thus at least one of entities should match the target one.
-                        itemFound = data.getId().getValue() === taskId.getValue() || itemFound;
-                    },
-                    error: fail(done),
-                    complete() {
-                        assert.ok(itemFound);
-                        done();
-                    }
+                const query = buildQueryFor({
+                    filters: [
+                        Filters.eq('lastUpdated', whenFirstUserGotTask),
+                    ]
                 });
 
-            }, fail(done), fail(done));
-        });
+                client.execute(query)
+                    .then(userTasksList => {
+                        assert.ok(Array.isArray(userTasksList));
+                        assert.equal(userTasksList.length, 1);
 
-        it('retrieves the existing entities of given type at once', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-at-once'});
-            const taskId = command.getId();
-
-            client.sendCommand(command, () => {
-
-                client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK}).atOnce()
-                    .then(data => {
-                        const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
-                        assert.ok(targetObject);
+                        const actualUserId = userTasksList[0].getId();
+                        assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
                         done();
-                    }, fail(done));
-
-            }, fail(done), fail(done));
-        });
-
-        it('retrieves an empty list for entity that does not get created at once', done => {
-            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.PROJECT}).atOnce()
-                .then(data => {
-                    assert.ok(data.length === 0);
-                    done();
-                }, fail(done));
-        });
-
-        it('retrieves an empty list for entity that does not get created one-by-one', done => {
-            client.fetchAll({ofType: TestEnvironment.TYPE.OF_ENTITY.PROJECT}).oneByOne()
-                .subscribe({
-                    next: fail(done),
-                    error: fail(done),
-                    complete: () => done()
-                });
-        });
-
-        it('fails a malformed query', done => {
-            const command = TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});
-
-            client.sendCommand(command, () => {
-
-                client.fetchAll({ofType: TestEnvironment.TYPE.MALFORMED}).atOnce()
-                    .then(fail(done), error => {
-                        assert.ok(error instanceof ServerError);
-                        assert.equal(error.message, 'Server Error');
-                        done();
-                    });
-
-            }, fail(done), fail(done));
-        });
+                    })
+                    .catch(() => fail(done));
+            });
     });
 });

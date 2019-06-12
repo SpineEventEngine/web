@@ -25,6 +25,7 @@ import {
     CommandHandlingError,
     ConnectionError
 } from '@lib/index';
+import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
 
@@ -45,14 +46,17 @@ describe('FirebaseClient command sending', function () {
 
         client.sendCommand(command, () => {
 
-            client.fetchById(TestEnvironment.TYPE.OF_ENTITY.TASK, taskId, data => {
-                assert.equal(data.getId().getValue(), taskId);
-                assert.equal(data.getName(), command.getName());
-                assert.equal(data.getDescription(), command.getDescription());
+            client.fetch({entity: Task, byIds: taskId})
+                .then(data => {
+                    assert.ok(data.length === 1);
+                    const item = data[0];
+                    assert.equal(item.getId().getValue(), taskId);
+                    assert.equal(item.getName(), command.getName());
+                    assert.equal(item.getDescription(), command.getDescription());
 
-                done();
+                    done();
 
-            }, fail(done));
+                }, fail(done));
 
         }, fail(done), fail(done));
     });
@@ -93,6 +97,7 @@ describe('FirebaseClient command sending', function () {
                 try {
                     assert.ok(error instanceof CommandValidationError);
                     assert.ok(error.validationError());
+                    // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
                     // assert.ok(error.assuresCommandNeglected());
 
                     const cause = error.getCause();

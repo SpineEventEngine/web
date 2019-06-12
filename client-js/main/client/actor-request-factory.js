@@ -42,10 +42,20 @@ import {Type, TypedMessage, isProtobufMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
 
+// TODO:2019-06-07:yegor.udovchenko: Cover `Filters` class with the unit tests
+// https://github.com/SpineEventEngine/web/issues/100
 /**
  * A factory for `Filter` and `CompositeFilter` instances.
  */
 export class Filters {
+
+  /**
+   * @typedef {string | number | boolean | Date | TypedMessage<T> | <T extends Message>} FieldValue
+   *
+   * Represents all types acceptable as a value for filtering.
+   *
+   * @template <T> a type of the Protobuf message to compare with
+   */
 
   /**
    * Instantiation not allowed and will throw an error.
@@ -58,7 +68,7 @@ export class Filters {
    * Creates a new filter for the value of an object field to be equal to the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -70,7 +80,7 @@ export class Filters {
    * Creates a new filter for the value of an object field to be less than the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -82,7 +92,7 @@ export class Filters {
    * Creates a new filter for the value an object field to be greater than the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -95,7 +105,7 @@ export class Filters {
    * the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -108,7 +118,7 @@ export class Filters {
    * the provided value.
    *
    * @param {!String} fieldPath a path to the object field
-   * @param {!TypedMessage} value a value to compare with
+   * @param {!FieldValue} value a value to compare with
    *
    * @return {Filter} a new filter instance
    */
@@ -119,14 +129,53 @@ export class Filters {
   /**
    * Creates a filter for an object field to match the provided value according to an operator.
    *
+   * Accepts various types of {@link FieldValue field values}.
+   *
+   * @example
+   * // Create filters with primitive values to compare
+   * Filters.eq('description', 'Sample task description') // Wraps string in the Protobuf `StringValue`
+   * Filters.gt('length', 12) // Wraps number in the Protobuf `Int32Value`
+   * Filters.eq('multiline', false) // Wraps boolean in the Protobuf `BoolValue`
+   *
+   * @example
+   * // Create filter for the primitive value of a custom type
+   * Filters.gt('price', TypedMessage.float(7.41))
+   *
+   * @example
+   * // Create filter for the time-based value
+   * Filters.gt('whenCreated', new Date(2019, 5, 4)) // Converts the given date to the `Timestamp` message
+   *
+   * @example
+   * // Create filter for the user-defined type
+   * Filters.eq('status', Task.Status.COMPLETED)
+   *
    * @param {!String} fieldPath a path to the object field
    * @param {!Filter.Operator} operator an operator to check the field value upon
-   * @param {!TypedMessage} value a value to compare the field value to
+   * @param {!FieldValue} value a value to compare the field value to
    *
    * @return {Filter} a new filter instance
    */
   static with(fieldPath, operator, value) {
-    const wrappedValue = AnyPacker.packTyped(value);
+    let typedValue;
+
+    if (value instanceof Number || typeof value === 'number') {
+      typedValue = TypedMessage.int32(value);
+    } else if (value instanceof String || typeof value === 'string') {
+      typedValue = TypedMessage.string(value);
+    } else if (value instanceof Boolean || typeof value === 'boolean') {
+      typedValue = TypedMessage.bool(value);
+    } else if (value instanceof Date) {
+      typedValue = TypedMessage.timestamp(value);
+    } else if (value instanceof TypedMessage) {
+      typedValue = value;
+    } else if(isProtobufMessage(value)) {
+      typedValue = TypedMessage.of(value);
+    } else {
+      throw new Error(`Unable to create filter.
+       Filter value type of ${typeof value} is unsupported.`)
+    }
+
+    const wrappedValue = AnyPacker.packTyped(typedValue);
     const filter = new Filter();
     filter.setFieldPath(FieldPaths.parse(fieldPath));
     filter.setValue(wrappedValue);
@@ -190,10 +239,10 @@ class Targets {
    * Composes a new target for objects of specified type, optionally with specified IDs and
    * filters.
    *
-   * @param {!Type} forType a Type URL of target objects
-   * @param {?TypedMessage[]} withIds an array of IDs one of which must be matched by each target
-   *                                  object
-   * @param {?CompositeFilter[]} filteredBy an array of filters target
+   * @param {!Type} type a Type URL of target objects
+   * @param {?TypedMessage[]} ids an array of IDs one of which must be matched by each target
+   *                              object
+   * @param {?CompositeFilter[]} filters an array of filters target
    *
    * @return {Target} a newly created target for objects matching the specified filters
    */
@@ -310,12 +359,15 @@ const INVALID_FILTER_TYPE =
  */
 class AbstractTargetBuilder {
 
-  constructor(type) {
+  /**
+   * @param {!Class<T extends Message>} entity a Protobuf type of the target entities
+   */
+  constructor(entity) {
     /**
-     * @type {Type}
+     * @type {Type} a type composed from the target entity class
      * @private
      */
-    this._type = type;
+    this._type = Type.forClass(entity);
     /**
      * @type {TypedMessage[]}
      * @private
@@ -338,16 +390,17 @@ class AbstractTargetBuilder {
    *
    * Makes the query return only the items identified by the provided IDs.
    *
-   * Supported ID types are string, number, and `TypedMessage`. To use other primitive types
-   * wrap them in type message using Protobuf primitive wrappers (e.g. StringValue, BytesValue).
+   * Supported ID types are string, number, and Protobuf messages. All of the passed
+   * IDs must be of the same type.
    *
    * If number IDs are passed they are assumed to be of `int64` Protobuf type.
    *
-   * @param {!TypedMessage[]|Number[]|String[]} ids an array with identifiers to query
+   * @param {!<T extends Message>[]|Number[]|String[]} ids an array with identifiers to query
    * @return {this} the current builder instance
    * @throws if this method is executed more than once
    * @throws if the provided IDs are not an instance of `Array`
-   * @throws if any of provided IDs are not an instance of `TypedMessage`
+   * @throws if any of provided IDs are not an instance of supported types
+   * @throws if the provided IDs are not of the same type
    */
   byIds(ids) {
     if (this._ids !== null) {
@@ -359,16 +412,18 @@ class AbstractTargetBuilder {
     if (!ids.length) {
       return this;
     }
-    const invalidTypeMessage = 'Each provided ID must be a string, number or a TypedMessage.';
+    const invalidTypeMessage = 'Each provided ID must be a string, number or a Protobuf message.';
     if (ids[0] instanceof Number || typeof ids[0] === 'number') {
       AbstractTargetBuilder._checkAllOfType(ids, Number, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.int64);
     } else if (ids[0] instanceof String || typeof ids[0] === 'string') {
       AbstractTargetBuilder._checkAllOfType(ids, String, invalidTypeMessage);
       this._ids = ids.map(TypedMessage.string);
+    } else if (!isProtobufMessage(ids[0])){
+      throw new Error(invalidTypeMessage);
     } else {
-      AbstractTargetBuilder._checkAllOfType(ids, TypedMessage, invalidTypeMessage);
-      this._ids = ids.slice();
+      AbstractTargetBuilder._checkAllOfType(ids, ids[0].constructor, invalidTypeMessage);
+      this._ids = ids.map(id => TypedMessage.of(id));
     }
     return this;
   }
@@ -553,15 +608,16 @@ class AbstractTargetBuilder {
  * than using a `QueryFactory`.
  *
  * @extends {AbstractTargetBuilder<Query>}
+ * @template <T> a Protobuf type of the query target entities
  */
 class QueryBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Type} type
+   * @param {!Class<T extends Message>} entity a Protobuf type of the query target entities
    * @param {!QueryFactory} queryFactory
    */
-  constructor(type, queryFactory) {
-    super(type);
+  constructor(entity, queryFactory) {
+    super(entity);
     /**
      * @type {QueryFactory}
      * @private
@@ -585,6 +641,7 @@ class QueryBuilder extends AbstractTargetBuilder {
  * A factory for creating `Query` instances specifying the data to be retrieved from Spine server.
  *
  * @see ActorRequestFactory#query()
+ * @template <T> a Protobuf type of the query target entities
  */
 class QueryFactory {
 
@@ -596,12 +653,13 @@ class QueryFactory {
   }
 
   /**
-   * Creates a new builder of `Query` instances of the provided type
-   * @param {!Type} type a type URL of the target type
+   * Creates a new builder of `Query` instances of the provided type.
+   *
+   * @param {!Class<T extend Message>} entity a Protobuf type of the query target entities
    * @return {QueryBuilder}
    */
-  select(type) {
-    return new QueryBuilder(type, this);
+  select(entity) {
+    return new QueryBuilder(entity, this);
   }
 
   /**
@@ -702,15 +760,16 @@ class CommandFactory {
  * than using a `TopicFactory`.
  *
  * @extends {AbstractTargetBuilder<Topic>}
+ * @template <T> a Protobuf type of the subscription target entities
  */
 class TopicBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Type} type
+   * @param {!Class<T extends Message>} entity a Protobuf type of the subscription target entities
    * @param {!TopicFactory} topicFactory
    */
-  constructor(type, topicFactory) {
-    super(type);
+  constructor(entity, topicFactory) {
+    super(entity);
     /**
      * @type {TopicFactory}
      * @private
@@ -738,6 +797,7 @@ class TopicBuilder extends AbstractTargetBuilder {
  * such as the actor.
  *
  * @see ActorRequestFactory#topic()
+ * @template <T> a Protobuf type of the subscription target entities
  */
 class TopicFactory {
 
@@ -750,24 +810,13 @@ class TopicFactory {
   }
 
   /**
-   * Creates a new builder of `Topic` instances of the provided type
-   * @param {!Type} type a type URL of the target type
+   * Creates a new builder of `Topic` instances of the provided type.
+   *
+   * @param {!Class<T extend Message>} entity a Protobuf type of the subscription target entities
    * @return {TopicBuilder}
    */
-  select(type) {
-    return new TopicBuilder(type, this);
-  }
-
-  /**
-   * Creates a `Topic` for all items within IDs of interest.
-   *
-   * @param {!Type} of the class of a target event/entity
-   * @param {?TypedMessage[]} withIds the IDs of interest
-   * @return {Topic} an instance of `Topic` assembled according to the parameters
-   */
-  all({of: type, withIds: ids}) {
-    const target = Targets.compose({forType: type, withIds: ids});
-    return this.compose({forTarget: target});
+  select(entity) {
+    return new TopicBuilder(entity, this);
   }
 
   /**

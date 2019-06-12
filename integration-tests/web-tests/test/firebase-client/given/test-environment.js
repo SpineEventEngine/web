@@ -20,10 +20,21 @@
 
 import uuid from 'uuid';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
-import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {Project} from '@testProto/spine/web/test/given/project_pb';
-import {Type} from '@lib/client/typed-message';
+import {TaskId} from '@testProto/spine/web/test/given/task_pb';
+import {UserId} from '@testProto/spine/core/user_id_pb';
 
+/**
+ * @typedef {Object} User a type representing a user with his tasks for test purposes
+ *
+ * @property {UserId} id
+ * @property {String} name
+ * @property {TaskId[]} tasks
+ */
+
+/**
+ * The class for preparation of a test environment using a sample application
+ * defined in `test-app` module. Allows to create and update tasks.
+ */
 export default class TestEnvironment {
 
     constructor() {
@@ -31,14 +42,23 @@ export default class TestEnvironment {
     }
 
     /**
-     * @param {?String} withId
-     * @param {?String} withPrefix
-     * @param {?String} named
-     * @param {?String} describedAs
+     * @param {{
+     *     withId?: String,
+     *     withPrefix?: String,
+     *     named?: String,
+     *     describedAs: String,
+     *     assignedTo: UserId
+     * }}
      *
      * @return {CreateTask}
      */
-    static createTaskCommand({withId: id, withPrefix: idPrefix, named: name, describedAs: description}) {
+    static createTaskCommand({
+                                 withId: id,
+                                 withPrefix: idPrefix,
+                                 named: name,
+                                 describedAs: description,
+                                 assignedTo: userId
+                             }) {
         const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
         name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
@@ -49,30 +69,18 @@ export default class TestEnvironment {
         command.setName(name);
         command.setDescription(description);
 
+        if (!!userId) {
+            command.setAssignee(userId);
+        }
+
         return command;
     }
 
     /**
-     * @param {!String[]} named
-     * @param {?String} withPrefix
-     *
-     * @return {CreateTask[]}
-     */
-    static createTaskCommands({named: names, withPrefix: idPrefix}) {
-        const commands = [];
-        for (let i = 0; i < names.length; i++) {
-            const command = this.createTaskCommand({
-                withPrefix: idPrefix,
-                named: names[i]
-            });
-            commands.push(command);
-        }
-        return commands;
-    }
-
-    /**
-     * @param {!String} withId
-     * @param {!String} to
+     * @param {{
+     *     withId!: String,
+     *     to!: String
+     * }}
      *
      * @return {RenameTask}
      */
@@ -115,11 +123,3 @@ export default class TestEnvironment {
 
 TestEnvironment.DEFAULT_TASK_NAME = 'Get to Mount Doom';
 TestEnvironment.DEFAULT_TASK_DESCRIPTION = 'There seems to be a bug with the rings that needs to be fixed';
-
-TestEnvironment.TYPE = {
-    OF_ENTITY: {
-        TASK: Type.forClass(Task),
-        PROJECT: Type.forClass(Project),
-    },
-    MALFORMED: Type.of(Object, 'types.spine.io/malformed'),
-};

@@ -23,6 +23,7 @@ script:
   # Grant permissions to the script used to stop Firebase emulator process
   # after integration tests.
   - chmod +x ./scripts/kill-process.sh
+
   # Run integration tests of `spine-web` library.
   - ./gradlew :web-tests:integrationTest
 

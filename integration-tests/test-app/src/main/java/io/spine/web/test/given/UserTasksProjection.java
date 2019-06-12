@@ -20,6 +20,7 @@
 
 package io.spine.web.test.given;
 
+import com.google.protobuf.Timestamp;
 import io.spine.core.Subscribe;
 import io.spine.core.UserId;
 import io.spine.server.entity.storage.Column;
@@ -43,9 +44,13 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
     @Subscribe
     void on(TaskCreated event) {
         builder().setId(event.getAssignee())
-                 .addTasks(event.getId());
+                 .addTasks(event.getId())
+                 .setLastUpdated(event.getWhen());
     }
 
+    // TODO 5/31/2019[yegor.udovchenko]: Remove @CheckReturnValue suppression
+    // for `remove` operation
+    @SuppressWarnings("CheckReturnValue")
     @Subscribe
     void on(TaskReassigned event) {
         if (reassignedFromThisUser(event)) {
@@ -56,6 +61,8 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
             builder().setId(event.getTo())
                      .addTasks(event.getId());
         }
+
+        builder().setLastUpdated(event.getWhen());
     }
 
     @Column
@@ -64,8 +71,13 @@ public class UserTasksProjection extends Projection<UserId, UserTasks, UserTasks
     }
 
     @Column
-    public boolean hasSeveralTasks() {
+    public boolean isOverloaded() {
         return state().getTasksCount() > 1;
+    }
+
+    @Column
+    public Timestamp getLastUpdated() {
+        return state().getLastUpdated();
     }
 
     private boolean reassignedFromThisUser(TaskReassigned event) {

@@ -75,7 +75,7 @@ task killFirebaseProcess {
 
     doLast {
         final File pidFile = file(pidFilePath)
-        
+
         if (pidFile.exists()) {
             final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
             final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'

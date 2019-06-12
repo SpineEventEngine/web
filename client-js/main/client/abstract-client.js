@@ -20,7 +20,6 @@
 
 "use strict";
 
-import {TypedMessage} from './typed-message';
 import {CommandHandlingError, CommandValidationError, SpineError} from './errors';
 import KnownTypes from './known-types';
 import ObjectToProto from './object-to-proto';
@@ -30,7 +29,7 @@ import {Client} from './client';
 /**
  * A mediate abstract `Client` for Spine application backend.
  *
- * Defines operations that client is able to perform (`.fetchAll(...)`, `.sendCommand(...)`, etc.)
+ * Defines operations that client is able to perform (`.fetch(...)`, `.sendCommand(...)`, etc.)
  * without reference to the particular data provider.
  *
  * @abstract
@@ -51,36 +50,15 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  fetchAll({ofType: type}) {
-    const query = this._requestFactory.query().select(type).build();
-    return this._fetchOf(query);
+  newQuery() {
+    return this._requestFactory.query();
   }
 
   /**
    * @inheritDoc
    */
-  fetchById(type, id, dataCallback, errorCallback) {
-    const typedId = TypedMessage.of(id);
-    const query = this._requestFactory.query().select(type).byIds([typedId]).build();
-
-    let itemReceived = false;
-
-    const observer = {
-      next: item => {
-        itemReceived = true;
-        dataCallback(item);
-      },
-      complete: () => {
-        if (!itemReceived) {
-          dataCallback(null);
-        }
-      }
-    };
-
-    if (errorCallback) {
-      observer.error = errorCallback;
-    }
-    this._fetchOf(query).oneByOne().subscribe(observer);
+  newTopic() {
+    return this._requestFactory.topic();
   }
 
   /**
@@ -120,47 +98,46 @@ export class AbstractClient extends Client {
   /**
    * @inheritDoc
    */
-  subscribeToEntities({ofType: type, byIds: ids, byId: id}) {
-    if (typeof ids !== 'undefined' && typeof id !== 'undefined') {
-      throw new Error('No entity IDs set. Specify either a single entity ID or' +
-          ' multiple entity IDs to subscribe to the entity state updates.');
-
-    }
-    if (typeof id !== 'undefined') {
-      ids = [id];
-    }
-    let topic;
-    if (ids) {
-      const typedIds = ids.map(TypedMessage.of);
-      topic = this._requestFactory.topic().all({of: type, withIds: typedIds});
-    } else {
-      topic = this._requestFactory.topic().all({of: type});
-    }
-    return this._subscribeTo(topic);
+  fetch({entity: cls, byIds: ids}) {
+    const queryBuilder = this.newQuery().select(cls);
+    const query = AbstractClient._buildTarget(queryBuilder, ids);
+    return this.execute(query);
   }
 
   /**
-   * Creates a new `Fetch` object specifying the target of fetch and its parameters.
-   *
-   * @param {!spine.client.Query} query a request to the read-side
-   * @return {Client.Fetch<T>} an object that performs the fetch
-   * @template <T> type of Fetch results
-   * @protected
-   * @abstract
+   * @inheritDoc
    */
-  _fetchOf(query) {
-    throw new Error('Not implemented in abstract base.');
+  subscribe({entity: cls, byIds: ids}) {
+    const topicBuilder = this.newTopic().select(cls);
+    const topic = AbstractClient._buildTarget(topicBuilder, ids);
+
+    return this.subscribeTo(topic);
   }
 
   /**
-   * Creates a subscription to the topic which is updated with backend changes.
+   * Builds target from the given target builder specifying the set
+   * of target entities.
    *
-   * @param {!spine.client.Topic} topic a topic of a subscription
-   * @return {Promise<EntitySubscriptionObject>}
-   * @protected
-   * @abstract
+   * The resulting target points to:
+   *  - the particular entities with the given IDs;
+   *  - the all entities if no IDs specified;
+   *
+   * @param {AbstractTargetBuilder<Query|Topic>} targetBuilder
+   *    a builder for creating `Query` or `Topic` instances.
+   * @param {?<T extends Message>[] | <T extends Message> | Number[] | Number | String[] | String} ids
+   *      a list of target entities IDs or an ID of a single target entity
+   * @return {Query|Topic} the built target
+   *
+   * @template <T> a class of identifiers, corresponding to the query/subscription targets
+   * @private
    */
-  _subscribeTo(topic) {
-    throw new Error('Not implemented in abstract base.');
+  static _buildTarget(targetBuilder, ids) {
+    if (Array.isArray(ids)) {
+      targetBuilder.byIds(ids);
+    } else if (!!ids) {
+      targetBuilder.byIds([ids]);
+    }
+
+    return targetBuilder.build();
   }
 }

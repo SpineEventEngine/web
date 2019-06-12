@@ -54,3 +54,46 @@ export function fail(done, message = '') {
     }
   };
 }
+
+/**
+ * Ensures given lists contain the same user IDs.
+ *
+ * @param {UserId[]} actual
+ * @param {UserId[]} expected
+ */
+export function ensureUserIds(actual, expected) {
+    return arraysEqualDeep(actual, expected, (userId1, userId2) =>
+        userId1.getValue() === userId2.getValue());
+}
+
+/**
+ * Ensures given list of `UserTasks` contains items with expected IDs.
+ *
+ * @param {UserTasks[]} actualUserTasks
+ * @param {{
+ *     id: UserId,
+ *     tasks: TaskId[]
+ * }[]} expectedUsers
+ */
+export function ensureUserTasks(actualUserTasks, expectedUsers) {
+    const actualUserIds = actualUserTasks.map(userTasks => userTasks.getId());
+    const expectedUserIds = expectedUsers.map(user => user.id);
+    return ensureUserIds(actualUserIds, expectedUserIds);
+}
+
+/**
+ * Ensures given arrays have the same elements. Uses given function
+ * to compare arrays elements.
+ *
+ * @param {Object[]}arr1
+ * @param {Object[]} arr2
+ * @param {(o1, o2) => boolean} compare compares objects of type of arrays entries
+ * @return {boolean} `true` if arrays are equal; `false` otherwise;
+ */
+function arraysEqualDeep(arr1, arr2, compare) {
+    const intersection = arr1.filter(value1 => {
+        return arr2.findIndex(value2 => compare(value1, value2)) > -1;
+    });
+
+    return intersection.length === arr1.length
+}

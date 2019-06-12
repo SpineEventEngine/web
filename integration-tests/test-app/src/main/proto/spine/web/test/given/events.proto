@@ -11,6 +11,7 @@ option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "google/protobuf/timestamp.proto";
 import "spine/web/test/given/task.proto";
 import "spine/web/test/given/project.proto";
 
@@ -23,6 +24,8 @@ message TaskCreated {
     spine.core.UserId assignee = 3;
 
     string description = 4;
+
+    google.protobuf.Timestamp when = 5 [(required) = true];
 }
 
 message TaskRenamed {
@@ -30,6 +33,8 @@ message TaskRenamed {
     TaskId id = 1;
 
     string name = 2 [(required) = true];
+
+    google.protobuf.Timestamp when = 3 [(required) = true];
 }
 
 message TaskReassigned {
@@ -39,6 +44,8 @@ message TaskReassigned {
     spine.core.UserId from = 2;
 
     spine.core.UserId to = 3 [(required) = true];
+
+    google.protobuf.Timestamp when = 4 [(required) = true];
 }
 
 

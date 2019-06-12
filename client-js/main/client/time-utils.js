@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
+
 /**
  * @typedef {Object} DurationValue
  *
@@ -53,6 +55,33 @@ function checkItemsNotNegative(items, message) {
     }
   });
 }
+
+/**
+ * Converts a given JavaScript Date into the Timestamp Protobuf message.
+ *
+ * @param {!Date} date a date to convert
+ * @return {Timestamp} a timestamp message of the given date value
+ *
+ * @throws error when non-Date value is passed or it is invalid
+ */
+export function convertDateToTimestamp(date) {
+  const errorMessage = (message) => `Cannot convert to Timestamp. ${message}`;
+
+  if (!(date instanceof Date && typeof date.getTime === 'function')) {
+    throw new Error(errorMessage(`The given "${date}" isn't of Date type.`));
+  }
+
+  if (isNaN(date.getTime())) {
+    throw new Error(errorMessage(`The given "${date}" is invalid.`));
+  }
+    const millis = date.getTime();
+
+    const timestamp = new Timestamp();
+    timestamp.setSeconds(Math.trunc(millis / 1000));
+    timestamp.setNanos((millis % 1000) * 1000000);
+    return timestamp;
+}
+
 
 /**
  * A duration of a specified amount of time.

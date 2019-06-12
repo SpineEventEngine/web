@@ -21,6 +21,7 @@
 import assert from 'assert';
 import {fail} from '../test-helpers';
 import TestEnvironment from './given/test-environment';
+import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {client} from './given/firebase-client';
 
 describe('FirebaseClient subscription', function () {
@@ -33,16 +34,17 @@ describe('FirebaseClient subscription', function () {
         const newTasksCount = names.length;
         let receivedCount = 0;
 
-        const commands = TestEnvironment.createTaskCommands({
+        const commands = names.map(name => TestEnvironment.createTaskCommand({
             withPrefix: 'spine-web-test-subscribe',
-            named: names
-        });
+            named: name
+        }));
+
         const taskIds = commands.map(command => command.getId().getValue());
         commands.forEach(command => {
             client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
         });
 
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK})
+        client.subscribe({entity: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: task => {
@@ -74,7 +76,7 @@ describe('FirebaseClient subscription', function () {
         let reportItemAdded;
         const itemAddedPromise = new Promise(resolve => reportItemAdded = resolve);
 
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK})
+        client.subscribe({entity: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {
@@ -164,7 +166,7 @@ describe('FirebaseClient subscription', function () {
         const itemRenamedAtFirstPromise = new Promise(resolve =>
             reportItemRenamedAtFirst = resolve);
         let changesCount = 0;
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.OF_ENTITY.TASK, byId: taskId})
+        client.subscribe({entity: Task, byIds: taskId})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
                     next: item => {
@@ -228,7 +230,13 @@ describe('FirebaseClient subscription', function () {
     });
 
     it('fails for a malformed entity type', done => {
-        client.subscribeToEntities({ofType: TestEnvironment.TYPE.MALFORMED})
+        const Unknown = class {
+            static typeUrl() {
+                return 'spine.web/fails.malformed.type'
+            }
+        };
+
+        client.subscribe({entity: Unknown})
             .then(() => {
                 done(new Error('A malformed subscription should not yield results.'));
             })

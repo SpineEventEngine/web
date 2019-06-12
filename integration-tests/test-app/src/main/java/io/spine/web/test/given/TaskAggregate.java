@@ -24,6 +24,8 @@ import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 
+import static io.spine.base.Time.currentTime;
+
 /**
  * An aggregate with the state of type {@code spine.web.test.Task}.
  */
@@ -39,7 +41,8 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
         TaskCreated.Builder taskCreated = TaskCreated.newBuilder()
                                                      .setId(command.getId())
                                                      .setName(command.getName())
-                                                     .setDescription(command.getDescription());
+                                                     .setDescription(command.getDescription())
+                                                     .setWhen(currentTime());
         if (command.hasAssignee()) {
             taskCreated.setAssignee(command.getAssignee());
         }
@@ -53,6 +56,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
                 .newBuilder()
                 .setId(command.getId())
                 .setName(command.getName())
+                .setWhen(currentTime())
                 .vBuild();
     }
 
@@ -60,7 +64,8 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
     TaskReassigned handle(ReassignTask command) {
         TaskReassigned.Builder taskReassigned = TaskReassigned.newBuilder()
                                                               .setId(command.getId())
-                                                              .setTo(command.getNewAssignee());
+                                                              .setTo(command.getNewAssignee())
+                                                              .setWhen(currentTime());
         if (state().hasAssignee()) {
             taskReassigned.setFrom(state().getAssignee());
         }
@@ -72,6 +77,7 @@ public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
     private void on(TaskCreated event) {
         builder().setId(event.getId())
                  .setName(event.getName())
+                 .setWhenCreated(event.getWhen())
                  .setDescription(event.getDescription());
 
         if (event.hasAssignee()) {
