@@ -28,6 +28,8 @@ import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.annotation.Nullable;
+
 import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
@@ -105,7 +107,7 @@ public final class NodeValue {
     /**
      * Adds a child to the value under a specified key.
      */
-    public void addChild(String key, String data) {
+    public void addChild(String key, @Nullable String data) {
         value.addProperty(key, data);
     }
 
