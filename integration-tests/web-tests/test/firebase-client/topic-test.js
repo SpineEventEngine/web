@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Subject, Observable} from 'rxjs';
+import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {fail, ensureUserTasksCount, toListObservable} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
@@ -27,45 +27,125 @@ import {Filters} from '@lib/client/actor-request-factory';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
 /**
- * A utility class that allows to convert `UserTasks` subscription
- * and to check the consistency of the state updates.
+ * A utility class that allows to control over the state of `UserTasks` observable
+ * and to perform actions when the `UserTasks` list matches the next expected state. The configuration
+ * of the expected states and followed actions can be done in a Promise-like manner:
+ *
+ * ```
+ *      UserTasksFlow.for(userTasksList$)
+ *          .waitFor([])
+ *          .waitFor([
+ *              { id: user1.id, tasksCount: 1 },
+ *          ])
+ *          .then(() => assignTaskTo(user1))
+ *          .waitFor([
+ *              { id: user1.id, tasksCount: 2 },
+ *          ])
+ *          .then(() => assignTaskTo(user2))
+ *          .waitFor([
+ *              { id: user1.id, tasksCount: 2 },
+ *              { id: user2.id, tasksCount: 1 },
+ *          ]).start()
+ * ```
  */
-class UserTasksSubscriptions {
+class UserTasksFlow {
+
+    constructor(userTasksList$) {
+        this.userTasksList$ = userTasksList$;
+        this._states = [];
+        this._transitions = [];
+    }
+
+    static for(userTasksList$) {
+        return new UserTasksFlow(userTasksList$);
+    }
 
     /**
-     * Subscribes to the given user tasks list, compares each next state with
-     * the next expected state. Fails the given `Done` test function if the state mismatch occurs,
-     * resolves `Done` function when the list of expected states becomes empty.
-     *
-     * @param {Observable<UserTasks[]>} userTasksList$
-     * @param {{
-     *     id: UserId,
-     *     tasksCount: number
-     * } | null []} expectedStates the list of expected user tasks states,the  not-`null` value in
-     *              the list indicates that the state check on this step must be performed
-     * @param done `Done` function to complete/fail async test
+     * Adds a transition that does nothing if the next state is expected to be received
+     * without any actions. This allows to handle such cases:
+     * ```
+     *      ...
+     *      .waitFor([]) // The NoOp transition will be performed when this state matches
+     *      .waitFor([
+     *          { id: user1.id, tasksCount: 1 }
+     *      ])
+     *      ...
+     * ```
+     * @private
      */
-    static ensureStateUpdates(userTasksList$, expectedStates, done) {
-        if (!expectedStates.length) {
-            throw new Error('The list of states must not be empty.');
+    static _equalize(states, transitions) {
+        if (states.length === transitions.length) {
+            return;
         }
-        const subscriptionEnd$ = new Subject();
-        userTasksList$
-            .pipe(takeUntil(subscriptionEnd$))
-            .subscribe(userTasksList => {
-                const expectedState = expectedStates[0];
+        if (states.length === transitions.length + 1) {
+            transitions.push(UserTasksFlow.doNothing);
+            return;
+        }
 
-                const stateMatches = ensureUserTasksCount(userTasksList, expectedState);
-                if (stateMatches) {
-                    expectedStates.shift();
-                }
+        throw new Error('The consistency of the flow is broken. Ensure each action is' +
+            'followed by the next expected state.');
+    }
 
-                if (expectedStates.length === 0) {
-                    subscriptionEnd$.next();
-                    subscriptionEnd$.complete();
-                    done();
-                }
+    static doNothing() {
+        // NoOp
+    }
+
+    waitFor(state) {
+        UserTasksFlow._equalize(this._states, this._transitions);
+        this._states.push(state);
+        return this;
+    }
+
+    then(perform) {
+        this._transitions.push(perform);
+        return this;
+    }
+
+    /**
+     * Starts to observe the user tasks list and perform actions when the
+     * list state matches the next expected state.
+     *
+     * @return {Promise} a promise to be resolved when all expected states were
+     *      received and all followed
+     */
+    start() {
+        return new Promise((resolve, reject) => {
+            if (!this._states.length) {
+                reject('The list of states must not be empty.');
+            }
+            UserTasksFlow._equalize(this._states, this._transitions);
+            const subscriptionEnd$ = new Subject();
+            this.userTasksList$
+                .pipe(takeUntil(subscriptionEnd$))
+                .subscribe(userTasksList => {
+                    const nextState = this._states[0];
+
+                    const nextStateMatches = ensureUserTasksCount(userTasksList, nextState);
+                    try {
+                        this._transitIf(nextStateMatches);
+                    } catch (e) {
+                        reject(e);
+                    }
+
+                    if (this._hasNoMoreStates()) {
+                        subscriptionEnd$.next();
+                        subscriptionEnd$.complete();
+                        resolve();
+                    }
+                });
         });
+    }
+
+    _transitIf(stateMatches) {
+        if (stateMatches) {
+            this._states.shift();
+            const performTransition = this._transitions.shift();
+            performTransition();
+        }
+    }
+
+    _hasNoMoreStates() {
+        return !this._states.length;
     }
 }
 
@@ -120,13 +200,16 @@ describe('FirebaseClient subscribes to topic', function () {
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
                 const userTasksList$ = toListObservable(subscription, compareUserTasks);
-                UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
-                    [],
-                    [
+                const userTasksFlow = UserTasksFlow.for(userTasksList$);
+
+                userTasksFlow
+                    .waitFor([
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
-                    ]
-                ], done)
+                    ])
+                    .start()
+                    .then(done)
+                    .catch(e => fail(done, e)())
             })
     });
 
@@ -142,13 +225,16 @@ describe('FirebaseClient subscribes to topic', function () {
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
                 const userTasksList$ = toListObservable(subscription, compareUserTasks);
-                UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
-                    [],
-                    [
+                const userTasksFlow = UserTasksFlow.for(userTasksList$);
+
+                userTasksFlow
+                    .waitFor([
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
-                    ]
-                ], done)
+                    ])
+                    .start()
+                    .then(done)
+                    .catch(e => fail(done, e)())
             })
     });
 
@@ -164,19 +250,30 @@ describe('FirebaseClient subscribes to topic', function () {
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
                 const userTasksList$ = toListObservable(subscription, compareUserTasks);
-                UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
-                    [],
-                    [
+                const userTasksFlow = UserTasksFlow.for(userTasksList$);
+
+                userTasksFlow
+                    .waitFor([
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
-                    ],
-                    [
+                    ])
+                    .then(() => {
+                        const taskToReassign = user1.tasks[0];
+                        TestEnvironment.reassignTask(taskToReassign, user2.id, client);
+                    })
+                    .waitFor([
                         { id: user2.id, tasksCount: 3 }
-                    ],
-                ], done)
+                    ])
+                    .then(() => {
+                        const taskToReassign = user1.tasks[1];
+                        TestEnvironment.reassignTask(taskToReassign, user2.id, client);
+                    })
+                    .waitFor([
+                        { id: user2.id, tasksCount: 4 }
+                    ])
+                    .start()
+                    .then(done)
+                    .catch(e => fail(done, e)())
             });
-
-            const taskToReassign = user1.tasks[0];
-            TestEnvironment.reassignTask(taskToReassign, user2.id, client);
     });
 });
