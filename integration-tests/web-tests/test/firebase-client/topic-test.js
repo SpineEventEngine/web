@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {BehaviorSubject, Subject, Observable} from 'rxjs';
+import {Subject, Observable} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {fail, ensureUserTasksCount} from '../test-helpers';
+import {fail, ensureUserTasksCount, toListObservable} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
 import {client} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
@@ -46,80 +46,35 @@ class UserTasksSubscriptions {
      * @param done `Done` function to complete/fail async test
      */
     static ensureStateUpdates(userTasksList$, expectedStates, done) {
+        if (!expectedStates.length) {
+            throw new Error('The list of states must not be empty.');
+        }
         const subscriptionEnd$ = new Subject();
         userTasksList$
             .pipe(takeUntil(subscriptionEnd$))
             .subscribe(userTasksList => {
-                const expectedState = expectedStates.shift();
-                if (expectedState) {
-                    const stateMismatch = !ensureUserTasksCount(userTasksList, expectedState);
-                    if (stateMismatch) {
-                        subscriptionEnd$.complete();
-                        fail(done,
-                            `The next received state doesn't match the expected one.`)();
-                    }
+                const expectedState = expectedStates[0];
+
+                const stateMatches = ensureUserTasksCount(userTasksList, expectedState);
+                if (stateMatches) {
+                    expectedStates.shift();
                 }
 
                 if (expectedStates.length === 0) {
+                    subscriptionEnd$.next();
                     subscriptionEnd$.complete();
                     done();
                 }
         });
-    }
-
-    /**
-     * Composes the given `UserTasks` subscription object into the `UserTasks`
-     * list observable.
-     *
-     * @param {EntitySubscriptionObject<UserTasks>}
-     * @return {Observable<UserTasks[]>}
-     */
-    static toListObservable({itemAdded, itemChanged, itemRemoved, unsubscribe}) {
-        const userTasks$ = new BehaviorSubject([]);
-
-        itemAdded.subscribe({
-            next: addedItem => {
-                const currentUserTasks = userTasks$.getValue();
-                userTasks$.next([...currentUserTasks, addedItem]);
-            }
-        });
-
-        itemChanged.subscribe({
-            next: changedItem => {
-                const currentUserTasks = userTasks$.getValue();
-                const changedItemIndex =
-                    UserTasksSubscriptions._indexOf(changedItem, currentUserTasks);
-                const updatedUserTasks = currentUserTasks.slice();
-                updatedUserTasks[changedItemIndex] = changedItem;
-                userTasks$.next(updatedUserTasks);
-            }
-        });
-
-        itemRemoved.subscribe({
-            next: removedItem => {
-                const currentUserTasks = userTasks$.getValue();
-                const removedItemIndex =
-                    UserTasksSubscriptions._indexOf(removedItem, currentUserTasks);
-                const updatedUserTasks = [
-                    ...currentUserTasks.slice(0, removedItemIndex),
-                    ...currentUserTasks.slice(removedItemIndex + 1)
-                ];
-                userTasks$.next(updatedUserTasks);
-            }
-        });
-
-        return userTasks$.asObservable();
-    }
-
-    static _indexOf(userTasks, userTasksList) {
-        return userTasksList.findIndex(item =>
-            item.getId().getValue() === userTasks.getId().getValue());
     }
 }
 
 describe('FirebaseClient subscribes to topic', function () {
     // Big timeout allows to receive model state changes during tests.
     this.timeout(120 * 1000);
+    const compareUserTasks = (userTasks1, userTasks2) =>
+        userTasks1.getId().getValue() === userTasks2.getId().getValue();
+
     let user1;
     let user2;
     let teardownSubscription = () => {
@@ -164,11 +119,9 @@ describe('FirebaseClient subscribes to topic', function () {
         client.subscribeTo(topic)
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
-                const userTasksList$ = UserTasksSubscriptions.toListObservable(subscription);
+                const userTasksList$ = toListObservable(subscription, compareUserTasks);
                 UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
                     [],
-                    null, // Don't perform state check on this step, there's no way to
-                          // know what item will be received first
                     [
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
@@ -188,11 +141,9 @@ describe('FirebaseClient subscribes to topic', function () {
         client.subscribeTo(topic)
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
-                const userTasksList$ = UserTasksSubscriptions.toListObservable(subscription);
+                const userTasksList$ = toListObservable(subscription, compareUserTasks);
                 UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
                     [],
-                    null, // Don't perform state check on this step, there's no way to
-                          // know what item will be received first
                     [
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
@@ -212,16 +163,13 @@ describe('FirebaseClient subscribes to topic', function () {
         client.subscribeTo(topic)
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
-                const userTasksList$ = UserTasksSubscriptions.toListObservable(subscription);
+                const userTasksList$ = toListObservable(subscription, compareUserTasks);
                 UserTasksSubscriptions.ensureStateUpdates(userTasksList$, [
                     [],
-                    null, // Don't perform state check on this step, there's no way to
-                          // know what item will be received first
                     [
                         { id: user1.id, tasksCount: 2 },
                         { id: user2.id, tasksCount: 2 }
                     ],
-                    null,
                     [
                         { id: user2.id, tasksCount: 3 }
                     ],

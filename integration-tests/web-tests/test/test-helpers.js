@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {BehaviorSubject, Observable} from 'rxjs';
+
 /**
  * A helper functions to fail fast async tests.
  *
@@ -110,9 +112,68 @@ export function ensureUserTasksCount(actualUserTasks, expectedUsers) {
  * @return {boolean} `true` if arrays are equal; `false` otherwise;
  */
 function arraysEqualDeep(arr1, arr2, compare) {
+    if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
+        throw new Error('Unable to compare equality of non-array objects.');
+    }
+
+    if (arr1.length === 0 && arr2.length === 0) {
+        return true;
+    }
+
     const intersection = arr1.filter(value1 => {
         return arr2.findIndex(value2 => compare(value1, value2)) > -1;
     });
 
     return intersection.length === arr1.length
+}
+
+/**
+ * Composes the given subscription object into the list observable.
+ *
+ * @param {EntitySubscriptionObject<T>} subscription a subscription to retrieve values
+ * @param {(o1: T, o2: T) => boolean} compare a function that compares objects of `T` type;
+ *      returns `true` if objects are considered equal, `false` otherwise
+ * @return {Observable<T[]>} an observable that emits a list of values, composed from the given
+ *      subscription object
+ *
+ * @template <T> a class of a subscription target entities
+ */
+export function toListObservable(subscription, compare) {
+    const list$ = new BehaviorSubject([]);
+    const {itemAdded, itemChanged, itemRemoved} = subscription;
+
+    itemAdded.subscribe({
+        next: addedItem => {
+            const currentList = list$.getValue();
+            list$.next([...currentList, addedItem]);
+        }
+    });
+
+    itemChanged.subscribe({
+        next: changedItem => {
+            const currentList = list$.getValue();
+            const changedItemIndex =_indexOf(changedItem, currentList, compare);
+            const updatedList = currentList.slice();
+            updatedList[changedItemIndex] = changedItem;
+            list$.next(updatedList);
+        }
+    });
+
+    itemRemoved.subscribe({
+        next: removedItem => {
+            const currentList = list$.getValue();
+            const removedItemIndex = _indexOf(removedItem, currentList, compare);
+            const updatedList = [
+                ...currentList.slice(0, removedItemIndex),
+                ...currentList.slice(removedItemIndex + 1)
+            ];
+            list$.next(updatedList);
+        }
+    });
+
+    return list$.asObservable();
+}
+
+function _indexOf(item, items, compare) {
+    return items.findIndex(value => compare(value, item));
 }
