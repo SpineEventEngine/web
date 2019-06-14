@@ -110,7 +110,7 @@ final class SubscriptionRecord {
         diff.getChangedList()
             .forEach(record -> nodeValue.addChild(record.getKey(), record.getData()));
         diff.getRemovedList()
-            .forEach(record -> nodeValue.addChild(record.getKey(), "null"));
+            .forEach(record -> nodeValue.addNullChild(record.getKey()));
         diff.getAddedList()
             .forEach(record -> nodeValue.addChild(record.getData()));
         firebaseClient.merge(path, nodeValue);

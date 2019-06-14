@@ -42,6 +42,7 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Book
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.guideToTheGalaxy;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.mockQueryResponse;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.updateAuthors;
+import static io.spine.web.firebase.subscription.given.HasChildren.JSON_NULL;
 import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -107,7 +108,7 @@ class QueryRecordTest {
         Map<String, String> expected = new HashMap<>();
         expected.put(anyKey(), toCompactJson(donQuixote));
         expected.put(patternsKey, toCompactJson(designPatternsWithAuthors));
-        expected.put(guideKey, "null");
+        expected.put(guideKey, JSON_NULL);
         verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 

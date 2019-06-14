@@ -1,6 +1,6 @@
 {
   "name": "client-js-tests",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "license": "Apache-2.0",
   "description": "Tests of a `spine-web` JS library against the Spine-based application.",
   "scripts": {
@@ -17,6 +17,7 @@
     "firebase-server": "^1.0.2",
     "google-protobuf": "^3.6.0",
     "mocha": "^5.2.0",
+    "rxjs": "~6.5.1",
     "uuid": "^3.2.1"
   }
 }

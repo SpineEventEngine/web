@@ -109,6 +109,13 @@ public final class NodeValue {
         value.addProperty(key, data);
     }
 
+    /**
+     * Adds a `null` child to the value under a specified key.
+     */
+    public void addNullChild(String key) {
+        value.add(key, null);
+    }
+
     public JsonObject underlyingJson() {
         return value;
     }

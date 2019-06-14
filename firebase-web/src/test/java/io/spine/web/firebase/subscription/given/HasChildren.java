@@ -45,6 +45,7 @@ import static java.util.stream.Collectors.toList;
 public class HasChildren implements ArgumentMatcher<NodeValue> {
 
     private static final String ANY_KEY = "any_key";
+    public static final String JSON_NULL = "json_null";
 
     private final ImmutableMap<String, String> expected;
 
@@ -78,19 +79,25 @@ public class HasChildren implements ArgumentMatcher<NodeValue> {
             List<Map.Entry<String, JsonElement>> containingValue = json
                     .entrySet()
                     .stream()
-                    .filter(e -> value.equals(e.getValue()
-                                               .getAsString()))
+                    .filter(e -> equalsOrNull(e.getValue(), value))
                     .collect(toList());
             boolean result = !containingValue.isEmpty();
             return result;
         } else {
-            boolean result = json.has(key) && value.equals(json.get(key)
-                                                               .getAsString());
+            boolean result = json.has(key) && equalsOrNull(json.get(key), value);
             return result;
         }
     }
 
     public static String anyKey() {
         return ANY_KEY + UUID.randomUUID().toString();
+    }
+
+    private static boolean equalsOrNull(JsonElement element, String value) {
+        if (element.isJsonNull()) {
+            return value.equals(JSON_NULL);
+        }
+
+        return element.getAsString().equals(value);
     }
 }

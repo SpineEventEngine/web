@@ -20,6 +20,7 @@
 
 import uuid from 'uuid';
 import {UserId} from '@testProto/spine/core/user_id_pb';
+import {ReassignTask} from '@testProto/spine/web/test/given/commands_pb';
 import TestEnvironment from './test-environment';
 
 /**
@@ -62,6 +63,23 @@ export class UserTasksTestEnvironment extends TestEnvironment {
         }
 
         return Promise.all(createTaskPromises);
+    }
+
+    /**
+     * Sends a command to reassign the given task to the given user.
+     *
+     * @param {!TaskId} taskId
+     * @param {!UserId} newAssignee
+     * @param {!Client} client
+     * @return {Promise<any>}
+     */
+    static reassignTask(taskId, newAssignee, client) {
+        return new Promise((resolve, reject) => {
+            const command = new ReassignTask();
+            command.setId(taskId);
+            command.setNewAssignee(newAssignee);
+            client.sendCommand(command, () => resolve(), () => reject());
+        })
     }
 
     /**
