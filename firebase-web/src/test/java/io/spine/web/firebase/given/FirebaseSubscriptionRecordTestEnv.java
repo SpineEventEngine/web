@@ -56,7 +56,7 @@ public final class FirebaseSubscriptionRecordTestEnv {
                 .setResponse(okResponse());
         stream(books)
                 .map(FirebaseSubscriptionRecordTestEnv::toEntityState)
-                .forEach(responseBuilder::addMessages);
+                .forEach(responseBuilder::addMessage);
         return responseBuilder.build();
     }
 

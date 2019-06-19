@@ -67,7 +67,7 @@ final class QueryRecord {
      * <p>Suitable for big queries, spanning thousands and millions of items.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        queryResponse.getMessagesList()
+        queryResponse.getMessageList()
                      .stream()
                      .unordered()
                      .map(EntityStateWithVersion::getState)

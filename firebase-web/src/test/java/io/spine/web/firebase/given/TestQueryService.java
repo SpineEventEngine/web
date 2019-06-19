@@ -55,7 +55,7 @@ public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBas
                 QueryResponse
                         .newBuilder()
                         .setResponse(ok())
-                        .addAllMessages(new ArrayList<>(response))
+                        .addAllMessage(new ArrayList<>(response))
                         .vBuild();
         responseObserver.onNext(queryResponse);
         responseObserver.onCompleted();
