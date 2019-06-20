@@ -119,14 +119,12 @@ final class SubscriptionRecord {
     /**
      * Creates a stream of response messages mapping each response message to JSON.
      *
-     * @param response
-     *         response to an entity query
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
     private Stream<String> mapMessagesToJson() {
         return queryResponse
-                .getMessagesList()
+                .getMessageList()
                 .stream()
                 .unordered()
                 .map(EntityStateWithVersion::getState)
