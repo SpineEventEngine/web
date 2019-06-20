@@ -23,7 +23,6 @@ buildscript { final scriptHandler ->
     apply from: "$rootDir/version.gradle"
 
     defaultRepositories(scriptHandler)
-
     dependencies {
         classpath deps.build.guava
         classpath deps.build.gradlePlugins.protobuf
@@ -31,7 +30,6 @@ buildscript { final scriptHandler ->
         classpath "io.spine.tools:spine-model-compiler:$spineBaseVersion"
         classpath "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"
     }
-
     forceConfiguration(scriptHandler)
 }
 
@@ -73,11 +71,6 @@ subprojects {
         }
 
         forceConfiguration(scriptHandler)
-        configurations.all({
-            resolutionStrategy {
-                force deps.build.guava
-            }
-        })
     }
 
     ext {
