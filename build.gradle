@@ -134,14 +134,23 @@ subprojects {
     forceConfiguration(project)
     configurations.all({
         resolutionStrategy {
+
+            /**
+             * Force transitive dependencies of 3rd party components. 
+             * Common 3rd party dependencies are forced by {@code forceConfiguration()} calls above.
+             * 
+             * The forced versions are selected as the highest among detected in the version 
+             * conflict. Developers <em>may</em> select a higher version as the dependency in
+             * this project <em>IFF</em> this dependency is used directly or a newer version 
+             * fixes a security issue.
+             * 
+             * {@code proto-google-common-protos} starting with version {@code 1.1.0}
+             * and {@code proto-google-iam-v1} starting with version {@code 0.1.29}
+             * include Protobuf message definitions alongside with compiled Java.
+             * This breaks the Spine compiler which searches for all Protobuf definitions 
+             * in classpath, and assumes they implement the Type URLs.
+             */
             force (
-                    /**
-                     * {@code proto-google-common-protos} starting with version {@code 1.1.0}
-                     * and {@code proto-google-iam-v1} starting with version {@code 0.1.29}
-                     * include Protobuf message definitions alongside with compiled Java.
-                     * This breaks the Spine compiler which searches for all Protobuf definitions 
-                     * in classpath, and assumes they implement the Type URLs.
-                     */
                     "io.opencensus:opencensus-api:0.21.0",
                     "io.opencensus:opencensus-contrib-http-util:0.18.0",
 
@@ -183,7 +192,7 @@ subprojects {
                     "io.netty:netty-handler:4.1.34.Final",
                     "io.netty:netty-codec-http:4.1.34.Final",
                     
-                    "javax.servlet:javax.servlet-api:4.0.0", // see version.gradle
+                    "javax.servlet:javax.servlet-api:$servletApiVersion", // see version.gradle
 
                     "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
                     "org.eclipse.jetty.toolchain:jetty-schemas:3.1"
