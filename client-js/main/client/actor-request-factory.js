@@ -309,7 +309,7 @@ class Targets {
     const idFilter = new IdFilter();
     ids.forEach(rawId => {
       const packedId = AnyPacker.packTyped(rawId);
-      idFilter.addIds(packedId);
+      idFilter.addId(packedId);
     });
     return idFilter;
   }

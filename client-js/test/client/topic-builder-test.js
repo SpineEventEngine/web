@@ -180,7 +180,7 @@ describe('TopicBuilder', function () {
     const idFilter = filters.getIdFilter();
     assert.ok(idFilter);
 
-    const targetIds = idFilter.getIdsList()
+    const targetIds = idFilter.getIdList()
       .map(any => AnyPacker.unpack(any).as(Given.TYPE.TASK_ID))
       .map(taskId => taskId.getValue());
 
@@ -212,7 +212,7 @@ describe('TopicBuilder', function () {
     const idFilter = filters.getIdFilter();
     assert.ok(idFilter);
 
-    const targetIds = idFilter.getIdsList()
+    const targetIds = idFilter.getIdList()
       .map(any => AnyPacker.unpack(any).asString());
 
     Given.assertUnorderedEqual(targetIds, values);
@@ -243,7 +243,7 @@ describe('TopicBuilder', function () {
     const idFilter = filters.getIdFilter();
     assert.ok(idFilter);
 
-    const targetIds = idFilter.getIdsList()
+    const targetIds = idFilter.getIdList()
       .map(any => AnyPacker.unpack(any).asInt64());
 
     Given.assertUnorderedEqual(targetIds, values);

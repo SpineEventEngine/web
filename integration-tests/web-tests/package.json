@@ -1,6 +1,6 @@
 {
   "name": "client-js-tests",
-  "version": "0.17.1",
+  "version": "0.18.0",
   "license": "Apache-2.0",
   "description": "Tests of a `spine-web` JS library against the Spine-based application.",
   "scripts": {
@@ -13,7 +13,7 @@
     "@babel/register": "^7.0.0",
     "assert": "^2.0.0",
     "babel-plugin-module-resolver": "^3.1.1",
-    "firebase": "^5.5.6",
+    "firebase": "^6.2.0",
     "firebase-server": "^1.0.2",
     "google-protobuf": "^3.8.0",
     "mocha": "^5.2.0",
