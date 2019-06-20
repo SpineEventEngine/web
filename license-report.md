@@ -417,11 +417,11 @@
      * **POM Project URL:** [https://github.com/census-instrumentation/opencensus-java](https://github.com/census-instrumentation/opencensus-java)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** javax.websocket **Name:** javax.websocket-api **Version:** 1.0
      * **Manifest Project URL:** [http://www.oracle.com](http://www.oracle.com)
@@ -620,7 +620,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:31:08 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.18.0`
@@ -2806,7 +2806,7 @@ This report was generated on **Thu Jun 20 15:31:08 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Thu Jun 20 2019 15:31:09 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Thu Jun 20 2019 15:51:27 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3121,11 +3121,11 @@ This report was generated on **Thu Jun 20 2019 15:31:09 GMT+0300 (Eastern Europe
      * **POM Project URL:** [https://github.com/census-instrumentation/opencensus-java](https://github.com/census-instrumentation/opencensus-java)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** joda-time **Name:** joda-time **Version:** 2.9.2
      * **Project URL:** [http://www.joda.org/joda-time/](http://www.joda.org/joda-time/)
@@ -3573,11 +3573,11 @@ This report was generated on **Thu Jun 20 2019 15:31:09 GMT+0300 (Eastern Europe
      * **POM Project URL:** [http://code.google.com/p/atinject/](http://code.google.com/p/atinject/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** joda-time **Name:** joda-time **Version:** 2.9.2
      * **Project URL:** [http://www.joda.org/joda-time/](http://www.joda.org/joda-time/)
@@ -3807,7 +3807,7 @@ This report was generated on **Thu Jun 20 2019 15:31:09 GMT+0300 (Eastern Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:31:11 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jun 20 15:51:28 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4122,11 +4122,11 @@ This report was generated on **Thu Jun 20 15:31:11 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [https://github.com/census-instrumentation/opencensus-java](https://github.com/census-instrumentation/opencensus-java)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** javax.websocket **Name:** javax.websocket-api **Version:** 1.0
      * **Manifest Project URL:** [http://www.oracle.com](http://www.oracle.com)
@@ -5713,7 +5713,7 @@ This report was generated on **Thu Jun 20 15:31:11 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:32:08 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5890,11 +5890,11 @@ This report was generated on **Thu Jun 20 15:32:08 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [https://github.com/census-instrumentation/opencensus-java](https://github.com/census-instrumentation/opencensus-java)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** org.apache.httpcomponents **Name:** httpclient **Version:** 4.5.5
      * **POM Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
@@ -6188,11 +6188,11 @@ This report was generated on **Thu Jun 20 15:32:08 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [http://code.google.com/p/atinject/](http://code.google.com/p/atinject/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** junit **Name:** junit **Version:** 4.12
      * **POM Project URL:** [http://junit.org](http://junit.org)
@@ -6406,7 +6406,7 @@ This report was generated on **Thu Jun 20 15:32:08 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:32:09 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6828,11 +6828,11 @@ This report was generated on **Thu Jun 20 15:32:09 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [https://github.com/census-instrumentation/opencensus-java](https://github.com/census-instrumentation/opencensus-java)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 4.0.0
-     * **Manifest Project URL:** [https://javaee.github.io](https://javaee.github.io)
-     * **Manifest license URL:** [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
-     * **POM Project URL:** [https://javaee.github.io/servlet-spec/](https://javaee.github.io/servlet-spec/)
-     * **POM License: CDDL + GPLv2 with classpath exception** - [https://oss.oracle.com/licenses/CDDL+GPL-1.1](https://oss.oracle.com/licenses/CDDL+GPL-1.1)
+1. **Group:** javax.servlet **Name:** javax.servlet-api **Version:** 3.1.0
+     * **Manifest Project URL:** [https://glassfish.dev.java.net](https://glassfish.dev.java.net)
+     * **Manifest license URL:** [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
+     * **POM Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
+     * **POM License: CDDL + GPLv2 with classpath exception** - [https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
 1. **Group:** javax.websocket **Name:** javax.websocket-api **Version:** 1.0
      * **Manifest Project URL:** [http://www.oracle.com](http://www.oracle.com)
@@ -7031,4 +7031,4 @@ This report was generated on **Thu Jun 20 15:32:09 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:32:10 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jun 20 15:51:32 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

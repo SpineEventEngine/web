@@ -64,7 +64,7 @@ class Given {
   static assertActorContextCorrect(context) {
     assert.ok(context);
     assert.ok(context.getTimestamp().getSeconds() <= new Date().getTime());
-    assert.equal(context.getActor().getValue(), ActorProvider.ANONYMOUS);
+    assert.ok(context.getActor().getValue() === ActorProvider.ANONYMOUS);
   }
 
   /**
@@ -83,7 +83,7 @@ class Given {
    * @param {Type} type
    */
   static assertTargetTypeEqual(target, type) {
-    assert.equal(target.getType(), type.url().value());
+    assert.ok(target.getType() === type.url().value());
   }
 
   /**
