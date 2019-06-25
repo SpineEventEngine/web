@@ -620,7 +620,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jun 25 18:46:23 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.18.0`
@@ -887,7 +887,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **@firebase/app-types@0.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app@0.4.5**
+1. **@firebase/app@0.4.8**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/auth-types@0.7.0**
@@ -899,40 +899,40 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **@firebase/database-types@0.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/database@0.4.5**
+1. **@firebase/database@0.4.6**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore-types@1.4.0**
+1. **@firebase/firestore-types@1.4.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore@1.4.0**
+1. **@firebase/firestore@1.4.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/functions-types@0.3.5**
+1. **@firebase/functions-types@0.3.6**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/functions@0.4.9**
+1. **@firebase/functions@0.4.10**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/installations-types@0.1.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/installations@0.1.6**
+1. **@firebase/installations@0.1.7**
      * Licenses: Apache-2.0
      * Repository: unknown
-1. **@firebase/logger@0.1.16**
+1. **@firebase/logger@0.1.17**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/messaging-types@0.3.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/messaging@0.4.2**
+1. **@firebase/messaging@0.4.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/performance-types@0.0.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance-types](https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance-types)
-1. **@firebase/performance@0.2.7**
+1. **@firebase/performance@0.2.8**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance](https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance)
 1. **@firebase/polyfill@0.3.14**
@@ -941,13 +941,13 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **@firebase/storage-types@0.3.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/storage@0.3.2**
+1. **@firebase/storage@0.3.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/util@0.2.19**
+1. **@firebase/util@0.2.20**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/webchannel-wrapper@0.2.20**
+1. **@firebase/webchannel-wrapper@0.2.21**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@grpc/proto-loader@0.5.1**
@@ -998,7 +998,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **@types/long@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/node@10.14.9**
+1. **@types/node@10.14.10**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@webassemblyjs/ast@1.8.5**
@@ -1083,9 +1083,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv](https://github.com/epoberezkin/ajv)
 1. **ansi-regex@2.1.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)
-1. **ansi-regex@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)
 1. **ansi-regex@4.1.0**
@@ -1268,7 +1265,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **camelcase@5.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
-1. **caniuse-lite@1.0.30000975**
+1. **caniuse-lite@1.0.30000977**
      * Licenses: CC-BY-4.0
      * Repository: [https://github.com/ben-eb/caniuse-lite](https://github.com/ben-eb/caniuse-lite)
 1. **chalk@1.1.3**
@@ -1293,9 +1290,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/class-utils](https://github.com/jonschlinkert/class-utils)
 1. **cliui@3.2.0**
-     * Licenses: ISC
-     * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
-1. **cliui@4.1.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
 1. **cliui@5.0.0**
@@ -1466,7 +1460,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.166**
+1. **electron-to-chromium@1.3.173**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.4.1**
@@ -1547,8 +1541,8 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **fast-json-stable-stringify@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify)
-1. **faye-websocket@0.11.1**
-     * Licenses: MIT
+1. **faye-websocket@0.11.3**
+     * Licenses: Apache-2.0
      * Repository: [https://github.com/faye/faye-websocket-node](https://github.com/faye/faye-websocket-node)
 1. **figgy-pudding@3.5.1**
      * Licenses: ISC
@@ -1568,10 +1562,10 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **find-up@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/find-up](https://github.com/sindresorhus/find-up)
-1. **findup-sync@2.0.0**
+1. **findup-sync@3.0.0**
      * Licenses: MIT
-     * Repository: [https://github.com/js-cli/node-findup-sync](https://github.com/js-cli/node-findup-sync)
-1. **firebase@6.2.0**
+     * Repository: [https://github.com/gulpjs/findup-sync](https://github.com/gulpjs/findup-sync)
+1. **firebase@6.2.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **flush-write-stream@1.1.1**
@@ -1607,9 +1601,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **gauge@2.7.4**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/gauge](https://github.com/iarna/gauge)
-1. **get-caller-file@1.0.3**
-     * Licenses: ISC
-     * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
 1. **get-caller-file@2.0.5**
      * Licenses: ISC
      * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
@@ -1634,7 +1625,13 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **global-modules@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/global-modules](https://github.com/jonschlinkert/global-modules)
+1. **global-modules@2.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/jonschlinkert/global-modules](https://github.com/jonschlinkert/global-modules)
 1. **global-prefix@1.0.2**
+     * Licenses: MIT
+     * Repository: [https://github.com/jonschlinkert/global-prefix](https://github.com/jonschlinkert/global-prefix)
+1. **global-prefix@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/global-prefix](https://github.com/jonschlinkert/global-prefix)
 1. **globals@11.12.0**
@@ -2015,7 +2012,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **mississippi@3.0.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/maxogden/mississippi](https://github.com/maxogden/mississippi)
-1. **mixin-deep@1.3.1**
+1. **mixin-deep@1.3.2**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/mixin-deep](https://github.com/jonschlinkert/mixin-deep)
 1. **mkdirp@0.5.1**
@@ -2243,9 +2240,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **posix-character-classes@0.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/posix-character-classes](https://github.com/jonschlinkert/posix-character-classes)
-1. **prettier@1.18.2**
-     * Licenses: MIT
-     * Repository: [https://github.com/prettier/prettier](https://github.com/prettier/prettier)
 1. **private@0.1.8**
      * Licenses: MIT
      * Repository: [https://github.com/benjamn/private](https://github.com/benjamn/private)
@@ -2375,9 +2369,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **require-directory@2.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/troygoode/node-require-directory](https://github.com/troygoode/node-require-directory)
-1. **require-main-filename@1.0.1**
-     * Licenses: ISC
-     * Repository: [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)
 1. **require-main-filename@2.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)
@@ -2399,7 +2390,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **resolve-url@0.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/resolve-url](https://github.com/lydell/resolve-url)
-1. **resolve@1.11.0**
+1. **resolve@1.11.1**
      * Licenses: MIT
      * Repository: [https://github.com/browserify/resolve](https://github.com/browserify/resolve)
 1. **ret@0.1.15**
@@ -2432,7 +2423,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **semver@5.7.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
-1. **semver@6.1.1**
+1. **semver@6.1.2**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
 1. **serialize-javascript@1.7.0**
@@ -2441,10 +2432,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **set-blocking@2.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/set-blocking](https://github.com/yargs/set-blocking)
-1. **set-value@0.4.3**
-     * Licenses: MIT
-     * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
-1. **set-value@2.0.0**
+1. **set-value@2.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
 1. **setimmediate@1.0.5**
@@ -2555,9 +2543,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **string-width@1.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
-1. **string-width@2.1.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
 1. **string-width@3.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
@@ -2565,9 +2550,6 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/nodejs/string_decoder](https://github.com/nodejs/string_decoder)
 1. **strip-ansi@3.0.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/chalk/strip-ansi](https://github.com/chalk/strip-ansi)
-1. **strip-ansi@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/strip-ansi](https://github.com/chalk/strip-ansi)
 1. **strip-ansi@5.2.0**
@@ -2666,7 +2648,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **unicode-property-aliases-ecmascript@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-property-aliases-ecmascript](https://github.com/mathiasbynens/unicode-property-aliases-ecmascript)
-1. **union-value@1.0.0**
+1. **union-value@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/union-value](https://github.com/jonschlinkert/union-value)
 1. **unique-filename@1.1.1**
@@ -2720,7 +2702,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **watchpack@1.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/watchpack](https://github.com/webpack/watchpack)
-1. **webpack-cli@3.3.4**
+1. **webpack-cli@3.3.5**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-cli](https://github.com/webpack/webpack-cli)
 1. **webpack-merge@4.2.1**
@@ -2789,15 +2771,9 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
 1. **yallist@3.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/yallist](https://github.com/isaacs/yallist)
-1. **yargs-parser@11.1.1**
-     * Licenses: ISC
-     * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
 1. **yargs-parser@13.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
-1. **yargs@12.0.5**
-     * Licenses: MIT
-     * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
 1. **yargs@13.2.4**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
@@ -2806,7 +2782,7 @@ This report was generated on **Thu Jun 20 15:51:24 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Thu Jun 20 2019 15:51:27 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Tue Jun 25 2019 18:46:26 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3492,7 +3468,7 @@ This report was generated on **Thu Jun 20 2019 15:51:27 GMT+0300 (Eastern Europe
      * **POM Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **POM License: Apache 2.0** - [https://opensource.org/licenses/Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1. **Group:** io.grpc **Name:** protoc-gen-grpc-java **Version:** 1.20.0
+1. **Group:** io.grpc **Name:** protoc-gen-grpc-java **Version:** 1.21.0
      * **POM Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **POM License: Apache 2.0** - [https://opensource.org/licenses/Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -3807,7 +3783,7 @@ This report was generated on **Thu Jun 20 2019 15:51:27 GMT+0300 (Eastern Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:51:28 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jun 25 18:43:13 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4405,7 +4381,7 @@ This report was generated on **Thu Jun 20 15:51:28 EEST 2019** using [Gradle-Lic
      * **Manifest license URL:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.7.1
+1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.8.0
      * **POM Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4532,7 +4508,7 @@ This report was generated on **Thu Jun 20 15:51:28 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **POM License: Apache 2.0** - [https://opensource.org/licenses/Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1. **Group:** io.grpc **Name:** protoc-gen-grpc-java **Version:** 1.20.0
+1. **Group:** io.grpc **Name:** protoc-gen-grpc-java **Version:** 1.21.0
      * **POM Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **POM License: Apache 2.0** - [https://opensource.org/licenses/Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -5713,7 +5689,7 @@ This report was generated on **Thu Jun 20 15:51:28 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jun 25 18:44:55 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6111,7 +6087,7 @@ This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **POM License: Apache 2.0** - [https://opensource.org/licenses/Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1. **Group:** io.grpc **Name:** protoc-gen-grpc-java **Version:** 1.20.0
+1. **Group:** io.grpc **Name:** protoc-gen-grpc-java **Version:** 1.21.0
      * **POM Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **POM License: Apache 2.0** - [https://opensource.org/licenses/Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -6406,7 +6382,7 @@ This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jun 25 18:44:56 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -7031,4 +7007,4 @@ This report was generated on **Thu Jun 20 15:51:31 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Jun 20 15:51:32 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jun 25 18:44:57 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

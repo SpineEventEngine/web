@@ -181,7 +181,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.grpc</groupId>
     <artifactId>protoc-gen-grpc-java</artifactId>
-    <version>1.20.0</version>
+    <version>1.21.0</version>
   </dependency>
   <dependency>
     <groupId>io.spine</groupId>
