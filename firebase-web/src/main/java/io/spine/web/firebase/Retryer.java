@@ -25,7 +25,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.function.Supplier;
 
 /**
- * Strategy of retrying a request to Firebase.
+ * Executes given routines and retries if an exception is thrown.
  */
 public interface Retryer {
 
