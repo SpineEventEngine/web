@@ -75,7 +75,7 @@ task installLinkedLib {
  * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
  */
 task integrationTest {
-    description = 'Runs integration tests of the `spine-web` library agains the sample application.'
+    description = 'Runs integration tests of the `spine-web` library against the sample application.'
 
     dependsOn build, installLinkedLib, ':test-app:appBeforeIntegrationTest'
     finalizedBy ':test-app:appAfterIntegrationTest'
