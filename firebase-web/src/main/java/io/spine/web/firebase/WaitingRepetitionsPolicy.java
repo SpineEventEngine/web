@@ -50,7 +50,7 @@ public final class WaitingRepetitionsPolicy implements RetryPolicy {
      *         the attempt count after which the request is considered failed
      */
     public static WaitingRepetitionsPolicy noWait(int maxRepetitions) {
-        return incrementingWait(maxRepetitions, ZERO, CONSTANT_MULTIPLIER);
+        return exponentialWait(maxRepetitions, ZERO, CONSTANT_MULTIPLIER);
     }
 
     /**
@@ -74,7 +74,7 @@ public final class WaitingRepetitionsPolicy implements RetryPolicy {
      *         the time to wait between attempts
      */
     public static WaitingRepetitionsPolicy constantWait(int maxRepetitions, Duration waitTime) {
-        return incrementingWait(maxRepetitions, waitTime, CONSTANT_MULTIPLIER);
+        return exponentialWait(maxRepetitions, waitTime, CONSTANT_MULTIPLIER);
     }
 
     /**
@@ -96,7 +96,7 @@ public final class WaitingRepetitionsPolicy implements RetryPolicy {
      *         the number to multiply the last wait time by in order to get the next wait time
      */
     public static WaitingRepetitionsPolicy
-    incrementingWait(int maxRepetitions, Duration seedWait, int multiplier) {
+    exponentialWait(int maxRepetitions, Duration seedWait, int multiplier) {
         checkArgument(maxRepetitions > 0, "Repetition count must be positive.");
         checkNotNull(seedWait);
         checkArgument(!seedWait.isNegative(), "Wait time must not be negative.");
