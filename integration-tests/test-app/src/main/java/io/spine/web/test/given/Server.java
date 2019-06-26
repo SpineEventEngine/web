@@ -21,10 +21,7 @@
 package io.spine.web.test.given;
 
 import io.spine.server.BoundedContext;
-import io.spine.server.storage.StorageFactory;
-
-import static io.spine.core.BoundedContextNames.newName;
-import static io.spine.server.storage.memory.InMemoryStorageFactory.newInstance;
+import io.spine.server.storage.memory.InMemoryStorageFactory;
 
 /**
  * The test application server.
@@ -48,11 +45,9 @@ final class Server {
 
     private static Application createApplication() {
         String name = "Test Bounded Context";
-        StorageFactory storageFactory = newInstance(newName(name), false);
         BoundedContext boundedContext =
-                BoundedContext.newBuilder()
-                              .setName(name)
-                              .setStorageFactorySupplier(() -> storageFactory)
+                BoundedContext.singleTenant(name)
+                              .setStorage(InMemoryStorageFactory::newInstance)
                               .build();
         boundedContext.register(new TaskRepository());
         boundedContext.register(new ProjectRepository());
