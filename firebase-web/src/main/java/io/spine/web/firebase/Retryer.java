@@ -25,7 +25,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.function.Supplier;
 
 /**
- * Executes given routines and retries if an exception is thrown.
+ * Executes given routines and retries when exceptions are thrown.
  */
 public interface Retryer {
 
