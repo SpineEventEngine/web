@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class RetryingClient implements FirebaseClient {
 
     private final FirebaseClient delegate;
-    private final RetryPolicy retryPolicy;
+    private final Retryer retryer;
 
     /**
      * Creates a new {@code RetryingClient}.
@@ -43,18 +43,18 @@ public final class RetryingClient implements FirebaseClient {
      * @param policy
      *         the request retry policy
      */
-    public RetryingClient(FirebaseClient delegate, RetryPolicy policy) {
+    public RetryingClient(FirebaseClient delegate, Retryer policy) {
         this.delegate = checkNotNull(delegate);
-        this.retryPolicy = checkNotNull(policy);
+        this.retryer = checkNotNull(policy);
     }
 
     @Override
     public Optional<NodeValue> get(NodePath nodePath) {
-        return retryPolicy.callAndRetry(() -> delegate.get(nodePath));
+        return retryer.callAndRetry(() -> delegate.get(nodePath));
     }
 
     @Override
     public void merge(NodePath nodePath, NodeValue value) {
-        retryPolicy.runAndRetry(() -> delegate.merge(nodePath, value));
+        retryer.runAndRetry(() -> delegate.merge(nodePath, value));
     }
 }

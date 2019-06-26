@@ -31,9 +31,9 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 import static java.time.Duration.ZERO;
 
 /**
- * A {@link RetryPolicy} which allows a given number of attempts separated by some wait time.
+ * A {@link Retryer} which allows a given number of attempts separated by some wait time.
  */
-public final class WaitingRepetitionsPolicy implements RetryPolicy {
+public final class WaitingRepetitionsRetryer implements Retryer {
 
     private static final Duration ONE_SECOND = Duration.ofSeconds(1);
     private static final int CONSTANT_MULTIPLIER = 1;
@@ -43,29 +43,29 @@ public final class WaitingRepetitionsPolicy implements RetryPolicy {
     private final int multiplier;
 
     /**
-     * Creates a new instance of {@code WaitingRepetitionsPolicy} which does not wait between
+     * Creates a new instance of {@code WaitingRepetitionsRetryer} which does not wait between
      * attempts.
      *
      * @param maxRepetitions
      *         the attempt count after which the request is considered failed
      */
-    public static WaitingRepetitionsPolicy noWait(int maxRepetitions) {
+    public static WaitingRepetitionsRetryer noWait(int maxRepetitions) {
         return exponentialWait(maxRepetitions, ZERO, CONSTANT_MULTIPLIER);
     }
 
     /**
-     * Creates a new instance of {@code WaitingRepetitionsPolicy} which waits for 1 second between
+     * Creates a new instance of {@code WaitingRepetitionsRetryer} which waits for 1 second between
      * attempts.
      *
      * @param maxRepetitions
      *         the attempt count after which the request is considered failed
      */
-    public static WaitingRepetitionsPolicy oneSecondWait(int maxRepetitions) {
+    public static WaitingRepetitionsRetryer oneSecondWait(int maxRepetitions) {
         return constantWait(maxRepetitions, ONE_SECOND);
     }
 
     /**
-     * Creates a new instance of {@code WaitingRepetitionsPolicy} which waits for a given constant
+     * Creates a new instance of {@code WaitingRepetitionsRetryer} which waits for a given constant
      * time between attempts.
      *
      * @param maxRepetitions
@@ -73,12 +73,12 @@ public final class WaitingRepetitionsPolicy implements RetryPolicy {
      * @param waitTime
      *         the time to wait between attempts
      */
-    public static WaitingRepetitionsPolicy constantWait(int maxRepetitions, Duration waitTime) {
+    public static WaitingRepetitionsRetryer constantWait(int maxRepetitions, Duration waitTime) {
         return exponentialWait(maxRepetitions, waitTime, CONSTANT_MULTIPLIER);
     }
 
     /**
-     * Creates a new instance of {@code WaitingRepetitionsPolicy} which waits for a greater time
+     * Creates a new instance of {@code WaitingRepetitionsRetryer} which waits for a greater time
      * period between attempts.
      *
      * <p>If the given {@code seedWait} is {@code 2} seconds and the {@code multiplier} is equal to
@@ -95,16 +95,16 @@ public final class WaitingRepetitionsPolicy implements RetryPolicy {
      * @param multiplier
      *         the number to multiply the last wait time by in order to get the next wait time
      */
-    public static WaitingRepetitionsPolicy
+    public static WaitingRepetitionsRetryer
     exponentialWait(int maxRepetitions, Duration seedWait, int multiplier) {
         checkArgument(maxRepetitions > 0, "Repetition count must be positive.");
         checkNotNull(seedWait);
         checkArgument(!seedWait.isNegative(), "Wait time must not be negative.");
         checkArgument(multiplier > 0, "Wait time multiplier must be positive.");
-        return new WaitingRepetitionsPolicy(maxRepetitions, seedWait, multiplier);
+        return new WaitingRepetitionsRetryer(maxRepetitions, seedWait, multiplier);
     }
 
-    private WaitingRepetitionsPolicy(int maxRepetitions, Duration seedWait, int multiplier) {
+    private WaitingRepetitionsRetryer(int maxRepetitions, Duration seedWait, int multiplier) {
         this.maxRepetitions = maxRepetitions;
         this.seedWait = checkNotNull(seedWait);
         this.multiplier = multiplier;

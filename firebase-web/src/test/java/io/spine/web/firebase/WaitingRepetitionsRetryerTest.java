@@ -29,17 +29,17 @@ import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.web.firebase.WaitingRepetitionsPolicy.constantWait;
-import static io.spine.web.firebase.WaitingRepetitionsPolicy.exponentialWait;
-import static io.spine.web.firebase.WaitingRepetitionsPolicy.noWait;
-import static io.spine.web.firebase.WaitingRepetitionsPolicy.oneSecondWait;
+import static io.spine.web.firebase.WaitingRepetitionsRetryer.constantWait;
+import static io.spine.web.firebase.WaitingRepetitionsRetryer.exponentialWait;
+import static io.spine.web.firebase.WaitingRepetitionsRetryer.noWait;
+import static io.spine.web.firebase.WaitingRepetitionsRetryer.oneSecondWait;
 import static java.time.Duration.ZERO;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
-@DisplayName("WaitingRepetitionsPolicy should")
-class WaitingRepetitionsPolicyTest {
+@DisplayName("WaitingRepetitionsRetryer should")
+class WaitingRepetitionsRetryerTest {
 
     private static final int OVERHEAD_MILLIS = 500;
 
@@ -47,7 +47,7 @@ class WaitingRepetitionsPolicyTest {
     @DisplayName("allow no wait between attempts")
     void withoutWait() {
         int repetitions = 5;
-        WaitingRepetitionsPolicy policy = noWait(repetitions);
+        WaitingRepetitionsRetryer policy = noWait(repetitions);
         assertTimeout(Duration.ofMillis(OVERHEAD_MILLIS), () -> runAttempts(policy, repetitions));
     }
 
@@ -55,7 +55,7 @@ class WaitingRepetitionsPolicyTest {
     @DisplayName("allow 1 second wait between attempts")
     void oneSecond() {
         int repetitions = 5;
-        WaitingRepetitionsPolicy policy = oneSecondWait(repetitions);
+        WaitingRepetitionsRetryer policy = oneSecondWait(repetitions);
         assertTimeout(ofSeconds(repetitions - 1)
                               .plusMillis(OVERHEAD_MILLIS),
                       () -> runAttempts(policy, repetitions));
@@ -66,7 +66,7 @@ class WaitingRepetitionsPolicyTest {
     void constSeconds() {
         int repetitions = 5;
         Duration waitTime = ofSeconds(2);
-        WaitingRepetitionsPolicy policy = constantWait(repetitions, waitTime);
+        WaitingRepetitionsRetryer policy = constantWait(repetitions, waitTime);
         assertTimeout(waitTime.multipliedBy(repetitions - 1)
                               .plusMillis(OVERHEAD_MILLIS),
                       () -> runAttempts(policy, repetitions));
@@ -78,7 +78,7 @@ class WaitingRepetitionsPolicyTest {
         int repetitions = 5;
         Duration waitTime = ofSeconds(2);
         int multiplier = 2;
-        WaitingRepetitionsPolicy policy = exponentialWait(repetitions, waitTime, multiplier);
+        WaitingRepetitionsRetryer policy = exponentialWait(repetitions, waitTime, multiplier);
         Duration total = ofSeconds(2 + 4 + 8 + 16)
                                  .plusMillis(OVERHEAD_MILLIS);
         assertTimeout(total, () -> runAttempts(policy, repetitions));
@@ -87,7 +87,7 @@ class WaitingRepetitionsPolicyTest {
     @Test
     @DisplayName("rethrow first exception")
     void throwFirst() {
-        WaitingRepetitionsPolicy policy = noWait(3);
+        WaitingRepetitionsRetryer policy = noWait(3);
         AtomicInteger counter = new AtomicInteger(0);
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
@@ -99,7 +99,7 @@ class WaitingRepetitionsPolicyTest {
         assertThat(exception.getSuppressed()).hasLength(2);
     }
 
-    private static void runAttempts(WaitingRepetitionsPolicy policy, int repetitionCount) {
+    private static void runAttempts(WaitingRepetitionsRetryer policy, int repetitionCount) {
         AtomicInteger attemptCount = new AtomicInteger(0);
         policy.runAndRetry(() -> {
             int attemptNumber = attemptCount.incrementAndGet();
@@ -119,7 +119,7 @@ class WaitingRepetitionsPolicyTest {
             new NullPointerTester()
                     .setDefault(Duration.class, ZERO)
                     .setDefault(int.class, 1)
-                    .testAllPublicStaticMethods(WaitingRepetitionsPolicy.class);
+                    .testAllPublicStaticMethods(WaitingRepetitionsRetryer.class);
         }
 
         @Test

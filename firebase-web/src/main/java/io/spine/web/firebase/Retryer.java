@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 /**
  * Strategy of retrying a request to Firebase.
  */
-public interface RetryPolicy {
+public interface Retryer {
 
     /**
      * Calls the given routine and obtains its result.

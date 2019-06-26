@@ -26,9 +26,9 @@ import io.spine.server.QueryService;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.RetryPolicy;
+import io.spine.web.firebase.Retryer;
 import io.spine.web.firebase.RetryingClient;
-import io.spine.web.firebase.WaitingRepetitionsPolicy;
+import io.spine.web.firebase.WaitingRepetitionsRetryer;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
@@ -42,7 +42,7 @@ final class Application {
 
     private static final DatabaseUrl DATABASE_URL =
             DatabaseUrls.from("http://127.0.0.1:5000/");
-    private static final RetryPolicy RETRY_POLICY = WaitingRepetitionsPolicy.oneSecondWait(3);
+    private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(3);
 
     private final CommandService commandService;
     private final FirebaseQueryBridge queryBridge;
