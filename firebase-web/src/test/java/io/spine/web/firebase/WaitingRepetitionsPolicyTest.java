@@ -20,13 +20,21 @@
 
 package io.spine.web.firebase;
 
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.web.firebase.WaitingRepetitionsPolicy.constantWait;
+import static io.spine.web.firebase.WaitingRepetitionsPolicy.exponentialWait;
+import static io.spine.web.firebase.WaitingRepetitionsPolicy.noWait;
+import static io.spine.web.firebase.WaitingRepetitionsPolicy.oneSecondWait;
+import static java.time.Duration.ZERO;
+import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
@@ -37,9 +45,9 @@ class WaitingRepetitionsPolicyTest {
 
     @Test
     @DisplayName("allow no wait between attempts")
-    void noWait() {
+    void withoutWait() {
         int repetitions = 5;
-        WaitingRepetitionsPolicy policy = WaitingRepetitionsPolicy.noWait(repetitions);
+        WaitingRepetitionsPolicy policy = noWait(repetitions);
         assertTimeout(Duration.ofMillis(OVERHEAD_MILLIS), () -> runAttempts(policy, repetitions));
     }
 
@@ -47,8 +55,8 @@ class WaitingRepetitionsPolicyTest {
     @DisplayName("allow 1 second wait between attempts")
     void oneSecond() {
         int repetitions = 5;
-        WaitingRepetitionsPolicy policy = WaitingRepetitionsPolicy.oneSecondWait(repetitions);
-        assertTimeout(Duration.ofSeconds(repetitions - 1)
+        WaitingRepetitionsPolicy policy = oneSecondWait(repetitions);
+        assertTimeout(ofSeconds(repetitions - 1)
                               .plusMillis(OVERHEAD_MILLIS),
                       () -> runAttempts(policy, repetitions));
     }
@@ -57,9 +65,8 @@ class WaitingRepetitionsPolicyTest {
     @DisplayName("allow constant time wait between attempts")
     void constSeconds() {
         int repetitions = 5;
-        Duration waitTime = Duration.ofSeconds(2);
-        WaitingRepetitionsPolicy policy =
-                WaitingRepetitionsPolicy.constantWait(repetitions, waitTime);
+        Duration waitTime = ofSeconds(2);
+        WaitingRepetitionsPolicy policy = constantWait(repetitions, waitTime);
         assertTimeout(waitTime.multipliedBy(repetitions - 1)
                               .plusMillis(OVERHEAD_MILLIS),
                       () -> runAttempts(policy, repetitions));
@@ -69,11 +76,10 @@ class WaitingRepetitionsPolicyTest {
     @DisplayName("allow exponential time wait between attempts")
     void exponential() {
         int repetitions = 5;
-        Duration waitTime = Duration.ofSeconds(2);
+        Duration waitTime = ofSeconds(2);
         int multiplier = 2;
-        WaitingRepetitionsPolicy policy =
-                WaitingRepetitionsPolicy.exponentialWait(repetitions, waitTime, multiplier);
-        Duration total = Duration.ofSeconds(2 + 4 + 8 + 16)
+        WaitingRepetitionsPolicy policy = exponentialWait(repetitions, waitTime, multiplier);
+        Duration total = ofSeconds(2 + 4 + 8 + 16)
                                  .plusMillis(OVERHEAD_MILLIS);
         assertTimeout(total, () -> runAttempts(policy, repetitions));
     }
@@ -81,14 +87,15 @@ class WaitingRepetitionsPolicyTest {
     @Test
     @DisplayName("rethrow first exception")
     void throwFirst() {
-        WaitingRepetitionsPolicy policy = WaitingRepetitionsPolicy.noWait(3);
+        WaitingRepetitionsPolicy policy = noWait(3);
         AtomicInteger counter = new AtomicInteger(0);
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
                 () -> policy.callAndRetry(() -> {
                     throw new IllegalStateException(String.valueOf(counter.incrementAndGet()));
                 }));
-        assertThat(exception).hasMessageThat().isEqualTo("1");
+        assertThat(exception).hasMessageThat()
+                             .isEqualTo("1");
         assertThat(exception.getSuppressed()).hasLength(2);
     }
 
@@ -100,5 +107,39 @@ class WaitingRepetitionsPolicyTest {
                 throw new IllegalStateException(Integer.toString(attemptNumber));
             }
         });
+    }
+
+    @Nested
+    @DisplayName("not allow")
+    class InvalidArguments {
+
+        @Test
+        @DisplayName("nulls")
+        void nulls() {
+            new NullPointerTester()
+                    .setDefault(Duration.class, ZERO)
+                    .setDefault(int.class, 1)
+                    .testAllPublicStaticMethods(WaitingRepetitionsPolicy.class);
+        }
+
+        @Test
+        @DisplayName("zero repetitions")
+        void repetitions() {
+            assertThrows(IllegalArgumentException.class, () -> noWait(0));
+        }
+
+        @Test
+        @DisplayName("negative wait time")
+        void time() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> constantWait(1, ofSeconds(-1)));
+        }
+
+        @Test
+        @DisplayName("zero multiplier")
+        void multiplier() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> exponentialWait(1, ofSeconds(1),0));
+        }
     }
 }
