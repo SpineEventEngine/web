@@ -49,9 +49,9 @@ describe('FirebaseClient executes query built', function () {
      * Prepares environment, where four users have one, two, three, and four tasks
      * assigned respectively.
      */
-    before((done) => {
+    before(function(done) {
         // Big timeout allows complete environment setup.
-        this.timeout(30 * 1000);
+        this.timeout(10 * 1000);
 
         users = [
             TestEnvironment.newUser('query-tester1'),
