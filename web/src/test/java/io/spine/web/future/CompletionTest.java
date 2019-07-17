@@ -20,68 +20,57 @@
 
 package io.spine.web.future;
 
-import com.google.common.truth.IterableSubject;
 import io.spine.logging.Logging;
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.BeforeEach;
+import io.spine.testing.logging.LogRecordSubject;
+import io.spine.testing.logging.SimpleLoggingTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.event.EventRecodingLogger;
-import org.slf4j.event.SubstituteLoggingEvent;
-import org.slf4j.helpers.SubstituteLogger;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.slf4j.event.Level.ERROR;
 
 @DisplayName("Completion should")
 class CompletionTest extends UtilityClassTest<Completion> {
-
-    private Queue<SubstituteLoggingEvent> log;
 
     CompletionTest() {
         super(Completion.class);
     }
 
-    @BeforeEach
-    void setUp() {
-        Logger completionLogger = Logging.get(Completion.class);
-        SubstituteLogger substituteLogger = (SubstituteLogger) completionLogger;
-        log = new ArrayDeque<>();
-        substituteLogger.setDelegate(new EventRecodingLogger(substituteLogger, log));
-    }
+    @Nested
+    class LogOutputTest extends SimpleLoggingTest {
 
-    @Test
-    @DisplayName("ignore stages which complete successfully")
-    void ignoreSuccessfulStages() {
-        CompletableFuture<Number> successfulStage = new CompletableFuture<>();
-        successfulStage.complete(42);
-        Completion.dispose(successfulStage);
-        assertThat(log).isEmpty();
-    }
+        LogOutputTest() {
+            super(Completion.class, Logging.errorLevel());
+        }
 
-    @Test
-    @DisplayName("log stage exceptions")
-    void logExceptions() {
-        CompletableFuture<Number> failedStage = new CompletableFuture<>();
-        failedStage.completeExceptionally(new UnicornException());
-        Completion.dispose(failedStage);
+        @Test
+        @DisplayName("ignore stages which complete successfully")
+        void ignoreSuccessfulStages() {
+            CompletableFuture<Number> successfulStage = new CompletableFuture<>();
+            successfulStage.complete(42);
+            Completion.dispose(successfulStage);
 
-        IterableSubject assertLog = assertThat(log);
-        assertLog.isNotEmpty();
-        assertLog.hasSize(1);
+            assertLog().isEmpty();
+        }
 
-        SubstituteLoggingEvent loggingEvent = log.poll();
-        assertThat(loggingEvent.getLevel()).isEqualTo(ERROR);
-        assertThat(loggingEvent.getThrowable())
-                .isInstanceOf(UnicornException.class);
+        @Test
+        @DisplayName("log stage exceptions")
+        void logExceptions() {
+            CompletableFuture<Number> failedStage = new CompletableFuture<>();
+            failedStage.completeExceptionally(new UnicornException());
+            Completion.dispose(failedStage);
+
+            LogRecordSubject assertLogRecord = assertLog().record();
+
+            assertLogRecord.hasLevelThat()
+                           .isEqualTo(Logging.errorLevel());
+            assertLogRecord.hasThrowableThat()
+                           .isInstanceOf(UnicornException.class);
+        }
     }
 
     private static final class UnicornException extends Exception {
-        private static final long serialVersionUID = 0L;
+        private static final long serialVersionUID = 1L;
     }
 }
