@@ -28,8 +28,6 @@ import io.spine.protobuf.Messages;
 import java.util.Base64;
 import java.util.Optional;
 
-import static com.google.common.base.Throwables.getRootCause;
-
 /**
  * An implementation of {@link MessageParser} which parses messages from
  * a {@code Base64}-encoded byte string.

@@ -28,7 +28,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Throwables.getRootCause;
 import static io.spine.json.Json.fromJson;
 import static java.util.regex.Pattern.LITERAL;
 import static java.util.regex.Pattern.compile;

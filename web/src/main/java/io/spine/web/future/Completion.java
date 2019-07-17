@@ -21,9 +21,7 @@
 package io.spine.web.future;
 
 import com.google.common.flogger.FluentLogger;
-import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
 
 import java.util.concurrent.CompletionStage;
 
