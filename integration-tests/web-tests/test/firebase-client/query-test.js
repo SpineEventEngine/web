@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import {fail, ensureUserTasks} from '../test-helpers';
+import {ensureUserTasks, fail} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
 import {client} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
@@ -49,7 +49,7 @@ describe('FirebaseClient executes query built', function () {
      * Prepares environment, where four users have one, two, three, and four tasks
      * assigned respectively.
      */
-    before((done) => {
+    before(function(done) {
         // Big timeout allows complete environment setup.
         this.timeout(10 * 1000);
 

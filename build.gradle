@@ -23,7 +23,6 @@ buildscript { final scriptHandler ->
     apply from: "$rootDir/version.gradle"
 
     defaultRepositories(scriptHandler)
-
     dependencies {
         classpath deps.build.guava
         classpath deps.build.gradlePlugins.protobuf
@@ -31,18 +30,11 @@ buildscript { final scriptHandler ->
         classpath "io.spine.tools:spine-model-compiler:$spineBaseVersion"
         classpath "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"
     }
-
-    configurations.all({
-        resolutionStrategy {
-            force deps.build.guava
-            force deps.test.guavaTestlib
-        }
-    })
+    forceConfiguration(scriptHandler)
 }
 
 plugins {
-    id 'io.spine.tools.gradle.bootstrap' version '0.15.4' apply false
-    id 'net.ltgt.errorprone' version '0.8' apply false
+    id 'io.spine.tools.gradle.bootstrap' version '0.15.5' apply false
 }
 
 apply from: 'version.gradle'
@@ -77,11 +69,7 @@ subprojects {
             classpath deps.build.guava
         }
 
-        configurations.all({
-            resolutionStrategy {
-                force deps.build.guava
-            }
-        })
+        forceConfiguration(scriptHandler)
     }
 
     ext {
@@ -112,8 +100,8 @@ subprojects {
     apply from: deps.scripts.pmd
     apply from: deps.scripts.projectLicenseReport
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     defaultRepositories(project)
 
@@ -135,17 +123,72 @@ subprojects {
         testImplementation "io.spine:spine-testutil-client:$spineVersion"
     }
 
+    forceConfiguration(project)
     configurations.all({
         resolutionStrategy {
+
             /**
+             * Force transitive dependencies of 3rd party components. 
+             * Common 3rd party dependencies are forced by {@code forceConfiguration()} calls above.
+             * 
+             * The forced versions are selected as the highest among detected in the version 
+             * conflict. Developers <em>may</em> select a higher version as the dependency in
+             * this project <em>IFF</em> this dependency is used directly or a newer version 
+             * fixes a security issue.
+             * 
              * {@code proto-google-common-protos} starting with version {@code 1.1.0}
              * and {@code proto-google-iam-v1} starting with version {@code 0.1.29}
              * include Protobuf message definitions alongside with compiled Java.
-             * This breaks the spine compiler which searches for all Protobuf definitions 
+             * This breaks the Spine compiler which searches for all Protobuf definitions 
              * in classpath, and assumes they implement the Type URLs.
              */
-            force "com.google.api.grpc:proto-google-common-protos:1.0.0"
-            force "com.google.api.grpc:proto-google-iam-v1:0.1.28"
+            force (
+                    "io.opencensus:opencensus-api:0.21.0",
+                    "io.opencensus:opencensus-contrib-http-util:0.18.0",
+
+                    "io.grpc:grpc-core:$deps.versions.grpc",
+                    "io.grpc:grpc-stub:$deps.versions.grpc",
+                    "io.grpc:grpc-okhttp:$deps.versions.grpc",
+                    "io.grpc:grpc-protobuf:$deps.versions.grpc",
+                    "io.grpc:grpc-netty:$deps.versions.grpc",
+                    "io.grpc:grpc-context:$deps.versions.grpc",
+                    "io.grpc:grpc-stub:$deps.versions.grpc",
+                    "io.grpc:grpc-protobuf:$deps.versions.grpc",
+                    "io.grpc:grpc-core:$deps.versions.grpc",
+
+                    "com.google.code.gson:gson:2.7",
+                    "com.google.api:api-common:1.7.0",
+                    "com.google.api.grpc:proto-google-common-protos:1.0.0",
+                    "com.google.api.grpc:proto-google-iam-v1:0.1.28",
+
+                    "com.google.oauth-client:google-oauth-client:1.25.0",
+
+                    "com.google.auth:google-auth-library-credentials:0.11.0",
+                    "com.google.auth:google-auth-library-oauth2-http:0.11.0",
+                    
+                    "com.google.j2objc:j2objc-annotations:1.3",
+
+                    "com.google.http-client:google-http-client:1.29.0",
+                    "com.google.http-client:google-http-client-jackson2:1.29.0",
+                    
+                    "com.google.api-client:google-api-client:1.25.0",
+
+                    "org.apache.httpcomponents:httpclient:4.5.5",
+
+                    "com.fasterxml.jackson.core:jackson-core:2.9.9",
+                    "commons-collections:commons-collections:3.2.2",
+
+                    "io.netty:netty-common:4.1.34.Final",
+                    "io.netty:netty-buffer:4.1.34.Final",
+                    "io.netty:netty-transport:4.1.34.Final",
+                    "io.netty:netty-handler:4.1.34.Final",
+                    "io.netty:netty-codec-http:4.1.34.Final",
+                    
+                    "javax.servlet:javax.servlet-api:$servletApiVersion", // see version.gradle
+
+                    "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
+                    "org.eclipse.jetty.toolchain:jetty-schemas:3.1"
+            )
         }
     })
 
