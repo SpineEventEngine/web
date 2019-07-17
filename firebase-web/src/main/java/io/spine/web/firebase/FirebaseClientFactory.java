@@ -87,7 +87,7 @@ public final class FirebaseClientFactory {
      * HttpTransport docs</a>.
      */
     private static FirebaseClient forCurrentEnv(DatabaseUrl url, FirebaseCredentials credentials) {
-        DeploymentType deploymentType = ServerEnvironment.deploymentType();
+        DeploymentType deploymentType = ServerEnvironment.instance().deploymentType();
         if (deploymentType == APPENGINE_CLOUD || deploymentType == APPENGINE_EMULATOR) {
             return gae(url, credentials);
         } else {

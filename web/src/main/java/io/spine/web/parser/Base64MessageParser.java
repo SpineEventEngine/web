@@ -28,8 +28,6 @@ import io.spine.protobuf.Messages;
 import java.util.Base64;
 import java.util.Optional;
 
-import static com.google.common.base.Throwables.getRootCause;
-
 /**
  * An implementation of {@link MessageParser} which parses messages from
  * a {@code Base64}-encoded byte string.
@@ -59,8 +57,9 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M>, 
                                            .build();
             return Optional.of(message);
         } catch (InvalidProtocolBufferException | ClassCastException e) {
-            log().error("Unable to parse message of type {} from a Base64 string: `{}`",
-                        type.getName(), raw, System.lineSeparator(), getRootCause(e).getMessage());
+            _error().withCause(e)
+                    .log("Unable to parse message of type `%s` from the Base64 string: `%s`.",
+                        type.getName(), raw);
             return Optional.empty();
         }
     }
