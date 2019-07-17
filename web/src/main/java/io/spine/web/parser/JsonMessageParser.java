@@ -59,8 +59,9 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
             M message = fromJson(json, type);
             return Optional.of(message);
         } catch (IllegalArgumentException e) {
-            log().error("Unable to parse message of type {} from JSON: `{}`",
-                        type.getName(), json, System.lineSeparator(), getRootCause(e).getMessage());
+            _error().withCause(e)
+                    .log("Unable to parse message of type `%s` from JSON: `%s`.",
+                         type.getName(), json);
             return Optional.empty();
         }
     }

@@ -70,8 +70,8 @@ public final class FirebaseQueryBridge implements QueryBridge {
         QueryRecord record = new QueryRecord(query, queryResponse);
         record.storeVia(firebaseClient);
 
-        QueryProcessingResult result = new QueryResult(record.path(),
-                                                       queryResponse.getMessagesCount());
+        QueryProcessingResult result =
+                new QueryResult(record.path(), queryResponse.getMessageCount());
         return result;
     }
 
