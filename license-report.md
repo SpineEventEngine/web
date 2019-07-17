@@ -189,6 +189,14 @@
      * **POM Project URL:** [https://firebase.google.com/](https://firebase.google.com/)
      * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -518,41 +526,41 @@
 1. **Group:** org.hamcrest **Name:** hamcrest-core **Version:** 1.3
      * **POM License: New BSD License** - [http://www.opensource.org/licenses/bsd-license.php](http://www.opensource.org/licenses/bsd-license.php)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
 1. **Group:** org.mockito **Name:** mockito-core **Version:** 2.12.0
      * **POM Project URL:** [https://github.com/mockito/mockito](https://github.com/mockito/mockito)
@@ -563,15 +571,10 @@
      * **POM Project URL:** [http://objenesis.org](http://objenesis.org)
      * **POM License: Apache 2** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.1.1
+1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.2.0
+     * **Manifest License:** The Apache License, Version 2.0 (Not packaged)
      * **POM Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
@@ -579,19 +582,19 @@
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
@@ -620,7 +623,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jul 17 20:46:47 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.18.0`
@@ -887,7 +890,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **@firebase/app-types@0.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app@0.4.8**
+1. **@firebase/app@0.4.5**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/auth-types@0.7.0**
@@ -899,40 +902,40 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **@firebase/database-types@0.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/database@0.4.6**
+1. **@firebase/database@0.4.5**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore-types@1.4.1**
+1. **@firebase/firestore-types@1.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore@1.4.1**
+1. **@firebase/firestore@1.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/functions-types@0.3.6**
+1. **@firebase/functions-types@0.3.5**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/functions@0.4.10**
+1. **@firebase/functions@0.4.9**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/installations-types@0.1.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/installations@0.1.7**
+1. **@firebase/installations@0.1.6**
      * Licenses: Apache-2.0
      * Repository: unknown
-1. **@firebase/logger@0.1.17**
+1. **@firebase/logger@0.1.16**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/messaging-types@0.3.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/messaging@0.4.3**
+1. **@firebase/messaging@0.4.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/performance-types@0.0.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance-types](https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance-types)
-1. **@firebase/performance@0.2.8**
+1. **@firebase/performance@0.2.7**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance](https://github.com/firebase/firebase-js-sdk/tree/master/packages/performance)
 1. **@firebase/polyfill@0.3.14**
@@ -941,13 +944,13 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **@firebase/storage-types@0.3.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/storage@0.3.3**
+1. **@firebase/storage@0.3.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/util@0.2.20**
+1. **@firebase/util@0.2.19**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/webchannel-wrapper@0.2.21**
+1. **@firebase/webchannel-wrapper@0.2.20**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@grpc/proto-loader@0.5.1**
@@ -998,7 +1001,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **@types/long@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/node@10.14.10**
+1. **@types/node@10.14.9**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@webassemblyjs/ast@1.8.5**
@@ -1083,6 +1086,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv](https://github.com/epoberezkin/ajv)
 1. **ansi-regex@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)
+1. **ansi-regex@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)
 1. **ansi-regex@4.1.0**
@@ -1265,7 +1271,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **camelcase@5.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
-1. **caniuse-lite@1.0.30000978**
+1. **caniuse-lite@1.0.30000975**
      * Licenses: CC-BY-4.0
      * Repository: [https://github.com/ben-eb/caniuse-lite](https://github.com/ben-eb/caniuse-lite)
 1. **chalk@1.1.3**
@@ -1290,6 +1296,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/class-utils](https://github.com/jonschlinkert/class-utils)
 1. **cliui@3.2.0**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
+1. **cliui@4.1.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
 1. **cliui@5.0.0**
@@ -1460,10 +1469,10 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.174**
+1. **electron-to-chromium@1.3.166**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
-1. **elliptic@6.5.0**
+1. **elliptic@6.4.1**
      * Licenses: MIT
      * Repository: [https://github.com/indutny/elliptic](https://github.com/indutny/elliptic)
 1. **emoji-regex@7.0.3**
@@ -1541,8 +1550,8 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **fast-json-stable-stringify@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify)
-1. **faye-websocket@0.11.3**
-     * Licenses: Apache-2.0
+1. **faye-websocket@0.11.1**
+     * Licenses: MIT
      * Repository: [https://github.com/faye/faye-websocket-node](https://github.com/faye/faye-websocket-node)
 1. **figgy-pudding@3.5.1**
      * Licenses: ISC
@@ -1562,10 +1571,10 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **find-up@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/find-up](https://github.com/sindresorhus/find-up)
-1. **findup-sync@3.0.0**
+1. **findup-sync@2.0.0**
      * Licenses: MIT
-     * Repository: [https://github.com/gulpjs/findup-sync](https://github.com/gulpjs/findup-sync)
-1. **firebase@6.2.3**
+     * Repository: [https://github.com/js-cli/node-findup-sync](https://github.com/js-cli/node-findup-sync)
+1. **firebase@6.2.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **flush-write-stream@1.1.1**
@@ -1601,6 +1610,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **gauge@2.7.4**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/gauge](https://github.com/iarna/gauge)
+1. **get-caller-file@1.0.3**
+     * Licenses: ISC
+     * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
 1. **get-caller-file@2.0.5**
      * Licenses: ISC
      * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
@@ -1625,13 +1637,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **global-modules@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/global-modules](https://github.com/jonschlinkert/global-modules)
-1. **global-modules@2.0.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/jonschlinkert/global-modules](https://github.com/jonschlinkert/global-modules)
 1. **global-prefix@1.0.2**
-     * Licenses: MIT
-     * Repository: [https://github.com/jonschlinkert/global-prefix](https://github.com/jonschlinkert/global-prefix)
-1. **global-prefix@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/global-prefix](https://github.com/jonschlinkert/global-prefix)
 1. **globals@11.12.0**
@@ -2012,7 +2018,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **mississippi@3.0.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/maxogden/mississippi](https://github.com/maxogden/mississippi)
-1. **mixin-deep@1.3.2**
+1. **mixin-deep@1.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/mixin-deep](https://github.com/jonschlinkert/mixin-deep)
 1. **mkdirp@0.5.1**
@@ -2240,6 +2246,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **posix-character-classes@0.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/posix-character-classes](https://github.com/jonschlinkert/posix-character-classes)
+1. **prettier@1.18.2**
+     * Licenses: MIT
+     * Repository: [https://github.com/prettier/prettier](https://github.com/prettier/prettier)
 1. **private@0.1.8**
      * Licenses: MIT
      * Repository: [https://github.com/benjamn/private](https://github.com/benjamn/private)
@@ -2369,6 +2378,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **require-directory@2.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/troygoode/node-require-directory](https://github.com/troygoode/node-require-directory)
+1. **require-main-filename@1.0.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)
 1. **require-main-filename@2.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)
@@ -2390,7 +2402,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **resolve-url@0.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/resolve-url](https://github.com/lydell/resolve-url)
-1. **resolve@1.11.1**
+1. **resolve@1.11.0**
      * Licenses: MIT
      * Repository: [https://github.com/browserify/resolve](https://github.com/browserify/resolve)
 1. **ret@0.1.15**
@@ -2423,7 +2435,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **semver@5.7.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
-1. **semver@6.1.2**
+1. **semver@6.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
 1. **serialize-javascript@1.7.0**
@@ -2432,7 +2444,10 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **set-blocking@2.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/set-blocking](https://github.com/yargs/set-blocking)
-1. **set-value@2.0.1**
+1. **set-value@0.4.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
+1. **set-value@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
 1. **setimmediate@1.0.5**
@@ -2543,6 +2558,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **string-width@1.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
+1. **string-width@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
 1. **string-width@3.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
@@ -2550,6 +2568,9 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/nodejs/string_decoder](https://github.com/nodejs/string_decoder)
 1. **strip-ansi@3.0.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/chalk/strip-ansi](https://github.com/chalk/strip-ansi)
+1. **strip-ansi@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/strip-ansi](https://github.com/chalk/strip-ansi)
 1. **strip-ansi@5.2.0**
@@ -2648,7 +2669,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **unicode-property-aliases-ecmascript@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-property-aliases-ecmascript](https://github.com/mathiasbynens/unicode-property-aliases-ecmascript)
-1. **union-value@1.0.1**
+1. **union-value@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/union-value](https://github.com/jonschlinkert/union-value)
 1. **unique-filename@1.1.1**
@@ -2702,7 +2723,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **watchpack@1.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/watchpack](https://github.com/webpack/watchpack)
-1. **webpack-cli@3.3.5**
+1. **webpack-cli@3.3.4**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-cli](https://github.com/webpack/webpack-cli)
 1. **webpack-merge@4.2.1**
@@ -2771,9 +2792,15 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
 1. **yallist@3.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/yallist](https://github.com/isaacs/yallist)
+1. **yargs-parser@11.1.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
 1. **yargs-parser@13.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
+1. **yargs@12.0.5**
+     * Licenses: MIT
+     * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
 1. **yargs@13.2.4**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
@@ -2782,7 +2809,7 @@ This report was generated on **Wed Jun 26 14:05:50 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Wed Jul 17 2019 20:46:49 GMT+0300 (Eastern European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -2898,6 +2925,14 @@ This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using 
 1. **Group:** com.google.firebase **Name:** firebase-admin **Version:** 6.8.0
      * **POM Project URL:** [https://firebase.google.com/](https://firebase.google.com/)
      * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
@@ -3289,6 +3324,14 @@ This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using 
      * **POM Project URL:** [https://firebase.google.com/](https://firebase.google.com/)
      * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
      * **POM License: Apache License 2.0** - [http://opensource.org/licenses/Apache-2.0](http://opensource.org/licenses/Apache-2.0)
@@ -3676,41 +3719,41 @@ This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using 
 1. **Group:** org.hamcrest **Name:** hamcrest-core **Version:** 1.3
      * **POM License: New BSD License** - [http://www.opensource.org/licenses/bsd-license.php](http://www.opensource.org/licenses/bsd-license.php)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
 1. **Group:** org.mockito **Name:** mockito-core **Version:** 2.12.0
      * **POM Project URL:** [https://github.com/mockito/mockito](https://github.com/mockito/mockito)
@@ -3721,15 +3764,10 @@ This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using 
      * **POM Project URL:** [http://objenesis.org](http://objenesis.org)
      * **POM License: Apache 2** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.1.1
+1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.2.0
+     * **Manifest License:** The Apache License, Version 2.0 (Not packaged)
      * **POM Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
@@ -3737,19 +3775,19 @@ This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using 
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
@@ -3783,7 +3821,7 @@ This report was generated on **Wed Jun 26 2019 14:05:53 GMT+0300 (EEST)** using 
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jul 17 20:46:50 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3899,6 +3937,14 @@ This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.firebase **Name:** firebase-admin **Version:** 6.8.0
      * **POM Project URL:** [https://firebase.google.com/](https://firebase.google.com/)
      * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
@@ -4313,6 +4359,14 @@ This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.firebase **Name:** firebase-admin **Version:** 6.8.0
      * **POM Project URL:** [https://firebase.google.com/](https://firebase.google.com/)
      * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
@@ -5519,41 +5573,41 @@ This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-Lic
 1. **Group:** org.hamcrest **Name:** hamcrest-core **Version:** 1.3
      * **POM License: New BSD License** - [http://www.opensource.org/licenses/bsd-license.php](http://www.opensource.org/licenses/bsd-license.php)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
 1. **Group:** org.mockito **Name:** mockito-core **Version:** 2.12.0
      * **POM Project URL:** [https://github.com/mockito/mockito](https://github.com/mockito/mockito)
@@ -5586,7 +5640,8 @@ This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [http://objenesis.org](http://objenesis.org)
      * **POM License: Apache 2** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.1.1
+1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.2.0
+     * **Manifest License:** The Apache License, Version 2.0 (Not packaged)
      * **POM Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5608,13 +5663,31 @@ This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-Lic
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.1
+     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
+     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
+     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
+     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.0
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.1
+     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
+     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
+     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
+     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.0
+     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
+     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
+     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
+     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
@@ -5689,7 +5762,7 @@ This report was generated on **Wed Jun 26 14:05:54 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jul 17 20:46:53 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5717,6 +5790,14 @@ This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-Lic
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.errorprone **Name:** error_prone_type_annotations **Version:** 2.3.3
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
@@ -5954,6 +6035,14 @@ This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.errorprone **Name:** javac **Version:** 9+181-r4173-1
      * **POM Project URL:** [https://github.com/google/error-prone-javac](https://github.com/google/error-prone-javac)
      * **POM License: GNU General Public License, version 2, with the Classpath Exception** - [http://openjdk.java.net/legal/gplv2+ce.html](http://openjdk.java.net/legal/gplv2+ce.html)
+
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.gradle **Name:** osdetector-gradle-plugin **Version:** 1.4.0
      * **POM Project URL:** [https://github.com/google/osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
@@ -6281,41 +6370,41 @@ This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-Lic
 1. **Group:** org.hamcrest **Name:** hamcrest-core **Version:** 1.3
      * **POM License: New BSD License** - [http://www.opensource.org/licenses/bsd-license.php](http://www.opensource.org/licenses/bsd-license.php)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
 1. **Group:** org.mockito **Name:** mockito-core **Version:** 2.12.0
      * **POM Project URL:** [https://github.com/mockito/mockito](https://github.com/mockito/mockito)
@@ -6326,15 +6415,10 @@ This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [http://objenesis.org](http://objenesis.org)
      * **POM License: Apache 2** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.1.1
+1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.2.0
+     * **Manifest License:** The Apache License, Version 2.0 (Not packaged)
      * **POM Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
@@ -6342,19 +6426,19 @@ This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-Lic
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
@@ -6382,7 +6466,7 @@ This report was generated on **Wed Jun 26 14:05:57 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jul 17 20:46:54 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6575,6 +6659,14 @@ This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-Lic
 1. **Group:** com.google.firebase **Name:** firebase-admin **Version:** 6.8.0
      * **POM Project URL:** [https://firebase.google.com/](https://firebase.google.com/)
      * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** com.google.flogger **Name:** flogger-system-backend **Version:** 0.4
+     * **POM Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
+     * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** com.google.guava **Name:** failureaccess **Version:** 1.0.1
      * **Manifest Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
@@ -6905,41 +6997,41 @@ This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-Lic
 1. **Group:** org.hamcrest **Name:** hamcrest-core **Version:** 1.3
      * **POM License: New BSD License** - [http://www.opensource.org/licenses/bsd-license.php](http://www.opensource.org/licenses/bsd-license.php)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.agent **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.ant **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.core **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.3
+1. **Group:** org.jacoco **Name:** org.jacoco.report **Version:** 0.8.4
      * **Manifest license URL:** [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
      * **POM License: Eclipse Public License v1.0** - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-api **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-engine **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.4.2
+1. **Group:** org.junit.jupiter **Name:** junit-jupiter-params **Version:** 5.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-commons **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
-1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.4.2
+1. **Group:** org.junit.platform **Name:** junit-platform-engine **Version:** 1.5.0
      * **POM Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
-     * **POM License: Eclipse Public License v2.0** - [http://www.eclipse.org/legal/epl-v20.html](http://www.eclipse.org/legal/epl-v20.html)
+     * **POM License: Eclipse Public License v2.0** - [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html)
 
 1. **Group:** org.mockito **Name:** mockito-core **Version:** 2.12.0
      * **POM Project URL:** [https://github.com/mockito/mockito](https://github.com/mockito/mockito)
@@ -6950,15 +7042,10 @@ This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-Lic
      * **POM Project URL:** [http://objenesis.org](http://objenesis.org)
      * **POM License: Apache 2** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.1.1
+1. **Group:** org.opentest4j **Name:** opentest4j **Version:** 1.2.0
+     * **Manifest License:** The Apache License, Version 2.0 (Not packaged)
      * **POM Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
@@ -6966,19 +7053,19 @@ This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-Lic
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.0
+1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
      * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
@@ -7007,4 +7094,4 @@ This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jun 26 14:05:58 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jul 17 20:46:55 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
