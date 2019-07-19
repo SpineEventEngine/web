@@ -20,6 +20,8 @@
 
 package io.spine.web.firebase;
 
+import io.spine.net.Urls;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -43,6 +45,6 @@ public final class DatabaseUrls {
         return DatabaseUrl
                 .newBuilder()
                 .setUrl(Urls.create(url))
-                .build();
+                .vBuild();
     }
 }

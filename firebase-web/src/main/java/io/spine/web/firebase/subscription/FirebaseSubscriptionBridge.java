@@ -22,6 +22,7 @@ package io.spine.web.firebase.subscription;
 
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
+import io.spine.client.ResponseFormat;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
@@ -71,12 +72,16 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     }
 
     private static Query newQueryForTopic(Topic topic) {
+        ResponseFormat format = ResponseFormat
+                .newBuilder()
+                .setFieldMask(topic.getFieldMask())
+                .buildPartial();
         return Query
                 .newBuilder()
                 .setId(generateId())
                 .setTarget(topic.getTarget())
-                .setFieldMask(topic.getFieldMask())
                 .setContext(topic.getContext())
+                .setFormat(format)
                 .vBuild();
     }
 
