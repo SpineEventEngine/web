@@ -33,6 +33,8 @@ dependencies {
     implementation deps.build.googleHttpClient
     implementation deps.build.googleHttpClientApache
     implementation "io.spine:spine-server:$spineVersion"
+
+    testImplementation "io.spine.tools:spine-mute-logging:$spineVersion"
 }
 
 task compileProtoToJs {

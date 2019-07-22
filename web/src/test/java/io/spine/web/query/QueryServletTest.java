@@ -25,6 +25,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
+import io.spine.testing.logging.MuteLogging;
 import io.spine.web.query.given.QueryServletTestEnv.TestQueryServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,9 +72,10 @@ class QueryServletTest {
         assertEquals(expectedData, actualData);
     }
 
+    @MuteLogging
     @Test
     @DisplayName("respond 400 to an invalid query")
-    void testInvalidCommand() throws IOException {
+    void testInvalidQuery() throws IOException {
         QueryServlet servlet = new TestQueryServlet();
         HttpServletResponse response = response(new StringWriter());
         servlet.doPost(request(currentTime()), response);

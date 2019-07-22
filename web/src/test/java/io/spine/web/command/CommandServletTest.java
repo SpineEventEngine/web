@@ -28,6 +28,7 @@ import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.client.command.TestCommandMessage;
+import io.spine.testing.logging.MuteLogging;
 import io.spine.web.command.given.CommandServletTestEnv.TestCommandServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,6 +79,7 @@ class CommandServletTest {
         assertEquals(command.getId(), AnyPacker.unpack(ack.getMessageId()));
     }
 
+    @MuteLogging
     @Test
     @DisplayName("respond 400 to an invalid command")
     void testInvalidCommand() throws IOException {
