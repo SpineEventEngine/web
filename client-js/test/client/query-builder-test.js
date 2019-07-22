@@ -23,15 +23,11 @@ import assert from 'assert';
 
 import {Message} from 'google-protobuf';
 import {Type} from '@lib/client/typed-message';
-import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-request-factory';
+import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {
-  Filter,
-  CompositeFilter,
-  TargetFilters
-} from '@proto/spine/client/filters_pb';
+import {CompositeFilter, Filter, TargetFilters} from '@proto/spine/client/filters_pb';
 
 class Given {
 
@@ -482,7 +478,7 @@ describe('QueryBuilder', function () {
     assert.ok(target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    Given.assertUnorderedEqual(query.getFieldMask().getPathsList(), maskedFields);
+    Given.assertUnorderedEqual(query.getFormat().getFieldMask().getPathsList(), maskedFields);
 
     done();
   });
