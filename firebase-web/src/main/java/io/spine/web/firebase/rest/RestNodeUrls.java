@@ -25,10 +25,10 @@ final class RestNodeUrls {
      */
     RestNodeUrl with(NodePath path) {
         Url url = Urls.create(format(template, path.getValue()));
-        RestNodeUrl node = RestNodeUrlVBuilder
+        RestNodeUrl node = RestNodeUrl
                 .newBuilder()
                 .setUrl(url)
-                .build();
+                .vBuild();
         return node;
     }
 

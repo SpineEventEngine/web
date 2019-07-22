@@ -34,10 +34,10 @@ class NodePathsTest extends UtilityClassTest<NodePaths> {
     @Test
     void createsNodePath() {
         String testPath = "test-path";
-        NodePath expected = NodePathVBuilder
+        NodePath expected = NodePath
                 .newBuilder()
                 .setValue(testPath)
-                .build();
+                .buildPartial();
         assertEquals(expected, NodePaths.of(testPath));
     }
 }

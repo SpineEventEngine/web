@@ -33,9 +33,9 @@ public final class NodePaths {
 
     public static NodePath of(String path) {
         checkNotNull(path);
-        return NodePathVBuilder
+        return NodePath
                 .newBuilder()
                 .setValue(path)
-                .build();
+                .vBuild();
     }
 }

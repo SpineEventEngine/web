@@ -25,13 +25,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("DatabaseUrls should")
 class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
 
     private static final String VALID_URL = "https://spine-dev.appspot.com/";
-    private static final String INVALID_URL = "invalid_url";
 
     DatabaseUrlsTest() {
         super(DatabaseUrls.class);
@@ -43,12 +41,5 @@ class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
         DatabaseUrl url = DatabaseUrls.from(VALID_URL);
         assertEquals(VALID_URL, url.getUrl()
                                    .getSpec());
-    }
-
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
-    @Test
-    @DisplayName("throw IAE when invalid URL passed on construction")
-    void rejectInvalidUrl() {
-        assertThrows(IllegalArgumentException.class, () -> DatabaseUrls.from(INVALID_URL));
     }
 }
