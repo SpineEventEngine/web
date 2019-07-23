@@ -43,10 +43,6 @@ dependencies {
     implementation "io.spine:spine-client:$spineVersion"
 }
 
-modelCompiler {
-    generateValidatingBuilders = true
-}
-
 task compileProtoToJs {
     description = "Compiles Protobuf sources into JavaScript."
 }
