@@ -124,11 +124,6 @@ subprojects {
     }
 
     forceConfiguration(project)
-    configurations.all {
-        resolutionStrategy {
-            force("io.netty:netty-codec:4.1.35.Final")
-        }
-    }
     configurations.all({
         resolutionStrategy {
 
