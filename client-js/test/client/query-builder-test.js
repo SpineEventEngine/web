@@ -286,7 +286,7 @@ describe('QueryBuilder', function () {
 
   /********* FILTERS *********/
 
-  it('creates a Query with a no filters', done => {
+  it('creates a Query with no filters', done => {
     const query = Given.requestFactory()
       .query()
       .select(Given.ENTITY_CLASS.TASK)
@@ -518,5 +518,25 @@ describe('QueryBuilder', function () {
     } catch (e) {
       done();
     }
+  });
+
+  /********* LIMIT *********/
+
+  it('creates a Query with a limit', done => {
+    const limit = 42;
+    const query = Given.requestFactory()
+        .query()
+        .select(Given.ENTITY_CLASS.TASK)
+        .limit(limit)
+        .build();
+
+    assert.ok(query.getId());
+
+    Given.assertActorContextCorrect(query.getContext());
+
+    const format = query.getFormat();
+    assert.equal(limit, format.getLimit());
+
+    done();
   });
 });
