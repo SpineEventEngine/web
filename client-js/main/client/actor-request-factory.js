@@ -27,11 +27,11 @@ import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
 import {Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
-  CompositeFilter,
-  Filter,
-  IdFilter,
-  Target,
-  TargetFilters
+    CompositeFilter,
+    Filter,
+    IdFilter,
+    Target,
+    TargetFilters
 } from '../proto/spine/client/filters_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
@@ -625,10 +625,6 @@ class QueryBuilder extends AbstractTargetBuilder {
     this._factory = queryFactory;
 
     /**
-     * Max number of entities to retrieve as the query response.
-     *
-     * The value must be non-negative. If set to `0`, all the available entities are retrieved.
-     *
      * @type {number}
      * @private
      */
@@ -637,6 +633,9 @@ class QueryBuilder extends AbstractTargetBuilder {
 
   /**
    * Limits the query response to the given number of entities.
+   *
+   * The value must be non-negative, otherwise an error occurs. If set to `0`, all the available
+   * entities are retrieved.
    *
    * @param {number} limit the max number of response entities
    */
