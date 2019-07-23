@@ -623,6 +623,29 @@ class QueryBuilder extends AbstractTargetBuilder {
      * @private
      */
     this._factory = queryFactory;
+
+    /**
+     * Max number of entities to retrieve as the query response.
+     *
+     * The value must be non-negative. If set to `0`, all the available entities are retrieved.
+     *
+     * @type {number}
+     * @private
+     */
+    this._limit = 0;
+  }
+
+  /**
+   * Limits the query response to the given number of entities.
+   *
+   * @param {number} limit the max number of response entities
+   */
+  limit(limit) {
+    if (limit < 0) {
+      throw new Error("Query limit must not be negative.");
+    }
+    this._limit = limit;
+    return this;
   }
 
   /**
@@ -633,7 +656,8 @@ class QueryBuilder extends AbstractTargetBuilder {
   build() {
     const target = this.getTarget();
     const fieldMask = this.getMask();
-    return this._factory.compose({forTarget: target, withMask: fieldMask});
+    const limit = this._limit;
+    return this._factory.compose({forTarget: target, withMask: fieldMask, limit: limit});
   }
 }
 
@@ -668,7 +692,8 @@ class QueryFactory {
    * An optional field mask can be provided to specify particular fields to be returned for `Query`
    *
    * @param {!Target} forTarget a specification of type and filters for `Query` result to match
-   * @param {?FieldMask} withMask a specification of fields to be returned by executing `Query`
+   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
+   * @param {number} limit max number of entities to fetch
    * @return {Query}
    */
   compose({forTarget: target, withMask: fieldMask, limit: limit}) {
