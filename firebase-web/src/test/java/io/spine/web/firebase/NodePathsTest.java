@@ -37,7 +37,7 @@ class NodePathsTest extends UtilityClassTest<NodePaths> {
         NodePath expected = NodePath
                 .newBuilder()
                 .setValue(testPath)
-                .buildPartial();
+                .build();
         assertEquals(expected, NodePaths.of(testPath));
     }
 }

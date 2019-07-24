@@ -71,7 +71,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
                                             .setKey(OLD_ENTRY.key())
                                             .setData(NEW_ENTRY.data())
                                             .setOperation(CHANGE)
-                                            .buildPartial());
+                                            .build());
     }
 
     @Test
@@ -83,7 +83,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
                                             .setKey(EXISTING_ENTRY.key())
                                             .setData(UP_TO_DATE_ENTRY.data())
                                             .setOperation(PASS)
-                                            .buildPartial());
+                                            .build());
     }
 
     @Test
@@ -94,7 +94,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
                                             .newBuilder()
                                             .setData(UP_TO_DATE_ENTRY.data())
                                             .setOperation(ADD)
-                                            .buildPartial());
+                                            .build());
     }
 
     @Test
@@ -106,7 +106,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
                                             .setKey(EXISTING_ENTRY.key())
                                             .setData(EXISTING_ENTRY.data())
                                             .setOperation(REMOVE)
-                                            .buildPartial());
+                                            .build());
     }
 
     private static ExistingEntry existingEntry(String value) {

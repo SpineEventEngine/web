@@ -75,7 +75,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         ResponseFormat format = ResponseFormat
                 .newBuilder()
                 .setFieldMask(topic.getFieldMask())
-                .buildPartial();
+                .build();
         return Query
                 .newBuilder()
                 .setId(generateId())
