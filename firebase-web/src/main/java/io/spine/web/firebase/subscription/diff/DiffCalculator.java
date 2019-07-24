@@ -72,23 +72,20 @@ public final class DiffCalculator {
         updates.forEach(update -> {
             switch (update.getOperation()) {
                 case ADD:
-                    added.add(AddedItemVBuilder
-                                      .newBuilder()
-                                      .setData(update.getData())
-                                      .build());
+                    added.add(AddedItem.newBuilder()
+                                       .setData(update.getData())
+                                       .vBuild());
                     break;
                 case REMOVE:
-                    removed.add(RemovedItemVBuilder
-                                        .newBuilder()
-                                        .setKey(update.getKey())
-                                        .build());
+                    removed.add(RemovedItem.newBuilder()
+                                           .setKey(update.getKey())
+                                           .vBuild());
                     break;
                 case CHANGE:
-                    changed.add(ChangedItemVBuilder
-                                        .newBuilder()
-                                        .setKey(update.getKey())
-                                        .setData(update.getData())
-                                        .build());
+                    changed.add(ChangedItem.newBuilder()
+                                           .setKey(update.getKey())
+                                           .setData(update.getData())
+                                           .vBuild());
                     break;
                 case PASS:
                 case UNRECOGNIZED:
@@ -102,11 +99,11 @@ public final class DiffCalculator {
     private static Diff diff(List<AddedItem> added,
                              List<ChangedItem> changed,
                              List<RemovedItem> removed) {
-        return DiffVBuilder
+        return Diff
                 .newBuilder()
                 .addAllAdded(added)
                 .addAllChanged(changed)
                 .addAllRemoved(removed)
-                .build();
+                .vBuild();
     }
 }

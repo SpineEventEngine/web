@@ -27,6 +27,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UnknownFieldSet;
 import io.spine.base.Time;
 import io.spine.core.Ack;
+import io.spine.testing.logging.MuteLogging;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -103,6 +104,7 @@ class HttpMessagesTest {
         assertEquals(expectedMessage, actual.get());
     }
 
+    @MuteLogging
     @Test
     @DisplayName("not parse message of an unknown format")
     void testNotSupportUnknownFormat() throws IOException {
@@ -124,6 +126,7 @@ class HttpMessagesTest {
         assertEquals(Empty.getDefaultInstance(), parsed.get());
     }
 
+    @MuteLogging
     @Test
     @DisplayName("fail to parse a malformed byte string")
     void testFailToParseBytes() throws IOException {
@@ -133,6 +136,7 @@ class HttpMessagesTest {
         assertFalse(parsed.isPresent());
     }
 
+    @MuteLogging
     @Test
     @DisplayName("fail to parse wrong type of message from JSON")
     void testJsonWrongType() throws IOException {
@@ -141,6 +145,7 @@ class HttpMessagesTest {
         assertFalse(parsed.isPresent());
     }
 
+    @MuteLogging
     @Test
     @DisplayName("parse to parse wrong type of message from bytes into unknown fields")
     void testBase64WrongType() throws IOException {

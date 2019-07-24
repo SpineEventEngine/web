@@ -49,12 +49,13 @@ final class QueryResult implements QueryProcessingResult {
 
     @Override
     public void writeTo(ServletResponse response) throws IOException {
-        FirebaseQueryResponse queryResponse =
-                FirebaseQueryResponseVBuilder.newBuilder()
-                                             .setPath(path.getValue())
-                                             .setCount(count)
-                                             .build();
-        response.getWriter().append(toCompactJson(queryResponse));
+        FirebaseQueryResponse queryResponse = FirebaseQueryResponse
+                .newBuilder()
+                .setPath(path.getValue())
+                .setCount(count)
+                .vBuild();
+        response.getWriter()
+                .append(toCompactJson(queryResponse));
         response.setContentType(JSON_MIME_TYPE);
     }
 }

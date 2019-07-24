@@ -24,21 +24,21 @@ import uuid from 'uuid';
 
 import {Message} from 'google-protobuf';
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
-import {Query, QueryId} from '../proto/spine/client/query_pb';
+import {Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
-  Filter,
-  CompositeFilter,
-  TargetFilters,
-  IdFilter,
-  Target
+    CompositeFilter,
+    Filter,
+    IdFilter,
+    Target,
+    TargetFilters
 } from '../proto/spine/client/filters_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
 import {UserId} from '../proto/spine/core/user_id_pb';
 import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
 import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
-import {Type, TypedMessage, isProtobufMessage} from './typed-message';
+import {isProtobufMessage, Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
 
@@ -623,6 +623,28 @@ class QueryBuilder extends AbstractTargetBuilder {
      * @private
      */
     this._factory = queryFactory;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this._limit = 0;
+  }
+
+  /**
+   * Limits the query response to the given number of entities.
+   *
+   * The value must be non-negative, otherwise an error occurs. If set to `0`, all the available
+   * entities are retrieved.
+   *
+   * @param {number} limit the max number of response entities
+   */
+  limit(limit) {
+    if (limit < 0) {
+      throw new Error("Query limit must not be negative.");
+    }
+    this._limit = limit;
+    return this;
   }
 
   /**
@@ -633,7 +655,8 @@ class QueryBuilder extends AbstractTargetBuilder {
   build() {
     const target = this.getTarget();
     const fieldMask = this.getMask();
-    return this._factory.compose({forTarget: target, withMask: fieldMask});
+    const limit = this._limit;
+    return this._factory.compose({forTarget: target, withMask: fieldMask, limit: limit});
   }
 }
 
@@ -668,27 +691,33 @@ class QueryFactory {
    * An optional field mask can be provided to specify particular fields to be returned for `Query`
    *
    * @param {!Target} forTarget a specification of type and filters for `Query` result to match
-   * @param {?FieldMask} withMask a specification of fields to be returned by executing `Query`
+   * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
+   * @param {number} limit max number of entities to fetch
    * @return {Query}
    */
-  compose({forTarget: target, withMask: fieldMask}) {
-    return this._newQuery(target, fieldMask);
+  compose({forTarget: target, withMask: fieldMask, limit: limit}) {
+    return this._newQuery(target, fieldMask, limit);
   }
 
   /**
    * @param {!Target} target a specification of type and filters for `Query` result to match
    * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
+   * @param {?Number} limit the maximum number of the requested entities
    * @return {Query} a new query instance
    * @private
    */
-  _newQuery(target, fieldMask) {
+  _newQuery(target, fieldMask, limit) {
     const id = QueryFactory._newId();
     const actorContext = this._requestFactory._actorContext();
+
+    const format = new ResponseFormat();
+    format.setFieldMask(fieldMask);
+    format.setLimit(limit);
 
     const result = new Query();
     result.setId(id);
     result.setTarget(target);
-    result.setFieldMask(fieldMask);
+    result.setFormat(format);
     result.setContext(actorContext);
 
     return result;

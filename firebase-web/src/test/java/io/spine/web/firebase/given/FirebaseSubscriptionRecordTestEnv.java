@@ -43,7 +43,7 @@ public final class FirebaseSubscriptionRecordTestEnv {
     }
 
     public static Book updateAuthors(Book designPatterns, List<Author> gangOfFour) {
-        BookVBuilder builder = BookVBuilder.newBuilder();
+        Book.Builder builder = Book.newBuilder();
         builder.mergeFrom(designPatterns);
         return builder.clearAuthors()
                       .addAllAuthors(gangOfFour)
@@ -95,17 +95,17 @@ public final class FirebaseSubscriptionRecordTestEnv {
         }
 
         private static Book book(BookId id, String name, Author author) {
-            return BookVBuilder.newBuilder()
-                               .setId(id)
-                               .setName(name)
-                               .addAuthors(author)
-                               .build();
+            return Book.newBuilder()
+                       .setId(id)
+                       .setName(name)
+                       .addAuthors(author)
+                       .build();
         }
 
         private static BookId bookId() {
-            return BookIdVBuilder.newBuilder()
-                                 .setValue(newUuid())
-                                 .build();
+            return BookId.newBuilder()
+                         .setValue(newUuid())
+                         .build();
         }
     }
 

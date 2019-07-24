@@ -21,9 +21,7 @@
 package io.spine.web.firebase;
 
 import io.spine.net.Urls;
-import org.apache.commons.validator.routines.UrlValidator;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -38,31 +36,15 @@ public final class DatabaseUrls {
     /**
      * Creates a {@code DatabaseUrls} instance from the given string.
      *
-     * <p>The given string should be a valid URL by the Apache
-     * {@link org.apache.commons.validator.routines.UrlValidator} standards.
-     *
      * @param url
      *         a {@code String} containing database URL
      * @return a new instance of {@code DatabaseUrls}
      */
     public static DatabaseUrl from(String url) {
         checkNotNull(url);
-        validate(url);
-        return DatabaseUrlVBuilder
+        return DatabaseUrl
                 .newBuilder()
                 .setUrl(Urls.create(url))
-                .build();
-    }
-
-    public static void checkSpec(DatabaseUrl url) {
-        checkNotNull(url);
-        String spec = url.getUrl()
-                         .getSpec();
-        validate(spec);
-    }
-
-    private static void validate(String url) {
-        UrlValidator urlValidator = UrlValidator.getInstance();
-        checkArgument(urlValidator.isValid(url), "The specified database URL %s is invalid", url);
+                .vBuild();
     }
 }

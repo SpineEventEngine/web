@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.ADD;
 import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.CHANGE;
 import static io.spine.web.firebase.subscription.diff.EntryUpdate.Operation.PASS;
@@ -38,7 +39,6 @@ import static io.spine.web.firebase.subscription.diff.EntryUpdates.removeEntry;
 import static io.spine.web.firebase.subscription.diff.ExistingEntry.fromJson;
 import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test for {@link EntryUpdates}.
@@ -66,47 +66,47 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
     void createsChangeEntry() {
         EntryUpdate entry = changeEntry(NEW_ENTRY, OLD_ENTRY);
 
-        assertEquals(EntryUpdateVBuilder
-                             .newBuilder()
-                             .setKey(OLD_ENTRY.key())
-                             .setData(NEW_ENTRY.data())
-                             .setOperation(CHANGE)
-                             .build(), entry);
+        assertThat(entry).isEqualTo(EntryUpdate
+                                            .newBuilder()
+                                            .setKey(OLD_ENTRY.key())
+                                            .setData(NEW_ENTRY.data())
+                                            .setOperation(CHANGE)
+                                            .build());
     }
 
     @Test
     void createsPassEntry() {
         EntryUpdate entry = passEntry(UP_TO_DATE_ENTRY, EXISTING_ENTRY);
 
-        assertEquals(EntryUpdateVBuilder
-                             .newBuilder()
-                             .setKey(EXISTING_ENTRY.key())
-                             .setData(UP_TO_DATE_ENTRY.data())
-                             .setOperation(PASS)
-                             .build(), entry);
+        assertThat(entry).isEqualTo(EntryUpdate
+                                            .newBuilder()
+                                            .setKey(EXISTING_ENTRY.key())
+                                            .setData(UP_TO_DATE_ENTRY.data())
+                                            .setOperation(PASS)
+                                            .build());
     }
 
     @Test
     void createsAddEntry() {
         EntryUpdate entry = addEntry(UP_TO_DATE_ENTRY);
 
-        assertEquals(EntryUpdateVBuilder
-                             .newBuilder()
-                             .setData(UP_TO_DATE_ENTRY.data())
-                             .setOperation(ADD)
-                             .build(), entry);
+        assertThat(entry).isEqualTo(EntryUpdate
+                                            .newBuilder()
+                                            .setData(UP_TO_DATE_ENTRY.data())
+                                            .setOperation(ADD)
+                                            .build());
     }
 
     @Test
     void createsRemoveEntry() {
         EntryUpdate entry = removeEntry(EXISTING_ENTRY);
 
-        assertEquals(EntryUpdateVBuilder
-                             .newBuilder()
-                             .setKey(EXISTING_ENTRY.key())
-                             .setData(EXISTING_ENTRY.data())
-                             .setOperation(REMOVE)
-                             .build(), entry);
+        assertThat(entry).isEqualTo(EntryUpdate
+                                            .newBuilder()
+                                            .setKey(EXISTING_ENTRY.key())
+                                            .setData(EXISTING_ENTRY.data())
+                                            .setOperation(REMOVE)
+                                            .build());
     }
 
     private static ExistingEntry existingEntry(String value) {

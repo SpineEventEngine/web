@@ -23,15 +23,11 @@ import assert from 'assert';
 
 import {Message} from 'google-protobuf';
 import {Type} from '@lib/client/typed-message';
-import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-request-factory';
+import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
-import {
-  Filter,
-  CompositeFilter,
-  TargetFilters
-} from '@proto/spine/client/filters_pb';
+import {CompositeFilter, Filter, TargetFilters} from '@proto/spine/client/filters_pb';
 
 class Given {
 
@@ -290,7 +286,7 @@ describe('QueryBuilder', function () {
 
   /********* FILTERS *********/
 
-  it('creates a Query with a no filters', done => {
+  it('creates a Query with no filters', done => {
     const query = Given.requestFactory()
       .query()
       .select(Given.ENTITY_CLASS.TASK)
@@ -482,7 +478,7 @@ describe('QueryBuilder', function () {
     assert.ok(target.getIncludeAll());
     Given.assertTargetTypeEqual(target, Given.TYPE.TASK);
 
-    Given.assertUnorderedEqual(query.getFieldMask().getPathsList(), maskedFields);
+    Given.assertUnorderedEqual(query.getFormat().getFieldMask().getPathsList(), maskedFields);
 
     done();
   });
@@ -522,5 +518,25 @@ describe('QueryBuilder', function () {
     } catch (e) {
       done();
     }
+  });
+
+  /********* LIMIT *********/
+
+  it('creates a Query with a limit', done => {
+    const limit = 42;
+    const query = Given.requestFactory()
+        .query()
+        .select(Given.ENTITY_CLASS.TASK)
+        .limit(limit)
+        .build();
+
+    assert.ok(query.getId());
+
+    Given.assertActorContextCorrect(query.getContext());
+
+    const format = query.getFormat();
+    assert.equal(limit, format.getLimit());
+
+    done();
   });
 });

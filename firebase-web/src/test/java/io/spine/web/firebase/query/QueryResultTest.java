@@ -77,10 +77,11 @@ class QueryResultTest {
 
     private static FirebaseQueryResponse toQueryResponse(NodePath path, long count) {
         FirebaseQueryResponse response =
-                FirebaseQueryResponseVBuilder.newBuilder()
-                                             .setPath(path.getValue())
-                                             .setCount(count)
-                                             .build();
+                FirebaseQueryResponse
+                        .newBuilder()
+                        .setPath(path.getValue())
+                        .setCount(count)
+                        .vBuild();
         return response;
     }
 }

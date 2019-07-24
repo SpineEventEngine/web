@@ -37,37 +37,37 @@ final class EntryUpdates {
     }
 
     static EntryUpdate changeEntry(UpToDateEntry entry, ExistingEntry matchingEntry) {
-        return EntryUpdateVBuilder
+        return EntryUpdate
                 .newBuilder()
                 .setKey(matchingEntry.key())
                 .setData(entry.data())
                 .setOperation(CHANGE)
-                .build();
+                .vBuild();
     }
 
     static EntryUpdate passEntry(UpToDateEntry entry, ExistingEntry matchingEntry) {
-        return EntryUpdateVBuilder
+        return EntryUpdate
                 .newBuilder()
                 .setKey(matchingEntry.key())
                 .setData(entry.data())
                 .setOperation(PASS)
-                .build();
+                .vBuild();
     }
 
     static EntryUpdate addEntry(UpToDateEntry entry) {
-        return EntryUpdateVBuilder
+        return EntryUpdate
                 .newBuilder()
                 .setData(entry.data())
                 .setOperation(ADD)
-                .build();
+                .vBuild();
     }
 
     static EntryUpdate removeEntry(ExistingEntry existing) {
-        return EntryUpdateVBuilder
+        return EntryUpdate
                 .newBuilder()
                 .setKey(existing.key())
                 .setData(existing.data())
                 .setOperation(REMOVE)
-                .build();
+                .vBuild();
     }
 }

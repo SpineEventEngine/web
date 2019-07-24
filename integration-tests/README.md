@@ -69,4 +69,4 @@ To run the integration tests do the following:
        two-step package linking see `npm-link` [documentation](https://docs.npmjs.com/cli/link);
      - runs the local backend server from the `test-app` module;
      - performs integration tests;
-     - stops the local server when test complete or fail;
+     - stops the local server when test complete or fail.
