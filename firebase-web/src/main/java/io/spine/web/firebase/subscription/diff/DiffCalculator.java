@@ -20,10 +20,10 @@
 
 package io.spine.web.firebase.subscription.diff;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.NodeValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,9 +66,10 @@ public final class DiffCalculator {
     }
 
     private static Diff toDiff(List<EntryUpdate> updates) {
-        ImmutableList.Builder<AddedItem> added = ImmutableList.builder();
-        ImmutableList.Builder<ChangedItem> changed = ImmutableList.builder();
-        ImmutableList.Builder<RemovedItem> removed = ImmutableList.builder();
+        int expectedSize = updates.size();
+        List<AddedItem> added = new ArrayList<>(expectedSize);
+        List<ChangedItem> changed = new ArrayList<>(expectedSize);
+        List<RemovedItem> removed = new ArrayList<>(expectedSize);
         updates.forEach(update -> {
             switch (update.getOperation()) {
                 case ADD:
@@ -93,12 +94,6 @@ public final class DiffCalculator {
                     break;
             }
         });
-        return diff(added.build(), changed.build(), removed.build());
-    }
-
-    private static Diff diff(List<AddedItem> added,
-                             List<ChangedItem> changed,
-                             List<RemovedItem> removed) {
         return Diff
                 .newBuilder()
                 .addAllAdded(added)
