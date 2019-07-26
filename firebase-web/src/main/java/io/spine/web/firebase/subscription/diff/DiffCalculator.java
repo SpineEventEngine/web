@@ -70,30 +70,30 @@ public final class DiffCalculator {
         List<AddedItem> added = new ArrayList<>(expectedSize);
         List<ChangedItem> changed = new ArrayList<>(expectedSize);
         List<RemovedItem> removed = new ArrayList<>(expectedSize);
-        updates.forEach(update -> {
+        for (EntryUpdate update : updates) {
             switch (update.getOperation()) {
                 case ADD:
                     added.add(AddedItem.newBuilder()
                                        .setData(update.getData())
-                                       .vBuild());
+                                       .buildPartial());
                     break;
                 case REMOVE:
                     removed.add(RemovedItem.newBuilder()
                                            .setKey(update.getKey())
-                                           .vBuild());
+                                           .buildPartial());
                     break;
                 case CHANGE:
                     changed.add(ChangedItem.newBuilder()
                                            .setKey(update.getKey())
                                            .setData(update.getData())
-                                           .vBuild());
+                                           .buildPartial());
                     break;
                 case PASS:
                 case UNRECOGNIZED:
                 default:
                     break;
             }
-        });
+        }
         return Diff
                 .newBuilder()
                 .addAllAdded(added)

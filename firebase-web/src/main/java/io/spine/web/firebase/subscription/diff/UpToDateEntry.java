@@ -1,6 +1,7 @@
 package io.spine.web.firebase.subscription.diff;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ class UpToDateEntry {
 
     private final String data;
     private final JsonNode json;
-    private final JsonNode id;
+    private final @Nullable JsonNode id;
     private final boolean containsId;
 
     private UpToDateEntry(String data) {
@@ -54,7 +55,7 @@ class UpToDateEntry {
     /**
      * A {@link JsonNode} representation of the entities {@code "id"} field.
      */
-    JsonNode id() {
+    @Nullable JsonNode id() {
         return id;
     }
 }

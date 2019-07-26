@@ -2,6 +2,7 @@ package io.spine.web.firebase.subscription.diff;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonObject;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 
@@ -58,8 +59,10 @@ final class ExistingEntry {
 
     /**
      * Checks if this entries {@code "id"} field matches the provided one.
+     *
+     * <p>Returns {@code false} if the ID is {@code null}.
      */
-    boolean idEquals(JsonNode id) {
+    boolean idEquals(@Nullable JsonNode id) {
         return containsId && this.id.equals(id);
     }
 }
