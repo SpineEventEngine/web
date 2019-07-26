@@ -54,13 +54,6 @@ class NodeValueTest {
     }
 
     @Test
-    @DisplayName("allow creation with single child")
-    void beCreatedWithSingleChild() {
-        NodeValue value = NodeValue.withSingleChild(VALUE);
-        assertSingleChild(value, VALUE);
-    }
-
-    @Test
     @DisplayName("add a new child under the generated key")
     void pushChild() {
         NodeValue value = NodeValue.empty();

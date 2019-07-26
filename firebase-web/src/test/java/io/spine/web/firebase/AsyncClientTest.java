@@ -63,24 +63,17 @@ class AsyncClientTest {
     }
 
     @Test
-    @DisplayName("perform create() with the given executor")
-    void executeCreate() {
+    @DisplayName("perform write operations with the given executor")
+    void executeWrites() {
         AsyncClient asyncClient = new AsyncClient(delegate, executor);
-        checkCreateAsync(asyncClient);
-    }
-
-    @Test
-    @DisplayName("perform update() with the given executor")
-    void executeUpdate() {
-        AsyncClient asyncClient = new AsyncClient(delegate, executor);
-        checkUpdateAsync(asyncClient);
+        checkAsync(asyncClient);
     }
 
     @Test
     @DisplayName("perform write operations with asynchronously by default")
     void executeWritesWithForkJoinPool() {
         AsyncClient asyncClient = new AsyncClient(delegate);
-        checkCreateAsync(asyncClient);
+        checkAsync(asyncClient);
     }
 
     @Test
@@ -91,17 +84,8 @@ class AsyncClientTest {
         assertThat(delegate.writes()).contains(path);
     }
 
-    private void checkCreateAsync(AsyncClient asyncClient) {
-        asyncClient.create(path, NodeValue.empty());
-        checkWrite();
-    }
-
-    private void checkUpdateAsync(AsyncClient asyncClient) {
-        asyncClient.create(path, NodeValue.empty());
-        checkWrite();
-    }
-
-    private void checkWrite() {
+    private void checkAsync(AsyncClient asyncClient) {
+        asyncClient.update(path, NodeValue.empty());
         assertThat(delegate.writes()).doesNotContain(path);
         Duration surefireTime = latency.plusSeconds(1);
         sleepFor(surefireTime);

@@ -54,12 +54,12 @@ public final class RetryingClient implements FirebaseClient {
     }
 
     @Override
-    public void create(NodePath path, NodeValue value) {
-        retryer.runAndRetry(() -> delegate.create(path, value));
+    public void create(NodePath nodePath, NodeValue value) {
+        retryer.runAndRetry(() -> delegate.create(nodePath, value));
     }
 
     @Override
-    public void update(NodePath path, NodeValue value) {
-        retryer.runAndRetry(() -> delegate.update(path, value));
+    public void update(NodePath nodePath, NodeValue value) {
+        retryer.runAndRetry(() -> delegate.update(nodePath, value));
     }
 }

@@ -38,6 +38,15 @@ public final class DiffCalculator {
         this.existingEntries = existingEntries;
     }
 
+    public static boolean canCalculateFor(List<String> entries) {
+        if (entries.isEmpty()) {
+            return false;
+        }
+        String firstEntry = entries.get(0);
+        UpToDateEntry upToDateEntry = UpToDateEntry.parse(firstEntry);
+        return upToDateEntry.containsId();
+    }
+
     /**
      * Create a new {@code DiffCalculator} with state current in Firebase.
      *

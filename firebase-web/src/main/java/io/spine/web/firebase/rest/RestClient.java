@@ -85,21 +85,21 @@ public final class RestClient implements FirebaseClient {
     }
 
     @Override
-    public void create(NodePath path, NodeValue value) {
-        checkNotNull(path);
+    public void create(NodePath nodePath, NodeValue value) {
+        checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(path));
+        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         ByteArrayContent byteArrayContent = value.toByteArray();
         create(nodeUrl, byteArrayContent);
     }
 
     @Override
-    public void update(NodePath path, NodeValue value) {
-        checkNotNull(path);
+    public void update(NodePath nodePath, NodeValue value) {
+        checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(path));
+        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         ByteArrayContent byteArrayContent = value.toByteArray();
         update(nodeUrl, byteArrayContent);
     }

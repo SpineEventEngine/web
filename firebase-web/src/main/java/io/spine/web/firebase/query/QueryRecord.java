@@ -29,6 +29,10 @@ import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 /**
  * A record which can be stored into a Firebase database.
  *
@@ -61,19 +65,18 @@ final class QueryRecord {
     }
 
     /**
-     * Flushes the array response of the query to the Firebase, adding array items to storage one
-     * by one.
-     *
-     * <p>Suitable for big queries, spanning thousands and millions of items.
+     * Flushes the array response of the query to the Firebase, adding array items to storage in
+     * bulk.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        queryResponse.getMessageList()
-                     .stream()
-                     .unordered()
-                     .map(EntityStateWithVersion::getState)
-                     .map(AnyPacker::unpack)
-                     .map(Json::toCompactJson)
-                     .map(NodeValue::withSingleChild)
-                     .forEach(node -> firebaseClient.create(path, node));
+        List<String> jsons = queryResponse
+                .getMessageList()
+                .stream()
+                .unordered()
+                .map(EntityStateWithVersion::getState)
+                .map(AnyPacker::unpack)
+                .map(Json::toCompactJson)
+                .collect(toList());
+        firebaseClient.create(path, NodeValue.withChildren(jsons));
     }
 }

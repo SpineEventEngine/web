@@ -13,9 +13,13 @@ final class UpToDateEntry extends Entry {
         super(rawData);
     }
 
+    static UpToDateEntry parse(String json) {
+        return new UpToDateEntry(json);
+    }
+
     static List<UpToDateEntry> parse(List<String> json) {
         return json.stream()
-                   .map(UpToDateEntry::new)
+                   .map(UpToDateEntry::parse)
                    .collect(toList());
     }
 }

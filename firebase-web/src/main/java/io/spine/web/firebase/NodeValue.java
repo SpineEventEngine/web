@@ -69,11 +69,18 @@ public final class NodeValue {
     }
 
     /**
-     * Creates a {@code NodeValue} which has a single entry under a generated key.
+     * Creates a new node value with all the given JSONs as its children.
+     *
+     * <p>The child nodes are added under generated keys.
+     *
+     * @param jsons child nodes
+     * @return new node value
      */
-    public static NodeValue withSingleChild(String childValue) {
+    public static NodeValue withChildren(Iterable<String> jsons) {
         NodeValue nodeValue = new NodeValue();
-        nodeValue.addChild(childValue);
+        for (String json : jsons) {
+            nodeValue.addChild(json);
+        }
         return nodeValue;
     }
 

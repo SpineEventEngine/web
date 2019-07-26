@@ -33,7 +33,6 @@ import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -64,14 +63,6 @@ final class SubscriptionRecord {
      * already stored in database at given location.
      */
     void storeAsInitial(FirebaseClient firebaseClient) {
-        flushNewVia(firebaseClient);
-    }
-
-    /**
-     * Flushes an array response of the query to the Firebase adding array items to storage in a
-     * transaction.
-     */
-    private void flushNewVia(FirebaseClient firebaseClient) {
         flushEntries(mapMessagesToJson(), firebaseClient);
     }
 
@@ -79,29 +70,24 @@ final class SubscriptionRecord {
      * Stores the data to the Firebase updating only the data that has changed.
      */
     void storeAsUpdate(FirebaseClient firebaseClient) {
-        flushDiffVia(firebaseClient);
-    }
+        List<String> newEntries = mapMessagesToJson();
 
-    /**
-     * Flushes an array response of the query to the Firebase, adding, removing, and updating items
-     * already present in storage in a transaction.
-     */
-    private void flushDiffVia(FirebaseClient firebaseClient) {
-        Optional<NodeValue> existingValue = firebaseClient.get(path);
-        Stream<String> newEntries = mapMessagesToJson();
-        if (existingValue.isPresent()) {
-            DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
-            List<String> entriesList = newEntries.collect(toList());
-            Diff diff = diffCalculator.compareWith(entriesList);
-            updateWithDiff(diff, firebaseClient);
+        if (DiffCalculator.canCalculateFor(newEntries)) {
+            Optional<NodeValue> existingValue = firebaseClient.get(path);
+            if (existingValue.isPresent()) {
+                DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
+                Diff diff = diffCalculator.compareWith(newEntries);
+                updateWithDiff(diff, firebaseClient);
+            } else {
+                storeAsInitial(firebaseClient);
+            }
         } else {
-            flushEntries(newEntries, firebaseClient);
+            storeAsInitial(firebaseClient);
         }
     }
 
-    private void flushEntries(Stream<String> jsonEntries, FirebaseClient client) {
-        NodeValue nodeValue = NodeValue.empty();
-        jsonEntries.forEach(nodeValue::addChild);
+    private void flushEntries(Iterable<String> jsonEntries, FirebaseClient client) {
+        NodeValue nodeValue = NodeValue.withChildren(jsonEntries);
         client.create(path, nodeValue);
     }
 
@@ -122,13 +108,14 @@ final class SubscriptionRecord {
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
-    private Stream<String> mapMessagesToJson() {
+    private List<String> mapMessagesToJson() {
         return queryResponse
                 .getMessageList()
                 .stream()
                 .unordered()
                 .map(EntityStateWithVersion::getState)
                 .map(AnyPacker::<Message>unpack)
-                .map(Json::toCompactJson);
+                .map(Json::toCompactJson)
+                .collect(toList());
     }
 }
