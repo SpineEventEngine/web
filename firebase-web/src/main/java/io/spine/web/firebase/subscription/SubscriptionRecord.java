@@ -72,7 +72,7 @@ final class SubscriptionRecord {
     void storeAsUpdate(FirebaseClient firebaseClient) {
         List<String> newEntries = mapMessagesToJson();
 
-        if (DiffCalculator.canCalculateFor(newEntries)) {
+        if (DiffCalculator.canCalculateEfficientlyFor(newEntries)) {
             Optional<NodeValue> existingValue = firebaseClient.get(path);
             if (existingValue.isPresent()) {
                 DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());

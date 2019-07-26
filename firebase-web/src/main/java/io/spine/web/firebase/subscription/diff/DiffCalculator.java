@@ -38,7 +38,22 @@ public final class DiffCalculator {
         this.existingEntries = existingEntries;
     }
 
-    public static boolean canCalculateFor(List<String> entries) {
+    /**
+     * Checks if it is possible to efficiently calculate diff for the given entities.
+     *
+     * <p>For that, the JSON entries must have the {@code "id"} field defined.
+     *
+     * <p>Note that {@code DiffCalculator} can calculate diff even if this condition is not met.
+     * However, that may not be as efficient. In particular,
+     * the {@link EntryUpdate.Operation#CHANGE CHANGE} updates are reflected as a deletion and
+     * an addition.
+     *
+     * @param entries
+     *         the entries to check
+     * @return {@code true} if the entries may be included in a diff calculation,
+     *         {@code false} otherwise
+     */
+    public static boolean canCalculateEfficientlyFor(List<String> entries) {
         if (entries.isEmpty()) {
             return false;
         }
