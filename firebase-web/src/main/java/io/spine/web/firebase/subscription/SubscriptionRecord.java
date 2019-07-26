@@ -102,7 +102,7 @@ final class SubscriptionRecord {
     private void flushEntries(Stream<String> jsonEntries, FirebaseClient client) {
         NodeValue nodeValue = NodeValue.empty();
         jsonEntries.forEach(nodeValue::addChild);
-        client.merge(path, nodeValue);
+        client.create(path, nodeValue);
     }
 
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
@@ -113,7 +113,7 @@ final class SubscriptionRecord {
             .forEach(record -> nodeValue.addNullChild(record.getKey()));
         diff.getAddedList()
             .forEach(record -> nodeValue.addChild(record.getData()));
-        firebaseClient.merge(path, nodeValue);
+        firebaseClient.update(path, nodeValue);
     }
 
     /**

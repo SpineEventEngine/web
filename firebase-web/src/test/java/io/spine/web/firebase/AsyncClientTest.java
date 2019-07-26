@@ -63,29 +63,45 @@ class AsyncClientTest {
     }
 
     @Test
-    @DisplayName("perform write operations with the given executor")
-    void executeWrites() {
+    @DisplayName("perform create() with the given executor")
+    void executeCreate() {
         AsyncClient asyncClient = new AsyncClient(delegate, executor);
-        checkAsync(asyncClient);
+        checkCreateAsync(asyncClient);
+    }
+
+    @Test
+    @DisplayName("perform update() with the given executor")
+    void executeUpdate() {
+        AsyncClient asyncClient = new AsyncClient(delegate, executor);
+        checkUpdateAsync(asyncClient);
     }
 
     @Test
     @DisplayName("perform write operations with asynchronously by default")
     void executeWritesWithForkJoinPool() {
         AsyncClient asyncClient = new AsyncClient(delegate);
-        checkAsync(asyncClient);
+        checkCreateAsync(asyncClient);
     }
 
     @Test
     @DisplayName("allow to use the direct executor")
     void allowDirectExecutor() {
         AsyncClient asyncClient = new AsyncClient(delegate, directExecutor());
-        asyncClient.merge(path, NodeValue.empty());
+        asyncClient.create(path, NodeValue.empty());
         assertThat(delegate.writes()).contains(path);
     }
 
-    private void checkAsync(AsyncClient asyncClient) {
-        asyncClient.merge(path, NodeValue.empty());
+    private void checkCreateAsync(AsyncClient asyncClient) {
+        asyncClient.create(path, NodeValue.empty());
+        checkWrite();
+    }
+
+    private void checkUpdateAsync(AsyncClient asyncClient) {
+        asyncClient.create(path, NodeValue.empty());
+        checkWrite();
+    }
+
+    private void checkWrite() {
         assertThat(delegate.writes()).doesNotContain(path);
         Duration surefireTime = latency.plusSeconds(1);
         sleepFor(surefireTime);

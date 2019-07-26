@@ -74,6 +74,6 @@ final class QueryRecord {
                      .map(AnyPacker::unpack)
                      .map(Json::toCompactJson)
                      .map(NodeValue::withSingleChild)
-                     .forEach(node -> firebaseClient.merge(path, node));
+                     .forEach(node -> firebaseClient.create(path, node));
     }
 }

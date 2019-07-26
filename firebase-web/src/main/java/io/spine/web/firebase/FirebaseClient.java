@@ -42,17 +42,32 @@ public interface FirebaseClient {
     Optional<NodeValue> get(NodePath nodePath);
 
     /**
-     * Merges the specified value to the Firebase database node.
+     * Writes the given value under the given path in the database.
      *
-     * <p>If the node doesn't exist, it is created with the given value.
+     * <p>Overrides any existing value at the given path.
      *
-     * <p>If the node exists, the value entries are added to the node children overwriting common
-     * ones if present.
-     *
-     * @param nodePath
-     *         the path to the node in the Firebase database
+     * @param path
+     *         the path to the node in the database
      * @param value
-     *         the value to merge
+     *         the value to write into the database
+     * @see #update(NodePath, NodeValue)
      */
-    void merge(NodePath nodePath, NodeValue value);
+    void create(NodePath path, NodeValue value);
+
+    /**
+     * Updates the value under the given database path with the given value.
+     *
+     * <p>If there is an existing value of the given node, the values are merged:
+     * <ul>
+     *     <li>common values are overridden;
+     *     <li>non-common values are preserved.
+     * </ul>
+     *
+     * @param path
+     *         the path to the node in the database
+     * @param value
+     *         the value to merge into the database node
+     * @see #create(NodePath, NodeValue)
+     */
+    void update(NodePath path, NodeValue value);
 }

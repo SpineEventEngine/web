@@ -70,7 +70,12 @@ public final class AsyncClient implements FirebaseClient {
     }
 
     @Override
-    public void merge(NodePath nodePath, NodeValue value) {
-        executor.execute(() -> delegate.merge(nodePath, value));
+    public void create(NodePath path, NodeValue value) {
+        executor.execute(() -> delegate.create(path, value));
+    }
+
+    @Override
+    public void update(NodePath path, NodeValue value) {
+        executor.execute(() -> delegate.update(path, value));
     }
 }

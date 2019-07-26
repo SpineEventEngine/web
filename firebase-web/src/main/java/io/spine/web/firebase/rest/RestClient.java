@@ -41,7 +41,7 @@ import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
  * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
  * </a>.
  */
-public class RestClient implements FirebaseClient {
+public final class RestClient implements FirebaseClient {
 
     /**
      * The representation of the database {@code null} entry.
@@ -85,18 +85,23 @@ public class RestClient implements FirebaseClient {
     }
 
     @Override
-    public void merge(NodePath nodePath, NodeValue value) {
-        checkNotNull(nodePath);
+    public void create(NodePath path, NodeValue value) {
+        checkNotNull(path);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = asGenericUrl(factory.with(path));
         ByteArrayContent byteArrayContent = value.toByteArray();
-        Optional<NodeValue> existingValue = get(nodePath);
-        if (!existingValue.isPresent()) {
-            create(nodeUrl, byteArrayContent);
-        } else {
-            update(nodeUrl, byteArrayContent);
-        }
+        create(nodeUrl, byteArrayContent);
+    }
+
+    @Override
+    public void update(NodePath path, NodeValue value) {
+        checkNotNull(path);
+        checkNotNull(value);
+
+        GenericUrl nodeUrl = asGenericUrl(factory.with(path));
+        ByteArrayContent byteArrayContent = value.toByteArray();
+        update(nodeUrl, byteArrayContent);
     }
 
     /**

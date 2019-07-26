@@ -106,7 +106,7 @@ class RestClientTest {
     void storeNewViaPut() {
         when(httpClient.get(any())).thenReturn(NULL_ENTRY);
 
-        client.merge(path, value);
+        client.create(path, value);
         verify(httpClient).put(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
     }
 
@@ -115,7 +115,7 @@ class RestClientTest {
     void updateExistingViaPatch() {
         when(httpClient.get(any())).thenReturn(DATA);
 
-        client.merge(path, value);
+        client.update(path, value);
         verify(httpClient).patch(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
     }
 }

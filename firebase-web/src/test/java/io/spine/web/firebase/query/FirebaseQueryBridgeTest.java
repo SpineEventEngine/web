@@ -111,6 +111,6 @@ class FirebaseQueryBridgeTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put(anyKey(), toCompactJson(dataElement));
-        verify(firebaseClient).merge(any(), argThat(new HasChildren(expected)));
+        verify(firebaseClient).create(any(), argThat(new HasChildren(expected)));
     }
 }

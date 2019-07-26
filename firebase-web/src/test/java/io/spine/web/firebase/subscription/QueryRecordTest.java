@@ -72,7 +72,7 @@ class QueryRecordTest {
         Map<String, String> expected = new HashMap<>();
         expected.put(anyKey(), toCompactJson(aliceInWonderland));
         expected.put(anyKey(), toCompactJson(donQuixote));
-        verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
+        verify(firebaseClient).create(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -109,7 +109,7 @@ class QueryRecordTest {
         expected.put(anyKey(), toCompactJson(donQuixote));
         expected.put(patternsKey, toCompactJson(designPatternsWithAuthors));
         expected.put(guideKey, JSON_NULL);
-        verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
+        verify(firebaseClient).update(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 
     @Test
@@ -127,6 +127,6 @@ class QueryRecordTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put(anyKey(), toCompactJson(aliceInWonderland));
-        verify(firebaseClient).merge(eq(queryResponsePath), argThat(new HasChildren(expected)));
+        verify(firebaseClient).create(eq(queryResponsePath), argThat(new HasChildren(expected)));
     }
 }
