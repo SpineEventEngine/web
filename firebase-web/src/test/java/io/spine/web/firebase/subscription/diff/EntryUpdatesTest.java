@@ -69,7 +69,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
                                             .setKey(OLD_ENTRY.key())
-                                            .setData(NEW_ENTRY.data())
+                                            .setData(NEW_ENTRY.rawData())
                                             .setOperation(CHANGE)
                                             .build());
     }
@@ -81,7 +81,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
                                             .setKey(EXISTING_ENTRY.key())
-                                            .setData(UP_TO_DATE_ENTRY.data())
+                                            .setData(UP_TO_DATE_ENTRY.rawData())
                                             .setOperation(PASS)
                                             .build());
     }
@@ -92,7 +92,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
 
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
-                                            .setData(UP_TO_DATE_ENTRY.data())
+                                            .setData(UP_TO_DATE_ENTRY.rawData())
                                             .setOperation(ADD)
                                             .build());
     }
@@ -104,7 +104,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
                                             .setKey(EXISTING_ENTRY.key())
-                                            .setData(EXISTING_ENTRY.data())
+                                            .setData(EXISTING_ENTRY.rawData())
                                             .setOperation(REMOVE)
                                             .build());
     }
