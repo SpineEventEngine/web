@@ -32,8 +32,6 @@ import io.spine.web.subscription.result.SubscriptionKeepUpResult;
  * <p>Defines an interface for {@link #subscribe(Topic) subscribing} to a {@link Topic},
  * {@link #keepUp(Subscription) keeping up} an existing {@link Subscription}
  * and {@link #cancel(Subscription) canceling} an existing {@code Subscription}.
- *
- * @author Mykhailo Drachuk
  */
 public interface SubscriptionBridge {
 
@@ -41,8 +39,10 @@ public interface SubscriptionBridge {
      * Creates a new {@link Subscription} to a provided topic supplying this subscription to the
      * client as a result.
      *
-     * @param topic a topic to subscribe the client to
-     * @return a {@link SubscribeResult} which can be written to a {@link javax.servlet.ServletResponse}
+     * @param topic
+     *         a topic to subscribe the client to
+     * @return a {@link SubscribeResult} which can be written to a {@link
+     *         javax.servlet.ServletResponse}
      */
     SubscribeResult subscribe(Topic topic);
 
@@ -53,16 +53,20 @@ public interface SubscriptionBridge {
      * Server cancels the subscription at some point, because maintaining the subscription requires
      * resources and the client cannot be trusted to cancel every subscription it creates.
      *
-     * @param subscription a subscription that should stay open
-     * @return a {@link SubscriptionKeepUpResult} which can be written to a {@link javax.servlet.ServletResponse}
+     * @param subscription
+     *         a subscription that should stay open
+     * @return a {@link SubscriptionKeepUpResult} which can be written to
+     *         a {@link javax.servlet.ServletResponse}
      */
     SubscriptionKeepUpResult keepUp(Subscription subscription);
 
     /**
      * Cancel the existing subscription, which stopping sending new data updates to the client.
      *
-     * @param subscription a subscription that should be stopped from receiving updates
-     * @return a {@link SubscriptionCancelResult} which can be written to a {@link javax.servlet.ServletResponse}
+     * @param subscription
+     *         a subscription that should be stopped from receiving updates
+     * @return a {@link SubscriptionCancelResult} which can be written to
+     *         a {@link javax.servlet.ServletResponse}
      */
     SubscriptionCancelResult cancel(Subscription subscription);
 }
