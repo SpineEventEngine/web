@@ -22,6 +22,7 @@ package io.spine.web.firebase.subscription.diff;
 
 import com.google.gson.JsonObject;
 import io.spine.testing.UtilityClassTest;
+import io.spine.web.firebase.StoredJson;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -69,7 +70,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
                                             .setKey(OLD_ENTRY.key())
-                                            .setData(NEW_ENTRY.data())
+                                            .setData(NEW_ENTRY.rawData())
                                             .setOperation(CHANGE)
                                             .build());
     }
@@ -81,7 +82,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
                                             .setKey(EXISTING_ENTRY.key())
-                                            .setData(UP_TO_DATE_ENTRY.data())
+                                            .setData(UP_TO_DATE_ENTRY.rawData())
                                             .setOperation(PASS)
                                             .build());
     }
@@ -92,7 +93,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
 
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
-                                            .setData(UP_TO_DATE_ENTRY.data())
+                                            .setData(UP_TO_DATE_ENTRY.rawData())
                                             .setOperation(ADD)
                                             .build());
     }
@@ -104,7 +105,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
         assertThat(entry).isEqualTo(EntryUpdate
                                             .newBuilder()
                                             .setKey(EXISTING_ENTRY.key())
-                                            .setData(EXISTING_ENTRY.data())
+                                            .setData(EXISTING_ENTRY.rawData())
                                             .setOperation(REMOVE)
                                             .build());
     }
@@ -117,7 +118,7 @@ class EntryUpdatesTest extends UtilityClassTest<EntryUpdates> {
 
     private static UpToDateEntry upToDateEntry(String s) {
         List<UpToDateEntry> upToDateEntries =
-                UpToDateEntry.parse(newArrayList(s));
+                UpToDateEntry.parse(newArrayList(StoredJson.from(s)));
         return upToDateEntries.get(0);
     }
 }

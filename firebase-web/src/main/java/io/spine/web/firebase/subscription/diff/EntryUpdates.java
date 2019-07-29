@@ -40,7 +40,7 @@ final class EntryUpdates {
         return EntryUpdate
                 .newBuilder()
                 .setKey(matchingEntry.key())
-                .setData(entry.data())
+                .setData(entry.rawData())
                 .setOperation(CHANGE)
                 .vBuild();
     }
@@ -49,7 +49,7 @@ final class EntryUpdates {
         return EntryUpdate
                 .newBuilder()
                 .setKey(matchingEntry.key())
-                .setData(entry.data())
+                .setData(entry.rawData())
                 .setOperation(PASS)
                 .vBuild();
     }
@@ -57,7 +57,7 @@ final class EntryUpdates {
     static EntryUpdate addEntry(UpToDateEntry entry) {
         return EntryUpdate
                 .newBuilder()
-                .setData(entry.data())
+                .setData(entry.rawData())
                 .setOperation(ADD)
                 .vBuild();
     }
@@ -66,7 +66,7 @@ final class EntryUpdates {
         return EntryUpdate
                 .newBuilder()
                 .setKey(existing.key())
-                .setData(existing.data())
+                .setData(existing.rawData())
                 .setOperation(REMOVE)
                 .vBuild();
     }

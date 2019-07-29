@@ -29,6 +29,7 @@ import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 
 import java.util.Optional;
 
@@ -41,13 +42,9 @@ import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
  * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
  * </a>.
  */
-public class RestClient implements FirebaseClient {
+public final class RestClient implements FirebaseClient {
 
-    /**
-     * The representation of the database {@code null} entry.
-     *
-     * <p>In Firebase the {@code null} node is deemed nonexistent.
-     */
+
     @VisibleForTesting
     static final String NULL_ENTRY = "null";
 
@@ -76,27 +73,31 @@ public class RestClient implements FirebaseClient {
 
         GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         String data = httpClient.get(nodeUrl);
-        if (isNullData(data)) {
-            return Optional.empty();
-        }
-        NodeValue value = NodeValue.from(data);
-        Optional<NodeValue> result = Optional.of(value);
-        return result;
+        StoredJson json = StoredJson.from(data);
+        Optional<NodeValue> nodeValue = Optional.of(json)
+                                                .filter(value -> !value.isNull())
+                                                .map(StoredJson::asNodeValue);
+        return nodeValue;
     }
 
     @Override
-    public void merge(NodePath nodePath, NodeValue value) {
+    public void create(NodePath nodePath, NodeValue value) {
         checkNotNull(nodePath);
         checkNotNull(value);
 
         GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         ByteArrayContent byteArrayContent = value.toByteArray();
-        Optional<NodeValue> existingValue = get(nodePath);
-        if (!existingValue.isPresent()) {
-            create(nodeUrl, byteArrayContent);
-        } else {
-            update(nodeUrl, byteArrayContent);
-        }
+        create(nodeUrl, byteArrayContent);
+    }
+
+    @Override
+    public void update(NodePath nodePath, NodeValue value) {
+        checkNotNull(nodePath);
+        checkNotNull(value);
+
+        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        ByteArrayContent byteArrayContent = value.toByteArray();
+        update(nodeUrl, byteArrayContent);
     }
 
     /**
@@ -113,9 +114,5 @@ public class RestClient implements FirebaseClient {
      */
     private void update(GenericUrl nodeUrl, HttpContent value) {
         httpClient.patch(nodeUrl, value);
-    }
-
-    private static boolean isNullData(String data) {
-        return NULL_ENTRY.equals(data);
     }
 }

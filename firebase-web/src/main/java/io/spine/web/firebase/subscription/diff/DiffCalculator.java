@@ -20,10 +20,11 @@
 
 package io.spine.web.firebase.subscription.diff;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,30 @@ public final class DiffCalculator {
 
     private DiffCalculator(List<ExistingEntry> existingEntries) {
         this.existingEntries = existingEntries;
+    }
+
+    /**
+     * Checks if it is possible to efficiently calculate diff for the given entities.
+     *
+     * <p>For that, the JSON entries must have the {@code "id"} field defined.
+     *
+     * <p>Note that {@code DiffCalculator} can calculate diff even if this condition is not met.
+     * However, that may not be as efficient. In particular,
+     * the {@link EntryUpdate.Operation#CHANGE CHANGE} updates are reflected as a deletion and
+     * an addition.
+     *
+     * @param entries
+     *         the entries to check
+     * @return {@code true} if the entries may be included in a diff calculation,
+     *         {@code false} otherwise
+     */
+    public static boolean canCalculateEfficientlyFor(List<StoredJson> entries) {
+        if (entries.isEmpty()) {
+            return false;
+        }
+        StoredJson firstEntry = entries.get(0);
+        UpToDateEntry upToDateEntry = UpToDateEntry.parse(firstEntry.value());
+        return upToDateEntry.containsId();
     }
 
     /**
@@ -58,7 +83,7 @@ public final class DiffCalculator {
      *         a list of JSON serialized entries retrieved from Spine
      * @return a diff between Spine and Firebase data states
      */
-    public Diff compareWith(List<String> newEntries) {
+    public Diff compareWith(List<StoredJson> newEntries) {
         List<UpToDateEntry> entries = UpToDateEntry.parse(newEntries);
         EntriesMatcher matcher = new EntriesMatcher(existingEntries);
         List<EntryUpdate> updates = matcher.match(entries);
@@ -66,39 +91,34 @@ public final class DiffCalculator {
     }
 
     private static Diff toDiff(List<EntryUpdate> updates) {
-        ImmutableList.Builder<AddedItem> added = ImmutableList.builder();
-        ImmutableList.Builder<ChangedItem> changed = ImmutableList.builder();
-        ImmutableList.Builder<RemovedItem> removed = ImmutableList.builder();
-        updates.forEach(update -> {
+        int expectedSize = updates.size();
+        List<AddedItem> added = new ArrayList<>(expectedSize);
+        List<ChangedItem> changed = new ArrayList<>(expectedSize);
+        List<RemovedItem> removed = new ArrayList<>(expectedSize);
+        for (EntryUpdate update : updates) {
             switch (update.getOperation()) {
                 case ADD:
                     added.add(AddedItem.newBuilder()
                                        .setData(update.getData())
-                                       .vBuild());
+                                       .buildPartial());
                     break;
                 case REMOVE:
                     removed.add(RemovedItem.newBuilder()
                                            .setKey(update.getKey())
-                                           .vBuild());
+                                           .buildPartial());
                     break;
                 case CHANGE:
                     changed.add(ChangedItem.newBuilder()
                                            .setKey(update.getKey())
                                            .setData(update.getData())
-                                           .vBuild());
+                                           .buildPartial());
                     break;
                 case PASS:
                 case UNRECOGNIZED:
                 default:
                     break;
             }
-        });
-        return diff(added.build(), changed.build(), removed.build());
-    }
-
-    private static Diff diff(List<AddedItem> added,
-                             List<ChangedItem> changed,
-                             List<RemovedItem> removed) {
+        }
         return Diff
                 .newBuilder()
                 .addAllAdded(added)

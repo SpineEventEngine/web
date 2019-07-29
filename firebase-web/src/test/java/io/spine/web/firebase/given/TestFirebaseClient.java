@@ -56,7 +56,13 @@ public final class TestFirebaseClient implements FirebaseClient {
     }
 
     @Override
-    public void merge(NodePath nodePath, NodeValue value) {
+    public void create(NodePath nodePath, NodeValue value) {
+        sleepFor(writeLatency);
+        writes.add(nodePath);
+    }
+
+    @Override
+    public void update(NodePath nodePath, NodeValue value) {
         sleepFor(writeLatency);
         writes.add(nodePath);
     }

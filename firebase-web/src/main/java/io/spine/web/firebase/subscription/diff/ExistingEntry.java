@@ -5,48 +5,27 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toList;
 
 /**
  * An entry retrieved from Firebase database to check the {@link UpToDateEntry} against.
  */
-final class ExistingEntry {
+final class ExistingEntry extends Entry {
 
     private final String key;
-    private final String data;
-    private final JsonNode json;
-    private final JsonNode id;
-    private final boolean containsId;
 
     private ExistingEntry(String key, String data) {
-        this.key = key;
-        this.data = data;
-        this.json = JsonParser.parse(data);
-        this.id = json.get("id");
-        this.containsId = id != null;
+        super(data);
+        this.key = checkNotNull(key);
     }
 
     static List<ExistingEntry> fromJson(JsonObject object) {
         return object
                 .entrySet()
                 .stream()
-                .map(entry -> new ExistingEntry(entry.getKey(), entry.getValue()
-                                                                     .getAsString()))
+                .map(entry -> new ExistingEntry(entry.getKey(), entry.getValue().getAsString()))
                 .collect(toList());
-    }
-
-    /**
-     * JSON data of this entry.
-     */
-    JsonNode json() {
-        return json;
-    }
-
-    /**
-     * JSON serialized entity data represented as a string.
-     */
-    String data() {
-        return data;
     }
 
     /**
@@ -57,9 +36,14 @@ final class ExistingEntry {
     }
 
     /**
-     * Checks if this entries {@code "id"} field matches the provided one.
+     * Checks if this entry's {@code "id"} field matches the provided one.
+     *
+     * <p>Returns {@code false} if this entry has no {@code "id"} field
+     *
+     * @return {@code true} if the ID of this entry is equal to the given node,
+     *         {@code false} otherwise
      */
     boolean idEquals(JsonNode id) {
-        return containsId && this.id.equals(id);
+        return id.equals(id());
     }
 }

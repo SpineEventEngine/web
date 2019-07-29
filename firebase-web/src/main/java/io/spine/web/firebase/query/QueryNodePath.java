@@ -60,7 +60,6 @@ public class QueryNodePath {
         return path;
     }
 
-    @SuppressWarnings("UnnecessaryDefault")
     private static String tenantIdAsString(Query query) {
         TenantId tenantId = query.getContext()
                                  .getTenantId();

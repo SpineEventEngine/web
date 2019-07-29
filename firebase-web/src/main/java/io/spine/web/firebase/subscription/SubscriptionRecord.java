@@ -20,20 +20,17 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.protobuf.Message;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
-import io.spine.json.Json;
-import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.subscription.diff.Diff;
 import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -64,14 +61,6 @@ final class SubscriptionRecord {
      * already stored in database at given location.
      */
     void storeAsInitial(FirebaseClient firebaseClient) {
-        flushNewVia(firebaseClient);
-    }
-
-    /**
-     * Flushes an array response of the query to the Firebase adding array items to storage in a
-     * transaction.
-     */
-    private void flushNewVia(FirebaseClient firebaseClient) {
         flushEntries(mapMessagesToJson(), firebaseClient);
     }
 
@@ -79,41 +68,36 @@ final class SubscriptionRecord {
      * Stores the data to the Firebase updating only the data that has changed.
      */
     void storeAsUpdate(FirebaseClient firebaseClient) {
-        flushDiffVia(firebaseClient);
-    }
+        List<StoredJson> newEntries = mapMessagesToJson();
 
-    /**
-     * Flushes an array response of the query to the Firebase, adding, removing, and updating items
-     * already present in storage in a transaction.
-     */
-    private void flushDiffVia(FirebaseClient firebaseClient) {
-        Optional<NodeValue> existingValue = firebaseClient.get(path);
-        Stream<String> newEntries = mapMessagesToJson();
-        if (existingValue.isPresent()) {
-            DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
-            List<String> entriesList = newEntries.collect(toList());
-            Diff diff = diffCalculator.compareWith(entriesList);
-            updateWithDiff(diff, firebaseClient);
+        if (DiffCalculator.canCalculateEfficientlyFor(newEntries)) {
+            Optional<NodeValue> existingValue = firebaseClient.get(path);
+            if (existingValue.isPresent()) {
+                DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
+                Diff diff = diffCalculator.compareWith(newEntries);
+                updateWithDiff(diff, firebaseClient);
+            } else {
+                storeAsInitial(firebaseClient);
+            }
         } else {
-            flushEntries(newEntries, firebaseClient);
+            storeAsInitial(firebaseClient);
         }
     }
 
-    private void flushEntries(Stream<String> jsonEntries, FirebaseClient client) {
-        NodeValue nodeValue = NodeValue.empty();
-        jsonEntries.forEach(nodeValue::addChild);
-        client.merge(path, nodeValue);
+    private void flushEntries(Iterable<StoredJson> jsonEntries, FirebaseClient client) {
+        NodeValue nodeValue = NodeValue.withChildren(jsonEntries);
+        client.create(path, nodeValue);
     }
 
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
         NodeValue nodeValue = NodeValue.empty();
         diff.getChangedList()
-            .forEach(record -> nodeValue.addChild(record.getKey(), record.getData()));
+            .forEach(record -> nodeValue.addChild(record.getKey(), StoredJson.from(record.getData())));
         diff.getRemovedList()
             .forEach(record -> nodeValue.addNullChild(record.getKey()));
         diff.getAddedList()
-            .forEach(record -> nodeValue.addChild(record.getData()));
-        firebaseClient.merge(path, nodeValue);
+            .forEach(record -> nodeValue.addChild(StoredJson.from(record.getData())));
+        firebaseClient.update(path, nodeValue);
     }
 
     /**
@@ -122,13 +106,13 @@ final class SubscriptionRecord {
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
-    private Stream<String> mapMessagesToJson() {
+    private List<StoredJson> mapMessagesToJson() {
         return queryResponse
                 .getMessageList()
                 .stream()
                 .unordered()
                 .map(EntityStateWithVersion::getState)
-                .map(AnyPacker::<Message>unpack)
-                .map(Json::toCompactJson);
+                .map(StoredJson::encode)
+                .collect(toList());
     }
 }

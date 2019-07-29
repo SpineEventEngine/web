@@ -23,11 +23,14 @@ package io.spine.web.firebase.query;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
-import io.spine.json.Json;
-import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * A record which can be stored into a Firebase database.
@@ -61,19 +64,17 @@ final class QueryRecord {
     }
 
     /**
-     * Flushes the array response of the query to the Firebase, adding array items to storage one
-     * by one.
-     *
-     * <p>Suitable for big queries, spanning thousands and millions of items.
+     * Flushes the array response of the query to the Firebase, adding array items to storage in
+     * bulk.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        queryResponse.getMessageList()
-                     .stream()
-                     .unordered()
-                     .map(EntityStateWithVersion::getState)
-                     .map(AnyPacker::unpack)
-                     .map(Json::toCompactJson)
-                     .map(NodeValue::withSingleChild)
-                     .forEach(node -> firebaseClient.merge(path, node));
+        List<StoredJson> jsons = queryResponse
+                .getMessageList()
+                .stream()
+                .unordered()
+                .map(EntityStateWithVersion::getState)
+                .map(StoredJson::encode)
+                .collect(toList());
+        firebaseClient.create(path, NodeValue.withChildren(jsons));
     }
 }

@@ -80,12 +80,12 @@ class AsyncClientTest {
     @DisplayName("allow to use the direct executor")
     void allowDirectExecutor() {
         AsyncClient asyncClient = new AsyncClient(delegate, directExecutor());
-        asyncClient.merge(path, NodeValue.empty());
+        asyncClient.create(path, NodeValue.empty());
         assertThat(delegate.writes()).contains(path);
     }
 
     private void checkAsync(AsyncClient asyncClient) {
-        asyncClient.merge(path, NodeValue.empty());
+        asyncClient.update(path, NodeValue.empty());
         assertThat(delegate.writes()).doesNotContain(path);
         Duration surefireTime = latency.plusSeconds(1);
         sleepFor(surefireTime);

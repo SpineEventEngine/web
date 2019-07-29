@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.subscription.diff.EntryUpdates.addEntry;
 import static io.spine.web.firebase.subscription.diff.EntryUpdates.changeEntry;
 import static io.spine.web.firebase.subscription.diff.EntryUpdates.passEntry;
@@ -66,7 +67,7 @@ final class EntriesMatcher {
     private EntryUpdate matchById(UpToDateEntry entry) {
         Optional<ExistingEntry> optionalMatchingEntry =
                 unmatchedEntries.stream()
-                                .filter(existing -> existing.idEquals(entry.id()))
+                                .filter(existing -> existing.idEquals(checkNotNull(entry.id())))
                                 .findFirst();
         if (optionalMatchingEntry.isPresent()) {
             ExistingEntry matchingEntry = optionalMatchingEntry.get();
