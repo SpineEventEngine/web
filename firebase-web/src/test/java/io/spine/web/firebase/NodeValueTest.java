@@ -35,8 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class NodeValueTest {
 
     private static final String KEY = "theKey";
-    private static final String VALUE = "theValue";
-    private static final String DATA = "{\"" + KEY + "\":\"" + VALUE + "\"}";
+    private static final StoredJson VALUE = StoredJson.from("theValue");
+    private static final StoredJson DATA = StoredJson.from("{\"" + KEY + "\":\"" + VALUE + "\"}");
 
     @Test
     @DisplayName("be empty when created via the default constructor")
@@ -69,7 +69,7 @@ class NodeValueTest {
         assertSingleChild(value, KEY, VALUE);
     }
 
-    private static void assertSingleChild(NodeValue value, String childValue) {
+    private static void assertSingleChild(NodeValue value, StoredJson childValue) {
         JsonObject underlyingJson = value.underlyingJson();
         assertEquals(1, underlyingJson.entrySet()
                                       .size());
@@ -78,15 +78,15 @@ class NodeValueTest {
                                                              .next();
         String valueString = entry.getValue()
                                   .getAsString();
-        assertEquals(childValue, valueString);
+        assertEquals(childValue.value(), valueString);
     }
 
     private static void
-    assertSingleChild(NodeValue value, String childKey, String childValue) {
+    assertSingleChild(NodeValue value, String childKey, StoredJson childValue) {
         JsonObject underlyingJson = value.underlyingJson();
         assertTrue(underlyingJson.has(childKey));
         String actual = underlyingJson.get(childKey)
                                       .getAsString();
-        assertEquals(childValue, actual);
+        assertEquals(childValue.value(), actual);
     }
 }

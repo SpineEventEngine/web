@@ -22,6 +22,7 @@ package io.spine.web.firebase.subscription.diff;
 
 import com.google.gson.JsonObject;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +54,12 @@ public final class DiffCalculator {
      * @return {@code true} if the entries may be included in a diff calculation,
      *         {@code false} otherwise
      */
-    public static boolean canCalculateEfficientlyFor(List<String> entries) {
+    public static boolean canCalculateEfficientlyFor(List<StoredJson> entries) {
         if (entries.isEmpty()) {
             return false;
         }
-        String firstEntry = entries.get(0);
-        UpToDateEntry upToDateEntry = UpToDateEntry.parse(firstEntry);
+        StoredJson firstEntry = entries.get(0);
+        UpToDateEntry upToDateEntry = UpToDateEntry.parse(firstEntry.value());
         return upToDateEntry.containsId();
     }
 
@@ -82,7 +83,7 @@ public final class DiffCalculator {
      *         a list of JSON serialized entries retrieved from Spine
      * @return a diff between Spine and Firebase data states
      */
-    public Diff compareWith(List<String> newEntries) {
+    public Diff compareWith(List<StoredJson> newEntries) {
         List<UpToDateEntry> entries = UpToDateEntry.parse(newEntries);
         EntriesMatcher matcher = new EntriesMatcher(existingEntries);
         List<EntryUpdate> updates = matcher.match(entries);

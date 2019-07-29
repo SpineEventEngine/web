@@ -1,5 +1,7 @@
 package io.spine.web.firebase.subscription.diff;
 
+import io.spine.web.firebase.StoredJson;
+
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -17,8 +19,9 @@ final class UpToDateEntry extends Entry {
         return new UpToDateEntry(json);
     }
 
-    static List<UpToDateEntry> parse(List<String> json) {
+    static List<UpToDateEntry> parse(List<StoredJson> json) {
         return json.stream()
+                   .map(StoredJson::value)
                    .map(UpToDateEntry::parse)
                    .collect(toList());
     }

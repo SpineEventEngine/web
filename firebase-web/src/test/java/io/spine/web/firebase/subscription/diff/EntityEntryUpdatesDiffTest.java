@@ -21,13 +21,15 @@
 package io.spine.web.firebase.subscription.diff;
 
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -41,7 +43,7 @@ class EntityEntryUpdatesDiffTest {
 
         Diff diff = DiffCalculator
                 .from(value)
-                .compareWith(newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"));
+                .compareWith(jsons("{\"id\":\"1\",\"a\":1,\"b\":2}"));
 
         assertEquals(1, diff.getChangedCount());
         assertEquals(0, diff.getAddedCount());
@@ -55,7 +57,7 @@ class EntityEntryUpdatesDiffTest {
 
         Diff diff = DiffCalculator
                 .from(value)
-                .compareWith(newArrayList("{\"id\":\"1\",\"a\":1,\"b\":2}"));
+                .compareWith(jsons("{\"id\":\"1\",\"a\":1,\"b\":2}"));
 
         assertEquals(0, diff.getChangedCount());
         assertEquals(1, diff.getAddedCount());
@@ -87,11 +89,11 @@ class EntityEntryUpdatesDiffTest {
         );
         Diff diff = DiffCalculator
                 .from(value)
-                .compareWith(newArrayList("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed 
-                                          "{\"a\":1,\"b\":3}", // added
-                                          "{\"id\":{\"value\": \"passed\"}}", // passed
-                                          "{\"id\":\"2\",\"added\":1}", // added
-                                          "{\"pass\": true}"));
+                .compareWith(jsons("{\"id\":\"1\",\"a\":2,\"b\":4}", // changed
+                                   "{\"a\":1,\"b\":3}", // added
+                                   "{\"id\":{\"value\": \"passed\"}}", // passed
+                                   "{\"id\":\"2\",\"added\":1}", // added
+                                   "{\"pass\": true}"));
         assertEquals(1, diff.getChangedCount());
         assertEquals(2, diff.getAddedCount());
         assertEquals(1, diff.getRemovedCount());
@@ -102,7 +104,7 @@ class EntityEntryUpdatesDiffTest {
     @DisplayName("throw RuntimeException in case the new entries are invalid")
     void throwOnIncorrectEntries() {
         String invalidJson = "invalidJson";
-        List<String> newEntries = Collections.singletonList(invalidJson);
+        List<StoredJson> newEntries = jsons(invalidJson);
         NodeValue stubValue = NodeValue.empty();
         assertThrows(RuntimeException.class, () -> DiffCalculator.from(stubValue)
                                                                  .compareWith(newEntries));
@@ -111,8 +113,15 @@ class EntityEntryUpdatesDiffTest {
     private static NodeValue nodeValue(String... entries) {
         NodeValue nodeValue = NodeValue.empty();
         for (String entry : entries) {
-            nodeValue.addChild(entry);
+            nodeValue.addChild(StoredJson.from(entry));
         }
         return nodeValue;
+    }
+
+    private static List<StoredJson> jsons(String... rawJsons) {
+        List<StoredJson> jsons = Stream.of(rawJsons)
+                                       .map(StoredJson::from)
+                                       .collect(toList());
+        return jsons;
     }
 }

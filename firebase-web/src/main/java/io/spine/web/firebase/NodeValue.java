@@ -26,9 +26,9 @@ import com.google.firebase.database.utilities.Clock;
 import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import static com.google.api.client.http.ByteArrayContent.fromString;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
 
@@ -61,10 +61,8 @@ public final class NodeValue {
      * Creates a {@code NodeValue} whose underlying {@link com.google.gson.JsonObject} is
      * parsed from the given {@code String}.
      */
-    public static NodeValue from(String json) {
-        JsonParser parser = new JsonParser();
-        JsonObject value = parser.parse(json)
-                                 .getAsJsonObject();
+    static NodeValue from(StoredJson json) {
+        JsonObject value = json.asJsonObject();
         return new NodeValue(value);
     }
 
@@ -76,9 +74,9 @@ public final class NodeValue {
      * @param jsons child nodes
      * @return new node value
      */
-    public static NodeValue withChildren(Iterable<String> jsons) {
+    public static NodeValue withChildren(Iterable<StoredJson> jsons) {
         NodeValue nodeValue = new NodeValue();
-        for (String json : jsons) {
+        for (StoredJson json : jsons) {
             nodeValue.addChild(json);
         }
         return nodeValue;
@@ -103,17 +101,19 @@ public final class NodeValue {
      * @return the generated key under which the data was stored
      */
     @CanIgnoreReturnValue
-    public String addChild(String data) {
+    public String addChild(StoredJson data) {
         String key = ChildKeyGenerator.newKey();
-        value.addProperty(key, data);
+        addChild(key, data);
         return key;
     }
 
     /**
      * Adds a child to the value under a specified key.
      */
-    public void addChild(String key, String data) {
-        value.addProperty(key, data);
+    public void addChild(String key, StoredJson data) {
+        checkNotNull(key);
+        checkNotNull(data);
+        value.addProperty(key, data.value());
     }
 
     /**

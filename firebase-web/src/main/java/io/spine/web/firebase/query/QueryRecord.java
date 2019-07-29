@@ -23,11 +23,10 @@ package io.spine.web.firebase.query;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
-import io.spine.json.Json;
-import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 
 import java.util.List;
 
@@ -69,13 +68,12 @@ final class QueryRecord {
      * bulk.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        List<String> jsons = queryResponse
+        List<StoredJson> jsons = queryResponse
                 .getMessageList()
                 .stream()
                 .unordered()
                 .map(EntityStateWithVersion::getState)
-                .map(AnyPacker::unpack)
-                .map(Json::toCompactJson)
+                .map(StoredJson::encode)
                 .collect(toList());
         firebaseClient.create(path, NodeValue.withChildren(jsons));
     }

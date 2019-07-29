@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.StoredJson.encode;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Authors.gangOfFour;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.aliceInWonderland;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.designPatterns;
@@ -97,9 +98,9 @@ class QueryRecordTest {
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
                                                            queryResponse);
         NodeValue existingValue = NodeValue.empty();
-        existingValue.addChild(toCompactJson(aliceInWonderland));
-        String patternsKey = existingValue.addChild(toCompactJson(designPatterns));
-        String guideKey = existingValue.addChild(toCompactJson(guideToTheGalaxy));
+        existingValue.addChild(encode(aliceInWonderland));
+        String patternsKey = existingValue.addChild(encode(designPatterns));
+        String guideKey = existingValue.addChild(encode(guideToTheGalaxy));
 
         when(firebaseClient.get(any())).thenReturn(Optional.of(existingValue));
 

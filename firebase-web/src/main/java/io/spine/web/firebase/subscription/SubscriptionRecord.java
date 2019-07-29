@@ -20,14 +20,12 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.protobuf.Message;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
-import io.spine.json.Json;
-import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.subscription.diff.Diff;
 import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
@@ -70,7 +68,7 @@ final class SubscriptionRecord {
      * Stores the data to the Firebase updating only the data that has changed.
      */
     void storeAsUpdate(FirebaseClient firebaseClient) {
-        List<String> newEntries = mapMessagesToJson();
+        List<StoredJson> newEntries = mapMessagesToJson();
 
         if (DiffCalculator.canCalculateEfficientlyFor(newEntries)) {
             Optional<NodeValue> existingValue = firebaseClient.get(path);
@@ -86,7 +84,7 @@ final class SubscriptionRecord {
         }
     }
 
-    private void flushEntries(Iterable<String> jsonEntries, FirebaseClient client) {
+    private void flushEntries(Iterable<StoredJson> jsonEntries, FirebaseClient client) {
         NodeValue nodeValue = NodeValue.withChildren(jsonEntries);
         client.create(path, nodeValue);
     }
@@ -94,11 +92,11 @@ final class SubscriptionRecord {
     private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
         NodeValue nodeValue = NodeValue.empty();
         diff.getChangedList()
-            .forEach(record -> nodeValue.addChild(record.getKey(), record.getData()));
+            .forEach(record -> nodeValue.addChild(record.getKey(), StoredJson.from(record.getData())));
         diff.getRemovedList()
             .forEach(record -> nodeValue.addNullChild(record.getKey()));
         diff.getAddedList()
-            .forEach(record -> nodeValue.addChild(record.getData()));
+            .forEach(record -> nodeValue.addChild(StoredJson.from(record.getData())));
         firebaseClient.update(path, nodeValue);
     }
 
@@ -108,14 +106,13 @@ final class SubscriptionRecord {
      * @return a stream of messages represented by JSON strings
      */
     @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
-    private List<String> mapMessagesToJson() {
+    private List<StoredJson> mapMessagesToJson() {
         return queryResponse
                 .getMessageList()
                 .stream()
                 .unordered()
                 .map(EntityStateWithVersion::getState)
-                .map(AnyPacker::<Message>unpack)
-                .map(Json::toCompactJson)
+                .map(StoredJson::encode)
                 .collect(toList());
     }
 }

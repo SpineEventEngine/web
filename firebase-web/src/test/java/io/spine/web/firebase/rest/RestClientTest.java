@@ -28,6 +28,7 @@ import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ import static org.mockito.Mockito.when;
 class RestClientTest {
 
     private static final String PATH = "node/path";
-    private static final String DATA = "{\"a\":\"b\"}";
+    private static final StoredJson DATA = StoredJson.from("{\"a\":\"b\"}");
     private static final String DATABASE_URL_STRING = "https://database.com";
     private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from(DATABASE_URL_STRING);
     private static final RestNodeUrls NODE_FACTORY = new RestNodeUrls(DATABASE_URL);
@@ -67,7 +68,7 @@ class RestClientTest {
         httpClient = mock(HttpClient.class);
         client = new RestClient(NODE_FACTORY, httpClient);
         path = NodePaths.of(PATH);
-        value = NodeValue.from(DATA);
+        value = DATA.asNodeValue();
     }
 
     @Test
@@ -82,14 +83,14 @@ class RestClientTest {
     @Test
     @DisplayName("retrieve data from given database path")
     void getData() {
-        when(httpClient.get(any())).thenReturn(DATA);
+        when(httpClient.get(any())).thenReturn(DATA.value());
 
         Optional<NodeValue> result = client.get(path);
         assertTrue(result.isPresent());
         NodeValue value = result.get();
         String contentString = value.underlyingJson()
                                     .toString();
-        assertEquals(DATA, contentString);
+        assertEquals(DATA.value(), contentString);
     }
 
     @Test
@@ -113,7 +114,7 @@ class RestClientTest {
     @Test
     @DisplayName("store data via PATCH method when node already exists")
     void updateExistingViaPatch() {
-        when(httpClient.get(any())).thenReturn(DATA);
+        when(httpClient.get(any())).thenReturn(DATA.value());
 
         client.update(path, value);
         verify(httpClient).patch(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
