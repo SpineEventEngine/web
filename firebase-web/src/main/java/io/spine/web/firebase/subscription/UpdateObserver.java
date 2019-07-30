@@ -85,17 +85,22 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
         if (target.getIncludeAll()) {
             return messages;
         } else {
-            TargetFilters filters = target.getFilters();
-            IdFilter idFilter = filters.getIdFilter();
-            IdMatcher idMatches = new IdMatcher(idFilter);
-            Predicate<Message> fieldsMatch = CompositeFilters.toPredicate(filters.getFilterList());
-            ImmutableList<? extends Message> matching = fromUpdate(update)
-                    .stream()
-                    .filter(idMatches)
-                    .filter(fieldsMatch)
-                    .collect(toImmutableList());
+            ImmutableList<? extends Message> matching = filteredMessages(update, target);
             return matching;
         }
+    }
+
+    private static ImmutableList<? extends Message> filteredMessages(SubscriptionUpdate update,
+                                                                     Target target) {
+        TargetFilters filters = target.getFilters();
+        IdFilter idFilter = filters.getIdFilter();
+        IdMatcher idMatches = new IdMatcher(idFilter);
+        Predicate<Message> fieldsMatch = CompositeFilters.toPredicate(filters.getFilterList());
+        return fromUpdate(update)
+                .stream()
+                .filter(idMatches)
+                .filter(fieldsMatch)
+                .collect(toImmutableList());
     }
 
     private static ImmutableList<? extends Message> fromUpdate(SubscriptionUpdate update) {

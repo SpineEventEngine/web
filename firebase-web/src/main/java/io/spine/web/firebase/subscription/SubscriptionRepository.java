@@ -46,6 +46,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
 import static io.spine.json.Json.fromJson;
+import static io.spine.web.firebase.StoredJson.jsonNull;
 
 // TODO:2019-07-29:dmytro.dashenkov: Find a better name.
 final class SubscriptionRepository {
@@ -154,7 +155,7 @@ final class SubscriptionRepository {
     void delete(SubscriptionToken token) {
         checkNotNull(token);
         NodePath path = path(token);
-        firebase.delete(path);
+        firebase.update(path, jsonNull().asNodeValue());
     }
 
     private static NodePath path(SubscriptionToken token) {

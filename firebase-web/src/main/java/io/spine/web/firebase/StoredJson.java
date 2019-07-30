@@ -51,6 +51,10 @@ public final class StoredJson extends StringTypeValue {
         super(value);
     }
 
+    public static StoredJson jsonNull() {
+        return NULL_JSON;
+    }
+
     public static StoredJson from(String value) {
         checkNotNull(value);
         return JSON_NULL.equals(value)
@@ -75,7 +79,6 @@ public final class StoredJson extends StringTypeValue {
     }
 
     public NodeValue asNodeValue() {
-        checkState(!isNull(), "A null JSON cannot be converted into a NodeValue.");
         return NodeValue.from(this);
     }
 

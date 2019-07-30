@@ -22,7 +22,6 @@ package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.web.firebase.DatabaseUrl;
@@ -87,7 +86,7 @@ public final class RestClient implements FirebaseClient {
 
         GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         ByteArrayContent byteArrayContent = value.toByteArray();
-        create(nodeUrl, byteArrayContent);
+        httpClient.put(nodeUrl, byteArrayContent);
     }
 
     @Override
@@ -97,22 +96,6 @@ public final class RestClient implements FirebaseClient {
 
         GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
         ByteArrayContent byteArrayContent = value.toByteArray();
-        update(nodeUrl, byteArrayContent);
-    }
-
-    /**
-     * Creates the database node with the given value or overwrites the existing one.
-     */
-    private void create(GenericUrl nodeUrl, HttpContent value) {
-        httpClient.put(nodeUrl, value);
-    }
-
-    /**
-     * Updates the database node with the given value.
-     *
-     * <p>Common entries are overwritten.
-     */
-    private void update(GenericUrl nodeUrl, HttpContent value) {
-        httpClient.patch(nodeUrl, value);
+        httpClient.patch(nodeUrl, byteArrayContent);
     }
 }

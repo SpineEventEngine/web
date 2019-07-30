@@ -61,6 +61,14 @@ import static io.spine.web.firebase.subscription.Tokens.tokenFor;
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
+    private static final UserId SUBSCRIBER = UserId
+            .newBuilder()
+            .setValue(FirebaseSubscriptionBridge.class.getSimpleName())
+            .vBuild();
+    private static final ActorRequestFactory factory = ActorRequestFactory
+            .newBuilder()
+            .setActor(SUBSCRIBER)
+            .build();
     private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
     private final SubscriptionService subscriptionService;
@@ -76,13 +84,6 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     private void subscribeToAll() {
         Set<TypeUrl> types = repository.allTypes();
-        UserId actor = UserId.newBuilder()
-                             .setValue(FirebaseSubscriptionBridge.class.getSimpleName())
-                             .build();
-        ActorRequestFactory factory = ActorRequestFactory
-                .newBuilder()
-                .setActor(actor)
-                .build();
         UpdateObserver updateObserver = new UpdateObserver(firebaseClient, repository);
         StreamObserver<Subscription> subscriptionObserver =
                 new SubscriptionObserver(updateObserver, subscriptionService);
