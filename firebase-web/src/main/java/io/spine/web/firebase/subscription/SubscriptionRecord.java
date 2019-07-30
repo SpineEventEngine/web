@@ -72,16 +72,24 @@ final class SubscriptionRecord {
 
     private static ImmutableList<Any> fromUpdate(SubscriptionUpdate update) {
         return update.getUpdateCase() == ENTITY_UPDATES
-                        ? update.getEntityUpdates()
-                                .getUpdateList()
-                                .stream()
-                                .map(EntityStateUpdate::getState)
-                                .collect(toImmutableList())
-                        : update.getEventUpdates()
-                                .getEventList()
-                                .stream()
-                                .map(Event::getMessage)
-                                .collect(toImmutableList());
+                        ? entityUpdates(update)
+                        : eventUpdates(update);
+    }
+
+    private static ImmutableList<Any> entityUpdates(SubscriptionUpdate update) {
+        return update.getEntityUpdates()
+                .getUpdateList()
+                .stream()
+                .map(EntityStateUpdate::getState)
+                .collect(toImmutableList());
+    }
+
+    private static ImmutableList<Any> eventUpdates(SubscriptionUpdate update) {
+        return update.getEventUpdates()
+                     .getEventList()
+                     .stream()
+                     .map(Event::getMessage)
+                     .collect(toImmutableList());
     }
 
     /**
