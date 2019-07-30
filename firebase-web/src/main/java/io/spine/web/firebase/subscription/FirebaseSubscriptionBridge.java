@@ -28,7 +28,6 @@ import io.spine.client.QueryResponse;
 import io.spine.client.ResponseFormat;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
-import io.spine.client.SubscriptionUpdate;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.core.UserId;
@@ -43,7 +42,6 @@ import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
-import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -52,7 +50,6 @@ import static com.google.protobuf.util.Durations.fromMinutes;
 import static io.spine.base.Time.currentTime;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.web.firebase.subscription.Tokens.tokenFor;
 
 /**
@@ -86,8 +83,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                 .newBuilder()
                 .setActor(actor)
                 .build();
-        UpdateObserver updateObserver =
-                new UpdateObserver(firebaseClient, subscriptionService, repository);
+        UpdateObserver updateObserver = new UpdateObserver(firebaseClient, repository);
         StreamObserver<Subscription> subscriptionObserver =
                 new SubscriptionObserver(updateObserver, subscriptionService);
         for (TypeUrl type : types) {
@@ -158,78 +154,6 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                 .setWhenUpdated(currentTime())
                 .vBuild();
         repository.write(persisted);
-    }
-
-    private static final class SubscriptionObserver implements StreamObserver<Subscription> {
-
-        private final UpdateObserver updateObserver;
-        private final SubscriptionService subscriptionService;
-
-        private SubscriptionObserver(UpdateObserver observer, SubscriptionService service) {
-            this.updateObserver = checkNotNull(observer);
-            this.subscriptionService = checkNotNull(service);
-        }
-
-        @Override
-        public void onNext(Subscription subscription) {
-            subscriptionService.activate(subscription, updateObserver);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            throw illegalStateWithCauseOf(t);
-        }
-
-        @Override
-        public void onCompleted() {
-            // Do nothing.
-        }
-    }
-
-    private static final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
-
-        private final FirebaseClient firebase;
-        private final SubscriptionService subscriptionService;
-        private final SubscriptionRepository repository;
-
-        private UpdateObserver(FirebaseClient firebase,
-                               SubscriptionService service,
-                               SubscriptionRepository repository) {
-            this.firebase = checkNotNull(firebase);
-            this.subscriptionService = checkNotNull(service);
-            this.repository = checkNotNull(repository);
-        }
-
-        @Override
-        public void onNext(SubscriptionUpdate update) {
-            Subscription subscription = update.getSubscription();
-            TypeUrl type = TypeUrl.parse(subscription.getTopic()
-                                                     .getTarget()
-                                                     .getType());
-            List<PersistedSubscription> subscriptions = repository.forType(type);
-            for (PersistedSubscription userSubscription : subscriptions) {
-                if (matches(update, userSubscription)) {
-                    SubscriptionRecord record = new SubscriptionRecord(
-                            RequestNodePath.of(userSubscription.token()), update);
-                    record.storeAsUpdate(firebase);
-                }
-            }
-        }
-
-        private boolean matches(SubscriptionUpdate update, PersistedSubscription subscription) {
-
-            return true;
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            throw illegalStateWithCauseOf(t);
-        }
-
-        @Override
-        public void onCompleted() {
-            // Do nothing.
-        }
     }
 
     /**

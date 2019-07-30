@@ -23,11 +23,8 @@ package io.spine.web.firebase.subscription;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-import io.spine.client.EntityStateUpdate;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
-import io.spine.client.SubscriptionUpdate;
-import io.spine.core.Event;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
@@ -35,11 +32,12 @@ import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.subscription.diff.Diff;
 import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.appengine.repackaged.com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.client.SubscriptionUpdate.UpdateCase.ENTITY_UPDATES;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -53,8 +51,7 @@ final class SubscriptionRecord {
     private final ImmutableList<? extends Message> messages;
 
     SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
-        this.path = path;
-        this.messages = fromQueryResponse(queryResponse);
+        this(path, fromQueryResponse(queryResponse));
     }
 
     private static ImmutableList<Any> fromQueryResponse(QueryResponse queryResponse) {
@@ -65,31 +62,9 @@ final class SubscriptionRecord {
                 .collect(toImmutableList());
     }
 
-    SubscriptionRecord(NodePath path, SubscriptionUpdate update) {
-        this.path = path;
-        this.messages = fromUpdate(update);
-    }
-
-    private static ImmutableList<Any> fromUpdate(SubscriptionUpdate update) {
-        return update.getUpdateCase() == ENTITY_UPDATES
-                        ? entityUpdates(update)
-                        : eventUpdates(update);
-    }
-
-    private static ImmutableList<Any> entityUpdates(SubscriptionUpdate update) {
-        return update.getEntityUpdates()
-                .getUpdateList()
-                .stream()
-                .map(EntityStateUpdate::getState)
-                .collect(toImmutableList());
-    }
-
-    private static ImmutableList<Any> eventUpdates(SubscriptionUpdate update) {
-        return update.getEventUpdates()
-                     .getEventList()
-                     .stream()
-                     .map(Event::getMessage)
-                     .collect(toImmutableList());
+    SubscriptionRecord(NodePath path, Collection<? extends Message> messages) {
+        this.path = checkNotNull(path);
+        this.messages = ImmutableList.copyOf(messages);
     }
 
     /**

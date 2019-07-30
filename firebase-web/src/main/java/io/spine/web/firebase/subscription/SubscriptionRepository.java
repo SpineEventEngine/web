@@ -151,7 +151,7 @@ final class SubscriptionRepository {
         }
     }
 
-    public void delete(SubscriptionToken token) {
+    void delete(SubscriptionToken token) {
         checkNotNull(token);
         NodePath path = path(token);
         firebase.delete(path);
