@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import io.spine.web.firebase.given.TestFirebaseClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,6 @@ import java.util.concurrent.ExecutorService;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
-import static io.spine.web.firebase.given.AsyncClientTestEnv.sleepFor;
 import static java.time.Duration.ofSeconds;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -46,10 +46,7 @@ class AsyncClientTest {
     void setUp() {
         latency = ofSeconds(2);
         delegate = TestFirebaseClient.withSimulatedLatency(latency);
-        path = NodePath
-                .newBuilder()
-                .setValue("some/kind/of/path")
-                .build();
+        path = NodePaths.of("some/kind/of/path");
         executor = newSingleThreadExecutor();
     }
 
@@ -88,7 +85,7 @@ class AsyncClientTest {
         asyncClient.update(path, NodeValue.empty());
         assertThat(delegate.writes()).doesNotContain(path);
         Duration surefireTime = latency.plusSeconds(1);
-        sleepFor(surefireTime);
+        Uninterruptibles.sleepUninterruptibly(surefireTime);
         assertThat(delegate.writes()).contains(path);
     }
 }

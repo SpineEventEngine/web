@@ -79,4 +79,9 @@ public final class AsyncClient implements FirebaseClient {
         executor.execute(() -> delegate.update(nodePath, value));
 
     }
+
+    @Override
+    public void delete(NodePath nodePath) {
+        executor.execute(() -> delegate.delete(nodePath));
+    }
 }

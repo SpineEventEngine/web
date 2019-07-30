@@ -20,18 +20,13 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
-import io.spine.base.EventMessage;
-import io.spine.client.EntityStateUpdate;
 import io.spine.client.IdFilter;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.client.Target;
 import io.spine.client.TargetFilters;
-import io.spine.core.Event;
-import io.spine.protobuf.AnyPacker;
 import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
@@ -39,13 +34,10 @@ import io.spine.web.firebase.query.RequestNodePath;
 import io.spine.web.firebase.subscription.matcher.CompositeFilters;
 import io.spine.web.firebase.subscription.matcher.IdMatcher;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.client.SubscriptionUpdate.UpdateCase.ENTITY_UPDATES;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
@@ -66,64 +58,35 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
                                                  .getType());
         List<PersistedSubscription> subscriptions = repository.forType(type);
         for (PersistedSubscription userSubscription : subscriptions) {
-            Collection<? extends Message> matchingMessages =
-                    extractMatching(update, userSubscription);
-            if (!matchingMessages.isEmpty()) {
+            UpdatePayload payload = extractMatching(update, userSubscription);
+            if (!payload.isEmpty()) {
                 NodePath token = RequestNodePath.of(userSubscription.token());
-                SubscriptionRecord record = new SubscriptionRecord(token, matchingMessages);
+                SubscriptionRecord record = new SubscriptionRecord(token, payload);
                 record.storeAsUpdate(firebase);
             }
         }
     }
 
-    private static Collection<? extends Message>
+    private static UpdatePayload
     extractMatching(SubscriptionUpdate update, PersistedSubscription targetSubscription) {
-        ImmutableList<? extends Message> messages = fromUpdate(update);
+        UpdatePayload payload = UpdatePayload.from(update);
         Target target = targetSubscription.getSubscription()
                                           .getTopic()
                                           .getTarget();
         if (target.getIncludeAll()) {
-            return messages;
+            return payload;
         } else {
-            ImmutableList<? extends Message> matching = filteredMessages(update, target);
+            UpdatePayload matching = filteredMessages(payload, target);
             return matching;
         }
     }
 
-    private static ImmutableList<? extends Message> filteredMessages(SubscriptionUpdate update,
-                                                                     Target target) {
+    private static UpdatePayload filteredMessages(UpdatePayload update, Target target) {
         TargetFilters filters = target.getFilters();
         IdFilter idFilter = filters.getIdFilter();
-        IdMatcher idMatches = new IdMatcher(idFilter);
+        Predicate<Message> idMatches = new IdMatcher(idFilter);
         Predicate<Message> fieldsMatch = CompositeFilters.toPredicate(filters.getFilterList());
-        return fromUpdate(update)
-                .stream()
-                .filter(idMatches)
-                .filter(fieldsMatch)
-                .collect(toImmutableList());
-    }
-
-    private static ImmutableList<? extends Message> fromUpdate(SubscriptionUpdate update) {
-        return update.getUpdateCase() == ENTITY_UPDATES
-               ? entityUpdates(update)
-               : eventUpdates(update);
-    }
-
-    private static ImmutableList<Message> entityUpdates(SubscriptionUpdate update) {
-        return update.getEntityUpdates()
-                     .getUpdateList()
-                     .stream()
-                     .map(EntityStateUpdate::getState)
-                     .map(AnyPacker.unpackFunc())
-                     .collect(toImmutableList());
-    }
-
-    private static ImmutableList<EventMessage> eventUpdates(SubscriptionUpdate update) {
-        return update.getEventUpdates()
-                     .getEventList()
-                     .stream()
-                     .map(Event::enclosedMessage)
-                     .collect(toImmutableList());
+        return update.filter(idMatches.and(fieldsMatch));
     }
 
     @Override

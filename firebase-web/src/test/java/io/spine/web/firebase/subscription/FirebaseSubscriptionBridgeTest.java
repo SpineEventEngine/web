@@ -24,6 +24,7 @@ import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.server.QueryService;
 import io.spine.web.firebase.FirebaseClient;
@@ -61,8 +62,9 @@ class FirebaseSubscriptionBridgeTest {
     @BeforeEach
     void setUp() {
         QueryServiceImplBase queryService = new TestQueryService();
+        SubscriptionServiceImplBase subscriptionService = new TestSubscriptionService();
         FirebaseClient firebaseClient = mock(FirebaseClient.class);
-        bridge = newBridge(firebaseClient, queryService);
+        bridge = newBridge(firebaseClient, queryService, subscriptionService);
         topicFactory = topicFactory();
     }
 

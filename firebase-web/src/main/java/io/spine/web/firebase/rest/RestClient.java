@@ -70,7 +70,7 @@ public final class RestClient implements FirebaseClient {
     public Optional<NodeValue> get(NodePath nodePath) {
         checkNotNull(nodePath);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = url(nodePath);
         String data = httpClient.get(nodeUrl);
         StoredJson json = StoredJson.from(data);
         Optional<NodeValue> nodeValue = Optional.of(json)
@@ -84,7 +84,7 @@ public final class RestClient implements FirebaseClient {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = url(nodePath);
         ByteArrayContent byteArrayContent = value.toByteArray();
         httpClient.put(nodeUrl, byteArrayContent);
     }
@@ -94,8 +94,20 @@ public final class RestClient implements FirebaseClient {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = url(nodePath);
         ByteArrayContent byteArrayContent = value.toByteArray();
         httpClient.patch(nodeUrl, byteArrayContent);
+    }
+
+    @Override
+    public void delete(NodePath nodePath) {
+        checkNotNull(nodePath);
+
+        GenericUrl nodeUrl = url(nodePath);
+        httpClient.delete(nodeUrl);
+    }
+
+    private GenericUrl url(NodePath nodePath) {
+        return asGenericUrl(factory.with(nodePath));
     }
 }

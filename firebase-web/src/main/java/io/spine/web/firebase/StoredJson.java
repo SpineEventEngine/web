@@ -29,7 +29,6 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static io.spine.json.Json.toCompactJson;
 
 /**
@@ -49,10 +48,6 @@ public final class StoredJson extends StringTypeValue {
 
     private StoredJson(String value) {
         super(value);
-    }
-
-    public static StoredJson jsonNull() {
-        return NULL_JSON;
     }
 
     public static StoredJson from(String value) {

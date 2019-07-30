@@ -37,6 +37,7 @@ public final class NodePaths {
     private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
     private static final String SUBSTITUTION_SYMBOL = "-";
     private static final char SEPARATOR = '/';
+    private static final Joiner pathJoiner = Joiner.on(SEPARATOR);
 
     /** Prevents instantiation of this static factory. */
     private NodePaths() {
@@ -53,23 +54,18 @@ public final class NodePaths {
         checkNotNull(path);
         return NodePath
                 .newBuilder()
-                .setValue(path)
+                .setValue(escaped(path))
                 .vBuild();
-    }
-
-    public static char separator() {
-        return SEPARATOR;
     }
 
     private static String concatPath(String... elements) {
         Collection<String> pathElements = newArrayList();
         for (String element : elements) {
             if (!element.isEmpty()) {
-                pathElements.add(escaped(element));
+                pathElements.add(element);
             }
         }
-        String path = Joiner.on(SEPARATOR)
-                            .join(pathElements);
+        String path = pathJoiner.join(pathElements);
         return path;
     }
 

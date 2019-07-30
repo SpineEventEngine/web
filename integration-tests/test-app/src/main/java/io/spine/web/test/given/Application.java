@@ -23,6 +23,7 @@ package io.spine.web.test.given;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
@@ -40,8 +41,7 @@ import static io.spine.web.firebase.FirebaseClientFactory.restClient;
  */
 final class Application {
 
-    private static final DatabaseUrl DATABASE_URL =
-            DatabaseUrls.from("http://127.0.0.1:5000/");
+    private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from("http://127.0.0.1:5000");
     private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(3);
 
     private final CommandService commandService;
@@ -50,29 +50,39 @@ final class Application {
 
     private Application(CommandService commandService,
                         QueryService queryService,
+                        SubscriptionService subscriptionService,
                         FirebaseClient client) {
         this.commandService = commandService;
-        this.queryBridge = FirebaseQueryBridge.newBuilder()
-                                              .setQueryService(queryService)
-                                              .setFirebaseClient(client)
-                                              .build();
-        this.subscriptionBridge = FirebaseSubscriptionBridge.newBuilder()
-                                                            .setQueryService(queryService)
-                                                            .setFirebaseClient(client)
-                                                            .build();
+        this.queryBridge = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(client)
+                .build();
+        this.subscriptionBridge = FirebaseSubscriptionBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setSubscriptionService(subscriptionService)
+                .setFirebaseClient(client)
+                .build();
     }
 
     static Application create(BoundedContext boundedContext) {
         checkNotNull(boundedContext);
-        CommandService commandService = CommandService.newBuilder()
-                                                      .add(boundedContext)
-                                                      .build();
-        QueryService queryService = QueryService.newBuilder()
-                                                .add(boundedContext)
-                                                .build();
+        CommandService commandService = CommandService
+                .newBuilder()
+                .add(boundedContext)
+                .build();
+        QueryService queryService = QueryService
+                .newBuilder()
+                .add(boundedContext)
+                .build();
+        SubscriptionService subscriptionService = SubscriptionService
+                .newBuilder()
+                .add(boundedContext)
+                .build();
         FirebaseClient firebaseClient = restClient(DATABASE_URL);
         FirebaseClient retryingClient = new RetryingClient(firebaseClient, RETRY_POLICY);
-        return new Application(commandService, queryService, retryingClient);
+        return new Application(commandService, queryService, subscriptionService, retryingClient);
     }
 
     CommandService commandService() {

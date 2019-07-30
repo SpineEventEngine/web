@@ -30,8 +30,8 @@ import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.UserId;
-import io.spine.server.SubscriptionService;
 import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
@@ -71,7 +71,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             .build();
     private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
-    private final SubscriptionService subscriptionService;
+    private final SubscriptionServiceImplBase subscriptionService;
     private final SubscriptionRepository repository;
 
     private FirebaseSubscriptionBridge(Builder builder) {
@@ -175,7 +175,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
         private BlockingQueryService queryService;
         private FirebaseClient firebaseClient;
-        private SubscriptionService subscriptionService;
+        private SubscriptionServiceImplBase subscriptionService;
         private Duration subscriptionLifeSpan = DEFAULT_SUBSCRIPTION_LIFE_SPAN;
 
         /**
@@ -195,7 +195,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             return this;
         }
 
-        public Builder setSubscriptionService(SubscriptionService subscriptionService) {
+        public Builder setSubscriptionService(SubscriptionServiceImplBase subscriptionService) {
             this.subscriptionService = checkNotNull(subscriptionService);
             return this;
         }

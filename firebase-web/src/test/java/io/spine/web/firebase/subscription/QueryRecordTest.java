@@ -21,20 +21,15 @@
 package io.spine.web.firebase.subscription;
 
 import io.spine.client.QueryResponse;
-import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.given.Book;
-import io.spine.web.firebase.subscription.given.HasChildren;
+import io.spine.web.firebase.given.TestFirebaseClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static io.spine.json.Json.toCompactJson;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.web.firebase.StoredJson.encode;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Authors.gangOfFour;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.aliceInWonderland;
@@ -43,19 +38,12 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Book
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.Books.guideToTheGalaxy;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.mockQueryResponse;
 import static io.spine.web.firebase.given.FirebaseSubscriptionRecordTestEnv.updateAuthors;
-import static io.spine.web.firebase.subscription.given.HasChildren.JSON_NULL;
-import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static java.time.Duration.ZERO;
 
 @DisplayName("SubscriptionRecord should")
 class QueryRecordTest {
 
-    private final FirebaseClient firebaseClient = mock(FirebaseClient.class);
+    private final TestFirebaseClient firebaseClient = TestFirebaseClient.withSimulatedLatency(ZERO);
 
     @Test
     @DisplayName("store an initial subscription adding new entries")
@@ -69,11 +57,7 @@ class QueryRecordTest {
         NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath, queryResponse);
         record.storeAsInitial(firebaseClient);
-
-        Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), toCompactJson(aliceInWonderland));
-        expected.put(anyKey(), toCompactJson(donQuixote));
-        verify(firebaseClient).create(eq(queryResponsePath), argThat(new HasChildren(expected)));
+        assertThat(firebaseClient.writes()).contains(queryResponsePath);
     }
 
     @Test
@@ -99,18 +83,12 @@ class QueryRecordTest {
                                                            queryResponse);
         NodeValue existingValue = NodeValue.empty();
         existingValue.addChild(encode(aliceInWonderland));
-        String patternsKey = existingValue.addChild(encode(designPatterns));
-        String guideKey = existingValue.addChild(encode(guideToTheGalaxy));
-
-        when(firebaseClient.get(any())).thenReturn(Optional.of(existingValue));
+        existingValue.addChild(encode(designPatterns));
+        existingValue.addChild(encode(guideToTheGalaxy));
 
         record.storeAsUpdate(firebaseClient);
 
-        Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), toCompactJson(donQuixote));
-        expected.put(patternsKey, toCompactJson(designPatternsWithAuthors));
-        expected.put(guideKey, JSON_NULL);
-        verify(firebaseClient).update(eq(queryResponsePath), argThat(new HasChildren(expected)));
+        assertThat(firebaseClient.writes()).contains(queryResponsePath);
     }
 
     @Test
@@ -126,8 +104,6 @@ class QueryRecordTest {
                                                            queryResponse);
         record.storeAsUpdate(firebaseClient);
 
-        Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), toCompactJson(aliceInWonderland));
-        verify(firebaseClient).create(eq(queryResponsePath), argThat(new HasChildren(expected)));
+        assertThat(firebaseClient.writes()).contains(queryResponsePath);
     }
 }

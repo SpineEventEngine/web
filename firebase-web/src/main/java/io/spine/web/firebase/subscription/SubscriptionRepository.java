@@ -30,6 +30,7 @@ import io.spine.json.Json;
 import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
+import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.query.RequestNodePath;
@@ -45,35 +46,17 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
-import static io.spine.json.Json.fromJson;
-import static io.spine.web.firebase.StoredJson.jsonNull;
 
 // TODO:2019-07-29:dmytro.dashenkov: Find a better name.
 final class SubscriptionRepository {
 
-    private static final NodePath SUBSCRIPTIONS_ROOT = NodePath
-            .newBuilder()
-            .setValue("io.spine.web.subscription")
-            .vBuild();
+    private static final NodePath SUBSCRIPTIONS_ROOT = NodePaths.of("subscriptions");
     private final FirebaseClient firebase;
     private final Duration expirationTimeout;
 
     SubscriptionRepository(FirebaseClient firebase, Duration timeout) {
         this.firebase = checkNotNull(firebase);
         this.expirationTimeout = checkNotNull(timeout);
-    }
-
-    public Optional<PersistedSubscription> read(SubscriptionToken token) {
-        NodePath path = path(token);
-        Optional<NodeValue> node = firebase.get(path);
-        Optional<PersistedSubscription> subscription = node
-                .map(val -> fromJson(val.toString(), PersistedSubscription.class))
-                .flatMap(this::deleteIfOutdated);
-        return subscription;
-    }
-
-    public boolean isActive(SubscriptionToken token) {
-        return read(token).isPresent();
     }
 
     public List<PersistedSubscription> forType(TypeUrl targetType) {
@@ -91,24 +74,7 @@ final class SubscriptionRepository {
         return parseActive(jsons);
     }
 
-    public List<PersistedSubscription> all() {
-        Optional<NodeValue> subscriptionRoot = firebase.get(SUBSCRIPTIONS_ROOT);
-        if (!subscriptionRoot.isPresent()) {
-            return ImmutableList.of();
-        }
-        NodeValue rootNode = subscriptionRoot.get();
-        Stream<JsonElement> jsons = rootNode.underlyingJson()
-                                             .entrySet()
-                                             .stream()
-                                             .flatMap(entry -> entry.getValue()
-                                                                    .getAsJsonObject()
-                                                                    .entrySet()
-                                                                    .stream())
-                                             .map(Map.Entry::getValue);
-        return parseActive(jsons);
-    }
-
-    public Set<TypeUrl> allTypes() {
+    Set<TypeUrl> allTypes() {
         Optional<NodeValue> subscriptionRoot = firebase.get(SUBSCRIPTIONS_ROOT);
         if (!subscriptionRoot.isPresent()) {
             return ImmutableSet.of();
@@ -155,7 +121,7 @@ final class SubscriptionRepository {
     void delete(SubscriptionToken token) {
         checkNotNull(token);
         NodePath path = path(token);
-        firebase.update(path, jsonNull().asNodeValue());
+        firebase.delete(path);
     }
 
     private static NodePath path(SubscriptionToken token) {

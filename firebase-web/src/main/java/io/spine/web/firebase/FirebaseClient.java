@@ -67,4 +67,6 @@ public interface FirebaseClient {
      *         the value to merge
      */
     void update(NodePath nodePath, NodeValue value);
+
+    void delete(NodePath nodePath);
 }

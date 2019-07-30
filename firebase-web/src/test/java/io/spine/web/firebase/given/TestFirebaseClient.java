@@ -31,7 +31,7 @@ import java.util.Optional;
 
 import static com.google.appengine.repackaged.com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.web.firebase.given.AsyncClientTestEnv.sleepFor;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
 public final class TestFirebaseClient implements FirebaseClient {
 
@@ -57,13 +57,19 @@ public final class TestFirebaseClient implements FirebaseClient {
 
     @Override
     public void create(NodePath nodePath, NodeValue value) {
-        sleepFor(writeLatency);
+        sleepUninterruptibly(writeLatency);
         writes.add(nodePath);
     }
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
-        sleepFor(writeLatency);
+        sleepUninterruptibly(writeLatency);
+        writes.add(nodePath);
+    }
+
+    @Override
+    public void delete(NodePath nodePath) {
+        sleepUninterruptibly(writeLatency);
         writes.add(nodePath);
     }
 

@@ -20,25 +20,12 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Any;
-import com.google.protobuf.Message;
-import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
-import io.spine.web.firebase.StoredJson;
-import io.spine.web.firebase.subscription.diff.Diff;
-import io.spine.web.firebase.subscription.diff.DiffCalculator;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 import static com.google.appengine.repackaged.com.google.gson.internal.$Gson$Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A subscription record that gets stored into a Firebase database.
@@ -48,23 +35,15 @@ import static java.util.stream.Collectors.toList;
 final class SubscriptionRecord {
 
     private final NodePath path;
-    private final ImmutableList<? extends Message> messages;
+    private final UpdatePayload updatePayload;
 
     SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
-        this(path, fromQueryResponse(queryResponse));
+        this(path, UpdatePayload.from(queryResponse));
     }
 
-    private static ImmutableList<Any> fromQueryResponse(QueryResponse queryResponse) {
-        return queryResponse
-                .getMessageList()
-                .stream()
-                .map(EntityStateWithVersion::getState)
-                .collect(toImmutableList());
-    }
-
-    SubscriptionRecord(NodePath path, Collection<? extends Message> messages) {
+    SubscriptionRecord(NodePath path, UpdatePayload payload) {
         this.path = checkNotNull(path);
-        this.messages = ImmutableList.copyOf(messages);
+        this.updatePayload = checkNotNull(payload);
     }
 
     /**
@@ -79,54 +58,15 @@ final class SubscriptionRecord {
      * already stored in database at given location.
      */
     void storeAsInitial(FirebaseClient firebaseClient) {
-        flushEntries(mapMessagesToJson(), firebaseClient);
+        NodeValue nodeValue = updatePayload.asNodeValue();
+        firebaseClient.create(path, nodeValue);
     }
 
     /**
      * Stores the data to the Firebase updating only the data that has changed.
      */
     void storeAsUpdate(FirebaseClient firebaseClient) {
-        List<StoredJson> newEntries = mapMessagesToJson();
-
-        if (DiffCalculator.canCalculateEfficientlyFor(newEntries)) {
-            Optional<NodeValue> existingValue = firebaseClient.get(path);
-            if (existingValue.isPresent()) {
-                DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
-                Diff diff = diffCalculator.compareWith(newEntries);
-                updateWithDiff(diff, firebaseClient);
-            } else {
-                storeAsInitial(firebaseClient);
-            }
-        } else {
-            storeAsInitial(firebaseClient);
-        }
-    }
-
-    private void flushEntries(Iterable<StoredJson> jsonEntries, FirebaseClient client) {
-        NodeValue nodeValue = NodeValue.withChildren(jsonEntries);
-        client.create(path, nodeValue);
-    }
-
-    private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
-        NodeValue nodeValue = NodeValue.empty();
-        diff.getChangedList()
-            .forEach(record -> nodeValue.addChild(record.getKey(), StoredJson.from(record.getData())));
-        diff.getRemovedList()
-            .forEach(record -> nodeValue.addNullChild(record.getKey()));
-        diff.getAddedList()
-            .forEach(record -> nodeValue.addChild(StoredJson.from(record.getData())));
+        NodeValue nodeValue = updatePayload.asNodeValue();
         firebaseClient.update(path, nodeValue);
-    }
-
-    /**
-     * Creates a stream of response messages mapping each response message to JSON.
-     *
-     * @return a stream of messages represented by JSON strings
-     */
-    private List<StoredJson> mapMessagesToJson() {
-        return messages
-                .stream()
-                .map(StoredJson::encode)
-                .collect(toList());
     }
 }
