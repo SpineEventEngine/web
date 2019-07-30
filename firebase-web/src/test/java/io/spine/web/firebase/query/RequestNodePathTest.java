@@ -44,11 +44,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("QueryNodePath should")
-class QueryNodePathTest {
+@DisplayName("RequestNodePath should")
+class RequestNodePathTest {
 
     private static final QueryFactory queryFactory =
-            new TestActorRequestFactory(QueryNodePathTest.class).query();
+            new TestActorRequestFactory(RequestNodePathTest.class).query();
 
     @Test
     @DisplayName("construct self for a Query")
@@ -56,8 +56,8 @@ class QueryNodePathTest {
         Query firstQuery = queryFactory.all(Empty.class);
         Query secondQuery = queryFactory.all(Timestamp.class);
 
-        NodePath firstPath = QueryNodePath.of(firstQuery);
-        NodePath secondPath = QueryNodePath.of(secondQuery);
+        NodePath firstPath = RequestNodePath.of(firstQuery);
+        NodePath secondPath = RequestNodePath.of(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -95,8 +95,8 @@ class QueryNodePathTest {
                                        emailTenant,
                                        firstValueTenant,
                                        secondValueTenant)
-                                   .map(QueryNodePathTest::tenantAwareQuery)
-                                   .map(QueryNodePath::of)
+                                   .map(RequestNodePathTest::tenantAwareQuery)
+                                   .map(RequestNodePath::of)
                                    .map(NodePath::getValue)
                                    .collect(toList());
         new EqualsTester()
@@ -116,7 +116,7 @@ class QueryNodePathTest {
         );
         Query query = requestFactory.query()
                                     .all(Any.class);
-        String path = QueryNodePath.of(query).getValue();
+        String path = RequestNodePath.of(query).getValue();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -129,7 +129,7 @@ class QueryNodePathTest {
 
     private static Query tenantAwareQuery(TenantId tenantId) {
         TestActorRequestFactory requestFactory =
-                new TestActorRequestFactory(QueryNodePathTest.class, tenantId);
+                new TestActorRequestFactory(RequestNodePathTest.class, tenantId);
         Query query = requestFactory.query()
                                     .all(Any.class);
         return query;

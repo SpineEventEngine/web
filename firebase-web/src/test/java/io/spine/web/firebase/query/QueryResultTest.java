@@ -51,7 +51,7 @@ class QueryResultTest {
     @BeforeEach
     void setUp() {
         Query query = queryFactory.all(Any.class);
-        nodePath = QueryNodePath.of(query);
+        nodePath = RequestNodePath.of(query);
     }
 
     @Test

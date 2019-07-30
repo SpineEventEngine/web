@@ -20,15 +20,33 @@
 
 package io.spine.web.firebase;
 
+import com.google.common.base.Joiner;
+
+import java.util.Collection;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * A static factory for {@link NodePath}.
  */
 public final class NodePaths {
 
+    private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
+    private static final String SUBSTITUTION_SYMBOL = "-";
+    private static final char SEPARATOR = '/';
+
     /** Prevents instantiation of this static factory. */
     private NodePaths() {
+    }
+
+    public static NodePath of(String... pathElements) {
+        checkNotNull(pathElements);
+        checkArgument(pathElements.length > 0);
+        String path = concatPath(pathElements);
+        return of(path);
     }
 
     public static NodePath of(String path) {
@@ -37,5 +55,27 @@ public final class NodePaths {
                 .newBuilder()
                 .setValue(path)
                 .vBuild();
+    }
+
+    public static char separator() {
+        return SEPARATOR;
+    }
+
+    private static String concatPath(String... elements) {
+        Collection<String> pathElements = newArrayList();
+        for (String element : elements) {
+            if (!element.isEmpty()) {
+                pathElements.add(escaped(element));
+            }
+        }
+        String path = Joiner.on(SEPARATOR)
+                            .join(pathElements);
+        return path;
+    }
+
+    private static String escaped(String dirty) {
+        return ILLEGAL_DATABASE_PATH_SYMBOL
+                .matcher(dirty)
+                .replaceAll(SUBSTITUTION_SYMBOL);
     }
 }

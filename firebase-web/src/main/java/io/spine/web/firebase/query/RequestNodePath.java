@@ -1,31 +1,24 @@
 package io.spine.web.firebase.query;
 
-import com.google.common.base.Joiner;
 import io.spine.client.Query;
 import io.spine.client.QueryId;
+import io.spine.core.ActorContext;
 import io.spine.core.TenantId;
 import io.spine.core.UserId;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
-
-import java.util.Collection;
-import java.util.regex.Pattern;
-
-import static com.google.common.collect.Lists.newArrayList;
+import io.spine.web.firebase.subscription.SubscriptionToken;
 
 /**
  * A factory creating {@link NodePath}s where query results are placed.
  */
-public class QueryNodePath {
+public class RequestNodePath {
 
-    private static final Pattern ILLEGAL_DATABASE_PATH_SYMBOL = Pattern.compile("[\\[\\].$#]");
-    private static final String SUBSTITUTION_SYMBOL = "-";
-    private static final String PATH_DELIMITER = "/";
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String DEFAULT_TENANT = "common";
 
     /** Prevents instantiation of this static factory. */
-    private QueryNodePath() {
+    private RequestNodePath() {
     }
 
     /**
@@ -37,32 +30,22 @@ public class QueryNodePath {
      * @return new {@code NodePath}
      */
     public static NodePath of(Query query) {
-        String path = constructPath(query);
-        return NodePaths.of(path);
-    }
-
-    private static String constructPath(Query query) {
-        String tenantId = tenantIdAsString(query);
-        String actor = actorAsString(query);
+        ActorContext context = query.getContext();
+        String tenantId = tenantIdAsString(context.getTenantId());
+        String actor = actorAsString(context.getActor());
         String queryId = queryIdAsString(query);
-        Collection<String> pathElements = newArrayList();
-        if (!tenantId.isEmpty()) {
-            pathElements.add(escaped(tenantId));
-        }
-        if (!actor.isEmpty()) {
-            pathElements.add(escaped(actor));
-        }
-        if (!queryId.isEmpty()) {
-            pathElements.add(escaped(queryId));
-        }
-        String path = Joiner.on(PATH_DELIMITER)
-                            .join(pathElements);
-        return path;
+        return NodePaths.of(tenantId, actor, queryId);
     }
 
-    private static String tenantIdAsString(Query query) {
-        TenantId tenantId = query.getContext()
-                                 .getTenantId();
+    public static NodePath of(SubscriptionToken subscription) {
+        String type = subscription.getTarget();
+        String tenantId = tenantIdAsString(subscription.getTenant());
+        String actor = actorAsString(subscription.getUser());
+        String queryId = subscriptionIdAsString(subscription);
+        return NodePaths.of(type, tenantId, actor, queryId);
+    }
+
+    private static String tenantIdAsString(TenantId tenantId) {
         TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
@@ -81,10 +64,7 @@ public class QueryNodePath {
         }
     }
 
-    private static String actorAsString(Query query) {
-        UserId actor = query
-                .getContext()
-                .getActor();
+    private static String actorAsString(UserId actor) {
         String result = actor.getValue();
         return result;
     }
@@ -95,9 +75,9 @@ public class QueryNodePath {
         return result;
     }
 
-    private static String escaped(String dirty) {
-        return ILLEGAL_DATABASE_PATH_SYMBOL
-                .matcher(dirty)
-                .replaceAll(SUBSTITUTION_SYMBOL);
+    private static String subscriptionIdAsString(SubscriptionToken subscription) {
+        return subscription.getId().getValue();
     }
+
+
 }

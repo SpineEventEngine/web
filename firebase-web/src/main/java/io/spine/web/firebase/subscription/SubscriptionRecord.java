@@ -20,8 +20,14 @@
 
 package io.spine.web.firebase.subscription;
 
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Any;
+import com.google.protobuf.Message;
+import io.spine.client.EntityStateUpdate;
 import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
+import io.spine.client.SubscriptionUpdate;
+import io.spine.core.Event;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
@@ -32,6 +38,8 @@ import io.spine.web.firebase.subscription.diff.DiffCalculator;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.client.SubscriptionUpdate.UpdateCase.ENTITY_UPDATES;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -42,11 +50,38 @@ import static java.util.stream.Collectors.toList;
 final class SubscriptionRecord {
 
     private final NodePath path;
-    private final QueryResponse queryResponse;
+    private final ImmutableList<? extends Message> messages;
 
     SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
         this.path = path;
-        this.queryResponse = queryResponse;
+        this.messages = fromQueryResponse(queryResponse);
+    }
+
+    private static ImmutableList<Any> fromQueryResponse(QueryResponse queryResponse) {
+        return queryResponse
+                .getMessageList()
+                .stream()
+                .map(EntityStateWithVersion::getState)
+                .collect(toImmutableList());
+    }
+
+    SubscriptionRecord(NodePath path, SubscriptionUpdate update) {
+        this.path = path;
+        this.messages = fromUpdate(update);
+    }
+
+    private static ImmutableList<Any> fromUpdate(SubscriptionUpdate update) {
+        return update.getUpdateCase() == ENTITY_UPDATES
+                        ? update.getEntityUpdates()
+                                .getUpdateList()
+                                .stream()
+                                .map(EntityStateUpdate::getState)
+                                .collect(toImmutableList())
+                        : update.getEventUpdates()
+                                .getEventList()
+                                .stream()
+                                .map(Event::getMessage)
+                                .collect(toImmutableList());
     }
 
     /**
@@ -105,13 +140,9 @@ final class SubscriptionRecord {
      *
      * @return a stream of messages represented by JSON strings
      */
-    @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
     private List<StoredJson> mapMessagesToJson() {
-        return queryResponse
-                .getMessageList()
+        return messages
                 .stream()
-                .unordered()
-                .map(EntityStateWithVersion::getState)
                 .map(StoredJson::encode)
                 .collect(toList());
     }

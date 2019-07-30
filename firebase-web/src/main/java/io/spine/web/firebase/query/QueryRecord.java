@@ -43,7 +43,7 @@ final class QueryRecord {
     private final QueryResponse queryResponse;
 
     QueryRecord(Query query, QueryResponse queryResponse) {
-        this.path = QueryNodePath.of(query);
+        this.path = RequestNodePath.of(query);
         this.queryResponse = queryResponse;
     }
 
