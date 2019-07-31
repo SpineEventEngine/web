@@ -55,11 +55,16 @@ class FirebaseSubscribeResultTest {
         Topic topic = topicFactory.forTarget(newTarget("test-type"));
         NodePath path = NodePaths.of("test-database-path");
         Subscription subscription = newSubscription(topic, path.getValue());
-        SubscribeResult result = new FirebaseSubscribeResult(subscription);
-        result.writeTo(response);
+        SubscribeResult firebaseResult = new FirebaseSubscribeResult(subscription, path);
+        firebaseResult.writeTo(response);
         verify(response).getWriter();
 
-        String expected = toCompactJson(subscription);
+        FirebaseSubscription firebaseSubscription = FirebaseSubscription
+                .newBuilder()
+                .setSubscription(subscription)
+                .setNodePath(path)
+                .buildPartial();
+        String expected = toCompactJson(firebaseSubscription);
         assertEquals(expected, writer.toString());
     }
 }

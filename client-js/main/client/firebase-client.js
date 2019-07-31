@@ -125,7 +125,7 @@ export class FirebaseClient extends AbstractClient {
 
       this._endpoint.subscribeTo(topic)
         .then(response => {
-          const path = response.id.value;
+          const path = response.nodePath.value;
 
           const itemAdded = new Subject();
           const itemChanged = new Subject();

@@ -47,6 +47,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
+import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.currentTime;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
@@ -95,15 +96,29 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     @Override
     public SubscribeResult subscribe(Topic topic) {
+        Subscription subscription = createSubscription(topic);
+        QueryResponse queryResponse = queryInitial(topic);
+        NodePath path = storeInitial(subscription, queryResponse);
+        return new FirebaseSubscribeResult(subscription, path);
+    }
+
+    private QueryResponse queryInitial(Topic topic) {
         Query query = newQueryForTopic(topic);
-        QueryResponse queryResponse = queryService.execute(query);
-        NodePath path = RequestNodePath.of(query);
-        SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
-        record.storeAsInitial(firebaseClient);
-        SubscriptionId id = newSubscriptionId(record.path());
+        return queryService.execute(query);
+    }
+
+    private Subscription createSubscription(Topic topic) {
+        SubscriptionId id = newSubscriptionId();
         Subscription subscription = newSubscription(id, topic);
         store(subscription);
-        return new FirebaseSubscribeResult(subscription);
+        return subscription;
+    }
+
+    private NodePath storeInitial(Subscription subscription, QueryResponse queryResponse) {
+        NodePath path = RequestNodePath.of(tokenFor(subscription));
+        SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
+        record.storeAsInitial(firebaseClient);
+        return path;
     }
 
     private static Query newQueryForTopic(Topic topic) {
@@ -128,10 +143,10 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                 .vBuild();
     }
 
-    private static SubscriptionId newSubscriptionId(NodePath path) {
+    private static SubscriptionId newSubscriptionId() {
         return SubscriptionId
                 .newBuilder()
-                .setValue(path.getValue())
+                .setValue(newUuid())
                 .vBuild();
     }
 

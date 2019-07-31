@@ -21,6 +21,7 @@
 package io.spine.web.firebase.subscription;
 
 import io.spine.client.Subscription;
+import io.spine.web.firebase.NodePath;
 import io.spine.web.subscription.result.SubscribeResult;
 
 import javax.servlet.ServletResponse;
@@ -36,10 +37,14 @@ import static io.spine.json.Json.toCompactJson;
  */
 final class FirebaseSubscribeResult implements SubscribeResult {
 
-    private final Subscription subscription;
+    private final FirebaseSubscription subscription;
 
-    FirebaseSubscribeResult(Subscription subscription) {
-        this.subscription = subscription;
+    FirebaseSubscribeResult(Subscription subscription, NodePath resultPath) {
+        this.subscription = FirebaseSubscription
+                .newBuilder()
+                .setSubscription(subscription)
+                .setNodePath(resultPath)
+                .vBuild();
     }
 
     @Override

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package spine.web.firebase.subscription;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web.firebase.subscription";
+option java_outer_classname = "FirebaseSubscriptionProto";
+option java_multiple_files = true;
+
+import "spine/client/subscription.proto";
+import "spine/web/firebase/client.proto";
+
+message FirebaseSubscription {
+
+    client.Subscription subscription = 1 [(required) = true, (validate) = true];
+
+    NodePath node_path = 2 [(required) = true];
+}

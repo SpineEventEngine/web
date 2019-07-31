@@ -47,13 +47,6 @@ final class SubscriptionRecord {
     }
 
     /**
-     * Retrieves the database path to this record.
-     */
-    NodePath path() {
-        return path;
-    }
-
-    /**
      * Writes this record to the Firebase database as initial data without checking what is
      * already stored in database at given location.
      */
