@@ -131,7 +131,7 @@ final class SubscriptionRepository {
         SubscriptionToken token = subscription.token();
         NodePath path = path(token);
         StoredJson jsonSubscription = StoredJson.encode(subscription);
-        firebase.update(path, jsonSubscription.asNodeValue());
+        firebase.create(path, jsonSubscription.asNodeValue());
         subscribeToUpdates(TypeUrl.parse(token.getTarget()));
     }
 
