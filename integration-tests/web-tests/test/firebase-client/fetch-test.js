@@ -65,7 +65,7 @@ describe('FirebaseClient "fetch"', function () {
         client.fetch({entity: Task, byIds: id})
             .then(data => {
                 assert.ok(Array.isArray(data));
-                assert.ok(data.length === 1);
+                assert.equal(data.length, 1);
                 const item = data[0];
                 assert.ok(item.getId().getValue() === id.getValue());
                 done();
