@@ -42,6 +42,7 @@ import java.io.StringWriter;
 
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
+import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.assertSubscriptionPointsToFirebase;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.mockWriter;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newBridge;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newResponse;
@@ -133,5 +134,6 @@ class FirebaseSubscriptionBridgeTest {
                 fromJson(writer.toString(), FirebaseSubscription.class);
         Subscription subscription = firebaseSubscription.getSubscription();
         assertEquals(topic, subscription.getTopic());
+        assertSubscriptionPointsToFirebase(firebaseSubscription.getNodePath(), topic);
     }
 }

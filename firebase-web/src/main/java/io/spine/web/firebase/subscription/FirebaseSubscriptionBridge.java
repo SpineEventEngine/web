@@ -21,8 +21,6 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Duration;
-import io.grpc.stub.StreamObserver;
-import io.spine.client.ActorRequestFactory;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.ResponseFormat;
@@ -31,8 +29,6 @@ import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
-import io.spine.core.UserId;
-import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.query.RequestNodePath;
@@ -41,8 +37,6 @@ import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
-
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -62,36 +56,17 @@ import static io.spine.web.firebase.subscription.Tokens.tokenFor;
  */
 public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
-    private static final UserId SUBSCRIBER = UserId
-            .newBuilder()
-            .setValue(FirebaseSubscriptionBridge.class.getSimpleName())
-            .vBuild();
-    private static final ActorRequestFactory factory = ActorRequestFactory
-            .newBuilder()
-            .setActor(SUBSCRIBER)
-            .build();
     private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
-    private final SubscriptionServiceImplBase subscriptionService;
     private final SubscriptionRepository repository;
 
     private FirebaseSubscriptionBridge(Builder builder) {
         this.queryService = builder.queryService;
         this.firebaseClient = builder.firebaseClient;
-        this.subscriptionService = builder.subscriptionService;
-        this.repository = new SubscriptionRepository(firebaseClient, builder.subscriptionLifeSpan);
-        subscribeToAll();
-    }
-
-    private void subscribeToAll() {
-        Set<TypeUrl> types = repository.allTypes();
-        UpdateObserver updateObserver = new UpdateObserver(firebaseClient, repository);
-        StreamObserver<Subscription> subscriptionObserver =
-                new SubscriptionObserver(updateObserver, subscriptionService);
-        for (TypeUrl type : types) {
-            Topic topic = factory.topic().allOf(type.getMessageClass());
-            subscriptionService.subscribe(topic, subscriptionObserver);
-        }
+        this.repository = new SubscriptionRepository(firebaseClient,
+                                                     builder.subscriptionService,
+                                                     builder.subscriptionLifeSpan);
+        repository.serveSubscriptionUpdates();
     }
 
     @Override

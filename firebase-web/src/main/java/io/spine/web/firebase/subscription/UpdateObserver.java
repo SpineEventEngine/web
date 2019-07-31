@@ -43,9 +43,9 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
 
     private final FirebaseClient firebase;
-    private final SubscriptionRepository repository;
+    private final LazyRepository repository;
 
-    UpdateObserver(FirebaseClient firebase, SubscriptionRepository repository) {
+    UpdateObserver(FirebaseClient firebase, LazyRepository repository) {
         this.firebase = checkNotNull(firebase);
         this.repository = checkNotNull(repository);
     }
@@ -56,7 +56,7 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
         TypeUrl type = TypeUrl.parse(subscription.getTopic()
                                                  .getTarget()
                                                  .getType());
-        List<PersistedSubscription> subscriptions = repository.forType(type);
+        List<PersistedSubscription> subscriptions = repository.get().forType(type);
         for (PersistedSubscription userSubscription : subscriptions) {
             UpdatePayload payload = extractMatching(update, userSubscription);
             if (!payload.isEmpty()) {

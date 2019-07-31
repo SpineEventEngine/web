@@ -20,7 +20,7 @@ message TaskId {
 
 message Task {
     option (entity).kind = AGGREGATE;
-    option (entity).visibility = QUERY;
+    option (entity).visibility = FULL;
 
     TaskId id = 1;
 

@@ -24,8 +24,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.protobuf.Duration;
+import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
+import io.spine.client.ActorRequestFactory;
+import io.spine.client.Subscription;
+import io.spine.client.Topic;
+import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
+import io.spine.core.UserId;
 import io.spine.json.Json;
 import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
@@ -35,6 +42,7 @@ import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.query.RequestNodePath;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,17 +54,37 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
+import static io.spine.web.firebase.subscription.LazyRepository.lazy;
+import static java.util.Collections.synchronizedSet;
 
 // TODO:2019-07-29:dmytro.dashenkov: Find a better name.
 final class SubscriptionRepository {
 
+    private static final UserId SUBSCRIBER = UserId
+            .newBuilder()
+            .setValue(SubscriptionRepository.class.getSimpleName())
+            .vBuild();
+    private static final ActorRequestFactory factory = ActorRequestFactory
+            .newBuilder()
+            .setActor(SUBSCRIBER)
+            .build();
     private static final NodePath SUBSCRIPTIONS_ROOT = NodePaths.of("subscriptions");
-    private final FirebaseClient firebase;
-    private final Duration expirationTimeout;
 
-    SubscriptionRepository(FirebaseClient firebase, Duration timeout) {
+    private final FirebaseClient firebase;
+    private final SubscriptionServiceImplBase subscriptionService;
+    private final Duration expirationTimeout;
+    private final Set<TypeUrl> subscribedTo;
+    private final StreamObserver<Subscription> subscriptionObserver;
+
+    SubscriptionRepository(FirebaseClient firebase,
+                           SubscriptionServiceImplBase service,
+                           Duration timeout) {
         this.firebase = checkNotNull(firebase);
+        this.subscriptionService = checkNotNull(service);
         this.expirationTimeout = checkNotNull(timeout);
+        UpdateObserver observer = new UpdateObserver(firebase, lazy(() -> this));
+        this.subscriptionObserver = new SubscriptionObserver(observer, subscriptionService);
+        this.subscribedTo = synchronizedSet(new HashSet<>());
     }
 
     public List<PersistedSubscription> forType(TypeUrl targetType) {
@@ -101,9 +129,11 @@ final class SubscriptionRepository {
     }
 
     public void write(PersistedSubscription subscription) {
-        NodePath path = path(subscription.token());
+        SubscriptionToken token = subscription.token();
+        NodePath path = path(token);
         StoredJson jsonSubscription = StoredJson.encode(subscription);
         firebase.update(path, jsonSubscription.asNodeValue());
+        subscribeToUpdates(TypeUrl.parse(token.getTarget()));
     }
 
     private Optional<PersistedSubscription> deleteIfOutdated(PersistedSubscription subscription) {
@@ -127,5 +157,22 @@ final class SubscriptionRepository {
     private static NodePath path(SubscriptionToken token) {
         NodePath path = RequestNodePath.of(token);
         return SUBSCRIPTIONS_ROOT.append(path);
+    }
+
+    void serveSubscriptionUpdates() {
+        for (TypeUrl typeUrl : allTypes()) {
+            subscribeToUpdates(typeUrl);
+        }
+    }
+
+    private void
+    subscribeToUpdates(TypeUrl type) {
+        boolean newType = subscribedTo.add(type);
+        if (newType) {
+            Class<Message> aClass = type.getMessageClass();
+            System.out.println(TypeUrl.of(aClass));
+            Topic topic = factory.topic().allOf(aClass);
+            subscriptionService.subscribe(topic, subscriptionObserver);
+        }
     }
 }
