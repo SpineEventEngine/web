@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Subscription} from '../proto/spine/client/subscription_pb';
 import {Duration} from './time-utils';
 
-const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({seconds: 10});
+const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
 /**
  * A service that manages the subscriptions periodically sending requests to keep them running.
