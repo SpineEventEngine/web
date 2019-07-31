@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.protobuf.Duration;
-import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
@@ -169,9 +168,7 @@ final class SubscriptionRepository {
     subscribeToUpdates(TypeUrl type) {
         boolean newType = subscribedTo.add(type);
         if (newType) {
-            Class<Message> aClass = type.getMessageClass();
-            System.out.println(TypeUrl.of(aClass));
-            Topic topic = factory.topic().allOf(aClass);
+            Topic topic = factory.topic().allOf(type.getMessageClass());
             subscriptionService.subscribe(topic, subscriptionObserver);
         }
     }
