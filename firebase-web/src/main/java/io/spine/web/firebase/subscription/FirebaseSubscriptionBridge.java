@@ -25,14 +25,13 @@ import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.ResponseFormat;
 import io.spine.client.Subscription;
-import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
-import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
 import io.spine.web.query.BlockingQueryService;
+import io.spine.web.subscription.BlockingSubscriptionService;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
@@ -41,10 +40,9 @@ import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
-import static io.spine.base.Identifier.newUuid;
+import static io.spine.base.Time.currentTime;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
-import static io.spine.web.firebase.subscription.Tokens.tokenFor;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -70,7 +68,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     @Override
     public SubscribeResult subscribe(Topic topic) {
-        Subscription subscription = createSubscription(topic);
+        Subscription subscription = repository.write(topic);
         QueryResponse queryResponse = queryInitial(topic);
         NodePath path = storeInitial(subscription, queryResponse);
         return new FirebaseSubscribeResult(subscription, path);
@@ -81,15 +79,8 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         return queryService.execute(query);
     }
 
-    private Subscription createSubscription(Topic topic) {
-        SubscriptionId id = newSubscriptionId();
-        Subscription subscription = newSubscription(id, topic);
-        repository.write(subscription);
-        return subscription;
-    }
-
     private NodePath storeInitial(Subscription subscription, QueryResponse queryResponse) {
-        NodePath path = RequestNodePath.of(tokenFor(subscription));
+        NodePath path = RequestNodePath.of(subscription.getTopic());
         SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
         record.storeAsInitial(firebaseClient);
         return path;
@@ -109,31 +100,19 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                 .vBuild();
     }
 
-    private static Subscription newSubscription(SubscriptionId subscriptionId, Topic topic) {
-        return Subscription
-                .newBuilder()
-                .setId(subscriptionId)
-                .setTopic(topic)
-                .vBuild();
-    }
-
-    private static SubscriptionId newSubscriptionId() {
-        return SubscriptionId
-                .newBuilder()
-                .setValue(newUuid())
-                .vBuild();
-    }
-
     @Override
     public SubscriptionKeepUpResult keepUp(Subscription subscription) {
-        repository.write(subscription);
+        Topic.Builder topic = subscription.getTopic()
+                                          .toBuilder();
+        topic.getContextBuilder().setTimestamp(currentTime());
+        repository.write(topic.buildPartial());
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 
     @Override
     public SubscriptionCancelResult cancel(Subscription subscription) {
         checkNotNull(subscription);
-        repository.delete(subscription);
+        repository.cancel(subscription);
         return new FirebaseSubscriptionCancelResult(statusOk());
     }
 
@@ -155,7 +134,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
         private BlockingQueryService queryService;
         private FirebaseClient firebaseClient;
-        private SubscriptionServiceImplBase subscriptionService;
+        private BlockingSubscriptionService subscriptionService;
         private Duration subscriptionLifeSpan = DEFAULT_SUBSCRIPTION_LIFE_SPAN;
 
         /**
@@ -175,7 +154,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             return this;
         }
 
-        public Builder setSubscriptionService(SubscriptionServiceImplBase subscriptionService) {
+        public Builder setSubscriptionService(BlockingSubscriptionService subscriptionService) {
             this.subscriptionService = checkNotNull(subscriptionService);
             return this;
         }

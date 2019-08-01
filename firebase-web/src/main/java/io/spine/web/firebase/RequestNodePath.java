@@ -23,10 +23,10 @@ package io.spine.web.firebase;
 import io.spine.annotation.Internal;
 import io.spine.client.Query;
 import io.spine.client.QueryId;
+import io.spine.client.Target;
+import io.spine.client.Topic;
 import io.spine.core.ActorContext;
 import io.spine.core.TenantId;
-import io.spine.core.UserId;
-import io.spine.web.firebase.subscription.SubscriptionToken;
 
 /**
  * A factory creating {@link NodePath}s where query results are placed.
@@ -52,17 +52,19 @@ public class RequestNodePath {
     public static NodePath of(Query query) {
         ActorContext context = query.getContext();
         String tenantId = tenantIdAsString(context.getTenantId());
-        String actor = actorAsString(context.getActor());
+        String actor = context.getActor().getValue();
         String queryId = queryIdAsString(query);
         return NodePaths.of(tenantId, actor, queryId);
     }
 
-    public static NodePath of(SubscriptionToken subscription) {
-        String type = subscription.getTarget();
-        String tenantId = tenantIdAsString(subscription.getTenant());
-        String actor = actorAsString(subscription.getUser());
-        String subscriptionId = subscriptionIdAsString(subscription);
-        return NodePaths.of(type, tenantId, actor, subscriptionId);
+    public static NodePath of(Topic topic) {
+        Target target = topic.getTarget();
+        String type = target.getType();
+        ActorContext context = topic.getContext();
+        String tenantId = tenantIdAsString(context.getTenantId());
+        String actor = context.getActor().getValue();
+        String topicId = topic.getId().getValue();
+        return NodePaths.of(type, tenantId, actor, topicId);
     }
 
     public static String tenantIdAsString(TenantId tenantId) {
@@ -84,20 +86,9 @@ public class RequestNodePath {
         }
     }
 
-    private static String actorAsString(UserId actor) {
-        String result = actor.getValue();
-        return result;
-    }
-
     private static String queryIdAsString(Query query) {
         QueryId queryId = query.getId();
         String result = queryId.getValue();
         return result;
     }
-
-    private static String subscriptionIdAsString(SubscriptionToken subscription) {
-        return subscription.getId().getValue();
-    }
-
-
 }

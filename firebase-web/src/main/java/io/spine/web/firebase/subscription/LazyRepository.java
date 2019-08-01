@@ -20,35 +20,28 @@
 
 package io.spine.web.firebase.subscription;
 
-import io.grpc.stub.StreamObserver;
-import io.spine.client.Subscription;
-import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
+import com.google.common.base.Suppliers;
+
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
-final class SubscriptionObserver implements StreamObserver<Subscription> {
+final class LazyRepository implements Supplier<SubscriptionRepository> {
 
-    private final UpdateObserver updateObserver;
-    private final SubscriptionServiceImplBase subscriptionService;
+    private final Supplier<SubscriptionRepository> delegate;
 
-    SubscriptionObserver(UpdateObserver observer, SubscriptionServiceImplBase service) {
-        this.updateObserver = checkNotNull(observer);
-        this.subscriptionService = checkNotNull(service);
+    private LazyRepository(Supplier<SubscriptionRepository> delegate) {
+        this.delegate = delegate;
+    }
+
+    static LazyRepository lazy(Supplier<SubscriptionRepository> delegate) {
+        checkNotNull(delegate);
+        Supplier<SubscriptionRepository> memoized = Suppliers.memoize(delegate::get);
+        return new LazyRepository(memoized);
     }
 
     @Override
-    public void onNext(Subscription subscription) {
-        subscriptionService.activate(subscription, updateObserver);
-    }
-
-    @Override
-    public void onError(Throwable t) {
-        throw illegalStateWithCauseOf(t);
-    }
-
-    @Override
-    public void onCompleted() {
-        // Do nothing.
+    public SubscriptionRepository get() {
+        return delegate.get();
     }
 }

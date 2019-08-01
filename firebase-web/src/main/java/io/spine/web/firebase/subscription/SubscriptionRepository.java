@@ -20,29 +20,25 @@
 
 package io.spine.web.firebase.subscription;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.gson.JsonElement;
 import com.google.protobuf.Duration;
-import com.google.protobuf.Timestamp;
-import io.grpc.stub.StreamObserver;
-import io.spine.base.Time;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
-import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.json.Json;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
+import io.spine.web.subscription.BlockingSubscriptionService;
 
 import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.util.Durations.compare;
-import static com.google.protobuf.util.Timestamps.between;
-import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.web.firebase.RequestNodePath.tenantIdAsString;
-import static io.spine.web.firebase.subscription.Tokens.tokenFor;
+import static io.spine.web.firebase.subscription.LazyRepository.lazy;
 
 // TODO:2019-07-29:dmytro.dashenkov: Find a better name.
 final class SubscriptionRepository {
@@ -50,18 +46,17 @@ final class SubscriptionRepository {
     private static final NodePath SUBSCRIPTIONS_ROOT = NodePaths.of("subscriptions");
 
     private final FirebaseClient firebase;
-    private final SubscriptionServiceImplBase subscriptionService;
-    private final Duration expirationTimeout;
-    private final StreamObserver<Subscription> subscriptionObserver;
+    private final BlockingSubscriptionService subscriptionService;
+    private final UpdateObserver updateObserver;
+    private final SubscriptionHealthLog healthLog;
 
     SubscriptionRepository(FirebaseClient firebase,
-                           SubscriptionServiceImplBase service,
+                           BlockingSubscriptionService service,
                            Duration timeout) {
         this.firebase = checkNotNull(firebase);
         this.subscriptionService = checkNotNull(service);
-        this.expirationTimeout = checkNotNull(timeout);
-        UpdateObserver observer = new UpdateObserver(firebase);
-        this.subscriptionObserver = new SubscriptionObserver(observer, subscriptionService);
+        this.healthLog = SubscriptionHealthLog.withTimeout(checkNotNull(timeout));
+        this.updateObserver = new UpdateObserver(firebase, healthLog, lazy(() -> this));
     }
 
     void subscribeToAll() {
@@ -75,51 +70,54 @@ final class SubscriptionRepository {
                                            .entrySet()
                                            .stream()
                                            .map(Map.Entry::getValue))
-                .map(json -> Json.fromJson(json.toString(), Subscription.class))
+                .map(this::loadTopic)
                 .map(this::deleteIfOutdated)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(Subscription::getTopic)
-                .forEach(topic -> subscriptionService.subscribe(topic, subscriptionObserver)));
+                .forEach(topic -> subscriptionService.subscribe(topic, updateObserver)));
     }
 
-    public void write(Subscription subscription) {
-        SubscriptionToken token = tokenFor(subscription);
-        NodePath path = pathForSubscription(token);
-        StoredJson jsonSubscription = StoredJson.encode(subscription);
+    private Topic loadTopic(JsonElement json) {
+        Topic topic = Json.fromJson(json.toString(), Topic.class);
+        healthLog.put(topic);
+        return topic;
+    }
+
+    @CanIgnoreReturnValue
+    public Subscription write(Topic topic) {
+        NodePath path = pathForSubscription(topic);
+        StoredJson jsonSubscription = StoredJson.encode(topic);
         firebase.create(path, jsonSubscription.asNodeValue());
-        Topic topic = subscription.getTopic();
-        subscriptionService.subscribe(topic,
-                                      subscriptionObserver);
+        healthLog.put(topic);
+        return subscriptionService.subscribe(topic, updateObserver);
     }
 
-    private Optional<Subscription> deleteIfOutdated(Subscription subscription) {
-        Timestamp lastUpdate = subscription.getTopic()
-                                           .getContext()
-                                           .getTimestamp();
-        Timestamp now = Time.currentTime();
-        Duration elapsed = between(lastUpdate, now);
-        if (compare(elapsed, expirationTimeout) > 0) {
-            delete(subscription);
+    private Optional<Topic> deleteIfOutdated(Topic topic) {
+        boolean active = healthLog.isActive(topic);
+        if (!active) {
+            delete(topic);
             return Optional.empty();
         } else {
-            return Optional.of(subscription);
+            return Optional.of(topic);
         }
     }
 
-    void delete(Subscription subscription) {
-        checkNotNull(subscription);
-        NodePath path = pathForSubscription(tokenFor(subscription));
-        firebase.delete(path);
-        subscriptionService.cancel(subscription, noOpObserver());
+    void cancel(Subscription subscription) {
+        subscriptionService.cancel(subscription);
+        delete(subscription.getTopic());
     }
 
-    private static NodePath pathForSubscription(SubscriptionToken token) {
-        String tenant = tenantIdAsString(token.getTenant());
-        String subscriptionId = token.getId()
-                                     .getValue();
-        String targetType = token.getTarget();
-        NodePath path = NodePaths.of(tenant, targetType, subscriptionId);
+    private void delete(Topic topic) {
+        checkNotNull(topic);
+        NodePath path = pathForSubscription(topic);
+        firebase.delete(path);
+    }
+
+    private static NodePath pathForSubscription(Topic topic) {
+        String tenant = tenantIdAsString(topic.getContext().getTenantId());
+        String topicId = topic.getId().getValue();
+        String targetType = topic.getTarget().getType();
+        NodePath path = NodePaths.of(tenant, targetType, topicId);
         return SUBSCRIPTIONS_ROOT.append(path);
     }
 }

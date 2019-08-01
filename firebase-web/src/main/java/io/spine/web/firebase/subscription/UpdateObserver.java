@@ -23,31 +23,42 @@ package io.spine.web.firebase.subscription;
 import io.grpc.stub.StreamObserver;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
+import io.spine.client.Topic;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.web.firebase.subscription.Tokens.tokenFor;
 
 final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
 
     private final FirebaseClient firebase;
+    private final SubscriptionHealthLog healthLog;
+    private final LazyRepository repository;
 
-    UpdateObserver(FirebaseClient firebase) {
+    UpdateObserver(FirebaseClient firebase,
+                   SubscriptionHealthLog healthLog,
+                   LazyRepository repository) {
         this.firebase = checkNotNull(firebase);
+        this.healthLog = checkNotNull(healthLog);
+        this.repository = checkNotNull(repository);
     }
 
     @Override
     public void onNext(SubscriptionUpdate update) {
         Subscription subscription = update.getSubscription();
+        Topic topic = subscription.getTopic();
 
-        UpdatePayload payload = UpdatePayload.from(update);
-        NodePath path = RequestNodePath.of(tokenFor(subscription));
-        if (!payload.isEmpty()) {
-            SubscriptionRecord record = new SubscriptionRecord(path, payload);
-            record.storeAsUpdate(firebase);
+        if (healthLog.isActive(topic)) {
+            UpdatePayload payload = UpdatePayload.from(update);
+            NodePath path = RequestNodePath.of(subscription.getTopic());
+            if (!payload.isEmpty()) {
+                SubscriptionRecord record = new SubscriptionRecord(path, payload);
+                record.storeAsUpdate(firebase);
+            }
+        } else {
+            repository.get().cancel(subscription);
         }
     }
 

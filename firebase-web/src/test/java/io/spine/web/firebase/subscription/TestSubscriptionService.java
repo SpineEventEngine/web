@@ -51,6 +51,6 @@ public class TestSubscriptionService extends SubscriptionServiceGrpc.Subscriptio
 
     @Override
     public void cancel(Subscription request, StreamObserver<Response> responseObserver) {
-        // Do nothing.
+        responseObserver.onCompleted();
     }
 }

@@ -36,6 +36,7 @@ import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
+import io.spine.web.subscription.BlockingSubscriptionService;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -122,7 +123,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
                 .newBuilder()
                 .setQueryService(queryService)
                 .setFirebaseClient(firebaseClient)
-                .setSubscriptionService(subscriptionService)
+                .setSubscriptionService(new BlockingSubscriptionService(subscriptionService))
                 .build();
     }
 

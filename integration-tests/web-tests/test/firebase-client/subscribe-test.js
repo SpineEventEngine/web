@@ -83,8 +83,8 @@ describe('FirebaseClient subscription', function () {
                         const id = item.getId().getValue();
                         console.log(`Retrieved new task '${id}'.`);
                         if (taskId === id) {
-                            assert.ok(
-                                INITIAL_TASK_NAME === item.getName(),
+                            assert.equal(
+                                INITIAL_TASK_NAME, item.getName(),
                                 `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}"`
                             );
                             reportItemAdded();
@@ -98,8 +98,8 @@ describe('FirebaseClient subscription', function () {
                     next: item => {
                         const id = item.getId().getValue();
                         if (taskId === id) {
-                            assert.ok(
-                                item.getName() === UPDATED_TASK_NAME,
+                            assert.equal(
+                                item.getName(), UPDATED_TASK_NAME,
                                 `Task is named "${item.getName()}", expected "${UPDATED_TASK_NAME}"`
                             );
                             console.log(`Got task changes for ${id}.`);
