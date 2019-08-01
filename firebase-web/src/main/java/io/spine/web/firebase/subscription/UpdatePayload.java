@@ -24,15 +24,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.client.EntityStateUpdate;
-import io.spine.client.EntityStateWithVersion;
-import io.spine.client.QueryResponse;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.core.Event;
 import io.spine.protobuf.AnyPacker;
-import io.spine.protobuf.TypeConverter;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 
@@ -53,24 +49,6 @@ final class UpdatePayload {
 
     private UpdatePayload(ImmutableMap<String, Message> messages) {
         this.messages = messages;
-    }
-
-    static UpdatePayload from(QueryResponse queryResponse) {
-        ImmutableMap<String, Message> messages = queryResponse
-                .getMessageList()
-                .stream()
-                .collect(toHashTable(UpdatePayload::guessId, record -> unpack(record.getState())));
-        return new UpdatePayload(messages);
-    }
-
-    private static Any guessId(EntityStateWithVersion record) {
-        Message entityState = unpack(record.getState());
-        FieldDescriptor firstField = entityState.getDescriptorForType()
-                                                .getFields()
-                                                .get(0);
-        Object fieldValue = entityState.getField(firstField);
-        Any bestGuessId = TypeConverter.toAny(fieldValue);
-        return bestGuessId;
     }
 
     static UpdatePayload from(SubscriptionUpdate update) {

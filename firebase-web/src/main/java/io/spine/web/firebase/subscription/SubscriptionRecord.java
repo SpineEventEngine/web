@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase.subscription;
 
-import io.spine.client.QueryResponse;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
@@ -36,10 +35,6 @@ final class SubscriptionRecord {
 
     private final NodePath path;
     private final UpdatePayload updatePayload;
-
-    SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
-        this(path, UpdatePayload.from(queryResponse));
-    }
 
     SubscriptionRecord(NodePath path, UpdatePayload payload) {
         this.path = checkNotNull(path);

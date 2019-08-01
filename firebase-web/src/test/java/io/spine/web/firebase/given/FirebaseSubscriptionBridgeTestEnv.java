@@ -26,7 +26,6 @@ import io.spine.client.SubscriptionId;
 import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.UserId;
@@ -36,7 +35,6 @@ import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
-import io.spine.web.subscription.BlockingSubscriptionService;
 
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -117,13 +115,11 @@ public final class FirebaseSubscriptionBridgeTestEnv {
 
     public static FirebaseSubscriptionBridge
     newBridge(FirebaseClient firebaseClient,
-              QueryServiceImplBase queryService,
               SubscriptionServiceImplBase subscriptionService) {
         return FirebaseSubscriptionBridge
                 .newBuilder()
-                .setQueryService(queryService)
                 .setFirebaseClient(firebaseClient)
-                .setSubscriptionService(new BlockingSubscriptionService(subscriptionService))
+                .setSubscriptionService(subscriptionService)
                 .build();
     }
 

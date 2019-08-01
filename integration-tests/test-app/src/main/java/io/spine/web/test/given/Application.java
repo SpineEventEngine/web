@@ -32,7 +32,6 @@ import io.spine.web.firebase.RetryingClient;
 import io.spine.web.firebase.WaitingRepetitionsRetryer;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
-import io.spine.web.subscription.BlockingSubscriptionService;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.FirebaseClientFactory.restClient;
@@ -61,8 +60,7 @@ final class Application {
                 .build();
         this.subscriptionBridge = FirebaseSubscriptionBridge
                 .newBuilder()
-                .setQueryService(queryService)
-                .setSubscriptionService(new BlockingSubscriptionService(subscriptionService))
+                .setSubscriptionService(subscriptionService)
                 .setFirebaseClient(client)
                 .build();
     }
