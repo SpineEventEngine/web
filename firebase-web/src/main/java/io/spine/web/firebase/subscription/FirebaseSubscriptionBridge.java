@@ -42,7 +42,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.base.Time.currentTime;
 import static io.spine.client.Queries.generateId;
 import static io.spine.core.Responses.statusOk;
 import static io.spine.web.firebase.subscription.Tokens.tokenFor;
@@ -66,7 +65,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         this.repository = new SubscriptionRepository(firebaseClient,
                                                      builder.subscriptionService,
                                                      builder.subscriptionLifeSpan);
-        repository.serveSubscriptionUpdates();
+        repository.subscribeToAll();
     }
 
     @Override
@@ -85,7 +84,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     private Subscription createSubscription(Topic topic) {
         SubscriptionId id = newSubscriptionId();
         Subscription subscription = newSubscription(id, topic);
-        store(subscription);
+        repository.write(subscription);
         return subscription;
     }
 
@@ -127,24 +126,15 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     @Override
     public SubscriptionKeepUpResult keepUp(Subscription subscription) {
-        store(subscription);
+        repository.write(subscription);
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 
     @Override
     public SubscriptionCancelResult cancel(Subscription subscription) {
         checkNotNull(subscription);
-        repository.delete(tokenFor(subscription));
+        repository.delete(subscription);
         return new FirebaseSubscriptionCancelResult(statusOk());
-    }
-
-    private void store(Subscription subscription) {
-        PersistedSubscription persisted = PersistedSubscription
-                .newBuilder()
-                .setSubscription(subscription)
-                .setWhenUpdated(currentTime())
-                .vBuild();
-        repository.write(persisted);
     }
 
     /**

@@ -40,7 +40,9 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
+import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.web.firebase.RequestNodePath.tenantIdAsString;
+import static io.spine.web.firebase.subscription.Tokens.tokenFor;
 
 // TODO:2019-07-29:dmytro.dashenkov: Find a better name.
 final class SubscriptionRepository {
@@ -73,43 +75,43 @@ final class SubscriptionRepository {
                                            .entrySet()
                                            .stream()
                                            .map(Map.Entry::getValue))
-                .map(json -> Json.fromJson(json.toString(),
-                                           PersistedSubscription.class))
+                .map(json -> Json.fromJson(json.toString(), Subscription.class))
                 .map(this::deleteIfOutdated)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(persisted -> persisted.getSubscription()
-                                           .getTopic())
+                .map(Subscription::getTopic)
                 .forEach(topic -> subscriptionService.subscribe(topic, subscriptionObserver)));
     }
 
-    public void write(PersistedSubscription subscription) {
-        SubscriptionToken token = subscription.token();
+    public void write(Subscription subscription) {
+        SubscriptionToken token = tokenFor(subscription);
         NodePath path = pathForSubscription(token);
         StoredJson jsonSubscription = StoredJson.encode(subscription);
         firebase.create(path, jsonSubscription.asNodeValue());
-        Topic topic = subscription.getSubscription()
-                                  .getTopic();
+        Topic topic = subscription.getTopic();
         subscriptionService.subscribe(topic,
                                       subscriptionObserver);
     }
 
-    private Optional<PersistedSubscription> deleteIfOutdated(PersistedSubscription subscription) {
-        Timestamp lastUpdate = subscription.getWhenUpdated();
+    private Optional<Subscription> deleteIfOutdated(Subscription subscription) {
+        Timestamp lastUpdate = subscription.getTopic()
+                                           .getContext()
+                                           .getTimestamp();
         Timestamp now = Time.currentTime();
         Duration elapsed = between(lastUpdate, now);
         if (compare(elapsed, expirationTimeout) > 0) {
-            delete(subscription.token());
+            delete(subscription);
             return Optional.empty();
         } else {
             return Optional.of(subscription);
         }
     }
 
-    void delete(SubscriptionToken token) {
-        checkNotNull(token);
-        NodePath path = pathForSubscription(token);
+    void delete(Subscription subscription) {
+        checkNotNull(subscription);
+        NodePath path = pathForSubscription(tokenFor(subscription));
         firebase.delete(path);
+        subscriptionService.cancel(subscription, noOpObserver());
     }
 
     private static NodePath pathForSubscription(SubscriptionToken token) {
