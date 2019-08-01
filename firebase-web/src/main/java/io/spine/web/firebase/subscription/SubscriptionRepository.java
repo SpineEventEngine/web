@@ -48,15 +48,18 @@ final class SubscriptionRepository {
     private final FirebaseClient firebase;
     private final BlockingSubscriptionService subscriptionService;
     private final UpdateObserver updateObserver;
+    private final LocalSubscriptionRegistry subscriptionRegistry;
     private final SubscriptionHealthLog healthLog;
 
     SubscriptionRepository(FirebaseClient firebase,
                            BlockingSubscriptionService service,
-                           Duration timeout) {
+                           Duration timeout,
+                           LocalSubscriptionRegistry subscriptionRegistry) {
         this.firebase = checkNotNull(firebase);
         this.subscriptionService = checkNotNull(service);
         this.healthLog = SubscriptionHealthLog.withTimeout(checkNotNull(timeout));
         this.updateObserver = new UpdateObserver(firebase, healthLog, lazy(() -> this));
+        this.subscriptionRegistry = subscriptionRegistry;
     }
 
     void subscribeToAll() {
@@ -74,7 +77,14 @@ final class SubscriptionRepository {
                 .map(this::deleteIfOutdated)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .forEach(topic -> subscriptionService.subscribe(topic, updateObserver)));
+                .forEach(this::subscribe));
+    }
+
+    @CanIgnoreReturnValue
+    private Subscription subscribe(Topic topic) {
+        Subscription subscription = subscriptionService.subscribe(topic, updateObserver);
+        subscriptionRegistry.register(subscription);
+        return subscription;
     }
 
     private Topic loadTopic(JsonElement json) {
@@ -89,7 +99,7 @@ final class SubscriptionRepository {
         StoredJson jsonSubscription = StoredJson.encode(topic);
         firebase.create(path, jsonSubscription.asNodeValue());
         healthLog.put(topic);
-        return subscriptionService.subscribe(topic, updateObserver);
+        return subscribe(topic);
     }
 
     private Optional<Topic> deleteIfOutdated(Topic topic) {

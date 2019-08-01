@@ -56,13 +56,16 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
     private final SubscriptionRepository repository;
+    private final LocalSubscriptionRegistry subscriptionRegistry;
 
     private FirebaseSubscriptionBridge(Builder builder) {
         this.queryService = builder.queryService;
         this.firebaseClient = builder.firebaseClient;
+        this.subscriptionRegistry = new LocalSubscriptionRegistry();
         this.repository = new SubscriptionRepository(firebaseClient,
                                                      builder.subscriptionService,
-                                                     builder.subscriptionLifeSpan);
+                                                     builder.subscriptionLifeSpan,
+                                                     subscriptionRegistry);
         repository.subscribeToAll();
     }
 
@@ -82,7 +85,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     private NodePath storeInitial(Subscription subscription, QueryResponse queryResponse) {
         NodePath path = RequestNodePath.of(subscription.getTopic());
         SubscriptionRecord record = new SubscriptionRecord(path, queryResponse);
-        record.storeAsInitial(firebaseClient);
+        record.store(firebaseClient);
         return path;
     }
 
@@ -112,7 +115,11 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     @Override
     public SubscriptionCancelResult cancel(Subscription subscription) {
         checkNotNull(subscription);
-        repository.cancel(subscription);
+        Topic topic = subscription.getTopic();
+        Subscription localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
+        repository.cancel(localSubscription);
+        NodePath updatesPath = RequestNodePath.of(topic);
+        firebaseClient.delete(updatesPath);
         return new FirebaseSubscriptionCancelResult(statusOk());
     }
 

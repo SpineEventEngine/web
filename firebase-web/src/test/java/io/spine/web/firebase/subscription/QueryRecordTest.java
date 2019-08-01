@@ -56,7 +56,7 @@ class QueryRecordTest {
 
         NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath, queryResponse);
-        record.storeAsInitial(firebaseClient);
+        record.store(firebaseClient);
         assertThat(firebaseClient.writes()).contains(queryResponsePath);
     }
 
@@ -86,7 +86,7 @@ class QueryRecordTest {
         existingValue.addChild(encode(designPatterns));
         existingValue.addChild(encode(guideToTheGalaxy));
 
-        record.storeAsUpdate(firebaseClient);
+        record.store(firebaseClient);
 
         assertThat(firebaseClient.writes()).contains(queryResponsePath);
     }
@@ -102,7 +102,7 @@ class QueryRecordTest {
         NodePath queryResponsePath = NodePaths.of(dbPath);
         SubscriptionRecord record = new SubscriptionRecord(queryResponsePath,
                                                            queryResponse);
-        record.storeAsUpdate(firebaseClient);
+        record.store(firebaseClient);
 
         assertThat(firebaseClient.writes()).contains(queryResponsePath);
     }

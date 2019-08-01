@@ -20,37 +20,35 @@
 
 package io.spine.web.firebase.subscription;
 
-import io.spine.client.QueryResponse;
-import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.NodePath;
-import io.spine.web.firebase.NodeValue;
+import io.spine.client.Subscription;
+import io.spine.client.SubscriptionId;
+import io.spine.client.Topic;
+import io.spine.client.TopicId;
 
-import static com.google.appengine.repackaged.com.google.gson.internal.$Gson$Preconditions.checkNotNull;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * A subscription record that gets stored into a Firebase database.
- *
- * <p>Supports both an initial store and consequent updates of the stored data.
- */
-final class SubscriptionRecord {
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Collections.synchronizedMap;
 
-    private final NodePath path;
-    private final UpdatePayload updatePayload;
+final class LocalSubscriptionRegistry {
 
-    SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
-        this(path, UpdatePayload.from(queryResponse));
+    private final Map<TopicId, SubscriptionId> ids = synchronizedMap(new HashMap<>());
+
+    void register(Subscription subscription) {
+        SubscriptionId subscriptionId = subscription.getId();
+        TopicId topicId = subscription.getTopic().getId();
+        ids.put(topicId, subscriptionId);
     }
 
-    SubscriptionRecord(NodePath path, UpdatePayload payload) {
-        this.path = checkNotNull(path);
-        this.updatePayload = checkNotNull(payload);
-    }
-
-    /**
-     * Stores the data to the Firebase updating only the data that has changed.
-     */
-    void store(FirebaseClient firebaseClient) {
-        NodeValue nodeValue = updatePayload.asNodeValue();
-        firebaseClient.update(path, nodeValue);
+    Subscription localSubscriptionFor(Topic topic) {
+        TopicId topicId = topic.getId();
+        SubscriptionId subscriptionId = ids.get(topicId);
+        checkArgument(subscriptionId != null, "No local subscription found for topic: ", topic);
+        return Subscription
+                .newBuilder()
+                .setId(subscriptionId)
+                .setTopic(topic)
+                .buildPartial();
     }
 }

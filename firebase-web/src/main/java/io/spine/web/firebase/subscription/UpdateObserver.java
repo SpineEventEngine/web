@@ -55,7 +55,7 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
             NodePath path = RequestNodePath.of(subscription.getTopic());
             if (!payload.isEmpty()) {
                 SubscriptionRecord record = new SubscriptionRecord(path, payload);
-                record.storeAsUpdate(firebase);
+                record.store(firebase);
             }
         } else {
             repository.get().cancel(subscription);

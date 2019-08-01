@@ -24,10 +24,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.client.EntityStateUpdate;
+import io.spine.client.EntityStateWithVersion;
 import io.spine.client.QueryResponse;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.core.Event;
+import io.spine.protobuf.AnyPacker;
 import io.spine.protobuf.TypeConverter;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
@@ -43,7 +47,7 @@ import static io.spine.protobuf.AnyPacker.unpack;
 
 final class UpdatePayload {
 
-    private static final HashFunction keyHasher = murmur3_128();
+    private static final HashFunction keyHashFunction = murmur3_128();
 
     private final ImmutableMap<String, Message> messages;
 
@@ -55,8 +59,18 @@ final class UpdatePayload {
         ImmutableMap<String, Message> messages = queryResponse
                 .getMessageList()
                 .stream()
-                .collect(collector(record -> unpack(record.getState())));
+                .collect(toHashTable(UpdatePayload::guessId, record -> unpack(record.getState())));
         return new UpdatePayload(messages);
+    }
+
+    private static Any guessId(EntityStateWithVersion record) {
+        Message entityState = unpack(record.getState());
+        FieldDescriptor firstField = entityState.getDescriptorForType()
+                                                .getFields()
+                                                .get(0);
+        Object fieldValue = entityState.getField(firstField);
+        Any bestGuessId = TypeConverter.toAny(fieldValue);
+        return bestGuessId;
     }
 
     static UpdatePayload from(SubscriptionUpdate update) {
@@ -66,33 +80,34 @@ final class UpdatePayload {
     }
 
     private static UpdatePayload entityUpdates(SubscriptionUpdate update) {
-        ImmutableMap<String, Message> messages =
-                update.getEntityUpdates()
-                      .getUpdateList()
-                      .stream()
-                      .collect(collector(upd -> unpack(upd.getState())));
+        ImmutableMap<String, Message> messages = update
+                .getEntityUpdates()
+                .getUpdateList()
+                .stream()
+                .collect(toHashTable(EntityStateUpdate::getId, upd -> unpack(upd.getState())));
         return new UpdatePayload(messages);
     }
 
     private static UpdatePayload eventUpdates(SubscriptionUpdate update) {
-        ImmutableMap<String, Message> messages = update.getEventUpdates()
-                                                       .getEventList()
-                                                       .stream()
-                                                       .collect(collector(Event::enclosedMessage));
+        ImmutableMap<String, Message> messages = update
+                .getEventUpdates()
+                .getEventList()
+                .stream()
+                .collect(toHashTable(Event::id, Event::enclosedMessage));
         return new UpdatePayload(messages);
     }
 
     private static <T> Collector<T, ?, ImmutableMap<String, Message>>
-    collector(Function<T, Message> valueMapper) {
-        return toImmutableMap(UpdatePayload::key, valueMapper);
+    toHashTable(Function<T, Message> keyMapper, Function<T, Message> valueMapper) {
+        return toImmutableMap(keyMapper.andThen(UpdatePayload::key), valueMapper);
     }
 
-    private static String key(Object id) {
-        Any idAny = TypeConverter.toAny(id);
-        HashCode code = keyHasher.newHasher()
-                                 .putString(id.getClass().getSimpleName(), UTF_8)
-                                 .putBytes(idAny.toByteArray())
-                                 .hash();
+    private static String key(Message id) {
+        Any packedId = AnyPacker.pack(id);
+        HashCode code = keyHashFunction.newHasher()
+                                       .putString(packedId.getTypeUrl(), UTF_8)
+                                       .putBytes(packedId.getValue().toByteArray())
+                                       .hash();
         return code.toString();
     }
 
