@@ -32,13 +32,10 @@ import io.spine.protobuf.TypeConverter;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 
-import java.util.Map.Entry;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collector;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.hash.Hashing.murmur3_128;
 import static io.spine.client.SubscriptionUpdate.UpdateCase.ENTITY_UPDATES;
@@ -97,16 +94,6 @@ final class UpdatePayload {
                                  .putBytes(idAny.toByteArray())
                                  .hash();
         return code.toString();
-    }
-
-    UpdatePayload filter(Predicate<Message> messagePredicate) {
-        checkNotNull(messagePredicate);
-        ImmutableMap<String, Message> filteredMessages =
-                messages.entrySet()
-                        .stream()
-                        .filter(entry -> messagePredicate.test(entry.getValue()))
-                        .collect(toImmutableMap(Entry::getKey, Entry::getValue));
-        return new UpdatePayload(filteredMessages);
     }
 
     NodeValue asNodeValue() {

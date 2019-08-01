@@ -31,6 +31,7 @@ import io.spine.net.EmailAddress;
 import io.spine.net.InternetDomain;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.NodePath;
+import io.spine.web.firebase.RequestNodePath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

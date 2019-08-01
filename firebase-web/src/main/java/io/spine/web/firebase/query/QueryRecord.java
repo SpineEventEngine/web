@@ -26,6 +26,7 @@ import io.spine.client.QueryResponse;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.RequestNodePath;
 import io.spine.web.firebase.StoredJson;
 
 import java.util.List;

@@ -20,73 +20,35 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
-import io.spine.client.IdFilter;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
-import io.spine.client.Target;
-import io.spine.client.TargetFilters;
-import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
-import io.spine.web.firebase.query.RequestNodePath;
-import io.spine.web.firebase.subscription.matcher.CompositeFilters;
-import io.spine.web.firebase.subscription.matcher.IdMatcher;
-
-import java.util.List;
-import java.util.function.Predicate;
+import io.spine.web.firebase.RequestNodePath;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.web.firebase.subscription.Tokens.tokenFor;
 
 final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
 
     private final FirebaseClient firebase;
-    private final LazyRepository repository;
 
-    UpdateObserver(FirebaseClient firebase, LazyRepository repository) {
+    UpdateObserver(FirebaseClient firebase) {
         this.firebase = checkNotNull(firebase);
-        this.repository = checkNotNull(repository);
     }
 
     @Override
     public void onNext(SubscriptionUpdate update) {
         Subscription subscription = update.getSubscription();
-        TypeUrl type = TypeUrl.parse(subscription.getTopic()
-                                                 .getTarget()
-                                                 .getType());
-        List<PersistedSubscription> subscriptions = repository.get().forType(type);
-        for (PersistedSubscription userSubscription : subscriptions) {
-            UpdatePayload payload = extractMatching(update, userSubscription);
-            if (!payload.isEmpty()) {
-                NodePath token = RequestNodePath.of(userSubscription.token());
-                SubscriptionRecord record = new SubscriptionRecord(token, payload);
-                record.storeAsUpdate(firebase);
-            }
-        }
-    }
 
-    private static UpdatePayload
-    extractMatching(SubscriptionUpdate update, PersistedSubscription targetSubscription) {
         UpdatePayload payload = UpdatePayload.from(update);
-        Target target = targetSubscription.getSubscription()
-                                          .getTopic()
-                                          .getTarget();
-        if (target.getIncludeAll()) {
-            return payload;
-        } else {
-            UpdatePayload matching = filteredMessages(payload, target);
-            return matching;
+        NodePath path = RequestNodePath.of(tokenFor(subscription));
+        if (!payload.isEmpty()) {
+            SubscriptionRecord record = new SubscriptionRecord(path, payload);
+            record.storeAsUpdate(firebase);
         }
-    }
-
-    private static UpdatePayload filteredMessages(UpdatePayload update, Target target) {
-        TargetFilters filters = target.getFilters();
-        IdFilter idFilter = filters.getIdFilter();
-        Predicate<Message> idMatches = new IdMatcher(idFilter);
-        Predicate<Message> fieldsMatch = CompositeFilters.toPredicate(filters.getFilterList());
-        return update.filter(idMatches.and(fieldsMatch));
     }
 
     @Override

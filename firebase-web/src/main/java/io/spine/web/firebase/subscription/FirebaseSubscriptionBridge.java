@@ -31,7 +31,7 @@ import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
-import io.spine.web.firebase.query.RequestNodePath;
+import io.spine.web.firebase.RequestNodePath;
 import io.spine.web.query.BlockingQueryService;
 import io.spine.web.subscription.SubscriptionBridge;
 import io.spine.web.subscription.result.SubscribeResult;
