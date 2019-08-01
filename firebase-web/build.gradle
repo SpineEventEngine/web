@@ -38,6 +38,7 @@ dependencies {
     implementation deps.build.googleHttpClient
     implementation deps.build.googleHttpClientApache
     implementation deps.build.appengineApi
+    implementation deps.build.firebaseAdmin
 
     implementation "io.spine:spine-server:$spineVersion"
     implementation "io.spine:spine-client:$spineVersion"
