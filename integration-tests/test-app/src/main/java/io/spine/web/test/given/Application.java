@@ -85,7 +85,7 @@ final class Application {
                 .add(boundedContext)
                 .build();
         // Dummy service account to satisfy `FirebaseOptions`. The account has NO permissions.
-        Resource googleCredentialsFile = Resource.file("spine-dev-dummy.json");
+        Resource googleCredentialsFile = Resource.file("spine-dev.json");
         GoogleCredentials credentials;
         try {
             credentials = GoogleCredentials.fromStream(googleCredentialsFile.open());
