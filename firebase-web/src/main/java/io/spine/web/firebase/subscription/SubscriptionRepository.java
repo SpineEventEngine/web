@@ -30,8 +30,6 @@ import com.google.protobuf.Duration;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.json.Json;
-import io.spine.type.TypeName;
-import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
@@ -46,7 +44,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.RequestNodePath.tenantIdAsPath;
 import static io.spine.web.firebase.subscription.LazyRepository.lazy;
 
-// TODO:2019-07-29:dmytro.dashenkov: Find a better name.
+/**
+ * A repository of entity/event subscriptions.
+ *
+ * <p>Registers the received from the client {@linkplain Topic subscription topics} in
+ * the {@code SubscriptionService}, activates them, and cancels when the client requests so or when
+ * the subscription becomes outdated.
+ *
+ * <p>Subscription repositories running on different sever instances exchange subscriptions via
+ * Firebase, so that each instance can post updates for each subscription.
+ */
 final class SubscriptionRepository {
 
     private static final NodePath SUBSCRIPTIONS_ROOT = NodePaths.of("subscriptions");
@@ -68,6 +75,12 @@ final class SubscriptionRepository {
         this.subscriptionRegistry = subscriptionRegistry;
     }
 
+    /**
+     * Fetches all the existing subscriptions from the Firebase and activates them.
+     *
+     * <p>After calling this method, all the new subscriptions are automatically activates on this
+     * server instance.
+     */
     void subscribeToAll() {
         activateExistingSubscriptions();
         subscribeToSubscriptionUpdates();
@@ -116,8 +129,18 @@ final class SubscriptionRepository {
         }
     }
 
+    /**
+     * Subscribes to the given topic and activates the subscription.
+     *
+     * <p>The topic may be a new one received from the client or an existing one, fetched from the
+     * storage.
+     *
+     * @param topic
+     *         the subscription topic
+     * @return new subscription local to this server instance
+     */
     @CanIgnoreReturnValue
-    public Subscription write(Topic topic) {
+    Subscription write(Topic topic) {
         NodePath path = pathForSubscription(topic);
         StoredJson jsonSubscription = StoredJson.encode(topic);
         firebase.create(path, jsonSubscription.asNodeValue());
@@ -125,6 +148,12 @@ final class SubscriptionRepository {
         return subscribe(topic);
     }
 
+    /**
+     * Cancels the given subscription.
+     *
+     * <p>After this method, all the other server instances will <i>eventually</i> stop publishing
+     * updates for the subscription.
+     */
     void cancel(Subscription subscription) {
         subscriptionService.cancel(subscription);
         delete(subscription.getTopic());
@@ -139,51 +168,19 @@ final class SubscriptionRepository {
     private static NodePath pathForSubscription(Topic topic) {
         NodePath tenant = tenantIdAsPath(topic.getContext().getTenantId());
         String topicId = topic.getId().getValue();
-        TypeName targetType = TypeUrl.parse(topic.getTarget().getType()).toTypeName();
-        NodePath path = NodePaths.of(tenant.getValue(), targetType.value(), topicId);
+        NodePath path = NodePaths.of(tenant.getValue(), topicId);
         return SUBSCRIPTIONS_ROOT.append(path);
     }
 
+    /**
+     * An event listener for the nodes which contain all the active subscriptions of a certain
+     * tenant.
+     */
     private static final class NewTenantObserver implements ChildEventListener {
-
-        private final NewSubscriptionObserver listener;
-
-        private NewTenantObserver(SubscriptionRepository repository) {
-            this.listener = new NewSubscriptionObserver(repository);
-        }
-
-        @Override
-        public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-            snapshot.getRef()
-                    .addChildEventListener(listener);
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-            // NOP.
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot snapshot) {
-            // NOP.
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-            // NOP.
-        }
-
-        @Override
-        public void onCancelled(DatabaseError error) {
-            // NOP.
-        }
-    }
-
-    private static final class NewSubscriptionObserver implements ChildEventListener {
 
         private final SubscriptionChangeObserver listener;
 
-        private NewSubscriptionObserver(SubscriptionRepository repository) {
+        private NewTenantObserver(SubscriptionRepository repository) {
             this.listener = new SubscriptionChangeObserver(repository);
         }
 
@@ -214,6 +211,12 @@ final class SubscriptionRepository {
         }
     }
 
+    /**
+     * An event listener for separate subscription updates.
+     *
+     * <p>When a subscription is updated, checks if it is stale or not and either cancels it or
+     * re-activates for this server instance.
+     */
     private static final class SubscriptionChangeObserver implements ValueEventListener {
 
         private final SubscriptionRepository repository;
