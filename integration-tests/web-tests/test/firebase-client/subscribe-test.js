@@ -27,7 +27,7 @@ import {client} from './given/firebase-client';
 describe('FirebaseClient subscription', function () {
 
     // Big timeout allows to receive model state changes during tests.
-    this.timeout(180 * 1000);
+    this.timeout(120 * 1000);
 
     it('retrieves new entities', done => {
         const names = ['Task #1', 'Task #2', 'Task #3'];
@@ -61,12 +61,11 @@ describe('FirebaseClient subscription', function () {
                 itemChanged.subscribe({
                     next: fail(done, 'Unexpected entity change during entity create subscription test.')
                 });
+                commands.forEach(command => {
+                    client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
+                });
             })
             .catch(fail(done));
-
-        commands.forEach(command => {
-            client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
-        });
     });
 
     it('retrieves updates when subscribed by type', done => {
@@ -108,23 +107,21 @@ describe('FirebaseClient subscription', function () {
                         }
                     }
                 });
+                // Create task.
+                const createCommand = TestEnvironment.createTaskCommand({
+                    withPrefix: 'spine-web-test-subscribe',
+                    named: INITIAL_TASK_NAME
+                });
+                taskId = createCommand.getId().getValue();
+
+                client.sendCommand(
+                    createCommand,
+                    () => console.log(`Task '${createCommand.getId().getValue()}' created.`),
+                    fail(done, 'Unexpected error while creating a task.'),
+                    fail(done, 'Unexpected rejection while creating a task.')
+                );
             })
             .catch(fail(done));
-
-        // Create task.
-        const createCommand = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-subscribe',
-            named: INITIAL_TASK_NAME
-        });
-        taskId = createCommand.getId().getValue();
-
-        client.sendCommand(
-            createCommand,
-            () => console.log(`Task '${createCommand.getId().getValue()}' created.`),
-            fail(done, 'Unexpected error while creating a task.'),
-            fail(done, 'Unexpected rejection while creating a task.')
-        );
-
         // Rename created task after the `itemAdded` subscription was received.
         itemAddedPromise.then(() => {
             const renameCommand = TestEnvironment.renameTaskCommand({
@@ -194,14 +191,14 @@ describe('FirebaseClient subscription', function () {
                         }
                     }
                 });
+                client.sendCommand(
+                    createCommand,
+                    () => console.log(`Task '${taskIdValue}' created.`),
+                    fail(done, 'Unexpected error while creating a task.'),
+                    fail(done, 'Unexpected rejection while creating a task.')
+                );
             })
             .catch(fail(done));
-        client.sendCommand(
-            createCommand,
-            () => console.log(`Task '${taskIdValue}' created.`),
-            fail(done, 'Unexpected error while creating a task.'),
-            fail(done, 'Unexpected rejection while creating a task.')
-        );
         itemAddedPromise.then(() => {
             const renameCommand = TestEnvironment.renameTaskCommand({
                 withId: taskIdValue,
