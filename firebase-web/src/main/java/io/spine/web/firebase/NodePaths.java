@@ -43,6 +43,16 @@ public final class NodePaths {
     private NodePaths() {
     }
 
+    /**
+     * Creates a {@link NodePath} by joining the given elements.
+     *
+     * <p>The elements are also checked for illegal path symbols. Such symbols
+     * ({@literal [, ], ., $, #}) are replaced with the {@code -} (hyphen) symbol.
+     *
+     * @param pathElements
+     *         the elements of a database path
+     * @return the path
+     */
     public static NodePath of(String... pathElements) {
         checkNotNull(pathElements);
         checkArgument(pathElements.length > 0);
@@ -50,6 +60,16 @@ public final class NodePaths {
         return of(path);
     }
 
+    /**
+     * Creates a {@link NodePath} from the given string.
+     *
+     * <p>The path string is checked for illegal path symbols. Such symbols
+     * ({@literal [, ], ., $, #}) are replaced with the {@code -} (hyphen) symbol.
+     *
+     * @param path
+     *         the path string
+     * @return the path
+     */
     public static NodePath of(String path) {
         checkNotNull(path);
         return NodePath
