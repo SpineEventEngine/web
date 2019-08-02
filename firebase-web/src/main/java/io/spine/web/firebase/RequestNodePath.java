@@ -31,13 +31,13 @@ import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 
 /**
- * A factory creating {@link NodePath}s where query results are placed.
+ * A factory creating {@link NodePath}s for placing actor request results.
  */
 @Internal
-public class RequestNodePath {
+public final class RequestNodePath {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
-    private static final String DEFAULT_TENANT = "common";
+    private static final NodePath DEFAULT_TENANT = NodePaths.of("common");
 
     /** Prevents instantiation of this static factory. */
     private RequestNodePath() {
@@ -53,35 +53,54 @@ public class RequestNodePath {
      */
     public static NodePath of(Query query) {
         ActorContext context = query.getContext();
-        String tenantId = tenantIdAsString(context.getTenantId());
-        String actor = context.getActor().getValue();
+        NodePath tenantId = tenantIdAsPath(context.getTenantId());
+        String actor = context.getActor()
+                              .getValue();
         String queryId = queryIdAsString(query);
-        return NodePaths.of(tenantId, actor, queryId);
+        return NodePaths.of(tenantId.getValue(), actor, queryId);
     }
 
+    /**
+     * Creates an instance of {@code NodePath} which points to a database node storing
+     * updates of the given subscription {@link Topic}.
+     *
+     * @param topic
+     *         the topic to host updates for
+     * @return new {@code NodePath}
+     */
     public static NodePath of(Topic topic) {
         Target target = topic.getTarget();
         TypeName type = TypeUrl.parse(target.getType()).toTypeName();
         ActorContext context = topic.getContext();
-        String tenantId = tenantIdAsString(context.getTenantId());
+        NodePath tenantId = tenantIdAsPath(context.getTenantId());
         String actor = context.getActor().getValue();
         String topicId = topic.getId().getValue();
-        return NodePaths.of(type.value(), tenantId, actor, topicId);
+        return NodePaths.of(type.value(), tenantId.getValue(), actor, topicId);
     }
 
-    public static String tenantIdAsString(TenantId tenantId) {
+    /**
+     * Converts a given tenant ID into a database node path.
+     *
+     * <p>When given a default instance, returns {@code common} as a node path. Otherwise, returns
+     * the string representation of the tenant ID: an email, a domain name, or a plain string value,
+     * depending on the kind of the ID.
+     *
+     * <p>The resulting value is a valid node path, i.e. does not contain
+     * {@linkplain NodePaths#of illegal path characters}.
+     *
+     * @param tenantId
+     *         the tenant ID
+     * @return new {@code NodePath}
+     */
+    public static NodePath tenantIdAsPath(TenantId tenantId) {
         TenantId.KindCase kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
-                return tenantId
-                        .getEmail()
-                        .getValue();
+                return NodePaths.of(tenantId.getEmail().getValue());
             case DOMAIN:
-                return tenantId
-                        .getDomain()
-                        .getValue();
+                return NodePaths.of(tenantId.getDomain().getValue());
             case VALUE:
-                return tenantId.getValue();
+                return NodePaths.of(tenantId.getValue());
             case KIND_NOT_SET: // Fallthrough intended.
             default:
                 return DEFAULT_TENANT;

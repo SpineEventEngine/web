@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.RequestNodePath.tenantIdAsString;
+import static io.spine.web.firebase.RequestNodePath.tenantIdAsPath;
 import static io.spine.web.firebase.subscription.LazyRepository.lazy;
 
 // TODO:2019-07-29:dmytro.dashenkov: Find a better name.
@@ -137,10 +137,10 @@ final class SubscriptionRepository {
     }
 
     private static NodePath pathForSubscription(Topic topic) {
-        String tenant = tenantIdAsString(topic.getContext().getTenantId());
+        NodePath tenant = tenantIdAsPath(topic.getContext().getTenantId());
         String topicId = topic.getId().getValue();
         TypeName targetType = TypeUrl.parse(topic.getTarget().getType()).toTypeName();
-        NodePath path = NodePaths.of(tenant, targetType.value(), topicId);
+        NodePath path = NodePaths.of(tenant.getValue(), targetType.value(), topicId);
         return SUBSCRIPTIONS_ROOT.append(path);
     }
 
