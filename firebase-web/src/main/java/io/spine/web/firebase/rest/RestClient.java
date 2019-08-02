@@ -24,6 +24,8 @@ import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.FirebaseDatabase;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
@@ -43,15 +45,13 @@ import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
  */
 public final class RestClient implements FirebaseClient {
 
-
-    @VisibleForTesting
-    static final String NULL_ENTRY = "null";
-
+    private final FirebaseDatabase database;
     private final RestNodeUrls factory;
     private final HttpClient httpClient;
 
     @VisibleForTesting
-    RestClient(RestNodeUrls factory, HttpClient httpClient) {
+    RestClient(FirebaseDatabase database, RestNodeUrls factory, HttpClient httpClient) {
+        this.database = database;
         this.factory = factory;
         this.httpClient = httpClient;
     }
@@ -61,9 +61,10 @@ public final class RestClient implements FirebaseClient {
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
     public static RestClient create(DatabaseUrl url, HttpRequestFactory requestFactory) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance(url.getUrl().getSpec());
         RestNodeUrls nodeUrlTemplate = new RestNodeUrls(url);
         HttpClient requestExecutor = HttpClient.using(requestFactory);
-        return new RestClient(nodeUrlTemplate, requestExecutor);
+        return new RestClient(database, nodeUrlTemplate, requestExecutor);
     }
 
     @Override
@@ -77,6 +78,14 @@ public final class RestClient implements FirebaseClient {
                                                 .filter(value -> !value.isNull())
                                                 .map(StoredJson::asNodeValue);
         return nodeValue;
+    }
+
+    @Override
+    public void subscribeTo(NodePath path, ChildEventListener listener) {
+        checkNotNull(path);
+        checkNotNull(listener);
+        database.getReference(path.getValue())
+                .addChildEventListener(listener);
     }
 
     @Override

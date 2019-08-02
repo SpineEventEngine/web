@@ -21,6 +21,7 @@
 package io.spine.web.firebase.given;
 
 import com.google.common.collect.ImmutableList;
+import com.google.firebase.database.ChildEventListener;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
@@ -53,6 +54,11 @@ public final class TestFirebaseClient implements FirebaseClient {
     public Optional<NodeValue> get(NodePath nodePath) {
         reads.add(nodePath);
         return Optional.empty();
+    }
+
+    @Override
+    public void subscribeTo(NodePath path, ChildEventListener listener) {
+        reads.add(path);
     }
 
     @Override

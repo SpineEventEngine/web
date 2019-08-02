@@ -20,6 +20,8 @@
 
 package io.spine.web.firebase;
 
+import com.google.firebase.database.ChildEventListener;
+
 import java.util.Optional;
 
 /**
@@ -40,6 +42,8 @@ public interface FirebaseClient {
      * @return the node value or empty {@code Optional} if the node is not present in the database
      */
     Optional<NodeValue> get(NodePath nodePath);
+
+    void subscribeTo(NodePath path, ChildEventListener listener);
 
     /**
      * Writes the specified value to the Firebase database node.

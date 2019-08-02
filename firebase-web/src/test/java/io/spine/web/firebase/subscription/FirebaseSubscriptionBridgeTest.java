@@ -38,6 +38,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.assertSubscriptionPointsToFirebase;
@@ -107,6 +108,8 @@ class FirebaseSubscriptionBridgeTest {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
 
+        SubscribeResult subscribeResult = bridge.subscribe(topic);
+        assertThat(subscribeResult).isNotNull();
         SubscriptionCancelResult result = bridge.cancel(subscription);
 
         ServletResponse response = mock(ServletResponse.class);
@@ -114,7 +117,7 @@ class FirebaseSubscriptionBridgeTest {
         result.writeTo(response);
         Response responseMessage = newResponse();
 
-        assertEquals(toCompactJson(responseMessage), writer.toString());
+        assertThat(writer.toString()).isEqualTo(toCompactJson(responseMessage));
     }
 
     @Test

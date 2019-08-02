@@ -25,15 +25,20 @@ import io.grpc.stub.StreamObserver;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.client.Topic;
+import io.spine.client.TopicId;
 import io.spine.client.grpc.SubscriptionServiceGrpc;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.grpc.MemoizingObserver;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.util.Collections.synchronizedSet;
 
 public final class BlockingSubscriptionService {
 
@@ -42,6 +47,7 @@ public final class BlockingSubscriptionService {
             .getFullMethodName();
 
     private final SubscriptionServiceImplBase subscriptionService;
+    private final Set<TopicId> activeTopics = synchronizedSet(new HashSet<>());
 
     public BlockingSubscriptionService(SubscriptionServiceImplBase service) {
         this.subscriptionService = checkNotNull(service);
@@ -57,6 +63,7 @@ public final class BlockingSubscriptionService {
         checkObserver(subscriptionObserver);
         Subscription subscription = subscriptionObserver.firstResponse();
         subscriptionService.activate(subscription, updateObserver);
+        activeTopics.add(topic.getId());
         return subscription;
     }
 
@@ -76,5 +83,6 @@ public final class BlockingSubscriptionService {
     public void cancel(Subscription subscription) {
         checkNotNull(subscription);
         subscriptionService.cancel(subscription, noOpObserver());
+        activeTopics.remove(subscription.getTopic().getId());
     }
 }
