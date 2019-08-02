@@ -26,6 +26,9 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A lazy loading {@link SubscriptionRepository}.
+ */
 final class LazyRepository implements Supplier<SubscriptionRepository> {
 
     private final Supplier<SubscriptionRepository> delegate;
@@ -34,12 +37,23 @@ final class LazyRepository implements Supplier<SubscriptionRepository> {
         this.delegate = delegate;
     }
 
+    /**
+     * Creates a new instance of {@code LazyRepository}.
+     *
+     * @param delegate a supplier which produces the resulting repository
+     */
     static LazyRepository lazy(Supplier<SubscriptionRepository> delegate) {
         checkNotNull(delegate);
         Supplier<SubscriptionRepository> memoized = Suppliers.memoize(delegate::get);
         return new LazyRepository(memoized);
     }
 
+    /**
+     * Obtains the repository.
+     *
+     * <p>When called for the first time, invokes the given supplier and memoizes its result.
+     * When called again, obtains the same instance as the first time.
+     */
     @Override
     public SubscriptionRepository get() {
         return delegate.get();
