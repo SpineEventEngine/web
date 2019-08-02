@@ -15,6 +15,13 @@ allows to test functionality of the `spine-web` library.
 The application uses Firebase application emulated locally with a [`firebase-server`](https://www.npmjs.com/package/firebase-server)
 tool. This tool is executed from the `web-tests` module `node_modules` folder.
 
+### Dummy service account
+
+The resources of this project contain a Google service account credential. The credential 
+corresponds to the `dummy` service account. The account has **no permissions**. This credential
+allows us to initialize the Firebase Admin SDK without the need to maintain an encrypted credential
+for Travis and AppVeyor.
+
 ### Running the application locally
 
 The application can be run locally by Gretty and Firebase emulators. To run the
