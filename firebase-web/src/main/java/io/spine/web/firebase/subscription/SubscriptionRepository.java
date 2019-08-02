@@ -25,15 +25,22 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.JsonElement;
 import com.google.protobuf.Duration;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.json.Json;
+import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
+import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.subscription.BlockingSubscriptionService;
+
+import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.RequestNodePath.tenantIdAsString;
@@ -62,6 +69,27 @@ final class SubscriptionRepository {
     }
 
     void subscribeToAll() {
+        activateExistingSubscriptions();
+        subscribeToSubscriptionUpdates();
+    }
+
+    private void activateExistingSubscriptions() {
+        Optional<NodeValue> allSubscriptions = firebase.get(SUBSCRIPTIONS_ROOT);
+        allSubscriptions.ifPresent(subscriptions -> subscriptions
+                .underlyingJson()
+                .entrySet()
+                .stream()
+                .map(Map.Entry::getValue)
+                .flatMap(element -> element.getAsJsonObject()
+                                           .entrySet()
+                                           .stream()
+                                           .map(Map.Entry::getValue))
+                .map(JsonElement::toString)
+                .map(this::loadTopic)
+                .forEach(this::deleteOrActivate));
+    }
+
+    private void subscribeToSubscriptionUpdates() {
         NewTenantObserver observer = new NewTenantObserver(this);
         firebase.subscribeTo(SUBSCRIPTIONS_ROOT, observer);
     }
@@ -73,14 +101,12 @@ final class SubscriptionRepository {
         return subscription;
     }
 
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private Topic loadTopic(String json) {
         Topic topic = Json.fromJson(json, Topic.class);
         healthLog.put(topic);
         return topic;
     }
 
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private void deleteOrActivate(Topic topic) {
         boolean active = healthLog.isActive(topic);
         if (!active) {
@@ -111,13 +137,10 @@ final class SubscriptionRepository {
     }
 
     private static NodePath pathForSubscription(Topic topic) {
-        String tenant = tenantIdAsString(topic.getContext()
-                                              .getTenantId());
-        String topicId = topic.getId()
-                              .getValue();
-        String targetType = topic.getTarget()
-                                 .getType();
-        NodePath path = NodePaths.of(tenant, targetType, topicId);
+        String tenant = tenantIdAsString(topic.getContext().getTenantId());
+        String topicId = topic.getId().getValue();
+        TypeName targetType = TypeUrl.parse(topic.getTarget().getType()).toTypeName();
+        NodePath path = NodePaths.of(tenant, targetType.value(), topicId);
         return SUBSCRIPTIONS_ROOT.append(path);
     }
 
@@ -137,18 +160,22 @@ final class SubscriptionRepository {
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+            // NOP.
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
+            // NOP.
         }
 
         @Override
         public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+            // NOP.
         }
 
         @Override
         public void onCancelled(DatabaseError error) {
+            // NOP.
         }
     }
 
@@ -168,18 +195,22 @@ final class SubscriptionRepository {
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+            // NOP.
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
+            // NOP.
         }
 
         @Override
         public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+            // NOP.
         }
 
         @Override
         public void onCancelled(DatabaseError error) {
+            // NOP.
         }
     }
 
@@ -200,6 +231,7 @@ final class SubscriptionRepository {
 
         @Override
         public void onCancelled(DatabaseError error) {
+            // NOP.
         }
     }
 }

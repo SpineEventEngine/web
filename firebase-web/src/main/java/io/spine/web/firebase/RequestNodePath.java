@@ -27,6 +27,8 @@ import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.core.ActorContext;
 import io.spine.core.TenantId;
+import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
 
 /**
  * A factory creating {@link NodePath}s where query results are placed.
@@ -59,12 +61,12 @@ public class RequestNodePath {
 
     public static NodePath of(Topic topic) {
         Target target = topic.getTarget();
-        String type = target.getType();
+        TypeName type = TypeUrl.parse(target.getType()).toTypeName();
         ActorContext context = topic.getContext();
         String tenantId = tenantIdAsString(context.getTenantId());
         String actor = context.getActor().getValue();
         String topicId = topic.getId().getValue();
-        return NodePaths.of(type, tenantId, actor, topicId);
+        return NodePaths.of(type.value(), tenantId, actor, topicId);
     }
 
     public static String tenantIdAsString(TenantId tenantId) {

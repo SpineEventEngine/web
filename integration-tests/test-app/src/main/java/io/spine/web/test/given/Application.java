@@ -20,7 +20,11 @@
 
 package io.spine.web.test.given;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
+import io.spine.io.Resource;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
@@ -31,6 +35,8 @@ import io.spine.web.firebase.RetryingClient;
 import io.spine.web.firebase.WaitingRepetitionsRetryer;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
+
+import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.FirebaseClientFactory.remoteClient;
@@ -78,7 +84,21 @@ final class Application {
                 .newBuilder()
                 .add(boundedContext)
                 .build();
-        FirebaseDatabase database = FirebaseDatabase.getInstance(DATABASE_URL);
+
+        Resource googleCredentialsFile = Resource.file("spine-dev.json");
+        GoogleCredentials credentials;
+        try {
+            credentials = GoogleCredentials.fromStream(googleCredentialsFile.open());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        FirebaseOptions options = FirebaseOptions
+                .builder()
+                .setDatabaseUrl(DATABASE_URL)
+                .setCredentials(credentials)
+                .build();
+        FirebaseApp.initializeApp(options);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseClient firebaseClient = remoteClient(database);
         FirebaseClient retryingClient = new RetryingClient(firebaseClient, RETRY_POLICY);
         return new Application(commandService, queryService, subscriptionService, retryingClient);
