@@ -130,8 +130,17 @@ class HttpClient {
         }
     }
 
+    /**
+     * Prepares and executes a DELETE request.
+     *
+     * @param url
+     *         the target URL
+     * @return the {@code String} containing response body
+     * @throws RequestToFirebaseFailedException
+     *         if the request couldn't be performed normally
+     */
     @CanIgnoreReturnValue
-    public String delete(GenericUrl url) {
+    String delete(GenericUrl url) {
         checkNotNull(url);
 
         try {
