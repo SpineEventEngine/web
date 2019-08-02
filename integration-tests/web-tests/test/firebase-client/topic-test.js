@@ -20,7 +20,7 @@
 
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {fail, ensureUserTasksCount, toListObservable} from '../test-helpers';
+import {ensureUserTasksCount, fail, toListObservable} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
 import {client} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
@@ -242,7 +242,8 @@ describe('FirebaseClient subscribes to topic', function () {
         const topic = buildTopicFor({
             ids: [user1.id, user2.id],
             filters: [
-                Filters.ge('tasksCount', 2)
+                // TODO:2019-08-01:dmytro.dashenkov: Change to `tasksCount` when subscriptions start working with columns.
+                Filters.ge('tasks_count', 2)
             ]
         });
 
