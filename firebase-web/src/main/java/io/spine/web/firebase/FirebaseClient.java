@@ -83,7 +83,7 @@ public interface FirebaseClient {
     /**
      * Deletes the node under the given path.
      *
-     * <p>Does nothing if such a node does not exist.
+     * <p>Does nothing if the node does not exist.
      *
      * @param nodePath
      *         the path to the node to delete
