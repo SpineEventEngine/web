@@ -65,8 +65,10 @@ public final class FirebaseSubscriptionBridgeTestEnv {
 
     public static void assertSubscriptionPointsToFirebase(NodePath path, Topic topic) {
         String actor = actorAsString(topic);
+        TypeUrl targetType = TypeUrl.parse(topic.getTarget()
+                                           .getType());
         Collection<String> pathElements = newArrayList(
-                escaped(topic.getTarget().getType()), DEFAULT_TENANT, escaped(actor), ""
+                escaped(targetType.toTypeName().value()), DEFAULT_TENANT, escaped(actor), ""
         );
         String expectedPath = PATH_JOINER.join(pathElements);
         assertThat(path.getValue()).startsWith(expectedPath);
