@@ -33,6 +33,8 @@ import io.spine.web.subscription.result.SubscribeResult;
 import io.spine.web.subscription.result.SubscriptionCancelResult;
 import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
+import java.util.Optional;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
@@ -82,10 +84,12 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     public SubscriptionCancelResult cancel(Subscription subscription) {
         checkNotNull(subscription);
         Topic topic = subscription.getTopic();
-        Subscription localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
-        repository.cancel(localSubscription);
-        NodePath updatesPath = RequestNodePath.of(topic);
-        firebaseClient.delete(updatesPath);
+        Optional<Subscription> localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
+        localSubscription.ifPresent(local -> {
+            repository.cancel(local);
+            NodePath updatesPath = RequestNodePath.of(topic);
+            firebaseClient.delete(updatesPath);
+        });
         return new FirebaseSubscriptionCancelResult(statusOk());
     }
 

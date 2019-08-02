@@ -27,8 +27,8 @@ import io.spine.client.TopicId;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Collections.synchronizedMap;
 
 final class LocalSubscriptionRegistry {
@@ -41,14 +41,14 @@ final class LocalSubscriptionRegistry {
         ids.put(topicId, subscriptionId);
     }
 
-    Subscription localSubscriptionFor(Topic topic) {
+    Optional<Subscription> localSubscriptionFor(Topic topic) {
         TopicId topicId = topic.getId();
         SubscriptionId subscriptionId = ids.get(topicId);
-        checkArgument(subscriptionId != null, "No local subscription found for topic: ", topic);
-        return Subscription
-                .newBuilder()
-                .setId(subscriptionId)
-                .setTopic(topic)
-                .buildPartial();
+        return Optional.ofNullable(subscriptionId)
+                       .map(id -> Subscription
+                               .newBuilder()
+                               .setId(subscriptionId)
+                               .setTopic(topic)
+                               .buildPartial());
     }
 }
