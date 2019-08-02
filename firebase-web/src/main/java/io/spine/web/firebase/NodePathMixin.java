@@ -25,15 +25,39 @@ import io.spine.annotation.GeneratedMixin;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A generated mixin interface for the {@link NodePath} message type.
+ */
 @SuppressWarnings("ClassReferencesSubclass")
 @GeneratedMixin
-public interface NodePathMixin extends NodePathOrBuilder {
+interface NodePathMixin extends NodePathOrBuilder {
 
+    /**
+     * Generates a new path by concatenating this path with the given {@code other} one.
+     *
+     * <p>For example, if this path if {@code root/child/sub-child} and the {@code other} is
+     * {@code aaa/bbb}, the resulting path would be {@code root/child/sub-child/aaa/bbb}.
+     *
+     * @param other
+     *         path to append
+     * @return the concatenated path
+     */
     default NodePath append(NodePath other) {
         checkNotNull(other);
         return append(other.getValue());
     }
 
+    /**
+     * Generates a new path by concatenating this path with the given string representing another
+     * path.
+     *
+     * <p>For example, if this path if {@code root/child/sub-child} and the given raw string is
+     * {@code "aaa/bbb"}, the resulting path would be {@code root/child/sub-child/aaa/bbb}.
+     *
+     * @param rawPath
+     *         path to append
+     * @return the concatenated path
+     */
     default NodePath append(String rawPath) {
         checkNotNull(rawPath);
         checkArgument(!rawPath.isEmpty());
