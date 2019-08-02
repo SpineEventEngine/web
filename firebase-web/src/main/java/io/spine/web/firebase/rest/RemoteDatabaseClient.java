@@ -38,10 +38,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
 /**
- * A {@code FirebaseClient} which operates via the Firebase REST API and the Java Admin API.
+ * A {@code FirebaseClient} which operates via the Firebase REST API and the Java Admin SDK.
  *
- * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
- * </a>.
+ * <p>The client uses the Java Firebase Admin SDK for subscribing to events of a given database
+ * node. The API exposes the {@link ChildEventListener} so that the caller may build more complex
+ * "nested" subscriptions without a need to re-fetch database references.
+ *
+ * <p>For all the other operations, the client uses the Firebase REST API as described in the
+ * <a href="https://firebase.google.com/docs/reference/rest/database/">documentation</a>.
  */
 public final class RemoteDatabaseClient implements FirebaseClient {
 
@@ -84,10 +88,10 @@ public final class RemoteDatabaseClient implements FirebaseClient {
     }
 
     @Override
-    public void subscribeTo(NodePath path, ChildEventListener listener) {
-        checkNotNull(path);
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        checkNotNull(nodePath);
         checkNotNull(listener);
-        database.getReference(path.getValue())
+        database.getReference(nodePath.getValue())
                 .addChildEventListener(listener);
     }
 

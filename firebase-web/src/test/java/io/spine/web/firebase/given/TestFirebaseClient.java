@@ -57,8 +57,8 @@ public final class TestFirebaseClient implements FirebaseClient {
     }
 
     @Override
-    public void subscribeTo(NodePath path, ChildEventListener listener) {
-        reads.add(path);
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        reads.add(nodePath);
     }
 
     @Override

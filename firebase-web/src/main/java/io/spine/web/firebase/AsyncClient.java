@@ -72,8 +72,8 @@ public final class AsyncClient implements FirebaseClient {
     }
 
     @Override
-    public void subscribeTo(NodePath path, ChildEventListener listener) {
-        delegate.subscribeTo(path, listener);
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        delegate.subscribeTo(nodePath, listener);
     }
 
     @Override

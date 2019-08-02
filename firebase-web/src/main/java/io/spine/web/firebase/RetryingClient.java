@@ -56,8 +56,8 @@ public final class RetryingClient implements FirebaseClient {
     }
 
     @Override
-    public void subscribeTo(NodePath path, ChildEventListener listener) {
-        retryer.runAndRetry(() -> delegate.subscribeTo(path, listener));
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        retryer.runAndRetry(() -> delegate.subscribeTo(nodePath, listener));
     }
 
     @Override

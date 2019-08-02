@@ -43,7 +43,15 @@ public interface FirebaseClient {
      */
     Optional<NodeValue> get(NodePath nodePath);
 
-    void subscribeTo(NodePath path, ChildEventListener listener);
+    /**
+     * Subscribes to the child events of the given node.
+     *
+     * @param nodePath
+     *         the path to the node to subscribe to
+     * @param listener
+     *         the callbacks invoked on child events
+     */
+    void subscribeTo(NodePath nodePath, ChildEventListener listener);
 
     /**
      * Writes the specified value to the Firebase database node.
@@ -72,5 +80,13 @@ public interface FirebaseClient {
      */
     void update(NodePath nodePath, NodeValue value);
 
+    /**
+     * Deletes the node under the given path.
+     *
+     * <p>Does nothing if such a node does not exist.
+     *
+     * @param nodePath
+     *         the path to the node to delete
+     */
     void delete(NodePath nodePath);
 }
