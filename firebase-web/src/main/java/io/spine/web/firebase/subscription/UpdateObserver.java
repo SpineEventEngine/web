@@ -50,7 +50,7 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
         Subscription subscription = update.getSubscription();
         Topic topic = subscription.getTopic();
 
-        if (healthLog.isActive(topic)) {
+        if (!healthLog.isStale(topic)) {
             UpdatePayload payload = UpdatePayload.from(update);
             NodePath path = RequestNodePath.of(subscription.getTopic());
             if (!payload.isEmpty()) {

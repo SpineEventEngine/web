@@ -55,11 +55,11 @@ final class SubscriptionHealthLog {
         updateTimes.put(id, updateTime);
     }
 
-    boolean isActive(Topic topic) {
+    boolean isStale(Topic topic) {
         TopicId id = topic.getId();
         Timestamp lastUpdate = updateTimes.get(id);
         Timestamp now = Time.currentTime();
         Duration elapsed = between(lastUpdate, now);
-        return compare(elapsed, expirationTimeout) < 0;
+        return compare(elapsed, expirationTimeout) > 0;
     }
 }

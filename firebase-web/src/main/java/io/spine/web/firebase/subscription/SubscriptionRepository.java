@@ -108,8 +108,8 @@ final class SubscriptionRepository {
     }
 
     private void deleteOrActivate(Topic topic) {
-        boolean active = healthLog.isActive(topic);
-        if (!active) {
+        boolean stale = healthLog.isStale(topic);
+        if (stale) {
             delete(topic);
         } else {
             subscribe(topic);
