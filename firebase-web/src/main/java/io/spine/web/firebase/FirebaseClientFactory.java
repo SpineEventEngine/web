@@ -28,7 +28,6 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.server.DeploymentType;
 import io.spine.server.ServerEnvironment;
-import io.spine.web.firebase.rest.RemoteDatabaseClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.server.DeploymentType.APPENGINE_CLOUD;
@@ -45,7 +44,7 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@linkplain RemoteDatabaseClient firebase client} which
+     * Creates a {@linkplain io.spine.web.firebase.rest.RemoteDatabaseClient firebase client} which
      * operates via the Firebase REST API.
      *
      * <p>The client created with this method is suitable only for databases whose read/write side
@@ -62,8 +61,8 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@link RemoteDatabaseClient} which uses given credentials to
-     * authorize its requests to the Firebase database.
+     * Creates a {@link io.spine.web.firebase.rest.RemoteDatabaseClient} which uses given
+     * credentials to authorize its requests to the Firebase database.
      *
      * @param database
      *         the Firebase database to connect to
@@ -79,7 +78,8 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@link RemoteDatabaseClient} for the current environment.
+     * Creates a {@link io.spine.web.firebase.rest.RemoteDatabaseClient} for the current
+     * environment.
      *
      * <p>Different environments require different {@linkplain HttpTransport HTTP transport}
      * to operate.
