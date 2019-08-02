@@ -15,23 +15,22 @@ allows to test functionality of the `spine-web` library.
 The application uses Firebase application emulated locally with a [`firebase-server`](https://www.npmjs.com/package/firebase-server)
 tool. This tool is executed from the `web-tests` module `node_modules` folder.
 
-### Dummy service account
-
-The resources of this project contain a Google service account credential. The credential 
-corresponds to the `dummy` service account. The account has **no permissions**. This credential
-allows us to initialize the Firebase Admin SDK without the need to maintain an encrypted credential
-for Travis and AppVeyor.
-
 ### Running the application locally
 
 The application can be run locally by Gretty and Firebase emulators. To run the
 application do the following:
-1. Assemble the application:
+
+1. Add a Google Cloud service account key to the `src/main/resources` directory. The file should be
+called `spine-dev.json` and be a valid service account credential. It, however, must not have any
+permissions, as it is never used for remote calls, but only to satisfy requirements of
+the Firebase Admin SDK. 
+
+2. Assemble the application:
     ```bash
     ./gradlew clean assemble
     ```
     
-2. Start the local server:
+3. Start the local server:
 
     The following command runs the server on `localhost:8080`. It also runs
     the the local Firebase server on `localhost:5000`:
