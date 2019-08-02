@@ -25,14 +25,15 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
-import com.google.common.annotations.VisibleForTesting;
+import com.google.firebase.database.FirebaseDatabase;
 import io.spine.server.DeploymentType;
 import io.spine.server.ServerEnvironment;
+import io.spine.web.firebase.rest.RemoteDatabaseClient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.server.DeploymentType.APPENGINE_CLOUD;
 import static io.spine.server.DeploymentType.APPENGINE_EMULATOR;
-import static io.spine.web.firebase.rest.RestClient.create;
+import static io.spine.web.firebase.rest.RemoteDatabaseClient.create;
 
 /**
  * A tool for {@link FirebaseClient} instances creation.
@@ -44,40 +45,41 @@ public final class FirebaseClientFactory {
     }
 
     /**
-     * Creates a {@linkplain io.spine.web.firebase.rest.RestClient firebase client} which
+     * Creates a {@linkplain RemoteDatabaseClient firebase client} which
      * operates via the Firebase REST API.
      *
      * <p>The client created with this method is suitable only for databases whose read/write side
      * is public, to access the databases requiring authentication, use
-     * {@link #restClient(DatabaseUrl, FirebaseCredentials)}.
+     * {@link #remoteClient(FirebaseDatabase, FirebaseCredentials)}.
      *
-     * @param url
-     *         the URL of the database on which the client operates
+     * @param database
+     *         the Firebase database to connect to
      * @return the new instance of {@code RestClient}
      */
-    public static FirebaseClient restClient(DatabaseUrl url) {
-        checkNotNull(url);
-        return forCurrentEnv(url, FirebaseCredentials.empty());
+    public static FirebaseClient remoteClient(FirebaseDatabase database) {
+        checkNotNull(database);
+        return remoteClient(database, FirebaseCredentials.empty());
     }
 
     /**
-     * Creates a {@link io.spine.web.firebase.rest.RestClient} which uses given credentials to
+     * Creates a {@link RemoteDatabaseClient} which uses given credentials to
      * authorize its requests to the Firebase database.
      *
-     * @param url
-     *         the URL of the database on which the client operates
+     * @param database
+     *         the Firebase database to connect to
      * @param credentials
      *         the Firebase Database credentials to use
      * @return the new instance of {@code RestClient}
      */
-    public static FirebaseClient restClient(DatabaseUrl url, FirebaseCredentials credentials) {
-        checkNotNull(url);
+    public static FirebaseClient
+    remoteClient(FirebaseDatabase database, FirebaseCredentials credentials) {
+        checkNotNull(database);
         checkNotNull(credentials);
-        return forCurrentEnv(url, credentials);
+        return forCurrentEnv(database, credentials);
     }
 
     /**
-     * Creates a {@link io.spine.web.firebase.rest.RestClient} for the current environment.
+     * Creates a {@link RemoteDatabaseClient} for the current environment.
      *
      * <p>Different environments require different {@linkplain HttpTransport HTTP transport}
      * to operate.
@@ -86,59 +88,56 @@ public final class FirebaseClientFactory {
      * <a href="https://developers.google.com/api-client-library/java/google-http-java-client/reference/1.20.0/com/google/api/client/http/HttpTransport">
      * HttpTransport docs</a>.
      */
-    private static FirebaseClient forCurrentEnv(DatabaseUrl url, FirebaseCredentials credentials) {
+    private static FirebaseClient
+    forCurrentEnv(FirebaseDatabase database, FirebaseCredentials credentials) {
         DeploymentType deploymentType = ServerEnvironment.instance().deploymentType();
-        if (deploymentType == APPENGINE_CLOUD || deploymentType == APPENGINE_EMULATOR) {
-            return gae(url, credentials);
-        } else {
-            return nonGae(url, credentials);
-        }
+        return deploymentType == APPENGINE_CLOUD || deploymentType == APPENGINE_EMULATOR
+               ? gae(database, credentials)
+               : nonGae(database, credentials);
     }
 
     /**
      * Creates a {@code FirebaseClient} for usage in the Google AppEngine environment.
      */
-    @VisibleForTesting
-    static FirebaseClient gae(DatabaseUrl url, FirebaseCredentials credentials) {
+    private static FirebaseClient gae(FirebaseDatabase database, FirebaseCredentials credentials) {
         UrlFetchTransport urlFetchTransport = UrlFetchTransport.getDefaultInstance();
-        return createWithTransport(urlFetchTransport, url, credentials);
+        return createWithTransport(urlFetchTransport, database, credentials);
     }
 
     /**
      * Creates a {@code FirebaseClient} for usage in the non-GAE environment.
      */
-    @VisibleForTesting
-    static FirebaseClient nonGae(DatabaseUrl url, FirebaseCredentials credentials) {
+    private static FirebaseClient
+    nonGae(FirebaseDatabase database, FirebaseCredentials credentials) {
         ApacheHttpTransport apacheHttpTransport = new ApacheHttpTransport();
-        return createWithTransport(apacheHttpTransport, url, credentials);
+        return createWithTransport(apacheHttpTransport, database, credentials);
     }
 
     private static FirebaseClient createWithTransport(HttpTransport httpTransport,
-                                                      DatabaseUrl url,
+                                                      FirebaseDatabase database,
                                                       FirebaseCredentials credentials) {
-        if (credentials.isEmpty()) {
-            return createUnauthorized(httpTransport, url);
-        }
-        return createAuthorized(httpTransport, url, credentials);
+        return credentials.isEmpty()
+               ? createUnauthorized(httpTransport, database)
+               : createAuthorized(httpTransport, database, credentials);
     }
 
     /**
      * Creates a {@code FirebaseClient} authorized with the given credentials.
      */
     private static FirebaseClient createAuthorized(HttpTransport httpTransport,
-                                                   DatabaseUrl url,
+                                                   FirebaseDatabase database,
                                                    FirebaseCredentials credentials) {
         GoogleCredential googleCredentials = credentials.credentials();
         HttpRequestFactory requestFactory = httpTransport.createRequestFactory(googleCredentials);
-        return create(url, requestFactory);
+        return create(database, requestFactory);
     }
 
     /**
      * Creates an unauthorized {@code FirebaseClient} to access the database with public rules.
      */
     private static FirebaseClient createUnauthorized(HttpTransport httpTransport,
-                                                     DatabaseUrl url) {
+                                                     FirebaseDatabase database) {
         HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
-        return create(url, requestFactory);
+        return create(database, requestFactory);
     }
 }

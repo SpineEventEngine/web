@@ -26,7 +26,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
-import io.spine.web.firebase.DatabaseUrl;
+import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
@@ -38,19 +38,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
 /**
- * A {@code FirebaseClient} which operates via the Firebase REST API.
+ * A {@code FirebaseClient} which operates via the Firebase REST API and the Java Admin API.
  *
  * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
  * </a>.
  */
-public final class RestClient implements FirebaseClient {
+public final class RemoteDatabaseClient implements FirebaseClient {
 
     private final FirebaseDatabase database;
     private final RestNodeUrls factory;
     private final HttpClient httpClient;
 
     @VisibleForTesting
-    RestClient(FirebaseDatabase database, RestNodeUrls factory, HttpClient httpClient) {
+    RemoteDatabaseClient(FirebaseDatabase database, RestNodeUrls factory, HttpClient httpClient) {
         this.database = database;
         this.factory = factory;
         this.httpClient = httpClient;
@@ -60,11 +60,14 @@ public final class RestClient implements FirebaseClient {
      * Creates a {@code RestClient} which operates on the database located at the given
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
-    public static RestClient create(DatabaseUrl url, HttpRequestFactory requestFactory) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance(url.getUrl().getSpec());
-        RestNodeUrls nodeUrlTemplate = new RestNodeUrls(url);
+    public static RemoteDatabaseClient
+    create(FirebaseDatabase database, HttpRequestFactory requestFactory) {
+        String databaseUrl = database.getApp()
+                                     .getOptions()
+                                     .getDatabaseUrl();
+        RestNodeUrls nodeUrlTemplate = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
         HttpClient requestExecutor = HttpClient.using(requestFactory);
-        return new RestClient(database, nodeUrlTemplate, requestExecutor);
+        return new RemoteDatabaseClient(database, nodeUrlTemplate, requestExecutor);
     }
 
     @Override

@@ -20,12 +20,11 @@
 
 package io.spine.web.test.given;
 
+import com.google.firebase.database.FirebaseDatabase;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
 import io.spine.server.SubscriptionService;
-import io.spine.web.firebase.DatabaseUrl;
-import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.Retryer;
 import io.spine.web.firebase.RetryingClient;
@@ -34,14 +33,14 @@ import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.FirebaseClientFactory.restClient;
+import static io.spine.web.firebase.FirebaseClientFactory.remoteClient;
 
 /**
  * A test Spine application.
  */
 final class Application {
 
-    private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from("http://127.0.0.1:5000");
+    private static final String DATABASE_URL = "http://127.0.0.1:5000";
     private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(10);
 
     private final CommandService commandService;
@@ -79,7 +78,8 @@ final class Application {
                 .newBuilder()
                 .add(boundedContext)
                 .build();
-        FirebaseClient firebaseClient = restClient(DATABASE_URL);
+        FirebaseDatabase database = FirebaseDatabase.getInstance(DATABASE_URL);
+        FirebaseClient firebaseClient = remoteClient(database);
         FirebaseClient retryingClient = new RetryingClient(firebaseClient, RETRY_POLICY);
         return new Application(commandService, queryService, subscriptionService, retryingClient);
     }
