@@ -19,12 +19,13 @@
  */
 
 plugins {
-    id "org.gretty" version "2.3.1"
+    id 'java'
+    id 'org.gretty' version '2.3.1'
+    id "com.github.psxpaul.execfork" version "0.1.11"
 }
 
-apply plugin: 'io.spine.tools.gradle.bootstrap'
-
-spine.enableJava()
+apply plugin: 'io.spine.tools.spine-model-compiler'
+apply from: "$rootDir/config/gradle/model-compiler.gradle"
 
 dependencies {
     implementation project(":firebase-web")
@@ -32,8 +33,6 @@ dependencies {
 
     implementation deps.test.slf4j
 }
-
-apply from: "$rootDir/gradle/script/firebase-emulator.gradle"
 
 gretty {
     contextPath = '/'
@@ -52,3 +51,59 @@ gretty {
         appAfterIntegrationTest.finalizedBy killFirebaseProcess
     }
 }
+
+/**
+ * The path to the temporary file storing the identifier
+ * of a currently running Firebase emulator process.
+ */
+final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
+
+/**
+ * Runs the Firebase emulator locally for the tests purposes.
+ *
+ * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
+ * module dependency. Stores the PID of the newly started emulator process to the
+ * "web/scripts/firebase-emulator.pid" file.
+ */
+task runFirebase(type: com.github.psxpaul.task.ExecFork) {
+    description = "Starts local Firebase server emulator."
+
+    final def webTestsDir = project(':web-tests').projectDir
+    workingDir = "$webTestsDir/node_modules/.bin"
+
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    final def extension = runsOnWindows ? '.cmd' : ''
+
+    executable = "$workingDir/firebase-server$extension"
+
+    final def rulesFile = file("$projectDir/firebase-rules.json")
+    args = ['--rules', rulesFile.getPath(), '--rest', '--pid', pidFilePath]
+
+    waitForPort = 5000
+}
+
+/**
+ * Stops the currently running Firebase emulator by killing its process by PID.
+ *
+ * The PID of a process to kill is taken from the "web/scripts/firebase-emulator.pid". If the
+ * file exists, kills the process specified, then deletes the file.
+ */
+task killFirebaseProcess {
+    description = "Stops local Firebase server emulator by killing its process by PID."
+
+    doLast {
+        final File pidFile = file(pidFilePath)
+
+        if (pidFile.exists()) {
+            final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+            final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'
+            final def script = "$rootDir/scripts/kill-process.${scriptExtension}"
+            final def params = " ${pidFile.text}"
+
+            "${script}${params}".execute()
+
+            delete pidFile
+        }
+    }
+}
+
