@@ -37,6 +37,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.hash.Hashing.murmur3_128;
 import static io.spine.client.SubscriptionUpdate.UpdateCase.ENTITY_UPDATES;
@@ -83,6 +84,7 @@ final class UpdatePayload {
                 .getUpdateList()
                 .stream()
                 .collect(toHashTable(EntityStateUpdate::getId, UpdatePayload::messageOrNull));
+        checkArgument(!messages.isEmpty(), "Empty subscription update: %s", update);
         return new UpdatePayload(messages);
     }
 
