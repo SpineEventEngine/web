@@ -42,8 +42,24 @@ import static com.google.common.hash.Hashing.murmur3_128;
 import static io.spine.client.SubscriptionUpdate.UpdateCase.ENTITY_UPDATES;
 import static io.spine.protobuf.AnyPacker.unpack;
 
+/**
+ * Data of a single subscription update.
+ *
+ * <p>Consists of entities or events, which ought to be written into the Firebase database under
+ * a certain path.
+ */
 final class UpdatePayload {
 
+    /**
+     * A hash function for the entity IDs and event IDs.
+     *
+     * <p>The ID hashes are used as keys for storing the entities and events in the Firestore.
+     *
+     * @implNote The 128-but murmur3 function is recommended by Guava as a quick and consistent
+     *         between launches. It is not cryptographically safe. However, accidental collisions
+     *         should be quite rare.
+     * @see com.google.common.hash.Hashing#murmur3_128()
+     */
     private static final HashFunction keyHashFunction = murmur3_128();
 
     private final ImmutableMap<String, @Nullable Message> messages;
@@ -52,6 +68,9 @@ final class UpdatePayload {
         this.messages = messages;
     }
 
+    /**
+     * Creates a new {@code UpdatePayload} from the given subscription update.
+     */
     static UpdatePayload from(SubscriptionUpdate update) {
         return update.getUpdateCase() == ENTITY_UPDATES
                ? entityUpdates(update)
@@ -87,6 +106,20 @@ final class UpdatePayload {
         return toImmutableMap(keyMapper.andThen(UpdatePayload::key), valueMapper);
     }
 
+    /**
+     * Converts the given ID message into a key for persistence.
+     *
+     * <p>The output key string consists of hexadecimal lower case characters (0-9 and a-f).
+     *
+     * @param id
+     *         the ID to convert into a key
+     * @return database key
+     * @implSpec The returned value is a murmur3 hash code of the given key with respect to its
+     *           Protobuf type.
+     * @implNote It is important for the implementation that this function is deterministic, i.e.
+     *           returns the same string (in terms of {@link String#equals(Object) equals} method)
+     *           for the same input message.
+     */
     private static String key(Message id) {
         Any packedId = AnyPacker.pack(id);
         HashCode code = keyHashFunction.newHasher()
@@ -96,6 +129,9 @@ final class UpdatePayload {
         return code.toString();
     }
 
+    /**
+     * Obtains this update as a database node value.
+     */
     NodeValue asNodeValue() {
         NodeValue node = NodeValue.empty();
         messages.forEach((id, message) -> node.addChild(id, StoredJson.encodeOrNull(message)));

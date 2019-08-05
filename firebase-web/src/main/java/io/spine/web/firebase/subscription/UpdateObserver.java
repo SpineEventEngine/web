@@ -31,6 +31,10 @@ import io.spine.web.firebase.RequestNodePath;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
+/**
+ * A {@code StreamObserver} for subscription updates which writes the updates into a Firebase
+ * database.
+ */
 final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
 
     private final FirebaseClient firebase;
