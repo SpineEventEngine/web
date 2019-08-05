@@ -76,7 +76,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
         Topic.Builder topic = subscription.getTopic()
                                           .toBuilder();
         topic.getContextBuilder().setTimestamp(currentTime());
-        repository.write(topic.buildPartial());
+        repository.updateExisting(topic.buildPartial());
         return new FirebaseSubscriptionKeepUpResult(statusOk());
     }
 

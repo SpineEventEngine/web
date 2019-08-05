@@ -148,6 +148,17 @@ final class SubscriptionRepository {
         return subscribe(topic);
     }
 
+    void updateExisting(Topic topic) {
+        NodePath path = pathForSubscription(topic);
+        Optional<NodeValue> existing = firebase.get(path);
+        if (existing.isPresent()) {
+            StoredJson jsonSubscription = StoredJson.encode(topic);
+            firebase.create(path, jsonSubscription.asNodeValue());
+            healthLog.put(topic);
+            subscribe(topic);
+        }
+    }
+
     /**
      * Cancels the given subscription.
      *
