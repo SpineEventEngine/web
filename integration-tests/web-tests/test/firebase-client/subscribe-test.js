@@ -197,32 +197,32 @@ describe('FirebaseClient subscription', function () {
                     fail(done, 'Unexpected error while creating a task.'),
                     fail(done, 'Unexpected rejection while creating a task.')
                 );
+                itemAddedPromise.then(() => {
+                    const renameCommand = TestEnvironment.renameTaskCommand({
+                        withId: taskIdValue,
+                        to: UPDATED_NAMES[0]
+                    });
+                    client.sendCommand(
+                        renameCommand,
+                        () => console.log(`Task '${taskIdValue}' renamed for the first time.`),
+                        fail(done, 'Unexpected error while renaming a task.'),
+                        fail(done, 'Unexpected rejection while renaming a task.')
+                    );
+                });
+                itemRenamedAtFirstPromise.then(() => {
+                    const renameCommand = TestEnvironment.renameTaskCommand({
+                        withId: taskIdValue,
+                        to: UPDATED_NAMES[1]
+                    });
+                    client.sendCommand(
+                        renameCommand,
+                        () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
+                        fail(done, 'Unexpected error while renaming a task.'),
+                        fail(done, 'Unexpected rejection while renaming a task.')
+                    );
+                });
             })
             .catch(fail(done));
-        itemAddedPromise.then(() => {
-            const renameCommand = TestEnvironment.renameTaskCommand({
-                withId: taskIdValue,
-                to: UPDATED_NAMES[0]
-            });
-            client.sendCommand(
-                renameCommand,
-                () => console.log(`Task '${taskIdValue}' renamed for the first time.`),
-                fail(done, 'Unexpected error while renaming a task.'),
-                fail(done, 'Unexpected rejection while renaming a task.')
-            );
-        });
-        itemRenamedAtFirstPromise.then(() => {
-            const renameCommand = TestEnvironment.renameTaskCommand({
-                withId: taskIdValue,
-                to: UPDATED_NAMES[1]
-            });
-            client.sendCommand(
-                renameCommand,
-                () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
-                fail(done, 'Unexpected error while renaming a task.'),
-                fail(done, 'Unexpected rejection while renaming a task.')
-            );
-        });
     });
 
     it('fails for a malformed entity type', done => {
