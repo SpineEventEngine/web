@@ -23,12 +23,9 @@ package io.spine.web.firebase;
 import io.spine.annotation.Internal;
 import io.spine.client.Query;
 import io.spine.client.QueryId;
-import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.core.ActorContext;
 import io.spine.core.TenantId;
-import io.spine.type.TypeName;
-import io.spine.type.TypeUrl;
 
 /**
  * A factory creating {@link NodePath}s for placing actor request results.
@@ -69,13 +66,11 @@ public final class RequestNodePath {
      * @return new {@code NodePath}
      */
     public static NodePath of(Topic topic) {
-        Target target = topic.getTarget();
-        TypeName type = TypeUrl.parse(target.getType()).toTypeName();
         ActorContext context = topic.getContext();
         NodePath tenantId = tenantIdAsPath(context.getTenantId());
         String actor = context.getActor().getValue();
         String topicId = topic.getId().getValue();
-        return NodePaths.of(type.value(), tenantId.getValue(), actor, topicId);
+        return NodePaths.of(tenantId.getValue(), actor, topicId);
     }
 
     /**
