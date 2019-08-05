@@ -27,6 +27,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.json.Json.toCompactJson;
@@ -55,6 +56,12 @@ public final class StoredJson extends StringTypeValue {
         return JSON_NULL.equals(value)
                ? NULL_JSON
                : new StoredJson(value);
+    }
+
+    public static StoredJson encodeOrNull(@Nullable Message message) {
+        return message != null
+               ? encode(message)
+               : NULL_JSON;
     }
 
     public static StoredJson encode(Message value) {

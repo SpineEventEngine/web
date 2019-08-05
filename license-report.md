@@ -588,7 +588,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Aug 05 10:57:41 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@0.18.0`
@@ -1437,7 +1437,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.211**
+1. **electron-to-chromium@1.3.214**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.5.0**
@@ -1623,7 +1623,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **globals@9.18.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/globals](https://github.com/sindresorhus/globals)
-1. **graceful-fs@4.2.0**
+1. **graceful-fs@4.2.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-graceful-fs](https://github.com/isaacs/node-graceful-fs)
 1. **growl@1.10.5**
@@ -1677,7 +1677,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **homedir-polyfill@1.0.3**
      * Licenses: MIT
      * Repository: [https://github.com/doowb/homedir-polyfill](https://github.com/doowb/homedir-polyfill)
-1. **hosted-git-info@2.7.1**
+1. **hosted-git-info@2.8.2**
      * Licenses: ISC
      * Repository: [https://github.com/npm/hosted-git-info](https://github.com/npm/hosted-git-info)
 1. **http-parser-js@0.4.10**
@@ -1923,7 +1923,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **lodash@4.17.15**
      * Licenses: MIT
      * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
-1. **lolex@4.1.0**
+1. **lolex@4.2.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/lolex](https://github.com/sinonjs/lolex)
 1. **long@3.2.0**
@@ -2043,7 +2043,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **nice-try@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/electerious/nice-try](https://github.com/electerious/nice-try)
-1. **nise@1.5.0**
+1. **nise@1.5.1**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/nise](https://github.com/sinonjs/nise)
 1. **node-fetch@2.6.0**
@@ -2448,7 +2448,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **signal-exit@3.0.2**
      * Licenses: ISC
      * Repository: [https://github.com/tapjs/signal-exit](https://github.com/tapjs/signal-exit)
-1. **sinon@7.3.2**
+1. **sinon@7.4.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/sinon](https://github.com/sinonjs/sinon)
 1. **slash@1.0.0**
@@ -2589,7 +2589,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
 1. **terser-webpack-plugin@1.4.1**
      * Licenses: MIT
      * Repository: [https://github.com/webpack-contrib/terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
-1. **terser@4.1.2**
+1. **terser@4.1.3**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/fabiosantoscode/terser](https://github.com/fabiosantoscode/terser)
 1. **test-exclude@5.2.3**
@@ -2786,7 +2786,7 @@ This report was generated on **Fri Aug 02 17:48:28 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Fri Aug 02 2019 17:48:31 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Mon Aug 05 2019 10:57:43 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3728,7 +3728,7 @@ This report was generated on **Fri Aug 02 2019 17:48:31 GMT+0300 (EEST)** using 
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Aug 02 17:48:32 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Aug 05 10:57:44 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5599,7 +5599,7 @@ This report was generated on **Fri Aug 02 17:48:32 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Aug 02 17:48:34 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Aug 05 10:57:47 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6203,7 +6203,7 @@ This report was generated on **Fri Aug 02 17:48:34 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Aug 02 17:48:35 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Aug 05 10:57:47 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6796,4 +6796,4 @@ This report was generated on **Fri Aug 02 17:48:35 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Aug 02 17:48:35 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Aug 05 10:57:48 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

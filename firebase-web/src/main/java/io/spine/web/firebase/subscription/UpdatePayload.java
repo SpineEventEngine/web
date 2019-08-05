@@ -31,6 +31,7 @@ import io.spine.core.Event;
 import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -45,9 +46,9 @@ final class UpdatePayload {
 
     private static final HashFunction keyHashFunction = murmur3_128();
 
-    private final ImmutableMap<String, Message> messages;
+    private final ImmutableMap<String, @Nullable Message> messages;
 
-    private UpdatePayload(ImmutableMap<String, Message> messages) {
+    private UpdatePayload(ImmutableMap<String, @Nullable Message> messages) {
         this.messages = messages;
     }
 
@@ -58,12 +59,18 @@ final class UpdatePayload {
     }
 
     private static UpdatePayload entityUpdates(SubscriptionUpdate update) {
-        ImmutableMap<String, Message> messages = update
+        ImmutableMap<String, @Nullable Message> messages = update
                 .getEntityUpdates()
                 .getUpdateList()
                 .stream()
-                .collect(toHashTable(EntityStateUpdate::getId, upd -> unpack(upd.getState())));
+                .collect(toHashTable(EntityStateUpdate::getId, UpdatePayload::messageOrNull));
         return new UpdatePayload(messages);
+    }
+
+    private static @Nullable Message messageOrNull(EntityStateUpdate update) {
+        return update.hasState()
+                ? unpack(update.getState())
+                : null;
     }
 
     private static UpdatePayload eventUpdates(SubscriptionUpdate update) {
@@ -91,7 +98,7 @@ final class UpdatePayload {
 
     NodeValue asNodeValue() {
         NodeValue node = NodeValue.empty();
-        messages.forEach((id, message) -> node.addChild(id, StoredJson.encode(message)));
+        messages.forEach((id, message) -> node.addChild(id, StoredJson.encodeOrNull(message)));
         return node;
     }
 
