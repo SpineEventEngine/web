@@ -137,8 +137,4 @@ final class UpdatePayload {
         messages.forEach((id, message) -> node.addChild(id, StoredJson.encodeOrNull(message)));
         return node;
     }
-
-    boolean isEmpty() {
-        return messages.isEmpty();
-    }
 }
