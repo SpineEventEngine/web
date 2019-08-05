@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>1.0.0-SNAPSHOT</version>
+<version>1.0.0</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -75,14 +75,8 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>io.spine</groupId>
-    <artifactId>spine-base</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <scope>compile</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.spine</groupId>
     <artifactId>spine-server</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -105,20 +99,14 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>io.spine</groupId>
-    <artifactId>spine-testlib</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.spine</groupId>
     <artifactId>spine-testutil-client</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-mute-logging</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -186,17 +174,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-client</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-errorprone-checks</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </dependency>
   <dependency>
     <groupId>javax.servlet</groupId>
