@@ -1,0 +1,84 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+buildscript {
+    repositories.gradlePluginPortal()
+
+    dependencies {
+        classpath "gradle.plugin.com.github.psxpaul:gradle-execfork-plugin:0.1.11"
+    }
+}
+
+apply plugin: 'com.github.psxpaul.execfork'
+
+/**
+ * The path to the temporary file storing the identifier
+ * of a currently running Firebase emulator process.
+ */
+final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
+
+/**
+ * Runs the Firebase emulator locally for the tests purposes.
+ *
+ * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
+ * module dependency. Stores the PID of the newly started emulator process to the
+ * "web/scripts/firebase-emulator.pid" file.
+ */
+task runFirebase(type: com.github.psxpaul.task.ExecFork) {
+    description = "Starts local Firebase server emulator."
+
+    final def webTestsDir = project(':web-tests').projectDir
+    workingDir = "$webTestsDir/node_modules/.bin"
+
+    final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    final def extension = runsOnWindows ? '.cmd' : ''
+
+    executable = "$workingDir/firebase-server$extension"
+
+    final def rulesFile = file("$projectDir/firebase-rules.json")
+    args = ['--rules', rulesFile.getPath(), '--rest', '--pid', pidFilePath]
+
+    waitForPort = 5000
+}
+
+/**
+ * Stops the currently running Firebase emulator by killing its process by PID.
+ *
+ * The PID of a process to kill is taken from the "web/scripts/firebase-emulator.pid". If the
+ * file exists, kills the process specified, then deletes the file.
+ */
+task killFirebaseProcess {
+    description = "Stops local Firebase server emulator by killing its process by PID."
+
+    doLast {
+        final File pidFile = file(pidFilePath)
+
+        if (pidFile.exists()) {
+            final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+            final def scriptExtension =  runsOnWindows ? 'bat' : 'sh'
+            final def script = "$rootDir/scripts/kill-process.${scriptExtension}"
+            final def params = " ${pidFile.text}"
+
+            "${script}${params}".execute()
+
+            delete pidFile
+        }
+    }
+}
