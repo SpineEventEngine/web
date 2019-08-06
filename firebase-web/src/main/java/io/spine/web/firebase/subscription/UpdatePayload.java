@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
@@ -90,14 +89,9 @@ final class UpdatePayload {
     }
 
     private static @Nullable Message messageOrNull(EntityStateUpdate update) {
-        if (update.hasState()) {
-            System.out.println("Update state: " + unpack(update.getState()));
-            return unpack(update.getState());
-        } else {
-            Preconditions.checkState(update.getNoLongerMatching());
-            System.out.println("No longer matching");
-            return null;
-        }
+        return update.hasState()
+               ? unpack(update.getState())
+               : null;
     }
 
     private static UpdatePayload eventUpdates(SubscriptionUpdate update) {

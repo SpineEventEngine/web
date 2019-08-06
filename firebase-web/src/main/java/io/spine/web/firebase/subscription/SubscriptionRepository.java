@@ -97,10 +97,9 @@ final class SubscriptionRepository {
      *         the subscription topic
      */
     void write(Topic topic) {
-        StoredJson jsonSubscription = StoredJson.encode(topic);
         healthLog.put(topic);
+        StoredJson jsonSubscription = StoredJson.encode(topic);
         NodePath path = pathForSubscription(topic);
-        System.out.println("> Writing topic into " + path.getValue());
         firebase.update(path, jsonSubscription.asNodeValue());
     }
 
@@ -108,8 +107,8 @@ final class SubscriptionRepository {
         NodePath path = pathForSubscription(topic);
         Optional<String> existing = firebase.fetchString(path);
         if (existing.isPresent()) {
-            StoredJson jsonSubscription = StoredJson.encode(topic);
             healthLog.put(topic);
+            StoredJson jsonSubscription = StoredJson.encode(topic);
             firebase.update(path, jsonSubscription.asNodeValue());
         }
     }
@@ -162,7 +161,6 @@ final class SubscriptionRepository {
 
         private void updateSubscription(DataSnapshot snapshot) {
             String json = asJson(snapshot);
-            System.out.println("> Subscription: " + json);
             Topic topic = loadTopic(json);
             deleteOrActivate(topic);
         }
