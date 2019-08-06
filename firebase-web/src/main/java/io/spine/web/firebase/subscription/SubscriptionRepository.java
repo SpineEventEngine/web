@@ -105,7 +105,7 @@ final class SubscriptionRepository {
 
     void updateExisting(Topic topic) {
         NodePath path = pathForSubscription(topic);
-        Optional<String> existing = firebase.fetchString(path);
+        Optional<?> existing = firebase.fetchNode(path);
         if (existing.isPresent()) {
             healthLog.put(topic);
             StoredJson jsonSubscription = StoredJson.encode(topic);
