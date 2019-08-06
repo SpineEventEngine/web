@@ -22,8 +22,11 @@ package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Duration;
 import io.spine.client.Subscription;
+import io.spine.client.SubscriptionId;
+import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
+import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
@@ -66,9 +69,21 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
 
     @Override
     public SubscribeResult subscribe(Topic topic) {
-        Subscription subscription = repository.write(topic);
-        NodePath path = RequestNodePath.of(subscription.getTopic());
+        validateTarget(topic.getTarget());
+        repository.write(topic);
+        NodePath path = RequestNodePath.of(topic);
+        Subscription subscription = Subscription
+                .newBuilder()
+                .setId(SubscriptionId.newBuilder().setValue(path.getValue()))
+                .setTopic(topic)
+                .buildPartial();
         return new FirebaseSubscribeResult(subscription, path);
+    }
+
+    private static void validateTarget(Target target) {
+        String type = target.getType();
+        TypeUrl url = TypeUrl.parse(type);
+        checkNotNull(url);
     }
 
     @Override

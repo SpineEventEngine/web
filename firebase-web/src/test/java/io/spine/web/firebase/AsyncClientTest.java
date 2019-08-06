@@ -55,7 +55,7 @@ class AsyncClientTest {
     @DisplayName("perform read operations directly")
     void readDirectly() {
         AsyncClient asyncClient = new AsyncClient(delegate);
-        asyncClient.get(path);
+        asyncClient.fetchNode(path);
         assertThat(delegate.reads()).contains(path);
     }
 

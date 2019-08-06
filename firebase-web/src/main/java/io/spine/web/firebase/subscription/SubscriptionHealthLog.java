@@ -55,9 +55,15 @@ final class SubscriptionHealthLog {
         updateTimes.put(id, updateTime);
     }
 
+    boolean isKnown(Topic topic) {
+        TopicId id = topic.getId();
+        return updateTimes.containsKey(id);
+    }
+
     boolean isStale(Topic topic) {
         TopicId id = topic.getId();
         Timestamp lastUpdate = updateTimes.get(id);
+        checkNotNull(lastUpdate);
         Timestamp now = Time.currentTime();
         Duration elapsed = between(lastUpdate, now);
         return compare(elapsed, expirationTimeout) > 0;

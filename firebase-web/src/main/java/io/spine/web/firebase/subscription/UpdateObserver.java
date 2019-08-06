@@ -54,12 +54,15 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
         Subscription subscription = update.getSubscription();
         Topic topic = subscription.getTopic();
 
+        System.out.println("Received update for " + update.getSubscription().getTopic().getTarget());
         if (!healthLog.isStale(topic)) {
+            System.out.println("Topic is active");
             UpdatePayload payload = UpdatePayload.from(update);
             NodePath path = RequestNodePath.of(subscription.getTopic());
             SubscriptionRecord record = new SubscriptionRecord(path, payload);
             record.store(firebase);
         } else {
+            System.out.println("Topic is stale. Cleaning up");
             repository.get().cancel(subscription);
         }
     }

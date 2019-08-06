@@ -20,12 +20,11 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-import com.google.gson.JsonElement;
 import com.google.protobuf.Duration;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
@@ -33,15 +32,13 @@ import io.spine.json.Json;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
-import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.subscription.BlockingSubscriptionService;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.RequestNodePath.tenantIdAsPath;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.web.firebase.subscription.LazyRepository.lazy;
 
 /**
@@ -82,51 +79,12 @@ final class SubscriptionRepository {
      * server instance.
      */
     void subscribeToAll() {
-        activateExistingSubscriptions();
         subscribeToSubscriptionUpdates();
     }
 
-    private void activateExistingSubscriptions() {
-        Optional<NodeValue> allSubscriptions = firebase.get(SUBSCRIPTIONS_ROOT);
-        allSubscriptions.ifPresent(subscriptions -> subscriptions
-                .underlyingJson()
-                .entrySet()
-                .stream()
-                .map(Map.Entry::getValue)
-                .flatMap(element -> element.getAsJsonObject()
-                                           .entrySet()
-                                           .stream()
-                                           .map(Map.Entry::getValue))
-                .map(JsonElement::toString)
-                .map(this::loadTopic)
-                .forEach(this::deleteOrActivate));
-    }
-
     private void subscribeToSubscriptionUpdates() {
-        NewTenantObserver observer = new NewTenantObserver(this);
+        ChildEventListener observer = new SubscriptionChangeObserver(this);
         firebase.subscribeTo(SUBSCRIPTIONS_ROOT, observer);
-    }
-
-    @CanIgnoreReturnValue
-    private Subscription subscribe(Topic topic) {
-        Subscription subscription = subscriptionService.subscribe(topic, updateObserver);
-        subscriptionRegistry.register(subscription);
-        return subscription;
-    }
-
-    private Topic loadTopic(String json) {
-        Topic topic = Json.fromJson(json, Topic.class);
-        healthLog.put(topic);
-        return topic;
-    }
-
-    private void deleteOrActivate(Topic topic) {
-        boolean stale = healthLog.isStale(topic);
-        if (stale) {
-            delete(topic);
-        } else {
-            subscribe(topic);
-        }
     }
 
     /**
@@ -137,25 +95,22 @@ final class SubscriptionRepository {
      *
      * @param topic
      *         the subscription topic
-     * @return new subscription local to this server instance
      */
-    @CanIgnoreReturnValue
-    Subscription write(Topic topic) {
-        NodePath path = pathForSubscription(topic);
+    void write(Topic topic) {
         StoredJson jsonSubscription = StoredJson.encode(topic);
-        firebase.create(path, jsonSubscription.asNodeValue());
         healthLog.put(topic);
-        return subscribe(topic);
+        NodePath path = pathForSubscription(topic);
+        System.out.println("> Writing topic into " + path.getValue());
+        firebase.update(path, jsonSubscription.asNodeValue());
     }
 
     void updateExisting(Topic topic) {
         NodePath path = pathForSubscription(topic);
-        Optional<NodeValue> existing = firebase.get(path);
+        Optional<String> existing = firebase.fetchString(path);
         if (existing.isPresent()) {
             StoredJson jsonSubscription = StoredJson.encode(topic);
-            firebase.create(path, jsonSubscription.asNodeValue());
             healthLog.put(topic);
-            subscribe(topic);
+            firebase.update(path, jsonSubscription.asNodeValue());
         }
     }
 
@@ -177,33 +132,70 @@ final class SubscriptionRepository {
     }
 
     private static NodePath pathForSubscription(Topic topic) {
-        NodePath tenant = tenantIdAsPath(topic.getContext().getTenantId());
         String topicId = topic.getId().getValue();
-        NodePath path = NodePaths.of(tenant.getValue(), topicId);
-        return SUBSCRIPTIONS_ROOT.append(path);
+        return SUBSCRIPTIONS_ROOT.append(topicId);
     }
 
     /**
-     * An event listener for the nodes which contain all the active subscriptions of a certain
-     * tenant.
+     * An event listener for separate subscription updates.
+     *
+     * <p>When a subscription is updated, checks if it is stale or not and either cancels it or
+     * re-activates for this server instance.
      */
-    private static final class NewTenantObserver implements ChildEventListener {
+    private static final class SubscriptionChangeObserver implements ChildEventListener {
 
-        private final SubscriptionChangeObserver listener;
+        private final SubscriptionRepository repository;
 
-        private NewTenantObserver(SubscriptionRepository repository) {
-            this.listener = new SubscriptionChangeObserver(repository);
+        private SubscriptionChangeObserver(SubscriptionRepository repository) {
+            this.repository = repository;
         }
 
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-            snapshot.getChildren()
-                    .forEach(child -> child.getRef().addValueEventListener(listener));
+            updateSubscription(snapshot);
         }
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-            // NOP.
+            updateSubscription(snapshot);
+        }
+
+        private void updateSubscription(DataSnapshot snapshot) {
+            String json = asJson(snapshot);
+            System.out.println("> Subscription: " + json);
+            Topic topic = loadTopic(json);
+            deleteOrActivate(topic);
+        }
+
+        private static String asJson(DataSnapshot snapshot) {
+            Object value = snapshot.getValue();
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                return mapper.writeValueAsString(value);
+            } catch (JsonProcessingException e) {
+                throw illegalStateWithCauseOf(e);
+            }
+        }
+
+        private Topic loadTopic(String json) {
+            Topic topic = Json.fromJson(json, Topic.class);
+            repository.healthLog.put(topic);
+            return topic;
+        }
+
+        private void deleteOrActivate(Topic topic) {
+            SubscriptionHealthLog healthLog = repository.healthLog;
+            if (healthLog.isKnown(topic) && healthLog.isStale(topic)) {
+                repository.delete(topic);
+            } else {
+                subscribe(topic);
+            }
+        }
+
+        private void subscribe(Topic topic) {
+            Subscription subscription =
+                    repository.subscriptionService.subscribe(topic, repository.updateObserver);
+            repository.subscriptionRegistry.register(subscription);
         }
 
         @Override
@@ -218,34 +210,7 @@ final class SubscriptionRepository {
 
         @Override
         public void onCancelled(DatabaseError error) {
-            // NOP.
-        }
-    }
-
-    /**
-     * An event listener for separate subscription updates.
-     *
-     * <p>When a subscription is updated, checks if it is stale or not and either cancels it or
-     * re-activates for this server instance.
-     */
-    private static final class SubscriptionChangeObserver implements ValueEventListener {
-
-        private final SubscriptionRepository repository;
-
-        private SubscriptionChangeObserver(SubscriptionRepository repository) {
-            this.repository = repository;
-        }
-
-        @Override
-        public void onDataChange(DataSnapshot snapshot) {
-            String json = snapshot.getValue(String.class);
-            Topic topic = repository.loadTopic(json);
-            repository.deleteOrActivate(topic);
-        }
-
-        @Override
-        public void onCancelled(DatabaseError error) {
-            // NOP.
+            throw error.toException();
         }
     }
 }

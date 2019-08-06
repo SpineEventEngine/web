@@ -67,8 +67,13 @@ public final class AsyncClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<NodeValue> get(NodePath nodePath) {
-        return delegate.get(nodePath);
+    public Optional<NodeValue> fetchNode(NodePath nodePath) {
+        return delegate.fetchNode(nodePath);
+    }
+
+    @Override
+    public Optional<String> fetchString(NodePath nodePath) {
+        return delegate.fetchString(nodePath);
     }
 
     @Override
@@ -83,6 +88,11 @@ public final class AsyncClient implements FirebaseClient {
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
+        executor.execute(() -> delegate.update(nodePath, value));
+    }
+
+    @Override
+    public void update(NodePath nodePath, String value) {
         executor.execute(() -> delegate.update(nodePath, value));
     }
 

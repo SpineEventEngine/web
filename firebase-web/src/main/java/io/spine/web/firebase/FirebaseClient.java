@@ -41,7 +41,9 @@ public interface FirebaseClient {
      *         the path to the requested node in the database
      * @return the node value or empty {@code Optional} if the node is not present in the database
      */
-    Optional<NodeValue> get(NodePath nodePath);
+    Optional<NodeValue> fetchNode(NodePath nodePath);
+
+    Optional<String> fetchString(NodePath nodePath);
 
     /**
      * Subscribes to the child events of the given node.
@@ -79,6 +81,8 @@ public interface FirebaseClient {
      *         the value to merge
      */
     void update(NodePath nodePath, NodeValue value);
+
+    void update(NodePath nodePath, String value);
 
     /**
      * Deletes the node under the given path.
