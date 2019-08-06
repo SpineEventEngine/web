@@ -47,7 +47,7 @@ import static io.spine.web.firebase.FirebaseClientFactory.remoteClient;
 final class Application {
 
     private static final String DATABASE_URL = "http://127.0.0.1:5000";
-    private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(10);
+    private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(3);
 
     private final CommandService commandService;
     private final FirebaseQueryBridge queryBridge;
