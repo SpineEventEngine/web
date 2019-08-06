@@ -97,7 +97,7 @@ public final class RemoteDatabaseClient implements FirebaseClient {
         String data = httpClient.get(nodeUrl);
         String valueOrNull = Strings.emptyToNull(data);
         return Optional.ofNullable(valueOrNull)
-                       .filter(value -> !value.equalsIgnoreCase("null"));
+                       .filter(value -> !"null".equalsIgnoreCase(value));
     }
 
     @Override
