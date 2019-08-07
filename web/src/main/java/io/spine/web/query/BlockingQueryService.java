@@ -20,6 +20,7 @@
 
 package io.spine.web.query;
 
+import io.spine.annotation.Internal;
 import io.spine.client.Query;
 import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
@@ -30,6 +31,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
+/**
+ * A wrapper for a local {@link io.spine.server.QueryService} which returns the query execution
+ * result in a blocking manner.
+ */
+@Internal
 public final class BlockingQueryService {
 
     private final QueryServiceImplBase queryService;
@@ -38,6 +44,9 @@ public final class BlockingQueryService {
         queryService = checkNotNull(service);
     }
 
+    /**
+     * Executes the given query.
+     */
     public QueryResponse execute(Query query) {
         MemoizingObserver<QueryResponse> observer = memoizingObserver();
         queryService.read(query, observer);

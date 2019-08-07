@@ -22,6 +22,7 @@ package io.spine.web.subscription;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.grpc.stub.StreamObserver;
+import io.spine.annotation.Internal;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.client.Topic;
@@ -40,6 +41,11 @@ import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.util.Collections.synchronizedSet;
 
+/**
+ * A wrapper for a local {@link io.spine.server.SubscriptionService} which returns the subscription
+ * result in a blocking manner.
+ */
+@Internal
 public final class BlockingSubscriptionService {
 
     private static final String SUBSCRIBE_METHOD_NAME = SubscriptionServiceGrpc
@@ -53,6 +59,15 @@ public final class BlockingSubscriptionService {
         this.subscriptionService = checkNotNull(service);
     }
 
+    /**
+     * Creates and activates a subscription for the given topic.
+     *
+     * @param topic
+     *         the subscription topic
+     * @param updateObserver
+     *         the subscription result observer
+     * @return new subscription
+     */
     @CanIgnoreReturnValue
     public Subscription subscribe(Topic topic, StreamObserver<SubscriptionUpdate> updateObserver) {
         checkNotNull(topic);
@@ -80,6 +95,9 @@ public final class BlockingSubscriptionService {
         }
     }
 
+    /**
+     * Cancels the given subscription.
+     */
     public void cancel(Subscription subscription) {
         checkNotNull(subscription);
         subscriptionService.cancel(subscription, noOpObserver());
