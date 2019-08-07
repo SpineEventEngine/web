@@ -205,21 +205,4 @@ describe('FirebaseClient subscription', function () {
             })
             .catch(fail(done));
     });
-
-    it('fails for a malformed entity type', done => {
-        const Unknown = class {
-            static typeUrl() {
-                return 'spine.web/fails.malformed.type'
-            }
-        };
-
-        client.subscribe({entity: Unknown})
-            .then(() => {
-                done(new Error('A malformed subscription should not yield results.'));
-            })
-            .catch(error => {
-                assert.ok(true);
-                done();
-            });
-    });
 });
