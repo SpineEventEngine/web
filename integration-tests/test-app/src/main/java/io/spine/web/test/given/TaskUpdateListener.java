@@ -20,38 +20,15 @@
 
 package io.spine.web.test.given;
 
-import io.spine.server.BoundedContext;
+import io.spine.core.Subscribe;
+import io.spine.server.event.AbstractEventSubscriber;
 
-/**
- * The test application server.
- */
-final class Server {
+public class TaskUpdateListener extends AbstractEventSubscriber {
 
-    private static final Application app = createApplication();
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Server() {
-    }
-
-    /**
-     * Retrieves the {@link Application} instance.
-     */
-    static Application application() {
-        return app;
-    }
-
-    private static Application createApplication() {
-        String name = "Test Bounded Context";
-        BoundedContext context = BoundedContext
-                .singleTenant(name)
-                .add(new TaskRepository())
-                .add(new ProjectRepository())
-                .add(new UserTasksProjectionRepository())
-                .addEventDispatcher(new TaskUpdateListener())
-                .build();
-        Application app = Application.create(context);
-        return app;
+    @Subscribe
+    void on(Task task) {
+        System.out.println("________________________");
+        System.out.println("New task state: " + task);
+        System.out.println("________________________");
     }
 }

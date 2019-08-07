@@ -160,6 +160,7 @@ describe('FirebaseClient subscription', function () {
                             withId: taskIdValue,
                             to: UPDATED_NAMES[0]
                         });
+                        console.warn("Sending command #2");
                         client.sendCommand(
                             renameCommand,
                             () => console.log(`Task '${taskIdValue}' renamed for the first time.`),
@@ -186,6 +187,7 @@ describe('FirebaseClient subscription', function () {
                                     withId: taskIdValue,
                                     to: UPDATED_NAMES[1]
                                 });
+                                console.warn("Sending command #3");
                                 client.sendCommand(
                                     renameCommand,
                                     () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
@@ -196,6 +198,7 @@ describe('FirebaseClient subscription', function () {
                         }
                     }
                 });
+                console.warn("Sending command #1");
                 client.sendCommand(
                     createCommand,
                     () => console.log(`Task '${taskIdValue}' created.`),

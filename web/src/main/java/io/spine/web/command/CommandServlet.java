@@ -70,6 +70,9 @@ public abstract class CommandServlet extends NonSerializableServlet {
             resp.sendError(SC_BAD_REQUEST);
         } else {
             Command command = parsed.get();
+            System.out.println("________________________");
+            System.out.println(">>>> Command: " + command.typeUrl() + ' ' + command.enclosedMessage());
+            System.out.println("________________________");
             MemoizingObserver<Ack> ack = memoizingObserver();
             commandService.post(command, ack);
             checkState(ack.isCompleted());
