@@ -56,11 +56,6 @@ public final class RetryingClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<String> fetchString(NodePath nodePath) {
-        return retryer.callAndRetry(() -> delegate.fetchString(nodePath));
-    }
-
-    @Override
     public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
         retryer.runAndRetry(() -> delegate.subscribeTo(nodePath, listener));
     }
@@ -72,11 +67,6 @@ public final class RetryingClient implements FirebaseClient {
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
-        retryer.runAndRetry(() -> delegate.update(nodePath, value));
-    }
-
-    @Override
-    public void update(NodePath nodePath, String value) {
         retryer.runAndRetry(() -> delegate.update(nodePath, value));
     }
 

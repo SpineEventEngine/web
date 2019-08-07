@@ -49,11 +49,6 @@ public class TidyClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<String> fetchString(NodePath nodePath) {
-        return delegate.fetchString(nodePath);
-    }
-
-    @Override
     public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
         delegate.subscribeTo(nodePath, listener);
     }
@@ -66,12 +61,6 @@ public class TidyClient implements FirebaseClient {
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
-        delegate.update(nodePath, value);
-        writtenNodes.add(nodePath);
-    }
-
-    @Override
-    public void update(NodePath nodePath, String value) {
         delegate.update(nodePath, value);
         writtenNodes.add(nodePath);
     }

@@ -23,7 +23,6 @@ package io.spine.web.firebase.rest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
-import com.google.common.base.Strings;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.web.firebase.DatabaseUrls;
@@ -34,7 +33,6 @@ import io.spine.web.firebase.StoredJson;
 
 import java.util.Optional;
 
-import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
@@ -90,17 +88,6 @@ public final class RemoteDatabaseClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<String> fetchString(NodePath nodePath) {
-        checkNotNull(nodePath);
-
-        GenericUrl nodeUrl = url(nodePath);
-        String data = httpClient.get(nodeUrl);
-        String valueOrNull = Strings.emptyToNull(data);
-        return Optional.ofNullable(valueOrNull)
-                       .filter(value -> !"null".equalsIgnoreCase(value));
-    }
-
-    @Override
     public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
         checkNotNull(nodePath);
         checkNotNull(listener);
@@ -125,16 +112,6 @@ public final class RemoteDatabaseClient implements FirebaseClient {
 
         GenericUrl nodeUrl = url(nodePath);
         ByteArrayContent byteArrayContent = value.toByteArray();
-        httpClient.patch(nodeUrl, byteArrayContent);
-    }
-
-    @Override
-    public void update(NodePath nodePath, String value) {
-        checkNotNull(nodePath);
-        checkNotNull(value);
-
-        GenericUrl nodeUrl = url(nodePath);
-        ByteArrayContent byteArrayContent = fromString(String.class.getSimpleName(), value);
         httpClient.patch(nodeUrl, byteArrayContent);
     }
 

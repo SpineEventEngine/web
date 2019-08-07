@@ -43,8 +43,6 @@ public interface FirebaseClient {
      */
     Optional<NodeValue> fetchNode(NodePath nodePath);
 
-    Optional<String> fetchString(NodePath nodePath);
-
     /**
      * Subscribes to the child events of the given node.
      *
@@ -81,8 +79,6 @@ public interface FirebaseClient {
      *         the value to merge
      */
     void update(NodePath nodePath, NodeValue value);
-
-    void update(NodePath nodePath, String value);
 
     /**
      * Deletes the node under the given path.

@@ -57,12 +57,6 @@ public final class TestFirebaseClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<String> fetchString(NodePath nodePath) {
-        reads.add(nodePath);
-        return Optional.empty();
-    }
-
-    @Override
     public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
         reads.add(nodePath);
     }
@@ -75,12 +69,6 @@ public final class TestFirebaseClient implements FirebaseClient {
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
-        sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
-    }
-
-    @Override
-    public void update(NodePath nodePath, String value) {
         sleepUninterruptibly(writeLatency);
         writes.add(nodePath);
     }
