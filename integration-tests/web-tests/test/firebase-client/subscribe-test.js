@@ -135,7 +135,6 @@ describe('FirebaseClient subscription', function () {
         const INITIAL_TASK_NAME = 'Initial task name';
         const UPDATED_NAMES = ['Renamed once', 'Renamed twice'];
 
-        // Create tasks.
         const createCommand = TestEnvironment.createTaskCommand({
             withPrefix: 'spine-web-test-subscribe',
             named: INITIAL_TASK_NAME
