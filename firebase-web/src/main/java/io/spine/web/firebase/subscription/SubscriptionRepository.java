@@ -101,6 +101,7 @@ final class SubscriptionRepository {
         StoredJson jsonSubscription = StoredJson.encode(topic);
         NodePath path = pathForSubscription(topic);
         firebase.update(path, jsonSubscription.asNodeValue());
+        subscribe(topic);
     }
 
     void updateExisting(Topic topic) {
@@ -110,6 +111,14 @@ final class SubscriptionRepository {
             healthLog.put(topic);
             StoredJson jsonSubscription = StoredJson.encode(topic);
             firebase.update(path, jsonSubscription.asNodeValue());
+        }
+    }
+
+    private void subscribe(Topic topic) {
+        Optional<Subscription> localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
+        if (!localSubscription.isPresent()) {
+            Subscription subscription = subscriptionService.subscribe(topic, updateObserver);
+            subscriptionRegistry.register(subscription);
         }
     }
 
@@ -189,14 +198,8 @@ final class SubscriptionRepository {
                 repository.delete(topic);
             } else {
                 System.out.println(">>> Subscribe to " + topic.getId().getValue());
-                subscribe(topic);
+                repository.subscribe(topic);
             }
-        }
-
-        private void subscribe(Topic topic) {
-            Subscription subscription =
-                    repository.subscriptionService.subscribe(topic, repository.updateObserver);
-            repository.subscriptionRegistry.register(subscription);
         }
 
         @Override
