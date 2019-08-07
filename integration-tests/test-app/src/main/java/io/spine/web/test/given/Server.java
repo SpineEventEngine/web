@@ -49,7 +49,6 @@ final class Server {
                 .add(new TaskRepository())
                 .add(new ProjectRepository())
                 .add(new UserTasksProjectionRepository())
-                .addEventDispatcher(new TaskUpdateListener())
                 .build();
         Application app = Application.create(context);
         return app;

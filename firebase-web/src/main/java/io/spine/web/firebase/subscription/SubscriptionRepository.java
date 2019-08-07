@@ -169,7 +169,6 @@ final class SubscriptionRepository {
         }
 
         private void updateSubscription(DataSnapshot snapshot) {
-            System.out.println(">>> Update in " + snapshot.getRef().getPath().toString());
             String json = asJson(snapshot);
             Topic topic = loadTopic(json);
             deleteOrActivate(topic);
@@ -194,10 +193,8 @@ final class SubscriptionRepository {
         private void deleteOrActivate(Topic topic) {
             SubscriptionHealthLog healthLog = repository.healthLog;
             if (healthLog.isKnown(topic) && healthLog.isStale(topic)) {
-                System.out.println(">>> Delete " + topic.getId().getValue());
                 repository.delete(topic);
             } else {
-                System.out.println(">>> Subscribe to " + topic.getId().getValue());
                 repository.subscribe(topic);
             }
         }

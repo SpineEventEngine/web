@@ -53,9 +53,6 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
     public void onNext(SubscriptionUpdate update) {
         Subscription subscription = update.getSubscription();
         Topic topic = subscription.getTopic();
-
-        System.out.println(">>>> Entity update for " + update.getSubscription().getTopic().getId().getValue());
-
         if (!healthLog.isStale(topic)) {
             UpdatePayload payload = UpdatePayload.from(update);
             NodePath path = RequestNodePath.of(subscription.getTopic());
