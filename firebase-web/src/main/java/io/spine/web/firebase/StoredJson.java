@@ -51,6 +51,9 @@ public final class StoredJson extends StringTypeValue {
         super(value);
     }
 
+    /**
+     * Creates a {@code StoredJson} from the given JSON string.
+     */
     public static StoredJson from(String value) {
         checkNotNull(value);
         return JSON_NULL.equals(value)
@@ -58,12 +61,26 @@ public final class StoredJson extends StringTypeValue {
                : new StoredJson(value);
     }
 
+    /**
+     * Tries to encode the given message into a {@code StoredJson}.
+     *
+     * <p>Returns the {@code null} JSON value if the given message is {@code null};
+     *
+     * @param message
+     *         message to encode
+     */
     public static StoredJson encodeOrNull(@Nullable Message message) {
         return message != null
                ? encode(message)
                : NULL_JSON;
     }
 
+    /**
+     * Encodes the given message into a {@code StoredJson}.
+     *
+     * @param value
+     *         message to encode
+     */
     public static StoredJson encode(Message value) {
         checkNotNull(value);
         Message message = value;
@@ -74,16 +91,22 @@ public final class StoredJson extends StringTypeValue {
         return from(json);
     }
 
-    public JsonObject asJsonObject() {
+    /**
+     * Obtains this JSON as a database node value.
+     */
+    public NodeValue asNodeValue() {
+        return NodeValue.from(this);
+    }
+
+    JsonObject asJsonObject() {
         JsonParser parser = new JsonParser();
         JsonElement object = parser.parse(value());
         return object.getAsJsonObject();
     }
 
-    public NodeValue asNodeValue() {
-        return NodeValue.from(this);
-    }
-
+    /**
+     * Checks if this JSON is equal to the {@code null} JSON value.
+     */
     @SuppressWarnings("ReferenceEquality") // There is only one `null` object.
     public boolean isNull() {
         return this == NULL_JSON;
