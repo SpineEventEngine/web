@@ -20,10 +20,9 @@ tool. This tool is executed from the `web-tests` module `node_modules` folder.
 The application can be run locally by Gretty and Firebase emulators. To run the
 application do the following:
 
-1. Add a Google Cloud service account key to the `src/main/resources` directory. The file should be
-called `spine-dev.json` and be a valid service account credential. It, however, must not have any
-permissions, as it is never used for remote calls, but only to satisfy requirements of
-the Firebase Admin SDK. 
+1. Add a Firebase service account key to the `test-app/src/main/resources` directory. The file 
+should be called `spine-dev.json` and be a valid service account credential. The account must have
+privileges read data from Firebase. The default Firebase service account will do.
 
 2. Assemble the application:
     ```bash
@@ -60,12 +59,17 @@ test not only the library functionality but also ensure it is properly built.
 ### Running integration test
 
 To run the integration tests do the following:
-1. Assemble the application:
+
+1. Add a Firebase service account key to the `test-app/src/main/resources` directory. The file 
+should be called `spine-dev.json` and be a valid service account credential. The account must have
+privileges read data from Firebase. The default Firebase service account will do.
+
+2. Assemble the application:
     ```bash
     ./gradlew clean assemble
     ```
     
-2. Run tests:
+3. Run tests:
     ```bash
     ./gradlew web-tests:integrationTest
     ```
