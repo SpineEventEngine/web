@@ -100,8 +100,8 @@ final class SubscriptionRepository {
         healthLog.put(topic);
         StoredJson jsonSubscription = StoredJson.encode(topic);
         NodePath path = pathForSubscription(topic);
-        firebase.update(path, jsonSubscription.asNodeValue());
         subscribe(topic);
+        firebase.update(path, jsonSubscription.asNodeValue());
     }
 
     void updateExisting(Topic topic) {
