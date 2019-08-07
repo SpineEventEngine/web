@@ -20,6 +20,7 @@
 
 package io.spine.web.test.given;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -30,6 +31,7 @@ import io.spine.server.CommandService;
 import io.spine.server.QueryService;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.FirebaseCredentials;
 import io.spine.web.firebase.Retryer;
 import io.spine.web.firebase.RetryingClient;
 import io.spine.web.firebase.WaitingRepetitionsRetryer;
@@ -40,13 +42,14 @@ import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.FirebaseClientFactory.remoteClient;
+import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 /**
  * A test Spine application.
  */
 final class Application {
 
-    private static final String DATABASE_URL = "http://127.0.0.1:5000";
+    private static final String DATABASE_URL = "https://spine-dev.firebaseio.com/";
     private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(5);
 
     private final CommandService commandService;
@@ -84,10 +87,19 @@ final class Application {
                 .newBuilder()
                 .add(boundedContext)
                 .build();
+        FirebaseClient retryingClient = buildClient();
+        return new Application(commandService, queryService, subscriptionService, retryingClient);
+    }
+
+    private static FirebaseClient buildClient() {
         Resource googleCredentialsFile = Resource.file("spine-dev.json");
+
+        // Same credentials but represented with different Java objects.
         GoogleCredentials credentials;
+        GoogleCredential credential;
         try {
             credentials = GoogleCredentials.fromStream(googleCredentialsFile.open());
+            credential = GoogleCredential.fromStream(googleCredentialsFile.open());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -97,10 +109,11 @@ final class Application {
                 .setCredentials(credentials)
                 .build();
         FirebaseApp.initializeApp(options);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseClient firebaseClient = remoteClient(database);
-        FirebaseClient retryingClient = new RetryingClient(firebaseClient, RETRY_POLICY);
-        return new Application(commandService, queryService, subscriptionService, retryingClient);
+        FirebaseCredentials firebaseCredentials = fromGoogleCredentials(credential);
+        FirebaseClient firebaseClient = remoteClient(database, firebaseCredentials);
+        return new TidyClient(new RetryingClient(firebaseClient, RETRY_POLICY));
     }
 
     CommandService commandService() {
