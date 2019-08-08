@@ -20,6 +20,7 @@
 
 package io.spine.web.firebase;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -110,5 +111,10 @@ public final class StoredJson extends StringTypeValue {
     @SuppressWarnings("ReferenceEquality") // There is only one `null` object.
     public boolean isNull() {
         return this == NULL_JSON;
+    }
+
+    @VisibleForTesting
+    public static StoredJson nullValue() {
+        return NULL_JSON;
     }
 }

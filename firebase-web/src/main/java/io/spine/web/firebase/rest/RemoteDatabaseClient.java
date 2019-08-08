@@ -23,6 +23,7 @@ package io.spine.web.firebase.rest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.web.firebase.DatabaseUrls;
@@ -52,9 +53,8 @@ public final class RemoteDatabaseClient implements FirebaseClient {
     private final RestNodeUrls factory;
     private final HttpClient httpClient;
 
-    private RemoteDatabaseClient(FirebaseDatabase database,
-                                 RestNodeUrls factory,
-                                 HttpClient httpClient) {
+    @VisibleForTesting
+    RemoteDatabaseClient(FirebaseDatabase database, RestNodeUrls factory, HttpClient httpClient) {
         this.database = database;
         this.factory = factory;
         this.httpClient = httpClient;
@@ -64,14 +64,13 @@ public final class RemoteDatabaseClient implements FirebaseClient {
      * Creates a {@code RestClient} which operates on the database located at the given
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
-    public static RemoteDatabaseClient
-    create(FirebaseDatabase database, HttpRequestFactory requestFactory) {
-        String databaseUrl = database.getApp()
-                                     .getOptions()
-                                     .getDatabaseUrl();
-        RestNodeUrls nodeUrlTemplate = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
-        HttpClient requestExecutor = HttpClient.using(requestFactory);
-        return new RemoteDatabaseClient(database, nodeUrlTemplate, requestExecutor);
+    public static RemoteDatabaseClient create(FirebaseDatabase db, HttpRequestFactory factory) {
+        String databaseUrl = db.getApp()
+                               .getOptions()
+                               .getDatabaseUrl();
+        HttpClient requestExecutor = HttpClient.using(factory);
+        RestNodeUrls urls = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
+        return new RemoteDatabaseClient(db, urls, requestExecutor);
     }
 
     @Override
