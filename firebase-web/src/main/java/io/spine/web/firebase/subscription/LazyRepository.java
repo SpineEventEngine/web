@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A lazy loading {@link SubscriptionRepository}.
+ * A lazy-loading {@link SubscriptionRepository}.
  */
 final class LazyRepository implements Supplier<SubscriptionRepository> {
 
