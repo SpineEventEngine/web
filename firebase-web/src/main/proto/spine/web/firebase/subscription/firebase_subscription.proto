@@ -14,20 +14,30 @@ import "spine/core/user_id.proto";
 import "spine/client/subscription.proto";
 import "spine/web/firebase/client.proto";
 
+import "google/protobuf/timestamp.proto";
+
+// A record of a `Subscription` stored in Firebase RDB.
 message FirebaseSubscription {
 
+    // A subscription.
     client.Subscription subscription = 1 [(required) = true, (validate) = true];
 
+    // Path in Firebase RDB where the records matching the subscription are stored.
     NodePath node_path = 2 [(required) = true];
 }
 
+// An identifier of an active subscription created by a certain user.
 message SubscriptionToken {
 
+    // An identifier of the subscription.
     client.SubscriptionId id = 1 [(required) = true, (validate) = true];
 
+    // Who created the subscription.
     core.UserId user = 2 [(required) = true, (validate) = true];
 
+    // In which tenant the subscription is processed.
     core.TenantId tenant = 3 [(required) = false, (validate) = true];
 
+    // The stringified representation of a `Subscription` target.
     string target = 4 [(required) = true];
 }

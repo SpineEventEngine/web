@@ -23,6 +23,7 @@ package io.spine.web.firebase.subscription;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
+import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.client.TopicId;
 
@@ -34,20 +35,44 @@ import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
 import static java.util.Collections.synchronizedMap;
 
-final class SubscriptionHealthLog {
+/**
+ * The log of the {@code Topic}s to which the clients are still subscribed.
+ *
+ * <p>To understand whether a client is still listening to the {@code Topic} updates, she
+ * periodically sends a {@link FirebaseSubscriptionBridge#keepUp(Subscription) keepUp(Subscription)}
+ * request. The server records the timestamps of these requests in this log and counts the client
+ * alive, as long as the {@linkplain #withTimeout(Duration)} configured} timeout does not pass
+ * since the last request.
+ */
+final class HealthLog {
 
     private final Map<TopicId, Timestamp> updateTimes;
     private final Duration expirationTimeout;
 
-    private SubscriptionHealthLog(Map<TopicId, Timestamp> updateTimes, Duration expirationTimeout) {
+    private HealthLog(Map<TopicId, Timestamp> updateTimes, Duration expirationTimeout) {
         this.updateTimes = checkNotNull(updateTimes);
         this.expirationTimeout = checkNotNull(expirationTimeout);
     }
 
-    static SubscriptionHealthLog withTimeout(Duration expirationTimeout) {
-        return new SubscriptionHealthLog(synchronizedMap(new HashMap<>()), expirationTimeout);
+    /**
+     * Creates a {@code HealthLog} with a certain topic expiration timeout.
+     *
+     * @param expirationTimeout
+     *         a duration of a timeout to count a {@code Topic} active since its last {@code keepUp}
+     *         request is received
+     * @return a new instance of {@code HealthLog}
+     */
+    static HealthLog withTimeout(Duration expirationTimeout) {
+        return new HealthLog(synchronizedMap(new HashMap<>()), expirationTimeout);
     }
 
+    /**
+     * Updates the health record for the given {@code Topic} by recording the timestamp of its
+     * context as a time of update.
+     *
+     * @param topic
+     *         the topic to update.
+     */
     void put(Topic topic) {
         TopicId id = topic.getId();
         Timestamp updateTime = topic.getContext()
@@ -55,11 +80,25 @@ final class SubscriptionHealthLog {
         updateTimes.put(id, updateTime);
     }
 
+    /**
+     * Tells whether any activity has been recorded for the given {@code Topic}.
+     */
     boolean isKnown(Topic topic) {
         TopicId id = topic.getId();
         return updateTimes.containsKey(id);
     }
 
+    /**
+     * Tells whether this topic is already stale, meaning that no updates were received for it for
+     * longer than an expiration timeout set for this instance of {@code HealthLog}.
+     *
+     * <p>If the given {@code topic} isn't {@linkplain #isKnown(Topic) known} to this log,
+     * a {@linkplain NullPointerException} is thrown.
+     *
+     * @param topic
+     *         the topic to detect staleness
+     * @return {@code true} if the topic is stale, {@code false} otherwise
+     */
     boolean isStale(Topic topic) {
         TopicId id = topic.getId();
         Timestamp lastUpdate = updateTimes.get(id);

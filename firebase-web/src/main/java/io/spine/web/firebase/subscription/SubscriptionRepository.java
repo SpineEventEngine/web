@@ -49,7 +49,7 @@ import static io.spine.web.firebase.subscription.LazyRepository.lazy;
  * the subscription becomes outdated.
  *
  * <p>Subscription repositories running on different sever instances exchange subscriptions via
- * Firebase, so that each instance can post updates for each subscription.
+ * Firebase RDB, so that each instance can post updates for each subscription.
  */
 final class SubscriptionRepository {
 
@@ -59,15 +59,15 @@ final class SubscriptionRepository {
     private final BlockingSubscriptionService subscriptionService;
     private final UpdateObserver updateObserver;
     private final LocalSubscriptionRegistry subscriptionRegistry;
-    private final SubscriptionHealthLog healthLog;
+    private final HealthLog healthLog;
 
     SubscriptionRepository(FirebaseClient firebase,
                            BlockingSubscriptionService service,
-                           Duration timeout,
+                           Duration expirationTimeout,
                            LocalSubscriptionRegistry subscriptionRegistry) {
         this.firebase = checkNotNull(firebase);
         this.subscriptionService = checkNotNull(service);
-        this.healthLog = SubscriptionHealthLog.withTimeout(checkNotNull(timeout));
+        this.healthLog = HealthLog.withTimeout(checkNotNull(expirationTimeout));
         this.updateObserver = new UpdateObserver(firebase, healthLog, lazy(() -> this));
         this.subscriptionRegistry = subscriptionRegistry;
     }
@@ -191,7 +191,7 @@ final class SubscriptionRepository {
         }
 
         private void deleteOrActivate(Topic topic) {
-            SubscriptionHealthLog healthLog = repository.healthLog;
+            HealthLog healthLog = repository.healthLog;
             if (healthLog.isKnown(topic) && healthLog.isStale(topic)) {
                 repository.delete(topic);
             } else {

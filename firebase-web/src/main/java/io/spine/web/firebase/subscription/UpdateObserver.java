@@ -38,11 +38,11 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
 
     private final FirebaseClient firebase;
-    private final SubscriptionHealthLog healthLog;
+    private final HealthLog healthLog;
     private final LazyRepository repository;
 
     UpdateObserver(FirebaseClient firebase,
-                   SubscriptionHealthLog healthLog,
+                   HealthLog healthLog,
                    LazyRepository repository) {
         this.firebase = checkNotNull(firebase);
         this.healthLog = checkNotNull(healthLog);

@@ -31,16 +31,32 @@ import java.util.Optional;
 
 import static java.util.Collections.synchronizedMap;
 
+/**
+ * An in-memory cache of {@link Subscription}s and corresponding {@link Topic}s.
+ *
+ * <p>{@code Topic}s of active {@code Subscription}s may be shared across different node
+ * of the application. An identifier of {@code Subscription} is UUID-based, so two nodes of
+ * the application will have different {@code SubscriptionId}s for the shared {@code Topic}.
+ * This cache correlates the locally-created {@code Subscription}s with the identifier of
+ * the shared {@code Topic}.
+ */
 final class LocalSubscriptionRegistry {
 
     private final Map<TopicId, SubscriptionId> ids = synchronizedMap(new HashMap<>());
 
+    /**
+     * Registers the passed {@code Subscription} and remembers its {@code Topic}.
+     */
     void register(Subscription subscription) {
         SubscriptionId subscriptionId = subscription.getId();
         TopicId topicId = subscription.getTopic().getId();
         ids.put(topicId, subscriptionId);
     }
 
+    /**
+     * Fetches the {@code Subscription} for the given {@code Topic}, if it is present in
+     * this registry.
+     */
     Optional<Subscription> localSubscriptionFor(Topic topic) {
         TopicId topicId = topic.getId();
         SubscriptionId subscriptionId = ids.get(topicId);
