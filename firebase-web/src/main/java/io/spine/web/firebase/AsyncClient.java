@@ -20,6 +20,8 @@
 
 package io.spine.web.firebase;
 
+import com.google.firebase.database.ChildEventListener;
+
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
@@ -65,8 +67,13 @@ public final class AsyncClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<NodeValue> get(NodePath nodePath) {
-        return delegate.get(nodePath);
+    public Optional<NodeValue> fetchNode(NodePath nodePath) {
+        return delegate.fetchNode(nodePath);
+    }
+
+    @Override
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        delegate.subscribeTo(nodePath, listener);
     }
 
     @Override
@@ -77,6 +84,10 @@ public final class AsyncClient implements FirebaseClient {
     @Override
     public void update(NodePath nodePath, NodeValue value) {
         executor.execute(() -> delegate.update(nodePath, value));
+    }
 
+    @Override
+    public void delete(NodePath nodePath) {
+        executor.execute(() -> delegate.delete(nodePath));
     }
 }

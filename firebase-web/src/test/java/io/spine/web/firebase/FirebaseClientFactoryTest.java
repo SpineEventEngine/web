@@ -22,18 +22,15 @@ package io.spine.web.firebase;
 
 import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
 import com.google.common.testing.NullPointerTester;
+import com.google.firebase.database.FirebaseDatabase;
 import io.spine.testing.UtilityClassTest;
-import io.spine.web.firebase.rest.RestClient;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
 import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("FirebaseClientFactory should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
-
-    private static final DatabaseUrl SOME_URL = DatabaseUrls.from("https://someUrl.com");
 
     private static final MockGoogleCredential GOOGLE_CREDENTIALS =
             new MockGoogleCredential.Builder().build();
@@ -47,35 +44,7 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
 
     @Override
     protected void configure(NullPointerTester tester) {
-        tester.setDefault(DatabaseUrl.class, SOME_URL)
+        tester.setDefault(FirebaseDatabase.class, mock(FirebaseDatabase.class))
               .setDefault(FirebaseCredentials.class, CREDENTIALS);
-    }
-
-    @Test
-    @DisplayName("create a REST client without Firebase credentials")
-    void createWithoutCredentials() {
-        FirebaseClient client = FirebaseClientFactory.restClient(SOME_URL);
-        assertThat(client).isInstanceOf(RestClient.class);
-    }
-
-    @Test
-    @DisplayName("create a REST client with the given Firebase credentials")
-    void createWithCredentials() {
-        FirebaseClient client = FirebaseClientFactory.restClient(SOME_URL, CREDENTIALS);
-        assertThat(client).isInstanceOf(RestClient.class);
-    }
-
-    @Test
-    @DisplayName("create a REST client for the AppEngine environment")
-    void createGaeRestClient() {
-        FirebaseClient client = FirebaseClientFactory.gae(SOME_URL, CREDENTIALS);
-        assertThat(client).isInstanceOf(RestClient.class);
-    }
-
-    @Test
-    @DisplayName("create a REST client for the non-GAE environment")
-    void createNonGaeRestClient() {
-        FirebaseClient client = FirebaseClientFactory.nonGae(SOME_URL, CREDENTIALS);
-        assertThat(client).isInstanceOf(RestClient.class);
     }
 }

@@ -22,10 +22,11 @@ package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.web.firebase.DatabaseUrl;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.FirebaseDatabase;
+import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
@@ -37,22 +38,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
 /**
- * A {@code FirebaseClient} which operates via the Firebase REST API.
+ * A {@code FirebaseClient} which operates via the Firebase REST API and the Java Admin SDK.
  *
- * See Firebase REST API <a href="https://firebase.google.com/docs/reference/rest/database/">docs
- * </a>.
+ * <p>The client uses the Java Firebase Admin SDK for subscribing to events of a given database
+ * node. The API exposes the {@link ChildEventListener} so that the caller may build more complex
+ * "nested" subscriptions without a need to re-fetch database references.
+ *
+ * <p>For all the other operations, the client uses the Firebase REST API as described in the
+ * <a href="https://firebase.google.com/docs/reference/rest/database/">documentation</a>.
  */
-public final class RestClient implements FirebaseClient {
+public final class RemoteDatabaseClient implements FirebaseClient {
 
-
-    @VisibleForTesting
-    static final String NULL_ENTRY = "null";
-
+    private final FirebaseDatabase database;
     private final RestNodeUrls factory;
     private final HttpClient httpClient;
 
     @VisibleForTesting
-    RestClient(RestNodeUrls factory, HttpClient httpClient) {
+    RemoteDatabaseClient(FirebaseDatabase database, RestNodeUrls factory, HttpClient httpClient) {
+        this.database = database;
         this.factory = factory;
         this.httpClient = httpClient;
     }
@@ -61,17 +64,20 @@ public final class RestClient implements FirebaseClient {
      * Creates a {@code RestClient} which operates on the database located at the given
      * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
      */
-    public static RestClient create(DatabaseUrl url, HttpRequestFactory requestFactory) {
-        RestNodeUrls nodeUrlTemplate = new RestNodeUrls(url);
-        HttpClient requestExecutor = HttpClient.using(requestFactory);
-        return new RestClient(nodeUrlTemplate, requestExecutor);
+    public static RemoteDatabaseClient create(FirebaseDatabase db, HttpRequestFactory factory) {
+        String databaseUrl = db.getApp()
+                               .getOptions()
+                               .getDatabaseUrl();
+        HttpClient requestExecutor = HttpClient.using(factory);
+        RestNodeUrls urls = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
+        return new RemoteDatabaseClient(db, urls, requestExecutor);
     }
 
     @Override
-    public Optional<NodeValue> get(NodePath nodePath) {
+    public Optional<NodeValue> fetchNode(NodePath nodePath) {
         checkNotNull(nodePath);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = url(nodePath);
         String data = httpClient.get(nodeUrl);
         StoredJson json = StoredJson.from(data);
         Optional<NodeValue> nodeValue = Optional.of(json)
@@ -81,13 +87,21 @@ public final class RestClient implements FirebaseClient {
     }
 
     @Override
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        checkNotNull(nodePath);
+        checkNotNull(listener);
+        database.getReference(nodePath.getValue())
+                .addChildEventListener(listener);
+    }
+
+    @Override
     public void create(NodePath nodePath, NodeValue value) {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = url(nodePath);
         ByteArrayContent byteArrayContent = value.toByteArray();
-        create(nodeUrl, byteArrayContent);
+        httpClient.put(nodeUrl, byteArrayContent);
     }
 
     @Override
@@ -95,24 +109,20 @@ public final class RestClient implements FirebaseClient {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = asGenericUrl(factory.with(nodePath));
+        GenericUrl nodeUrl = url(nodePath);
         ByteArrayContent byteArrayContent = value.toByteArray();
-        update(nodeUrl, byteArrayContent);
+        httpClient.patch(nodeUrl, byteArrayContent);
     }
 
-    /**
-     * Creates the database node with the given value or overwrites the existing one.
-     */
-    private void create(GenericUrl nodeUrl, HttpContent value) {
-        httpClient.put(nodeUrl, value);
+    @Override
+    public void delete(NodePath nodePath) {
+        checkNotNull(nodePath);
+
+        GenericUrl nodeUrl = url(nodePath);
+        httpClient.delete(nodeUrl);
     }
 
-    /**
-     * Updates the database node with the given value.
-     *
-     * <p>Common entries are overwritten.
-     */
-    private void update(GenericUrl nodeUrl, HttpContent value) {
-        httpClient.patch(nodeUrl, value);
+    private GenericUrl url(NodePath nodePath) {
+        return asGenericUrl(factory.with(nodePath));
     }
 }

@@ -130,6 +130,26 @@ class HttpClient {
         }
     }
 
+    /**
+     * Prepares and executes a DELETE request.
+     *
+     * @param url
+     *         the target URL
+     * @return the {@code String} containing response body
+     * @throws RequestToFirebaseFailedException
+     *         if the request couldn't be performed normally
+     */
+    @CanIgnoreReturnValue
+    String delete(GenericUrl url) {
+        checkNotNull(url);
+
+        try {
+            return doDelete(url);
+        } catch (IOException e) {
+            throw new RequestToFirebaseFailedException(e.getMessage(), e);
+        }
+    }
+
     private String doGet(GenericUrl url) throws IOException {
         HttpRequest request = requestFactory.buildGetRequest(url);
         return executeAndGetResponse(request);
@@ -142,6 +162,11 @@ class HttpClient {
 
     private String doPatch(GenericUrl url, HttpContent content) throws IOException {
         HttpRequest request = requestFactory.buildPatchRequest(url, content);
+        return executeAndGetResponse(request);
+    }
+
+    private String doDelete(GenericUrl url) throws IOException {
+        HttpRequest request = requestFactory.buildDeleteRequest(url);
         return executeAndGetResponse(request);
     }
 

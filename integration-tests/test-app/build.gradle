@@ -19,19 +19,37 @@
  */
 
 plugins {
-    id 'com.github.psxpaul.execfork' version '0.1.10'
-    id "org.gretty" version "2.3.1"
+    id 'java'
+    id 'org.gretty' version '2.3.1'
+    id "com.github.psxpaul.execfork" version "0.1.11"
 }
 
-apply plugin: 'io.spine.tools.gradle.bootstrap'
-
-spine.enableJava()
+apply plugin: 'io.spine.tools.spine-model-compiler'
+apply from: "$rootDir/config/gradle/model-compiler.gradle"
 
 dependencies {
     implementation project(":firebase-web")
     implementation "io.spine:spine-server:$spineVersion"
 
     implementation deps.test.slf4j
+}
+
+gretty {
+    contextPath = '/'
+    httpPort = 8080
+    debugPort = 5005
+    debugSuspend = true
+    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
+    servletContainer = 'jetty9'
+
+    afterEvaluate {
+        appStart.dependsOn runFirebase
+        appBeforeIntegrationTest.dependsOn runFirebase
+        appStartDebug.dependsOn runFirebase
+
+        appStop.finalizedBy killFirebaseProcess
+        appAfterIntegrationTest.finalizedBy killFirebaseProcess
+    }
 }
 
 /**
@@ -42,7 +60,7 @@ final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
 
 /**
  * Runs the Firebase emulator locally for the tests purposes.
- * 
+ *
  * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
  * module dependency. Stores the PID of the newly started emulator process to the
  * "web/scripts/firebase-emulator.pid" file.
@@ -89,20 +107,3 @@ task killFirebaseProcess {
     }
 }
 
-gretty {
-    contextPath = '/'
-    httpPort = 8080
-    debugPort = 5005
-    debugSuspend = true
-    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
-    servletContainer = 'jetty9'
-
-    afterEvaluate {
-        appStart.dependsOn runFirebase
-        appBeforeIntegrationTest.dependsOn runFirebase
-        appStartDebug.dependsOn runFirebase
-
-        appStop.finalizedBy killFirebaseProcess
-        appAfterIntegrationTest.finalizedBy killFirebaseProcess
-    }
-}

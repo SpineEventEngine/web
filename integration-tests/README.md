@@ -19,12 +19,17 @@ tool. This tool is executed from the `web-tests` module `node_modules` folder.
 
 The application can be run locally by Gretty and Firebase emulators. To run the
 application do the following:
-1. Assemble the application:
+
+1. Add a Firebase service account key to the `test-app/src/main/resources` directory. The file 
+should be called `spine-dev.json` and be a valid service account credential. The account must have
+privileges read data from Firebase. The default Firebase service account will do.
+
+2. Assemble the application:
     ```bash
     ./gradlew clean assemble
     ```
     
-2. Start the local server:
+3. Start the local server:
 
     The following command runs the server on `localhost:8080`. It also runs
     the the local Firebase server on `localhost:5000`:
@@ -54,12 +59,17 @@ test not only the library functionality but also ensure it is properly built.
 ### Running integration test
 
 To run the integration tests do the following:
-1. Assemble the application:
+
+1. Add a Firebase service account key to the `test-app/src/main/resources` directory. The file 
+should be called `spine-dev.json` and be a valid service account credential. The account must have
+privileges read data from Firebase. The default Firebase service account will do.
+
+2. Assemble the application:
     ```bash
     ./gradlew clean assemble
     ```
     
-2. Run tests:
+3. Run tests:
     ```bash
     ./gradlew web-tests:integrationTest
     ```

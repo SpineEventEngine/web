@@ -20,6 +20,8 @@
 
 package io.spine.web.firebase;
 
+import com.google.firebase.database.ChildEventListener;
+
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -49,8 +51,13 @@ public final class RetryingClient implements FirebaseClient {
     }
 
     @Override
-    public Optional<NodeValue> get(NodePath nodePath) {
-        return retryer.callAndRetry(() -> delegate.get(nodePath));
+    public Optional<NodeValue> fetchNode(NodePath nodePath) {
+        return retryer.callAndRetry(() -> delegate.fetchNode(nodePath));
+    }
+
+    @Override
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        retryer.runAndRetry(() -> delegate.subscribeTo(nodePath, listener));
     }
 
     @Override
@@ -61,5 +68,10 @@ public final class RetryingClient implements FirebaseClient {
     @Override
     public void update(NodePath nodePath, NodeValue value) {
         retryer.runAndRetry(() -> delegate.update(nodePath, value));
+    }
+
+    @Override
+    public void delete(NodePath nodePath) {
+        retryer.runAndRetry(() -> delegate.delete(nodePath));
     }
 }

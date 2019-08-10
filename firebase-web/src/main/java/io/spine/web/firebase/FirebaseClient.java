@@ -20,6 +20,8 @@
 
 package io.spine.web.firebase;
 
+import com.google.firebase.database.ChildEventListener;
+
 import java.util.Optional;
 
 /**
@@ -39,7 +41,17 @@ public interface FirebaseClient {
      *         the path to the requested node in the database
      * @return the node value or empty {@code Optional} if the node is not present in the database
      */
-    Optional<NodeValue> get(NodePath nodePath);
+    Optional<NodeValue> fetchNode(NodePath nodePath);
+
+    /**
+     * Subscribes to the child events of the given node.
+     *
+     * @param nodePath
+     *         the path to the node to subscribe to
+     * @param listener
+     *         the callbacks invoked on child events
+     */
+    void subscribeTo(NodePath nodePath, ChildEventListener listener);
 
     /**
      * Writes the specified value to the Firebase database node.
@@ -67,4 +79,14 @@ public interface FirebaseClient {
      *         the value to merge
      */
     void update(NodePath nodePath, NodeValue value);
+
+    /**
+     * Deletes the node under the given path.
+     *
+     * <p>Does nothing if the node does not exist.
+     *
+     * @param nodePath
+     *         the path to the node to delete
+     */
+    void delete(NodePath nodePath);
 }

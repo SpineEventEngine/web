@@ -122,10 +122,9 @@ export class FirebaseClient extends AbstractClient {
   subscribeTo(topic) {
     return new Promise((resolve, reject) => {
       const typeUrl = topic.getTarget().getType();
-
       this._endpoint.subscribeTo(topic)
         .then(response => {
-          const path = response.id.value;
+          const path = response.nodePath.value;
 
           const itemAdded = new Subject();
           const itemChanged = new Subject();

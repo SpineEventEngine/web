@@ -26,6 +26,7 @@ import io.spine.client.QueryResponse;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.RequestNodePath;
 import io.spine.web.firebase.StoredJson;
 
 import java.util.List;
@@ -43,7 +44,7 @@ final class QueryRecord {
     private final QueryResponse queryResponse;
 
     QueryRecord(Query query, QueryResponse queryResponse) {
-        this.path = QueryNodePath.of(query);
+        this.path = RequestNodePath.of(query);
         this.queryResponse = queryResponse;
     }
 

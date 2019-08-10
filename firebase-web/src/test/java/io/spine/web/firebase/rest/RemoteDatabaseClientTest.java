@@ -23,6 +23,7 @@ package io.spine.web.firebase.rest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.common.testing.NullPointerTester;
+import com.google.firebase.database.FirebaseDatabase;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
 import io.spine.web.firebase.NodePath;
@@ -36,7 +37,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.web.firebase.rest.RestClient.NULL_ENTRY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,27 +46,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DisplayName("RestClient should")
-class RestClientTest {
+@DisplayName("`RemoteDatabaseClient` should")
+class RemoteDatabaseClientTest {
 
     private static final String PATH = "node/path";
     private static final StoredJson DATA = StoredJson.from("{\"a\":\"b\"}");
     private static final String DATABASE_URL_STRING = "https://database.com";
     private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from(DATABASE_URL_STRING);
     private static final RestNodeUrls NODE_FACTORY = new RestNodeUrls(DATABASE_URL);
-
+    private static final String NULL_ENTRY = StoredJson.nullValue()
+                                                       .toString();
     private static final GenericUrl EXPECTED_NODE_URL =
             new GenericUrl(DATABASE_URL_STRING + '/' + PATH + ".json");
 
     private HttpClient httpClient;
-    private RestClient client;
+    private RemoteDatabaseClient client;
     private NodePath path;
     private NodeValue value;
 
     @BeforeEach
     void setUp() {
         httpClient = mock(HttpClient.class);
-        client = new RestClient(NODE_FACTORY, httpClient);
+        FirebaseDatabase mockFirebase = mock(FirebaseDatabase.class);
+        client = new RemoteDatabaseClient(mockFirebase, NODE_FACTORY, httpClient);
         path = NodePaths.of(PATH);
         value = DATA.asNodeValue();
     }
@@ -85,7 +87,7 @@ class RestClientTest {
     void getData() {
         when(httpClient.get(any())).thenReturn(DATA.value());
 
-        Optional<NodeValue> result = client.get(path);
+        Optional<NodeValue> result = client.fetchNode(path);
         assertTrue(result.isPresent());
         NodeValue value = result.get();
         String contentString = value.underlyingJson()
@@ -98,7 +100,7 @@ class RestClientTest {
     void getNullData() {
         when(httpClient.get(any())).thenReturn(NULL_ENTRY);
 
-        Optional<NodeValue> result = client.get(path);
+        Optional<NodeValue> result = client.fetchNode(path);
         assertFalse(result.isPresent());
     }
 

@@ -18,72 +18,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.given;
+package io.spine.web.test.given;
 
-import com.google.common.collect.ImmutableList;
 import com.google.firebase.database.ChildEventListener;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
-import java.time.Duration;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
-import static com.google.appengine.repackaged.com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.synchronizedSet;
 
-public final class TestFirebaseClient implements FirebaseClient {
+public class TidyClient implements FirebaseClient {
 
-    private final List<NodePath> reads = newArrayList();
-    private final List<NodePath> writes = newArrayList();
+    private final Set<NodePath> writtenNodes = synchronizedSet(new HashSet<>());
+    private final FirebaseClient delegate;
 
-    private final Duration writeLatency;
-
-    private TestFirebaseClient(Duration latency) {
-        this.writeLatency = latency;
-    }
-
-    public static TestFirebaseClient withSimulatedLatency(Duration latency) {
-        checkNotNull(latency);
-        return new TestFirebaseClient(latency);
+    public TidyClient(FirebaseClient delegate) {
+        this.delegate = checkNotNull(delegate);
+        Runtime.getRuntime()
+               .addShutdownHook(new Thread(() -> writtenNodes.forEach(delegate::delete)));
     }
 
     @Override
     public Optional<NodeValue> fetchNode(NodePath nodePath) {
-        reads.add(nodePath);
-        return Optional.empty();
+        return delegate.fetchNode(nodePath);
     }
 
     @Override
     public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
-        reads.add(nodePath);
+        delegate.subscribeTo(nodePath, listener);
     }
 
     @Override
     public void create(NodePath nodePath, NodeValue value) {
-        sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        delegate.create(nodePath, value);
+        writtenNodes.add(nodePath);
     }
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
-        sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        delegate.update(nodePath, value);
+        writtenNodes.add(nodePath);
     }
 
     @Override
     public void delete(NodePath nodePath) {
-        sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
-    }
-
-    public ImmutableList<NodePath> reads() {
-        return ImmutableList.copyOf(reads);
-    }
-
-    public ImmutableList<NodePath> writes() {
-        return ImmutableList.copyOf(writes);
+        delegate.delete(nodePath);
+        writtenNodes.remove(nodePath);
     }
 }

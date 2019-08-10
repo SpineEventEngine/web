@@ -20,36 +20,37 @@
 
 package io.spine.web.firebase.subscription;
 
+import io.grpc.stub.StreamObserver;
 import io.spine.client.Subscription;
-import io.spine.web.firebase.NodePath;
-import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.client.SubscriptionId;
+import io.spine.client.SubscriptionUpdate;
+import io.spine.client.Topic;
+import io.spine.client.grpc.SubscriptionServiceGrpc;
+import io.spine.core.Response;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
+import static io.spine.base.Identifier.newUuid;
 
-import static io.spine.json.Json.toCompactJson;
+public class TestSubscriptionService extends SubscriptionServiceGrpc.SubscriptionServiceImplBase {
 
-/**
- * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
- * to be written to the {@link ServletResponse}.
- *
- * <p>The result is a JSON formatted {@link Subscription} message.
- */
-final class FirebaseSubscribeResult implements SubscribeResult {
-
-    private final FirebaseSubscription subscription;
-
-    FirebaseSubscribeResult(Subscription subscription, NodePath resultPath) {
-        this.subscription = FirebaseSubscription
+    @Override
+    public void subscribe(Topic request, StreamObserver<Subscription> responseObserver) {
+        Subscription subscription = Subscription
                 .newBuilder()
-                .setSubscription(subscription)
-                .setNodePath(resultPath)
+                .setId(SubscriptionId.newBuilder().setValue(newUuid()))
+                .setTopic(request)
                 .vBuild();
+        responseObserver.onNext(subscription);
+        responseObserver.onCompleted();
     }
 
     @Override
-    public void writeTo(ServletResponse response) throws IOException {
-        response.getWriter()
-                .write(toCompactJson(subscription));
+    public void activate(Subscription request,
+                         StreamObserver<SubscriptionUpdate> responseObserver) {
+        // Do nothing.
+    }
+
+    @Override
+    public void cancel(Subscription request, StreamObserver<Response> responseObserver) {
+        responseObserver.onCompleted();
     }
 }

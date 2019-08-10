@@ -20,11 +20,7 @@
 
 import assert from 'assert';
 import TestEnvironment from './given/test-environment';
-import {
-    CommandValidationError,
-    CommandHandlingError,
-    ConnectionError
-} from '@lib/index';
+import {CommandHandlingError, CommandValidationError, ConnectionError} from '@lib/index';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
@@ -48,7 +44,7 @@ describe('FirebaseClient command sending', function () {
 
             client.fetch({entity: Task, byIds: taskId})
                 .then(data => {
-                    assert.ok(data.length === 1);
+                    assert.equal(data.length, 1);
                     const item = data[0];
                     assert.equal(item.getId().getValue(), taskId);
                     assert.equal(item.getName(), command.getName());

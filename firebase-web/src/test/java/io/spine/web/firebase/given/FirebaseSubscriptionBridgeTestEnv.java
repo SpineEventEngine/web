@@ -26,11 +26,14 @@ import io.spine.client.SubscriptionId;
 import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
-import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.UserId;
+import io.spine.server.model.Nothing;
 import io.spine.testing.client.TestActorRequestFactory;
+import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
 import javax.servlet.ServletResponse;
@@ -41,8 +44,8 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.core.Responses.statusOk;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
@@ -60,12 +63,13 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     private FirebaseSubscriptionBridgeTestEnv() {
     }
 
-    public static void assertSubscriptionPointsToFirebase(SubscriptionId id, Topic topic) {
+    public static void assertSubscriptionPointsToFirebase(NodePath path, Topic topic) {
         String actor = actorAsString(topic);
-        Collection<String> pathElements = newArrayList(DEFAULT_TENANT, escaped(actor), "");
+        Collection<String> pathElements = newArrayList(
+                DEFAULT_TENANT, escaped(actor), topic.getId().getValue()
+        );
         String expectedPath = PATH_JOINER.join(pathElements);
-        String path = id.getValue();
-        assertTrue(path.startsWith(expectedPath));
+        assertThat(path.getValue()).isEqualTo(expectedPath);
     }
 
     private static String actorAsString(Topic topic) {
@@ -104,17 +108,18 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     public static Target newTarget() {
         return Target
                 .newBuilder()
-                .setType("test-type")
+                .setType(TypeUrl.of(Nothing.getDefaultInstance()).value())
                 .setIncludeAll(true)
                 .vBuild();
     }
 
-    public static FirebaseSubscriptionBridge newBridge(FirebaseClient firebaseClient,
-                                                       QueryServiceImplBase queryService) {
+    public static FirebaseSubscriptionBridge
+    newBridge(FirebaseClient firebaseClient,
+              SubscriptionServiceImplBase subscriptionService) {
         return FirebaseSubscriptionBridge
                 .newBuilder()
-                .setQueryService(queryService)
                 .setFirebaseClient(firebaseClient)
+                .setSubscriptionService(subscriptionService)
                 .build();
     }
 

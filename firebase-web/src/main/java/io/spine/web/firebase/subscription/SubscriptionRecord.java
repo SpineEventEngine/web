@@ -20,19 +20,11 @@
 
 package io.spine.web.firebase.subscription;
 
-import io.spine.client.EntityStateWithVersion;
-import io.spine.client.QueryResponse;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
-import io.spine.web.firebase.StoredJson;
-import io.spine.web.firebase.subscription.diff.Diff;
-import io.spine.web.firebase.subscription.diff.DiffCalculator;
 
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
+import static com.google.appengine.repackaged.com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
 /**
  * A subscription record that gets stored into a Firebase database.
@@ -42,77 +34,18 @@ import static java.util.stream.Collectors.toList;
 final class SubscriptionRecord {
 
     private final NodePath path;
-    private final QueryResponse queryResponse;
+    private final UpdatePayload updatePayload;
 
-    SubscriptionRecord(NodePath path, QueryResponse queryResponse) {
-        this.path = path;
-        this.queryResponse = queryResponse;
-    }
-
-    /**
-     * Retrieves the database path to this record.
-     */
-    NodePath path() {
-        return path;
-    }
-
-    /**
-     * Writes this record to the Firebase database as initial data without checking what is
-     * already stored in database at given location.
-     */
-    void storeAsInitial(FirebaseClient firebaseClient) {
-        flushEntries(mapMessagesToJson(), firebaseClient);
+    SubscriptionRecord(NodePath path, UpdatePayload payload) {
+        this.path = checkNotNull(path);
+        this.updatePayload = checkNotNull(payload);
     }
 
     /**
      * Stores the data to the Firebase updating only the data that has changed.
      */
-    void storeAsUpdate(FirebaseClient firebaseClient) {
-        List<StoredJson> newEntries = mapMessagesToJson();
-
-        if (DiffCalculator.canCalculateEfficientlyFor(newEntries)) {
-            Optional<NodeValue> existingValue = firebaseClient.get(path);
-            if (existingValue.isPresent()) {
-                DiffCalculator diffCalculator = DiffCalculator.from(existingValue.get());
-                Diff diff = diffCalculator.compareWith(newEntries);
-                updateWithDiff(diff, firebaseClient);
-            } else {
-                storeAsInitial(firebaseClient);
-            }
-        } else {
-            storeAsInitial(firebaseClient);
-        }
-    }
-
-    private void flushEntries(Iterable<StoredJson> jsonEntries, FirebaseClient client) {
-        NodeValue nodeValue = NodeValue.withChildren(jsonEntries);
-        client.create(path, nodeValue);
-    }
-
-    private void updateWithDiff(Diff diff, FirebaseClient firebaseClient) {
-        NodeValue nodeValue = NodeValue.empty();
-        diff.getChangedList()
-            .forEach(record -> nodeValue.addChild(record.getKey(), StoredJson.from(record.getData())));
-        diff.getRemovedList()
-            .forEach(record -> nodeValue.addNullChild(record.getKey()));
-        diff.getAddedList()
-            .forEach(record -> nodeValue.addChild(StoredJson.from(record.getData())));
+    void store(FirebaseClient firebaseClient) {
+        NodeValue nodeValue = updatePayload.asNodeValue();
         firebaseClient.update(path, nodeValue);
-    }
-
-    /**
-     * Creates a stream of response messages mapping each response message to JSON.
-     *
-     * @return a stream of messages represented by JSON strings
-     */
-    @SuppressWarnings("RedundantTypeArguments") // AnyPacker::unpack type cannot be inferred.
-    private List<StoredJson> mapMessagesToJson() {
-        return queryResponse
-                .getMessageList()
-                .stream()
-                .unordered()
-                .map(EntityStateWithVersion::getState)
-                .map(StoredJson::encode)
-                .collect(toList());
     }
 }

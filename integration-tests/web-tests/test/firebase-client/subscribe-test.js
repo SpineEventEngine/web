@@ -38,11 +38,7 @@ describe('FirebaseClient subscription', function () {
             withPrefix: 'spine-web-test-subscribe',
             named: name
         }));
-
         const taskIds = commands.map(command => command.getId().getValue());
-        commands.forEach(command => {
-            client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
-        });
 
         client.subscribe({entity: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
@@ -65,6 +61,9 @@ describe('FirebaseClient subscription', function () {
                 itemChanged.subscribe({
                     next: fail(done, 'Unexpected entity change during entity create subscription test.')
                 });
+                commands.forEach(command => {
+                    client.sendCommand(command, TestEnvironment.noop, fail(done), fail(done));
+                });
             })
             .catch(fail(done));
     });
@@ -73,9 +72,6 @@ describe('FirebaseClient subscription', function () {
         const INITIAL_TASK_NAME = "Task to test entity updates";
         const UPDATED_TASK_NAME = "RENAMED Task to test entity updates";
         let taskId;
-        let reportItemAdded;
-        const itemAddedPromise = new Promise(resolve => reportItemAdded = resolve);
-
         client.subscribe({entity: Task})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
                 itemAdded.subscribe({
@@ -83,11 +79,20 @@ describe('FirebaseClient subscription', function () {
                         const id = item.getId().getValue();
                         console.log(`Retrieved new task '${id}'.`);
                         if (taskId === id) {
-                            assert.ok(
-                                INITIAL_TASK_NAME === item.getName(),
+                            assert.equal(
+                                INITIAL_TASK_NAME, item.getName(),
                                 `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}"`
                             );
-                            reportItemAdded();
+                            const renameCommand = TestEnvironment.renameTaskCommand({
+                                withId: taskId,
+                                to: UPDATED_TASK_NAME
+                            });
+                            client.sendCommand(
+                                renameCommand,
+                                () => console.log(`Task '${taskId}' renamed.`),
+                                fail(done, 'Unexpected error while renaming a task.'),
+                                fail(done, 'Unexpected rejection while renaming a task.')
+                            );
                         }
                     }
                 });
@@ -98,8 +103,8 @@ describe('FirebaseClient subscription', function () {
                     next: item => {
                         const id = item.getId().getValue();
                         if (taskId === id) {
-                            assert.ok(
-                                item.getName() === UPDATED_TASK_NAME,
+                            assert.equal(
+                                item.getName(), UPDATED_TASK_NAME,
                                 `Task is named "${item.getName()}", expected "${UPDATED_TASK_NAME}"`
                             );
                             console.log(`Got task changes for ${id}.`);
@@ -108,36 +113,21 @@ describe('FirebaseClient subscription', function () {
                         }
                     }
                 });
+                // Create task.
+                const createCommand = TestEnvironment.createTaskCommand({
+                    withPrefix: 'spine-web-test-subscribe',
+                    named: INITIAL_TASK_NAME
+                });
+                taskId = createCommand.getId().getValue();
+
+                client.sendCommand(
+                    createCommand,
+                    () => console.log(`Task '${createCommand.getId().getValue()}' created.`),
+                    fail(done, 'Unexpected error while creating a task.'),
+                    fail(done, 'Unexpected rejection while creating a task.')
+                );
             })
             .catch(fail(done));
-
-        // Create task.
-        const createCommand = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-subscribe',
-            named: INITIAL_TASK_NAME
-        });
-        taskId = createCommand.getId().getValue();
-
-        client.sendCommand(
-            createCommand,
-            () => console.log(`Task '${createCommand.getId().getValue()}' created.`),
-            fail(done, 'Unexpected error while creating a task.'),
-            fail(done, 'Unexpected rejection while creating a task.')
-        );
-
-        // Rename created task after the `itemAdded` subscription was received.
-        itemAddedPromise.then(() => {
-            const renameCommand = TestEnvironment.renameTaskCommand({
-                withId: taskId,
-                to: UPDATED_TASK_NAME
-            });
-            client.sendCommand(
-                renameCommand,
-                () => console.log(`Task '${taskId}' renamed.`),
-                fail(done, 'Unexpected error while renaming a task.'),
-                fail(done, 'Unexpected rejection while renaming a task.')
-            );
-        });
     });
 
     it('retrieves updates by id', done => {
@@ -145,7 +135,6 @@ describe('FirebaseClient subscription', function () {
         const INITIAL_TASK_NAME = 'Initial task name';
         const UPDATED_NAMES = ['Renamed once', 'Renamed twice'];
 
-        // Create tasks.
         const createCommand = TestEnvironment.createTaskCommand({
             withPrefix: 'spine-web-test-subscribe',
             named: INITIAL_TASK_NAME
@@ -153,18 +142,6 @@ describe('FirebaseClient subscription', function () {
         const taskId = createCommand.getId();
         const taskIdValue = createCommand.getId().getValue();
 
-        let reportItemAdded;
-        const itemAddedPromise = new Promise(resolve => reportItemAdded = resolve);
-        client.sendCommand(
-            createCommand,
-            () => console.log(`Task '${taskIdValue}' created.`),
-            fail(done, 'Unexpected error while creating a task.'),
-            fail(done, 'Unexpected rejection while creating a task.')
-        );
-
-        let reportItemRenamedAtFirst;
-        const itemRenamedAtFirstPromise = new Promise(resolve =>
-            reportItemRenamedAtFirst = resolve);
         let changesCount = 0;
         client.subscribe({entity: Task, byIds: taskId})
             .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
@@ -178,7 +155,16 @@ describe('FirebaseClient subscription', function () {
                                 `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}"`
                             );
                         }
-                        reportItemAdded();
+                        const renameCommand = TestEnvironment.renameTaskCommand({
+                            withId: taskIdValue,
+                            to: UPDATED_NAMES[0]
+                        });
+                        client.sendCommand(
+                            renameCommand,
+                            () => console.log(`Task '${taskIdValue}' renamed for the first time.`),
+                            fail(done, 'Unexpected error while renaming a task.'),
+                            fail(done, 'Unexpected rejection while renaming a task.')
+                        );
                     }
                 });
                 itemRemoved.subscribe({
@@ -195,38 +181,28 @@ describe('FirebaseClient subscription', function () {
                                 unsubscribe();
                                 done();
                             } else {
-                                reportItemRenamedAtFirst();
+                                const renameCommand = TestEnvironment.renameTaskCommand({
+                                    withId: taskIdValue,
+                                    to: UPDATED_NAMES[1]
+                                });
+                                client.sendCommand(
+                                    renameCommand,
+                                    () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
+                                    fail(done, 'Unexpected error while renaming a task.'),
+                                    fail(done, 'Unexpected rejection while renaming a task.')
+                                );
                             }
                         }
                     }
                 });
+                client.sendCommand(
+                    createCommand,
+                    () => console.log(`Task '${taskIdValue}' created.`),
+                    fail(done, 'Unexpected error while creating a task.'),
+                    fail(done, 'Unexpected rejection while creating a task.')
+                );
             })
             .catch(fail(done));
-
-        itemAddedPromise.then(() => {
-            const renameCommand = TestEnvironment.renameTaskCommand({
-                withId: taskIdValue,
-                to: UPDATED_NAMES[0]
-            });
-            client.sendCommand(
-                renameCommand,
-                () => console.log(`Task '${taskIdValue}' renamed for the first time.`),
-                fail(done, 'Unexpected error while renaming a task.'),
-                fail(done, 'Unexpected rejection while renaming a task.')
-            );
-        });
-        itemRenamedAtFirstPromise.then(() => {
-            const renameCommand = TestEnvironment.renameTaskCommand({
-                withId: taskIdValue,
-                to: UPDATED_NAMES[1]
-            });
-            client.sendCommand(
-                renameCommand,
-                () => console.log(`Task '${taskIdValue}' renamed for the second time.`),
-                fail(done, 'Unexpected error while renaming a task.'),
-                fail(done, 'Unexpected rejection while renaming a task.')
-            );
-        });
     });
 
     it('fails for a malformed entity type', done => {

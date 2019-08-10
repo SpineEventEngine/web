@@ -25,8 +25,8 @@ import firebase from 'firebase';
  * see `integration-tests/README.MD`.
  */
 const config = {
-    databaseURL: 'ws://localhost:5000/',
-    authDomain: 'ws://localhost:5000/'
+    databaseURL: 'https://spine-dev.firebaseio.com/',
+    authDomain: 'https://spine-dev.firebaseio.com/'
 };
 
 /**

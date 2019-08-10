@@ -33,10 +33,6 @@ buildscript { final scriptHandler ->
     forceConfiguration(scriptHandler)
 }
 
-plugins {
-    id 'io.spine.tools.gradle.bootstrap' version '0.15.5' apply false
-}
-
 apply from: 'version.gradle'
 
 ext {

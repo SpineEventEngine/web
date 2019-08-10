@@ -33,7 +33,8 @@ dependencies {
     api(deps.build.firebaseAdmin) {
         exclude group: 'com.google.guava', module: 'guava'
     }
-    
+
+    api deps.build.firebaseAdmin
     implementation deps.build.jacksonDatabind
     implementation deps.build.googleHttpClient
     implementation deps.build.googleHttpClientApache

@@ -42,6 +42,7 @@ message DatabaseUrl {
 // to the database.
 //
 message NodePath {
+    option (is).java_type = "NodePathMixin";
 
     // A path in a Firebase Realtime Database.
     string value = 1 [(required) = true];

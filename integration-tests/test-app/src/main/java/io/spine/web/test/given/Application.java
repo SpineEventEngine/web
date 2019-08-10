@@ -20,29 +20,37 @@
 
 package io.spine.web.test.given;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.FirebaseDatabase;
+import io.spine.io.Resource;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
-import io.spine.web.firebase.DatabaseUrl;
-import io.spine.web.firebase.DatabaseUrls;
+import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.FirebaseCredentials;
 import io.spine.web.firebase.Retryer;
 import io.spine.web.firebase.RetryingClient;
 import io.spine.web.firebase.WaitingRepetitionsRetryer;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
+import java.io.IOException;
+
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.web.firebase.FirebaseClientFactory.restClient;
+import static io.spine.web.firebase.FirebaseClientFactory.remoteClient;
+import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 
 /**
  * A test Spine application.
  */
 final class Application {
 
-    private static final DatabaseUrl DATABASE_URL =
-            DatabaseUrls.from("http://127.0.0.1:5000/");
-    private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(3);
+    private static final String DATABASE_URL = "https://spine-dev.firebaseio.com/";
+    private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(5);
 
     private final CommandService commandService;
     private final FirebaseQueryBridge queryBridge;
@@ -50,29 +58,62 @@ final class Application {
 
     private Application(CommandService commandService,
                         QueryService queryService,
+                        SubscriptionService subscriptionService,
                         FirebaseClient client) {
         this.commandService = commandService;
-        this.queryBridge = FirebaseQueryBridge.newBuilder()
-                                              .setQueryService(queryService)
-                                              .setFirebaseClient(client)
-                                              .build();
-        this.subscriptionBridge = FirebaseSubscriptionBridge.newBuilder()
-                                                            .setQueryService(queryService)
-                                                            .setFirebaseClient(client)
-                                                            .build();
+        this.queryBridge = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(client)
+                .build();
+        this.subscriptionBridge = FirebaseSubscriptionBridge
+                .newBuilder()
+                .setSubscriptionService(subscriptionService)
+                .setFirebaseClient(client)
+                .build();
     }
 
     static Application create(BoundedContext boundedContext) {
         checkNotNull(boundedContext);
-        CommandService commandService = CommandService.newBuilder()
-                                                      .add(boundedContext)
-                                                      .build();
-        QueryService queryService = QueryService.newBuilder()
-                                                .add(boundedContext)
-                                                .build();
-        FirebaseClient firebaseClient = restClient(DATABASE_URL);
-        FirebaseClient retryingClient = new RetryingClient(firebaseClient, RETRY_POLICY);
-        return new Application(commandService, queryService, retryingClient);
+        CommandService commandService = CommandService
+                .newBuilder()
+                .add(boundedContext)
+                .build();
+        QueryService queryService = QueryService
+                .newBuilder()
+                .add(boundedContext)
+                .build();
+        SubscriptionService subscriptionService = SubscriptionService
+                .newBuilder()
+                .add(boundedContext)
+                .build();
+        FirebaseClient retryingClient = buildClient();
+        return new Application(commandService, queryService, subscriptionService, retryingClient);
+    }
+
+    private static FirebaseClient buildClient() {
+        Resource googleCredentialsFile = Resource.file("spine-dev.json");
+
+        // Same credentials but represented with different Java objects.
+        GoogleCredentials credentials;
+        GoogleCredential credential;
+        try {
+            credentials = GoogleCredentials.fromStream(googleCredentialsFile.open());
+            credential = GoogleCredential.fromStream(googleCredentialsFile.open());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        FirebaseOptions options = FirebaseOptions
+                .builder()
+                .setDatabaseUrl(DATABASE_URL)
+                .setCredentials(credentials)
+                .build();
+        FirebaseApp.initializeApp(options);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseCredentials firebaseCredentials = fromGoogleCredentials(credential);
+        FirebaseClient firebaseClient = remoteClient(database, firebaseCredentials);
+        return new TidyClient(new RetryingClient(firebaseClient, RETRY_POLICY));
     }
 
     CommandService commandService() {

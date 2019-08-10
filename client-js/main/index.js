@@ -19,7 +19,7 @@
  */
 
 export {Type, TypedMessage, TypeUrl} from './client/typed-message';
-export {ActorRequestFactory, ActorProvider} from './client/actor-request-factory';
+export {ActorRequestFactory, ActorProvider, Filters} from './client/actor-request-factory';
 export {FirebaseDatabaseClient} from './client/firebase-database-client';
 export {HttpClient} from './client/http-client';
 export {Client} from './client/client';

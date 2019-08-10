@@ -25,6 +25,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.NodePath;
+import io.spine.web.firebase.RequestNodePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ class QueryResultTest {
     @BeforeEach
     void setUp() {
         Query query = queryFactory.all(Any.class);
-        nodePath = QueryNodePath.of(query);
+        nodePath = RequestNodePath.of(query);
     }
 
     @Test
