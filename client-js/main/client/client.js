@@ -257,8 +257,6 @@ export class Client {
    *
    * Fulfills a returning promise with the created subscription.
    *
-   * The entities that already exist will be initially passed to the `itemAdded` observer.
-   *
    * This API call is a shortcut for {@link Client#newTopic()} followed by {@link Client#subscribeTo()}.
    * It covers the most common use cases. If a more advanced subscription behaviour is required,
    * the `Topic` instance should be created and parameterized via {@link Client#newTopic()}.
