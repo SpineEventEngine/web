@@ -30,7 +30,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.appengine.repackaged.com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 

@@ -24,7 +24,7 @@ import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
-import static com.google.appengine.repackaged.com.google.gson.internal.$Gson$Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A subscription record that gets stored into a Firebase database.
