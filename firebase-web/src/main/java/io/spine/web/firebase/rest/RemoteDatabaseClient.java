@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
 /**
@@ -164,8 +165,8 @@ public final class RemoteDatabaseClient implements FirebaseClient {
          * @return new instance of {@code RemoteDatabaseClient}
          */
         public RemoteDatabaseClient build() {
-            checkNotNull(database);
-            checkNotNull(requestFactory);
+            checkState(database != null);
+            checkState(requestFactory != null);
             return new RemoteDatabaseClient(this);
         }
 

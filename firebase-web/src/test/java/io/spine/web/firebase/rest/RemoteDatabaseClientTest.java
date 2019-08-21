@@ -22,7 +22,13 @@ package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.testing.http.MockHttpTransport;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.testing.NullPointerTester;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.DatabaseUrls;
@@ -30,15 +36,20 @@ import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -52,6 +63,7 @@ class RemoteDatabaseClientTest {
     private static final String PATH = "node/path";
     private static final StoredJson DATA = StoredJson.from("{\"a\":\"b\"}");
     private static final String DATABASE_URL_STRING = "https://database.com";
+    private static final String FIREBASE_APP_NAME = RemoteDatabaseClient.class.getSimpleName();
     private static final DatabaseUrl DATABASE_URL = DatabaseUrls.from(DATABASE_URL_STRING);
     private static final RestNodeUrls NODE_FACTORY = new RestNodeUrls(DATABASE_URL);
     private static final String NULL_ENTRY = StoredJson.nullValue()
@@ -63,6 +75,18 @@ class RemoteDatabaseClientTest {
     private RemoteDatabaseClient client;
     private NodePath path;
     private NodeValue value;
+
+    @BeforeAll
+    static void initFirebase() {
+        GoogleCredentials fakeCredentials =
+                GoogleCredentials.create(new AccessToken("obviously fake", new Date()));
+        FirebaseApp.initializeApp(FirebaseOptions
+                                          .builder()
+                                          .setDatabaseUrl(DATABASE_URL_STRING)
+                                          .setCredentials(fakeCredentials)
+                                          .build(),
+                                  FIREBASE_APP_NAME);
+    }
 
     @BeforeEach
     void setUp() {
@@ -120,5 +144,56 @@ class RemoteDatabaseClientTest {
 
         client.update(path, value);
         verify(httpClient).patch(eq(EXPECTED_NODE_URL), any(ByteArrayContent.class));
+    }
+
+    @Nested
+    @DisplayName("have a builder which should")
+    class Builder {
+
+        private final HttpRequestFactory requestFactory =
+                new MockHttpTransport().createRequestFactory();
+        private FirebaseDatabase database;
+
+        @BeforeEach
+        void configureFirebase() {
+            FirebaseApp app = FirebaseApp.getInstance(FIREBASE_APP_NAME);
+            database = FirebaseDatabase.getInstance(app);
+        }
+
+        @Test
+        @DisplayName(NOT_ACCEPT_NULLS)
+        void nulls() {
+            new NullPointerTester()
+                    .testAllPublicInstanceMethods(RemoteDatabaseClient.newBuilder());
+        }
+
+        @Test
+        @DisplayName("require a request factory to build")
+        void requireFactory() {
+            RemoteDatabaseClient.Builder builder = RemoteDatabaseClient
+                    .newBuilder()
+                    .setDatabase(database);
+            assertThrows(IllegalStateException.class, builder::build);
+        }
+
+        @Test
+        @DisplayName("require a Firebase database to build")
+        void requireDatabase() {
+            RemoteDatabaseClient.Builder builder = RemoteDatabaseClient
+                    .newBuilder()
+                    .setRequestFactory(requestFactory);
+            assertThrows(IllegalStateException.class, builder::build);
+        }
+
+        @Test
+        @DisplayName("build with all required parameters")
+        void build() {
+            RemoteDatabaseClient client = RemoteDatabaseClient
+                    .newBuilder()
+                    .setDatabase(database)
+                    .setRequestFactory(requestFactory)
+                    .build();
+            assertNotNull(client);
+        }
     }
 }
