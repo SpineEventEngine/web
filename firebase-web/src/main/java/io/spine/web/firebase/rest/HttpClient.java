@@ -21,15 +21,19 @@
 package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.util.BackOff;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
+import static com.google.api.client.util.BackOff.STOP_BACKOFF;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -51,9 +55,24 @@ class HttpClient {
     private static final String FIREBASE_DECODING_HEADER = "X-Firebase-Decoding";
 
     private final HttpRequestFactory requestFactory;
+    private final Supplier<BackOff> backOff;
 
-    private HttpClient(HttpRequestFactory requestFactory) {
+    private HttpClient(HttpRequestFactory requestFactory, Supplier<BackOff> backOff) {
         this.requestFactory = requestFactory;
+        this.backOff = backOff;
+    }
+
+    /**
+     * Creates a new {@code HttpClient} which will use the specified HTTP request factory.
+     *
+     * @param requestFactory
+     *         the {@code HttpRequestFactory} to use for HTTP requests execution
+     * @return the new instance of {@code HttpClient}
+     */
+    static HttpClient using(HttpRequestFactory requestFactory, Supplier<BackOff> backOff) {
+        checkNotNull(requestFactory);
+        checkNotNull(backOff);
+        return new HttpClient(requestFactory, backOff);
     }
 
     /**
@@ -65,7 +84,7 @@ class HttpClient {
      */
     static HttpClient using(HttpRequestFactory requestFactory) {
         checkNotNull(requestFactory);
-        return new HttpClient(requestFactory);
+        return using(requestFactory, () -> STOP_BACKOFF);
     }
 
     /**
@@ -170,8 +189,10 @@ class HttpClient {
         return executeAndGetResponse(request);
     }
 
-    private static String executeAndGetResponse(HttpRequest request) throws IOException {
+    private String executeAndGetResponse(HttpRequest request) throws IOException {
         setFirebaseDecodingHeader(request);
+        BackOff strategy = backOff.get();
+        request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(strategy));
         HttpResponse httpResponse = request.execute();
         String response = httpResponse.parseAsString();
         httpResponse.disconnect();
