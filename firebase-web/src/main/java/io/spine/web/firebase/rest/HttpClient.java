@@ -63,10 +63,13 @@ class HttpClient {
     }
 
     /**
-     * Creates a new {@code HttpClient} which will use the specified HTTP request factory.
+     * Creates a new {@code HttpClient} which will use the specified HTTP request factory and
+     * retry policy.
      *
      * @param requestFactory
      *         the {@code HttpRequestFactory} to use for HTTP requests execution
+     * @param backOff
+     *         a factory of {@link BackOff} policies to use for the HTTP requests
      * @return the new instance of {@code HttpClient}
      */
     static HttpClient using(HttpRequestFactory requestFactory, Supplier<BackOff> backOff) {
