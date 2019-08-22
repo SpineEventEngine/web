@@ -29,10 +29,10 @@ apply from: deps.scripts.modelCompiler
 
 dependencies {
     api "javax.servlet:javax.servlet-api:$servletApiVersion"
+    api "io.spine:spine-server:$spineVersion"
+    api deps.build.googleHttpClient
 
-    implementation deps.build.googleHttpClient
     implementation deps.build.googleHttpClientApache
-    implementation "io.spine:spine-server:$spineVersion"
 
     testImplementation "io.spine.tools:spine-mute-logging:$spineBaseVersion"
 }

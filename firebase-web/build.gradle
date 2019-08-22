@@ -34,14 +34,9 @@ dependencies {
         exclude group: 'com.google.guava', module: 'guava'
     }
 
-    api deps.build.firebaseAdmin
     implementation deps.build.jacksonDatabind
-    implementation deps.build.googleHttpClient
     implementation deps.build.googleHttpClientApache
     implementation deps.build.appengineApi
-
-    implementation "io.spine:spine-server:$spineVersion"
-    implementation "io.spine:spine-client:$spineVersion"
 }
 
 task compileProtoToJs {
