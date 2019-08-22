@@ -21,11 +21,24 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.testing.NullPointerTester;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
+import io.spine.server.DeploymentType;
+import io.spine.server.ServerEnvironment;
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 import static org.mockito.Mockito.mock;
 
@@ -34,17 +47,61 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
 
     private static final MockGoogleCredential GOOGLE_CREDENTIALS =
             new MockGoogleCredential.Builder().build();
-
     private static final FirebaseCredentials CREDENTIALS =
             fromGoogleCredentials(GOOGLE_CREDENTIALS);
+    private static final String FIREBASE_APP_NAME = FirebaseClientFactoryTest.class.getSimpleName();
+    private FirebaseDatabase database = mock(FirebaseDatabase.class);
 
     FirebaseClientFactoryTest() {
         super(FirebaseClientFactory.class);
+    }
+
+    @BeforeAll
+    static void initApp() {
+        GoogleCredentials fakeCredentials =
+                GoogleCredentials.create(new AccessToken("apparently fake", new Date()));
+        FirebaseApp.initializeApp(FirebaseOptions
+                                          .builder()
+                                          .setCredentials(fakeCredentials)
+                                          .setDatabaseUrl("https://apparently.fake")
+                                          .build(),
+                                  FIREBASE_APP_NAME);
     }
 
     @Override
     protected void configure(NullPointerTester tester) {
         tester.setDefault(FirebaseDatabase.class, mock(FirebaseDatabase.class))
               .setDefault(FirebaseCredentials.class, CREDENTIALS);
+    }
+
+    @BeforeEach
+    void configureFirebaseMock() {
+        FirebaseApp app = FirebaseApp.getInstance(FIREBASE_APP_NAME);
+        database = FirebaseDatabase.getInstance(app);
+    }
+
+    @AfterEach
+    void cleanUp() {
+        ServerEnvironment.instance().reset();
+    }
+
+    @Test
+    @DisplayName("create a client with AppEngine-specific HTTP transport")
+    void createForGae() {
+        ServerEnvironment
+                .instance()
+                .configureDeployment(() -> DeploymentType.APPENGINE_CLOUD);
+        FirebaseClient client = FirebaseClientFactory.remoteClient(database);
+        assertThat(client).isNotNull();
+    }
+
+    @Test
+    @DisplayName("create a client with non-AppEngine HTTP transport")
+    void createNotForGae() {
+        ServerEnvironment
+                .instance()
+                .configureDeployment(() -> DeploymentType.STANDALONE);
+        FirebaseClient client = FirebaseClientFactory.remoteClient(database);
+        assertThat(client).isNotNull();
     }
 }

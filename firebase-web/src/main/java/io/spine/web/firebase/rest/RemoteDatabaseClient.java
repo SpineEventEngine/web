@@ -23,6 +23,7 @@ package io.spine.web.firebase.rest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.util.BackOff;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,8 +34,10 @@ import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.web.firebase.rest.RestNodeUrls.asGenericUrl;
 
 /**
@@ -53,24 +56,15 @@ public final class RemoteDatabaseClient implements FirebaseClient {
     private final RestNodeUrls factory;
     private final HttpClient httpClient;
 
+    private RemoteDatabaseClient(Builder builder) {
+        this(builder.database, builder.buildNodeUrls(), builder.buildHttpClient());
+    }
+
     @VisibleForTesting
     RemoteDatabaseClient(FirebaseDatabase database, RestNodeUrls factory, HttpClient httpClient) {
         this.database = database;
         this.factory = factory;
         this.httpClient = httpClient;
-    }
-
-    /**
-     * Creates a {@code RestClient} which operates on the database located at the given
-     * {@code url} and uses the given {@code requestFactory} to prepare HTTP requests.
-     */
-    public static RemoteDatabaseClient create(FirebaseDatabase db, HttpRequestFactory factory) {
-        String databaseUrl = db.getApp()
-                               .getOptions()
-                               .getDatabaseUrl();
-        HttpClient requestExecutor = HttpClient.using(factory);
-        RestNodeUrls urls = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
-        return new RemoteDatabaseClient(db, urls, requestExecutor);
     }
 
     @Override
@@ -124,5 +118,69 @@ public final class RemoteDatabaseClient implements FirebaseClient {
 
     private GenericUrl url(NodePath nodePath) {
         return asGenericUrl(factory.with(nodePath));
+    }
+
+    /**
+     * Creates a new instance of {@code Builder} for {@code RemoteDatabaseClient} instances.
+     *
+     * @return new instance of {@code Builder}
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * A builder for the {@code RemoteDatabaseClient} instances.
+     */
+    public static final class Builder {
+
+        private FirebaseDatabase database;
+        private HttpRequestFactory requestFactory;
+        private Supplier<BackOff> backOff = () -> BackOff.STOP_BACKOFF;
+
+        /**
+         * Prevents direct instantiation.
+         */
+        private Builder() {
+        }
+
+        public Builder setDatabase(FirebaseDatabase database) {
+            this.database = checkNotNull(database);
+            return this;
+        }
+
+        public Builder setRequestFactory(HttpRequestFactory requestFactory) {
+            this.requestFactory = checkNotNull(requestFactory);
+            return this;
+        }
+
+        public Builder setBackOff(Supplier<BackOff> backOff) {
+            this.backOff = checkNotNull(backOff);
+            return this;
+        }
+
+        /**
+         * Creates a new instance of {@code RemoteDatabaseClient}.
+         *
+         * @return new instance of {@code RemoteDatabaseClient}
+         */
+        public RemoteDatabaseClient build() {
+            checkState(database != null);
+            checkState(requestFactory != null);
+            return new RemoteDatabaseClient(this);
+        }
+
+        private RestNodeUrls buildNodeUrls() {
+            String databaseUrl = database
+                    .getApp()
+                    .getOptions()
+                    .getDatabaseUrl();
+            RestNodeUrls urls = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
+            return urls;
+        }
+
+        private HttpClient buildHttpClient() {
+            return HttpClient.using(requestFactory, backOff);
+        }
     }
 }

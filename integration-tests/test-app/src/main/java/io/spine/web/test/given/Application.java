@@ -32,9 +32,6 @@ import io.spine.server.QueryService;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.FirebaseCredentials;
-import io.spine.web.firebase.Retryer;
-import io.spine.web.firebase.RetryingClient;
-import io.spine.web.firebase.WaitingRepetitionsRetryer;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
@@ -50,7 +47,6 @@ import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 final class Application {
 
     private static final String DATABASE_URL = "https://spine-dev.firebaseio.com/";
-    private static final Retryer RETRY_POLICY = WaitingRepetitionsRetryer.oneSecondWait(5);
 
     private final CommandService commandService;
     private final FirebaseQueryBridge queryBridge;
@@ -113,7 +109,7 @@ final class Application {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseCredentials firebaseCredentials = fromGoogleCredentials(credential);
         FirebaseClient firebaseClient = remoteClient(database, firebaseCredentials);
-        return new TidyClient(new RetryingClient(firebaseClient, RETRY_POLICY));
+        return new TidyClient(firebaseClient);
     }
 
     CommandService commandService() {
