@@ -18,15 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-web'
+dependencies {
+    protobuf "io.spine:spine-client:$spineVersion"
+}
 
-include 'web'
-include 'firebase-web'
+sourceSets {
+    main.proto.srcDir "$projectDir/proto"
+}
 
-include 'client-dart'
-include 'client-js'
-include 'test-app'
-include 'web-tests'
+protobuf {
+    generatedFilesBaseDir = "$projectDir/lib/src/proto"
 
-project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
+    protoc {
+        artifact = deps.build.protoc
+    }
+
+    plugins {
+        dart { path = '/Users/ddashenkov/.pub-cache/bin/protoc-gen-dart' }
+    }
+
+    generateProtoTasks {
+        all().each {
+            it.plugins {
+                dart {}
+            }
+            it.builtins {
+                remove java
+            }
+        }
+    }
+}
+
+tasks.withType(JavaCompile).each { it.enabled = false }
