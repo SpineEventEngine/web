@@ -18,5 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-library spine_client;
+import 'package:spine_client/src/proto/main/dart/google/protobuf/timestamp.pb.dart';
 
+Timestamp now() {
+    return Timestamp.fromDateTime(DateTime.now());
+}

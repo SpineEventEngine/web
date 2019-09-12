@@ -18,5 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-library spine_client;
+import 'package:uuid/uuid.dart';
 
+String newUuid({String prefix = ''}) {
+    var uuid = new Uuid();
+    return '${prefix}${uuid.v4()}';
+}

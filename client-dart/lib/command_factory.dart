@@ -18,5 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-library spine_client;
+import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
+import 'package:spine_client/src/proto/main/dart/spine/core/actor_context.pb.dart';
+import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
+import 'package:spine_client/src/uuids.dart';
 
+class CommandFactory {
+
+    final CommandContext _context = new CommandContext();
+
+    CommandFactory(ActorContext context) {
+        this._context.actorContext = context;
+    }
+
+    Command create(Any message) {
+        var cmd = new Command();
+        cmd.id = _newId();
+        cmd.message = message;
+        cmd.context = _context;
+        return cmd;
+    }
+
+    CommandId _newId() {
+        var id = new CommandId();
+        id.uuid = newUuid();
+        return id;
+    }
+}
