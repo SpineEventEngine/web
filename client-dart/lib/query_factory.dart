@@ -32,9 +32,10 @@ class QueryFactory {
 
     Query byIds(String typeUrl, List<Any> ids) {
         var query = new Query();
-        query.id = _newId();
-        query.target = _targetByIds(typeUrl, ids);
-        query.context = _context;
+        query
+            ..id = _newId()
+            ..target = _targetByIds(typeUrl, ids)
+            ..context = _context;
         return query;
     }
 
@@ -51,16 +52,18 @@ class QueryFactory {
 
     Query all(String typeUrl) {
         var query = new Query();
-        query.id = _newId();
-        query.target = _targetAll(typeUrl);
-        query.context = _context;
+        query
+            ..id = _newId()
+            ..target = _targetAll(typeUrl)
+            ..context = _context;
         return query;
     }
 
     Target _targetAll(String typeUrl) {
         var target = Target();
-        target.type = typeUrl;
-        target.includeAll = true;
+        target
+            ..type = typeUrl
+            ..includeAll = true;
         return target;
     }
 

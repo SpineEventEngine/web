@@ -44,9 +44,10 @@ class ActorRequestFactory {
 
     ActorContext _context() {
         var ctx = new ActorContext();
-        ctx.actor = this.actor;
-        ctx.timestamp = this.timestamp ?? now();
-        ctx.tenantId = this.tenant ?? TenantId.getDefault();
+        ctx
+            ..actor = this.actor
+            ..timestamp = this.timestamp ?? now()
+            ..tenantId = this.tenant ?? TenantId.getDefault();
         return ctx;
     }
 }
