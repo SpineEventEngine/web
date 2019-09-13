@@ -20,34 +20,52 @@
 
 import 'package:spine_client/command_factory.dart';
 import 'package:spine_client/query_factory.dart';
-import 'package:spine_client/src/proto/main/dart/google/protobuf/timestamp.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/actor_context.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/tenant_id.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/user_id.pb.dart';
-import 'package:spine_client/time.dart';
+import 'package:spine_client/src/proto/main/dart/spine/time/time.pb.dart';
+import 'package:spine_client/time.dart' as time;
 
+/// A factory for various requests fired from the client-side by an actor.
 class ActorRequestFactory {
 
     final UserId actor;
-    final Timestamp timestamp;
     final TenantId tenant;
+    final ZoneOffset zoneOffset;
+    final ZoneId zoneId;
 
-    ActorRequestFactory(this.actor, [this.timestamp = null, this.tenant = null]);
+    /// Creates a new [ActorRequestFactory].
+    ///
+    /// An [actor] is the ID of a user who initiates the request. If there is no user ID
+    /// (e.g. before the login) a conventional user ID should be used. Usually, `Anonymous` is
+    /// chosen for the absent user ID.
+    ///
+    /// In multitenant systems, it's required for all the actor requests to have a [tenant] ID.
+    ///
+    ActorRequestFactory(this.actor,
+                        [this.tenant = null, this.zoneOffset = null, this.zoneId = null]);
 
+    /// Creates a factory of queries to the server.
     QueryFactory query() {
-        return new QueryFactory(_context());
+        return new QueryFactory(_context);
     }
 
+    /// Creates a factory of commands to send to the server.
     CommandFactory command() {
-        return new CommandFactory(_context());
+        return new CommandFactory(_context);
     }
 
     ActorContext _context() {
         var ctx = new ActorContext();
         ctx
             ..actor = this.actor
-            ..timestamp = this.timestamp ?? now()
-            ..tenantId = this.tenant ?? TenantId.getDefault();
+            ..timestamp = time.now()
+            ..tenantId = this.tenant ?? TenantId.getDefault()
+            ..zoneId = zoneId ?? time.guessZoneId()
+            ..zoneOffset = zoneOffset ?? time.zoneOffset();
         return ctx;
     }
 }
+
+/// A function which generates an [ActorContext].
+typedef ActorContext ActorProvider();

@@ -19,7 +19,33 @@
  */
 
 import 'package:spine_client/src/proto/main/dart/google/protobuf/timestamp.pb.dart';
+import 'package:spine_client/src/proto/main/dart/spine/time/time.pb.dart';
 
+/// Obtains a [Timestamp] with the current time.
 Timestamp now() {
     return Timestamp.fromDateTime(DateTime.now());
+}
+
+/// Obtains the current time zone offset.
+ZoneOffset zoneOffset() {
+    var dateTime = DateTime.now();
+    var zoneOffset = dateTime.timeZoneOffset;
+    var offset = new ZoneOffset();
+    offset.amountSeconds = zoneOffset.inSeconds;
+    return offset;
+}
+
+/// Obtains an identifier string for the current time zone.
+///
+/// There is no way to obtain an actual time zone ID in Dart. The obtained value if platform
+/// dependant and usually human readable.
+///
+/// See https://github.com/dart-lang/sdk/issues/21758
+///
+ZoneId guessZoneId() {
+    var dateTime = DateTime.now();
+    var zoneName = dateTime.timeZoneName;
+    var zoneId = new ZoneId();
+    zoneId.value = zoneName;
+    return zoneId;
 }

@@ -18,24 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/client/filters.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/client/query.pb.dart';
-import 'package:spine_client/src/proto/main/dart/spine/core/actor_context.pb.dart';
 import 'package:spine_client/src/uuids.dart';
 
+/// A factory of queries to the server.
 class QueryFactory {
 
-    final ActorContext _context;
+    final ActorProvider _context;
 
     QueryFactory(this._context);
 
+    /// Creates a query which matches all entities of the given type with the given IDs.
     Query byIds(String typeUrl, List<Any> ids) {
         var query = new Query();
         query
             ..id = _newId()
             ..target = _targetByIds(typeUrl, ids)
-            ..context = _context;
+            ..context = _context();
         return query;
     }
 
@@ -50,12 +52,13 @@ class QueryFactory {
         return target;
     }
 
+    /// Creates a query which matches all entities of the given type.
     Query all(String typeUrl) {
         var query = new Query();
         query
             ..id = _newId()
             ..target = _targetAll(typeUrl)
-            ..context = _context;
+            ..context = _context();
         return query;
     }
 

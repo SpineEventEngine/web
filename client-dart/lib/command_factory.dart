@@ -18,25 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
-import 'package:spine_client/src/proto/main/dart/spine/core/actor_context.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
 import 'package:spine_client/src/uuids.dart';
 
+/// A factory of commands to send to the server.
 class CommandFactory {
 
-    final CommandContext _context = new CommandContext();
+    final ActorProvider _context;
 
-    CommandFactory(ActorContext context) {
-        this._context.actorContext = context;
-    }
+    CommandFactory(this._context);
 
+    /// Creates a new command with the given message.
     Command create(Any message) {
         var cmd = new Command();
-        cmd.id = _newId();
-        cmd.message = message;
-        cmd.context = _context;
+        cmd
+            ..id = _newId()
+            ..message = message
+            ..context = _buildContext();
         return cmd;
+    }
+
+    CommandContext _buildContext() {
+        var ctx = new CommandContext();
+        ctx.actorContext = _context();
+        return ctx;
     }
 
     CommandId _newId() {

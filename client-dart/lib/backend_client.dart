@@ -27,8 +27,14 @@ import 'package:spine_client/src/proto/main/dart/spine/core/ack.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/web/firebase/query/response.pb.dart';
 
-var _base64 = Base64Codec();
+const _base64 = Base64Codec();
 
+/// A client of a Spine-based web server.
+///
+/// Communicates with the backend via the Spine Firebase-web protocol.
+///
+/// For read operations, the client
+///
 class BackendClient {
 
     final String _baseUrl;
@@ -36,6 +42,7 @@ class BackendClient {
 
     BackendClient(this._baseUrl, this._database);
 
+    /// Posts a given [Command] to the server.
     Future<Ack> post(Command command) {
         var body = command.writeToBuffer();
         return http
@@ -43,6 +50,14 @@ class BackendClient {
             .then(_parseAck);
     }
 
+    /// Obtains entities matching the given query from the server.
+    ///
+    /// Sends a [Query] to the server and receives a path to a node in Firebase Realtime Database.
+    /// The node's children represent the entities matching the query.
+    ///
+    /// Throws an exception if the query is invalid or if any kind of network or server error
+    /// occurs.
+    ///
     Stream<T> fetch<T>(Query query, T parse(String json)) async* {
         var body = query.writeToBuffer();
         var qr = await http.post('$_baseUrl/query', body: _base64.encode(body))
@@ -50,6 +65,7 @@ class BackendClient {
         yield* _database
             .ref(qr.path)
             .onChildAdded
+            .take(qr.count.toInt())
             .map((event) => _parseValue(event, parse));
     }
 
