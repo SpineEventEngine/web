@@ -19,7 +19,7 @@
  */
 
 dependencies {
-    protobuf "io.spine:spine-client:$spineVersion"
+    protobuf project(':firebase-web')
 }
 
 sourceSets {
