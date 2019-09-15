@@ -20,8 +20,8 @@
 
 import 'dart:convert';
 
-import 'package:firebase/firebase.dart' as firebase;
 import 'package:http/http.dart' as http;
+import 'package:spine_client/firebase_client.dart';
 import 'package:spine_client/src/proto/main/dart/spine/client/query.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/ack.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
@@ -38,7 +38,7 @@ const _base64 = Base64Codec();
 class BackendClient {
 
     final String _baseUrl;
-    final firebase.Database _database;
+    final FirebaseClient _database;
 
     BackendClient(this._baseUrl, this._database);
 
@@ -63,15 +63,9 @@ class BackendClient {
         var qr = await http.post('$_baseUrl/query', body: _base64.encode(body))
             .then(_parseQueryResponse);
         yield* _database
-            .ref(qr.path)
-            .onChildAdded
+            .get(qr.path)
             .take(qr.count.toInt())
-            .map((event) => _parseValue(event, parse));
-    }
-
-    T _parseValue<T>(firebase.QueryEvent event, T parse(String json)) {
-        var json = event.snapshot.toJson();
-        return parse(json.toString());
+            .map(parse);
     }
 
     Ack _parseAck(http.Response response) {
