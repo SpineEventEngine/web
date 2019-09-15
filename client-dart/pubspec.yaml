@@ -5,7 +5,7 @@ homepage: https://spine.io
 author: Spine Event Engine <spine-developers@teamdev.com>
 
 environment:
-  sdk: '>=2.4.0 <3.0.0'
+  sdk: '>=2.5.0 <3.0.0'
 
 dependencies:
   protobuf: 0.14.1
