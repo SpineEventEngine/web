@@ -33,7 +33,8 @@ const _base64 = Base64Codec();
 ///
 /// Communicates with the backend via the Spine Firebase-web protocol.
 ///
-/// For read operations, the client
+/// For read operations, the client sends a request to the Spine-based server, receives a path to
+/// a node in Firebase Realtime Database in response, and fetches the data under that node.
 ///
 class BackendClient {
 
