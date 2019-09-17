@@ -21,6 +21,6 @@
 class FirebaseClient {
 
     Stream<String> get(String path) {
-        throw new UnimplementedError('FirebaseClient is an interface');
+        throw UnimplementedError('FirebaseClient is an interface');
     }
 }

@@ -47,16 +47,16 @@ class ActorRequestFactory {
 
     /// Creates a factory of queries to the server.
     QueryFactory query() {
-        return new QueryFactory(_context);
+        return QueryFactory(_context);
     }
 
     /// Creates a factory of commands to send to the server.
     CommandFactory command() {
-        return new CommandFactory(_context);
+        return CommandFactory(_context);
     }
 
     ActorContext _context() {
-        var ctx = new ActorContext();
+        var ctx = ActorContext();
         ctx
             ..actor = this.actor
             ..timestamp = time.now()

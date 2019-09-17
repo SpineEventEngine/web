@@ -24,6 +24,6 @@ import 'package:uuid/uuid.dart';
 ///
 /// If [prefix] is specified, the result string starts with the given prefix.
 String newUuid({String prefix = ''}) {
-    var uuid = new Uuid();
+    var uuid = Uuid();
     return '${prefix}${uuid.v4()}';
 }

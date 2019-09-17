@@ -25,14 +25,14 @@ import 'package:test/test.dart';
 void main() {
     group('ActorRequestFactory should', () {
 
-        var actor = new UserId();
+        var actor = UserId();
 
         setUp(() {
             actor.value = 'me';
         });
 
         test('be instantiatable only with the actor', () {
-            var factory = new ActorRequestFactory(actor);
+            var factory = ActorRequestFactory(actor);
             expect(factory, isNotNull);
         });
     });

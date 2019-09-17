@@ -21,7 +21,7 @@
 import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
-import 'package:spine_client/src/uuids.dart';
+import 'package:spine_client/uuids.dart';
 
 /// A factory of commands to send to the server.
 class CommandFactory {
@@ -30,9 +30,9 @@ class CommandFactory {
 
     CommandFactory(this._context);
 
-    /// Creates a new command with the given message.
+    /// Creates a command with the given message.
     Command create(Any message) {
-        var cmd = new Command();
+        var cmd = Command();
         cmd
             ..id = _newId()
             ..message = message
@@ -41,13 +41,13 @@ class CommandFactory {
     }
 
     CommandContext _buildContext() {
-        var ctx = new CommandContext();
+        var ctx = CommandContext();
         ctx.actorContext = _context();
         return ctx;
     }
 
     CommandId _newId() {
-        var id = new CommandId();
+        var id = CommandId();
         id.uuid = newUuid();
         return id;
     }

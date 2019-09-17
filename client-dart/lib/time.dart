@@ -30,7 +30,7 @@ Timestamp now() {
 ZoneOffset zoneOffset() {
     var dateTime = DateTime.now();
     var zoneOffset = dateTime.timeZoneOffset;
-    var offset = new ZoneOffset();
+    var offset = ZoneOffset();
     offset.amountSeconds = zoneOffset.inSeconds;
     return offset;
 }
@@ -45,7 +45,7 @@ ZoneOffset zoneOffset() {
 ZoneId guessZoneId() {
     var dateTime = DateTime.now();
     var zoneName = dateTime.timeZoneName;
-    var zoneId = new ZoneId();
+    var zoneId = ZoneId();
     zoneId.value = zoneName;
     return zoneId;
 }

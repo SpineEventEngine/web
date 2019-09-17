@@ -84,13 +84,13 @@ class BackendClient {
     }
 
     Ack _parseAck(http.Response response) {
-        var ack = new Ack();
+        var ack = Ack();
         _parseInto(ack, response);
         return ack;
     }
 
     FirebaseQueryResponse _parseQueryResponse(http.Response response) {
-        var queryResponse = new FirebaseQueryResponse();
+        var queryResponse = FirebaseQueryResponse();
         _parseInto(queryResponse, response);
         return queryResponse;
     }
@@ -102,7 +102,7 @@ class BackendClient {
 
     void _parseJson(GeneratedMessage message, String json) {
         var jsonMap = _json.decode(json);
-        var typeRegistry = new TypeRegistry([new CommandId(), new EventId()]);
+        var typeRegistry = TypeRegistry([CommandId(), EventId()]);
         message.mergeFromProto3Json(jsonMap, ignoreUnknownFields: true, typeRegistry: typeRegistry);
     }
 }

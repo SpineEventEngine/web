@@ -22,7 +22,7 @@ import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/client/filters.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/client/query.pb.dart';
-import 'package:spine_client/src/uuids.dart';
+import 'package:spine_client/uuids.dart';
 
 /// A factory of queries to the server.
 class QueryFactory {
@@ -33,7 +33,7 @@ class QueryFactory {
 
     /// Creates a query which matches all entities of the given type with the given IDs.
     Query byIds(String typeUrl, List<Any> ids) {
-        var query = new Query();
+        var query = Query();
         query
             ..id = _newId()
             ..target = _targetByIds(typeUrl, ids)
@@ -44,8 +44,8 @@ class QueryFactory {
     Target _targetByIds(String typeUrl, List<Any> ids) {
         var target = Target();
         target.type = typeUrl;
-        var filters = new TargetFilters();
-        var idFilter = new IdFilter();
+        var filters = TargetFilters();
+        var idFilter = IdFilter();
         idFilter.id.addAll(ids);
         filters.idFilter = idFilter;
         target.filters = filters;
@@ -54,7 +54,7 @@ class QueryFactory {
 
     /// Creates a query which matches all entities of the given type.
     Query all(String typeUrl) {
-        var query = new Query();
+        var query = Query();
         query
             ..id = _newId()
             ..target = _targetAll(typeUrl)
@@ -71,7 +71,7 @@ class QueryFactory {
     }
 
     QueryId _newId() {
-        var id = new QueryId();
+        var id = QueryId();
         id.value = newUuid(prefix: 'q-');
         return id;
     }
