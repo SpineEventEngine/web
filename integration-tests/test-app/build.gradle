@@ -61,14 +61,14 @@ final pidFilePath = "$rootDir/scripts/firebase-emulator.pid"
 /**
  * Runs the Firebase emulator locally for the tests purposes.
  *
- * Relies on the `firebase-server` NPM library that is installed as `:web-tests`
+ * Relies on the `firebase-server` NPM library that is installed as `:js-tests`
  * module dependency. Stores the PID of the newly started emulator process to the
  * "web/scripts/firebase-emulator.pid" file.
  */
 task runFirebase(type: com.github.psxpaul.task.ExecFork) {
     description = "Starts local Firebase server emulator."
 
-    final def webTestsDir = project(':web-tests').projectDir
+    final def webTestsDir = project(':js-tests').projectDir
     workingDir = "$webTestsDir/node_modules/.bin"
 
     final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()

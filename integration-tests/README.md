@@ -2,18 +2,18 @@
 
 This package contains modules for testing of the unpublished `spine-web` NPM library against
 the Spine-based server. The `test-app` module contains a simplified Spine application.
-The `web-tests` module defines tests acting as a client-side application where client-server
+The `js-tests` module defines tests acting as a client-side application where client-server
 interactions are carried out by `spine-web` NPM library.
 
 ## `test-app`
 
-The `test-app` module contains a simplified Spine application. The `web-tests` module uses this
+The `test-app` module contains a simplified Spine application. The `js-tests` module uses this
 application as a test backend. The application uses the Spine `web` API (with the `firebase-web`
 library). The application model contains a minimal set of commands, events, and projections that
 allows to test functionality of the `spine-web` library.
 
 The application uses Firebase application emulated locally with a [`firebase-server`](https://www.npmjs.com/package/firebase-server)
-tool. This tool is executed from the `web-tests` module `node_modules` folder.
+tool. This tool is executed from the `js-tests` module `node_modules` folder.
 
 ### Running the application locally
 
@@ -47,9 +47,9 @@ The local server should be stopped with `./gradlew appStop` command or just by t
 console process. When stopping the local server with a respective command, server and
 Firebase emulators are stopped. When terminating a console process, Firebase emulator stays serving.
 
-## `web-tests`
+## `js-tests`
 
-The `web-tests` module performs tests of the unpublished artifact of the `spine-web` library. It
+The `js-tests` module performs tests of the unpublished artifact of the `spine-web` library. It
 defines tests acting as a client-side application that uses `spine-web` library for interactions
 with a backend.
 
@@ -71,7 +71,7 @@ privileges read data from Firebase. The default Firebase service account will do
     
 3. Run tests:
     ```bash
-    ./gradlew web-tests:integrationTest
+    ./gradlew js-tests:integrationTest
     ```
     This command does the following:
      - installs the unpublished artifact of the `spine-web` library form the `client-js` module 

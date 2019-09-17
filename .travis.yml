@@ -27,7 +27,7 @@ script:
   - chmod +x ./scripts/kill-process.sh
 
   # Run integration tests of `spine-web` library.
-  - ./gradlew :web-tests:integrationTest
+  - ./gradlew :js-tests:integrationTest
 
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
