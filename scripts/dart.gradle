@@ -36,15 +36,14 @@ task cleanPackageIndex(type: Delete) {
     delete = [packageIndex]
 }
 
-tasks['clean'].dependsOn 'cleanPackageIndex'
-
-project.afterEvaluate {
-    if (project.plugins.findPlugin('com.google.protobuf')) {
-        task(name: 'cleanGeneratedDart', type: Delete) {
-            group = GROUP
-            delete = [protobuf.generatedFilesBaseDir]
-        }
+afterEvaluate {
+    task cleanGeneratedDart(type: Delete) {
+        group = GROUP
+        delete = protobuf.generatedFilesBaseDir
     }
 }
+
+
+tasks['clean'].dependsOn 'cleanPackageIndex', 'cleanGeneratedDart'
 
 tasks.withType(JavaCompile).each { it.enabled = false }
