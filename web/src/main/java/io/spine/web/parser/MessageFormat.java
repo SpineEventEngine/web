@@ -20,6 +20,7 @@
 
 package io.spine.web.parser;
 
+import com.google.common.flogger.FluentLogger;
 import com.google.common.net.MediaType;
 import com.google.protobuf.Message;
 
@@ -61,6 +62,8 @@ enum MessageFormat {
         }
     };
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     @SuppressWarnings("DuplicateStringLiteralInspection") // A duplicate is in tests.
     private static final String CONTENT_TYPE = "Content-Type";
 
@@ -93,8 +96,19 @@ enum MessageFormat {
         try {
             MediaType type = parse(contentTypeHeader);
             Optional<MessageFormat> format = formatOf(type);
+            if (!format.isPresent()) {
+                logger.atWarning()
+                      .log("Cannot determine message format for request `%s %s`.%n" +
+                                   "Content-Type: `%s`.",
+                           request.getMethod(),
+                           request.getServletPath(),
+                           contentTypeHeader);
+            }
             return format;
-        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException e) {
+            logger.atSevere()
+                  .withCause(e)
+                  .log();
             return empty();
         }
     }

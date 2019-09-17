@@ -53,8 +53,8 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M>, 
         Message.Builder builder = Messages.builderFor(type);
         try {
             @SuppressWarnings("unchecked") // Logically checked.
-                    M message = (M) builder.mergeFrom(bytes)
-                                           .build();
+            M message = (M) builder.mergeFrom(bytes)
+                                   .build();
             return Optional.of(message);
         } catch (InvalidProtocolBufferException | ClassCastException e) {
             _error().withCause(e)
