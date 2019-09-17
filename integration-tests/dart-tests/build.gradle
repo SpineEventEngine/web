@@ -18,4 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+dependencies {
+    protobuf project(':test-app')
+}
+
+final def protoGenerationPath = "$projectDir/lib/proto"
+
+protobuf {
+    generatedFilesBaseDir = protoGenerationPath
+
+    protoc {
+        artifact = deps.build.protoc
+    }
+
+    plugins {
+        // TODO:2019-09-13:dmytro.dashenkov: Remove this machine-specific path.
+        dart { path = '/Users/ddashenkov/.pub-cache/bin/protoc-gen-dart' }
+    }
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                remove java
+
+            }
+
+            task.plugins {
+                dart {}
+            }
+        }
+    }
+}
+
+task cleanProtoDart(type: Delete) {
+    delete = [protoGenerationPath]
+}
+
+clean.dependsOn(cleanProtoDart)
+
 tasks.withType(JavaCompile).each { it.enabled = false }
