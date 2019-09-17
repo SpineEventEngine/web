@@ -45,7 +45,6 @@ afterEvaluate {
     }
 }
 
-
 tasks['clean'].dependsOn 'cleanPackageIndex', 'cleanGeneratedDart'
 
 tasks.withType(JavaCompile).each { it.enabled = false }
