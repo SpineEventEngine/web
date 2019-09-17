@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+apply from: "$rootDir/scripts/dart.gradle"
+
 dependencies {
     protobuf project(':test-app')
 }
 
-final def protoGenerationPath = "$projectDir/lib/proto"
-
 protobuf {
-    generatedFilesBaseDir = protoGenerationPath
+    generatedFilesBaseDir = "$projectDir/lib/proto"
 
     protoc {
         artifact = deps.build.protoc
@@ -50,10 +50,11 @@ protobuf {
     }
 }
 
-task cleanProtoDart(type: Delete) {
-    delete = [protoGenerationPath]
+task dartTest(type: Exec) {
+    group = 'Dart'
+
+    commandLine 'pub', 'run', 'test', "$projectDir/test/"
+    workingDir projectDir
+
+    dependsOn 'resolveDependencies', ':test-app:appBeforeIntegrationTest'
 }
-
-clean.dependsOn(cleanProtoDart)
-
-tasks.withType(JavaCompile).each { it.enabled = false }

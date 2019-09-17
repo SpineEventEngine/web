@@ -18,47 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply from: "$rootDir/scripts/dart.gradle"
+final def GROUP = 'Dart'
+final def packageIndex = "$projectDir/.packages" as File
 
-dependencies {
-    protobuf project(':firebase-web')
+task resolveDependencies(type: Exec) {
+    group = GROUP
+
+    inputs.file "$projectDir/pubspec.yaml"
+    outputs.file packageIndex
+
+    commandLine 'pub', 'get'
+    workingDir projectDir
 }
 
-sourceSets {
-    main.proto.srcDir "$projectDir/proto"
+task cleanPackageIndex(type: Delete) {
+    group = GROUP
+    delete = [packageIndex]
 }
 
-protobuf {
-    generatedFilesBaseDir = "$projectDir/lib/src/proto"
+tasks['clean'].dependsOn 'cleanPackageIndex'
 
-    protoc {
-        artifact = deps.build.protoc
-    }
-
-    plugins {
-        // TODO:2019-09-13:dmytro.dashenkov: Remove this machine-specific path.
-        dart { path = '/Users/ddashenkov/.pub-cache/bin/protoc-gen-dart' }
-    }
-
-    generateProtoTasks {
-        all().each {
-            it.plugins {
-                dart {}
-            }
-            it.builtins {
-                remove java
-            }
+project.afterEvaluate {
+    if (project.plugins.findPlugin('com.google.protobuf')) {
+        task(name: 'cleanGeneratedDart', type: Delete) {
+            group = GROUP
+            delete = [protobuf.generatedFilesBaseDir]
         }
     }
 }
 
-task dartTest(type: Exec) {
-    group = 'Dart'
-
-    commandLine 'pub', 'run', 'test', "$projectDir/test/"
-    workingDir projectDir
-
-    dependsOn 'resolveDependencies'
-}
-
-tasks['check'].dependsOn 'dartTest'
+tasks.withType(JavaCompile).each { it.enabled = false }
