@@ -30,8 +30,8 @@ class RestClient implements FirebaseClient {
 
     @override
     Stream<String> get(String path) async* {
-        var value = await _client.get('${_databaseUrl}/${path}');
-        for (var element in value) {
+        var root = await _client.get('${_databaseUrl}/${path}.json');
+        for (var element in root.values) {
             yield element.toString();
         }
     }
