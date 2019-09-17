@@ -57,3 +57,6 @@ gcs-auth-key.json
 hs_err_pid*
 
 appengine-web.xml
+
+.packages
+pubspec.lock
