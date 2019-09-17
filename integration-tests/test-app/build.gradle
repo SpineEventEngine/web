@@ -41,15 +41,6 @@ gretty {
     debugSuspend = true
     jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
     servletContainer = 'jetty9'
-
-    afterEvaluate {
-        appStart.dependsOn runFirebase
-        appBeforeIntegrationTest.dependsOn runFirebase
-        appStartDebug.dependsOn runFirebase
-
-        appStop.finalizedBy killFirebaseProcess
-        appAfterIntegrationTest.finalizedBy killFirebaseProcess
-    }
 }
 
 /**

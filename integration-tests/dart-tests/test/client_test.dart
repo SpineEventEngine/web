@@ -29,14 +29,16 @@ import 'package:spine_client/src/proto/main/dart/spine/core/user_id.pb.dart';
 import 'package:spine_client/uuids.dart';
 import 'package:test/test.dart';
 
+import 'endpoints.dart';
+
 void main() {
     group('BackendClient should', () {
         ActorRequestFactory requestFactory;
         BackendClient client;
 
         setUp(() {
-            var firebase = RestClient(fb.FirebaseClient.anonymous(), 'http://localhost:5000');
-            client = BackendClient('http://localhost:8080', firebase);
+            var firebase = RestClient(fb.FirebaseClient.anonymous(), FIREBASE);
+            client = BackendClient(BACKEND, firebase);
             var actor = UserId();
             actor.value = newUuid();
             requestFactory = ActorRequestFactory(actor);
@@ -44,7 +46,7 @@ void main() {
 
         test('send commands and obtain query data', () async {
             var taskId = TaskId()
-                ..value = '42';
+                ..value = newUuid();
             var cmd = CreateTask()
                 ..id = taskId
                 ..name = 'Task name'
