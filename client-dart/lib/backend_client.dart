@@ -21,13 +21,17 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:protobuf/protobuf.dart';
 import 'package:spine_client/firebase_client.dart';
 import 'package:spine_client/src/proto/main/dart/spine/client/query.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/ack.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
+import 'package:spine_client/src/proto/main/dart/spine/core/event.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/web/firebase/query/response.pb.dart';
 
 const _base64 = Base64Codec();
+const _json = JsonCodec();
+const _contentType = { 'Content-Type': 'application/x-protobuf'};
 
 /// A client of a Spine-based web server.
 ///
@@ -47,7 +51,9 @@ class BackendClient {
     Future<Ack> post(Command command) {
         var body = command.writeToBuffer();
         return http
-            .post('$_baseUrl/command', body: _base64.encode(body))
+            .post('$_baseUrl/command',
+                  body: _base64.encode(body),
+                  headers: _contentType)
             .then(_parseAck);
     }
 
@@ -59,25 +65,44 @@ class BackendClient {
     /// Throws an exception if the query is invalid or if any kind of network or server error
     /// occurs.
     ///
-    Stream<T> fetch<T>(Query query, T parse(String json)) async* {
+    Stream<T> fetch<T extends GeneratedMessage>(Query query, T defaultInstance) async* {
         var body = query.writeToBuffer();
-        var qr = await http.post('$_baseUrl/query', body: _base64.encode(body))
+        var qr = await http.post('$_baseUrl/query',
+                                 body: _base64.encode(body),
+                                 headers: _contentType)
             .then(_parseQueryResponse);
         yield* _database
             .get(qr.path)
             .take(qr.count.toInt())
-            .map(parse);
+            .map((json) => _copyAndParse(defaultInstance, json));
+    }
+
+    T _copyAndParse<T extends GeneratedMessage>(T defaultInstance, String json) {
+        var msg = defaultInstance.clone();
+        _parseJson(msg, json);
+        return msg;
     }
 
     Ack _parseAck(http.Response response) {
-        var bytes = _base64.decode(response.body);
-        var ack = Ack.fromBuffer(bytes);
+        var ack = new Ack();
+        _parseInto(ack, response);
         return ack;
     }
 
     FirebaseQueryResponse _parseQueryResponse(http.Response response) {
-        var bytes = _base64.decode(response.body);
-        var queryResponse = FirebaseQueryResponse.fromBuffer(bytes);
+        var queryResponse = new FirebaseQueryResponse();
+        _parseInto(queryResponse, response);
         return queryResponse;
+    }
+
+    void _parseInto(GeneratedMessage message, http.Response response) {
+        var json = response.body;
+        _parseJson(message, json);
+    }
+
+    void _parseJson(GeneratedMessage message, String json) {
+        var jsonMap = _json.decode(json);
+        var typeRegistry = new TypeRegistry([new CommandId(), new EventId()]);
+        message.mergeFromProto3Json(jsonMap, ignoreUnknownFields: true, typeRegistry: typeRegistry);
     }
 }
