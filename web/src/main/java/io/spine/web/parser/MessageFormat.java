@@ -120,7 +120,8 @@ enum MessageFormat {
     }
 
     boolean matches(MediaType otherContentType) {
-        return contentType.is(otherContentType);
+        return contentType.withoutParameters()
+                          .is(otherContentType.withoutParameters());
     }
 
     /**
