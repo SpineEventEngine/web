@@ -28,6 +28,7 @@ import 'package:spine_client/src/proto/main/dart/spine/core/ack.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/core/event.pb.dart';
 import 'package:spine_client/src/proto/main/dart/spine/web/firebase/query/response.pb.dart';
+import 'package:spine_client/src/url.dart';
 
 const _base64 = Base64Codec();
 const _json = JsonCodec();
@@ -51,7 +52,7 @@ class BackendClient {
     Future<Ack> post(Command command) {
         var body = command.writeToBuffer();
         return http
-            .post('$_baseUrl/command',
+            .post(Url.from(_baseUrl, 'command').stringUrl,
                   body: _base64.encode(body),
                   headers: _contentType)
             .then(_parseAck);
@@ -67,7 +68,7 @@ class BackendClient {
     ///
     Stream<T> fetch<T extends GeneratedMessage>(Query query, T defaultInstance) async* {
         var body = query.writeToBuffer();
-        var qr = await http.post('$_baseUrl/query',
+        var qr = await http.post(Url.from(_baseUrl, 'query').stringUrl,
                                  body: _base64.encode(body),
                                  headers: _contentType)
             .then(_parseQueryResponse);

@@ -18,22 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import 'package:firebase/firebase_io.dart' as fb;
-import 'package:spine_client/firebase_client.dart';
-import 'package:spine_client/src/url.dart';
+class Url {
 
-class RestClient implements FirebaseClient {
+    final String stringUrl;
 
-    final fb.FirebaseClient _client;
-    final String _databaseUrl;
+    Url(this.stringUrl);
 
-    RestClient(this._client, this._databaseUrl);
+    static Url from(String host, String path) {
+        if (host.endsWith('/')) {
+            host = host.substring(0, host.length - 1);
+        }
+        if (path.startsWith('/')) {
+            path = path.substring(1);
+        }
+        return Url('$host/$path');
+    }
 
     @override
-    Stream<String> get(String path) async* {
-        var root = await _client.get(Url.from(_databaseUrl, '${path}.json').stringUrl);
-        for (var element in root.values) {
-            yield element.toString();
-        }
+    String toString() {
+        return stringUrl;
     }
 }
