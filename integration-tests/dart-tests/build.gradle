@@ -50,11 +50,12 @@ protobuf {
     }
 }
 
-task dartTest(type: Exec) {
+task integrationTest(type: Exec) {
     group = 'Dart'
 
     commandLine 'pub', 'run', 'test', "$projectDir/test/"
     workingDir projectDir
 
     dependsOn 'resolveDependencies', ':test-app:appBeforeIntegrationTest'
+    finalizedBy ':test-app:appAfterIntegrationTest'
 }

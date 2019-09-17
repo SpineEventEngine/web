@@ -14,7 +14,6 @@
     "assert": "^2.0.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "firebase": "^6.2.0",
-    "firebase-server": "^1.0.2",
     "google-protobuf": "^3.8.0",
     "mocha": "^5.2.0",
     "rxjs": "~6.5.1",

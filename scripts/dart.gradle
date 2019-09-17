@@ -31,6 +31,8 @@ task resolveDependencies(type: Exec) {
     workingDir projectDir
 }
 
+tasks['assemble'].dependsOn 'resolveDependencies'
+
 task cleanPackageIndex(type: Delete) {
     group = GROUP
     delete = [packageIndex]
