@@ -29,6 +29,7 @@ before_install:
   - mv ./spine-dev.json ./integration-tests/test-app/src/main/resources
 
 install:
+  - sudo apt-get update
   - sudo apt-get install dart
   - pub global activate protoc_plugin
 
