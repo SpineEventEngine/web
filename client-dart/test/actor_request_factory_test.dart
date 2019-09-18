@@ -19,7 +19,7 @@
  */
 
 import 'package:spine_client/actor_request_factory.dart';
-import 'package:spine_client/src/proto/main/dart/spine/core/user_id.pbserver.dart';
+import 'package:spine_client/proto/main/dart/spine/core/user_id.pbserver.dart';
 import 'package:test/test.dart';
 
 void main() {

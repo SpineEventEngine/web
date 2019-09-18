@@ -18,8 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import 'package:spine_client/src/proto/main/dart/google/protobuf/timestamp.pb.dart';
-import 'package:spine_client/src/proto/main/dart/spine/time/time.pb.dart';
+import 'package:spine_client/proto/main/dart/google/protobuf/timestamp.pb.dart';
+import 'package:spine_client/proto/main/dart/spine/time/time.pb.dart';
 
 /// Obtains a [Timestamp] with the current time.
 Timestamp now() {

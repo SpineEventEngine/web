@@ -19,8 +19,8 @@
  */
 
 import 'package:spine_client/actor_request_factory.dart';
-import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
-import 'package:spine_client/src/proto/main/dart/spine/core/command.pb.dart';
+import 'package:spine_client/proto/main/dart/google/protobuf/any.pb.dart';
+import 'package:spine_client/proto/main/dart/spine/core/command.pb.dart';
 import 'package:spine_client/uuids.dart';
 
 /// A factory of commands to send to the server.

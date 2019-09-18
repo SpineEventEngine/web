@@ -23,9 +23,9 @@ import 'package:client_test/proto/main/dart/spine/web/test/given/task.pb.dart';
 import 'package:firebase/firebase_io.dart' as fb;
 import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/backend_client.dart';
+import 'package:spine_client/proto/main/dart/google/protobuf/any.pb.dart';
+import 'package:spine_client/proto/main/dart/spine/core/user_id.pb.dart';
 import 'package:spine_client/rest_firebase_client.dart';
-import 'package:spine_client/src/proto/main/dart/google/protobuf/any.pb.dart';
-import 'package:spine_client/src/proto/main/dart/spine/core/user_id.pb.dart';
 import 'package:spine_client/uuids.dart';
 import 'package:test/test.dart';
 
