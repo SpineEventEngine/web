@@ -18,8 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/// A client of a Firebase Realtime Database.
+///
+/// This class is a platform-agnostic interface. Implementations are platform-specific.
+///
 class FirebaseClient {
 
+    /// Obtains children of the database node under a given path.
+    ///
+    /// If the node values are strings, those strings are obtained without change. Otherwise,
+    /// the values are converted into JSONs in form of strings and yielded.
+    ///
+    /// It is expected that the implementations are asynchronous and do not block the calling site
+    /// for a long time (i.e. while performing networking).
+    ///
     Stream<String> get(String path) {
         throw UnimplementedError('FirebaseClient is an interface');
     }

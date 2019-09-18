@@ -21,6 +21,10 @@
 import 'package:firebase/firebase.dart' as fb;
 import 'package:spine_client/firebase_client.dart';
 
+/// An implementation of [FirebaseClient] specific to browser JavaScript.
+///
+/// See `RestClient` for a platform-agnostic implementation.
+///
 class WebFirebaseClient implements FirebaseClient {
 
     final fb.Database _db;
