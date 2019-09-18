@@ -23,6 +23,7 @@ import 'package:uuid/uuid.dart';
 /// Creates a new UUID of version 4.
 ///
 /// If [prefix] is specified, the result string starts with the given prefix.
+///
 String newUuid({String prefix = ''}) {
     var uuid = Uuid();
     return '${prefix}${uuid.v4()}';
