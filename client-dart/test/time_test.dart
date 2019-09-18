@@ -23,7 +23,7 @@ import 'package:spine_client/time.dart';
 import 'package:test/test.dart';
 
 void main() {
-    group('Time utils should', () {
+    group('Time utility should', () {
 
         test('provide current time', () {
             var timestamp = now();
