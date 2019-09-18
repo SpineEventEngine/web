@@ -51,25 +51,19 @@ protobuf {
         // Configure path to the Dart protoc plugin executable without changing the `$PATH`.
         // See https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path
         dart {
-            final def executableName = 'protoc-gen-dart'
+            final def runsOnWindows = Os.isFamily(Os.FAMILY_WINDOWS)
+            final def slash = File.separatorChar
+            final def scriptExtension = runsOnWindows ? '.bat' : ''
+            final def executableName = "protoc-gen-dart${scriptExtension}"
             final def pubCacheEnv = 'PUB_CACHE'
-            final def customCacheLocation = System.getenv().containsKey(pubCacheEnv)
+            final def hasCustomCacheLocation = System.getenv().containsKey(pubCacheEnv)
             def executablePath
-            if (customCacheLocation) {
-                executablePath = "${System.getenv(pubCacheEnv)}/${executableName}"
+            if (hasCustomCacheLocation) {
+                executablePath = "${System.getenv(pubCacheEnv)}${slash}${executableName}"
             } else {
-                executablePath = Os.isFamily(Os.FAMILY_WINDOWS)
-                        ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\${executableName}"
-                        : "${System.getProperty('user.home')}/.pub-cache/bin/${executableName}"
-            }
-
-            final File executableFile = file(executablePath)
-            println "Protoc plugin executable resolved to $executablePath"
-            println "File ${executableFile.exists() ? 'exists' : 'does not exist'}"
-            println "File CAN${executableFile.canExecute() ? '' : 'NOT'} be executed"
-            println "Parent dir ${executableFile.parent} ${executableFile.parentFile.exists() ? 'exists': 'does not exist'}"
-            if (executableFile.parentFile.exists()) {
-                executableFile.parentFile.listFiles().each { println it.name }
+                executablePath = runsOnWindows
+                        ? "${System.getenv('APPDATA')}${slash}Pub${slash}Cache${slash}bin${slash}${executableName}"
+                        : "${System.getProperty('user.home')}${slash}.pub-cache${slash}bin${slash}${executableName}"
             }
 
             path = executablePath
