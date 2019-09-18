@@ -27,7 +27,7 @@ dependencies {
 task integrationTest(type: Exec) {
     group = 'Dart'
 
-    commandLine 'pub', 'run', 'test', "$projectDir/test/"
+    commandLine "pub${scriptFileExtension}", 'run', 'test', "$projectDir/test/"
     workingDir projectDir
 
     dependsOn 'resolveDependencies', ':test-app:appBeforeIntegrationTest'

@@ -20,6 +20,11 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
+ext {
+    runsOnWindows = Os.isFamily(Os.FAMILY_WINDOWS)
+    scriptFileExtension = runsOnWindows ? '.bat' : ''
+}
+
 final def GROUP = 'Dart'
 final def packageIndex = "$projectDir/.packages" as File
 
@@ -29,7 +34,7 @@ task resolveDependencies(type: Exec) {
     inputs.file "$projectDir/pubspec.yaml"
     outputs.file packageIndex
 
-    commandLine 'pub', 'get'
+    commandLine "pub${scriptFileExtension}", 'get'
     workingDir projectDir
 }
 
@@ -51,10 +56,8 @@ protobuf {
         // Configure path to the Dart protoc plugin executable without changing the `$PATH`.
         // See https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path
         dart {
-            final def runsOnWindows = Os.isFamily(Os.FAMILY_WINDOWS)
             final def slash = File.separatorChar
-            final def scriptExtension = runsOnWindows ? '.bat' : ''
-            final def executableName = "protoc-gen-dart${scriptExtension}"
+            final def executableName = "protoc-gen-dart${scriptFileExtension}"
             final def pubCacheEnv = 'PUB_CACHE'
             final def hasCustomCacheLocation = System.getenv().containsKey(pubCacheEnv)
             def executablePath
