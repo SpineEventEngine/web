@@ -47,17 +47,25 @@ protobuf {
         artifact = deps.build.protoc
     }
 
-    final runsOnWindows = Os.isFamily(Os.FAMILY_WINDOWS)
     plugins {
         // Configure path to the Dart protoc plugin executable without changing the `$PATH`.
         // See https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path
         dart {
-            final def executable = runsOnWindows
-                    ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\protoc-gen-dart"
-                    : "${System.getProperty('user.home')}/.pub-cache/bin/protoc-gen-dart"
+            final def executableName = 'protoc-gen-dart'
+            final def pubCacheEnv = 'PUB_CACHE'
+            final def customCacheLocation = System.getenv().containsKey(pubCacheEnv)
+            def executable
+            if (customCacheLocation) {
+                executable = "${System.getenv(pubCacheEnv)}/${executableName}"
+            } else {
+                executable = Os.isFamily(Os.FAMILY_WINDOWS)
+                        ? "${System.getenv('APPDATA')}/Pub/Cache/bin/${executableName}"
+                        : "${System.getProperty('user.home')}/.pub-cache/bin/${executableName}"
+            }
+
             println "Protoc plugin executable resolved to $executable"
             println "File is ${project.file(executable).exists() ? 'present' : 'not present'}"
-            println "File can ${project.file(executable).executable ? '' : 'NOT'} be executed"
+            println "File can ${project.file(executable).canExecute() ? '' : 'NOT'} be executed"
             path = executable
         }
     }
