@@ -28,25 +28,6 @@ sourceSets {
     main.proto.srcDir "$projectDir/proto"
 }
 
-protobuf {
-    generatedFilesBaseDir = "$projectDir/lib/src/proto"
-
-    protoc {
-        artifact = deps.build.protoc
-    }
-
-    generateProtoTasks {
-        all().each {
-            it.plugins {
-                dart {}
-            }
-            it.builtins {
-                remove java
-            }
-        }
-    }
-}
-
 task dartTest(type: Exec) {
     group = 'Dart'
 

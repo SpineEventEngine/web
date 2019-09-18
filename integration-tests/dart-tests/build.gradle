@@ -24,27 +24,6 @@ dependencies {
     protobuf project(':test-app')
 }
 
-protobuf {
-    generatedFilesBaseDir = "$projectDir/lib/proto"
-
-    protoc {
-        artifact = deps.build.protoc
-    }
-
-    generateProtoTasks {
-        all().each { final task ->
-            task.builtins {
-                remove java
-
-            }
-
-            task.plugins {
-                dart {}
-            }
-        }
-    }
-}
-
 task integrationTest(type: Exec) {
     group = 'Dart'
 
