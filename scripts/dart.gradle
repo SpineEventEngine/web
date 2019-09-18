@@ -38,6 +38,18 @@ task cleanPackageIndex(type: Delete) {
     delete = [packageIndex]
 }
 
+protobuf {
+
+    final runsOnWindows = Os.isFamily(Os.FAMILY_WINDOWS)
+    plugins {
+        dart {
+            path = runsOnWindows
+                    ? '%APPDATA%\\Pub\\Cache\\bin\\protoc-dart-get'
+                    : '$HOME/.pub-cache/bin/protoc-dart-get'
+        }
+    }
+}
+
 afterEvaluate {
     task cleanGeneratedDart(type: Delete) {
         group = GROUP

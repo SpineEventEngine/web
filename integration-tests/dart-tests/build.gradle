@@ -31,11 +31,6 @@ protobuf {
         artifact = deps.build.protoc
     }
 
-    plugins {
-        // TODO:2019-09-13:dmytro.dashenkov: Remove this machine-specific path.
-        dart { path = '/Users/ddashenkov/.pub-cache/bin/protoc-gen-dart' }
-    }
-
     generateProtoTasks {
         all().each { final task ->
             task.builtins {
