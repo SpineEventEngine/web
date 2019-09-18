@@ -20,18 +20,18 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.CorsFilter;
+import io.spine.web.AllowAnyOriginFilter;
 
 import javax.servlet.annotation.WebFilter;
 
-import static io.spine.web.CorsFilter.ANY_URL;
-import static io.spine.web.CorsFilter.NAME;
+import static io.spine.web.AllowAnyOriginFilter.ANY_URL;
+import static io.spine.web.AllowAnyOriginFilter.NAME;
 
 /**
  * A filter which allows requests from any origin to interact with any endpoint of this server.
  *
- * @see CorsFilter
+ * @see AllowAnyOriginFilter
  */
 @WebFilter(filterName = NAME, urlPatterns = ANY_URL)
-public final class CrossOriginResourceSharingFilter extends CorsFilter {
+public final class PermissiveCorsFilter extends AllowAnyOriginFilter {
 }

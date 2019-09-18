@@ -45,7 +45,7 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
  * <p>When configuring servlets via annotations, users can extend this class and mark the subtype
  * with the {@link javax.servlet.annotation.WebFilter} annotation.
  */
-public class CorsFilter implements Filter {
+public class AllowAnyOriginFilter implements Filter {
 
     /**
      * The human readable name of this filter.
