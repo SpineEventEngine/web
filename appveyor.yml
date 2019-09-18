@@ -10,6 +10,7 @@ build:
 install:
   - npm install -g npm@latest
   - choco install dart-sdk
+  - pub global activate protoc_plugin
 
 # Ensure `config` sub-module is initialized
 before_build:
