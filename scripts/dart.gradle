@@ -52,9 +52,13 @@ protobuf {
         // Configure path to the Dart protoc plugin executable without changing the `$PATH`.
         // See https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path
         dart {
-            path = runsOnWindows
+            final def executable = runsOnWindows
                     ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\protoc-gen-dart"
                     : "${System.getProperty('user.home')}/.pub-cache/bin/protoc-gen-dart"
+            println "Protoc plugin executable resolved to $executable"
+            println "File is ${project.file(executable).exists() ? 'present' : 'not present'}"
+            println "File can ${project.file(executable).executable ? '' : 'NOT'} be executed"
+            path = executable
         }
     }
 
