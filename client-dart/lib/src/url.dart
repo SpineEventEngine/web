@@ -18,12 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/// A link which points to a network resource.
+///
 class Url {
 
+    /// String representation of this URL.
     final String stringUrl;
 
     Url(this.stringUrl);
 
+    /// Concatenates a URL from the given [host] and [path].
     static Url from(String host, String path) {
         if (host.endsWith('/')) {
             host = host.substring(0, host.length - 1);
