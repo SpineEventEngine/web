@@ -54,19 +54,25 @@ protobuf {
             final def executableName = 'protoc-gen-dart'
             final def pubCacheEnv = 'PUB_CACHE'
             final def customCacheLocation = System.getenv().containsKey(pubCacheEnv)
-            def executable
+            def executablePath
             if (customCacheLocation) {
-                executable = "${System.getenv(pubCacheEnv)}/${executableName}"
+                executablePath = "${System.getenv(pubCacheEnv)}/${executableName}"
             } else {
-                executable = Os.isFamily(Os.FAMILY_WINDOWS)
-                        ? "${System.getenv('APPDATA')}/Pub/Cache/bin/${executableName}"
+                executablePath = Os.isFamily(Os.FAMILY_WINDOWS)
+                        ? "${System.getenv('APPDATA')}\\Pub\\Cache\\bin\\${executableName}"
                         : "${System.getProperty('user.home')}/.pub-cache/bin/${executableName}"
             }
 
-            println "Protoc plugin executable resolved to $executable"
-            println "File is ${project.file(executable).exists() ? 'present' : 'not present'}"
-            println "File can ${project.file(executable).canExecute() ? '' : 'NOT'} be executed"
-            path = executable
+            final File executableFile = file(executablePath)
+            println "Protoc plugin executable resolved to $executablePath"
+            println "File ${executableFile.exists() ? 'exists' : 'does not exist'}"
+            println "File CAN${executableFile.canExecute() ? '' : 'NOT'} be executed"
+            println "Parent dir ${executableFile.parent} ${executableFile.parentFile.exists() ? 'exists': 'does not exist'}"
+            if (executableFile.parentFile.exists()) {
+                executableFile.parentFile.listFiles().each { println it.name }
+            }
+
+            path = executablePath
         }
     }
 
