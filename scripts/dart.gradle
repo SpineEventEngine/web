@@ -1,0 +1,97 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+ext {
+    runsOnWindows = Os.isFamily(Os.FAMILY_WINDOWS)
+    scriptFileExtension = runsOnWindows ? '.bat' : ''
+}
+
+final def GROUP = 'Dart'
+final def packageIndex = "$projectDir/.packages" as File
+
+task resolveDependencies(type: Exec) {
+    group = GROUP
+
+    inputs.file "$projectDir/pubspec.yaml"
+    outputs.file packageIndex
+
+    commandLine "pub${scriptFileExtension}", 'get'
+    workingDir projectDir
+}
+
+tasks['assemble'].dependsOn 'resolveDependencies'
+
+task cleanPackageIndex(type: Delete) {
+    group = GROUP
+    delete = [packageIndex]
+}
+
+protobuf {
+    generatedFilesBaseDir = "$projectDir/lib/proto"
+
+    protoc {
+        artifact = deps.build.protoc
+    }
+
+    plugins {
+        // Configure path to the Dart protoc plugin executable without changing the `$PATH`.
+        // See https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path
+        dart {
+            final def slash = File.separatorChar
+            final def executableName = "protoc-gen-dart${scriptFileExtension}"
+            final def pubCacheEnv = 'PUB_CACHE'
+            final def hasCustomCacheLocation = System.getenv().containsKey(pubCacheEnv)
+            def executablePath
+            if (hasCustomCacheLocation) {
+                executablePath = "${System.getenv(pubCacheEnv)}${slash}${executableName}"
+            } else {
+                executablePath = runsOnWindows
+                        ? "${System.getenv('APPDATA')}${slash}Pub${slash}Cache${slash}bin${slash}${executableName}"
+                        : "${System.getProperty('user.home')}${slash}.pub-cache${slash}bin${slash}${executableName}"
+            }
+
+            path = executablePath
+        }
+    }
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                dart {}
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    task cleanGeneratedDart(type: Delete) {
+        group = GROUP
+        delete = protobuf.generatedFilesBaseDir
+    }
+}
+
+tasks['clean'].dependsOn 'cleanPackageIndex', 'cleanGeneratedDart'
+
+tasks.withType(JavaCompile).each { it.enabled = false }

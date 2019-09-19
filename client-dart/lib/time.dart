@@ -18,22 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:spine_client/proto/main/dart/google/protobuf/timestamp.pb.dart';
+import 'package:spine_client/proto/main/dart/spine/time/time.pb.dart';
 
-import io.spine.server.CommandService;
+/// Obtains a [Timestamp] with the current time.
+Timestamp now() {
+    return Timestamp.fromDateTime(DateTime.now());
+}
 
-final class CommandServletTestEnv {
+/// Obtains the current time zone offset.
+ZoneOffset zoneOffset() {
+    var dateTime = DateTime.now();
+    var zoneOffset = dateTime.timeZoneOffset;
+    var offset = ZoneOffset();
+    offset.amountSeconds = zoneOffset.inSeconds;
+    return offset;
+}
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
-
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+/// Obtains an identifier string for the current time zone.
+///
+/// There is no way to obtain an actual time zone ID in Dart. The obtained value if platform
+/// dependant and usually human readable.
+///
+/// See https://github.com/dart-lang/sdk/issues/21758
+///
+ZoneId guessZoneId() {
+    var dateTime = DateTime.now();
+    var zoneName = dateTime.timeZoneName;
+    var zoneId = ZoneId();
+    zoneId.value = zoneName;
+    return zoneId;
 }

@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>1.1.0</version>
+<version>1.1.1-SNAPSHOT+1</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -76,7 +76,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-server</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT+1</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -100,7 +100,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-testutil-client</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT+1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -174,7 +174,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-client</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT+1</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>

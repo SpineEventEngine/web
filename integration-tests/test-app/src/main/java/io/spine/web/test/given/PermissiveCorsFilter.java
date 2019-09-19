@@ -18,22 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+package io.spine.web.test.given;
 
-import io.spine.server.CommandService;
+import io.spine.web.AllowAnyOriginFilter;
 
-final class CommandServletTestEnv {
+import javax.servlet.annotation.WebFilter;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
+import static io.spine.web.AllowAnyOriginFilter.ANY_URL;
+import static io.spine.web.AllowAnyOriginFilter.NAME;
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+/**
+ * A filter which allows requests from any origin to interact with any endpoint of this server.
+ *
+ * @see AllowAnyOriginFilter
+ */
+@WebFilter(filterName = NAME, urlPatterns = ANY_URL)
+public final class PermissiveCorsFilter extends AllowAnyOriginFilter {
 }

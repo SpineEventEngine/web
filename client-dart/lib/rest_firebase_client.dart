@@ -18,22 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:firebase/firebase_io.dart' as fb;
+import 'package:spine_client/firebase_client.dart';
+import 'package:spine_client/src/url.dart';
 
-import io.spine.server.CommandService;
+/// A [FirebaseClient] based on the Firebase REST API.
+///
+/// This implementation does not have platform limitations.
+///
+/// See `WebFirebaseClient` for a web-specific implementation.
+///
+class RestClient implements FirebaseClient {
 
-final class CommandServletTestEnv {
+    final fb.FirebaseClient _client;
+    final String _databaseUrl;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
+    /// Creates a new [RestClient] which connects to the database on the given [_databaseUrl]
+    /// with the given REST API [_client].
+    RestClient(this._client, this._databaseUrl);
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
+    @override
+    Stream<String> get(String path) async* {
+        var root = await _client.get(Url.from(_databaseUrl, '${path}.json').stringUrl);
+        for (var element in root.values) {
+            yield element.toString();
+        }
     }
 }

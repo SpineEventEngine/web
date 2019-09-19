@@ -18,22 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:uuid/uuid.dart';
 
-import io.spine.server.CommandService;
-
-final class CommandServletTestEnv {
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
-
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+/// Creates a new UUID of version 4.
+///
+/// If [prefix] is specified, the result string starts with the given prefix.
+///
+String newUuid({String prefix = ''}) {
+    var uuid = Uuid();
+    return '${prefix}${uuid.v4()}';
 }

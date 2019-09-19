@@ -26,6 +26,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
+import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseClient;
@@ -76,9 +77,13 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("require Firebase Client set in class Builder")
     void requireFirebaseClient() {
+        QueryService queryService = QueryService
+                .newBuilder()
+                .add(BoundedContextBuilder.assumingTests().build())
+                .build();
         FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
                 .newBuilder()
-                .setQueryService(mock(QueryService.class));
+                .setQueryService(queryService);
         assertThrows(IllegalStateException.class, builder::build);
     }
 

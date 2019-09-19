@@ -18,22 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+/**
+ * Test environment for servlet testing.
+ */
 
-import io.spine.server.CommandService;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.given;
 
-final class CommandServletTestEnv {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
-
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

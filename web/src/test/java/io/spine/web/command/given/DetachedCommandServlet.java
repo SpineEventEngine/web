@@ -20,20 +20,15 @@
 
 package io.spine.web.command.given;
 
-import io.spine.server.CommandService;
+import io.spine.web.command.CommandServlet;
 
-final class CommandServletTestEnv {
+/**
+ * A {@code CommandServlet} which does not dispatch any commands.
+ */
+@SuppressWarnings("serial")
+public final class DetachedCommandServlet extends CommandServlet {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
-
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
+    public DetachedCommandServlet() {
+        super(CommandServletTestEnv.emptyCommandService());
     }
 }

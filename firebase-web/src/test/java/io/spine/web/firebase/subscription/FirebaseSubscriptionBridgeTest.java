@@ -25,6 +25,7 @@ import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
+import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.subscription.result.SubscribeResult;
@@ -80,9 +81,13 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("require Firebase Client set in Builder")
     void requireFirebaseClient() {
+        SubscriptionService subscriptionService = SubscriptionService
+                .newBuilder()
+                .add(BoundedContextBuilder.assumingTests().build())
+                .build();
         FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
                 .newBuilder()
-                .setSubscriptionService(mock(SubscriptionService.class));
+                .setSubscriptionService(subscriptionService);
         assertThrows(IllegalStateException.class, builder::build);
     }
 

@@ -18,22 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:firebase/firebase.dart' as fb;
+import 'package:spine_client/firebase_client.dart';
 
-import io.spine.server.CommandService;
+/// An implementation of [FirebaseClient] specific to browser JavaScript.
+///
+/// See `RestClient` for a platform-agnostic implementation.
+///
+class WebFirebaseClient implements FirebaseClient {
 
-final class CommandServletTestEnv {
+    final fb.Database _db;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
+    WebFirebaseClient(this._db);
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
+    @override
+    Stream<String> get(String path) async* {
+        yield* _db
+            .ref(path)
+            .onChildAdded
+            .map((event) => event.snapshot.toJson().toString());
     }
 }

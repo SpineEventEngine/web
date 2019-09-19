@@ -18,22 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+apply from: "$rootDir/scripts/dart.gradle"
 
-import io.spine.server.CommandService;
-
-final class CommandServletTestEnv {
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
-
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+dependencies {
+    protobuf project(':firebase-web')
 }
+
+sourceSets {
+    main.proto.srcDir "$projectDir/proto"
+}
+
+task dartTest(type: Exec) {
+    group = 'Dart'
+
+    commandLine "pub${scriptFileExtension}", 'run', 'test', "$projectDir/test/"
+    workingDir projectDir
+
+    dependsOn 'resolveDependencies'
+}
+
+tasks['check'].dependsOn 'dartTest'

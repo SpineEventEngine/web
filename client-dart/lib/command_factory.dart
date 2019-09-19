@@ -18,22 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:spine_client/actor_request_factory.dart';
+import 'package:spine_client/proto/main/dart/google/protobuf/any.pb.dart';
+import 'package:spine_client/proto/main/dart/spine/core/command.pb.dart';
+import 'package:spine_client/uuids.dart';
 
-import io.spine.server.CommandService;
+/// A factory of commands to send to the server.
+class CommandFactory {
 
-final class CommandServletTestEnv {
+    final ActorProvider _context;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
+    CommandFactory(this._context);
+
+    /// Creates a command with the given message.
+    Command create(Any message) {
+        var cmd = Command();
+        cmd
+            ..id = _newId()
+            ..message = message
+            ..context = _buildContext();
+        return cmd;
     }
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
+    CommandContext _buildContext() {
+        var ctx = CommandContext();
+        ctx.actorContext = _context();
+        return ctx;
+    }
+
+    CommandId _newId() {
+        var id = CommandId();
+        id.uuid = newUuid();
+        return id;
     }
 }

@@ -18,22 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:spine_client/proto/main/dart/google/protobuf/timestamp.pb.dart';
+import 'package:spine_client/time.dart';
+import 'package:test/test.dart';
 
-import io.spine.server.CommandService;
+void main() {
+    group('Time utility should', () {
 
-final class CommandServletTestEnv {
+        test('provide current time', () {
+            var timestamp = now();
+            var dateTime = DateTime.now();
+            var expectedTime = Timestamp.fromDateTime(dateTime).seconds.toInt();
+            expect(timestamp.seconds.toInt(), inInclusiveRange(expectedTime - 1, expectedTime + 1));
+        });
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
+        test('provide current zone offset', () {
+            expect(zoneOffset().amountSeconds, equals(DateTime.now().timeZoneOffset.inSeconds));
+        });
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+        test('provide human-readable zone ID', () {
+            expect(guessZoneId().value, isNotEmpty);
+        });
+    });
 }

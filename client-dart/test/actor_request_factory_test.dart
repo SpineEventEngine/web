@@ -18,22 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+import 'package:spine_client/actor_request_factory.dart';
+import 'package:spine_client/proto/main/dart/spine/core/user_id.pbserver.dart';
+import 'package:test/test.dart';
 
-import io.spine.server.CommandService;
+void main() {
+    group('ActorRequestFactory should', () {
 
-final class CommandServletTestEnv {
+        var actor = UserId();
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
+        setUp(() {
+            actor.value = 'me';
+        });
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+        test('be instantiatable only with the actor', () {
+            var factory = ActorRequestFactory(actor);
+            expect(factory, isNotNull);
+        });
+    });
 }

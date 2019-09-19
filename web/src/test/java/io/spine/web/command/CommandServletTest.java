@@ -29,7 +29,7 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.client.command.TestCommandMessage;
 import io.spine.testing.logging.MuteLogging;
-import io.spine.web.command.given.CommandServletTestEnv.TestCommandServlet;
+import io.spine.web.command.given.DetachedCommandServlet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +41,6 @@ import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.core.Status.StatusCase.OK;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,15 +56,16 @@ class CommandServletTest {
     @Test
     @DisplayName("fail to serialize")
     void testSerialize() throws IOException {
-        CommandServlet servlet = new TestCommandServlet();
+        CommandServlet servlet = new DetachedCommandServlet();
         ObjectOutput stream = new ObjectOutputStream(new ByteArrayOutputStream());
         assertThrows(UnsupportedOperationException.class, () -> stream.writeObject(servlet));
     }
 
+    @MuteLogging
     @Test
     @DisplayName("handle command POST requests")
     void testHandle() throws IOException {
-        CommandServlet servlet = new TestCommandServlet();
+        CommandServlet servlet = new DetachedCommandServlet();
         StringWriter response = new StringWriter();
         TestCommandMessage createTask = TestCommandMessage
                 .newBuilder()
@@ -74,8 +74,6 @@ class CommandServletTest {
         Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);
-        assertEquals(OK, ack.getStatus()
-                            .getStatusCase());
         assertEquals(command.getId(), AnyPacker.unpack(ack.getMessageId()));
     }
 
@@ -83,7 +81,7 @@ class CommandServletTest {
     @Test
     @DisplayName("respond 400 to an invalid command")
     void testInvalidCommand() throws IOException {
-        CommandServlet servlet = new TestCommandServlet();
+        CommandServlet servlet = new DetachedCommandServlet();
         HttpServletResponse response = response(new StringWriter());
         servlet.doPost(request(Time.currentTime()), response);
         verify(response).sendError(400);

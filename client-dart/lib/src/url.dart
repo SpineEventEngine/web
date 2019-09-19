@@ -18,22 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+/// A link which points to a network resource.
+///
+class Url {
 
-import io.spine.server.CommandService;
+    /// String representation of this URL.
+    final String stringUrl;
 
-final class CommandServletTestEnv {
+    Url(this.stringUrl);
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
+    /// Concatenates a URL from the given [host] and [path].
+    static Url from(String host, String path) {
+        if (host.endsWith('/')) {
+            host = host.substring(0, host.length - 1);
+        }
+        if (path.startsWith('/')) {
+            path = path.substring(1);
+        }
+        return Url('$host/$path');
     }
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
+    @override
+    String toString() {
+        return stringUrl;
     }
 }

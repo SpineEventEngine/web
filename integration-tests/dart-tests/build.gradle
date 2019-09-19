@@ -18,22 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
+apply from: "$rootDir/scripts/dart.gradle"
 
-import io.spine.server.CommandService;
+dependencies {
+    protobuf project(':test-app')
+}
 
-final class CommandServletTestEnv {
+task integrationTest(type: Exec) {
+    group = 'Dart'
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
+    commandLine "pub${scriptFileExtension}", 'run', 'test', "$projectDir/test/"
+    workingDir projectDir
 
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
+    dependsOn 'resolveDependencies', ':test-app:appBeforeIntegrationTest'
+    finalizedBy ':test-app:appAfterIntegrationTest'
 }

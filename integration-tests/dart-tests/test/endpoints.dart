@@ -18,22 +18,5 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.command.given;
-
-import io.spine.server.CommandService;
-
-final class CommandServletTestEnv {
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CommandServletTestEnv() {
-    }
-
-    static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
-        return commandService;
-    }
-}
+const BACKEND = 'http://localhost:8080/';
+const FIREBASE = 'https://spine-dev.firebaseio.com/';

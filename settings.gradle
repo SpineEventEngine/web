@@ -23,9 +23,13 @@ rootProject.name = 'spine-web'
 include 'web'
 include 'firebase-web'
 
+include 'client-dart'
 include 'client-js'
-include 'test-app'
-include 'web-tests'
 
+include 'dart-tests'
+include 'js-tests'
+include 'test-app'
+
+project(':dart-tests').projectDir = "integration-tests/dart-tests" as File
+project(':js-tests').projectDir = "integration-tests/js-tests" as File
 project(':test-app').projectDir = "integration-tests/test-app" as File
-project(':web-tests').projectDir = "integration-tests/web-tests" as File
