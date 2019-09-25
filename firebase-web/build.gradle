@@ -37,6 +37,9 @@ dependencies {
     implementation deps.build.jacksonDatabind
     implementation deps.build.googleHttpClientApache
     implementation deps.build.appengineApi
+
+    // Add an SLF4J binding because it's required by the Firebase Admin SDK.
+    runtimeOnly "org.slf4j:slf4j-jdk14:$slf4jVersion"
 }
 
 task compileProtoToJs {

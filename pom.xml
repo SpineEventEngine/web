@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>1.1.1-SNAPSHOT+1</version>
+<version>1.1.2</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -28,7 +28,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.9.9.2</version>
+    <version>2.9.10</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -76,7 +76,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-server</artifactId>
-    <version>1.1.1-SNAPSHOT+1</version>
+    <version>1.1.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -87,9 +87,9 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-api</artifactId>
-    <version>1.7.26</version>
-    <scope>compile</scope>
+    <artifactId>slf4j-jdk14</artifactId>
+    <version>1.7.27</version>
+    <scope>runtime</scope>
   </dependency>
   <dependency>
     <groupId>com.google.guava</groupId>
@@ -100,13 +100,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-testutil-client</artifactId>
-    <version>1.1.1-SNAPSHOT+1</version>
+    <version>1.1.2</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-mute-logging</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.2</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -146,12 +146,6 @@ all modules and does not describe the project structure per-subproject.
     <scope>test</scope>
   </dependency>
   <dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-jdk14</artifactId>
-    <version>1.7.26</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_core</artifactId>
     <version>2.3.3</version>
@@ -174,17 +168,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-client</artifactId>
-    <version>1.1.1-SNAPSHOT+1</version>
+    <version>1.1.2</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-errorprone-checks</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.2</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.2</version>
   </dependency>
   <dependency>
     <groupId>javax.servlet</groupId>
