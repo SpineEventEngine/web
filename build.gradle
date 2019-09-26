@@ -106,11 +106,9 @@ subprojects {
         errorproneJavac deps.build.errorProneJavac
 
         implementation deps.build.guava
-        implementation deps.build.slf4j
         implementation deps.build.checkerAnnotations
         implementation deps.build.errorProneAnnotations
 
-        testImplementation deps.test.slf4j
         testImplementation deps.test.guavaTestlib
         testImplementation deps.test.junit5Api
         testImplementation deps.test.junit5Runner

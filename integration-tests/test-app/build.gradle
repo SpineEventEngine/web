@@ -30,8 +30,6 @@ apply from: "$rootDir/config/gradle/model-compiler.gradle"
 dependencies {
     implementation project(":firebase-web")
     implementation "io.spine:spine-server:$spineVersion"
-
-    implementation deps.test.slf4j
 }
 
 gretty {
