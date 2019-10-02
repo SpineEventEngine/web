@@ -18,17 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply from: "$rootDir/scripts/dart.gradle"
 
 dependencies {
     protobuf project(':test-app')
 }
 
-task integrationTest(type: Exec) {
-    group = 'Dart'
+tasks['testDart'].enabled false
 
-    commandLine "pub${scriptFileExtension}", 'run', 'test', "$projectDir/test/"
-    workingDir projectDir
+task integrationTest(type: Exec) {
+    final def pub = 'pub' + (Os.isFamily(Os.FAMILY_WINDOWS) ? '.bat' : '')
+    commandLine pub, 'run', 'test', './integration-test'
 
     dependsOn 'resolveDependencies', ':test-app:appBeforeIntegrationTest'
     finalizedBy ':test-app:appAfterIntegrationTest'

@@ -27,14 +27,3 @@ dependencies {
 sourceSets {
     main.proto.srcDir "$projectDir/proto"
 }
-
-task dartTest(type: Exec) {
-    group = 'Dart'
-
-    commandLine "pub${scriptFileExtension}", 'run', 'test', "$projectDir/test/"
-    workingDir projectDir
-
-    dependsOn 'resolveDependencies'
-}
-
-tasks['check'].dependsOn 'dartTest'
