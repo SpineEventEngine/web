@@ -181,7 +181,11 @@ subprojects {
                     "javax.servlet:javax.servlet-api:$servletApiVersion", // see version.gradle
 
                     "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
-                    "org.eclipse.jetty.toolchain:jetty-schemas:3.1"
+                    "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
+
+                    // Transitive dependencies from `core-java` may have different (older) versions.
+                    "io.spine:spine-base:$spineBaseVersion",
+                    "io.spine:spine-testlib:$spineBaseVersion"
             )
         }
     })
