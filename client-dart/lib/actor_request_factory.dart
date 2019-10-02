@@ -19,10 +19,10 @@
  */
 
 import 'package:spine_client/command_factory.dart';
-import 'package:spine_client/proto/main/dart/spine/core/actor_context.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/core/tenant_id.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/core/user_id.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/time/time.pb.dart';
+import 'package:spine_client/spine/core/actor_context.pb.dart';
+import 'package:spine_client/spine/core/tenant_id.pb.dart';
+import 'package:spine_client/spine/core/user_id.pb.dart';
+import 'package:spine_client/spine/time/time.pb.dart';
 import 'package:spine_client/query_factory.dart';
 import 'package:spine_client/time.dart' as time;
 

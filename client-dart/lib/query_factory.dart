@@ -19,9 +19,9 @@
  */
 
 import 'package:spine_client/actor_request_factory.dart';
-import 'package:spine_client/proto/main/dart/google/protobuf/any.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/client/filters.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/client/query.pb.dart';
+import 'package:spine_client/google/protobuf/any.pb.dart';
+import 'package:spine_client/spine/client/filters.pb.dart';
+import 'package:spine_client/spine/client/query.pb.dart';
 import 'package:spine_client/uuids.dart';
 
 /// A factory of queries to the server.

@@ -23,11 +23,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:protobuf/protobuf.dart';
 import 'package:spine_client/firebase_client.dart';
-import 'package:spine_client/proto/main/dart/spine/client/query.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/core/ack.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/core/command.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/core/event.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/web/firebase/query/response.pb.dart';
+import 'package:spine_client/spine/client/query.pb.dart';
+import 'package:spine_client/spine/core/ack.pb.dart';
+import 'package:spine_client/spine/core/command.pb.dart';
+import 'package:spine_client/spine/core/event.pb.dart';
+import 'package:spine_client/spine/web/firebase/query/response.pb.dart';
 import 'package:spine_client/src/url.dart';
 
 const _base64 = Base64Codec();

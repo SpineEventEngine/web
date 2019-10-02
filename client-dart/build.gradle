@@ -24,6 +24,3 @@ dependencies {
     protobuf project(':firebase-web')
 }
 
-sourceSets {
-    main.proto.srcDir "$projectDir/proto"
-}

@@ -28,6 +28,9 @@ protobuf {
                 remove java
                 remove spineProtoc
             }
+            task.plugins {
+                dart {}
+            }
         }
     }
 }
