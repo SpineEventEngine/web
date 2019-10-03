@@ -23,9 +23,8 @@ import 'package:client_test/spine/web/test/given/task.pb.dart';
 import 'package:firebase/firebase_io.dart' as fb;
 import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/backend_client.dart';
-import 'package:spine_client/google/protobuf/any.pb.dart';
-import 'package:spine_client/spine/core/user_id.pb.dart';
 import 'package:spine_client/rest_firebase_client.dart';
+import 'package:spine_client/spine/core/user_id.pb.dart';
 import 'package:spine_client/uuids.dart';
 import 'package:test/test.dart';
 
@@ -38,7 +37,7 @@ void main() {
 
         setUp(() {
             var firebase = RestClient(fb.FirebaseClient.anonymous(), FIREBASE);
-            client = BackendClient(BACKEND, firebase);
+            client = BackendClient(BACKEND, firebase, );
             var actor = UserId();
             actor.value = newUuid();
             requestFactory = ActorRequestFactory(actor);
@@ -51,10 +50,9 @@ void main() {
                 ..id = taskId
                 ..name = 'Task name'
                 ..description = "long";
-            var anyCmd = Any.pack(cmd, typeUrlPrefix: 'type.spine.io');
-            await client.post(requestFactory.command().create(anyCmd));
-            var query = requestFactory.query().all('type.spine.io/spine.web.test.given.Task');
-            var tasks = await client.fetch(query, Task.getDefault()).toList();
+            await client.post(requestFactory.command().create(cmd));
+            var query = requestFactory.query().all(Task());
+            var tasks = await client.fetch<Task>(query).toList();
             expect(tasks, hasLength(equals(1)));
             var task = tasks.first;
             expect(task.id, equals(taskId));

@@ -20,7 +20,7 @@
 
 ext {
     spineVersion = '1.1.2'
-    spineBaseVersion = '1.1.3-SNAPSHOT+1'
+    spineBaseVersion = '1.1.3-SNAPSHOT+2'
     
     versionToPublish = '1.1.3-SNAPSHOT+1'
     versionToPublishJs = '1.1.3-SNAPSHOT+1'

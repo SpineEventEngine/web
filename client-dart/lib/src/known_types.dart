@@ -19,9 +19,10 @@
  */
 
 import 'package:protobuf/protobuf.dart';
+import 'package:spine_client/src/any_packer.dart';
 import 'package:spine_client/types.dart' as standardTypes;
 
-final knownTypes = KnownTypes();
+final theKnownTypes = KnownTypes();
 
 class KnownTypes {
 
@@ -29,7 +30,7 @@ class KnownTypes {
     final Map<GeneratedMessage, String> _msgToTypeUrl = Map();
 
     KnownTypes() {
-        register(standardTypes.typeUrlToInfo, standardTypes.defaultToTypeUrl);
+        register(standardTypes.types());
     }
 
     BuilderInfo findBuilderInfo(String typeUrl) {
@@ -41,12 +42,17 @@ class KnownTypes {
         return _msgToTypeUrl[defaultValue];
     }
 
+    AnyPacker anyPacker() {
+        return AnyPacker(this);
+    }
+
     TypeRegistry registry() {
         return TypeRegistry(_msgToTypeUrl.keys);
     }
 
-    void register(Map<String, BuilderInfo> typeUrlToBuilderInfo,
-                  Map<GeneratedMessage, String> msgToTypeUrl) {
+    void register(dynamic types) {
+        Map<String, BuilderInfo> typeUrlToBuilderInfo = types.typeUrlToInfo;
+        Map<GeneratedMessage, String> msgToTypeUrl = types.defaultToTypeUrl;
         _typeUrlToBuilderInfo.addAll(typeUrlToBuilderInfo);
         _msgToTypeUrl.addAll(msgToTypeUrl);
     }

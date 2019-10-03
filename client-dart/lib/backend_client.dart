@@ -26,8 +26,8 @@ import 'package:spine_client/firebase_client.dart';
 import 'package:spine_client/spine/client/query.pb.dart';
 import 'package:spine_client/spine/core/ack.pb.dart';
 import 'package:spine_client/spine/core/command.pb.dart';
-import 'package:spine_client/spine/core/event.pb.dart';
 import 'package:spine_client/spine/web/firebase/query/response.pb.dart';
+import 'package:spine_client/src/known_types.dart';
 import 'package:spine_client/src/url.dart';
 
 const _base64 = Base64Codec();
@@ -45,8 +45,13 @@ class BackendClient {
 
     final String _baseUrl;
     final FirebaseClient _database;
+    final KnownTypes _knownTypes = KnownTypes();
 
-    BackendClient(this._baseUrl, this._database);
+    BackendClient(this._baseUrl, this._database, {List<dynamic> typeRegistries: const []}) {
+        for (var registry in typeRegistries) {
+            _knownTypes.register(registry);
+        }
+    }
 
     /// Posts a given [Command] to the server.
     Future<Ack> post(Command command) {
@@ -66,8 +71,13 @@ class BackendClient {
     /// Throws an exception if the query is invalid or if any kind of network or server error
     /// occurs.
     ///
-    Stream<T> fetch<T extends GeneratedMessage>(Query query, T defaultInstance) async* {
+    Stream<T> fetch<T extends GeneratedMessage>(Query query) async* {
         var body = query.writeToBuffer();
+        var targetTypeUrl = query.target.type;
+        var builder = _knownTypes.findBuilderInfo(targetTypeUrl);
+        if (builder == null) {
+            throw ArgumentError.value(query, 'query', 'Target type `$targetTypeUrl` is unknown.');
+        }
         var qr = await http.post(Url.from(_baseUrl, 'query').stringUrl,
                                  body: _base64.encode(body),
                                  headers: _contentType)
@@ -75,11 +85,11 @@ class BackendClient {
         yield* _database
             .get(qr.path)
             .take(qr.count.toInt())
-            .map((json) => _copyAndParse(defaultInstance, json));
+            .map((json) => _copyAndParse(builder, json));
     }
 
-    T _copyAndParse<T extends GeneratedMessage>(T defaultInstance, String json) {
-        var msg = defaultInstance.clone();
+    T _copyAndParse<T extends GeneratedMessage>(BuilderInfo builderInfo, String json) {
+        var msg = builderInfo.createEmptyInstance();
         _parseJson(msg, json);
         return msg;
     }
@@ -103,7 +113,8 @@ class BackendClient {
 
     void _parseJson(GeneratedMessage message, String json) {
         var jsonMap = _json.decode(json);
-        var typeRegistry = TypeRegistry([CommandId(), EventId()]);
-        message.mergeFromProto3Json(jsonMap, ignoreUnknownFields: true, typeRegistry: typeRegistry);
+        message.mergeFromProto3Json(jsonMap,
+                                    ignoreUnknownFields: true,
+                                    typeRegistry: _knownTypes.registry());
     }
 }

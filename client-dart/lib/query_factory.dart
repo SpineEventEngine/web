@@ -18,10 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'package:protobuf/protobuf.dart';
 import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/google/protobuf/any.pb.dart';
 import 'package:spine_client/spine/client/filters.pb.dart';
 import 'package:spine_client/spine/client/query.pb.dart';
+import 'package:spine_client/src/known_types.dart';
 import 'package:spine_client/uuids.dart';
 
 /// A factory of queries to the server.
@@ -32,18 +34,18 @@ class QueryFactory {
     QueryFactory(this._context);
 
     /// Creates a query which matches all entities of the given type with the given IDs.
-    Query byIds(String typeUrl, List<Any> ids) {
+    Query byIds(GeneratedMessage instance, List<Any> ids) {
         var query = Query();
         query
             ..id = _newId()
-            ..target = _targetByIds(typeUrl, ids)
+            ..target = _targetByIds(instance, ids)
             ..context = _context();
         return query;
     }
 
-    Target _targetByIds(String typeUrl, List<Any> ids) {
+    Target _targetByIds(GeneratedMessage instance, List<Any> ids) {
         var target = Target();
-        target.type = typeUrl;
+        target.type = _typeUrl(instance);
         var filters = TargetFilters();
         var idFilter = IdFilter();
         idFilter.id.addAll(ids);
@@ -53,21 +55,25 @@ class QueryFactory {
     }
 
     /// Creates a query which matches all entities of the given type.
-    Query all(String typeUrl) {
+    Query all(GeneratedMessage instance) {
         var query = Query();
         query
             ..id = _newId()
-            ..target = _targetAll(typeUrl)
+            ..target = _targetAll(instance)
             ..context = _context();
         return query;
     }
 
-    Target _targetAll(String typeUrl) {
+    Target _targetAll(GeneratedMessage instance) {
         var target = Target();
         target
-            ..type = typeUrl
+            ..type = _typeUrl(instance)
             ..includeAll = true;
         return target;
+    }
+
+    String _typeUrl(GeneratedMessage message) {
+        return theKnownTypes.typeUrlOf(message);
     }
 
     QueryId _newId() {
