@@ -20,26 +20,24 @@
 
 import 'package:spine_client/google/protobuf/any.pb.dart';
 import 'package:spine_client/google/protobuf/timestamp.pb.dart';
-import 'package:spine_client/src/known_types.dart';
+import 'package:spine_client/src/any_packer.dart';
 import 'package:spine_client/time.dart';
 import 'package:test/test.dart';
 
 void main() {
     group('AnyPacker should', () {
-        var anyPacker = theKnownTypes.anyPacker();
-
         test('pack a known type', () {
             var timestamp = now();
-            var any = anyPacker.pack(timestamp);
+            var any = pack(timestamp);
             expect(any.canUnpackInto(Timestamp()), isTrue);
-            expect(anyPacker.unpack(any), timestamp);
+            expect(unpack(any), timestamp);
         });
 
         test('not unpack an unknown type', () {
             var any = Any()
                 ..typeUrl = 'types.example.com/unknown.Type'
                 ..value = [42];
-            expect(() { anyPacker.unpack(any); }, throwsA(isA<ArgumentError>()));
+            expect(() { unpack(any); }, throwsA(isA<ArgumentError>()));
         });
     });
 }
