@@ -64,3 +64,4 @@ pubspec.lock
 **/*.pbenum.dart
 **/*.pbjson.dart
 **/*.pbserver.dart
+**/types.dart
