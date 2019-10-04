@@ -45,11 +45,10 @@ class BackendClient {
 
     final String _baseUrl;
     final FirebaseClient _database;
-    final KnownTypes _knownTypes = KnownTypes();
 
     BackendClient(this._baseUrl, this._database, {List<dynamic> typeRegistries: const []}) {
         for (var registry in typeRegistries) {
-            _knownTypes.register(registry);
+            theKnownTypes.register(registry);
         }
     }
 
@@ -74,7 +73,7 @@ class BackendClient {
     Stream<T> fetch<T extends GeneratedMessage>(Query query) async* {
         var body = query.writeToBuffer();
         var targetTypeUrl = query.target.type;
-        var builder = _knownTypes.findBuilderInfo(targetTypeUrl);
+        var builder = theKnownTypes.findBuilderInfo(targetTypeUrl);
         if (builder == null) {
             throw ArgumentError.value(query, 'query', 'Target type `$targetTypeUrl` is unknown.');
         }
@@ -115,6 +114,6 @@ class BackendClient {
         var jsonMap = _json.decode(json);
         message.mergeFromProto3Json(jsonMap,
                                     ignoreUnknownFields: true,
-                                    typeRegistry: _knownTypes.registry());
+                                    typeRegistry: theKnownTypes.registry());
     }
 }

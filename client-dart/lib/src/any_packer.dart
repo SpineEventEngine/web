@@ -24,37 +24,30 @@ import 'package:spine_client/src/known_types.dart';
 
 const _pathSeparator = '/';
 
-class AnyPacker {
+GeneratedMessage unpack(Any any) {
+    var typeUrl = any.typeUrl;
+    var builder = theKnownTypes.findBuilderInfo(typeUrl);
+    if (builder == null) {
+        throw ArgumentError('Cannot unpack unknown type `$typeUrl`.');
+    }
+    var emptyInstance = builder.createEmptyInstance();
+    return any.unpackInto(emptyInstance);
+}
 
-    final KnownTypes _knownTypes;
+Any pack(GeneratedMessage message) {
+    return Any.pack(message, typeUrlPrefix: _typeUrlPrefix(message));
+}
 
-    AnyPacker(this._knownTypes);
-    
-    GeneratedMessage unpack(Any any) {
-        var typeUrl = any.typeUrl;
-        var builder = _knownTypes.findBuilderInfo(typeUrl);
-        if (builder == null) {
-            throw ArgumentError('Cannot unpack unknown type `$typeUrl`.');
-        }
-        var emptyInstance = builder.createEmptyInstance();
-        return any.unpackInto(emptyInstance);
+String _typeUrlPrefix(GeneratedMessage message) {
+    var typeUrl = theKnownTypes.typeUrlOf(message);
+    if (typeUrl == null) {
+        throw ArgumentError('Cannot pack message of unknown type `${message.runtimeType}`.');
     }
-    
-    Any pack(GeneratedMessage message) {
-        return Any.pack(message, typeUrlPrefix: _typeUrlPrefix(message));
+    var typeName = message.info_.qualifiedMessageName;
+    var matchingType = typeUrl.endsWith(typeName);
+    if (!matchingType) {
+        throw StateError('Type URL $typeUrl does not match type `${message.runtimeType}`. ' +
+                         'Try rebuilding generated type registry.');
     }
-    
-    String _typeUrlPrefix(GeneratedMessage message) {
-        var typeUrl = _knownTypes.typeUrlOf(message);
-        if (typeUrl == null) {
-            throw ArgumentError('Cannot pack message of unknown type `${message.runtimeType}`.');
-        }
-        var typeName = message.info_.qualifiedMessageName;
-        var matchingType = typeUrl.endsWith(typeName);
-        if (!matchingType) {
-            throw StateError('Type URL $typeUrl does not match type `${message.runtimeType}`. ' +
-                             'Try rebuilding generated type registry.');
-        }
-        return typeUrl.substring(0, typeUrl.length - typeName.length - _pathSeparator.length);
-    }
+    return typeUrl.substring(0, typeUrl.length - typeName.length - _pathSeparator.length);
 }

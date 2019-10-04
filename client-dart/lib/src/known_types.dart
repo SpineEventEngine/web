@@ -19,17 +19,16 @@
  */
 
 import 'package:protobuf/protobuf.dart';
-import 'package:spine_client/src/any_packer.dart';
 import 'package:spine_client/types.dart' as standardTypes;
 
-final theKnownTypes = KnownTypes();
+final theKnownTypes = KnownTypes._instance();
 
 class KnownTypes {
 
     final Map<String, BuilderInfo> _typeUrlToBuilderInfo = Map();
     final Map<GeneratedMessage, String> _msgToTypeUrl = Map();
 
-    KnownTypes() {
+    KnownTypes._instance() {
         register(standardTypes.types());
     }
 
@@ -38,12 +37,8 @@ class KnownTypes {
     }
 
     String typeUrlOf(GeneratedMessage message) {
-        var defaultValue = message.info_.createEmptyInstance();
+        var defaultValue = message.createEmptyInstance();
         return _msgToTypeUrl[defaultValue];
-    }
-
-    AnyPacker anyPacker() {
-        return AnyPacker(this);
     }
 
     TypeRegistry registry() {

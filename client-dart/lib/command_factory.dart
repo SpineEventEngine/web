@@ -21,7 +21,7 @@
 import 'package:protobuf/protobuf.dart';
 import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/spine/core/command.pb.dart';
-import 'package:spine_client/src/known_types.dart';
+import 'package:spine_client/src/any_packer.dart';
 import 'package:spine_client/uuids.dart';
 
 /// A factory of commands to send to the server.
@@ -33,11 +33,10 @@ class CommandFactory {
 
     /// Creates a command with the given message.
     Command create(GeneratedMessage message) {
-        var packer = theKnownTypes.anyPacker();
         var cmd = Command();
         cmd
             ..id = _newId()
-            ..message = packer.pack(message)
+            ..message = pack(message)
             ..context = _buildContext();
         return cmd;
     }
