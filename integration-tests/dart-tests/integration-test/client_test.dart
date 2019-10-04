@@ -18,8 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import 'package:client_test/spine/web/test/given/commands.pb.dart';
-import 'package:client_test/spine/web/test/given/task.pb.dart';
 import 'package:firebase/firebase_io.dart' as fb;
 import 'package:spine_client/actor_request_factory.dart';
 import 'package:spine_client/backend_client.dart';
@@ -29,6 +27,9 @@ import 'package:spine_client/uuids.dart';
 import 'package:test/test.dart';
 
 import 'endpoints.dart';
+import 'spine/web/test/given/commands.pb.dart';
+import 'spine/web/test/given/task.pb.dart';
+import 'types.dart' as testTypes;
 
 void main() {
     group('BackendClient should', () {
@@ -37,7 +38,7 @@ void main() {
 
         setUp(() {
             var firebase = RestClient(fb.FirebaseClient.anonymous(), FIREBASE);
-            client = BackendClient(BACKEND, firebase, );
+            client = BackendClient(BACKEND, firebase, typeRegistries: [testTypes.types()]);
             var actor = UserId();
             actor.value = newUuid();
             requestFactory = ActorRequestFactory(actor);
