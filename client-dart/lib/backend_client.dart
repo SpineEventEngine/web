@@ -46,6 +46,26 @@ class BackendClient {
     final String _baseUrl;
     final FirebaseClient _database;
 
+    /// Creates a new instance of `BackendClient`.
+    ///
+    /// The client connects to the Spine-based server by the given [_baseUrl] and reads query
+    /// responses from the given Firebase [_database].
+    ///
+    /// The client may accept [typeRegistries] defined by the client modules.
+    ///
+    /// Example:
+    /// ```dart
+    ///
+    /// import 'package:example_dependency/types.dart' as dependencyTypes;
+    /// import 'types.dart' as myTypes;
+    ///
+    /// var firebase = RestClient(fb.FirebaseClient.anonymous(),
+    ///                           'https://example-org-42.firebaseio.com');
+    /// var client = BackendClient('https://example.org',
+    ///                            firebase,
+    ///                            typeRegistries: [myTypes.types(), dependencyTypes.types()]);
+    /// ```
+    ///
     BackendClient(this._baseUrl, this._database, {List<dynamic> typeRegistries: const []}) {
         for (var registry in typeRegistries) {
             theKnownTypes.register(registry);
