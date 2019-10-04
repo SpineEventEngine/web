@@ -9,9 +9,10 @@ environment:
 
 dependencies:
   protobuf: ^1.0.0
-  http: 0.12.0+2
-  uuid: 2.0.2
-  firebase: 5.0.4
+  http: ^0.12.0+2
+  uuid: ^2.0.2
+  firebase: ^5.0.4
+  fixnum: ^0.10.9
 
 dev_dependencies:
   pedantic: ^1.7.0
