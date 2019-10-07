@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/// The central library of this package.
+/// The entry point for a Spine client.
 ///
-/// The library provides the API for constructing and executing actor requests, such as commands and
-/// queries.
+/// This library provides the API for constructing and executing actor requests, such as commands
+/// and queries.
 ///
 /// The library provides an interface for a firebase client. Two implementations are included in
 /// this package but not in the library.
