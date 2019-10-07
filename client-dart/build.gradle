@@ -30,3 +30,9 @@ dependencies {
     protobuf project(':firebase-web')
 }
 
+task copyLicense(type: Copy) {
+    from "$rootDir/LICENSE"
+    into "$projectDir"
+}
+
+build.dependsOn 'copyLicense'
