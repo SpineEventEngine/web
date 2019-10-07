@@ -18,6 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+buildscript {
+    dependencies {
+        classpath "io.spine.tools:spine-proto-dart-plugin:$spineBaseVersion"
+    }
+}
+
 apply from: "$rootDir/scripts/dart.gradle"
 
 dependencies {
