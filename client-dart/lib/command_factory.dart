@@ -18,9 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import 'package:protobuf/protobuf.dart';
 import 'package:spine_client/actor_request_factory.dart';
-import 'package:spine_client/proto/main/dart/google/protobuf/any.pb.dart';
-import 'package:spine_client/proto/main/dart/spine/core/command.pb.dart';
+import 'package:spine_client/spine/core/command.pb.dart';
+import 'package:spine_client/src/any_packer.dart';
 import 'package:spine_client/uuids.dart';
 
 /// A factory of commands to send to the server.
@@ -31,11 +32,11 @@ class CommandFactory {
     CommandFactory(this._context);
 
     /// Creates a command with the given message.
-    Command create(Any message) {
+    Command create(GeneratedMessage message) {
         var cmd = Command();
         cmd
             ..id = _newId()
-            ..message = message
+            ..message = pack(message)
             ..context = _buildContext();
         return cmd;
     }

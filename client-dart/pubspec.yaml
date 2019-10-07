@@ -8,10 +8,11 @@ environment:
   sdk: '>=2.5.0 <3.0.0'
 
 dependencies:
-  protobuf: ^0.14.4
-  http: 0.12.0+2
-  uuid: 2.0.2
-  firebase: 5.0.4
+  protobuf: ^1.0.0
+  http: ^0.12.0+2
+  uuid: ^2.0.2
+  firebase: ^5.0.4
+  fixnum: ^0.10.9
 
 dev_dependencies:
   pedantic: ^1.7.0

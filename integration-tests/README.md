@@ -68,7 +68,7 @@ privileges read data from Firebase. The default Firebase service account will do
     ```bash
     ./gradlew clean assemble
     ```
-    
+
 3. Run tests:
     ```bash
     ./gradlew js-tests:integrationTest

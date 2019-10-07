@@ -60,3 +60,8 @@ appengine-web.xml
 
 .packages
 pubspec.lock
+**/*.pb.dart
+**/*.pbenum.dart
+**/*.pbjson.dart
+**/*.pbserver.dart
+**/types.dart

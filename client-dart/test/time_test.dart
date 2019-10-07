@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import 'package:spine_client/proto/main/dart/google/protobuf/timestamp.pb.dart';
+import 'package:spine_client/google/protobuf/timestamp.pb.dart';
 import 'package:spine_client/time.dart';
 import 'package:test/test.dart';
 

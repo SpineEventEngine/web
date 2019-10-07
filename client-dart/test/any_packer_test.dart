@@ -18,32 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    dependencies {
-        classpath "io.spine.tools:spine-proto-dart-plugin:$spineBaseVersion"
-    }
-}
+import 'package:spine_client/google/protobuf/any.pb.dart';
+import 'package:spine_client/google/protobuf/timestamp.pb.dart';
+import 'package:spine_client/src/any_packer.dart';
+import 'package:spine_client/time.dart';
+import 'package:test/test.dart';
 
-import org.apache.tools.ant.taskdefs.condition.Os
+void main() {
+    group('AnyPacker should', () {
+        test('pack a known type', () {
+            var timestamp = now();
+            var any = pack(timestamp);
+            expect(any.canUnpackInto(Timestamp()), isTrue);
+            expect(unpack(any), timestamp);
+        });
 
-apply from: "$rootDir/scripts/dart.gradle"
-
-dependencies {
-    testProtobuf project(':test-app')
-}
-
-tasks['testDart'].enabled false
-
-final def integrationTestDir = './integration-test'
-
-task integrationTest(type: Exec) {
-    final def pub = 'pub' + (Os.isFamily(Os.FAMILY_WINDOWS) ? '.bat' : '')
-    commandLine pub, 'run', 'test', integrationTestDir
-
-    dependsOn 'resolveDependencies', ':test-app:appBeforeIntegrationTest'
-    finalizedBy ':test-app:appAfterIntegrationTest'
-}
-
-protoDart {
-    testDir.set project.layout.projectDirectory.dir(integrationTestDir)
+        test('not unpack an unknown type', () {
+            var any = Any()
+                ..typeUrl = 'types.example.com/unknown.Type'
+                ..value = [42];
+            expect(() { unpack(any); }, throwsA(isA<ArgumentError>()));
+        });
+    });
 }
