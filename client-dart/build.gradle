@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.nio.file.Files;
+
 buildscript {
     dependencies {
         classpath "io.spine.tools:spine-proto-dart-plugin:$spineBaseVersion"
@@ -30,9 +32,24 @@ dependencies {
     protobuf project(':firebase-web')
 }
 
-task copyLicense(type: Copy) {
+final def publicationDir = Files.createTempDirectory(project.name)
+
+task stagePubPublication(type: Copy) {
+
+    from fileTree(projectDir) {
+        include '**/*.dart', '**/*.pb.dart', 'pubspec.yaml', '**/*.md'
+        exclude 'proto/', 'build', '**/.*'
+    }
     from "$rootDir/LICENSE"
-    into "$projectDir"
+    into publicationDir
+
+    dependsOn 'assemble', 'testClasses'
 }
 
-build.dependsOn 'copyLicense'
+task publishToPub(type: Exec) {
+
+    commandLine 'pub', 'publish', '--dry-run'
+
+    workingDir publicationDir
+    dependsOn 'stagePubPublication'
+}
