@@ -1,7 +1,7 @@
 # Spine Dart Client Library
 
-Dart-based client for Spine applications. It’s a facade for sending domain commands and querying 
-entity states.
+Dart-based client for Spine applications. A facade for sending domain commands and querying entity
+states.
 
 The package provides the following:
  - Dart client library;
