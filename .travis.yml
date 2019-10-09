@@ -43,7 +43,7 @@ script:
   - ./gradlew check --stacktrace
 
   # Run integration tests of `spine-web` library.
-  - ./gradlew :js-tests:integrationTest
+  - ./gradlew integrationTest
 
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
