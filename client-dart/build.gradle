@@ -35,7 +35,7 @@ final def publicationDir = java.nio.file.Files.createTempDirectory(project.name)
 task stagePubPublication(type: Copy) {
 
     from fileTree(projectDir) {
-        include '**/*.dart', '**/*.pb.dart', 'pubspec.yaml', '**/*.md'
+        include '**/*.dart', 'pubspec.yaml', '**/*.md'
         exclude 'proto/', 'build', '**/.*'
     }
     from "$rootDir/LICENSE"
