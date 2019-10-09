@@ -30,7 +30,7 @@ dependencies {
     protobuf project(':firebase-web')
 }
 
-final def publicationDir = java.nio.file.Files.createTempDirectory(project.name)
+final def publicationDir = "/Users/ddashenkov/Desktop/pub-lication" // java.nio.file.Files.createTempDirectory(project.name)
 
 task stagePubPublication(type: Copy) {
 
@@ -46,7 +46,7 @@ task stagePubPublication(type: Copy) {
 
 task publishToPub(type: Exec) {
 
-    commandLine 'pub', 'publish', '--dry-run'
+    commandLine 'pub', 'publish', '--trace'
 
     workingDir publicationDir
     dependsOn 'stagePubPublication'
