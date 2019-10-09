@@ -66,7 +66,7 @@ class BackendClient {
     ///                            typeRegistries: [myTypes.types(), dependencyTypes.types()]);
     /// ```
     ///
-    BackendClient(this._baseUrl, this._database, {List<dynamic> typeRegistries: const []}) {
+    BackendClient(this._baseUrl, this._database, {List<dynamic> typeRegistries = const []}) {
         for (var registry in typeRegistries) {
             theKnownTypes.register(registry);
         }

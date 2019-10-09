@@ -42,8 +42,7 @@ class ActorRequestFactory {
     ///
     /// In multitenant systems, it's required for all the actor requests to have a [tenant] ID.
     ///
-    ActorRequestFactory(this.actor,
-                        [this.tenant = null, this.zoneOffset = null, this.zoneId = null]);
+    ActorRequestFactory(this.actor, [this.tenant, this.zoneOffset, this.zoneId]);
 
     /// Creates a factory of queries to the server.
     QueryFactory query() {
@@ -61,8 +60,8 @@ class ActorRequestFactory {
             ..actor = this.actor
             ..timestamp = time.now()
             ..tenantId = this.tenant ?? TenantId.getDefault()
-            ..zoneId = zoneId ?? time.guessZoneId()
-            ..zoneOffset = zoneOffset ?? time.zoneOffset();
+            ..zoneOffset = zoneOffset ?? time.zoneOffset()
+            ..zoneId = zoneId ?? time.guessZoneId();
         return ctx;
     }
 }

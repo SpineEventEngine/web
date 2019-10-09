@@ -59,7 +59,7 @@
 ///                                firebase,
 ///                                typeRegistries: [myTypes.types()]);
 ///     // Fetch all `TaskView` projections and mark all tasks as done.
-///     client.fetch(requests.query().all(TaskView())
+///     client.fetch(requests.query().all(TaskView()))
 ///           .forEach((taskView) {
 ///               var markDone = MarkTaskDone()
 ///                       ..id = taskView.id
