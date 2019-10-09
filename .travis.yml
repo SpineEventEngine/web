@@ -24,9 +24,9 @@ before_install:
   - npm install -g npm@latest
 
   # Decrypt and unarchive credentials for:
-  #  - Maven repositories;
-  #  - Google service account with Firebase admin privileges;
-  #  - Google account for publishing Pub packages.
+  #  - Maven repositories (cloudrepo.properties);
+  #  - Google service account with Firebase admin privileges (spine-dev.json);
+  #  - Google account for publishing Pub packages (pub-credentials.json).
   - openssl aes-256-cbc -K $encrypted_676141212ed2_key -iv $encrypted_676141212ed2_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar
   - mkdir ./integration-tests/test-app/src/main/resources/
