@@ -22,13 +22,8 @@ jobs:
         run: git submodule update --init --recursive
 
       - name: Run unit tests with Gradle
-        run: gradlew.bat build  --stacktrace
-
-        # GitHub Actions reset environment variables upon each step. Therefore, update the env and
-        # run checks in a single step.
-      - name: Install Dart & run integration tests with Gradle
         run: >
           choco install dart-sdk --limitoutput
           & refreshenv
           & pub global activate protoc_plugin
-          & gradlew.bat integrationTest --stacktrace
+          & gradlew.bat build  --stacktrace
