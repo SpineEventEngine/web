@@ -576,7 +576,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:37 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1165,7 +1165,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:38 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@1.1.6`
@@ -1216,16 +1216,16 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 
 ## `Development` dependencies:
 
-1. **@babel/cli@7.6.2**
+1. **@babel/cli@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](https://github.com/babel/babel/tree/master/packages/babel-cli)
 1. **@babel/code-frame@7.5.5**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-code-frame](https://github.com/babel/babel/tree/master/packages/babel-code-frame)
-1. **@babel/core@7.6.2**
+1. **@babel/core@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
-1. **@babel/generator@7.6.2**
+1. **@babel/generator@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-generator](https://github.com/babel/babel/tree/master/packages/babel-generator)
 1. **@babel/helper-annotate-as-pure@7.0.0**
@@ -1291,7 +1291,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **@babel/highlight@7.5.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-highlight](https://github.com/babel/babel/tree/master/packages/babel-highlight)
-1. **@babel/parser@7.6.2**
+1. **@babel/parser@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-parser](https://github.com/babel/babel/tree/master/packages/babel-parser)
 1. **@babel/plugin-proposal-async-generator-functions@7.2.0**
@@ -1336,7 +1336,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **@babel/plugin-transform-block-scoped-functions@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoped-functions](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoped-functions)
-1. **@babel/plugin-transform-block-scoping@7.6.2**
+1. **@babel/plugin-transform-block-scoping@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping)
 1. **@babel/plugin-transform-classes@7.5.5**
@@ -1381,7 +1381,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **@babel/plugin-transform-modules-umd@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-umd](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-umd)
-1. **@babel/plugin-transform-named-capturing-groups-regex@7.6.2**
+1. **@babel/plugin-transform-named-capturing-groups-regex@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 1. **@babel/plugin-transform-new-target@7.4.4**
@@ -1420,7 +1420,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **@babel/plugin-transform-unicode-regex@7.6.2**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex)
-1. **@babel/preset-env@7.6.2**
+1. **@babel/preset-env@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-env](https://github.com/babel/babel/tree/master/packages/babel-preset-env)
 1. **@babel/register@7.6.2**
@@ -1429,10 +1429,10 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **@babel/template@7.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-template](https://github.com/babel/babel/tree/master/packages/babel-template)
-1. **@babel/traverse@7.6.2**
+1. **@babel/traverse@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-traverse](https://github.com/babel/babel/tree/master/packages/babel-traverse)
-1. **@babel/types@7.6.1**
+1. **@babel/types@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-types](https://github.com/babel/babel/tree/master/packages/babel-types)
 1. **@firebase/app-types@0.4.3**
@@ -1552,7 +1552,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **@types/long@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/node@10.14.20**
+1. **@types/node@10.14.21**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@webassemblyjs/ast@1.8.5**
@@ -2020,7 +2020,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.277**
+1. **electron-to-chromium@1.3.279**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.5.1**
@@ -2218,7 +2218,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **grpc@1.23.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/grpc/grpc-node](https://github.com/grpc/grpc-node)
-1. **handlebars@4.4.2**
+1. **handlebars@4.4.3**
      * Licenses: MIT
      * Repository: [https://github.com/wycats/handlebars.js](https://github.com/wycats/handlebars.js)
 1. **has-ansi@2.0.0**
@@ -2290,7 +2290,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
 1. **ignore-walk@3.0.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/ignore-walk](https://github.com/isaacs/ignore-walk)
-1. **ignore-walk@3.0.2**
+1. **ignore-walk@3.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/ignore-walk](https://github.com/isaacs/ignore-walk)
 1. **import-local@2.0.0**
@@ -3378,7 +3378,7 @@ This report was generated on **Tue Oct 08 18:54:03 EEST 2019** using [Gradle-Lic
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Tue Oct 08 2019 18:54:05 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Wed Oct 09 2019 14:30:40 GMT+0300 (EEST)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3967,7 +3967,7 @@ This report was generated on **Tue Oct 08 2019 18:54:05 GMT+0300 (EEST)** using 
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:06 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:41 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4913,7 +4913,7 @@ This report was generated on **Tue Oct 08 18:54:06 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:08 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:42 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5502,7 +5502,7 @@ This report was generated on **Tue Oct 08 18:54:08 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:08 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:42 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -7373,7 +7373,7 @@ This report was generated on **Tue Oct 08 18:54:08 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:11 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:45 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -7965,4 +7965,4 @@ This report was generated on **Tue Oct 08 18:54:11 EEST 2019** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Oct 08 18:54:11 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 09 14:30:45 EEST 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
