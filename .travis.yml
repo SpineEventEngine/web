@@ -23,11 +23,16 @@ before_install:
   # Upgrade the `npm` version shipped with Travis to the latest.
   - npm install -g npm@latest
 
-  # Decrypt and unarchive Maven and Google Cloud credentials.
+  # Decrypt and unarchive credentials for:
+  #  - Maven repositories;
+  #  - Google service account;
+  #  - Google account for publishing Pub packages.
   - openssl aes-256-cbc -K $encrypted_676141212ed2_key -iv $encrypted_676141212ed2_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar
   - mkdir ./integration-tests/test-app/src/main/resources/
   - mv ./spine-dev.json ./integration-tests/test-app/src/main/resources
+  - mkdir $HOME/.pub-cache/
+  - mv ./pub-credentials.jsonv $HOME/.pub-cache/
 
 install:
   - sudo apt-get update
