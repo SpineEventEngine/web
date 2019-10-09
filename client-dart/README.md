@@ -3,6 +3,9 @@
 Dart-based client for Spine applications. A facade for sending domain commands and querying entity
 states.
 
+Visit the [Pub package registry](https://pub.dev/packages/spine_client) for the latest version of
+the package.
+
 The package provides the following:
  - Dart client library;
  - generated Protobuf Dart types:
