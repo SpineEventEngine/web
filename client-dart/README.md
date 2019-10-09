@@ -82,3 +82,33 @@ void main() {
           });
 }
 ```
+
+### Maintenance
+
+#### Publishing locally
+
+This package is published by Travis CI on a pull request merge.
+
+Should there be a need in publishing the package from a local machine, this may be done as follows:
+ - in `client-dart/build.gradle` change the value of `publicationDir` to a location on your computer
+but outside the project directory;
+ - run `./gradlew stagePubPublication`;
+ - in the selected directory, run `pub publish` and follow the instructions;
+ - don't forget to revert the changes to `client-dart/build.gradle`.
+
+_Note:_ in order to be able to do this, you have to be an [uploader](https://dart.dev/tools/pub/cmd/pub-uploader)
+for this package.
+
+#### Adding uploader
+
+As a uploader, you may add other uploaders for this package by running:
+```shell
+pub uploader --package spine_client add <email>
+```
+
+#### Removing uploader
+
+As a uploader, you may remove other uploaders for this package by running:
+```shell
+pub uploader --package spine_client remove <email>
+```
