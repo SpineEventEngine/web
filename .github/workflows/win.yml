@@ -22,6 +22,7 @@ jobs:
         run: git submodule update --init --recursive
 
       - name: Run unit tests with Gradle
+        shell: cmd
         run: >
           choco install dart-sdk --limitoutput
           & refreshenv
