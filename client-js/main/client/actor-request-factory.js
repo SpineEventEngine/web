@@ -27,11 +27,11 @@ import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
 import {OrderBy, Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
-    CompositeFilter,
-    Filter,
-    IdFilter,
-    Target,
-    TargetFilters
+  CompositeFilter,
+  Filter,
+  IdFilter,
+  Target,
+  TargetFilters
 } from '../proto/spine/client/filters_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
@@ -658,10 +658,9 @@ class QueryBuilder extends AbstractTargetBuilder {
   /**
    * Requests the query results to be ordered by the given `column` in the descending direction.
    *
-   * Weather or not the results will be sorted in the given order depends on the implementation
-   * details of the server-client communication. For example, the Firebase-based communication
-   * protocol does not preserve ordering. Regardless, if a `limit` is set for a query, an ordering
-   * is also required.
+   * Whether the results will be sorted in the requested order depends on the implementation of
+   * server-side communication. For example, the Firebase-based communication protocol does not
+   * preserve ordering. Regardless, if a `limit` is set for a query, an ordering is also required.
    *
    * @param column
    */
@@ -673,10 +672,9 @@ class QueryBuilder extends AbstractTargetBuilder {
   /**
    * Requests the query results to be ordered by the given `column` in the ascending direction.
    *
-   * Weather or not the results will be sorted in the given order depends on the implementation
-   * details of the server-client communication. For example, the Firebase-based communication
-   * protocol does not preserve ordering. Regardless, if a `limit` is set for a query, an ordering
-   * is also required.
+   * Whether the results will be sorted in the requested order depends on the implementation of
+   * server-side communication. For example, the Firebase-based communication protocol does not
+   * preserve ordering. Regardless, if a `limit` is set for a query, an ordering is also required.
    *
    * @param column
    */
