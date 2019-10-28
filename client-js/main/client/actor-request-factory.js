@@ -27,11 +27,11 @@ import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
 import {OrderBy, Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
-  CompositeFilter,
-  Filter,
-  IdFilter,
-  Target,
-  TargetFilters
+    CompositeFilter,
+    Filter,
+    IdFilter,
+    Target,
+    TargetFilters
 } from '../proto/spine/client/filters_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
