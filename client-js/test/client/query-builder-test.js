@@ -26,6 +26,7 @@ import {Type} from '@lib/client/typed-message';
 import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
+import {OrderBy} from '@proto/spine/client/query_pb';
 import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {CompositeFilter, Filter, TargetFilters} from '@proto/spine/client/filters_pb';
 
@@ -522,12 +523,14 @@ describe('QueryBuilder', function () {
 
   /********* LIMIT *********/
 
-  it('creates a Query with a limit', done => {
+  it('creates a Query with a limit and ascending ordering', done => {
     const limit = 42;
+    const fieldName = 'when_created';
     const query = Given.requestFactory()
         .query()
         .select(Given.ENTITY_CLASS.TASK)
         .limit(limit)
+        .orderAscendingBy(fieldName)
         .build();
 
     assert.ok(query.getId());
@@ -536,7 +539,40 @@ describe('QueryBuilder', function () {
 
     const format = query.getFormat();
     assert.equal(limit, format.getLimit());
+    assert.equal(fieldName, format.getOrderBy().getColumn());
+    assert.equal(OrderBy.Direction.ASCENDING, format.getOrderBy().getDirection());
 
+    done();
+  });
+
+  it('creates a Query with a limit and descending ordering', done => {
+    const limit = 42;
+    const fieldName = 'name';
+    const query = Given.requestFactory()
+        .query()
+        .select(Given.ENTITY_CLASS.TASK)
+        .limit(limit)
+        .orderDescendingBy(fieldName)
+        .build();
+
+    assert.ok(query.getId());
+
+    Given.assertActorContextCorrect(query.getContext());
+
+    const format = query.getFormat();
+    assert.equal(limit, format.getLimit());
+    assert.equal(fieldName, format.getOrderBy().getColumn());
+    assert.equal(OrderBy.Direction.DESCENDING, format.getOrderBy().getDirection());
+
+    done();
+  });
+
+  it('does not allow `limit` without `order_by`', done => {
+    const builder = Given.requestFactory()
+        .query()
+        .select(Given.ENTITY_CLASS.TASK)
+        .limit(42);
+    assert.throws(() => builder.build(), Error);
     done();
   });
 });

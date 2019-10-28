@@ -24,14 +24,14 @@ import uuid from 'uuid';
 
 import {Message} from 'google-protobuf';
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
-import {Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
+import {OrderBy, Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
 import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
-    CompositeFilter,
-    Filter,
-    IdFilter,
-    Target,
-    TargetFilters
+  CompositeFilter,
+  Filter,
+  IdFilter,
+  Target,
+  TargetFilters
 } from '../proto/spine/client/filters_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
@@ -629,6 +629,12 @@ class QueryBuilder extends AbstractTargetBuilder {
      * @private
      */
     this._limit = 0;
+
+    /**
+     * @type {OrderBy}
+     * @private
+     */
+    this._orderBy = null;
   }
 
   /**
@@ -636,6 +642,8 @@ class QueryBuilder extends AbstractTargetBuilder {
    *
    * The value must be non-negative, otherwise an error occurs. If set to `0`, all the available
    * entities are retrieved.
+   *
+   * When set, the result ordering must also be specified.
    *
    * @param {number} limit the max number of response entities
    */
@@ -648,6 +656,51 @@ class QueryBuilder extends AbstractTargetBuilder {
   }
 
   /**
+   * Requests the query results to be ordered by the given `column` in the descending direction.
+   *
+   * Whether the results will be sorted in the requested order depends on the implementation of
+   * server-side communication. For example, the Firebase-based communication protocol does not
+   * preserve ordering. Regardless, if a `limit` is set for a query, an ordering is also required.
+   *
+   * @param column
+   */
+  orderDescendingBy(column) {
+    this._addOrderBy(column, OrderBy.Direction.DESCENDING);
+    return this;
+  }
+
+  /**
+   * Requests the query results to be ordered by the given `column` in the ascending direction.
+   *
+   * Whether the results will be sorted in the requested order depends on the implementation of
+   * server-side communication. For example, the Firebase-based communication protocol does not
+   * preserve ordering. Regardless, if a `limit` is set for a query, an ordering is also required.
+   *
+   * @param column
+   */
+  orderAscendingBy(column) {
+    this._addOrderBy(column, OrderBy.Direction.ASCENDING);
+    return this;
+  }
+
+  /**
+   * Specifies the expected response ordering.
+   *
+   * @param column the name of the column to order by
+   * @param direction the direction of ordering: `OrderBy.Direction.ASCENDING` or
+   *        `OrderBy.Direction.DESCENDING`
+   * @private
+   */
+  _addOrderBy(column, direction) {
+    if (column === null) {
+      throw new Error("Column name must not be `null`.");
+    }
+    this._orderBy = new OrderBy();
+    this._orderBy.setColumn(column);
+    this._orderBy.setDirection(direction);
+  }
+
+  /**
    * Creates the Query instance based on the current builder configuration.
    *
    * @return {Query} a new query
@@ -656,7 +709,14 @@ class QueryBuilder extends AbstractTargetBuilder {
     const target = this.getTarget();
     const fieldMask = this.getMask();
     const limit = this._limit;
-    return this._factory.compose({forTarget: target, withMask: fieldMask, limit: limit});
+    const order = this._orderBy;
+    if (limit !== 0 && order === null) {
+        throw Error("Ordering is required for queries with a `limit`.")
+    }
+    return this._factory.compose({forTarget: target,
+                                  withMask: fieldMask,
+                                  limit: limit,
+                                  orderBy: order});
   }
 }
 
@@ -695,24 +755,26 @@ class QueryFactory {
    * @param {number} limit max number of entities to fetch
    * @return {Query}
    */
-  compose({forTarget: target, withMask: fieldMask, limit: limit}) {
-    return this._newQuery(target, fieldMask, limit);
+  compose({forTarget: target, withMask: fieldMask, limit: limit, orderBy: orderBy}) {
+    return this._newQuery(target, fieldMask, limit, orderBy);
   }
 
   /**
    * @param {!Target} target a specification of type and filters for `Query` result to match
    * @param {?FieldMask} fieldMask a specification of fields to be returned by executing `Query`
-   * @param {?Number} limit the maximum number of the requested entities
+   * @param {?Number} limit the maximum number of the requested entities; must go with `orderBy`
+   * @param {?OrderBy} orderBy ordering of the resulting entities
    * @return {Query} a new query instance
    * @private
    */
-  _newQuery(target, fieldMask, limit) {
+  _newQuery(target, fieldMask, limit, orderBy) {
     const id = QueryFactory._newId();
     const actorContext = this._requestFactory._actorContext();
 
     const format = new ResponseFormat();
     format.setFieldMask(fieldMask);
     format.setLimit(limit);
+    format.setOrderBy(orderBy);
 
     const result = new Query();
     result.setId(id);
