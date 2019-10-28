@@ -566,4 +566,13 @@ describe('QueryBuilder', function () {
 
     done();
   });
+
+  it('does not allow `limit` without `order_by`', done => {
+    const builder = Given.requestFactory()
+        .query()
+        .select(Given.ENTITY_CLASS.TASK)
+        .limit(42);
+    assert.throws(() => builder.build(), Error);
+    done();
+  });
 });

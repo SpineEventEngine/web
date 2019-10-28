@@ -712,6 +712,9 @@ class QueryBuilder extends AbstractTargetBuilder {
     const fieldMask = this.getMask();
     const limit = this._limit;
     const order = this._orderBy;
+    if (limit !== 0 && order === null) {
+        throw Error("Ordering is required for queries with a `limit`.")
+    }
     return this._factory.compose({forTarget: target,
                                   withMask: fieldMask,
                                   limit: limit,
