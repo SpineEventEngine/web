@@ -23,8 +23,4 @@ jobs:
 
       - name: Run unit tests with Gradle
         shell: cmd
-        run: >
-          choco install dart-sdk --limitoutput
-          & refreshenv
-          & pub global activate protoc_plugin
-          & gradlew.bat build  --stacktrace
+        run: gradlew.bat build --stacktrace
