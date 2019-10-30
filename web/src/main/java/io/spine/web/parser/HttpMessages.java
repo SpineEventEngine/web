@@ -55,8 +55,7 @@ import static java.util.stream.Collectors.joining;
  * the field can be found in the {@linkplain Message#getUnknownFields() unknown fields set} of
  * the parsed message.
  *
- * @author Dmytro Dashenkov
- * @see MessageFormat
+ *  @see MessageFormat
  */
 public final class HttpMessages {
 

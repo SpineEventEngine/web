@@ -41,7 +41,6 @@ import static java.util.regex.Pattern.compile;
  *
  * @param <M>
  *         the type of messages to parse
- * @author Dmytro Dashenkov
  */
 final class JsonMessageParser<M extends Message> implements MessageParser<M>, Logging {
 

@@ -30,7 +30,6 @@ import java.util.Optional;
  * <p>The string format is implementation specific.
  *
  * @param <M> the type of messages to parse
- * @author Dmytro Dashenkov
  */
 interface MessageParser<M extends Message> {
 

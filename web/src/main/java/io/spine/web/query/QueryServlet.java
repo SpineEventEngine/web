@@ -55,8 +55,6 @@ import java.util.Optional;
  * <p>A {@code QueryServlet} does not support serialization. Please keep that in mind when selecting
  * a servlet container. When trying to serialize an instance of {@code QueryServlet}, an
  * {@link UnsupportedOperationException} is thrown.
- *
- * @author Dmytro Dashenkov
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class QueryServlet extends NonSerializableServlet {

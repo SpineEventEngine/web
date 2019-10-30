@@ -46,8 +46,6 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * An {@link HttpServlet} representing a command endpoint.
  *
  * <p>Handles {@code POST} requests with {@linkplain Command commands} in their bodies.
- *
- * @author Dmytro Dashenkov
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class CommandServlet extends NonSerializableServlet {

@@ -36,8 +36,6 @@ import static java.util.Optional.empty;
 
 /**
  * Message formats supported by the {@link HttpMessages}.
- *
- * @author Dmytro Dashenkov
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
 enum MessageFormat {

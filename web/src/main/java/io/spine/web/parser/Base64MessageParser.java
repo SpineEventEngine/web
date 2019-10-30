@@ -36,7 +36,6 @@ import java.util.Optional;
  *
  * @param <M>
  *         the type of messages to parse
- * @author Dmytro Dashenkov
  */
 final class Base64MessageParser<M extends Message> implements MessageParser<M>, Logging {
 
