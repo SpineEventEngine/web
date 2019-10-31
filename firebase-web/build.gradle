@@ -40,6 +40,8 @@ dependencies {
 
     // Add an SLF4J binding because it's required by the Firebase Admin SDK.
     runtimeOnly "org.slf4j:slf4j-jdk14:$slf4jVersion"
+
+    testImplementation project(':testutil-web')
 }
 
 task compileProtoToJs {
