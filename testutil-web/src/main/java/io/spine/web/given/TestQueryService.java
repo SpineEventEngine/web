@@ -32,8 +32,8 @@ import io.spine.core.Version;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.google.protobuf.Any.pack;
 import static io.spine.core.Responses.ok;
+import static io.spine.protobuf.AnyPacker.pack;
 import static java.util.stream.Collectors.toSet;
 
 public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBase {
