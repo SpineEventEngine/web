@@ -20,6 +20,7 @@
 
 package io.spine.web.query;
 
+import com.google.protobuf.Message;
 import io.spine.web.RequestResult;
 
 import javax.servlet.ServletResponse;
@@ -31,8 +32,8 @@ import javax.servlet.ServletResponse;
  * be an error message, the data matching the associated query, or a token which identifies that
  * data in the delivery channel.
  *
- * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
+ * <p>A query result can be {@linkplain RequestResult#writeTo(ServletResponse, io.spine.web.parser.MessageFormat) written} into
  * a {@link ServletResponse} in order to be sent to a client.
  */
-public interface QueryProcessingResult extends RequestResult {
+public interface QueryProcessingResult<T extends Message> extends RequestResult<T> {
 }

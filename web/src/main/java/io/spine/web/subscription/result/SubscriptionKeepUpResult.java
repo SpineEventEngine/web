@@ -20,11 +20,12 @@
 
 package io.spine.web.subscription.result;
 
+import com.google.protobuf.Message;
 import io.spine.web.RequestResult;
 
 /**
  * An interface for a result of a request to keep up a subscription.
  */
-public interface SubscriptionKeepUpResult extends RequestResult {
+public interface SubscriptionKeepUpResult<T extends Message> extends RequestResult<T> {
 
 }

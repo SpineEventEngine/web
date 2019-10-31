@@ -20,6 +20,7 @@
 
 package io.spine.web.subscription;
 
+import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.web.subscription.result.SubscribeResult;
@@ -33,7 +34,7 @@ import io.spine.web.subscription.result.SubscriptionKeepUpResult;
  * {@link #keepUp(Subscription) keeping up} an existing {@link Subscription}
  * and {@link #cancel(Subscription) canceling} an existing {@code Subscription}.
  */
-public interface SubscriptionBridge {
+public interface SubscriptionBridge<S extends Message, K extends Message, C extends Message> {
 
     /**
      * Creates a new {@link Subscription} to a provided topic supplying this subscription to the
@@ -44,7 +45,7 @@ public interface SubscriptionBridge {
      * @return a {@link SubscribeResult} which can be written to a {@link
      *         javax.servlet.ServletResponse}
      */
-    SubscribeResult subscribe(Topic topic);
+    S subscribe(Topic topic);
 
     /**
      * Keep up the subscription, prohibiting it from closing from the server-side.
@@ -58,7 +59,7 @@ public interface SubscriptionBridge {
      * @return a {@link SubscriptionKeepUpResult} which can be written to
      *         a {@link javax.servlet.ServletResponse}
      */
-    SubscriptionKeepUpResult keepUp(Subscription subscription);
+    K keepUp(Subscription subscription);
 
     /**
      * Cancel the existing subscription, which stopping sending new data updates to the client.
@@ -68,5 +69,5 @@ public interface SubscriptionBridge {
      * @return a {@link SubscriptionCancelResult} which can be written to
      *         a {@link javax.servlet.ServletResponse}
      */
-    SubscriptionCancelResult cancel(Subscription subscription);
+    C cancel(Subscription subscription);
 }

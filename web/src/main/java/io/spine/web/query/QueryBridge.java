@@ -20,6 +20,7 @@
 
 package io.spine.web.query;
 
+import com.google.protobuf.Message;
 import io.spine.client.Query;
 
 /**
@@ -33,7 +34,7 @@ import io.spine.client.Query;
  * the query result. Refer to the concrete implementations to find out the details of their
  * behaviour.
  */
-public interface QueryBridge {
+public interface QueryBridge<T extends Message> {
 
     /**
      * Sends the given {@link io.spine.client.Query Query} to the 
@@ -45,5 +46,5 @@ public interface QueryBridge {
      * @param query the query to send
      * @return the query result
      */
-    QueryProcessingResult send(Query query);
+    T send(Query query);
 }

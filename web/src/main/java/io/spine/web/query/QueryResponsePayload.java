@@ -18,38 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.query;
 
-import io.spine.client.Subscription;
-import io.spine.web.firebase.NodePath;
-import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.client.QueryResponse;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import static io.spine.json.Json.toCompactJson;
+public final class QueryResponsePayload implements QueryProcessingResult<QueryResponse> {
 
-/**
- * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
- * to be written to the {@link ServletResponse}.
- *
- * <p>The result is a JSON formatted {@link Subscription} message.
- */
-final class FirebaseSubscribeResult implements SubscribeResult {
+    private final QueryResponse queryResponse;
 
-    private final FirebaseSubscription subscription;
-
-    FirebaseSubscribeResult(Subscription subscription, NodePath resultPath) {
-        this.subscription = FirebaseSubscription
-                .newBuilder()
-                .setSubscription(subscription)
-                .setNodePath(resultPath)
-                .vBuild();
+    QueryResponsePayload(QueryResponse queryResponse) {
+        this.queryResponse = checkNotNull(queryResponse);
     }
 
     @Override
-    public void writeTo(ServletResponse response) throws IOException {
-        response.getWriter()
-                .write(toCompactJson(subscription));
+    public QueryResponse response() {
+        return queryResponse;
     }
 }

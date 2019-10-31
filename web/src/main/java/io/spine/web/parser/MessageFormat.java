@@ -23,27 +23,36 @@ package io.spine.web.parser;
 import com.google.common.flogger.FluentLogger;
 import com.google.common.net.MediaType;
 import com.google.protobuf.Message;
+import io.spine.json.Json;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.common.net.MediaType.create;
-import static com.google.common.net.MediaType.parse;
 import static java.util.Optional.empty;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Message formats supported by the {@link HttpMessages}.
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
-enum MessageFormat {
+public enum MessageFormat {
 
     /**
      * The JSON message stringification format.
      */
-    JSON(Constants.PROTOBUF_JSON) {
+    JSON(JSON_UTF_8) {
+        @Override
+        public String print(Message message) {
+            return Json.toCompactJson(message);
+        }
+
         @Override
         <M extends Message> MessageParser<M> parserFor(Class<M> type) {
             return new JsonMessageParser<>(type);
@@ -53,7 +62,15 @@ enum MessageFormat {
     /**
      * The Base64 bytes message stringification format.
      */
-    BASE64(Constants.PROTOBUF_BINARY) {
+    BASE64(create("application", "x-protobuf")) {
+        @Override
+        public String print(Message message) {
+            byte[] bytes = message.toByteArray();
+            String raw = Base64.getEncoder()
+                               .encodeToString(bytes);
+            return raw;
+        }
+
         @Override
         <M extends Message> MessageParser<M> parserFor(Class<M> type) {
             return new Base64MessageParser<>(type);
@@ -71,6 +88,10 @@ enum MessageFormat {
         this.contentType = contentType;
     }
 
+    public MediaType contentType() {
+        return contentType;
+    }
+
     /**
      * Finds the required format for the given {@linkplain HttpServletRequest request}.
      *
@@ -84,7 +105,7 @@ enum MessageFormat {
      * @return the format of the message in the given request or {@code Optional.empty()} if
      *         the request does not justify the described format
      */
-    static Optional<MessageFormat> formatOf(HttpServletRequest request) {
+    public static Optional<MessageFormat> formatOf(HttpServletRequest request) {
         String contentTypeHeader = request.getHeader(CONTENT_TYPE);
 
         if (isNullOrEmpty(contentTypeHeader)) {
@@ -92,7 +113,7 @@ enum MessageFormat {
         }
 
         try {
-            MediaType type = parse(contentTypeHeader);
+            MediaType type = MediaType.parse(contentTypeHeader);
             Optional<MessageFormat> format = formatOf(type);
             if (!format.isPresent()) {
                 logger.atWarning()
@@ -111,13 +132,26 @@ enum MessageFormat {
         }
     }
 
-    static Optional<MessageFormat> formatOf(MediaType type) {
+    public abstract String print(Message message);
+
+    public <T extends Message> Optional<T> parse(String rawMessage, Class<T> cls) {
+        return parserFor(cls).parse(rawMessage);
+    }
+
+    private static String body(ServletRequest request) throws IOException {
+        String result = request.getReader()
+                               .lines()
+                               .collect(joining(" "));
+        return result;
+    }
+
+    private static Optional<MessageFormat> formatOf(MediaType type) {
         return Stream.of(values())
                      .filter(format -> format.matches(type))
                      .findFirst();
     }
 
-    boolean matches(MediaType otherContentType) {
+    private boolean matches(MediaType otherContentType) {
         return contentType.withoutParameters()
                           .is(otherContentType.withoutParameters());
     }
@@ -134,10 +168,4 @@ enum MessageFormat {
      * @return a message parses instance
      */
     abstract <M extends Message> MessageParser<M> parserFor(Class<M> type);
-
-    private static class Constants {
-
-        private static final MediaType PROTOBUF_JSON = JSON_UTF_8;
-        private static final MediaType PROTOBUF_BINARY = create("application", "x-protobuf");
-    }
 }

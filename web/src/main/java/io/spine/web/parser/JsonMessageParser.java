@@ -64,6 +64,12 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
         }
     }
 
+    @Override
+    public String write(Message message) {
+        String json = Json.toCompactJson(message);
+        return json;
+    }
+
     private static String cleanUp(String jsonFromRequest) {
         String json = EscapeSymbol.unEscapeAll(jsonFromRequest);
         String unQuoted = unQuote(json);
@@ -94,7 +100,7 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
         })
         LINE_FEED("\\n", "\n"),
         @SuppressWarnings("unused") // Used via `values()`.
-                QUOTATION_MARK("\\\"", "\"");
+        QUOTATION_MARK("\\\"", "\"");
 
         private final Pattern escapedPattern;
         private final String raw;

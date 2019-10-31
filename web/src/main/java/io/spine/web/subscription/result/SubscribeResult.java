@@ -20,11 +20,11 @@
 
 package io.spine.web.subscription.result;
 
+import com.google.protobuf.Message;
 import io.spine.web.RequestResult;
 
 /**
  * An interface for a result of a request to subscribe to some topic and receive its updates.
  */
-public interface SubscribeResult extends RequestResult {
-
+public interface SubscribeResult<T extends Message> extends RequestResult<T> {
 }

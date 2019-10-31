@@ -20,20 +20,15 @@
 
 package io.spine.web;
 
+import com.google.protobuf.Message;
+
 import javax.servlet.ServletResponse;
-import java.io.IOException;
 
 /**
  * A result of a request to Spine Web that can be written to a 
  * {@linkplain ServletResponse servlet response}.
  */
-public interface RequestResult {
+public interface RequestResult<T extends Message> {
 
-    /**
-     * Writes this {@code QueryProcessingResult} into the given {@link ServletResponse}.
-     *
-     * @param response the response to write the result into
-     * @throws IOException in case of a failure
-     */
-    void writeTo(ServletResponse response) throws IOException;
+    T response();
 }

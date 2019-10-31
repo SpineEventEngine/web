@@ -28,28 +28,17 @@ import io.spine.core.Response;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.subscription.result.SubscribeResult;
-import io.spine.web.subscription.result.SubscriptionCancelResult;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
-
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.json.Json.fromJson;
-import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.assertSubscriptionPointsToFirebase;
-import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.mockWriter;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newBridge;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newResponse;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newSubscription;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newTarget;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.topicFactory;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -93,52 +82,37 @@ class FirebaseSubscriptionBridgeTest {
 
     @Test
     @DisplayName("write OK response upon subscription keep up")
-    void keepUpSubscription() throws IOException {
+    void keepUpSubscription() {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
 
-        SubscriptionKeepUpResult result = bridge.keepUp(subscription);
-
-        ServletResponse response = mock(ServletResponse.class);
-        StringWriter writer = mockWriter(response);
-        result.writeTo(response);
+        Response keptUp = bridge.keepUp(subscription);
         Response responseMessage = newResponse();
-
-        assertEquals(toCompactJson(responseMessage), writer.toString());
+        assertThat(keptUp).isEqualTo(responseMessage);
     }
 
     @Test
     @DisplayName("write OK response upon cancelling subscription")
-    void cancelSubscription() throws IOException {
+    void cancelSubscription() {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
 
-        SubscribeResult subscribeResult = bridge.subscribe(topic);
-        assertThat(subscribeResult).isNotNull();
-        SubscriptionCancelResult result = bridge.cancel(subscription);
-
-        ServletResponse response = mock(ServletResponse.class);
-        StringWriter writer = mockWriter(response);
-        result.writeTo(response);
+        FirebaseSubscription subscriptionResult = bridge.subscribe(topic);
+        assertThat(subscriptionResult).isNotNull();
+        Response canceled = bridge.cancel(subscription);
         Response responseMessage = newResponse();
 
-        assertThat(writer.toString()).isEqualTo(toCompactJson(responseMessage));
+        assertThat(canceled).isEqualTo(responseMessage);
     }
 
     @Test
     @DisplayName("set firebase path to Subscription ID upon subscribe")
-    void subscribe() throws IOException {
+    void subscribe() {
         Topic topic = topicFactory.forTarget(newTarget());
 
-        SubscribeResult result = bridge.subscribe(topic);
-
-        ServletResponse response = mock(ServletResponse.class);
-        StringWriter writer = mockWriter(response);
-        result.writeTo(response);
-        FirebaseSubscription firebaseSubscription =
-                fromJson(writer.toString(), FirebaseSubscription.class);
+        FirebaseSubscription firebaseSubscription = bridge.subscribe(topic);
         Subscription subscription = firebaseSubscription.getSubscription();
-        assertEquals(topic, subscription.getTopic());
+        assertThat(subscription.getTopic()).isEqualTo(topic);
         assertSubscriptionPointsToFirebase(firebaseSubscription.getNodePath(), topic);
     }
 }

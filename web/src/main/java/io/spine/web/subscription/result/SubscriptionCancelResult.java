@@ -20,11 +20,12 @@
 
 package io.spine.web.subscription.result;
 
+import com.google.protobuf.Message;
 import io.spine.web.RequestResult;
 
 /**
  * An interface for a result of a request to cancel a subscription.
  */
-public interface SubscriptionCancelResult extends RequestResult {
+public interface SubscriptionCancelResult<T extends Message> extends RequestResult<T> {
 
 }

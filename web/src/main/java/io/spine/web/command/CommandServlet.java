@@ -20,27 +20,17 @@
 
 package io.spine.web.command;
 
-import com.google.common.net.MediaType;
 import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.grpc.MemoizingObserver;
 import io.spine.server.CommandService;
-import io.spine.web.NonSerializableServlet;
-import io.spine.web.parser.HttpMessages;
+import io.spine.web.MessageServlet;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.net.MediaType.JSON_UTF_8;
 import static io.spine.grpc.StreamObservers.memoizingObserver;
-import static io.spine.json.Json.toCompactJson;
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
  * An {@link HttpServlet} representing a command endpoint.
@@ -48,9 +38,7 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * <p>Handles {@code POST} requests with {@linkplain Command commands} in their bodies.
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class CommandServlet extends NonSerializableServlet {
-
-    private static final MediaType MIME_TYPE = JSON_UTF_8;
+public abstract class CommandServlet extends MessageServlet<Command, Ack> {
 
     private final CommandService commandService;
 
@@ -59,27 +47,12 @@ public abstract class CommandServlet extends NonSerializableServlet {
         this.commandService = checkNotNull(commandService);
     }
 
-    @OverridingMethodsMustInvokeSuper
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        Optional<Command> parsed = HttpMessages.parse(req, Command.class);
-        if (!parsed.isPresent()) {
-            resp.sendError(SC_BAD_REQUEST);
-        } else {
-            Command command = parsed.get();
-            MemoizingObserver<Ack> ack = memoizingObserver();
-            commandService.post(command, ack);
-            checkState(ack.isCompleted());
-            Ack result = ack.firstResponse();
-            writeToResponse(result, resp);
-        }
-    }
-
-    private static void writeToResponse(Ack ack, HttpServletResponse response)
-            throws IOException {
-        String json = toCompactJson(ack);
-        response.getWriter().append(json);
-        response.setContentType(MIME_TYPE.toString());
+    protected Ack handle(Command request) {
+        MemoizingObserver<Ack> ack = memoizingObserver();
+        commandService.post(request, ack);
+        checkState(ack.isCompleted());
+        Ack result = ack.firstResponse();
+        return result;
     }
 }

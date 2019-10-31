@@ -88,7 +88,7 @@ public final class HttpMessages {
         return message;
     }
 
-    private static String body(ServletRequest request) throws IOException {
+    public static String body(ServletRequest request) throws IOException {
         String result = request.getReader()
                                .lines()
                                .collect(joining(" "));

@@ -20,16 +20,12 @@
 
 package io.spine.web.query;
 
+import com.google.protobuf.Message;
 import io.spine.client.Query;
-import io.spine.web.NonSerializableServlet;
-import io.spine.web.parser.HttpMessages;
+import io.spine.web.MessageServlet;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
 
 /**
  * An {@link HttpServlet} which receives {@linkplain Query query requests}, passes them
@@ -43,9 +39,9 @@ import java.util.Optional;
  * {@code POST} request to this servlet. The request body should be a {@linkplain io.spine.json.Json
  * JSON} representation of a {@link Query io.spine.client.Query}.
  *
- * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query 
- * Query}), the response will contain the {@linkplain QueryProcessingResult query sending result}. 
- * Otherwise, the response will be empty with the response code 
+ * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query
+ * Query}), the response will contain the {@linkplain QueryProcessingResult query sending result}.
+ * Otherwise, the response will be empty with the response code
  * {@link HttpServletResponse#SC_BAD_REQUEST 400}.
  *
  * <p>A typical implementation would extend this class and provide a {@link QueryBridge} in
@@ -57,36 +53,23 @@ import java.util.Optional;
  * {@link UnsupportedOperationException} is thrown.
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class QueryServlet extends NonSerializableServlet {
+public abstract class QueryServlet<T extends Message> extends MessageServlet<Query, T> {
 
-    private final QueryBridge bridge;
+    private final QueryBridge<T> bridge;
 
     /**
      * Creates a new instance of {@code QueryServlet} with the given {@link QueryBridge}.
      *
-     * @param bridge the query bridge to be used in this query servlet
+     * @param bridge
+     *         the query bridge to be used in this query servlet
      */
-    protected QueryServlet(QueryBridge bridge) {
+    protected QueryServlet(QueryBridge<T> bridge) {
         super();
         this.bridge = bridge;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Handles the {@code POST} request through the {@link QueryBridge}.
-     */
-    @OverridingMethodsMustInvokeSuper
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        Optional<Query> optionalQuery = HttpMessages.parse(req, Query.class);
-        if (!optionalQuery.isPresent()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
-            Query query = optionalQuery.get();
-            QueryProcessingResult result = bridge.send(query);
-            result.writeTo(resp);
-        }
+    protected T handle(Query request) {
+        return bridge.send(request);
     }
 }
