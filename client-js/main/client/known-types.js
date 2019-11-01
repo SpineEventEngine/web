@@ -53,6 +53,20 @@ export default class KnownTypes {
   }
 
   /**
+   * Obtains JS class for the given Protobuf type URL.
+   *
+   * @param {!string} typeUrl the type URL
+   * @return {!Class} class of this Protobuf type
+   * @public
+   */
+  static classFor(typeUrl) {
+    const cls = types[typeUrl];
+    if (cls === null) {
+      throw new Error(`Class for type URL '${typeUrl}' is not found.`)
+    }
+  }
+
+  /**
    * Registers the type as a known type.
    *
    * @param {!Class} type the class of a Protobuf message or enum

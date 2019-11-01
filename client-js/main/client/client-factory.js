@@ -21,6 +21,10 @@
 import KnownTypes from './known-types';
 import TypeParsers from './parser/type-parsers';
 import {Client} from './client';
+import {HttpClient} from "./http-client";
+import {HttpEndpoint} from "./http-endpoint";
+import {ActorRequestFactory} from "./actor-request-factory";
+import {CommandingClient} from "./composite-client";
 
 /**
  * @typedef {Object} ClientOptions a type of object for initialization of Spine client
@@ -52,8 +56,7 @@ export class AbstractClientFactory {
    * @return {Client} a `Client` instance
    */
   static createClient(options) {
-    this._ensureOptionsSufficient(options);
-    this._registerTypes(...options.protoIndexFiles);
+    this._prepareOptions(options);
     return this._clientFor(options);
   }
 
@@ -66,6 +69,81 @@ export class AbstractClientFactory {
    */
   static _clientFor(options) {
     throw new Error('Not implemented in abstract base')
+  }
+
+  /**
+   * Creates a new instance of `QueryingClient` implementation in accordance with given options.
+   *
+   * @param {!ClientOptions} options client initialization options
+   * @return {QueryingClient} a `QueryingClient` instance
+   */
+  static createQuerying(options) {
+    this._prepareOptions(options);
+    return this._queryingClient(options);
+  }
+
+  /**
+   * Creates a new instance of `QueryingClient` implementation in accordance with given options.
+   *
+   * @param {!ClientOptions} options
+   * @return {QueryingClient}
+   * @protected
+   */
+  static _queryingClient(options) {
+    throw new Error('Not implemented in abstract base')
+  }
+
+  /**
+   * Creates a new instance of `SubscribingClient` implementation in accordance with given options.
+   *
+   * @param {!ClientOptions} options client initialization options
+   * @return {SubscribingClient} a `SubscribingClient` instance
+   */
+  static createSubscribing(options) {
+    this._prepareOptions(options);
+    return this._subscribingClient(options);
+  }
+
+  /**
+   * Creates a new instance of `SubscribingClient` implementation in accordance with given options.
+   *
+   * @param {!ClientOptions} options
+   * @return {SubscribingClient}
+   * @protected
+   */
+  static _subscribingClient(options) {
+    throw new Error('Not implemented in abstract base')
+  }
+
+  /**
+   * Creates a new instance of `CommandingClient` implementation in accordance with given options.
+   *
+   * @param {!ClientOptions} options client initialization options
+   * @return {CommandingClient} a `CommandingClient` instance
+   */
+  static createCommanding(options) {
+    this._prepareOptions(options);
+    return this._commandingClient(options);
+  }
+
+  /**
+   * Creates a new instance of `CommandingClient` implementation in accordance with given options.
+   *
+   * @param {!ClientOptions} options
+   * @return {CommandingClient}
+   * @protected
+   */
+  static _commandingClient(options) {
+    const httpClient = new HttpClient(options.endpointUrl);
+    const endpoint = new HttpEndpoint(httpClient);
+    const requestFactory = new ActorRequestFactory(options.actorProvider);
+
+    return new CommandingClient(endpoint, requestFactory);
+  }
+
+  static _prepareOptions(options) {
+    this._ensureOptionsSufficient(options);
+    this._registerTypes(...options.protoIndexFiles);
   }
 
   /**
@@ -123,8 +201,8 @@ export class AbstractClientFactory {
 export class CustomClientFactory extends AbstractClientFactory {
 
   /**
-   * Returns a custom Client implementation provided in options. Expects that the
-   * given options contain an implementation which extends `Client`.
+   * Returns a custom `Client` implementation provided in options. Expects that the given options
+   * contain an implementation which extends `Client`.
    *
    * Can be used to provide mock implementations of `Client`.
    *
@@ -133,6 +211,48 @@ export class CustomClientFactory extends AbstractClientFactory {
    * @override
    */
   static _clientFor(options) {
+    return options.implementation;
+  }
+
+  /**
+   * Returns a custom `QueryingClient` implementation provided in options. Expects that the given
+   * options contain an implementation which extends `QueryingClient`.
+   *
+   * Can be used to provide mock implementations of `QueryingClient`.
+   *
+   * @param {ClientOptions} options
+   * @return {QueryingClient} a custom `QueryingClient` implementation provided in options
+   * @override
+   */
+  static _queryingClient(options) {
+    return options.implementation;
+  }
+
+  /**
+   * Returns a custom `SubscribingClient` implementation provided in options. Expects that the given
+   * options contain an implementation which extends `SubscribingClient`.
+   *
+   * Can be used to provide mock implementations of `SubscribingClient`.
+   *
+   * @param {ClientOptions} options
+   * @return {SubscribingClient} a custom `SubscribingClient` implementation provided in options
+   * @override
+   */
+  static _subscribingClient(options) {
+    return options.implementation;
+  }
+
+  /**
+   * Returns a custom `CommandingClient` implementation provided in options. Expects that the given
+   * options contain an implementation which extends `CommandingClient`.
+   *
+   * Can be used to provide mock implementations of `CommandingClient`.
+   *
+   * @param {ClientOptions} options
+   * @return {CommandingClient} a custom `CommandingClient` implementation provided in options
+   * @override
+   */
+  static _commandingClient(options) {
     return options.implementation;
   }
 

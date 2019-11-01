@@ -22,8 +22,8 @@
 
 import {Observable, Subject, Subscription} from 'rxjs';
 import {
-  Subscription as SpineSubscription,
-  SubscriptionId
+    Subscription as SpineSubscription,
+    SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {AbstractClientFactory} from './client-factory';
 import ObjectToProto from './object-to-proto';
@@ -33,10 +33,10 @@ import {FirebaseDatabaseClient} from './firebase-database-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
 import {
-  CommandingClient,
-  CompositeClient,
-  QueryingClient,
-  SubscribingClient
+    CommandingClient,
+    CompositeClient,
+    QueryingClient,
+    SubscribingClient
 } from "./composite-client";
 
 /**
@@ -203,7 +203,8 @@ class FirebaseSubscribingClient extends SubscribingClient {
 }
 
 /**
- * An implementation of the `AbstractClientFactory` that creates instances of `FirebaseClient`.
+ * An implementation of the `AbstractClientFactory` that creates instances of client which exchanges
+ * data with the server via Firebase Realtime Database.
  */
 export class FirebaseClientFactory extends AbstractClientFactory {
 
@@ -236,6 +237,28 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     return new CompositeClient(querying, subscribing, commanding);
   }
 
+  static _queryingClient(options) {
+    const httpClient = new HttpClient(options.endpointUrl);
+    const endpoint = new HttpEndpoint(httpClient);
+    const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
+    const requestFactory = new ActorRequestFactory(options.actorProvider);
+
+    return new FirebaseQueryingClient(endpoint, firebaseDatabaseClient, requestFactory);
+  }
+
+  static _subscribingClient(options) {
+    const httpClient = new HttpClient(options.endpointUrl);
+    const endpoint = new HttpEndpoint(httpClient);
+    const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
+    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+
+    return new FirebaseSubscribingClient(endpoint,
+                                         firebaseDatabaseClient,
+                                         requestFactory,
+                                         subscriptionService);
+  }
+
   /**
    * @override
    */
@@ -250,7 +273,7 @@ export class FirebaseClientFactory extends AbstractClientFactory {
       throw new Error(messageForMissing('firebaseDatabase'));
     }
     if (!options.actorProvider) {
-      throw new Error(messageForMissing('endpointUrl'));
+      throw new Error(messageForMissing('actorProvider'));
     }
   }
 }

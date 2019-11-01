@@ -20,6 +20,7 @@
 
 import {FirebaseClientFactory} from './firebase-client';
 import {CustomClientFactory} from './client-factory';
+import {DirectClientFactory} from "./direct-client";
 
 /**
  * The main entry point of the `spine-web` JS library. Serves for initialization
@@ -64,8 +65,10 @@ export function init(options) {
 
   if (!!options.firebaseDatabase) {
     clientFactory = FirebaseClientFactory;
-  } else {
+  } else if (!!options.implementation) {
     clientFactory = CustomClientFactory;
+  } else {
+    clientFactory = DirectClientFactory;
   }
 
   return clientFactory.createClient(options);
