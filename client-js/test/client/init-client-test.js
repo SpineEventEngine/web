@@ -24,8 +24,8 @@ import * as testProtobuf from '@testProto/index';
 import {init} from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 import {MockClient} from './test-helpers';
-import {FirebaseClient} from '@lib/client/firebase-client';
 import KnownTypes from '@lib/client/known-types';
+import {Client} from "../../main";
 
 class Given {
 
@@ -102,7 +102,7 @@ describe('`init` function', function () {
 
   it('should create a FirebaseClient instance for the correct options', () => {
     const client = init(Given.firebaseClientOptions());
-    assert.ok(client instanceof FirebaseClient);
+    assert.ok(client instanceof Client);
   });
 
   it('should return the provided `Client` implementation for the correct options', () => {
