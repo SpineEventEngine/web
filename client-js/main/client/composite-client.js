@@ -102,7 +102,7 @@ export class QueryingClient {
     }
 
     fetch(entityClass, ids) {
-        const queryBuilder = this.newQuery().select(cls);
+        const queryBuilder = this.newQuery().select(entityClass);
         const query = _buildTarget(queryBuilder, ids);
         return this.execute(query);
     }
@@ -127,7 +127,7 @@ export class SubscribingClient {
     }
 
     subscribe(entityClass, ids) {
-        const topicBuilder = this.newTopic().select(cls);
+        const topicBuilder = this.newTopic().select(entityClass);
         const topic = _buildTarget(topicBuilder, ids);
 
         return this.subscribeTo(topic);
