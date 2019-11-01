@@ -24,6 +24,13 @@ import {CommandHandlingError, CommandValidationError, SpineError} from "./errors
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
 
+/**
+ * A {@link Client} delegates requests to case-specific client implementations.
+ *
+ * @see QueryingClient
+ * @see SubscribingClient
+ * @see CommandingClient
+ */
 export class CompositeClient extends Client {
 
     constructor(querying, subscribing, commanding) {
@@ -83,6 +90,9 @@ export class CompositeClient extends Client {
     }
 }
 
+/**
+ * A client which performs entity state queries.
+ */
 export class QueryingClient {
 
     /**
@@ -93,6 +103,17 @@ export class QueryingClient {
         this._requestFactory = actorRequestFactory;
     }
 
+    /**
+     * Executes the given `Query` instance specifying the data to be retrieved from
+     * Spine server fulfilling a returned promise with an array of received objects.
+     *
+     * @param {!Query} query a query instance to be executed
+     * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+     *        messages of a given type or with an empty list if no entities matching given query
+     *        were found; rejected with a `SpineError` if error occurs;
+     *
+     * @template <T> a Protobuf type of entities being the target of a query
+     */
     execute(query) {
         throw new Error('Not implemented in abstract base.');
     }
@@ -108,6 +129,9 @@ export class QueryingClient {
     }
 }
 
+/**
+ * A client which manages entity state and event subscriptions.
+ */
 export class SubscribingClient {
 
     /**
@@ -134,6 +158,9 @@ export class SubscribingClient {
     }
 }
 
+/**
+ * A client which posts commands.
+ */
 export class CommandingClient {
 
     constructor(endpoint, requestFactory) {
@@ -147,7 +174,8 @@ export class CommandingClient {
         this._endpoint.command(command)
             .then(ack => {
                 const responseStatus = ack.status;
-                const responseStatusProto = ObjectToProto.convert(responseStatus, KnownTypes.typeUrlFor(Status));
+                const typeUrl = KnownTypes.typeUrlFor(Status);
+                const responseStatusProto = ObjectToProto.convert(responseStatus, typeUrl);
                 const responseStatusCase = responseStatusProto.getStatusCase();
 
                 switch (responseStatusCase) {
@@ -165,7 +193,9 @@ export class CommandingClient {
                         rejectionCallback(responseStatusProto.getRejection());
                         break;
                     default:
-                        errorCallback(new SpineError(`Unknown response status case ${responseStatusCase}`));
+                        errorCallback(
+                            new SpineError(`Unknown response status case ${responseStatusCase}`)
+                        );
                 }
             })
             .catch(error => {
