@@ -24,7 +24,12 @@ import {AbstractClientFactory} from './client-factory';
 import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {ActorRequestFactory} from './actor-request-factory';
-import {CommandingClient, CompositeClient, QueryingClient} from "./composite-client";
+import {
+  CommandingClient,
+  CompositeClient,
+  QueryingClient,
+  SubscribingClient
+} from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
 import {Type} from "./typed-message";
