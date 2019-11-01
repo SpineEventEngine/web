@@ -25,10 +25,10 @@ import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {ActorRequestFactory} from './actor-request-factory';
 import {
-  CommandingClient,
-  CompositeClient,
-  QueryingClient,
-  SubscribingClient
+    CommandingClient,
+    CompositeClient,
+    QueryingClient,
+    SubscribingClient
 } from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
@@ -69,19 +69,6 @@ class DirectQueryingClient extends QueryingClient {
  */
 export class DirectClientFactory extends AbstractClientFactory {
 
-  /**
-   * Creates a new `FirebaseClient` instance which will send the requests on behalf of the provided
-   * actor to the provided endpoint, retrieving the data from the provided Firebase storage.
-   *
-   * Expects that given options contain backend endpoint URL, firebase Database instance and
-   * the actor provider.
-   *
-   * @param {ClientOptions} options
-   * @return {Client} a new backend client instance which will send the requests on behalf
-   *                  of the provided actor to the provided endpoint, retrieving the data
-   *                  from the provided Firebase storage
-   * @override
-   */
   static _clientFor(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient);
