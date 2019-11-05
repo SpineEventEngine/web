@@ -21,12 +21,14 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Duration;
+import io.spine.base.Error;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
+import io.spine.core.Status;
 import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
@@ -41,6 +43,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
 import static io.spine.base.Time.currentTime;
 import static io.spine.core.Responses.ok;
+import static java.lang.String.format;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -94,8 +97,8 @@ public final class FirebaseSubscriptionBridge
         Topic.Builder topic = subscription.getTopic()
                                           .toBuilder();
         topic.getContextBuilder().setTimestamp(currentTime());
-        repository.updateExisting(topic.buildPartial());
-        return ok();
+        boolean exists = repository.updateExisting(topic.buildPartial());
+        return exists ? ok() : missing(subscription);
     }
 
     @Override
@@ -108,7 +111,25 @@ public final class FirebaseSubscriptionBridge
             NodePath updatesPath = RequestNodePath.of(topic);
             firebaseClient.delete(updatesPath);
         });
-        return ok();
+        return localSubscription.isPresent() ? ok() : missing(subscription);
+    }
+
+    private static Response missing(Subscription subscription) {
+        String errorMessage =
+                format("Subscription `%s` is unknown or already canceled.",
+                       subscription.getId().getValue());
+        Error error = Error
+                .newBuilder()
+                .setMessage(errorMessage)
+                .build();
+        Status errorStatus = Status
+                .newBuilder()
+                .setError(error)
+                .build();
+        return Response
+                .newBuilder()
+                .setStatus(errorStatus)
+                .vBuild();
     }
 
     /**
