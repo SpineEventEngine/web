@@ -157,6 +157,8 @@ export class SubscribingClient {
     }
 }
 
+const _statusType = Status.typeUrl();
+
 /**
  * A client which posts commands.
  */
@@ -178,7 +180,7 @@ export class CommandingClient {
 
     _onAck(ack, acknowledgedCallback, errorCallback, rejectionCallback) {
         const responseStatus = ack.status;
-        const responseStatusProto = ObjectToProto.convert(responseStatus, Status.typeUrl());
+        const responseStatusProto = ObjectToProto.convert(responseStatus, _statusType);
         const responseStatusCase = responseStatusProto.getStatusCase();
 
         switch (responseStatusCase) {

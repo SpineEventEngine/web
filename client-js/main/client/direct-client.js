@@ -25,52 +25,22 @@ import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {ActorRequestFactory} from './actor-request-factory';
 import {
-  CommandingClient,
-  CompositeClient,
-  QueryingClient,
-  SubscribingClient
+    CommandingClient,
+    CompositeClient,
+    QueryingClient,
+    SubscribingClient
 } from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
 import {Type} from "./typed-message";
 import TypeParsers from "./parser/type-parsers";
 
-class DirectQueryingClient extends QueryingClient {
-
-  /**
-   * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
-   * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
-   *
-   * @protected use `FirebaseClient#usingFirebase()` for instantiation
-   */
-  constructor(endpoint, actorRequestFactory) {
-    super(actorRequestFactory);
-    this._endpoint = endpoint;
-  }
-
-  execute(query) {
-    const parser = TypeParsers.parserFor('type.spine.io/spine.client.QueryResponse');
-    const typeUrl = query.getTarget().getType();
-    const targetClass = KnownTypes.classFor(typeUrl);
-    const targetType = Type.of(targetClass, typeUrl);
-    return this._endpoint
-        .query(query)
-        .then(response => {
-          const message = parser.fromObject(response);
-          const entityStates = message.getMessageList();
-          return entityStates.map(entity => DirectQueryingClient._unpack(entity, targetType));
-    });
-  }
-
-  static _unpack(entity, targetType) {
-    const unpacker = AnyPacker.unpack(entity.getState());
-    return unpacker.as(targetType);
-  }
-}
-
 /**
  * An implementation of the `AbstractClientFactory` that creates instances of client which exchanges
  * data with the server directly.
+ *
+ * Querying is performed by sending a query to the server over HTTP and reading the query response
+ * from the HTTP response.
  */
 export class DirectClientFactory extends AbstractClientFactory {
 
@@ -111,5 +81,42 @@ export class DirectClientFactory extends AbstractClientFactory {
     if (!options.actorProvider) {
       throw new Error(messageForMissing('actorProvider'));
     }
+  }
+}
+
+const _responseParser = TypeParsers.parserFor('type.spine.io/spine.client.QueryResponse');
+
+/**
+ * A {@link QueryingClient} which reads entity states directly from the server.
+ */
+class DirectQueryingClient extends QueryingClient {
+
+  /**
+   * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
+   * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
+   *
+   * @protected use `FirebaseClient#usingFirebase()` for instantiation
+   */
+  constructor(endpoint, actorRequestFactory) {
+    super(actorRequestFactory);
+    this._endpoint = endpoint;
+  }
+
+  execute(query) {
+    const typeUrl = query.getTarget().getType();
+    const targetClass = KnownTypes.classFor(typeUrl);
+    const targetType = Type.of(targetClass, typeUrl);
+    return this._endpoint
+        .query(query)
+        .then(response => {
+          const message = _responseParser.fromObject(response);
+          const entityStates = message.getMessageList();
+          return entityStates.map(entity => DirectQueryingClient._unpack(entity, targetType));
+        });
+  }
+
+  static _unpack(entity, targetType) {
+    const unpacker = AnyPacker.unpack(entity.getState());
+    return unpacker.as(targetType);
   }
 }

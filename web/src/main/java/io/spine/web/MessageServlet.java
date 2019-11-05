@@ -24,17 +24,26 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Message;
 import io.spine.json.Json;
 import io.spine.reflect.GenericTypeIndex;
-import io.spine.web.parser.HttpMessages;
 import io.spine.web.parser.MessageFormat;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.util.stream.Collectors.joining;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
+/**
+ * An HTTP servlet which accepts POST requests with a message and responds with another message.
+ *
+ * @param <I>
+ *         the type of the input message
+ * @param <O>
+ *         the type of the output message
+ */
 @SuppressWarnings("serial")
 public abstract class MessageServlet<I extends Message, O extends Message>
         extends NonSerializableServlet {
@@ -48,11 +57,18 @@ public abstract class MessageServlet<I extends Message, O extends Message>
         requestType = type;
     }
 
+    /**
+     * Handles the servlet request and produces the response message.
+     *
+     * @param request
+     *         the request message
+     * @return the response message
+     */
     protected abstract O handle(I request);
 
     @Override
     @VisibleForTesting
-    public final void doPost(HttpServletRequest req, HttpServletResponse resp)
+    public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         Optional<I> optionalMessage = parseRequest(req);
         if (!optionalMessage.isPresent()) {
@@ -66,13 +82,20 @@ public abstract class MessageServlet<I extends Message, O extends Message>
 
     private Optional<I> parseRequest(HttpServletRequest req) throws IOException {
         Optional<MessageFormat> optionalFormat = MessageFormat.formatOf(req);
-        String body = HttpMessages.body(req);
+        String body = body(req);
         return optionalFormat.flatMap(
                 fmt -> fmt.parse(body, requestType)
         );
     }
 
-    private static void writeResponse(HttpServletResponse servletResponse, Message response)
+    private static String body(ServletRequest request) throws IOException {
+        String result = request.getReader()
+                               .lines()
+                               .collect(joining(" "));
+        return result;
+    }
+
+    private void writeResponse(HttpServletResponse servletResponse, O response)
             throws IOException {
         String json = Json.toCompactJson(response);
         servletResponse.getWriter()
@@ -80,9 +103,19 @@ public abstract class MessageServlet<I extends Message, O extends Message>
         servletResponse.setContentType(JSON_UTF_8.toString());
     }
 
+    /**
+     * Index of type parameters of a {@link MessageServlet}.
+     */
     private enum GenericParam implements GenericTypeIndex<MessageServlet> {
 
+        /**
+         * The {@code I} type param.
+         */
         REQUEST(0),
+
+        /**
+         * The {@code O} type param.
+         */
         RESPONSE(1);
 
         private final int index;

@@ -62,11 +62,7 @@ export default class KnownTypes {
   static classFor(typeUrl) {
     const cls = types.get(typeUrl);
     if (cls === null || cls === undefined) {
-      let allTypes = "";
-      for (let typesKey in types) {
-        allTypes += typesKey + "\n";
-      }
-      throw new Error(`Class for type URL '${typeUrl}' is not found. Known types are:\n${allTypes}`);
+      throw new Error(`Class for type URL '${typeUrl}' is not found.`);
     }
     return cls;
   }
