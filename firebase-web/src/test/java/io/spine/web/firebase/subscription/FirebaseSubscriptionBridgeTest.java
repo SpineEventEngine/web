@@ -28,11 +28,14 @@ import io.spine.core.Response;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.subscription.given.InMemFirebaseClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.core.Status.StatusCase.ERROR;
+import static io.spine.core.Status.StatusCase.OK;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.assertSubscriptionPointsToFirebase;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newBridge;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newResponse;
@@ -51,7 +54,7 @@ class FirebaseSubscriptionBridgeTest {
     @BeforeEach
     void setUp() {
         SubscriptionServiceImplBase subscriptionService = new TestSubscriptionService();
-        FirebaseClient firebaseClient = mock(FirebaseClient.class);
+        FirebaseClient firebaseClient = new InMemFirebaseClient();
         bridge = newBridge(firebaseClient, subscriptionService);
         topicFactory = topicFactory();
     }
@@ -84,11 +87,19 @@ class FirebaseSubscriptionBridgeTest {
     @DisplayName("write OK response upon subscription keep up")
     void keepUpSubscription() {
         Topic topic = topicFactory.forTarget(newTarget());
-        Subscription subscription = newSubscription(topic);
-
-        Response keptUp = bridge.keepUp(subscription);
+        FirebaseSubscription subscription = bridge.subscribe(topic);
+        Response keptUp = bridge.keepUp(subscription.getSubscription());
         Response responseMessage = newResponse();
         assertThat(keptUp).isEqualTo(responseMessage);
+    }
+
+    @Test
+    @DisplayName("write an error response upon unknown subscription keep up")
+    void failKeepUp() {
+        Topic topic = topicFactory.forTarget(newTarget());
+        Subscription subscription = newSubscription(topic);
+        Response keptUp = bridge.keepUp(subscription);
+        assertThat(keptUp.getStatus().getStatusCase()).isEqualTo(ERROR);
     }
 
     @Test
@@ -103,6 +114,27 @@ class FirebaseSubscriptionBridgeTest {
         Response responseMessage = newResponse();
 
         assertThat(canceled).isEqualTo(responseMessage);
+    }
+
+    @Test
+    @DisplayName("write an error response upon cancelling an unknown subscription")
+    void failCancellation() {
+        Topic topic = topicFactory.forTarget(newTarget());
+        Subscription subscription = newSubscription(topic);
+        Response canceled = bridge.cancel(subscription);
+        assertThat(canceled.getStatus().getStatusCase()).isEqualTo(ERROR);
+    }
+
+    @Test
+    @DisplayName("write an error response upon cancelling a subscription twice")
+    void failDoubleCancellation() {
+        Topic topic = topicFactory.forTarget(newTarget());
+        FirebaseSubscription subscriptionResult = bridge.subscribe(topic);
+        assertThat(subscriptionResult).isNotNull();
+        Response canceled = bridge.cancel(subscriptionResult.getSubscription());
+        assertThat(canceled.getStatus().getStatusCase()).isEqualTo(OK);
+        Response canceledAgain = bridge.cancel(subscriptionResult.getSubscription());
+        assertThat(canceledAgain.getStatus().getStatusCase()).isEqualTo(ERROR);
     }
 
     @Test

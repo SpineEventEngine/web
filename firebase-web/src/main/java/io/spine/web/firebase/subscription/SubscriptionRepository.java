@@ -137,6 +137,7 @@ final class SubscriptionRepository {
      */
     void cancel(Subscription subscription) {
         subscriptionService.cancel(subscription);
+        subscriptionRegistry.unregister(subscription);
         delete(subscription.getTopic());
     }
 

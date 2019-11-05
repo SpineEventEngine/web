@@ -121,11 +121,11 @@ public final class FirebaseSubscriptionBridge
         Error error = Error
                 .newBuilder()
                 .setMessage(errorMessage)
-                .build();
+                .buildPartial();
         Status errorStatus = Status
                 .newBuilder()
                 .setError(error)
-                .build();
+                .buildPartial();
         return Response
                 .newBuilder()
                 .setStatus(errorStatus)
