@@ -64,12 +64,6 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
         }
     }
 
-    @Override
-    public String write(Message message) {
-        String json = Json.toCompactJson(message);
-        return json;
-    }
-
     private static String cleanUp(String jsonFromRequest) {
         String json = EscapeSymbol.unEscapeAll(jsonFromRequest);
         String unQuoted = unQuote(json);

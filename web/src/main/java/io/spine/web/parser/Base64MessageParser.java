@@ -62,12 +62,4 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M>, 
             return Optional.empty();
         }
     }
-
-    @Override
-    public String write(Message message) {
-        byte[] bytes = message.toByteArray();
-        String base64Encoded = Base64.getEncoder()
-                                     .encodeToString(bytes);
-        return base64Encoded;
-    }
 }

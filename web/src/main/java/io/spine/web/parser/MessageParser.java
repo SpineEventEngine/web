@@ -41,6 +41,4 @@ interface MessageParser<M extends Message> {
      *         a message of type {@code M}
      */
     Optional<M> parse(String raw);
-
-    String write(Message message);
 }
