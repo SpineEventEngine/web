@@ -25,14 +25,15 @@ import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {ActorRequestFactory} from './actor-request-factory';
 import {
-    CommandingClient,
-    CompositeClient,
-    QueryingClient,
-    SubscribingClient
+  CommandingClient,
+  CompositeClient,
+  QueryingClient,
+  SubscribingClient
 } from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
 import {Type} from "./typed-message";
+import TypeParsers from "./parser/type-parsers";
 
 class DirectQueryingClient extends QueryingClient {
 
@@ -48,18 +49,22 @@ class DirectQueryingClient extends QueryingClient {
   }
 
   execute(query) {
+    const parser = TypeParsers.parserFor('type.spine.io/spine.client.QueryResponse');
     const typeUrl = query.getTarget().getType();
     const targetClass = KnownTypes.classFor(typeUrl);
     const targetType = Type.of(targetClass, typeUrl);
-    return new Promise((resolve, reject) => {
-      this._endpoint.query(query)
-          .then((response) => {
-            const messages = response.message
-                                     .map(entity => AnyPacker.unpack(entity.state).as(targetType));
-            resolve(messages);
-          })
-          .catch(error => reject(error));
+    return this._endpoint
+        .query(query)
+        .then(response => {
+          const message = parser.fromObject(response);
+          const entityStates = message.getMessageList();
+          return entityStates.map(entity => DirectQueryingClient._unpack(entity, targetType));
     });
+  }
+
+  static _unpack(entity, targetType) {
+    const unpacker = AnyPacker.unpack(entity.getState());
+    return unpacker.as(targetType);
   }
 }
 
@@ -71,7 +76,7 @@ export class DirectClientFactory extends AbstractClientFactory {
 
   static _clientFor(options) {
     const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient);
+    const endpoint = new HttpEndpoint(httpClient, options.routing);
     const requestFactory = new ActorRequestFactory(options.actorProvider);
 
     const querying = new DirectQueryingClient(endpoint, requestFactory);
@@ -82,7 +87,7 @@ export class DirectClientFactory extends AbstractClientFactory {
 
   static _queryingClient(options) {
     const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient);
+    const endpoint = new HttpEndpoint(httpClient, options.routing);
     const requestFactory = new ActorRequestFactory(options.actorProvider);
 
     return new DirectQueryingClient(endpoint, requestFactory);

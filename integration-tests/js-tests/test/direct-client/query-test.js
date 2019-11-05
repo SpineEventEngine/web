@@ -21,7 +21,7 @@
 import assert from 'assert';
 import {ensureUserTasks, fail} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-test-environment';
-import {client} from './given/firebase-client';
+import {client} from './given/direct-client';
 import {Filters} from '@lib/client/actor-request-factory';
 import {TypedMessage} from '@lib/client/typed-message';
 import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';
@@ -38,7 +38,8 @@ import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
  *                                  execution of query
  */
 
-describe('FirebaseClient executes query built', function () {
+describe('DirectClient executes query built', function () {
+
     let users;
 
     function toUserIds(users) {
@@ -177,13 +178,12 @@ describe('FirebaseClient executes query built', function () {
                     assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
                     done();
                 })
-                .catch(() => fail(done));
+                .catch(fail(done));
         });
     });
 
     it('with Date-based filter and returns correct values', (done) => {
         const userIds = toUserIds(users);
-
         client.fetch({entity: UserTasks, byIds: userIds})
             .then(data => {
                 assert.ok(Array.isArray(data));
@@ -212,7 +212,7 @@ describe('FirebaseClient executes query built', function () {
                         assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
                         done();
                     })
-                    .catch(() => fail(done));
+                    .catch(fail(done));
             });
     });
 });

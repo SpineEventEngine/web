@@ -37,6 +37,8 @@ import {CommandingClient} from "./composite-client";
  *  the optional provider of the user interacting with Spine
  * @property {?Client} implementation
  *  the optional custom implementation of `Client`
+ * @property {?Routing} routing
+ *  custom configuration of HTTP endpoints
  */
 
 /**
@@ -136,7 +138,7 @@ export class AbstractClientFactory {
    */
   static _commandingClient(options) {
     const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient);
+    const endpoint = new HttpEndpoint(httpClient, options.routing);
     const requestFactory = new ActorRequestFactory(options.actorProvider);
 
     return new CommandingClient(endpoint, requestFactory);

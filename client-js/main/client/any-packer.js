@@ -19,16 +19,7 @@
  */
 
 import {Message} from 'google-protobuf';
-import {
-  Type,
-  TypedMessage,
-  isProtobufMessage
-} from './typed-message';
-import {
-  Int32Value,
-  Int64Value,
-  StringValue
-} from '../proto/google/protobuf/wrappers_pb';
+import {isProtobufMessage, Type, TypedMessage} from './typed-message';
 import {Any} from '../proto/google/protobuf/any_pb';
 
 /**

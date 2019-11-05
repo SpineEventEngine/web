@@ -21,7 +21,7 @@
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ensureUserTasksCount, fail, toListObservable} from '../test-helpers';
-import {UserTasksTestEnvironment as TestEnvironment} from './given/users-test-environment';
+import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-test-environment';
 import {client} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';

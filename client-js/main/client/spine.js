@@ -71,7 +71,7 @@ export function init(options) {
 
 function _initCompositeClient(options) {
   const forQueries = options.forQueries;
-  const forSubscriptions = options.forsubscriptions;
+  const forSubscriptions = options.forSubscriptions;
   const forCommands = options.forCommands;
 
   if (!!forQueries || !!forSubscriptions || !!forCommands) {

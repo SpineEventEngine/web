@@ -88,10 +88,6 @@ public enum MessageFormat {
         this.contentType = contentType;
     }
 
-    public MediaType contentType() {
-        return contentType;
-    }
-
     /**
      * Finds the required format for the given {@linkplain HttpServletRequest request}.
      *

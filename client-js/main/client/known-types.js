@@ -60,10 +60,15 @@ export default class KnownTypes {
    * @public
    */
   static classFor(typeUrl) {
-    const cls = types[typeUrl];
-    if (cls === null) {
-      throw new Error(`Class for type URL '${typeUrl}' is not found.`)
+    const cls = types.get(typeUrl);
+    if (cls === null || cls === undefined) {
+      let allTypes = "";
+      for (let typesKey in types) {
+        allTypes += typesKey + "\n";
+      }
+      throw new Error(`Class for type URL '${typeUrl}' is not found. Known types are:\n${allTypes}`);
     }
+    return cls;
   }
 
   /**
@@ -73,7 +78,7 @@ export default class KnownTypes {
    * @param {!string} typeUrl the URL of the type
    */
   static register(type, typeUrl) {
-    if (!this.hasType(typeUrl)) {
+    if (!KnownTypes.hasType(typeUrl)) {
       types.set(typeUrl, type);
     }
   }
@@ -84,8 +89,7 @@ export default class KnownTypes {
    * @param {!string} typeUrl the type URL to check
    */
   static hasType(typeUrl) {
-    const result = types.has(typeUrl);
-    return result;
+    return types.has(typeUrl);
   }
 
   /**
