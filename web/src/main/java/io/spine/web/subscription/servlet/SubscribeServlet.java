@@ -24,15 +24,13 @@ import com.google.protobuf.Message;
 import io.spine.client.Topic;
 import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.SubscribeResult;
 
 /**
  * An abstract servlet for a client request to create a new  {@code Subscription} for the requested
  * {@link Topic Topic}.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
- * to process. After, {@linkplain SubscribeResult the processing result} is written to
- * the servlet response.
+ * to process. After, a processing result is written to the servlet response.
  *
  * @param <T>
  *         type of the response message

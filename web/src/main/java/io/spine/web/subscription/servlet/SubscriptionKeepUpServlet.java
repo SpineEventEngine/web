@@ -24,14 +24,12 @@ import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 /**
  * An abstract servlet for a client request to keep up an existing {@link Subscription}.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
- * to process. After, {@linkplain SubscriptionKeepUpResult the processing result} is written to
- * the servlet response.
+ * to process. After, a processing result is written to the servlet response.
  *
  * @param <T>
  *         type of the response message
