@@ -584,7 +584,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Nov 05 14:16:22 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@1.1.7`
@@ -635,52 +635,55 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 
 ## `Development` dependencies:
 
-1. **@babel/cli@7.6.4**
+1. **@babel/cli@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](https://github.com/babel/babel/tree/master/packages/babel-cli)
 1. **@babel/code-frame@7.5.5**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-code-frame](https://github.com/babel/babel/tree/master/packages/babel-code-frame)
-1. **@babel/core@7.6.4**
+1. **@babel/core@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
-1. **@babel/generator@7.6.4**
+1. **@babel/generator@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-generator](https://github.com/babel/babel/tree/master/packages/babel-generator)
-1. **@babel/helper-annotate-as-pure@7.0.0**
+1. **@babel/helper-annotate-as-pure@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-annotate-as-pure](https://github.com/babel/babel/tree/master/packages/babel-helper-annotate-as-pure)
-1. **@babel/helper-builder-binary-assignment-operator-visitor@7.1.0**
+1. **@babel/helper-builder-binary-assignment-operator-visitor@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor](https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor)
-1. **@babel/helper-call-delegate@7.4.4**
+1. **@babel/helper-call-delegate@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-call-delegate](https://github.com/babel/babel/tree/master/packages/babel-helper-call-delegate)
-1. **@babel/helper-define-map@7.5.5**
+1. **@babel/helper-create-regexp-features-plugin@7.7.0**
+     * Licenses: MIT
+     * Repository: unknown
+1. **@babel/helper-define-map@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-define-map](https://github.com/babel/babel/tree/master/packages/babel-helper-define-map)
-1. **@babel/helper-explode-assignable-expression@7.1.0**
+1. **@babel/helper-explode-assignable-expression@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression](https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression)
-1. **@babel/helper-function-name@7.1.0**
+1. **@babel/helper-function-name@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-function-name](https://github.com/babel/babel/tree/master/packages/babel-helper-function-name)
-1. **@babel/helper-get-function-arity@7.0.0**
+1. **@babel/helper-get-function-arity@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity](https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity)
-1. **@babel/helper-hoist-variables@7.4.4**
+1. **@babel/helper-hoist-variables@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables](https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables)
-1. **@babel/helper-member-expression-to-functions@7.5.5**
+1. **@babel/helper-member-expression-to-functions@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions](https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions)
-1. **@babel/helper-module-imports@7.0.0**
+1. **@babel/helper-module-imports@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports](https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports)
-1. **@babel/helper-module-transforms@7.5.5**
+1. **@babel/helper-module-transforms@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms](https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms)
-1. **@babel/helper-optimise-call-expression@7.0.0**
+1. **@babel/helper-optimise-call-expression@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression](https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression)
 1. **@babel/helper-plugin-utils@7.0.0**
@@ -689,34 +692,34 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/helper-regex@7.5.5**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-regex](https://github.com/babel/babel/tree/master/packages/babel-helper-regex)
-1. **@babel/helper-remap-async-to-generator@7.1.0**
+1. **@babel/helper-remap-async-to-generator@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-remap-async-to-generator](https://github.com/babel/babel/tree/master/packages/babel-helper-remap-async-to-generator)
-1. **@babel/helper-replace-supers@7.5.5**
+1. **@babel/helper-replace-supers@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers](https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers)
-1. **@babel/helper-simple-access@7.1.0**
+1. **@babel/helper-simple-access@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access](https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access)
-1. **@babel/helper-split-export-declaration@7.4.4**
+1. **@babel/helper-split-export-declaration@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration](https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration)
-1. **@babel/helper-wrap-function@7.2.0**
+1. **@babel/helper-wrap-function@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function](https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function)
-1. **@babel/helpers@7.6.2**
+1. **@babel/helpers@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helpers](https://github.com/babel/babel/tree/master/packages/babel-helpers)
 1. **@babel/highlight@7.5.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-highlight](https://github.com/babel/babel/tree/master/packages/babel-highlight)
-1. **@babel/parser@7.6.4**
+1. **@babel/parser@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-parser](https://github.com/babel/babel/tree/master/packages/babel-parser)
-1. **@babel/plugin-proposal-async-generator-functions@7.2.0**
+1. **@babel/plugin-proposal-async-generator-functions@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-async-generator-functions](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-async-generator-functions)
-1. **@babel/plugin-proposal-dynamic-import@7.5.0**
+1. **@babel/plugin-proposal-dynamic-import@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-dynamic-import](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-dynamic-import)
 1. **@babel/plugin-proposal-json-strings@7.2.0**
@@ -728,7 +731,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-proposal-optional-catch-binding@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-catch-binding](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-catch-binding)
-1. **@babel/plugin-proposal-unicode-property-regex@7.6.2**
+1. **@babel/plugin-proposal-unicode-property-regex@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-unicode-property-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-unicode-property-regex)
 1. **@babel/plugin-syntax-async-generators@7.2.0**
@@ -746,10 +749,13 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-syntax-optional-catch-binding@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding)
+1. **@babel/plugin-syntax-top-level-await@7.7.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-top-level-await](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-top-level-await)
 1. **@babel/plugin-transform-arrow-functions@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-arrow-functions](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-arrow-functions)
-1. **@babel/plugin-transform-async-to-generator@7.5.0**
+1. **@babel/plugin-transform-async-to-generator@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator)
 1. **@babel/plugin-transform-block-scoped-functions@7.2.0**
@@ -758,7 +764,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-transform-block-scoping@7.6.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping)
-1. **@babel/plugin-transform-classes@7.5.5**
+1. **@babel/plugin-transform-classes@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes)
 1. **@babel/plugin-transform-computed-properties@7.2.0**
@@ -767,7 +773,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-transform-destructuring@7.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring)
-1. **@babel/plugin-transform-dotall-regex@7.6.2**
+1. **@babel/plugin-transform-dotall-regex@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-dotall-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-dotall-regex)
 1. **@babel/plugin-transform-duplicate-keys@7.5.0**
@@ -779,7 +785,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-transform-for-of@7.4.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-for-of](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-for-of)
-1. **@babel/plugin-transform-function-name@7.4.4**
+1. **@babel/plugin-transform-function-name@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-function-name](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-function-name)
 1. **@babel/plugin-transform-literals@7.2.0**
@@ -791,16 +797,16 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-transform-modules-amd@7.5.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-amd](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-amd)
-1. **@babel/plugin-transform-modules-commonjs@7.6.0**
+1. **@babel/plugin-transform-modules-commonjs@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-commonjs](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-commonjs)
-1. **@babel/plugin-transform-modules-systemjs@7.5.0**
+1. **@babel/plugin-transform-modules-systemjs@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-systemjs](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-systemjs)
-1. **@babel/plugin-transform-modules-umd@7.2.0**
+1. **@babel/plugin-transform-modules-umd@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-umd](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-umd)
-1. **@babel/plugin-transform-named-capturing-groups-regex@7.6.3**
+1. **@babel/plugin-transform-named-capturing-groups-regex@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 1. **@babel/plugin-transform-new-target@7.4.4**
@@ -815,7 +821,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-transform-property-literals@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-property-literals](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-property-literals)
-1. **@babel/plugin-transform-regenerator@7.4.5**
+1. **@babel/plugin-transform-regenerator@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-regenerator](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-regenerator)
 1. **@babel/plugin-transform-reserved-words@7.2.0**
@@ -836,22 +842,22 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@babel/plugin-transform-typeof-symbol@7.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-typeof-symbol](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-typeof-symbol)
-1. **@babel/plugin-transform-unicode-regex@7.6.2**
+1. **@babel/plugin-transform-unicode-regex@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex)
-1. **@babel/preset-env@7.6.3**
+1. **@babel/preset-env@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-env](https://github.com/babel/babel/tree/master/packages/babel-preset-env)
-1. **@babel/register@7.6.2**
+1. **@babel/register@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-register](https://github.com/babel/babel/tree/master/packages/babel-register)
-1. **@babel/template@7.6.0**
+1. **@babel/template@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-template](https://github.com/babel/babel/tree/master/packages/babel-template)
-1. **@babel/traverse@7.6.3**
+1. **@babel/traverse@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-traverse](https://github.com/babel/babel/tree/master/packages/babel-traverse)
-1. **@babel/types@7.6.3**
+1. **@babel/types@7.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-types](https://github.com/babel/babel/tree/master/packages/babel-types)
 1. **@firebase/app-types@0.4.3**
@@ -920,7 +926,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **@firebase/webchannel-wrapper@0.2.26**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@grpc/proto-loader@0.5.2**
+1. **@grpc/proto-loader@0.5.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/grpc/grpc-node](https://github.com/grpc/grpc-node)
 1. **@protobufjs/aspromise@1.1.2**
@@ -1796,9 +1802,6 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **is-number@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/is-number](https://github.com/jonschlinkert/is-number)
-1. **is-plain-obj@1.1.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/is-plain-obj](https://github.com/sindresorhus/is-plain-obj)
 1. **is-plain-object@2.0.4**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/is-plain-object](https://github.com/jonschlinkert/is-plain-object)
@@ -1991,6 +1994,9 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **minimatch@3.0.4**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/minimatch](https://github.com/isaacs/minimatch)
+1. **minimist@0.0.10**
+     * Licenses: MIT
+     * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
 1. **minimist@0.0.8**
      * Licenses: MIT
      * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
@@ -2147,9 +2153,6 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
 1. **osenv@0.1.5**
      * Licenses: ISC
      * Repository: [https://github.com/npm/osenv](https://github.com/npm/osenv)
-1. **output-file-sync@2.0.1**
-     * Licenses: ISC
-     * Repository: [https://github.com/shinnn/output-file-sync](https://github.com/shinnn/output-file-sync)
 1. **p-defer@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/p-defer](https://github.com/sindresorhus/p-defer)
@@ -2794,7 +2797,7 @@ This report was generated on **Mon Nov 04 16:28:35 EET 2019** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Mon Nov 04 2019 16:28:37 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Tue Nov 05 2019 14:16:24 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3740,7 +3743,7 @@ This report was generated on **Mon Nov 04 2019 16:28:37 GMT+0200 (EET)** using [
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Nov 04 16:28:38 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Nov 05 14:16:26 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4329,7 +4332,7 @@ This report was generated on **Mon Nov 04 16:28:38 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Nov 04 16:28:39 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Nov 05 14:16:27 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6200,7 +6203,7 @@ This report was generated on **Mon Nov 04 16:28:39 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Nov 04 16:28:41 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Nov 05 14:16:30 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6712,7 +6715,7 @@ This report was generated on **Mon Nov 04 16:28:41 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Nov 04 16:28:41 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Nov 05 14:16:31 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -7304,4 +7307,4 @@ This report was generated on **Mon Nov 04 16:28:41 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Nov 04 16:28:42 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Nov 05 14:16:32 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

@@ -19,7 +19,6 @@
  */
 
 import ObjectToProto from "./object-to-proto";
-import KnownTypes from "./known-types";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
@@ -168,39 +167,39 @@ export class CommandingClient {
         this._endpoint = endpoint;
     }
 
-
     sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
         const command = this._requestFactory.command().create(commandMessage);
         this._endpoint.command(command)
-            .then(ack => {
-                const responseStatus = ack.status;
-                const typeUrl = KnownTypes.typeUrlFor(Status);
-                const responseStatusProto = ObjectToProto.convert(responseStatus, typeUrl);
-                const responseStatusCase = responseStatusProto.getStatusCase();
-
-                switch (responseStatusCase) {
-                    case Status.StatusCase.OK:
-                        acknowledgedCallback();
-                        break;
-                    case Status.StatusCase.ERROR:
-                        const error = responseStatusProto.getError();
-                        const message = error.getMessage();
-                        errorCallback(error.hasValidationError()
-                            ? new CommandValidationError(message, error)
-                            : new CommandHandlingError(message, error));
-                        break;
-                    case Status.StatusCase.REJECTION:
-                        rejectionCallback(responseStatusProto.getRejection());
-                        break;
-                    default:
-                        errorCallback(
-                            new SpineError(`Unknown response status case ${responseStatusCase}`)
-                        );
-                }
-            })
+            .then(ack => this._onAck(ack, acknowledgedCallback, errorCallback, rejectionCallback))
             .catch(error => {
                 errorCallback(new CommandHandlingError(error.message, error));
             });
+    }
+
+    _onAck(ack, acknowledgedCallback, errorCallback, rejectionCallback) {
+        const responseStatus = ack.status;
+        const responseStatusProto = ObjectToProto.convert(responseStatus, Status.typeUrl());
+        const responseStatusCase = responseStatusProto.getStatusCase();
+
+        switch (responseStatusCase) {
+            case Status.StatusCase.OK:
+                acknowledgedCallback();
+                break;
+            case Status.StatusCase.ERROR:
+                const error = responseStatusProto.getError();
+                const message = error.getMessage();
+                errorCallback(error.hasValidationError()
+                    ? new CommandValidationError(message, error)
+                    : new CommandHandlingError(message, error));
+                break;
+            case Status.StatusCase.REJECTION:
+                rejectionCallback(responseStatusProto.getRejection());
+                break;
+            default:
+                errorCallback(
+                    new SpineError(`Unknown response status case ${responseStatusCase}`)
+                );
+        }
     }
 }
 
@@ -227,6 +226,5 @@ function _buildTarget(targetBuilder, ids) {
     } else if (!!ids) {
         targetBuilder.byIds([ids]);
     }
-
     return targetBuilder.build();
 }
