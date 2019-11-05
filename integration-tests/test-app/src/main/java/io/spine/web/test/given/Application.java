@@ -25,6 +25,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.protobuf.util.Durations;
 import io.spine.io.Resource;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
@@ -68,6 +69,7 @@ final class Application {
         this.subscriptionBridge = FirebaseSubscriptionBridge
                 .newBuilder()
                 .setSubscriptionService(subscriptionService)
+                .setSubscriptionLifeSpan(Durations.fromMinutes(2))
                 .setFirebaseClient(client)
                 .build();
     }

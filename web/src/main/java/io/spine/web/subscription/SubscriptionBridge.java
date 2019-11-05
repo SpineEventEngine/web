@@ -23,9 +23,6 @@ package io.spine.web.subscription;
 import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
-import io.spine.web.subscription.result.SubscribeResult;
-import io.spine.web.subscription.result.SubscriptionCancelResult;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 /**
  * A bridge for requests to a subscription {@link io.spine.server.SubscriptionService}.
@@ -33,6 +30,13 @@ import io.spine.web.subscription.result.SubscriptionKeepUpResult;
  * <p>Defines an interface for {@link #subscribe(Topic) subscribing} to a {@link Topic},
  * {@link #keepUp(Subscription) keeping up} an existing {@link Subscription}
  * and {@link #cancel(Subscription) canceling} an existing {@code Subscription}.
+ *
+ * @param <S>
+ *         response type for {@link #subscribe(Topic)} requests
+ * @param <K>
+ *         response type for {@link #keepUp(Subscription)} requests
+ * @param <C>
+ *         response type for {@link #cancel(Subscription)} requests
  */
 public interface SubscriptionBridge<S extends Message, K extends Message, C extends Message> {
 
@@ -42,8 +46,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      *
      * @param topic
      *         a topic to subscribe the client to
-     * @return a {@link SubscribeResult} which can be written to a {@link
-     *         javax.servlet.ServletResponse}
+     * @return a message describing the created subscription
      */
     S subscribe(Topic topic);
 
@@ -56,8 +59,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      *
      * @param subscription
      *         a subscription that should stay open
-     * @return a {@link SubscriptionKeepUpResult} which can be written to
-     *         a {@link javax.servlet.ServletResponse}
+     * @return the keep-up response
      */
     K keepUp(Subscription subscription);
 
@@ -66,8 +68,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      *
      * @param subscription
      *         a subscription that should be stopped from receiving updates
-     * @return a {@link SubscriptionCancelResult} which can be written to
-     *         a {@link javax.servlet.ServletResponse}
+     * @return the cancellation response
      */
     C cancel(Subscription subscription);
 }
