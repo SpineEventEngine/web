@@ -25,10 +25,10 @@ import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {ActorRequestFactory} from './actor-request-factory';
 import {
-    CommandingClient,
-    CompositeClient,
-    QueryingClient,
-    SubscribingClient
+  CommandingClient,
+  CompositeClient,
+  QueryingClient,
+  SubscribingClient
 } from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
@@ -84,8 +84,6 @@ export class DirectClientFactory extends AbstractClientFactory {
   }
 }
 
-const _responseParser = TypeParsers.parserFor('type.spine.io/spine.client.QueryResponse');
-
 /**
  * A {@link QueryingClient} which reads entity states directly from the server.
  */
@@ -106,10 +104,11 @@ class DirectQueryingClient extends QueryingClient {
     const typeUrl = query.getTarget().getType();
     const targetClass = KnownTypes.classFor(typeUrl);
     const targetType = Type.of(targetClass, typeUrl);
+    const responseParser = TypeParsers.parserFor('type.spine.io/spine.client.QueryResponse');
     return this._endpoint
         .query(query)
         .then(response => {
-          const message = _responseParser.fromObject(response);
+          const message = responseParser.fromObject(response);
           const entityStates = message.getMessageList();
           return entityStates.map(entity => DirectQueryingClient._unpack(entity, targetType));
         });
