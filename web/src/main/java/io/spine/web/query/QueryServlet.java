@@ -28,9 +28,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * An {@link HttpServlet} which receives {@linkplain Query query requests}, passes them
- * into a {@link QueryBridge} and writes the {@linkplain QueryProcessingResult sending result} into
- * the response.
+ * An {@link HttpServlet} which receives {@linkplain Query query requests} and handles them via
+ * a {@link QueryBridge}.
  *
  * <p>The servlet supports only {@code POST} requests. {@code GET}, {@code HEAD}, {@code PUT},
  * {@code DELETE}, {@code OPTIONS}, and {@code TRACE} methods are not supported by default.
@@ -40,9 +39,11 @@ import javax.servlet.http.HttpServletResponse;
  * JSON} representation of a {@link Query io.spine.client.Query}.
  *
  * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query
- * Query}), the response will contain the {@linkplain QueryProcessingResult query sending result}.
- * Otherwise, the response will be empty with the response code
- * {@link HttpServletResponse#SC_BAD_REQUEST 400}.
+ * Query}), the response will contain a message with the query result. The format of the result
+ * depends on the implementation of {@link QueryBridge}.
+ *
+ * <p>If the query cannot be parsed from the request, the response will be empty with the response
+ * code {@link HttpServletResponse#SC_BAD_REQUEST 400}.
  *
  * <p>A typical implementation would extend this class and provide a {@link QueryBridge} in
  * the constructor. No additional config is required in order for this servlet to handle
@@ -51,6 +52,8 @@ import javax.servlet.http.HttpServletResponse;
  * <p>A {@code QueryServlet} does not support serialization. Please keep that in mind when selecting
  * a servlet container. When trying to serialize an instance of {@code QueryServlet}, an
  * {@link UnsupportedOperationException} is thrown.
+ *
+ * @param <T> the type of the query result
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class QueryServlet<T extends Message> extends MessageServlet<Query, T> {

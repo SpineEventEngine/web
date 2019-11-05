@@ -33,6 +33,9 @@ import io.spine.web.subscription.result.SubscribeResult;
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, {@linkplain SubscribeResult the processing result} is written to
  * the servlet response.
+ *
+ * @param <T>
+ *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscribeServlet<T extends Message> extends MessageServlet<Topic, T> {
