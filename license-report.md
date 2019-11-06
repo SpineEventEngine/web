@@ -55,7 +55,7 @@
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -584,7 +584,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Nov 05 16:31:33 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 18:08:13 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@1.1.7`
@@ -977,7 +977,7 @@ This report was generated on **Tue Nov 05 16:31:33 EET 2019** using [Gradle-Lice
 1. **@types/long@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/node@10.17.3**
+1. **@types/node@10.17.4**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@webassemblyjs/ast@1.8.5**
@@ -1325,7 +1325,7 @@ This report was generated on **Tue Nov 05 16:31:33 EET 2019** using [Gradle-Lice
 1. **constants-browserify@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/juliangruber/constants-browserify](https://github.com/juliangruber/constants-browserify)
-1. **convert-source-map@1.6.0**
+1. **convert-source-map@1.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/thlorenz/convert-source-map](https://github.com/thlorenz/convert-source-map)
 1. **copy-concurrently@1.0.5**
@@ -1439,7 +1439,7 @@ This report was generated on **Tue Nov 05 16:31:33 EET 2019** using [Gradle-Lice
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.303**
+1. **electron-to-chromium@1.3.304**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.5.1**
@@ -2642,7 +2642,7 @@ This report was generated on **Tue Nov 05 16:31:33 EET 2019** using [Gradle-Lice
 1. **typedarray@0.0.6**
      * Licenses: MIT
      * Repository: [https://github.com/substack/typedarray](https://github.com/substack/typedarray)
-1. **uglify-js@3.6.7**
+1. **uglify-js@3.6.8**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/mishoo/UglifyJS2](https://github.com/mishoo/UglifyJS2)
 1. **unicode-canonical-property-names-ecmascript@1.0.4**
@@ -2797,7 +2797,7 @@ This report was generated on **Tue Nov 05 16:31:33 EET 2019** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Tue Nov 05 2019 16:31:36 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Wed Nov 06 2019 18:08:16 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -2815,7 +2815,7 @@ This report was generated on **Tue Nov 05 2019 16:31:36 GMT+0200 (EET)** using [
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -3151,7 +3151,7 @@ This report was generated on **Tue Nov 05 2019 16:31:36 GMT+0200 (EET)** using [
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -3743,7 +3743,7 @@ This report was generated on **Tue Nov 05 2019 16:31:36 GMT+0200 (EET)** using [
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Nov 05 16:31:40 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 18:08:17 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3803,7 +3803,7 @@ This report was generated on **Tue Nov 05 16:31:40 EET 2019** using [Gradle-Lice
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4332,7 +4332,7 @@ This report was generated on **Tue Nov 05 16:31:40 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Nov 05 16:31:41 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 18:08:18 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4350,7 +4350,7 @@ This report was generated on **Tue Nov 05 16:31:41 EET 2019** using [Gradle-Lice
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4706,7 +4706,7 @@ This report was generated on **Tue Nov 05 16:31:41 EET 2019** using [Gradle-Lice
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **Manifest license URL:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -6203,7 +6203,7 @@ This report was generated on **Tue Nov 05 16:31:41 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Nov 05 16:33:19 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 18:08:22 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6715,7 +6715,7 @@ This report was generated on **Tue Nov 05 16:33:19 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Nov 05 16:33:19 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 18:08:22 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -7307,4 +7307,4 @@ This report was generated on **Tue Nov 05 16:33:19 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Nov 05 16:33:20 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Nov 06 18:08:23 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

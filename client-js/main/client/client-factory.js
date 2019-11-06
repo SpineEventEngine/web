@@ -81,18 +81,6 @@ export class AbstractClientFactory {
    * @return {QueryingClient} a `QueryingClient` instance
    */
   static createQuerying(options) {
-    this._ensureOptionsSufficient(options);
-    return this._queryingClient(options);
-  }
-
-  /**
-   * Creates a new instance of `QueryingClient` implementation in accordance with given options.
-   *
-   * @param {!ClientOptions} options
-   * @return {QueryingClient}
-   * @protected
-   */
-  static _queryingClient(options) {
     throw new Error('Not implemented in abstract base')
   }
 
@@ -103,18 +91,6 @@ export class AbstractClientFactory {
    * @return {SubscribingClient} a `SubscribingClient` instance
    */
   static createSubscribing(options) {
-    this._ensureOptionsSufficient(options);
-    return this._subscribingClient(options);
-  }
-
-  /**
-   * Creates a new instance of `SubscribingClient` implementation in accordance with given options.
-   *
-   * @param {!ClientOptions} options
-   * @return {SubscribingClient}
-   * @protected
-   */
-  static _subscribingClient(options) {
     throw new Error('Not implemented in abstract base')
   }
 
@@ -125,18 +101,6 @@ export class AbstractClientFactory {
    * @return {CommandingClient} a `CommandingClient` instance
    */
   static createCommanding(options) {
-    this._ensureOptionsSufficient(options);
-    return this._commandingClient(options);
-  }
-
-  /**
-   * Creates a new instance of `CommandingClient` implementation in accordance with given options.
-   *
-   * @param {!ClientOptions} options
-   * @return {CommandingClient}
-   * @protected
-   */
-  static _commandingClient(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const requestFactory = new ActorRequestFactory(options.actorProvider);
@@ -202,7 +166,7 @@ export class CustomClientFactory extends AbstractClientFactory {
    * @return {QueryingClient} a custom `QueryingClient` implementation provided in options
    * @override
    */
-  static _queryingClient(options) {
+  static createQuerying(options) {
     return options.implementation;
   }
 
@@ -216,7 +180,7 @@ export class CustomClientFactory extends AbstractClientFactory {
    * @return {SubscribingClient} a custom `SubscribingClient` implementation provided in options
    * @override
    */
-  static _subscribingClient(options) {
+  static createSubscribing(options) {
     return options.implementation;
   }
 
@@ -230,7 +194,7 @@ export class CustomClientFactory extends AbstractClientFactory {
    * @return {CommandingClient} a custom `CommandingClient` implementation provided in options
    * @override
    */
-  static _commandingClient(options) {
+  static createCommanding(options) {
     return options.implementation;
   }
 

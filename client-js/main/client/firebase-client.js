@@ -237,7 +237,7 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     return new CompositeClient(querying, subscribing, commanding);
   }
 
-  static _queryingClient(options) {
+  static createQuerying(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
@@ -246,7 +246,7 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     return new FirebaseQueryingClient(endpoint, firebaseDatabaseClient, requestFactory);
   }
 
-  static _subscribingClient(options) {
+  static createSubscribing(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);

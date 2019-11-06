@@ -55,7 +55,7 @@ export class DirectClientFactory extends AbstractClientFactory {
     return new CompositeClient(querying, subscribing, commanding);
   }
 
-  static _queryingClient(options) {
+  static createQuerying(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const requestFactory = new ActorRequestFactory(options.actorProvider);
@@ -63,7 +63,7 @@ export class DirectClientFactory extends AbstractClientFactory {
     return new DirectQueryingClient(endpoint, requestFactory);
   }
 
-  static _subscribingClient(options) {
+  static createSubscribing(options) {
     const requestFactory = new ActorRequestFactory(options.actorProvider);
     return new SubscribingClient(requestFactory);
   }
