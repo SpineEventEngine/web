@@ -96,10 +96,10 @@ function _initCompositeClient(options) {
     return null;
   }
 
-  const querying = _selectFactory(forQueries).createQuerying(options);
-  const subscribing = _selectFactory(forSubscriptions).createSubscribing(options);
-  const commanding = _selectFactory(forCommands).createCommanding(options);
-  return CompositeClient(querying, subscribing, commanding);
+  const querying = _selectFactory(forQueries).createQuerying(forQueries);
+  const subscribing = _selectFactory(forSubscriptions).createSubscribing(forSubscriptions);
+  const commanding = _selectFactory(forCommands).createCommanding(forCommands);
+  return new CompositeClient(querying, subscribing, commanding);
 }
 
 function _initSimpleClient(options) {
