@@ -25,8 +25,6 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
 import {init} from '@lib/client/spine';
 import {Client} from "@lib/client/client";
 import {CompositeClient} from "@lib/client/composite-client";
-import {DirectQueryingClient} from "@lib/client/direct-client";
-import {FirebaseQueryingClient} from "@lib/client/firebase-client";
 
 class TestClient extends Client {}
 
@@ -34,28 +32,26 @@ describe('Client factory should', () => {
 
     it('create composite client', done => {
         const endpoint = 'example.com';
-        const userId = UserId();
+        const userId = new UserId();
         userId.value = 'me';
         const client = init({
-            protoIndexFiles: types,
+            protoIndexFiles: [types],
             forQueries: {
                 endpointUrl: `${endpoint}/q/`,
-                actorProvider: ActorProvider(userId)
+                actorProvider: new ActorProvider(userId)
             },
             forSubscriptions: {
                 endpointUrl: `${endpoint}/q/`,
-                actorProvider: ActorProvider(userId),
+                actorProvider: new ActorProvider(userId),
                 firebaseDatabase: "mock database"
             },
             forCommands: {
                 endpointUrl: `${endpoint}/c/`,
-                actorProvider: ActorProvider(userId),
-                implementation: TestClient
+                actorProvider: new ActorProvider(userId),
+                implementation: new TestClient()
             }
         });
         assert.ok(client instanceof CompositeClient);
-        assert.ok(client._querying instanceof DirectQueryingClient);
-        assert.ok(client._subscribing instanceof FirebaseQueryingClient);
         assert.ok(client._commanding instanceof TestClient);
         done();
     });
