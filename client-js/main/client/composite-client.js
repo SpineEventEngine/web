@@ -109,7 +109,7 @@ export class QueryingClient {
      * @param {!Query} query a query instance to be executed
      * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
      *        messages of a given type or with an empty list if no entities matching given query
-     *        were found; rejected with a `SpineError` if error occurs;
+     *        were found; rejected with a `SpineError` if error occurs
      *
      * @template <T> a Protobuf type of entities being the target of a query
      */
