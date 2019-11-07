@@ -27,7 +27,7 @@ import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A {@link QueryBridge} which executes given queries is a blocking manner.
+ * A {@link QueryBridge} which executes given queries in a blocking manner.
  */
 public final class BlockingQueryBridge implements QueryBridge<QueryResponse> {
 
