@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import {TypedMessage} from './typed-message';
 import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
 

@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import ObjectToProto from "./object-to-proto";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import {Status} from '../proto/spine/core/response_pb';

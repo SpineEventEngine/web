@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import {Message} from 'google-protobuf';
 import {isProtobufMessage, Type, TypedMessage} from './typed-message';
 import {Any} from '../proto/google/protobuf/any_pb';

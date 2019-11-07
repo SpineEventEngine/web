@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import {Client} from './client';
 import {HttpClient} from "./http-client";
 import {HttpEndpoint} from "./http-endpoint";

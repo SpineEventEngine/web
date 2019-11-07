@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import {Duration} from './time-utils';
 
 const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});

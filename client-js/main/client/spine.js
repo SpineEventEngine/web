@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import {FirebaseClientFactory} from './firebase-client';
 import {CustomClientFactory} from './client-factory';
 import {DirectClientFactory} from "./direct-client";
