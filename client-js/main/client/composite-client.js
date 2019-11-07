@@ -211,7 +211,7 @@ export class CommandingClient {
  *
  * The resulting target points to:
  *  - the particular entities with the given IDs;
- *  - the all entities if no IDs specified;
+ *  - the all entities if no IDs specified.
  *
  * @param {AbstractTargetBuilder<Query|Topic>} targetBuilder
  *    a builder for creating `Query` or `Topic` instances.
