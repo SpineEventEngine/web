@@ -33,7 +33,7 @@ describe('DirectClient executes query built', function () {
      * assigned respectively.
      */
     before(function(done) {
-        // Big timeout allows complete environment setup.
+        // Big timeout allows to complete environment setup.
         this.timeout(10 * 1000);
 
         users = [

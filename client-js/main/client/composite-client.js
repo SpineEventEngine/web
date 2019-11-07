@@ -24,7 +24,7 @@ import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
 
 /**
- * A {@link Client} delegates requests to case-specific client implementations.
+ * A {@link Client} that delegates requests to case-specific client implementations.
  *
  * @see QueryingClient
  * @see SubscribingClient
@@ -109,7 +109,7 @@ export class QueryingClient {
      * @param {!Query} query a query instance to be executed
      * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
      *        messages of a given type or with an empty list if no entities matching given query
-     *        were found; rejected with a `SpineError` if error occurs;
+     *        were found; rejected with a `SpineError` if error occurs
      *
      * @template <T> a Protobuf type of entities being the target of a query
      */
@@ -211,7 +211,7 @@ export class CommandingClient {
  *
  * The resulting target points to:
  *  - the particular entities with the given IDs;
- *  - the all entities if no IDs specified;
+ *  - the all entities if no IDs specified.
  *
  * @param {AbstractTargetBuilder<Query|Topic>} targetBuilder
  *    a builder for creating `Query` or `Topic` instances.
