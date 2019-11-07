@@ -24,7 +24,7 @@ import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
 
 /**
- * A {@link Client} delegates requests to case-specific client implementations.
+ * A {@link Client} that delegates requests to case-specific client implementations.
  *
  * @see QueryingClient
  * @see SubscribingClient
