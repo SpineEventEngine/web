@@ -22,8 +22,8 @@
 
 import {Observable, Subject, Subscription} from 'rxjs';
 import {
-    Subscription as SpineSubscription,
-    SubscriptionId
+  Subscription as SpineSubscription,
+  SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {AbstractClientFactory} from './client-factory';
 import ObjectToProto from './object-to-proto';
@@ -33,10 +33,10 @@ import {FirebaseDatabaseClient} from './firebase-database-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
 import {
-    CommandingClient,
-    CompositeClient,
-    QueryingClient,
-    SubscribingClient
+  CommandingClient,
+  CompositeClient,
+  QueryingClient,
+  SubscribingClient
 } from "./composite-client";
 
 /**
@@ -111,13 +111,21 @@ class FirebaseQueryingClient extends QueryingClient {
   }
 }
 
+/**
+ * A {@link SubscribingClient} which receives entity state updates and events from
+ * a Firebase Realtime Database.
+ */
 class FirebaseSubscribingClient extends SubscribingClient {
 
   /**
-   * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
-   * @param {!FirebaseDatabaseClient} firebaseDatabase the client to read the query results from
-   * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
-   * @param {!FirebaseSubscriptionService} subscriptionService a service handling the subscriptions
+   * @param {!HttpEndpoint} endpoint
+   *  the server endpoint to execute queries and commands
+   * @param {!FirebaseDatabaseClient} firebaseDatabase
+   *  the client to read the query results from
+   * @param {!ActorRequestFactory} actorRequestFactory
+   *  a factory to instantiate the actor requests with
+   * @param {!FirebaseSubscriptionService} subscriptionService
+   *  a service handling the subscriptions
    *
    * @protected use `FirebaseClient#usingFirebase()` for instantiation
    */
