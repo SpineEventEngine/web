@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.synchronizedSet;
 
 /**
- * A Firebase Realtime Database client which clean up the database on the process exit.
+ * A Firebase Realtime Database client which cleans up the database on the process exit.
  */
 public class TidyClient implements FirebaseClient {
 
