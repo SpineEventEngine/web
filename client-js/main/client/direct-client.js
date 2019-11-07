@@ -28,7 +28,7 @@ import {
   CommandingClient,
   CompositeClient,
   QueryingClient,
-  SubscribingClient
+  NoOpSubscribingClient
 } from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
@@ -41,6 +41,8 @@ import TypeParsers from "./parser/type-parsers";
  *
  * Querying is performed by sending a query to the server over HTTP and reading the query response
  * from the HTTP response.
+ *
+ * This client does not support subscriptions.
  */
 export class DirectClientFactory extends AbstractClientFactory {
 
@@ -50,7 +52,7 @@ export class DirectClientFactory extends AbstractClientFactory {
     const requestFactory = new ActorRequestFactory(options.actorProvider);
 
     const querying = new DirectQueryingClient(endpoint, requestFactory);
-    const subscribing = new SubscribingClient(requestFactory);
+    const subscribing = new NoOpSubscribingClient(requestFactory);
     const commanding = new CommandingClient(endpoint, requestFactory);
     return new CompositeClient(querying, subscribing, commanding);
   }
@@ -65,7 +67,7 @@ export class DirectClientFactory extends AbstractClientFactory {
 
   static createSubscribing(options) {
     const requestFactory = new ActorRequestFactory(options.actorProvider);
-    return new SubscribingClient(requestFactory);
+    return new NoOpSubscribingClient(requestFactory);
   }
 
   /**

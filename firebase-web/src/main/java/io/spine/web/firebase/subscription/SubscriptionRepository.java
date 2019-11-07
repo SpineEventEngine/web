@@ -107,7 +107,8 @@ final class SubscriptionRepository {
     /**
      * Updates a subscription topic only if it already exists.
      *
-     * @param topic the subscription topic
+     * @param topic
+     *         the subscription topic
      * @return {@code true} if a subscription with such a topic ID exists, {@code false} otherwise
      */
     boolean updateExisting(Topic topic) {

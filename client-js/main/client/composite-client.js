@@ -91,6 +91,8 @@ export class CompositeClient extends Client {
 
 /**
  * A client which performs entity state queries.
+ *
+ * @abstract
  */
 export class QueryingClient {
 
@@ -130,6 +132,8 @@ export class QueryingClient {
 
 /**
  * A client which manages entity state and event subscriptions.
+ *
+ * @abstract
  */
 export class SubscribingClient {
 
@@ -157,10 +161,31 @@ export class SubscribingClient {
     }
 }
 
+/**
+ * A {@link SubscribingClient} which does not create subscriptions.
+ */
+export class NoOpSubscribingClient extends SubscribingClient {
+
+    constructor(actorRequestFactory) {
+        super(actorRequestFactory)
+    }
+
+    /**
+     * Always throws an error.
+     *
+     * @override
+     */
+    subscribeTo(topic) {
+        throw new Error('Entity subscription is not supported.');
+    }
+}
+
 const _statusType = Status.typeUrl();
 
 /**
  * A client which posts commands.
+ *
+ * This class has a default implementation. Override it to change the behaviour.
  */
 export class CommandingClient {
 
@@ -214,7 +239,7 @@ export class CommandingClient {
  *  - the all entities if no IDs specified.
  *
  * @param {AbstractTargetBuilder<Query|Topic>} targetBuilder
- *    a builder for creating `Query` or `Topic` instances.
+ *      a builder for creating `Query` or `Topic` instances.
  * @param {?<T extends Message>[] | <T extends Message> | Number[] | Number | String[] | String} ids
  *      a list of target entities IDs or an ID of a single target entity
  * @return {Query|Topic} the built target
