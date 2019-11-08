@@ -27,6 +27,7 @@ configurations {
 }
 
 apply plugin: spineProtobufPluginId
+apply from: deps.scripts.modelCompiler
 
 dependencies {
     api project(':web')

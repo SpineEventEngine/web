@@ -217,7 +217,7 @@ describe('FirebaseClient subscribes to topic', function () {
         const topic = buildTopicFor({
             ids: [user1.id, user2.id],
             filters: [
-                Filters.eq('tasksCount', 2)
+                Filters.eq('task_count', 2)
             ]
         });
 
@@ -244,7 +244,7 @@ describe('FirebaseClient subscribes to topic', function () {
         const topic = buildTopicFor({
             ids: [user1.id, user2.id],
             filters: [
-                Filters.ge('tasksCount', 2)
+                Filters.ge('task_count', 2)
             ]
         });
 

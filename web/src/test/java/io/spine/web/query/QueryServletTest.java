@@ -20,13 +20,14 @@
 
 package io.spine.web.query;
 
-import com.google.protobuf.Timestamp;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.logging.MuteLogging;
 import io.spine.web.query.given.QueryServletTestEnv.TestQueryServlet;
+import io.spine.web.test.Task;
+import io.spine.web.test.TaskId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,10 +38,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Time.currentTime;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
@@ -62,14 +63,18 @@ class QueryServletTest {
     @Test
     @DisplayName("handle query POST requests")
     void testHandle() throws IOException {
-        Timestamp expectedData = currentTime();
-        QueryServlet servlet = new TestQueryServlet(expectedData);
+        Task task = Task
+                .newBuilder()
+                .setId(TaskId.generate())
+                .setDescription("some-task-description")
+                .build();
+        QueryServlet servlet = new TestQueryServlet(task);
         StringWriter response = new StringWriter();
-        Query query = queryFactory.all(Timestamp.class);
+        Query query = queryFactory.all(Task.class);
         HttpServletRequest request = request(query);
         servlet.doPost(request, response(response));
-        Timestamp actualData = Json.fromJson(response.toString(), Timestamp.class);
-        assertEquals(expectedData, actualData);
+        Task actualData = Json.fromJson(response.toString(), Task.class);
+        assertThat(actualData).isEqualTo(task);
     }
 
     @MuteLogging

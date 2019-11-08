@@ -20,12 +20,12 @@
 
 package io.spine.web.firebase.query;
 
-import com.google.protobuf.Any;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
+import io.spine.web.firebase.given.Book;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class QueryResultTest {
 
     @BeforeEach
     void setUp() {
-        Query query = queryFactory.all(Any.class);
+        Query query = queryFactory.all(Book.class);
         nodePath = RequestNodePath.of(query);
     }
 
