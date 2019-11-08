@@ -21,17 +21,16 @@
 package io.spine.web.firebase.query;
 
 import com.google.common.testing.EqualsTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.Empty;
-import com.google.protobuf.Timestamp;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
+import io.spine.core.Event;
 import io.spine.core.TenantId;
 import io.spine.net.EmailAddress;
 import io.spine.net.InternetDomain;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
+import io.spine.web.firebase.given.Book;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -54,8 +53,8 @@ class RequestNodePathTest {
     @Test
     @DisplayName("construct self for a Query")
     void testConstruct() {
-        Query firstQuery = queryFactory.all(Empty.class);
-        Query secondQuery = queryFactory.all(Timestamp.class);
+        Query firstQuery = queryFactory.all(Book.class);
+        Query secondQuery = queryFactory.all(Event.class);
 
         NodePath firstPath = RequestNodePath.of(firstQuery);
         NodePath secondPath = RequestNodePath.of(secondQuery);
@@ -116,7 +115,7 @@ class RequestNodePathTest {
                 systemDefault()
         );
         Query query = requestFactory.query()
-                                    .all(Any.class);
+                                    .all(Book.class);
         String path = RequestNodePath.of(query).getValue();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
@@ -132,7 +131,7 @@ class RequestNodePathTest {
         TestActorRequestFactory requestFactory =
                 new TestActorRequestFactory(RequestNodePathTest.class, tenantId);
         Query query = requestFactory.query()
-                                    .all(Any.class);
+                                    .all(Book.class);
         return query;
     }
 }

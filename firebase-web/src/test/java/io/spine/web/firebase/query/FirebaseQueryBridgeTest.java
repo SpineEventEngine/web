@@ -20,16 +20,15 @@
 
 package io.spine.web.firebase.query;
 
-import com.google.protobuf.Empty;
-import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
-import io.spine.base.Time;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
+import io.spine.core.Event;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.given.Book;
+import io.spine.web.firebase.given.BookId;
 import io.spine.web.firebase.given.TestQueryService;
 import io.spine.web.firebase.subscription.given.HasChildren;
 import io.spine.web.query.QueryProcessingResult;
@@ -40,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.spine.base.Identifier.newUuid;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -95,7 +95,7 @@ class FirebaseQueryBridgeTest {
                                                         .setQueryService(queryService)
                                                         .setFirebaseClient(firebaseClient)
                                                         .build();
-        Query query = queryFactory.all(Empty.class);
+        Query query = queryFactory.all(Event.class);
         QueryProcessingResult result = bridge.send(query);
 
         assertThat(result, instanceOf(QueryResult.class));
@@ -104,18 +104,26 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("write query results to the database")
     void testWriteData() {
-        Message dataElement = Time.currentTime();
-        TestQueryService queryService = new TestQueryService(dataElement);
+        BookId id = BookId
+                .newBuilder()
+                .setValue(newUuid())
+                .build();
+        Book book = Book
+                .newBuilder()
+                .setId(id)
+                .setName(newUuid())
+                .build();
+        TestQueryService queryService = new TestQueryService(book);
         FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
                                                         .setQueryService(queryService)
                                                         .setFirebaseClient(firebaseClient)
                                                         .build();
-        Query query = queryFactory.all(Timestamp.class);
+        Query query = queryFactory.all(Book.class);
         @SuppressWarnings("unused")
         QueryProcessingResult ignored = bridge.send(query);
 
         Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), toCompactJson(dataElement));
+        expected.put(anyKey(), toCompactJson(book));
         verify(firebaseClient).create(any(), argThat(new HasChildren(expected)));
     }
 }
