@@ -19,12 +19,11 @@
  */
 
 ext {
-    spineVersion = '1.1.5'
-    spineBaseVersion = '1.1.7'
+    spineVersion = '1.2.1'
+    spineBaseVersion = '1.2.1'
     
-    versionToPublish = '1.1.7'
+    versionToPublish = '1.2.1'
     versionToPublishJs = versionToPublish
 
     servletApiVersion = '3.1.0'
-    slf4jVersion = '1.7.27'
 }
