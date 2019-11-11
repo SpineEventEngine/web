@@ -21,7 +21,7 @@
 
 import assert from 'assert';
 import {DirectClientFactory} from "../../main/client/direct-client";
-import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
+import {TaskCreated} from '@testProto/spine/test/js/events_pb';
 import * as types from "@testProto/index.js";
 import {ActorProvider} from "../../main";
 

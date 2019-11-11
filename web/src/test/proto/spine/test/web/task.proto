@@ -14,7 +14,7 @@ message TaskId {
 }
 
 message Task {
-    option (entity).visibility = FULL;
+    option (entity) = {visibility: FULL kind: ENTITY};
 
     TaskId id = 1;
     string title = 2;

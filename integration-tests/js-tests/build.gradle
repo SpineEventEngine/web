@@ -31,7 +31,9 @@ ext {
 }
 
 dependencies {
-    testProtobuf project(":test-app")
+    testProtobuf(project(":test-app")) {
+        exclude group: 'com.google.firebase'
+    }
 }
 
 /**

@@ -29,7 +29,7 @@ import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.given.BookId;
-import io.spine.web.firebase.given.TestQueryService;
+import io.spine.web.given.TestQueryService;
 import io.spine.web.firebase.subscription.given.HasChildren;
 import io.spine.web.given.TestQueryService;
 import org.junit.jupiter.api.BeforeEach;

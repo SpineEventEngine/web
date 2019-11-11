@@ -23,7 +23,7 @@ import assert from 'assert';
 import {Message} from 'google-protobuf';
 import {Duration} from '@lib/client/time-utils';
 import {ActorProvider} from '@lib/client/actor-request-factory';
-import {UserId} from '@testProto/spine/core/user_id_pb';
+import {UserId} from '@proto/spine/core/user_id_pb';
 import {fail} from './test-helpers';
 
 class Given {

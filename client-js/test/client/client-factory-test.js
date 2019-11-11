@@ -19,8 +19,9 @@
  */
 
 import assert from 'assert';
-import {UserId} from '@testProto/spine/core/user_id_pb';
-import * as types from '@testProto/index';
+import {UserId} from '@proto/spine/core/user_id_pb';
+import * as testTypes from '@testProto/index';
+import * as types from '@proto/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 import {init} from '@lib/client/spine';
 import {Client} from "@lib/client/client";
@@ -35,7 +36,7 @@ describe('Client factory should', () => {
         const userId = new UserId();
         userId.value = 'me';
         const client = init({
-            protoIndexFiles: [types],
+            protoIndexFiles: [types, testTypes],
             forQueries: {
                 endpointUrl: `${endpoint}/q/`,
                 actorProvider: new ActorProvider(userId)
