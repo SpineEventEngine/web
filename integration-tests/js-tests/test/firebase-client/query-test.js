@@ -97,58 +97,58 @@ describe('FirebaseClient executes query built', function () {
         {
             message: 'with `eq` filter',
             filters: [
-                Filters.eq('tasksCount', 3)
+                Filters.eq('task_count', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length === 3)
         },
         {
             message: 'with `lt` filter',
             filters: [
-                Filters.lt('tasksCount', 3)
+                Filters.lt('task_count', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length < 3)
         },
         {
             message: 'with `gt` filter',
             filters: [
-                Filters.gt('tasksCount', 3)
+                Filters.gt('task_count', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 3)
         },
         {
             message: 'with `le` filter',
             filters: [
-                Filters.le('tasksCount', TypedMessage.int32(3))
+                Filters.le('task_count', TypedMessage.int32(3))
             ],
             expectedUsers: () => users.filter(user => user.tasks.length <= 3)
         },
         {
             message: 'with `ge` filter',
             filters: [
-                Filters.ge('tasksCount', 3)
+                Filters.ge('task_count', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length >= 3)
         },
         {
             message: 'with several filters applied to the same column',
             filters: [
-                Filters.gt('tasksCount', 1),
-                Filters.lt('tasksCount', 3)
+                Filters.gt('task_count', 1),
+                Filters.lt('task_count', 3)
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
         },
         {
             message: 'with several filters applied to different column',
             filters: [
-                Filters.gt('tasksCount', 1),
-                Filters.lt('overloaded', new BoolValue([true]))
+                Filters.gt('task_count', 1),
+                Filters.lt('is_overloaded', new BoolValue([true]))
             ],
             expectedUsers: () => users.filter(user => user.tasks.length > 1)
         },
         {
             message: 'with inappropriate filter',
             filters: [
-                Filters.ge('tasksCount', 100)
+                Filters.ge('task_count', 100)
             ],
             expectedUsers: () => []
         }
@@ -199,7 +199,7 @@ describe('FirebaseClient executes query built', function () {
 
                 const query = buildQueryFor({
                     filters: [
-                        Filters.eq('lastUpdated', whenFirstUserGotTask),
+                        Filters.eq('last_updated', whenFirstUserGotTask),
                     ]
                 });
 

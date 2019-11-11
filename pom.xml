@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>1.1.7</version>
+<version>1.2.0</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -76,7 +76,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-server</artifactId>
-    <version>1.1.5</version>
+    <version>1.2.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -100,13 +100,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-testutil-client</artifactId>
-    <version>1.1.5</version>
+    <version>1.2.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-mute-logging</artifactId>
-    <version>1.1.7</version>
+    <version>1.2.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -163,22 +163,22 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.grpc</groupId>
     <artifactId>protoc-gen-grpc-java</artifactId>
-    <version>1.22.0</version>
+    <version>1.24.1</version>
   </dependency>
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-client</artifactId>
-    <version>1.1.5</version>
+    <version>1.2.0</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-errorprone-checks</artifactId>
-    <version>1.1.7</version>
+    <version>1.2.0</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.1.7</version>
+    <version>1.2.0</version>
   </dependency>
   <dependency>
     <groupId>javax.servlet</groupId>
