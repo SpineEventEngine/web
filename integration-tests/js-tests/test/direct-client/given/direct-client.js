@@ -25,6 +25,7 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
 /**
  * Initializes the {@link DirectClient client} that interacts with Gretty-based
  * local backend server.
+ *
  * See `integration-tests/README.MD` for details.
  */
 export function initClient() {
