@@ -26,7 +26,7 @@ import {Type, TypedMessage} from '@lib/client/typed-message';
 import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
-import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
+import {Task, TaskId} from '@testProto/spine/test/js/task_pb';
 import {
   Filter,
   CompositeFilter,

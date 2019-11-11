@@ -24,7 +24,7 @@ import sinon from 'sinon';
 import {HttpEndpoint} from '@lib/client/http-endpoint';
 import {HttpClient} from '@lib/client/http-client';
 import {TypedMessage} from '@lib/client/typed-message';
-import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
+import {CreateTask} from '@testProto/spine/test/js/commands_pb';
 import {
   SpineError,
   ConnectionError,

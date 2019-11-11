@@ -28,8 +28,6 @@ import static io.spine.util.Exceptions.unsupported;
 
 /**
  * An {@link HttpServlet} which cannot be serialized.
- *
- * @author Dmytro Dashenkov
  */
 @SuppressWarnings({
         "serial" /* The goal of this class. */,

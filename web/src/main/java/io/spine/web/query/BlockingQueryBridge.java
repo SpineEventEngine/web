@@ -18,13 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.subscription.result;
+package io.spine.web.query;
 
-import io.spine.web.RequestResult;
+import io.spine.client.Query;
+import io.spine.client.QueryResponse;
+import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An interface for a result of a request to keep up a subscription.
+ * A {@link QueryBridge} which executes given queries in a blocking manner.
  */
-public interface SubscriptionKeepUpResult extends RequestResult {
+public final class BlockingQueryBridge implements QueryBridge<QueryResponse> {
 
+    private final BlockingQueryService queryService;
+
+    /**
+     * Creates a new {@code BlockingQueryBridge}.
+     *
+     * @param service
+     *         the query service to send queries into
+     */
+    public BlockingQueryBridge(QueryServiceImplBase service) {
+        checkNotNull(service);
+        this.queryService = new BlockingQueryService(service);
+    }
+
+    @Override
+    public QueryResponse send(Query query) {
+        return queryService.execute(query);
+    }
 }

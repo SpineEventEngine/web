@@ -27,7 +27,8 @@ script:
   - ./gradlew check --stacktrace
 
   # Run integration tests of `spine-web` library.
-  - ./gradlew integrationTest
+  # - ./gradlew integrationTest
+  # TODO:2019-11-11:dmytro.dashenkov: Run integration tests when https://github.com/gretty-gradle-plugin/gretty/issues/130 is resolved.
 
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.

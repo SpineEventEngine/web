@@ -54,6 +54,15 @@ final class LocalSubscriptionRegistry {
     }
 
     /**
+     * Removes the given subscription from the registry.
+     */
+    void unregister(Subscription subscription) {
+        TopicId topicId = subscription.getTopic()
+                                      .getId();
+        ids.remove(topicId);
+    }
+
+    /**
      * Fetches the {@code Subscription} for the given {@code Topic}, if it is present in
      * this registry.
      */
@@ -63,7 +72,7 @@ final class LocalSubscriptionRegistry {
         return Optional.ofNullable(subscriptionId)
                        .map(id -> Subscription
                                .newBuilder()
-                               .setId(subscriptionId)
+                               .setId(id)
                                .setTopic(topic)
                                .buildPartial());
     }

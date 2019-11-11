@@ -25,7 +25,7 @@ import {Message} from 'google-protobuf';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Type, TypedMessage} from '@lib/client/typed-message';
 import {Duration} from '@lib/client/time-utils';
-import {Task, TaskId} from '@testProto/spine/web/test/given/task_pb';
+import {Task, TaskId} from '@testProto/spine/test/js/task_pb';
 
 class Given {
   constructor() {

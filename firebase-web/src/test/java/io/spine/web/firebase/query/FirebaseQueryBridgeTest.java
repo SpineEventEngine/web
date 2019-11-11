@@ -29,9 +29,9 @@ import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.given.BookId;
-import io.spine.web.firebase.given.TestQueryService;
+import io.spine.web.given.TestQueryService;
 import io.spine.web.firebase.subscription.given.HasChildren;
-import io.spine.web.query.QueryProcessingResult;
+import io.spine.web.given.TestQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,10 +40,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.spine.base.Identifier.newUuid;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -96,9 +95,8 @@ class FirebaseQueryBridgeTest {
                                                         .setFirebaseClient(firebaseClient)
                                                         .build();
         Query query = queryFactory.all(Event.class);
-        QueryProcessingResult result = bridge.send(query);
-
-        assertThat(result, instanceOf(QueryResult.class));
+        FirebaseQueryResponse response = bridge.send(query);
+        assertThat(response).isNotNull();
     }
 
     @Test
@@ -119,8 +117,7 @@ class FirebaseQueryBridgeTest {
                                                         .setFirebaseClient(firebaseClient)
                                                         .build();
         Query query = queryFactory.all(Book.class);
-        @SuppressWarnings("unused")
-        QueryProcessingResult ignored = bridge.send(query);
+        bridge.send(query);
 
         Map<String, String> expected = new HashMap<>();
         expected.put(anyKey(), toCompactJson(book));

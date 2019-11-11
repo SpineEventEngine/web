@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 export {Type, TypedMessage, TypeUrl} from './client/typed-message';
 export {ActorRequestFactory, ActorProvider, Filters} from './client/actor-request-factory';
 export {FirebaseDatabaseClient} from './client/firebase-database-client';

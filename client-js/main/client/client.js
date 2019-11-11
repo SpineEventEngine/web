@@ -179,9 +179,9 @@ export class Client {
    *
    * Invocation of the `acknowledgedCallback` and the `errorCallback` are mutually exclusive.
    *
-   * If the command sending fails, the respective error is passed to the `errorCallback`. This error is
-   * always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method and can
-   * be represented with the following types of errors:
+   * If the command sending fails, the respective error is passed to the `errorCallback`. This error
+   * is always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method
+   * and can be represented with the following types of errors:
    *
    *  - `ConnectionError`  – if the connection error occurs;
    *  - `ClientError`      – if the server responds with `4xx` HTTP status code;
@@ -190,8 +190,8 @@ export class Client {
    *  - `SpineError`       – if parsing of the response fails;
    *
    * If the command sending fails due to a command validation error, an error passed to the
-   * `errorCallback` is the type of `CommandValidationError` (inherited from `CommandHandlingError`).
-   * The validation error can be retrieved by `validationError()` method.
+   * `errorCallback` is the type of `CommandValidationError` (inherited from
+   * `CommandHandlingError`). The validation error can be retrieved by `validationError()` method.
    *
    * The occurrence of an error does not guarantee that the command is not accepted by the server
    * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
@@ -259,9 +259,10 @@ export class Client {
    *
    * The entities that already exist will be initially passed to the `itemAdded` observer.
    *
-   * This API call is a shortcut for {@link Client#newTopic()} followed by {@link Client#subscribeTo()}.
-   * It covers the most common use cases. If a more advanced subscription behaviour is required,
-   * the `Topic` instance should be created and parameterized via {@link Client#newTopic()}.
+   * This API call is a shortcut for {@link Client#newTopic()} followed by
+   * {@link Client#subscribeTo()}. It covers the most common use cases. If a more advanced
+   * subscription behaviour is required, the `Topic` instance should be created and parameterized
+   * via {@link Client#newTopic()}.
    *
    * @example
    * // Subscribe to changes of all `UserTasks` domain entities. Returning promise resolves with

@@ -23,14 +23,8 @@ package io.spine.web.query.given;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.client.Query;
-import io.spine.json.Json;
 import io.spine.web.query.QueryBridge;
-import io.spine.web.query.QueryProcessingResult;
 import io.spine.web.query.QueryServlet;
-
-import javax.annotation.Nonnull;
-import javax.servlet.ServletResponse;
-import java.io.IOException;
 
 public final class QueryServletTestEnv {
 
@@ -41,7 +35,7 @@ public final class QueryServletTestEnv {
     }
 
     @SuppressWarnings("serial")
-    public static final class TestQueryServlet extends QueryServlet {
+    public static final class TestQueryServlet extends QueryServlet<Message> {
 
         public TestQueryServlet() {
             this(Empty.getDefaultInstance());
@@ -51,12 +45,12 @@ public final class QueryServletTestEnv {
             this(new TestQueryBridge(expectedMessage));
         }
 
-        public TestQueryServlet(QueryBridge bridge) {
+        public TestQueryServlet(QueryBridge<Message> bridge) {
             super(bridge);
         }
     }
 
-    private static final class TestQueryBridge implements QueryBridge {
+    private static final class TestQueryBridge implements QueryBridge<Message> {
 
         private final Message response;
 
@@ -65,23 +59,8 @@ public final class QueryServletTestEnv {
         }
 
         @Override
-        public QueryProcessingResult send(Query query) {
-            return new TestQueryProcessingResult(response);
-        }
-    }
-
-    private static final class TestQueryProcessingResult implements QueryProcessingResult {
-
-        private final Message message;
-
-        private TestQueryProcessingResult(Message message) {
-            this.message = message;
-        }
-
-        @Override
-        public void writeTo(@Nonnull ServletResponse response) throws IOException {
-            response.getWriter()
-                    .append(Json.toJson(message));
+        public Message send(Query query) {
+            return response;
         }
     }
 }

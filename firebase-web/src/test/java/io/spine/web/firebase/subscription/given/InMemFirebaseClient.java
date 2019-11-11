@@ -18,38 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.subscription;
+package io.spine.web.firebase.subscription.given;
 
-import io.spine.client.Subscription;
+import com.google.firebase.database.ChildEventListener;
+import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
-import io.spine.web.subscription.result.SubscribeResult;
+import io.spine.web.firebase.NodeValue;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import static io.spine.json.Json.toCompactJson;
+public class InMemFirebaseClient implements FirebaseClient {
 
-/**
- * A result of a request to subscribe to some {@link io.spine.client.Topic Topic}
- * to be written to the {@link ServletResponse}.
- *
- * <p>The result is a JSON formatted {@link Subscription} message.
- */
-final class FirebaseSubscribeResult implements SubscribeResult {
+    private final Map<NodePath, NodeValue> values = new HashMap<>();
 
-    private final FirebaseSubscription subscription;
-
-    FirebaseSubscribeResult(Subscription subscription, NodePath resultPath) {
-        this.subscription = FirebaseSubscription
-                .newBuilder()
-                .setSubscription(subscription)
-                .setNodePath(resultPath)
-                .vBuild();
+    @Override
+    public Optional<NodeValue> fetchNode(NodePath nodePath) {
+        return Optional.ofNullable(values.get(nodePath));
     }
 
     @Override
-    public void writeTo(ServletResponse response) throws IOException {
-        response.getWriter()
-                .write(toCompactJson(subscription));
+    public void subscribeTo(NodePath nodePath, ChildEventListener listener) {
+        // Method `subscribeTo` is not supported. OK for test purposes.
+    }
+
+    @Override
+    public void create(NodePath nodePath, NodeValue value) {
+        values.put(nodePath,value);
+    }
+
+    @Override
+    public void update(NodePath nodePath, NodeValue value) {
+        values.put(nodePath,value);
+    }
+
+    @Override
+    public void delete(NodePath nodePath) {
+        values.remove(nodePath);
     }
 }

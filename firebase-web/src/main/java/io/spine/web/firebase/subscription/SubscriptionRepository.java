@@ -104,7 +104,14 @@ final class SubscriptionRepository {
         firebase.update(path, jsonSubscription.asNodeValue());
     }
 
-    void updateExisting(Topic topic) {
+    /**
+     * Updates a subscription topic only if it already exists.
+     *
+     * @param topic
+     *         the subscription topic
+     * @return {@code true} if a subscription with such a topic ID exists, {@code false} otherwise
+     */
+    boolean updateExisting(Topic topic) {
         NodePath path = pathForSubscription(topic);
         Optional<?> existing = firebase.fetchNode(path);
         if (existing.isPresent()) {
@@ -112,6 +119,7 @@ final class SubscriptionRepository {
             StoredJson jsonSubscription = StoredJson.encode(topic);
             firebase.update(path, jsonSubscription.asNodeValue());
         }
+        return existing.isPresent();
     }
 
     private void subscribe(Topic topic) {
@@ -130,6 +138,7 @@ final class SubscriptionRepository {
      */
     void cancel(Subscription subscription) {
         subscriptionService.cancel(subscription);
+        subscriptionRegistry.unregister(subscription);
         delete(subscription.getTopic());
     }
 

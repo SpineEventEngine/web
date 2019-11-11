@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase.given;
+package io.spine.web.given;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;

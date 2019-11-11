@@ -18,21 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.query;
+package io.spine.web.test.given;
 
-import io.spine.web.RequestResult;
+import io.spine.web.firebase.query.FirebaseQueryResponse;
+import io.spine.web.query.QueryServlet;
 
-import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebServlet;
+
+import static io.spine.web.test.given.Server.application;
 
 /**
- * A result of a query processing.
- *
- * <p>The structure of this object is not defined in the general case. It may, for example,
- * be an error message, the data matching the associated query, or a token which identifies that
- * data in the delivery channel.
- *
- * <p>A query result can be {@linkplain #writeTo(ServletResponse) written} into
- * a {@link ServletResponse} in order to be sent to a client.
+ * The query side endpoint of the application.
  */
-public interface QueryProcessingResult extends RequestResult {
+@WebServlet("/query")
+@SuppressWarnings("serial")
+public class TestFirebaseQueryServlet extends QueryServlet<FirebaseQueryResponse> {
+
+    public TestFirebaseQueryServlet() {
+        super(application().firebaseQueryBridge());
+    }
 }

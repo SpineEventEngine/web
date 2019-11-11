@@ -18,13 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.subscription.result;
-
-import io.spine.web.RequestResult;
-
-/**
- * An interface for a result of a request to subscribe to some topic and receive its updates.
- */
-public interface SubscribeResult extends RequestResult {
-
+dependencies {
+    implementation project(':web')
 }

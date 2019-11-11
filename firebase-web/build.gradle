@@ -33,6 +33,7 @@ dependencies {
     api project(':web')
     api(deps.build.firebaseAdmin) {
         exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'io.grpc'
     }
 
     implementation deps.build.jacksonDatabind
@@ -40,7 +41,9 @@ dependencies {
     implementation deps.build.appengineApi
 
     // Add an SLF4J binding because it's required by the Firebase Admin SDK.
-    runtimeOnly "org.slf4j:slf4j-jdk14:$slf4jVersion"
+    runtimeOnly "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
+
+    testImplementation project(':testutil-web')
 }
 
 task compileProtoToJs {

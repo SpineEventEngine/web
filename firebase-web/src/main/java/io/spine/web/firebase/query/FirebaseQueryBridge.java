@@ -26,7 +26,6 @@ import io.spine.client.grpc.QueryServiceGrpc.QueryServiceImplBase;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.query.BlockingQueryService;
 import io.spine.web.query.QueryBridge;
-import io.spine.web.query.QueryProcessingResult;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -45,7 +44,7 @@ import static com.google.common.base.Preconditions.checkState;
  * The absolute position of such a node is not specified, thus the result path is the only way
  * to read the data from the database.
  */
-public final class FirebaseQueryBridge implements QueryBridge {
+public final class FirebaseQueryBridge implements QueryBridge<FirebaseQueryResponse> {
 
     private final BlockingQueryService queryService;
     private final FirebaseClient firebaseClient;
@@ -65,14 +64,15 @@ public final class FirebaseQueryBridge implements QueryBridge {
      * @return a path in the database
      */
     @Override
-    public QueryProcessingResult send(Query query) {
+    public FirebaseQueryResponse send(Query query) {
         QueryResponse queryResponse = queryService.execute(query);
         QueryRecord record = new QueryRecord(query, queryResponse);
         record.storeVia(firebaseClient);
-
-        QueryProcessingResult result =
-                new QueryResult(record.path(), queryResponse.getMessageCount());
-        return result;
+        return FirebaseQueryResponse
+                .newBuilder()
+                .setPath(record.path().getValue())
+                .setCount(queryResponse.getMessageCount())
+                .vBuild();
     }
 
     /**

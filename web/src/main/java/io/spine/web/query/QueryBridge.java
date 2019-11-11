@@ -20,6 +20,7 @@
 
 package io.spine.web.query;
 
+import com.google.protobuf.Message;
 import io.spine.client.Query;
 
 /**
@@ -32,18 +33,22 @@ import io.spine.client.Query;
  * <p>No constrains are applied to the contents of the query. Neither any guaranties are made for
  * the query result. Refer to the concrete implementations to find out the details of their
  * behaviour.
+ *
+ * @param <T>
+ *         the type of the query result
  */
-public interface QueryBridge {
+public interface QueryBridge<T extends Message> {
 
     /**
-     * Sends the given {@link io.spine.client.Query Query} to the 
-     * {@link io.spine.server.QueryService QueryService} and dispatches the query response 
+     * Sends the given {@link io.spine.client.Query Query} to the
+     * {@link io.spine.server.QueryService QueryService} and dispatches the query response
      * to the query response processor.
      *
      * <p>Returns the result of query processing.
      *
-     * @param query the query to send
+     * @param query
+     *         the query to send
      * @return the query result
      */
-    QueryProcessingResult send(Query query);
+    T send(Query query);
 }

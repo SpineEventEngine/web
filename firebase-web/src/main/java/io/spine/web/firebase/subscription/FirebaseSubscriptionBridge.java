@@ -21,20 +21,20 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Duration;
+import io.spine.base.Error;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
+import io.spine.core.Response;
+import io.spine.core.Status;
 import io.spine.type.TypeUrl;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
 import io.spine.web.subscription.BlockingSubscriptionService;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.SubscribeResult;
-import io.spine.web.subscription.result.SubscriptionCancelResult;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
 
 import java.util.Optional;
 
@@ -42,7 +42,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
 import static io.spine.base.Time.currentTime;
-import static io.spine.core.Responses.statusOk;
+import static io.spine.core.Responses.ok;
+import static java.lang.String.format;
 
 /**
  * An implementation of {@link SubscriptionBridge} based on the Firebase Realtime Database.
@@ -51,7 +52,8 @@ import static io.spine.core.Responses.statusOk;
  * {@linkplain #keepUp(Subscription) keep up} the created {@linkplain Subscription subscription},
  * and {@linkplain #cancel(Subscription) cancel} the created subscription.
  */
-public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
+public final class FirebaseSubscriptionBridge
+        implements SubscriptionBridge<FirebaseSubscription, Response, Response> {
 
     private final FirebaseClient firebaseClient;
     private final SubscriptionRepository repository;
@@ -68,7 +70,7 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     }
 
     @Override
-    public SubscribeResult subscribe(Topic topic) {
+    public FirebaseSubscription subscribe(Topic topic) {
         validateTarget(topic.getTarget());
         repository.write(topic);
         NodePath path = RequestNodePath.of(topic);
@@ -77,7 +79,11 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
                 .setId(SubscriptionId.newBuilder().setValue(path.getValue()))
                 .setTopic(topic)
                 .buildPartial();
-        return new FirebaseSubscribeResult(subscription, path);
+        return FirebaseSubscription
+                .newBuilder()
+                .setSubscription(subscription)
+                .setNodePath(path)
+                .vBuild();
     }
 
     private static void validateTarget(Target target) {
@@ -87,16 +93,16 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
     }
 
     @Override
-    public SubscriptionKeepUpResult keepUp(Subscription subscription) {
+    public Response keepUp(Subscription subscription) {
         Topic.Builder topic = subscription.getTopic()
                                           .toBuilder();
         topic.getContextBuilder().setTimestamp(currentTime());
-        repository.updateExisting(topic.buildPartial());
-        return new FirebaseSubscriptionKeepUpResult(statusOk());
+        boolean exists = repository.updateExisting(topic.buildPartial());
+        return exists ? ok() : missing(subscription);
     }
 
     @Override
-    public SubscriptionCancelResult cancel(Subscription subscription) {
+    public Response cancel(Subscription subscription) {
         checkNotNull(subscription);
         Topic topic = subscription.getTopic();
         Optional<Subscription> localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
@@ -105,7 +111,25 @@ public final class FirebaseSubscriptionBridge implements SubscriptionBridge {
             NodePath updatesPath = RequestNodePath.of(topic);
             firebaseClient.delete(updatesPath);
         });
-        return new FirebaseSubscriptionCancelResult(statusOk());
+        return localSubscription.isPresent() ? ok() : missing(subscription);
+    }
+
+    private static Response missing(Subscription subscription) {
+        String errorMessage =
+                format("Subscription `%s` is unknown or already canceled.",
+                       subscription.getId().getValue());
+        Error error = Error
+                .newBuilder()
+                .setMessage(errorMessage)
+                .buildPartial();
+        Status errorStatus = Status
+                .newBuilder()
+                .setError(error)
+                .buildPartial();
+        return Response
+                .newBuilder()
+                .setStatus(errorStatus)
+                .vBuild();
     }
 
     /**

@@ -18,8 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+"use strict";
+
 import {TypedMessage} from './typed-message';
 import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
+
+/**
+ * @typedef {Object} SubscriptionRouting
+ *
+ * @property {string} create
+ *  the name of the subscription creation endpoint; defaults to "/subscription/create"
+ * @property {string} keepUp
+ *  the name of the subscription keep up endpoint; defaults to "/subscription/keep-up"
+ * @property {string} cancel
+ *  the name of the subscription cancellation endpoint; defaults to "/subscription/cancel"
+ */
+
+/**
+ * @typedef {Object} Routing
+ *
+ * @property {string} query
+ *  the name of the query endpoint; defaults to "/query"
+ * @property {string} command
+ *  the name of the command endpoint; defaults to "/command"
+ * @property {!SubscriptionRouting} subscription
+ *  the config of the subscription endpoints
+ */
 
 class Endpoint {
 
@@ -149,10 +173,12 @@ export class HttpEndpoint extends Endpoint {
 
   /**
    * @param {!HttpClient} httpClient a client sending requests to server
+   * @param {Routing} routing endpoint routing parameters
    */
-  constructor(httpClient) {
+  constructor(httpClient, routing) {
     super();
     this._httpClient = httpClient;
+    this._routing = routing;
   }
 
   /**
@@ -164,7 +190,8 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _executeCommand(command) {
-    return this._sendMessage('/command', command);
+    const path = (this._routing && this._routing.command) || '/command';
+    return this._sendMessage(path, command);
   }
 
   /**
@@ -176,7 +203,8 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _performQuery(query) {
-    return this._sendMessage('/query', query);
+    const path = (this._routing && this._routing.query) || '/query';
+    return this._sendMessage(path, query);
   }
 
   /**
@@ -188,7 +216,9 @@ export class HttpEndpoint extends Endpoint {
    * @protected
    */
   _subscribeTo(topic) {
-    return this._sendMessage('/subscription/create', topic);
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.create)
+        || '/subscription/create';
+    return this._sendMessage(path, topic);
   }
 
   /**
@@ -196,24 +226,28 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented
    *                                                                  from being closed by server
-   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data, rejected if
-   *                                      the client response is not 2xx or a connection error occurs
+   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
+   *         rejected if the client response is not 2xx or a connection error occurs
    * @protected
    */
   _keepUp(subscription) {
-    return this._sendMessage('/subscription/keep-up', subscription);
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.keepUp)
+        || '/subscription/keep-up';
+    return this._sendMessage(path, subscription);
   }
 
   /**
    * Sends off a request to cancel a subscription.
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
-   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data, rejected if
-   *                                      the client response is not 2xx or a connection error occurs
+   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
+   *         rejected if the client response is not 2xx or a connection error occurs
    * @protected
    */
   _cancel(subscription) {
-    return this._sendMessage('/subscription/cancel', subscription);
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.cancel)
+        || '/subscription/cancel';
+    return this._sendMessage(path, subscription);
   }
 
   /**

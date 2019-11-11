@@ -30,3 +30,4 @@ include 'test-app'
 
 project(':js-tests').projectDir = "integration-tests/js-tests" as File
 project(':test-app').projectDir = "integration-tests/test-app" as File
+include 'testutil-web'

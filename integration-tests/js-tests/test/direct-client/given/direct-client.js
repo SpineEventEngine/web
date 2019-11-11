@@ -18,13 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.subscription.result;
-
-import io.spine.web.RequestResult;
+import * as testProtobuf from '@testProto/index';
+import * as spineWeb from '@lib/index';
+import {ActorProvider} from '@lib/client/actor-request-factory';
 
 /**
- * An interface for a result of a request to cancel a subscription.
+ * Initializes the {@link DirectClient client} that interacts with Gretty-based
+ * local backend server.
+ *
+ * See `integration-tests/README.MD` for details.
  */
-public interface SubscriptionCancelResult extends RequestResult {
-
+export function initClient() {
+    return spineWeb.init({
+        protoIndexFiles: [testProtobuf],
+        endpointUrl: 'http://localhost:8080',
+        actorProvider: new ActorProvider(),
+        routing: {
+            query: '/direct-query'
+        }
+    });
 }
+
+/**
+ * A {@link DirectClient client} instance for tests.
+ *
+ * @type {DirectClient}
+ */
+export const client = initClient();

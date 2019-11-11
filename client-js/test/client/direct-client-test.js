@@ -18,15 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains the interfaces for results of client requests to subscribe, keep up 
- * or cancel an entity subscription.
- */
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.web.subscription.result;
+import assert from 'assert';
+import {DirectClientFactory} from "../../main/client/direct-client";
+import {TaskCreated} from '@testProto/spine/test/js/events_pb';
+import * as types from "@testProto/index.js";
+import {ActorProvider} from "../../main";
 
-import com.google.errorprone.annotations.CheckReturnValue;
+describe('Direct client should', () => {
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    it('not support subscriptions', done => {
+        const client = DirectClientFactory.createClient({
+            endpointUrl: 'example.org',
+            protoIndexFiles: [types],
+            actorProvider: ActorProvider.ANONYMOUS
+        });
+        try {
+            client.subscribeTo(client.newTopic().select(TaskCreated).build());
+            assert.fail();
+        } catch (e) {
+            assert.ok(e instanceof Error);
+            done();
+        }
+    });
+});

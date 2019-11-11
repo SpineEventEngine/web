@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static io.spine.core.Responses.statusOk;
-import static io.spine.json.Json.toCompactJson;
 import static org.mockito.Mockito.when;
 
 public final class FirebaseResultTestEnv {
@@ -46,11 +45,11 @@ public final class FirebaseResultTestEnv {
         return stringWriter;
     }
 
-    public static String okCancelSubscriptionResult() {
+    public static Response okCancelSubscriptionResult() {
         Response response = Response
                 .newBuilder()
                 .setStatus(statusOk())
                 .vBuild();
-        return toCompactJson(response);
+        return response;
     }
 }

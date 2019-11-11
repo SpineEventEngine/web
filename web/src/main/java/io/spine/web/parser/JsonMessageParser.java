@@ -41,7 +41,6 @@ import static java.util.regex.Pattern.compile;
  *
  * @param <M>
  *         the type of messages to parse
- * @author Dmytro Dashenkov
  */
 final class JsonMessageParser<M extends Message> implements MessageParser<M>, Logging {
 
@@ -95,7 +94,7 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
         })
         LINE_FEED("\\n", "\n"),
         @SuppressWarnings("unused") // Used via `values()`.
-                QUOTATION_MARK("\\\"", "\"");
+        QUOTATION_MARK("\\\"", "\"");
 
         private final Pattern escapedPattern;
         private final String raw;

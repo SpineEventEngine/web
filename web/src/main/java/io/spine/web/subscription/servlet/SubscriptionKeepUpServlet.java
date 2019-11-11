@@ -20,31 +20,25 @@
 
 package io.spine.web.subscription.servlet;
 
+import com.google.protobuf.Message;
 import io.spine.client.Subscription;
-import io.spine.web.NonSerializableServlet;
-import io.spine.web.parser.HttpMessages;
+import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
-import io.spine.web.subscription.result.SubscriptionKeepUpResult;
-
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
-
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
  * An abstract servlet for a client request to keep up an existing {@link Subscription}.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
- * to process. After, {@linkplain SubscriptionKeepUpResult the processing result} is written to
- * the servlet response.
+ * to process. After, a processing result is written to the servlet response.
+ *
+ * @param <T>
+ *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class SubscriptionKeepUpServlet extends NonSerializableServlet {
+public abstract class SubscriptionKeepUpServlet<T extends Message>
+        extends MessageServlet<Subscription, T> {
 
-    private final SubscriptionBridge bridge;
+    private final SubscriptionBridge<?, T, ?> bridge;
 
     /**
      * Creates a new instance of {@code SubscriptionKeepUpServlet} with the given 
@@ -53,27 +47,13 @@ public abstract class SubscriptionKeepUpServlet extends NonSerializableServlet {
      * @param bridge
      *         the subscription bridge to be used to keep-up subscriptions
      */
-    protected SubscriptionKeepUpServlet(SubscriptionBridge bridge) {
+    protected SubscriptionKeepUpServlet(SubscriptionBridge<?, T, ?> bridge) {
         super();
         this.bridge = bridge;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Handles the {@code POST} request through the {@link SubscriptionBridge}.
-     */
-    @OverridingMethodsMustInvokeSuper
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        Optional<Subscription> optionalSubscription = HttpMessages.parse(req, Subscription.class);
-        if (!optionalSubscription.isPresent()) {
-            resp.sendError(SC_BAD_REQUEST);
-        } else {
-            Subscription subscription = optionalSubscription.get();
-            SubscriptionKeepUpResult result = bridge.keepUp(subscription);
-            result.writeTo(resp);
-        }
+    protected T handle(Subscription request) {
+        return bridge.keepUp(request);
     }
 }

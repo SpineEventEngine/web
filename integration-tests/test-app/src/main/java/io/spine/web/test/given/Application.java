@@ -25,6 +25,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.protobuf.util.Durations;
 import io.spine.io.Resource;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
@@ -34,6 +35,7 @@ import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.FirebaseCredentials;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
+import io.spine.web.query.BlockingQueryBridge;
 
 import java.io.IOException;
 
@@ -49,22 +51,25 @@ final class Application {
     private static final String DATABASE_URL = "https://spine-dev.firebaseio.com/";
 
     private final CommandService commandService;
-    private final FirebaseQueryBridge queryBridge;
+    private final FirebaseQueryBridge fbQueryBridge;
     private final FirebaseSubscriptionBridge subscriptionBridge;
+    private final BlockingQueryBridge blockingQueryBridge;
 
     private Application(CommandService commandService,
                         QueryService queryService,
                         SubscriptionService subscriptionService,
                         FirebaseClient client) {
         this.commandService = commandService;
-        this.queryBridge = FirebaseQueryBridge
+        this.fbQueryBridge = FirebaseQueryBridge
                 .newBuilder()
                 .setQueryService(queryService)
                 .setFirebaseClient(client)
                 .build();
+        this.blockingQueryBridge = new BlockingQueryBridge(queryService);
         this.subscriptionBridge = FirebaseSubscriptionBridge
                 .newBuilder()
                 .setSubscriptionService(subscriptionService)
+                .setSubscriptionLifeSpan(Durations.fromMinutes(2))
                 .setFirebaseClient(client)
                 .build();
     }
@@ -116,8 +121,12 @@ final class Application {
         return commandService;
     }
 
-    FirebaseQueryBridge queryBridge() {
-        return this.queryBridge;
+    FirebaseQueryBridge firebaseQueryBridge() {
+        return this.fbQueryBridge;
+    }
+
+    BlockingQueryBridge blockingQueryBridge() {
+        return this.blockingQueryBridge;
     }
 
     FirebaseSubscriptionBridge subscriptionBridge() {

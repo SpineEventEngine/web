@@ -26,13 +26,18 @@ import {
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {AbstractClientFactory} from './client-factory';
-import {AbstractClient} from './abstract-client';
 import ObjectToProto from './object-to-proto';
 import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {FirebaseDatabaseClient} from './firebase-database-client';
 import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
+import {
+  CommandingClient,
+  CompositeClient,
+  QueryingClient,
+  SubscribingClient
+} from "./composite-client";
 
 /**
  * A subscription to entity changes on application backend.
@@ -78,32 +83,21 @@ class EntitySubscription extends Subscription {
   }
 }
 
-/**
- * An implementation of an `AbstractClient` connecting to the application backend retrieving data
- * through Firebase.
- *
- * Orchestrates the work of the HTTP and Firebase clients and the {@link ActorRequestFactory}.
- */
-export class FirebaseClient extends AbstractClient {
+class FirebaseQueryingClient extends QueryingClient {
 
   /**
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
    * @param {!FirebaseDatabaseClient} firebaseDatabase the client to read the query results from
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
-   * @param {!FirebaseSubscriptionService} subscriptionService a service handling the subscriptions
    *
    * @protected use `FirebaseClient#usingFirebase()` for instantiation
    */
-  constructor(endpoint, firebaseDatabase, actorRequestFactory, subscriptionService) {
-    super(endpoint, actorRequestFactory);
+  constructor(endpoint, firebaseDatabase, actorRequestFactory) {
+    super(actorRequestFactory);
+    this._endpoint = endpoint;
     this._firebase = firebaseDatabase;
-    this._subscriptionService = subscriptionService;
-    this._subscriptionService.run();
   }
 
-  /**
-   * @inheritDoc
-   */
   execute(query) {
     return new Promise((resolve, reject) => {
       this._endpoint.query(query)
@@ -115,6 +109,32 @@ export class FirebaseClient extends AbstractClient {
           .catch(error => reject(error));
     });
   }
+}
+
+/**
+ * A {@link SubscribingClient} which receives entity state updates and events from
+ * a Firebase Realtime Database.
+ */
+class FirebaseSubscribingClient extends SubscribingClient {
+
+  /**
+   * @param {!HttpEndpoint} endpoint
+   *  the server endpoint to execute queries and commands
+   * @param {!FirebaseDatabaseClient} firebaseDatabase
+   *  the client to read the query results from
+   * @param {!ActorRequestFactory} actorRequestFactory
+   *  a factory to instantiate the actor requests with
+   * @param {!FirebaseSubscriptionService} subscriptionService
+   *  a service handling the subscriptions
+   *
+   * @protected use `FirebaseClient#usingFirebase()` for instantiation
+   */
+  constructor(endpoint, firebaseDatabase, actorRequestFactory, subscriptionService) {
+    super(actorRequestFactory);
+    this._endpoint = endpoint;
+    this._firebase = firebaseDatabase;
+    this._subscriptionService = subscriptionService;
+  }
 
   /**
    * @inheritDoc
@@ -123,38 +143,39 @@ export class FirebaseClient extends AbstractClient {
     return new Promise((resolve, reject) => {
       const typeUrl = topic.getTarget().getType();
       this._endpoint.subscribeTo(topic)
-        .then(response => {
-          const path = response.nodePath.value;
+          .then(response => {
+            const path = response.nodePath.value;
 
-          const itemAdded = new Subject();
-          const itemChanged = new Subject();
-          const itemRemoved = new Subject();
+            const itemAdded = new Subject();
+            const itemChanged = new Subject();
+            const itemRemoved = new Subject();
 
-          const pathSubscriptions = [
-            this._firebase
-                .onChildAdded(path, itemAdded.next.bind(itemAdded)),
-            this._firebase
-                .onChildChanged(path, itemChanged.next.bind(itemChanged)),
-            this._firebase
-                .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
-          ];
+            const pathSubscriptions = [
+              this._firebase
+                  .onChildAdded(path, itemAdded.next.bind(itemAdded)),
+              this._firebase
+                  .onChildChanged(path, itemChanged.next.bind(itemChanged)),
+              this._firebase
+                  .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
+            ];
 
-          const internalSubscription = FirebaseClient.internalSubscription(path, topic);
-          const entitySubscription = new EntitySubscription({
-            unsubscribedBy: () => {
-              FirebaseClient._unsubscribe(pathSubscriptions);
-            },
-            withObservables: {
-              itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
-              itemChanged: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
-              itemRemoved: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
-            },
-            forInternal: internalSubscription
-          });
-          resolve(entitySubscription.toObject());
-          this._subscriptionService.add(entitySubscription);
-        })
-        .catch(reject);
+            const internalSubscription =
+                FirebaseSubscribingClient.internalSubscription(path, topic);
+            const entitySubscription = new EntitySubscription({
+              unsubscribedBy: () => {
+                FirebaseSubscribingClient._unsubscribe(pathSubscriptions);
+              },
+              withObservables: {
+                itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
+                itemChanged: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
+                itemRemoved: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
+              },
+              forInternal: internalSubscription
+            });
+            resolve(entitySubscription.toObject());
+            this._subscriptionService.add(entitySubscription);
+          })
+          .catch(reject);
     });
   }
 
@@ -190,7 +211,8 @@ export class FirebaseClient extends AbstractClient {
 }
 
 /**
- * An implementation of the `AbstractClientFactory` that creates instances of `FirebaseClient`.
+ * An implementation of the `AbstractClientFactory` that creates instances of client which exchanges
+ * data with the server via Firebase Realtime Database.
  */
 export class FirebaseClientFactory extends AbstractClientFactory {
 
@@ -209,12 +231,40 @@ export class FirebaseClientFactory extends AbstractClientFactory {
    */
   static _clientFor(options) {
     const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient);
+    const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = new ActorRequestFactory(options.actorProvider);
     const subscriptionService = new FirebaseSubscriptionService(endpoint);
 
-    return new FirebaseClient(endpoint, firebaseDatabaseClient, requestFactory, subscriptionService);
+    const querying = new FirebaseQueryingClient(endpoint, firebaseDatabaseClient, requestFactory);
+    const subscribing = new FirebaseSubscribingClient(endpoint,
+                                                      firebaseDatabaseClient,
+                                                      requestFactory,
+                                                      subscriptionService);
+    const commanding = new CommandingClient(endpoint, requestFactory);
+    return new CompositeClient(querying, subscribing, commanding);
+  }
+
+  static createQuerying(options) {
+    const httpClient = new HttpClient(options.endpointUrl);
+    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
+    const requestFactory = new ActorRequestFactory(options.actorProvider);
+
+    return new FirebaseQueryingClient(endpoint, firebaseDatabaseClient, requestFactory);
+  }
+
+  static createSubscribing(options) {
+    const httpClient = new HttpClient(options.endpointUrl);
+    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
+    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+
+    return new FirebaseSubscribingClient(endpoint,
+                                         firebaseDatabaseClient,
+                                         requestFactory,
+                                         subscriptionService);
   }
 
   /**
@@ -231,8 +281,7 @@ export class FirebaseClientFactory extends AbstractClientFactory {
       throw new Error(messageForMissing('firebaseDatabase'));
     }
     if (!options.actorProvider) {
-      throw new Error(messageForMissing('endpointUrl'));
+      throw new Error(messageForMissing('actorProvider'));
     }
   }
 }
-

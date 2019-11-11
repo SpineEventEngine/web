@@ -53,13 +53,28 @@ export default class KnownTypes {
   }
 
   /**
+   * Obtains JS class for the given Protobuf type URL.
+   *
+   * @param {!string} typeUrl the type URL
+   * @return {!Class} class of this Protobuf type
+   * @public
+   */
+  static classFor(typeUrl) {
+    const cls = types.get(typeUrl);
+    if (cls === null || cls === undefined) {
+      throw new Error(`Class for type URL '${typeUrl}' is not found.`);
+    }
+    return cls;
+  }
+
+  /**
    * Registers the type as a known type.
    *
    * @param {!Class} type the class of a Protobuf message or enum
    * @param {!string} typeUrl the URL of the type
    */
   static register(type, typeUrl) {
-    if (!this.hasType(typeUrl)) {
+    if (!KnownTypes.hasType(typeUrl)) {
       types.set(typeUrl, type);
     }
   }
@@ -70,8 +85,7 @@ export default class KnownTypes {
    * @param {!string} typeUrl the type URL to check
    */
   static hasType(typeUrl) {
-    const result = types.has(typeUrl);
-    return result;
+    return types.has(typeUrl);
   }
 
   /**

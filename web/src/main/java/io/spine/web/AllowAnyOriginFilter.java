@@ -43,21 +43,17 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
  * servlets.
  *
  * <p>When configuring servlets via annotations, users can extend this class and mark the subtype
- * with the {@link javax.servlet.annotation.WebFilter} annotation.
+ * with the {@code javax.servlet.annotation.WebFilter} annotation.
  */
 public class AllowAnyOriginFilter implements Filter {
 
     /**
      * The human readable name of this filter.
-     *
-     * @see javax.servlet.annotation.WebFilter#filterName()
      */
     public static final String NAME = "CORS filter";
 
     /**
      * A URL pattern which matches all the URLs.
-     *
-     * @see javax.servlet.annotation.WebFilter#urlPatterns()
      */
     public static final String ANY_URL = "*";
 
