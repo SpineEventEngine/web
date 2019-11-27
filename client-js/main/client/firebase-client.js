@@ -139,7 +139,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
   /**
    * @inheritDoc
    */
-  subscribeTo(topic) {
+  subscribe(topic) {
     return new Promise((resolve, reject) => {
       const typeUrl = topic.getTarget().getType();
       this._endpoint.subscribeTo(topic)

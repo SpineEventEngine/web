@@ -20,10 +20,12 @@
 
 "use strict";
 
+import {Message} from 'google-protobuf';
 import ObjectToProto from "./object-to-proto";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
+import {QueryRequest, SubscriptionRequest} from "./client-request";
 
 /**
  * A {@link Client} that delegates requests to case-specific client implementations.
@@ -59,35 +61,25 @@ export class CompositeClient extends Client {
         this._commanding = commanding;
     }
 
-    newQuery() {
-        return this._querying.newQuery();
+    /**
+     * @override
+     */
+    command(command) {
+        this._commanding.command(command);
     }
 
-    execute(query) {
-        return this._querying.execute(query);
+    /**
+     * @override
+     */
+    select(entityType) {
+        this._querying.select(entityType);
     }
 
-    fetch({entity: cls, byIds: ids}) {
-        return this._querying.fetch(cls, ids);
-    }
-
-    newTopic() {
-        return this._subscribing.newTopic();
-    }
-
-    subscribeTo(topic) {
-        return this._subscribing.subscribeTo(topic);
-    }
-
-    subscribe({entity: cls, byIds: ids}) {
-        return this._subscribing.subscribe(cls, ids);
-    }
-
-    sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
-        return this._commanding.sendCommand(commandMessage,
-                                            acknowledgedCallback,
-                                            errorCallback,
-                                            rejectionCallback);
+    /**
+     * @override
+     */
+    subscribeTo(type) {
+        this._subscribing.subscribeTo(type);
     }
 }
 
@@ -103,7 +95,7 @@ export class QueryingClient {
      *        a request factory to build requests to Spine server
      */
     constructor(actorRequestFactory) {
-        this._requestFactory = actorRequestFactory;
+        this.requestFactory = actorRequestFactory;
     }
 
     /**
@@ -121,14 +113,12 @@ export class QueryingClient {
         throw new Error('Not implemented in abstract base.');
     }
 
-    newQuery() {
-        return this._requestFactory.query();
-    }
-
-    fetch(entityClass, ids) {
-        const queryBuilder = this.newQuery().select(entityClass);
-        const query = _buildTarget(queryBuilder, ids);
-        return this.execute(query);
+    /**
+     * @param {!Class<? extend Message>} entityType a Protobuf type of the query target entities
+     * @return {QueryRequest}
+     */
+    select(entityType) {
+        return new QueryRequest(entityType, this);
     }
 }
 
@@ -144,22 +134,20 @@ export class SubscribingClient {
      *        a request factory to build requests to Spine server
      */
     constructor(actorRequestFactory) {
-        this._requestFactory = actorRequestFactory;
+        this.requestFactory = actorRequestFactory;
     }
 
-    subscribeTo(topic) {
+    /**
+     * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+     *
+     * @template <T> a Protobuf type of entities being the target of a subscription
+     */
+    subscribe(topic) {
         throw new Error('Not implemented in abstract base.');
     }
 
-    newTopic() {
-        return this._requestFactory.topic();
-    }
-
-    subscribe(entityClass, ids) {
-        const topicBuilder = this.newTopic().select(entityClass);
-        const topic = _buildTarget(topicBuilder, ids);
-
-        return this.subscribeTo(topic);
+    subscribeTo(type) {
+        return new SubscriptionRequest(type, this);
     }
 }
 
@@ -177,7 +165,7 @@ export class NoOpSubscribingClient extends SubscribingClient {
      *
      * @override
      */
-    subscribeTo(topic) {
+    subscribe(topic) {
         throw new Error('Entity subscription is not supported.');
     }
 }
@@ -192,12 +180,12 @@ const _statusType = Status.typeUrl();
 export class CommandingClient {
 
     constructor(endpoint, requestFactory) {
-        this._requestFactory = requestFactory;
+        this.requestFactory = requestFactory;
         this._endpoint = endpoint;
     }
 
     sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
-        const command = this._requestFactory.command().create(commandMessage);
+        const command = this.requestFactory.command().create(commandMessage);
         this._endpoint.command(command)
             .then(ack => this._onAck(ack, acknowledgedCallback, errorCallback, rejectionCallback))
             .catch(error => {
