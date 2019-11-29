@@ -22,6 +22,8 @@
 
 import {Message} from 'google-protobuf';
 import {Observable} from 'rxjs';
+import {CompositeFilter, Filter} from '../proto/spine/client/filters_pb';
+import {OrderBy} from '../proto/spine/client/query_pb';
 
 class FilteringRequest {
 
@@ -34,6 +36,36 @@ class FilteringRequest {
         this._client = client;
         this._requestFactory = client.requestFactory;
         this._builder = null;
+    }
+
+    /**
+     *
+     * @param ids {!<I extends Message>[]|Number[]|String[]}
+     * @return {QueryRequest | SubscriptionRequest} self
+     *
+     * @template <I> a Protobuf type of IDs
+     */
+    byId(ids) {
+        this.builder().byIds(ids);
+        return this.self();
+    }
+
+    /**
+     * @param {!Filter[]|CompositeFilter[]} predicates
+     * @return {QueryRequest | SubscriptionRequest} self
+     */
+    where(predicates) {
+        this.builder().where(predicates);
+        return this.self();
+    }
+
+    /**
+     * @param {!String[]} fieldNames
+     * @return {QueryRequest | SubscriptionRequest} self
+     */
+    withMask(fieldNames) {
+        this.builder().withMask(fieldNames);
+        return this.self();
     }
 
     targetType() {
@@ -57,6 +89,15 @@ class FilteringRequest {
      * @return {Function<ActorRequestFactory, AbstractTargetBuilder>}
      */
     builderFn() {
+        throw new Error('Not implemented in abstract base.');
+    }
+
+    /**
+     * @abstract
+     *
+     * @return {QueryRequest | SubscriptionRequest}
+     */
+    self() {
         throw new Error('Not implemented in abstract base.');
     }
 }
@@ -89,6 +130,32 @@ export class QueryRequest extends FilteringRequest {
         super(targetType, client)
     }
 
+    // TODO:2019-11-27:dmytro.kuzmin:WIP See what we can do about it.
+    // noinspection JSValidateJSDoc unresolved nested type which actually exists
+    /**
+     *
+     * @param {!String} column
+     * @param {!OrderBy.Direction} direction
+     * @return {QueryRequest} self
+     */
+    orderBy(column, direction) {
+        if (direction === OrderBy.Direction.ASCENDING) {
+            this.builder().orderAscendingBy(column);
+        } else {
+            this.builder().orderDescendingBy(column);
+        }
+        return this.self();
+    }
+
+    /**
+     * @param {number} count the max number of response entities
+     * @return {QueryRequest} self
+     */
+    limit(count) {
+        this.builder().limit(count);
+        return this.self();
+    }
+
     /**
      * @return {Promise<<T extends Message>[]>}
      *
@@ -101,6 +168,10 @@ export class QueryRequest extends FilteringRequest {
 
     builderFn() {
         return requestFactory => requestFactory.query().select(this.targetType());
+    }
+
+    self() {
+        return this;
     }
 }
 
@@ -122,5 +193,9 @@ export class SubscriptionRequest extends FilteringRequest {
 
     builderFn() {
         return requestFactory => requestFactory.topic().select(this.targetType());
+    }
+
+    self() {
+        return this;
     }
 }
