@@ -25,7 +25,7 @@ import ObjectToProto from "./object-to-proto";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
-import {QueryRequest, SubscriptionRequest} from "./client-request";
+import {CommandRequest, QueryRequest, SubscriptionRequest} from "./client-request";
 
 /**
  * A {@link Client} that delegates requests to case-specific client implementations.
@@ -99,6 +99,14 @@ export class QueryingClient {
     }
 
     /**
+     * @param {!Class<? extend Message>} entityType a Protobuf type of the query target entities
+     * @return {QueryRequest}
+     */
+    select(entityType) {
+        return new QueryRequest(entityType, this);
+    }
+
+    /**
      * Executes the given `Query` instance specifying the data to be retrieved from
      * Spine server fulfilling a returned promise with an array of received objects.
      *
@@ -111,14 +119,6 @@ export class QueryingClient {
      */
     execute(query) {
         throw new Error('Not implemented in abstract base.');
-    }
-
-    /**
-     * @param {!Class<? extend Message>} entityType a Protobuf type of the query target entities
-     * @return {QueryRequest}
-     */
-    select(entityType) {
-        return new QueryRequest(entityType, this);
     }
 }
 
@@ -137,6 +137,10 @@ export class SubscribingClient {
         this.requestFactory = actorRequestFactory;
     }
 
+    subscribeTo(type) {
+        return new SubscriptionRequest(type, this);
+    }
+
     /**
      * @return {Promise<EntitySubscriptionObject<T extends Message>>}
      *
@@ -145,11 +149,9 @@ export class SubscribingClient {
     subscribe(topic) {
         throw new Error('Not implemented in abstract base.');
     }
-
-    subscribeTo(type) {
-        return new SubscriptionRequest(type, this);
-    }
 }
+
+const SUBSCRIPTIONS_NOT_SUPPORTED = 'Subscriptions are not supported.';
 
 /**
  * A {@link SubscribingClient} which does not create subscriptions.
@@ -165,8 +167,17 @@ export class NoOpSubscribingClient extends SubscribingClient {
      *
      * @override
      */
+    subscribeTo(type) {
+        throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
+    }
+
+    /**
+     * Always throws an error.
+     *
+     * @override
+     */
     subscribe(topic) {
-        throw new Error('Entity subscription is not supported.');
+        throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
     }
 }
 
@@ -182,6 +193,10 @@ export class CommandingClient {
     constructor(endpoint, requestFactory) {
         this.requestFactory = requestFactory;
         this._endpoint = endpoint;
+    }
+
+    command(commandMessage) {
+        return new CommandRequest(commandMessage, this);
     }
 
     sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
