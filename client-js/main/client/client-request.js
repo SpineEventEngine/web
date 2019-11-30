@@ -21,7 +21,6 @@
 "use strict";
 
 import {Message} from 'google-protobuf';
-import {Observable} from 'rxjs';
 import {CompositeFilter, Filter} from '../proto/spine/client/filters_pb';
 import {OrderBy} from '../proto/spine/client/query_pb';
 
@@ -102,28 +101,6 @@ class FilteringRequest {
     }
 }
 
-export class CommandRequest {
-
-    /**
-     * @param {!Message} commandMessage
-     * @param {!CommandingClient} client
-     */
-    constructor(commandMessage, client) {
-        this._commandMessage = commandMessage;
-        this._client = client;
-    }
-
-    /**
-     * @return {Promise<Map<T extends Message, Observable> | Observable>}
-     *
-     * @template <T> a Protobuf type of entities being the target of a query
-     */
-    post() {
-        // TODO:2019-11-27:dmytro.kuzmin:WIP Extend with event-subscribing logic.
-        this._client.sendCommand(this._commandMessage);
-    }
-}
-
 export class QueryRequest extends FilteringRequest {
 
     constructor(targetType, client) {
@@ -197,5 +174,73 @@ export class SubscriptionRequest extends FilteringRequest {
 
     self() {
         return this;
+    }
+}
+
+const NOOP_CALLBACK = () => {};
+
+export class CommandRequest {
+
+    /**
+     * @param {!Message} commandMessage
+     * @param {!CommandingClient} client
+     */
+    constructor(commandMessage, client) {
+        this._commandMessage = commandMessage;
+        this._client = client;
+        this._onAck = NOOP_CALLBACK;
+        this._onError = NOOP_CALLBACK;
+        this._onRejection = NOOP_CALLBACK;
+        this._observedTypes = [];
+    }
+
+    /**
+     * @param {!parameterlessCallback} callback
+     *
+     * @return {CommandRequest} self
+     */
+    onAck(callback) {
+        this._onAck = callback;
+        return this;
+    }
+
+    /**
+     * @param {!consumerCallback} callback
+     *
+     * @return {CommandRequest} self
+     */
+    onError(callback) {
+        this._onError = callback;
+        return this;
+    }
+
+    /**
+     * @param {!consumerCallback} callback
+     *
+     * @return {CommandRequest} self
+     */
+    onRejection(callback) {
+        this._onRejection = callback;
+        return this;
+    }
+
+    /**
+     * @param {!Class<? extends Message>} eventType a Protobuf type of the observed events
+     *
+     * @return {CommandRequest} self
+     */
+    observe(eventType) {
+        this._observedTypes.push(eventType);
+        return this;
+    }
+
+    /**
+     * @return {Promise<Map<Class<? extends Message>, EntitySubscriptionObject> | EntitySubscriptionObject>}
+     */
+    post() {
+        // TODO:2019-11-27:dmytro.kuzmin:WIP Extend with event-subscribing logic.
+        const ackCallback =
+            {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
+        this._client.sendCommand(this._commandMessage, ackCallback, this._observedTypes);
     }
 }

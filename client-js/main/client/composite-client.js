@@ -64,13 +64,6 @@ export class CompositeClient extends Client {
     /**
      * @override
      */
-    command(command) {
-        this._commanding.command(command);
-    }
-
-    /**
-     * @override
-     */
     select(entityType) {
         this._querying.select(entityType);
     }
@@ -80,6 +73,13 @@ export class CompositeClient extends Client {
      */
     subscribeTo(type) {
         this._subscribing.subscribeTo(type);
+    }
+
+    /**
+     * @override
+     */
+    command(command) {
+        this._commanding.command(command);
     }
 }
 
@@ -184,6 +184,14 @@ export class NoOpSubscribingClient extends SubscribingClient {
 const _statusType = Status.typeUrl();
 
 /**
+ * @typedef AckCallback
+ *
+ * @property {!parameterlessCallback} onOk
+ * @property {!consumerCallback<Error>} onError
+ * @property {!consumerCallback<Message>} onRejection
+ */
+
+/**
  * A client which posts commands.
  *
  * This class has a default implementation. Override it to change the behaviour.
@@ -199,64 +207,43 @@ export class CommandingClient {
         return new CommandRequest(commandMessage, this);
     }
 
-    sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
+    /**
+     * @param {!Message} commandMessage
+     * @param {!AckCallback} ackCallback
+     * @param {!Array<Class<? extends Message>>} observedTypes
+     */
+    sendCommand(commandMessage, ackCallback, observedTypes) {
         const command = this.requestFactory.command().create(commandMessage);
         this._endpoint.command(command)
-            .then(ack => this._onAck(ack, acknowledgedCallback, errorCallback, rejectionCallback))
+            .then(ack => this._onAck(ack, ackCallback))
             .catch(error => {
-                errorCallback(new CommandHandlingError(error.message, error));
+                ackCallback.onError(new CommandHandlingError(error.message, error));
             });
     }
 
-    _onAck(ack, acknowledgedCallback, errorCallback, rejectionCallback) {
+    _onAck(ack, ackCallback) {
         const responseStatus = ack.status;
         const responseStatusProto = ObjectToProto.convert(responseStatus, _statusType);
         const responseStatusCase = responseStatusProto.getStatusCase();
 
         switch (responseStatusCase) {
             case Status.StatusCase.OK:
-                acknowledgedCallback();
+                ackCallback.onOk();
                 break;
             case Status.StatusCase.ERROR:
                 const error = responseStatusProto.getError();
                 const message = error.getMessage();
-                errorCallback(error.hasValidationError()
+                ackCallback.onError(error.hasValidationError()
                     ? new CommandValidationError(message, error)
                     : new CommandHandlingError(message, error));
                 break;
             case Status.StatusCase.REJECTION:
-                rejectionCallback(responseStatusProto.getRejection());
+                ackCallback.onRejection(responseStatusProto.getRejection());
                 break;
             default:
-                errorCallback(
+                ackCallback.onError(
                     new SpineError(`Unknown response status case ${responseStatusCase}`)
                 );
         }
     }
-}
-
-/**
- * Builds target from the given target builder specifying the set
- * of target entities.
- *
- * The resulting target points to:
- *  - the particular entities with the given IDs;
- *  - the all entities if no IDs specified.
- *
- * @param {AbstractTargetBuilder<Query|Topic>} targetBuilder
- *      a builder for creating `Query` or `Topic` instances.
- * @param {?<T extends Message>[] | <T extends Message> | Number[] | Number | String[] | String} ids
- *      a list of target entities IDs or an ID of a single target entity
- * @return {Query|Topic} the built target
- *
- * @template <T> a class of identifiers, corresponding to the query/subscription targets
- * @private
- */
-function _buildTarget(targetBuilder, ids) {
-    if (Array.isArray(ids)) {
-        targetBuilder.byIds(ids);
-    } else if (!!ids) {
-        targetBuilder.byIds([ids]);
-    }
-    return targetBuilder.build();
 }

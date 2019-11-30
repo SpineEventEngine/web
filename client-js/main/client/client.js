@@ -80,14 +80,6 @@ import {Observable} from 'rxjs';
 export class Client {
 
   /**
-   * @param {!Message} command a Protobuf type of the query target entities
-   * @return {CommandRequest}
-   */
-  command(command) {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
    * @param {!Class<? extends Message>} entityType a Protobuf type of the query target entities
    * @return {QueryRequest}
    */
@@ -100,6 +92,14 @@ export class Client {
    * @return {SubscriptionRequest}
    */
   subscribeTo(type) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * @param {!Message} command a Protobuf type of the query target entities
+   * @return {CommandRequest}
+   */
+  command(command) {
     throw new Error('Not implemented in abstract base.');
   }
 }

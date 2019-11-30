@@ -79,7 +79,7 @@ class EntitySubscription extends Subscription {
    * @return {EntitySubscriptionObject} a plain object with observables and unsubscribe method
    */
   toObject() {
-    return Object.assign({}, this._observables, {unsubscribe: () => this.unsubscribe()})
+    return Object.assign({}, this._observables, {unsubscribe: () => this.unsubscribe()});
   }
 }
 
