@@ -102,7 +102,7 @@ class DirectQueryingClient extends QueryingClient {
     this._endpoint = endpoint;
   }
 
-  execute(query) {
+  read(query) {
     const typeUrl = query.getTarget().getType();
     const targetClass = KnownTypes.classFor(typeUrl);
     const targetType = Type.of(targetClass, typeUrl);

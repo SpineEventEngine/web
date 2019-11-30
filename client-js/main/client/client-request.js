@@ -23,24 +23,37 @@
 import {Message} from 'google-protobuf';
 import {CompositeFilter, Filter} from '../proto/spine/client/filters_pb';
 import {OrderBy} from '../proto/spine/client/query_pb';
+import {MessageId, Origin} from '../proto/spine/core/diagnostics_pb';
+import {AnyPacker} from "./any-packer";
+import {Filters} from "./actor-request-factory";
 
-class FilteringRequest {
+class ClientRequest {
+
+    /**
+     * @param {!Client} client
+     * @param {!ActorRequestFactory} actorRequestFactory
+     */
+    constructor(client, actorRequestFactory) {
+        this.client = client;
+        this.actorRequestFactory = actorRequestFactory;
+    }
+}
+
+class FilteringRequest extends ClientRequest {
 
     /**
      * @param {!Class<? extends Message>} targetType
-     * @param {!QueryingClient | SubscribingClient} client
+     * @param {!Client} client
+     * @param {!ActorRequestFactory} actorRequestFactory
      */
-    constructor(targetType, client) {
-        this._targetType = targetType;
-        this._client = client;
-        this._requestFactory = client.requestFactory;
-        this._builder = null;
+    constructor(targetType, client, actorRequestFactory) {
+        super(client, actorRequestFactory);
+        this.targetType = targetType;
     }
 
     /**
-     *
      * @param ids {!<I extends Message>[]|Number[]|String[]}
-     * @return {QueryRequest | SubscriptionRequest} self
+     * @return {FilteringRequest} self
      *
      * @template <I> a Protobuf type of IDs
      */
@@ -51,7 +64,7 @@ class FilteringRequest {
 
     /**
      * @param {!Filter[]|CompositeFilter[]} predicates
-     * @return {QueryRequest | SubscriptionRequest} self
+     * @return {FilteringRequest} self
      */
     where(predicates) {
         this.builder().where(predicates);
@@ -60,24 +73,18 @@ class FilteringRequest {
 
     /**
      * @param {!String[]} fieldNames
-     * @return {QueryRequest | SubscriptionRequest} self
+     * @return {FilteringRequest} self
      */
     withMask(fieldNames) {
         this.builder().withMask(fieldNames);
         return this.self();
     }
 
-    targetType() {
-        return this._targetType;
-    }
-
-    client() {
-        return this._client;
-    }
-
     builder() {
+        // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
+        //  unnecessary.
         if (!this._builder) {
-            this._builder = this.builderFn().apply(this._requestFactory);
+            this._builder = this.newBuilderFn().apply(this.actorRequestFactory);
         }
         return this._builder;
     }
@@ -87,14 +94,14 @@ class FilteringRequest {
      *
      * @return {Function<ActorRequestFactory, AbstractTargetBuilder>}
      */
-    builderFn() {
+    newBuilderFn() {
         throw new Error('Not implemented in abstract base.');
     }
 
     /**
      * @abstract
      *
-     * @return {QueryRequest | SubscriptionRequest}
+     * @return {FilteringRequest} self
      */
     self() {
         throw new Error('Not implemented in abstract base.');
@@ -103,8 +110,8 @@ class FilteringRequest {
 
 export class QueryRequest extends FilteringRequest {
 
-    constructor(targetType, client) {
-        super(targetType, client)
+    constructor(targetType, client, actorRequestFactory) {
+        super(targetType, client, actorRequestFactory)
     }
 
     // TODO:2019-11-27:dmytro.kuzmin:WIP See what we can do about it.
@@ -140,11 +147,11 @@ export class QueryRequest extends FilteringRequest {
      */
     run() {
         const query = this.builder().build();
-        return this.client().execute(query);
+        return this.client.read(query);
     }
 
-    builderFn() {
-        return requestFactory => requestFactory.query().select(this.targetType());
+    newBuilderFn() {
+        return requestFactory => requestFactory.query().select(this.targetType);
     }
 
     self() {
@@ -154,8 +161,8 @@ export class QueryRequest extends FilteringRequest {
 
 export class SubscriptionRequest extends FilteringRequest {
 
-    constructor(targetType, client) {
-        super(targetType, client)
+    constructor(targetType, client, actorRequestFactory) {
+        super(targetType, client, actorRequestFactory)
     }
 
     /**
@@ -165,11 +172,11 @@ export class SubscriptionRequest extends FilteringRequest {
      */
     post() {
         const topic = this.builder().build();
-        return this.client().subscribe(topic);
+        return this.client.subscribe(topic);
     }
 
-    builderFn() {
-        return requestFactory => requestFactory.topic().select(this.targetType());
+    newBuilderFn() {
+        return requestFactory => requestFactory.topic().select(this.targetType);
     }
 
     self() {
@@ -179,15 +186,16 @@ export class SubscriptionRequest extends FilteringRequest {
 
 const NOOP_CALLBACK = () => {};
 
-export class CommandRequest {
+export class CommandRequest extends ClientRequest{
 
     /**
      * @param {!Message} commandMessage
-     * @param {!CommandingClient} client
+     * @param {!Client} client
+     * @param {!ActorRequestFactory} actorRequestFactory
      */
-    constructor(commandMessage, client) {
+    constructor(commandMessage, client, actorRequestFactory) {
+        super(client, actorRequestFactory);
         this._commandMessage = commandMessage;
-        this._client = client;
         this._onAck = NOOP_CALLBACK;
         this._onError = NOOP_CALLBACK;
         this._onRejection = NOOP_CALLBACK;
@@ -235,12 +243,49 @@ export class CommandRequest {
     }
 
     /**
-     * @return {Promise<Map<Class<? extends Message>, EntitySubscriptionObject> | EntitySubscriptionObject>}
+     * @return {Promise<EntitySubscriptionObject[] | EntitySubscriptionObject>}
      */
     post() {
-        // TODO:2019-11-27:dmytro.kuzmin:WIP Extend with event-subscribing logic.
+        const command = this.actorRequestFactory.command().create(this._commandMessage);
         const ackCallback =
             {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
-        this._client.sendCommand(this._commandMessage, ackCallback, this._observedTypes);
+        this.client.post(command, ackCallback);
+        const promises = [];
+        this._observedTypes.forEach(type => {
+            const originFilter = Filters.eq("context.past_message", this._asOrigin(command));
+            const promise = this.client.subscribeTo(type)
+                .where([originFilter])
+                .post();
+            promises.push(promise);
+        });
+        if (promises.length === 1) {
+            return promises[0];
+        }
+        return Promise.all(promises);
+    }
+
+    /**
+     * @param {!Command} command
+     *
+     * @return {Origin}
+     *
+     * @private
+     */
+    _asOrigin(command) {
+        const result = new Origin();
+
+        const messageId = new MessageId();
+        const packedId = AnyPacker.pack(command.getId());
+        messageId.setId(packedId);
+        const typeUrl = command.getMessage().getTypeUrl();
+        messageId.setTypeUrl(typeUrl);
+        result.setMessage(messageId);
+
+        const grandOrigin = command.getContext().getOrigin();
+        result.setGrandOrigin(grandOrigin);
+
+        const actorContext = command.getContext().getActorContext();
+        result.setActorContext(actorContext);
+        return result;
     }
 }

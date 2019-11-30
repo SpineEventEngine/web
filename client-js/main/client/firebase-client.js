@@ -98,7 +98,7 @@ class FirebaseQueryingClient extends QueryingClient {
     this._firebase = firebaseDatabase;
   }
 
-  execute(query) {
+  read(query) {
     return new Promise((resolve, reject) => {
       this._endpoint.query(query)
           .then(({path}) => this._firebase.getValues(path, values => {

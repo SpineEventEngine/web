@@ -72,6 +72,14 @@ import {Observable} from 'rxjs';
  */
 
 /**
+ * @typedef AckCallback
+ *
+ * @property {!parameterlessCallback} onOk
+ * @property {!consumerCallback<Error>} onError
+ * @property {!consumerCallback<Message>} onRejection
+ */
+
+/**
  * An abstract client for Spine application backend. This is a single channel for client-server
  * communication in a Spine-based browser application.
  *
@@ -88,6 +96,21 @@ export class Client {
   }
 
   /**
+   * Executes the given `Query` instance specifying the data to be retrieved from
+   * Spine server fulfilling a returned promise with an array of received objects.
+   *
+   * @param {!spine.client.Query} query a query instance to be executed
+   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   *        messages of a given type or with an empty list if no entities matching given query
+   *        were found; rejected with a `SpineError` if error occurs
+   *
+   * @template <T> a Protobuf type of entities being the target of a query
+   */
+  read(query) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * @param {!Class<? extends Message>} type a Protobuf type of the target entities or events
    * @return {SubscriptionRequest}
    */
@@ -96,10 +119,30 @@ export class Client {
   }
 
   /**
+   * @param {!spine.client.Topic} topic
+   *
+   * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+   *
+   * @template <T> a Protobuf type of entities being the target of a subscription
+   */
+  subscribe(topic) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * @param {!Message} command a Protobuf type of the query target entities
    * @return {CommandRequest}
    */
   command(command) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * @param {!Command} command a Command send to Spine server
+   * @param {!AckCallback} ackCallback
+   * @param {!Array<Class<? extends Message>>} observedTypes
+   */
+  post(command, ackCallback) {
     throw new Error('Not implemented in abstract base.');
   }
 }

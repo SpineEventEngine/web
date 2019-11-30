@@ -814,7 +814,7 @@ class CommandFactory {
    * Creates a `Command` from the given command message.
    *
    * @param {!Message} message a command message
-   * @return {TypedMessage<Command>} a typed representation of the Spine Command
+   * @return {Command} a typed representation of the Spine Command
    */
   create(message) {
     const id = CommandFactory._newCommandId();
@@ -825,7 +825,7 @@ class CommandFactory {
     result.setId(id);
     result.setMessage(messageAny);
     result.setContext(context);
-    return TypedMessage.of(result);
+    return result;
   }
 
   _commandContext() {

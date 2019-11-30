@@ -26,6 +26,7 @@ import {CommandHandlingError, CommandValidationError, SpineError} from "./errors
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
 import {CommandRequest, QueryRequest, SubscriptionRequest} from "./client-request";
+import {TypedMessage} from "./typed-message";
 
 /**
  * A {@link Client} that delegates requests to case-specific client implementations.
@@ -65,21 +66,42 @@ export class CompositeClient extends Client {
      * @override
      */
     select(entityType) {
-        this._querying.select(entityType);
+        return this._querying.select(entityType);
+    }
+
+    /**
+     * @override
+     */
+    read(query) {
+        return this._querying.read(query);
     }
 
     /**
      * @override
      */
     subscribeTo(type) {
-        this._subscribing.subscribeTo(type);
+        return this._subscribing.subscribeTo(type);
+    }
+
+    /**
+     * @override
+     */
+    subscribe(topic) {
+        return this._subscribing.subscribe(topic)
     }
 
     /**
      * @override
      */
     command(command) {
-        this._commanding.command(command);
+        return this._commanding.command(command);
+    }
+
+    /**
+     * @override
+     */
+    post(command, ackCallback) {
+        this._commanding.post(command, ackCallback);
     }
 }
 
@@ -110,14 +132,14 @@ export class QueryingClient {
      * Executes the given `Query` instance specifying the data to be retrieved from
      * Spine server fulfilling a returned promise with an array of received objects.
      *
-     * @param {!Query} query a query instance to be executed
+     * @param {!spine.client.Query} query a query instance to be executed
      * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
      *        messages of a given type or with an empty list if no entities matching given query
      *        were found; rejected with a `SpineError` if error occurs
      *
      * @template <T> a Protobuf type of entities being the target of a query
      */
-    execute(query) {
+    read(query) {
         throw new Error('Not implemented in abstract base.');
     }
 }
@@ -184,14 +206,6 @@ export class NoOpSubscribingClient extends SubscribingClient {
 const _statusType = Status.typeUrl();
 
 /**
- * @typedef AckCallback
- *
- * @property {!parameterlessCallback} onOk
- * @property {!consumerCallback<Error>} onError
- * @property {!consumerCallback<Message>} onRejection
- */
-
-/**
  * A client which posts commands.
  *
  * This class has a default implementation. Override it to change the behaviour.
@@ -207,14 +221,9 @@ export class CommandingClient {
         return new CommandRequest(commandMessage, this);
     }
 
-    /**
-     * @param {!Message} commandMessage
-     * @param {!AckCallback} ackCallback
-     * @param {!Array<Class<? extends Message>>} observedTypes
-     */
-    sendCommand(commandMessage, ackCallback, observedTypes) {
-        const command = this.requestFactory.command().create(commandMessage);
-        this._endpoint.command(command)
+    post(command, ackCallback) {
+        const cmd = TypedMessage.of(command);
+        this._endpoint.command(cmd)
             .then(ack => this._onAck(ack, ackCallback))
             .catch(error => {
                 ackCallback.onError(new CommandHandlingError(error.message, error));
