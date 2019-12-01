@@ -53,25 +53,6 @@ import {Observable} from 'rxjs';
  */
 
 /**
- * @typedef {Object} SimpleTarget
- *
- * An object representing a set of parameters for building a query or a subscription
- * topic specifying only a type and identifiers of the target entities.
- *
- * Target built from this object point either:
- *  - a single entity of a given type with a given ID;
- *  - several entities of a given type with given IDs;
- *  - all entities of a given type if no IDs specified;
- *
- * @property {!Class<T extends Message>} entity a class of target entities
- * @property {?<I extends Message>[] | <I extends Message> | Number[] | Number | String[] | String} byIds
- *      a list of target entities IDs or an ID of a single target entity
- *
- * @template <T> a class of a query or subscription target entities
- * @template <I> a class of a query or subscription target entities identifiers
- */
-
-/**
  * @typedef AckCallback
  *
  * @property {!parameterlessCallback} onOk
@@ -130,17 +111,16 @@ export class Client {
   }
 
   /**
-   * @param {!Message} command a Protobuf type of the query target entities
+   * @param {!Message} commandMessage a Protobuf type of the query target entities
    * @return {CommandRequest}
    */
-  command(command) {
+  command(commandMessage) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
-   * @param {!Command} command a Command send to Spine server
+   * @param {!spine.core.Command} command a Command send to Spine server
    * @param {!AckCallback} ackCallback
-   * @param {!Array<Class<? extends Message>>} observedTypes
    */
   post(command, ackCallback) {
     throw new Error('Not implemented in abstract base.');
