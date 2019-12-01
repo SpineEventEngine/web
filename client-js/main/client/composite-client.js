@@ -66,7 +66,7 @@ export class CompositeClient extends Client {
      * @override
      */
     select(entityType) {
-        return new QueryRequest(entityType, this, this._querying.requestFactory);
+        return this._querying.select(entityType, this);
     }
 
     /**
@@ -80,7 +80,7 @@ export class CompositeClient extends Client {
      * @override
      */
     subscribeTo(type) {
-        return new SubscriptionRequest(type, this, this._subscribing.requestFactory);
+        return this._subscribing.subscribeTo(type, this);
     }
 
     /**
@@ -94,7 +94,7 @@ export class CompositeClient extends Client {
      * @override
      */
     command(commandMessage) {
-        return new CommandRequest(commandMessage, this, this._commanding.requestFactory);
+        return this._commanding.command(commandMessage, this);
     }
 
     /**
@@ -117,7 +117,11 @@ export class QueryingClient {
      *        a request factory to build requests to Spine server
      */
     constructor(actorRequestFactory) {
-        this.requestFactory = actorRequestFactory;
+        this._requestFactory = actorRequestFactory;
+    }
+
+    select(entityType, client) {
+        return new QueryRequest(entityType, client, this._requestFactory);
     }
 
     /**
@@ -148,7 +152,11 @@ export class SubscribingClient {
      *        a request factory to build requests to Spine server
      */
     constructor(actorRequestFactory) {
-        this.requestFactory = actorRequestFactory;
+        this._requestFactory = actorRequestFactory;
+    }
+
+    subscribeTo(type, client) {
+        return new SubscriptionRequest(type, client, this._requestFactory);
     }
 
     /**
@@ -201,8 +209,12 @@ const _statusType = Status.typeUrl();
 export class CommandingClient {
 
     constructor(endpoint, requestFactory) {
-        this.requestFactory = requestFactory;
+        this._requestFactory = requestFactory;
         this._endpoint = endpoint;
+    }
+
+    command(commandMessage, client) {
+        return new CommandRequest(commandMessage, client, this._requestFactory);
     }
 
     post(command, ackCallback) {
