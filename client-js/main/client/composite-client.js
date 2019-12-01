@@ -66,7 +66,7 @@ export class CompositeClient extends Client {
      * @override
      */
     select(entityType) {
-        return this._querying.select(entityType);
+        return new QueryRequest(entityType, this, this._querying.requestFactory);
     }
 
     /**
@@ -80,7 +80,7 @@ export class CompositeClient extends Client {
      * @override
      */
     subscribeTo(type) {
-        return this._subscribing.subscribeTo(type);
+        return new SubscriptionRequest(type, this, this._subscribing.requestFactory);
     }
 
     /**
@@ -93,8 +93,8 @@ export class CompositeClient extends Client {
     /**
      * @override
      */
-    command(command) {
-        return this._commanding.command(command);
+    command(commandMessage) {
+        return new CommandRequest(commandMessage, this, this._commanding.requestFactory);
     }
 
     /**
@@ -118,14 +118,6 @@ export class QueryingClient {
      */
     constructor(actorRequestFactory) {
         this.requestFactory = actorRequestFactory;
-    }
-
-    /**
-     * @param {!Class<? extend Message>} entityType a Protobuf type of the query target entities
-     * @return {QueryRequest}
-     */
-    select(entityType) {
-        return new QueryRequest(entityType, this);
     }
 
     /**
@@ -157,10 +149,6 @@ export class SubscribingClient {
      */
     constructor(actorRequestFactory) {
         this.requestFactory = actorRequestFactory;
-    }
-
-    subscribeTo(type) {
-        return new SubscriptionRequest(type, this);
     }
 
     /**
@@ -215,10 +203,6 @@ export class CommandingClient {
     constructor(endpoint, requestFactory) {
         this.requestFactory = requestFactory;
         this._endpoint = endpoint;
-    }
-
-    command(commandMessage) {
-        return new CommandRequest(commandMessage, this);
     }
 
     post(command, ackCallback) {
