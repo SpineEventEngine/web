@@ -53,6 +53,13 @@ import {Observable} from 'rxjs';
  */
 
 /**
+ * @typedef {Object} EventSubscriptionObject
+ *
+ * @property <!Observable<spine.core.Event>> eventEmitted
+ * @property {!parameterlessCallback} unsubscribe
+ */
+
+/**
  * @typedef AckCallback
  *
  * @property {!parameterlessCallback} onOk
@@ -92,10 +99,18 @@ export class Client {
   }
 
   /**
-   * @param {!Class<? extends Message>} type a Protobuf type of the target entities or events
+   * @param {!Class<? extends Message>} entityType a Protobuf type of the target entities
    * @return {SubscriptionRequest}
    */
-  subscribeTo(type) {
+  subscribeTo(entityType) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * @param {!Class<? extends Message>} eventType a Protobuf type of the target events
+   * @return {EventSubscriptionRequest}
+   */
+  subscribeToEvent(eventType) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -107,6 +122,15 @@ export class Client {
    * @template <T> a Protobuf type of entities being the target of a subscription
    */
   subscribe(topic) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * @param {!spine.client.Topic} topic
+   *
+   * @return {Promise<EventSubscriptionObject>}
+   */
+  subscribeToEvents(topic) {
     throw new Error('Not implemented in abstract base.');
   }
 

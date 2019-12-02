@@ -25,7 +25,12 @@ import ObjectToProto from "./object-to-proto";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
-import {CommandRequest, QueryRequest, SubscriptionRequest} from "./client-request";
+import {
+    CommandRequest,
+    EventSubscriptionRequest,
+    QueryRequest,
+    SubscriptionRequest
+} from "./client-request";
 import {TypedMessage} from "./typed-message";
 
 /**
@@ -79,8 +84,15 @@ export class CompositeClient extends Client {
     /**
      * @override
      */
-    subscribeTo(type) {
-        return this._subscribing.subscribeTo(type, this);
+    subscribeTo(entityType) {
+        return this._subscribing.subscribeTo(entityType, this);
+    }
+
+    /**
+     * @override
+     */
+    subscribeToEvent(eventType) {
+        return this._subscribing.subscribeToEvent(eventType, this);
     }
 
     /**
@@ -88,6 +100,13 @@ export class CompositeClient extends Client {
      */
     subscribe(topic) {
         return this._subscribing.subscribe(topic)
+    }
+
+    /**
+     * @override
+     */
+    subscribeToEvents(topic) {
+        return this._subscribing.subscribeToEvents(topic);
     }
 
     /**
@@ -159,12 +178,23 @@ export class SubscribingClient {
         return new SubscriptionRequest(type, client, this._requestFactory);
     }
 
+    subscribeToEvent(type, client) {
+        return new EventSubscriptionRequest(type, client, this._requestFactory);
+    }
+
     /**
      * @return {Promise<EntitySubscriptionObject<T extends Message>>}
      *
      * @template <T> a Protobuf type of entities being the target of a subscription
      */
     subscribe(topic) {
+        throw new Error('Not implemented in abstract base.');
+    }
+
+    /**
+     * @return {Promise<EventSubscriptionObject>}
+     */
+    subscribeToEvents(topic) {
         throw new Error('Not implemented in abstract base.');
     }
 }
@@ -194,7 +224,25 @@ export class NoOpSubscribingClient extends SubscribingClient {
      *
      * @override
      */
+    subscribeToEvent(type, client) {
+        throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
+    }
+
+    /**
+     * Always throws an error.
+     *
+     * @override
+     */
     subscribe(topic) {
+        throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
+    }
+
+    /**
+     * Always throws an error.
+     *
+     * @override
+     */
+    subscribeToEvents(topic) {
         throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
     }
 }

@@ -99,7 +99,7 @@ final class UpdatePayload {
                 .getEventUpdates()
                 .getEventList()
                 .stream()
-                .collect(toHashTable(Event::id, Event::enclosedMessage));
+                .collect(toHashTable(Event::id, event -> event));
         return new UpdatePayload(messages);
     }
 

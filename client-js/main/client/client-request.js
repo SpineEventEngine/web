@@ -27,6 +27,9 @@ import {MessageId, Origin} from '../proto/spine/core/diagnostics_pb';
 import {AnyPacker} from "./any-packer";
 import {Filters} from "./actor-request-factory";
 
+/**
+ * @abstract
+ */
 class ClientRequest {
 
     /**
@@ -39,6 +42,9 @@ class ClientRequest {
     }
 }
 
+/**
+ * @abstract
+ */
 class FilteringRequest extends ClientRequest {
 
     /**
@@ -159,11 +165,10 @@ export class QueryRequest extends FilteringRequest {
     }
 }
 
-export class SubscriptionRequest extends FilteringRequest {
-
-    constructor(targetType, client, actorRequestFactory) {
-        super(targetType, client, actorRequestFactory)
-    }
+/**
+ * @abstract
+ */
+class SubscribingRequest extends FilteringRequest {
 
     /**
      * @return {Promise<EntitySubscriptionObject<T extends Message>>}
@@ -172,7 +177,7 @@ export class SubscriptionRequest extends FilteringRequest {
      */
     post() {
         const topic = this.builder().build();
-        return this.client.subscribe(topic);
+        return this.doSubscribe(topic);
     }
 
     newBuilderFn() {
@@ -181,6 +186,38 @@ export class SubscriptionRequest extends FilteringRequest {
 
     self() {
         return this;
+    }
+
+    doSubscribe(topic) {
+        throw new Error('Not implemented in abstract base.');
+    }
+}
+
+export class SubscriptionRequest extends SubscribingRequest {
+
+    constructor(entityType, client, actorRequestFactory) {
+        super(entityType, client, actorRequestFactory)
+    }
+
+    /**
+     * @override
+     */
+    doSubscribe(topic) {
+        return this.client.subscribe(topic);
+    }
+}
+
+export class EventSubscriptionRequest extends SubscribingRequest {
+
+    constructor(eventType, client, actorRequestFactory) {
+        super(eventType, client, actorRequestFactory)
+    }
+
+    /**
+     * @override
+     */
+    doSubscribe(topic) {
+        return this.client.subscribeToEvents(topic);
     }
 }
 

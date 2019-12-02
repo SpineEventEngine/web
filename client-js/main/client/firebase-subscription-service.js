@@ -25,7 +25,8 @@ import {Duration} from './time-utils';
 const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
 /**
- * A service that manages the subscriptions periodically sending requests to keep them running.
+ * A service that manages the active subscriptions periodically sending requests to keep them
+ * running.
  */
 export class FirebaseSubscriptionService {
   /**
@@ -33,7 +34,7 @@ export class FirebaseSubscriptionService {
    */
   constructor(endpoint) {
     /**
-     * @type {EntitySubscription[]}
+     * @type {SpineSubscription[]}
      * @private
      */
     this._subscriptions = [];
@@ -48,7 +49,7 @@ export class FirebaseSubscriptionService {
    * Add a subscription to the service to handle the keep-up requests and cancel in
    * case of unsubscribe.
    *
-   * @param {EntitySubscription} subscription an entity subscription to keep running
+   * @param {SpineSubscription} subscription an active subscription to keep running
    */
   add(subscription) {
     if (this._isRegistered(subscription)) {

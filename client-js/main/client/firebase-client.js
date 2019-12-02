@@ -22,7 +22,7 @@
 
 import {Observable, Subject, Subscription} from 'rxjs';
 import {
-  Subscription as SpineSubscription,
+  Subscription as SubscriptionObject,
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
 import {AbstractClientFactory} from './client-factory';
@@ -40,29 +40,19 @@ import {
 } from "./composite-client";
 
 /**
- * A subscription to entity changes on application backend.
+ * @abstract
  */
-class EntitySubscription extends Subscription {
+class SpineSubscription extends Subscription {
 
-  /**
-   * @param {Function} unsubscribe
-   * @param {{itemAdded: Observable, itemChanged: Observable, itemRemoved: Observable}} observables
-   * @param {SpineSubscription} subscription
-   */
-  constructor({
-                unsubscribedBy: unsubscribe,
-                withObservables: observables,
-                forInternal: subscription
-              }) {
+  constructor(unsubscribe, subscription) {
     super(unsubscribe);
-    this._observables = observables;
     this._subscription = subscription;
   }
 
   /**
    * An internal Spine subscription which includes the topic the updates are received for.
    *
-   * @return {SpineSubscription} a `spine.client.Subscription` instance
+   * @return {SubscriptionObject} a `spine.client.Subscription` instance
    */
   internal() {
     return this._subscription;
@@ -74,12 +64,58 @@ class EntitySubscription extends Subscription {
   id() {
     return this.internal().getId().getValue();
   }
+}
+
+/**
+ * A subscription to entity changes on application backend.
+ */
+class EntitySubscription extends SpineSubscription {
+
+  /**
+   * @param {Function} unsubscribe
+   * @param {{itemAdded: Observable, itemChanged: Observable, itemRemoved: Observable}} observables
+   * @param {SubscriptionObject} subscription
+   */
+  constructor({
+                unsubscribedBy: unsubscribe,
+                withObservables: observables,
+                forInternal: subscription
+              }) {
+    super(unsubscribe, subscription);
+    this._observables = observables;
+  }
 
   /**
    * @return {EntitySubscriptionObject} a plain object with observables and unsubscribe method
    */
   toObject() {
     return Object.assign({}, this._observables, {unsubscribe: () => this.unsubscribe()});
+  }
+}
+
+class EventSubscription extends SpineSubscription {
+
+  /**
+   * @param {Function} unsubscribe
+   * @param {Observable} eventEmitted
+   * @param {SubscriptionObject} subscription
+   */
+  constructor({
+                unsubscribedBy: unsubscribe,
+                withObservable: observable,
+                forInternal: subscription
+              }) {
+    super(unsubscribe, subscription);
+    this._observable = observable;
+  }
+
+  /**
+   * @return {EventSubscriptionObject} a plain object with observables and unsubscribe method
+   */
+  toObject() {
+    return Object.assign(
+        {}, {eventEmitted: this._observable}, {unsubscribe: () => this.unsubscribe()}
+    );
   }
 }
 
@@ -111,6 +147,8 @@ class FirebaseQueryingClient extends QueryingClient {
   }
 }
 
+const EVENT_TYPE_URL = 'type.spine.io/spine.core.Event';
+
 /**
  * A {@link SubscribingClient} which receives entity state updates and events from
  * a Firebase Realtime Database.
@@ -140,42 +178,76 @@ class FirebaseSubscribingClient extends SubscribingClient {
    * @inheritDoc
    */
   subscribe(topic) {
+    return this._doSubscribe(topic, this._entitySubscription);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  subscribeToEvents(topic) {
+    return this._doSubscribe(topic, this._eventSubscription);
+  }
+
+  /**
+   * @private
+   */
+  _doSubscribe(topic, createSubscriptionFn) {
     return new Promise((resolve, reject) => {
-      const typeUrl = topic.getTarget().getType();
       this._endpoint.subscribeTo(topic)
           .then(response => {
             const path = response.nodePath.value;
-
-            const itemAdded = new Subject();
-            const itemChanged = new Subject();
-            const itemRemoved = new Subject();
-
-            const pathSubscriptions = [
-              this._firebase
-                  .onChildAdded(path, itemAdded.next.bind(itemAdded)),
-              this._firebase
-                  .onChildChanged(path, itemChanged.next.bind(itemChanged)),
-              this._firebase
-                  .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
-            ];
-
             const internalSubscription =
                 FirebaseSubscribingClient.internalSubscription(path, topic);
-            const entitySubscription = new EntitySubscription({
-              unsubscribedBy: () => {
-                FirebaseSubscribingClient._unsubscribe(pathSubscriptions);
-              },
-              withObservables: {
-                itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
-                itemChanged: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
-                itemRemoved: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
-              },
-              forInternal: internalSubscription
-            });
-            resolve(entitySubscription.toObject());
-            this._subscriptionService.add(entitySubscription);
+
+            const subscription = createSubscriptionFn.apply(path, internalSubscription);
+
+            resolve(subscription.toObject());
+            this._subscriptionService.add(subscription);
           })
           .catch(reject);
+    });
+  }
+
+  _entitySubscription(path, subscription) {
+    const itemAdded = new Subject();
+    const itemChanged = new Subject();
+    const itemRemoved = new Subject();
+
+    const pathSubscriptions = [
+      this._firebase
+          .onChildAdded(path, itemAdded.next.bind(itemAdded)),
+      this._firebase
+          .onChildChanged(path, itemChanged.next.bind(itemChanged)),
+      this._firebase
+          .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
+    ];
+
+    const typeUrl = subscription.getTopic().getTarget().getType();
+
+    return new EntitySubscription({
+      unsubscribedBy: () => {
+        FirebaseSubscribingClient._unsubscribe(pathSubscriptions);
+      },
+      withObservables: {
+        itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
+        itemChanged: ObjectToProto.map(itemChanged.asObservable(), typeUrl),
+        itemRemoved: ObjectToProto.map(itemRemoved.asObservable(), typeUrl)
+      },
+      forInternal: subscription
+    });
+  }
+
+  _eventSubscription(path, subscription) {
+    const itemAdded = new Subject();
+    const pathSubscription =
+        this._firebase.onChildAdded(path, itemAdded.next.bind(itemAdded));
+
+    return new EventSubscription({
+      unsubscribedBy: () => {
+        FirebaseSubscribingClient._unsubscribe([pathSubscription]);
+      },
+      withObservable: ObjectToProto.map(itemAdded.asObservable(), EVENT_TYPE_URL),
+      forInternal: subscription
     });
   }
 
@@ -194,14 +266,14 @@ class FirebaseSubscribingClient extends SubscribingClient {
   }
 
   /**
-   * Creates a `SpineSubscription` instance to communicate with Spine server.
+   * Creates a `SubscriptionObject` instance to communicate with Spine server.
    *
    * @param {!String} path a path to object which gets updated in Firebase
    * @param {!spine.client.Topic} topic a topic for which the Subscription gets updates
-   * @return {SpineSubscription} a `SpineSubscription` instance to communicate with Spine server
+   * @return {SubscriptionObject} a `SubscriptionObject` instance to communicate with Spine server
    */
   static internalSubscription(path, topic) {
-    const subscription = new SpineSubscription();
+    const subscription = new SubscriptionObject();
     const id = new SubscriptionId();
     id.setValue(path);
     subscription.setId(id);
