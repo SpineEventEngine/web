@@ -35,13 +35,21 @@ class ClientRequest {
 
     /**
      * @param {!Client} client
-     * @param {!ActorRequestFactory} actorRequestFactory
+     * @param {!ActorRequestFactory} requestFactory
      *
      * @protected
      */
-    constructor(client, actorRequestFactory) {
-        this.client = client;
-        this.actorRequestFactory = actorRequestFactory;
+    constructor(client, requestFactory) {
+
+        /**
+         * @protected
+         */
+        this._client = client;
+
+        /**
+         * @protected
+         */
+        this._requestFactory = requestFactory;
     }
 }
 
@@ -102,7 +110,7 @@ class FilteringRequest extends ClientRequest {
         // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
         //  unnecessary.
         if (!this._builderInstance) {
-            this._builderInstance = this._newBuilderFn().apply(this.actorRequestFactory);
+            this._builderInstance = this._newBuilderFn().apply(this._requestFactory);
         }
         return this._builderInstance;
     }
@@ -169,7 +177,7 @@ export class QueryRequest extends FilteringRequest {
      */
     run() {
         const query = this._builder().build();
-        return this.client.read(query);
+        return this._client.read(query);
     }
 
     /**
@@ -243,7 +251,7 @@ export class SubscriptionRequest extends SubscribingRequest {
      * @template <T>
      */
     _subscribe(topic) {
-        return this.client.subscribe(topic);
+        return this._client.subscribe(topic);
     }
 
     /**
@@ -268,7 +276,7 @@ export class EventSubscriptionRequest extends SubscribingRequest {
      * @return {Promise<EventSubscriptionObject>}
      */
     _subscribe(topic) {
-        return this.client.subscribeToEvents(topic);
+        return this._client.subscribeToEvents(topic);
     }
 
     /**
@@ -343,14 +351,14 @@ export class CommandRequest extends ClientRequest{
      * @return {Promise<EventSubscriptionObject[] | EventSubscriptionObject>}
      */
     post() {
-        const command = this.actorRequestFactory.command().create(this._commandMessage);
+        const command = this._requestFactory.command().create(this._commandMessage);
         const ackCallback =
             {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
-        this.client.post(command, ackCallback);
+        this._client.post(command, ackCallback);
         const promises = [];
         this._observedTypes.forEach(type => {
             const originFilter = Filters.eq("context.past_message", this._asOrigin(command));
-            const promise = this.client.subscribeToEvent(type)
+            const promise = this._client.subscribeToEvent(type)
                 .where([originFilter])
                 .post();
             promises.push(promise);
