@@ -21,6 +21,9 @@
 "use strict";
 
 import {Duration} from './time-utils';
+import ObjectToProto from "./object-to-proto";
+import {Status} from '../proto/spine/core/response_pb';
+
 
 const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
@@ -71,6 +74,15 @@ export class FirebaseSubscriptionService {
     }, SUBSCRIPTION_KEEP_UP_INTERVAL.inMs());
   }
 
+  /**
+   * Sends the "keep-up" request for all active subscriptions.
+   *
+   * The non-`OK` response status on this request means the subscription has already been canceled
+   * by the server, most likely due to a timeout. So, in such case, the subscription is removed
+   * from the list of active subscriptions.
+   *
+   * @private
+   */
   _keepUpSubscriptions() {
     this._subscriptions.forEach(subscription => {
       const spineSubscription = subscription.internal();
@@ -79,7 +91,13 @@ export class FirebaseSubscriptionService {
           this._removeSubscription(subscription);
         });
       } else {
-        this._endpoint.keepUpSubscription(spineSubscription);
+        this._endpoint.keepUpSubscription(spineSubscription).then(response => {
+          const responseStatus = response.status;
+          const responseStatusProto = ObjectToProto.convert(responseStatus, _statusType);
+          if (responseStatusProto.getStatusCase() !== Status.StatusCase.OK) {
+            this._removeSubscription(subscription)
+          }
+        });
       }
     });
   }
