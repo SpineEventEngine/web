@@ -44,6 +44,9 @@ import {
  */
 class SpineSubscription extends Subscription {
 
+  /**
+   * @protected
+   */
   constructor(unsubscribe, subscription) {
     super(unsubscribe);
     this._subscription = subscription;

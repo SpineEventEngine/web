@@ -36,6 +36,8 @@ class ClientRequest {
     /**
      * @param {!Client} client
      * @param {!ActorRequestFactory} actorRequestFactory
+     *
+     * @protected
      */
     constructor(client, actorRequestFactory) {
         this.client = client;
@@ -52,6 +54,8 @@ class FilteringRequest extends ClientRequest {
      * @param {!Class<? extends Message>} targetType
      * @param {!Client} client
      * @param {!ActorRequestFactory} actorRequestFactory
+     *
+     * @protected
      */
     constructor(targetType, client, actorRequestFactory) {
         super(client, actorRequestFactory);
@@ -65,8 +69,8 @@ class FilteringRequest extends ClientRequest {
      * @template <I> a Protobuf type of IDs
      */
     byId(ids) {
-        this.builder().byIds(ids);
-        return this.self();
+        this._builder().byIds(ids);
+        return this._self();
     }
 
     /**
@@ -74,8 +78,8 @@ class FilteringRequest extends ClientRequest {
      * @return {this} self for method chaining
      */
     where(predicates) {
-        this.builder().where(predicates);
-        return this.self();
+        this._builder().where(predicates);
+        return this._self();
     }
 
     /**
@@ -83,22 +87,24 @@ class FilteringRequest extends ClientRequest {
      * @return {this} self for method chaining
      */
     withMask(fieldNames) {
-        this.builder().withMask(fieldNames);
-        return this.self();
+        this._builder().withMask(fieldNames);
+        return this._self();
     }
 
     /**
      * @return {AbstractTargetBuilder<T extends Message>}
      *
      * @template <T>
+     *
+     * @protected
      */
-    builder() {
+    _builder() {
         // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
         //  unnecessary.
-        if (!this._builder) {
-            this._builder = this.newBuilderFn().apply(this.actorRequestFactory);
+        if (!this._builderInstance) {
+            this._builderInstance = this._newBuilderFn().apply(this.actorRequestFactory);
         }
-        return this._builder;
+        return this._builderInstance;
     }
 
     /**
@@ -107,8 +113,10 @@ class FilteringRequest extends ClientRequest {
      * @return {Function<ActorRequestFactory, T extends AbstractTargetBuilder>}
      *
      * @template <T>
+     *
+     * @protected
      */
-    newBuilderFn() {
+    _newBuilderFn() {
         throw new Error('Not implemented in abstract base.');
     }
 
@@ -116,8 +124,10 @@ class FilteringRequest extends ClientRequest {
      * @abstract
      *
      * @return {this}
+     *
+     * @protected
      */
-    self() {
+    _self() {
         throw new Error('Not implemented in abstract base.');
     }
 }
@@ -136,11 +146,11 @@ export class QueryRequest extends FilteringRequest {
      */
     orderBy(column, direction) {
         if (direction === OrderBy.Direction.ASCENDING) {
-            this.builder().orderAscendingBy(column);
+            this._builder().orderAscendingBy(column);
         } else {
-            this.builder().orderDescendingBy(column);
+            this._builder().orderDescendingBy(column);
         }
-        return this.self();
+        return this._self();
     }
 
     /**
@@ -148,8 +158,8 @@ export class QueryRequest extends FilteringRequest {
      * @return {QueryRequest} self
      */
     limit(count) {
-        this.builder().limit(count);
-        return this.self();
+        this._builder().limit(count);
+        return this._self();
     }
 
     /**
@@ -158,7 +168,7 @@ export class QueryRequest extends FilteringRequest {
      * @template <T> a Protobuf type of entities being the target of a query
      */
     run() {
-        const query = this.builder().build();
+        const query = this._builder().build();
         return this.client.read(query);
     }
 
@@ -167,7 +177,7 @@ export class QueryRequest extends FilteringRequest {
      *
      * @return {Function<ActorRequestFactory, QueryBuilder>}
      */
-    newBuilderFn() {
+    _newBuilderFn() {
         return requestFactory => requestFactory.query().select(this.targetType);
     }
 
@@ -176,7 +186,7 @@ export class QueryRequest extends FilteringRequest {
      *
      * @return {QueryRequest}
      */
-    self() {
+    _self() {
         return this;
     }
 }
@@ -192,8 +202,8 @@ class SubscribingRequest extends FilteringRequest {
      * @template <T> a Protobuf type of entities being the target of a subscription
      */
     post() {
-        const topic = this.builder().build();
-        return this.doSubscribe(topic);
+        const topic = this._builder().build();
+        return this._subscribe(topic);
     }
 
     /**
@@ -201,16 +211,20 @@ class SubscribingRequest extends FilteringRequest {
      *
      * @return {Function<ActorRequestFactory, TopicBuilder>}
      */
-    newBuilderFn() {
+    _newBuilderFn() {
         return requestFactory => requestFactory.topic().select(this.targetType);
     }
 
     /**
+     * @abstract
+     *
      * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
      *
      * @template <T> a Protobuf type of entities being the target of a subscription
+     *
+     * @protected
      */
-    doSubscribe(topic) {
+    _subscribe(topic) {
         throw new Error('Not implemented in abstract base.');
     }
 }
@@ -228,7 +242,7 @@ export class SubscriptionRequest extends SubscribingRequest {
      *
      * @template <T>
      */
-    doSubscribe(topic) {
+    _subscribe(topic) {
         return this.client.subscribe(topic);
     }
 
@@ -237,7 +251,7 @@ export class SubscriptionRequest extends SubscribingRequest {
      *
      * @return {SubscriptionRequest}
      */
-    self() {
+    _self() {
         return this;
     }
 }
@@ -253,7 +267,7 @@ export class EventSubscriptionRequest extends SubscribingRequest {
      *
      * @return {Promise<EventSubscriptionObject>}
      */
-    doSubscribe(topic) {
+    _subscribe(topic) {
         return this.client.subscribeToEvents(topic);
     }
 
@@ -262,7 +276,7 @@ export class EventSubscriptionRequest extends SubscribingRequest {
      *
      * @return {EventSubscriptionRequest}
      */
-    self() {
+    _self() {
         return this;
     }
 }
