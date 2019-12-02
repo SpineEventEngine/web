@@ -23,6 +23,7 @@
 import {Message} from 'google-protobuf';
 import {CompositeFilter, Filter} from '../proto/spine/client/filters_pb';
 import {OrderBy} from '../proto/spine/client/query_pb';
+import {Command} from '../proto/spine/core/command_pb';
 import {MessageId, Origin} from '../proto/spine/core/diagnostics_pb';
 import {AnyPacker} from "./any-packer";
 import {Filters} from "./actor-request-factory";
@@ -86,6 +87,9 @@ class FilteringRequest extends ClientRequest {
         return this.self();
     }
 
+    /**
+     * @return {AbstractTargetBuilder}
+     */
     builder() {
         // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
         //  unnecessary.
@@ -98,7 +102,9 @@ class FilteringRequest extends ClientRequest {
     /**
      * @abstract
      *
-     * @return {Function<ActorRequestFactory, AbstractTargetBuilder>}
+     * @return {Function<ActorRequestFactory, T extends AbstractTargetBuilder>}
+     *
+     * @template <T>
      */
     newBuilderFn() {
         throw new Error('Not implemented in abstract base.');
@@ -120,8 +126,6 @@ export class QueryRequest extends FilteringRequest {
         super(targetType, client, actorRequestFactory)
     }
 
-    // TODO:2019-11-27:dmytro.kuzmin:WIP See what we can do about it.
-    // noinspection JSValidateJSDoc unresolved nested type which actually exists
     /**
      *
      * @param {!String} column
@@ -156,10 +160,20 @@ export class QueryRequest extends FilteringRequest {
         return this.client.read(query);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @return {Function<ActorRequestFactory, QueryBuilder>}
+     */
     newBuilderFn() {
         return requestFactory => requestFactory.query().select(this.targetType);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @return {QueryRequest}
+     */
     self() {
         return this;
     }
@@ -171,7 +185,7 @@ export class QueryRequest extends FilteringRequest {
 class SubscribingRequest extends FilteringRequest {
 
     /**
-     * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+     * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
      *
      * @template <T> a Protobuf type of entities being the target of a subscription
      */
@@ -180,14 +194,20 @@ class SubscribingRequest extends FilteringRequest {
         return this.doSubscribe(topic);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @return {Function<ActorRequestFactory, TopicBuilder>}
+     */
     newBuilderFn() {
         return requestFactory => requestFactory.topic().select(this.targetType);
     }
 
-    self() {
-        return this;
-    }
-
+    /**
+     * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
+     *
+     * @template <T> a Protobuf type of entities being the target of a subscription
+     */
     doSubscribe(topic) {
         throw new Error('Not implemented in abstract base.');
     }
@@ -200,10 +220,23 @@ export class SubscriptionRequest extends SubscribingRequest {
     }
 
     /**
-     * @override
+     * @inheritDoc
+     *
+     * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+     *
+     * @template <T>
      */
     doSubscribe(topic) {
         return this.client.subscribe(topic);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return {SubscriptionRequest}
+     */
+    self() {
+        return this;
     }
 }
 
@@ -214,10 +247,21 @@ export class EventSubscriptionRequest extends SubscribingRequest {
     }
 
     /**
-     * @override
+     * @inheritDoc
+     *
+     * @return {Promise<EventSubscriptionObject>}
      */
     doSubscribe(topic) {
         return this.client.subscribeToEvents(topic);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return {EventSubscriptionRequest}
+     */
+    self() {
+        return this;
     }
 }
 

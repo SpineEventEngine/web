@@ -208,6 +208,9 @@ class FirebaseSubscribingClient extends SubscribingClient {
     });
   }
 
+  /**
+   * @private
+   */
   _entitySubscription(path, subscription) {
     const itemAdded = new Subject();
     const itemChanged = new Subject();
@@ -237,6 +240,9 @@ class FirebaseSubscribingClient extends SubscribingClient {
     });
   }
 
+  /**
+   * @private
+   */
   _eventSubscription(path, subscription) {
     const itemAdded = new Subject();
     const pathSubscription =

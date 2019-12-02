@@ -143,7 +143,7 @@ export class Client {
   }
 
   /**
-   * @param {!spine.core.Command} command a Command send to Spine server
+   * @param {!spine.core.Command} command a Command sent to Spine server
    * @param {!AckCallback} ackCallback
    */
   post(command, ackCallback) {

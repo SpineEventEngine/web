@@ -50,7 +50,7 @@ class Endpoint {
   /**
    * Sends off a command to the endpoint.
    *
-   * @param {!TypedMessage<Command>} command a Command send to Spine server
+   * @param {!TypedMessage<Command>} command a Command sent to Spine server
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
@@ -110,7 +110,7 @@ class Endpoint {
 
 
   /**
-   * @param {!TypedMessage<Command>} command a Command send to Spine server
+   * @param {!TypedMessage<Command>} command a Command sent to Spine server
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    * @protected
@@ -184,7 +184,7 @@ export class HttpEndpoint extends Endpoint {
   /**
    * Sends off a command to the endpoint.
    *
-   * @param {!TypedMessage<Command>} command a Command send to Spine server
+   * @param {!TypedMessage<Command>} command a Command sent to Spine server
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data, rejected if
    *                                      the client response is not 2xx or a connection error occurs
    * @protected
