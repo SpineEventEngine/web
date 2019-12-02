@@ -280,7 +280,7 @@ export class CommandRequest extends ClientRequest{
     }
 
     /**
-     * @return {Promise<EntitySubscriptionObject[] | EntitySubscriptionObject>}
+     * @return {Promise<EventSubscriptionObject[] | EventSubscriptionObject>}
      */
     post() {
         const command = this.actorRequestFactory.command().create(this._commandMessage);
@@ -290,7 +290,7 @@ export class CommandRequest extends ClientRequest{
         const promises = [];
         this._observedTypes.forEach(type => {
             const originFilter = Filters.eq("context.past_message", this._asOrigin(command));
-            const promise = this.client.subscribeTo(type)
+            const promise = this.client.subscribeToEvent(type)
                 .where([originFilter])
                 .post();
             promises.push(promise);
