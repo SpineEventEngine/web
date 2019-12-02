@@ -99,7 +99,7 @@ final class UpdatePayload {
                 .getEventUpdates()
                 .getEventList()
                 .stream()
-                .collect(toHashTable(Event::id, event -> event));
+                .collect(toHashTable(Event::id, identity()));
         return new UpdatePayload(messages);
     }
 
@@ -138,5 +138,15 @@ final class UpdatePayload {
         NodeValue node = NodeValue.empty();
         messages.forEach((id, message) -> node.addChild(id, StoredJson.encodeOrNull(message)));
         return node;
+    }
+
+    /**
+     * An identity function for {@link Event}-to-{@link Message} conversion.
+     *
+     * <p>The standard {@link Function#identity()} cannot be applied because of the type arguments
+     * mismatch.
+     */
+    private static Function<Event, Message> identity() {
+        return event -> event;
     }
 }
