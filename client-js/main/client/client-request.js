@@ -60,7 +60,7 @@ class FilteringRequest extends ClientRequest {
 
     /**
      * @param ids {!<I extends Message>[]|Number[]|String[]}
-     * @return {FilteringRequest} self
+     * @return {this} self for method chaining
      *
      * @template <I> a Protobuf type of IDs
      */
@@ -71,7 +71,7 @@ class FilteringRequest extends ClientRequest {
 
     /**
      * @param {!Filter[]|CompositeFilter[]} predicates
-     * @return {FilteringRequest} self
+     * @return {this} self for method chaining
      */
     where(predicates) {
         this.builder().where(predicates);
@@ -80,7 +80,7 @@ class FilteringRequest extends ClientRequest {
 
     /**
      * @param {!String[]} fieldNames
-     * @return {FilteringRequest} self
+     * @return {this} self for method chaining
      */
     withMask(fieldNames) {
         this.builder().withMask(fieldNames);
@@ -88,7 +88,9 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
-     * @return {AbstractTargetBuilder}
+     * @return {AbstractTargetBuilder<T extends Message>}
+     *
+     * @template <T>
      */
     builder() {
         // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
@@ -113,7 +115,7 @@ class FilteringRequest extends ClientRequest {
     /**
      * @abstract
      *
-     * @return {FilteringRequest} self
+     * @return {this}
      */
     self() {
         throw new Error('Not implemented in abstract base.');
