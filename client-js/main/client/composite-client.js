@@ -215,24 +215,6 @@ export class NoOpSubscribingClient extends SubscribingClient {
      *
      * @override
      */
-    subscribeTo(type) {
-        throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
-    }
-
-    /**
-     * Always throws an error.
-     *
-     * @override
-     */
-    subscribeToEvent(type, client) {
-        throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
-    }
-
-    /**
-     * Always throws an error.
-     *
-     * @override
-     */
     subscribe(topic) {
         throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
     }
