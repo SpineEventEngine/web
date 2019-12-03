@@ -56,10 +56,14 @@ export class UserTasksTestEnvironment extends TestEnvironment {
                 createTaskFailed = reject;
             });
             createTaskPromises.push(promise);
-            client.sendCommand(command, () => {
-                user.tasks.push(taskId);
-                createTaskAcknowledged();
-            }, createTaskFailed);
+            client.command(command)
+                .onOk(() => {
+                    user.tasks.push(taskId);
+                    createTaskAcknowledged();
+                })
+                .onError(createTaskFailed)
+                .onRejection(createTaskFailed)
+                .post();
         }
 
         return Promise.all(createTaskPromises);
@@ -78,7 +82,13 @@ export class UserTasksTestEnvironment extends TestEnvironment {
             const command = new ReassignTask();
             command.setId(taskId);
             command.setNewAssignee(newAssignee);
-            client.sendCommand(command, () => resolve(), () => reject());
+
+            // TODO:2019-11-27:dmytro.kuzmin:WIP Try remove these lambdas.
+            client.command(command)
+                .onOk(() => resolve())
+                .onError(() => reject())
+                .onRejection(() => reject())
+                .post();
         })
     }
 

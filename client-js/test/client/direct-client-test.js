@@ -34,7 +34,7 @@ describe('Direct client should', () => {
             actorProvider: ActorProvider.ANONYMOUS
         });
         try {
-            client.subscribeTo(client.newTopic().select(TaskCreated).build());
+            client.subscribeTo(TaskCreated).post();
             assert.fail();
         } catch (e) {
             assert.ok(e instanceof Error);

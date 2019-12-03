@@ -40,9 +40,10 @@ describe('FirebaseClient command sending', function () {
 
         const taskId = command.getId();
 
-        client.sendCommand(command, () => {
-
-            client.fetch({entity: Task, byIds: taskId})
+        const fetchAndCheck = () => {
+            client.select(Task)
+                .byId(taskId)
+                .run()
                 .then(data => {
                     assert.equal(data.length, 1);
                     const item = data[0];
@@ -53,8 +54,13 @@ describe('FirebaseClient command sending', function () {
                     done();
 
                 }, fail(done));
+        };
 
-        }, fail(done), fail(done));
+        client.command(command)
+            .onOk(fetchAndCheck)
+            .onError(fail(done))
+            .onRejection(fail(done))
+            .post();
     });
 
     it('fails when wrong server endpoint specified', done => {
@@ -66,45 +72,48 @@ describe('FirebaseClient command sending', function () {
             describedAs: 'Spine Web need integration tests'
         });
 
-        malformedBackendClient.sendCommand(
-            command,
-            fail(done, 'A command was acknowledged when it was expected to fail.'),
-            error => {
-                try {
-                    assert.ok(error instanceof CommandHandlingError);
-                    assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
-                    const connectionError = error.getCause();
-                    assert.ok(connectionError instanceof ConnectionError);
-                    done();
-                } catch (e) {
-                    fail(done, e.message)
-                }
-            },
-            fail(done, 'A command was rejected when an error was expected.'));
+        const checkError = error => {
+            try {
+                assert.ok(error instanceof CommandHandlingError);
+                assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
+                const connectionError = error.getCause();
+                assert.ok(connectionError instanceof ConnectionError);
+                done();
+            } catch (e) {
+                fail(done, e.message)
+            }
+        };
+        malformedBackendClient.command(command)
+            .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
+            .onError(checkError)
+            .onRejection(fail(done, 'A command was rejected when an error was expected.'))
+            .post();
     });
 
     it('fails with `CommandValidationError` for invalid command message', done => {
         const command = TestEnvironment.createTaskCommand({withId: null});
 
-        client.sendCommand(
-            command,
-            fail(done, 'A command was acknowledged when it was expected to fail.'),
-            error => {
-                try {
-                    assert.ok(error instanceof CommandValidationError);
-                    assert.ok(error.validationError());
-                    // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
-                    // assert.ok(error.assuresCommandNeglected());
+        const checkError = error => {
+            try {
+                assert.ok(error instanceof CommandValidationError);
+                assert.ok(error.validationError());
+                // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
+                // assert.ok(error.assuresCommandNeglected());
 
-                    const cause = error.getCause();
-                    assert.ok(cause);
-                    assert.equal(cause.getCode(), 2);
-                    assert.equal(cause.getType(), 'spine.core.CommandValidationError');
-                    done();
-                } catch (e) {
-                    fail(done, e.message)
-                }
-            },
-            fail(done, 'A command was rejected when an error was expected.'));
+                const cause = error.getCause();
+                assert.ok(cause);
+                assert.equal(cause.getCode(), 2);
+                assert.equal(cause.getType(), 'spine.core.CommandValidationError');
+                done();
+            } catch (e) {
+                fail(done, e.message)
+            }
+        };
+
+        client.command(command)
+            .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
+            .onError(checkError)
+            .onRejection(fail(done, 'A command was rejected when an error was expected.'))
+            .post();
     });
 });

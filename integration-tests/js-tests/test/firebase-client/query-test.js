@@ -154,25 +154,15 @@ describe('FirebaseClient executes query built', function () {
         }
     ];
 
-    function buildQueryFor({ids, filters}) {
-        const queryBuilder = client.newQuery()
-            .select(UserTasks)
-            .byIds(ids ? ids : toUserIds(users));
-
-        if (!!filters) {
-            queryBuilder.where(filters)
-        }
-
-        return queryBuilder.build();
-    }
-
     tests.forEach(test => {
         it(`${test.message} and returns correct values`, done => {
             const ids = test.ids ? test.ids() : undefined;
             const filters = test.filters;
-            const query = buildQueryFor({ids: ids, filters: filters});
 
-            client.execute(query)
+            client.select(UserTasks)
+                .byId(ids)
+                .where(filters)
+                .run()
                 .then(userTasksList => {
                     assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
                     done();
@@ -184,7 +174,9 @@ describe('FirebaseClient executes query built', function () {
     it('with Date-based filter and returns correct values', (done) => {
         const userIds = toUserIds(users);
 
-        client.fetch({entity: UserTasks, byIds: userIds})
+        client.select(UserTasks)
+            .byId(userIds)
+            .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
                 assert.equal(data.length, userIds.length);
@@ -197,13 +189,9 @@ describe('FirebaseClient executes query built', function () {
                 const millis = seconds * 1000 + nanos / 1000000;
                 const whenFirstUserGotTask = new Date(millis);
 
-                const query = buildQueryFor({
-                    filters: [
-                        Filters.eq('last_updated', whenFirstUserGotTask),
-                    ]
-                });
-
-                client.execute(query)
+                client.select(UserTasks)
+                    .where(Filters.eq('last_updated', whenFirstUserGotTask))
+                    .run()
                     .then(userTasksList => {
                         assert.ok(Array.isArray(userTasksList));
                         assert.equal(userTasksList.length, 1);

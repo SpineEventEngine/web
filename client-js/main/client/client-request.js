@@ -71,21 +71,27 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
-     * @param ids {!<I extends Message>[]|Number[]|String[]}
+     * @param ids {!<I extends Message>|Number|String|<I extends Message>[]|Number[]|String[]}
      * @return {this} self for method chaining
      *
      * @template <I> a Protobuf type of IDs
      */
     byId(ids) {
+        ids = FilteringRequest._ensureArray(ids);
         this._builder().byIds(ids);
         return this._self();
     }
 
     /**
-     * @param {!Filter[]|CompositeFilter[]} predicates
+     * ...
+     *
+     * The subsequent calls override each other.
+     *
+     * @param {!Filter|CompositeFilter|Filter[]|CompositeFilter[]} predicates
      * @return {this} self for method chaining
      */
     where(predicates) {
+        predicates = FilteringRequest._ensureArray(predicates);
         this._builder().where(predicates);
         return this._self();
     }
@@ -95,6 +101,7 @@ class FilteringRequest extends ClientRequest {
      * @return {this} self for method chaining
      */
     withMask(fieldNames) {
+        fieldNames = FilteringRequest._ensureArray(fieldNames);
         this._builder().withMask(fieldNames);
         return this._self();
     }
@@ -110,7 +117,7 @@ class FilteringRequest extends ClientRequest {
         // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
         //  unnecessary.
         if (!this._builderInstance) {
-            this._builderInstance = this._newBuilderFn().apply(this._requestFactory);
+            this._builderInstance = this._newBuilderFn()(this._requestFactory);
         }
         return this._builderInstance;
     }
@@ -137,6 +144,19 @@ class FilteringRequest extends ClientRequest {
      */
     _self() {
         throw new Error('Not implemented in abstract base.');
+    }
+
+    /**
+     * @private
+     */
+    static _ensureArray(values) {
+        if (!values) {
+            return [];
+        }
+        if (!(values instanceof Array)) {
+            return [values]
+        }
+        return values;
     }
 }
 
@@ -312,7 +332,7 @@ export class CommandRequest extends ClientRequest{
      *
      * @return {CommandRequest} self
      */
-    onAck(callback) {
+    onOk(callback) {
         this._onAck = callback;
         return this;
     }
@@ -352,9 +372,9 @@ export class CommandRequest extends ClientRequest{
      */
     post() {
         const command = this._requestFactory.command().create(this._commandMessage);
-        const ackCallback =
+        const onAck =
             {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
-        this._client.post(command, ackCallback);
+        this._client.post(command, onAck);
         const promises = [];
         this._observedTypes.forEach(type => {
             const originFilter = Filters.eq("context.past_message", this._asOrigin(command));

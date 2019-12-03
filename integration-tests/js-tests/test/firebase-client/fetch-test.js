@@ -50,7 +50,11 @@ describe('FirebaseClient "fetch"', function () {
             const promise = new Promise(resolve => reportTaskCreated = resolve);
             createTasksPromises.push(promise);
 
-            client.sendCommand(command, () => reportTaskCreated(), fail(done), fail(done))
+            client.command(command)
+                .onOk(() => reportTaskCreated())
+                .onError(fail(done))
+                .onRejection(fail(done))
+                .post();
         });
 
         Promise.all(createTasksPromises)
@@ -60,9 +64,26 @@ describe('FirebaseClient "fetch"', function () {
             });
     });
 
+    it('returns all values of type', done => {
+        client.select(Task)
+            .run()
+            .then(data => {
+                taskIds.forEach(taskId => {
+                    const targetObject = data.find(
+                        item => item.getId().getValue() === taskId.getValue()
+                    );
+                    assert.ok(targetObject);
+                });
+
+                done();
+            }, fail(done));
+    });
+
     it('returns correct value by single ID', done => {
         const id = taskIds[0];
-        client.fetch({entity: Task, byIds: id})
+        client.select(Task)
+            .byId(id)
+            .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
                 assert.equal(data.length, 1);
@@ -72,8 +93,10 @@ describe('FirebaseClient "fetch"', function () {
             }, fail(done));
     });
 
-    it('ignores `byIds` parameter when empty list specified', done => {
-        client.fetch({entity: Task, byIds: []})
+    it('ignores `byId` parameter when empty list is specified', done => {
+        client.select(Task)
+            .byId([])
+            .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
                 assert.ok(data.length >= taskIds.length);
@@ -81,29 +104,23 @@ describe('FirebaseClient "fetch"', function () {
             }, fail(done));
     });
 
-    it('ignores `byIds` parameter when `null` value specified', done => {
-        client.fetch({entity: Task, byIds: null})
+    it('ignores `byId` parameter when `null` value is specified', done => {
+        client.select(Task)
+            .byId(null)
+            .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
                 assert.ok(data.length >= taskIds.length);
                 done();
             }, fail(done));
     });
-
-    it('ignores `byIds` parameter when empty list specified', done => {
-        client.fetch({entity: Task, byIds: []})
-            .then(data => {
-                assert.ok(Array.isArray(data));
-                assert.ok(data.length >= taskIds.length);
-                done();
-            }, fail(done));
-    });
-
 
     it('returns empty list when fetches entity by single ID that is missing', done => {
         const taskId = TestEnvironment.taskId({});
 
-        client.fetch({entity: Task, byIds: taskId})
+        client.select(Task)
+            .byId(taskId)
+            .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
                 assert.ok(data.length === 0);
@@ -112,7 +129,9 @@ describe('FirebaseClient "fetch"', function () {
     });
 
     it('returns correct values by IDs', done => {
-        client.fetch({entity: Task, byIds: taskIds})
+        client.select(Task)
+            .byId(taskIds)
+            .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
                 assert.equal(data.length, taskIds.length);
@@ -125,20 +144,9 @@ describe('FirebaseClient "fetch"', function () {
             }, fail(done));
     });
 
-    it('retrieves the existing entities of given type when no IDs specified', done => {
-        client.fetch({entity: Task})
-            .then(data => {
-                taskIds.forEach(taskId => {
-                    const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
-                    assert.ok(targetObject);
-                });
-
-                done();
-            }, fail(done));
-    });
-
     it('retrieves an empty list for entity that does not get created', done => {
-        client.fetch({entity: Project})
+        client.select(Project)
+            .run()
             .then(data => {
                 assert.ok(data.length === 0);
                 done();
@@ -153,16 +161,17 @@ describe('FirebaseClient "fetch"', function () {
                 return 'spine.web/fails.malformed.type'
             }
         };
-
-        client.sendCommand(command, () => {
-
-            client.fetch({entity: Unknown})
-                .then(fail(done), error => {
-                    assert.ok(error instanceof ServerError);
-                    assert.equal(error.message, 'Server Error');
-                    done();
-                });
-
-        }, fail(done), fail(done));
+        const selectAndCheckFailed = () => client.select(Unknown)
+            .run()
+            .then(fail(done), error => {
+                assert.ok(error instanceof ServerError);
+                assert.equal(error.message, 'Server Error');
+                done();
+            });
+        client.command(command)
+            .onOk(selectAndCheckFailed)
+            .onError(fail(done))
+            .onRejection(fail(done))
+            .post();
     });
 });

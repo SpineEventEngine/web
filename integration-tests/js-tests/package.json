@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "description": "Tests of a `spine-web` JS library against the Spine-based application.",
   "scripts": {
-    "test": "mocha --require @babel/register --recursive --exit --full-trace ./test",
+    "test": "mocha --require @babel/register --recursive --exit --full-trace ./test/firebase-client/query-test.js",
     "installLinkedLib": "npm link spine-web"
   },
   "devDependencies": {

@@ -202,7 +202,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
             const internalSubscription =
                 FirebaseSubscribingClient.internalSubscription(path, topic);
 
-            const subscription = createSubscriptionFn.apply(path, internalSubscription);
+            const subscription = createSubscriptionFn.call(this, path, internalSubscription);
 
             resolve(subscription.toObject());
             this._subscriptionService.add(subscription);

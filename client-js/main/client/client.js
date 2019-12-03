@@ -144,9 +144,9 @@ export class Client {
 
   /**
    * @param {!spine.core.Command} command a Command sent to Spine server
-   * @param {!AckCallback} ackCallback
+   * @param {!AckCallback} onAck
    */
-  post(command, ackCallback) {
+  post(command, onAck) {
     throw new Error('Not implemented in abstract base.');
   }
 }

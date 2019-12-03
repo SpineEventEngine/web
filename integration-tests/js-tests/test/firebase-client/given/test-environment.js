@@ -38,7 +38,7 @@ import {UserId} from '@testProto/spine/core/user_id_pb';
 export default class TestEnvironment {
 
     constructor() {
-        throw new Error('A utility TestEnvironment class cannot be instantiated.');
+        throw new Error('A utility `TestEnvironment` class cannot be instantiated.');
     }
 
     /**
@@ -62,7 +62,9 @@ export default class TestEnvironment {
         const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
         name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
-        description = typeof description === 'undefined' ? this.DEFAULT_TASK_DESCRIPTION : description;
+        description = typeof description === 'undefined'
+                      ? this.DEFAULT_TASK_DESCRIPTION
+                      : description;
 
         const command = new CreateTask();
         command.setId(taskId);

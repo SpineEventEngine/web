@@ -181,22 +181,10 @@ describe('FirebaseClient subscribes to topic', function () {
         teardownSubscription();
     });
 
-    function buildTopicFor({ids, filters}) {
-        const topicBuilder = client.newTopic()
-            .select(UserTasks)
-            .byIds(ids);
-
-        if (!!filters) {
-            topicBuilder.where(filters)
-        }
-
-        return topicBuilder.build();
-    }
-
     it('built by IDs and retrieves correct data', (done) => {
-        const topic = buildTopicFor({ids: [user1.id, user2.id]});
-
-        client.subscribeTo(topic)
+        client.subscribeTo(UserTasks)
+            .byId([user1.id, user2.id])
+            .post()
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
                 const userTasksList$ = toListObservable(subscription, compareUserTasks);
@@ -214,14 +202,10 @@ describe('FirebaseClient subscribes to topic', function () {
     });
 
     it('built by IDs and filters and retrieves correct data', (done) => {
-        const topic = buildTopicFor({
-            ids: [user1.id, user2.id],
-            filters: [
-                Filters.eq('task_count', 2)
-            ]
-        });
-
-        client.subscribeTo(topic)
+        client.subscribeTo(UserTasks)
+            .byId([user1.id, user2.id])
+            .where(Filters.eq('task_count', 2))
+            .post()
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
                 const userTasksList$ = toListObservable(subscription, compareUserTasks);
@@ -241,14 +225,11 @@ describe('FirebaseClient subscribes to topic', function () {
     it('built by IDs and filters and updates data correctly when state changes', (done) => {
         // TODO:2019-08-01:dmytro.dashenkov: Re-enable the test when columns filtering is implemented.
         done();
-        const topic = buildTopicFor({
-            ids: [user1.id, user2.id],
-            filters: [
-                Filters.ge('task_count', 2)
-            ]
-        });
 
-        client.subscribeTo(topic)
+        client.subscribeTo(UserTasks)
+            .byId([user1.id, user2.id])
+            .where(Filters.ge('task_count', 2))
+            .post()
             .then(subscription => {
                 teardownSubscription = subscription.unsubscribe;
                 const userTasksList$ = toListObservable(subscription, compareUserTasks);

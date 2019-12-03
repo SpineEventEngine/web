@@ -24,7 +24,7 @@ import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-test-e
 import {client} from './given/direct-client';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
-describe('DirectClient executes query built', function () {
+describe('`DirectClient` executes query built', function () {
 
     let users;
 
@@ -58,12 +58,9 @@ describe('DirectClient executes query built', function () {
 
     it(`by IDs and returns correct values`, done => {
         const ids = users.map(user => user.id);
-        const query = client.newQuery()
-                            .select(UserTasks)
-                            .byIds(ids)
-                            .build();
-
-        client.execute(query)
+        client.select(UserTasks)
+              .byId(ids)
+              .run()
               .then(userTasksList => {
                   assert.ok(ensureUserTasks(userTasksList, users));
                   done();

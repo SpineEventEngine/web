@@ -119,8 +119,8 @@ export class CompositeClient extends Client {
     /**
      * @override
      */
-    post(command, ackCallback) {
-        this._commanding.post(command, ackCallback);
+    post(command, onAck) {
+        this._commanding.post(command, onAck);
     }
 }
 
@@ -247,36 +247,36 @@ export class CommandingClient {
         return new CommandRequest(commandMessage, client, this._requestFactory);
     }
 
-    post(command, ackCallback) {
+    post(command, onAck) {
         const cmd = TypedMessage.of(command);
         this._endpoint.command(cmd)
-            .then(ack => this._onAck(ack, ackCallback))
+            .then(ack => this._onAck(ack, onAck))
             .catch(error => {
-                ackCallback.onError(new CommandHandlingError(error.message, error));
+                onAck.onError(new CommandHandlingError(error.message, error));
             });
     }
 
-    _onAck(ack, ackCallback) {
+    _onAck(ack, onAck) {
         const responseStatus = ack.status;
         const responseStatusProto = ObjectToProto.convert(responseStatus, _statusType);
         const responseStatusCase = responseStatusProto.getStatusCase();
 
         switch (responseStatusCase) {
             case Status.StatusCase.OK:
-                ackCallback.onOk();
+                onAck.onOk();
                 break;
             case Status.StatusCase.ERROR:
                 const error = responseStatusProto.getError();
                 const message = error.getMessage();
-                ackCallback.onError(error.hasValidationError()
+                onAck.onError(error.hasValidationError()
                     ? new CommandValidationError(message, error)
                     : new CommandHandlingError(message, error));
                 break;
             case Status.StatusCase.REJECTION:
-                ackCallback.onRejection(responseStatusProto.getRejection());
+                onAck.onRejection(responseStatusProto.getRejection());
                 break;
             default:
-                ackCallback.onError(
+                onAck.onError(
                     new SpineError(`Unknown response status case ${responseStatusCase}`)
                 );
         }

@@ -23,7 +23,7 @@ import * as spineWeb from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
 
 /**
- * Initializes the {@link DirectClient client} that interacts with Gretty-based
+ * Initializes the {@link DirectClientFactory client} that interacts with Gretty-based
  * local backend server.
  *
  * See `integration-tests/README.MD` for details.
@@ -40,8 +40,8 @@ export function initClient() {
 }
 
 /**
- * A {@link DirectClient client} instance for tests.
+ * A client instance for tests.
  *
- * @type {DirectClient}
+ * @type {Client}
  */
 export const client = initClient();
