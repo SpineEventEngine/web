@@ -63,20 +63,6 @@ public final class StoredJson extends StringTypeValue {
     }
 
     /**
-     * Tries to encode the given message into a {@code StoredJson}.
-     *
-     * <p>Returns the {@code null} JSON value if the given message is {@code null};
-     *
-     * @param message
-     *         message to encode
-     */
-    public static StoredJson encodeOrNull(@Nullable Message message) {
-        return message != null
-               ? encode(message)
-               : NULL_JSON;
-    }
-
-    /**
      * Encodes the given message into a {@code StoredJson}.
      *
      * @param value
