@@ -156,7 +156,7 @@ describe('FirebaseClient executes query built', function () {
 
     tests.forEach(test => {
         it(`${test.message} and returns correct values`, done => {
-            const ids = test.ids ? test.ids() : undefined;
+            const ids = test.ids ? test.ids() : toUserIds(users);
             const filters = test.filters;
 
             client.select(UserTasks)
