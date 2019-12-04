@@ -23,10 +23,11 @@
 import {Message} from 'google-protobuf';
 import {CompositeFilter, Filter} from '../proto/spine/client/filters_pb';
 import {OrderBy} from '../proto/spine/client/query_pb';
-import {Command} from '../proto/spine/core/command_pb';
+import {Command, CommandId} from '../proto/spine/core/command_pb';
 import {MessageId, Origin} from '../proto/spine/core/diagnostics_pb';
 import {AnyPacker} from "./any-packer";
 import {Filters} from "./actor-request-factory";
+import {Type} from "./typed-message";
 
 /**
  * @abstract
@@ -400,7 +401,8 @@ export class CommandRequest extends ClientRequest{
         const result = new Origin();
 
         const messageId = new MessageId();
-        const packedId = AnyPacker.pack(command.getId());
+        const commandIdType = Type.forClass(CommandId);
+        const packedId = AnyPacker.pack(command.getId()).as(commandIdType);
         messageId.setId(packedId);
         const typeUrl = command.getMessage().getTypeUrl();
         messageId.setTypeUrl(typeUrl);
