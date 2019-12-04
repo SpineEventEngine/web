@@ -28,7 +28,6 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.json.Json.toCompactJson;
