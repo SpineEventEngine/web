@@ -21,9 +21,12 @@
 import assert from 'assert';
 import TestEnvironment from './given/test-environment';
 import {CommandHandlingError, CommandValidationError, ConnectionError} from '@lib/index';
+import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
+import {AnyPacker} from '@lib/client/any-packer';
+import {Type} from '@lib/client/typed-message';
 
 describe('FirebaseClient command sending', function () {
 
@@ -115,5 +118,84 @@ describe('FirebaseClient command sending', function () {
             .onError(checkError)
             .onRejection(fail(done, 'A command was rejected when an error was expected.'))
             .post();
+    });
+
+    it('allows to observe the produced events of a given type', done => {
+        // TODO:2019-11-27:dmytro.kuzmin:WIP Enable when the latest `core-java` is published
+        //  enabling filtering events by `context.*some_field*`.
+        done();
+        const command = TestEnvironment.createTaskCommand({
+            withPrefix: 'spine-web-test-send-command',
+            named: 'Implement Spine Web JS client tests',
+            describedAs: 'Spine Web need integration tests'
+        });
+
+        const taskId = command.getId();
+
+        client.command(command)
+            .onError(fail(done))
+            .onRejection(fail(done))
+            .observe(TaskCreated)
+            .post()
+            .then(({eventEmitted, unsubscribe}) => {
+                eventEmitted.subscribe({
+                    next: event => {
+                        const packedMessage = event.getMessage();
+                        const taskCreatedType = Type.forClass(TaskCreated);
+                        const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
+                        const theTaskId = message.getId().getValue();
+                        assert.equal(
+                            taskId, theTaskId,
+                            `Expected the task ID to be ${taskId}, got ${theTaskId} instead.`
+                        );
+                        const newTaskName = message.getName();
+                        assert.equal(
+                            updatedTaskName, newTaskName,
+                            `Expected the new task name to be ${updatedTaskName}, got 
+                           ${newTaskName} instead.`
+                        );
+                        const origin = event.getPastMessage().getMessage();
+                        const originType = origin.getTypeUrl();
+                        const expectedOriginType = taskCreatedType.url().value();
+                        assert.equal(
+                            expectedOriginType, originType,
+                            `Expected origin to be of type ${expectedOriginType}, got ${originType} 
+                            instead.`
+                        );
+                        unsubscribe();
+                        done();
+                    }
+                });
+            });
+    });
+
+    it.only('fails when trying to observe a malformed event type', done => {
+        const Unknown = class {
+            static typeUrl() {
+                return 'spine.web/fails.malformed.type'
+            }
+        };
+
+        const command = TestEnvironment.createTaskCommand({
+            withPrefix: 'spine-web-test-send-command',
+            named: 'Implement Spine Web JS client tests',
+            describedAs: 'Spine Web need integration tests'
+        });
+
+        client.command(command)
+            .onError(fail(done))
+            .onRejection(fail(done))
+            .observe(Unknown)
+            .post()
+            .then(() => {
+                done(new Error('An attempt to observe a malformed event type should not yield ' +
+                    'results.'));
+            })
+            .catch(error => {
+                console.log('Error:');
+                console.log(error);
+                assert.ok(true);
+                done();
+            });
     });
 });
