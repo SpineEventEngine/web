@@ -192,8 +192,6 @@ describe('FirebaseClient command sending', function () {
                     'results.'));
             })
             .catch(error => {
-                console.log('Error:');
-                console.log(error);
                 assert.ok(true);
                 done();
             });
