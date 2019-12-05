@@ -380,7 +380,7 @@ export class CommandRequest extends ClientRequest{
         this._observedTypes.forEach(type => {
             const originFilter = Filters.eq("context.past_message", this._asOrigin(command));
             const promise = this._client.subscribeToEvent(type)
-                .where([originFilter])
+                .where(originFilter)
                 .post();
             promises.push(promise);
         });
@@ -408,7 +408,10 @@ export class CommandRequest extends ClientRequest{
         messageId.setTypeUrl(typeUrl);
         result.setMessage(messageId);
 
-        const grandOrigin = command.getContext().getOrigin();
+        let grandOrigin = command.getContext().getOrigin();
+        if (!grandOrigin) {
+            grandOrigin = new Origin();
+        }
         result.setGrandOrigin(grandOrigin);
 
         const actorContext = command.getContext().getActorContext();
