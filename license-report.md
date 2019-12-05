@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.2.6`
+# Dependencies of `io.spine:spine-client-js:1.2.9`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -376,10 +376,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Dec 03 12:59:56 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.2.6`
+#NPM dependencies of `spine-web@1.2.9`
 
 ## `Production` dependencies:
 
@@ -410,7 +410,7 @@ This report was generated on **Tue Dec 03 12:59:56 EET 2019** using [Gradle-Lice
 1. **safer-buffer@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)
-1. **spine-web@1.2.6**
+1. **spine-web@1.2.9**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tslib@1.10.0**
@@ -2275,7 +2275,7 @@ This report was generated on **Tue Dec 03 12:59:56 EET 2019** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.2.6**
+1. **spine-web@1.2.9**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **split-string@3.1.0**
@@ -2547,12 +2547,12 @@ This report was generated on **Tue Dec 03 12:59:56 EET 2019** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Tue Dec 03 2019 12:59:59 GMT+0200 (Eastern European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Thu Dec 05 2019 13:15:47 GMT+0200 (Eastern European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.2.6`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.2.9`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -3395,12 +3395,12 @@ This report was generated on **Tue Dec 03 2019 12:59:59 GMT+0200 (Eastern Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Dec 03 13:00:14 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Dec 05 13:16:39 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.2.6`
+# Dependencies of `io.spine:spine-js-tests:1.2.9`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3806,12 +3806,12 @@ This report was generated on **Tue Dec 03 13:00:14 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Dec 05 13:17:11 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.2.6`
+# Dependencies of `io.spine:spine-test-app:1.2.9`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -4347,9 +4347,9 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM Project URL:** [http://github.com/square/javapoet/](http://github.com/square/javapoet/)
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** commons-cli **Name:** commons-cli **Version:** 1.2
-     * **Project URL:** [http://commons.apache.org/cli/](http://commons.apache.org/cli/)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1. **Group:** commons-cli **Name:** commons-cli **Version:** 1.4
+     * **Project URL:** [http://commons.apache.org/proper/commons-cli/](http://commons.apache.org/proper/commons-cli/)
+     * **POM License: Apache License, Version 2.0** - [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** commons-codec **Name:** commons-codec **Version:** 1.10
      * **Project URL:** [http://commons.apache.org/proper/commons-codec/](http://commons.apache.org/proper/commons-codec/)
@@ -4564,31 +4564,11 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
 1. **Group:** org.apache.maven **Name:** maven-plugin-api **Version:** 3.2.1
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.apache.servicemix.bundles **Name:** org.apache.servicemix.bundles.bcprov-jdk16 **Version:** 1.46_3
-     * **Manifest Project URL:** [http://www.apache.org/](http://www.apache.org/)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat **Name:** tomcat-annotations-api **Version:** 7.0.92
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat **Name:** tomcat-annotations-api **Version:** 8.0.53
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1. **Group:** org.apache.tomcat **Name:** tomcat-annotations-api **Version:** 8.5.35
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.apache.tomcat **Name:** tomcat-annotations-api **Version:** 9.0.13
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-core **Version:** 7.0.92
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-core **Version:** 8.0.53
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4600,14 +4580,6 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-el **Version:** 7.0.92
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-el **Version:** 8.0.53
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-el **Version:** 8.5.35
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4616,31 +4588,11 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-jasper **Version:** 7.0.92
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-jasper **Version:** 8.0.53
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-jasper **Version:** 8.5.35
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-jasper **Version:** 9.0.13
-     * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-logging-log4j **Version:** 7.0.92
-     * **POM Project URL:** [http://tomcat.apache.org/](http://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-websocket **Version:** 7.0.92
-     * **POM Project URL:** [http://tomcat.apache.org/](http://tomcat.apache.org/)
-     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.apache.tomcat.embed **Name:** tomcat-embed-websocket **Version:** 8.0.53
      * **POM Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4655,6 +4607,10 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
 1. **Group:** org.apiguardian **Name:** apiguardian-api **Version:** 1.0.0
      * **POM Project URL:** [https://github.com/apiguardian-team/apiguardian](https://github.com/apiguardian-team/apiguardian)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** org.bouncycastle **Name:** bcprov-jdk15on **Version:** 1.60
+     * **POM Project URL:** [http://www.bouncycastle.org/java.html](http://www.bouncycastle.org/java.html)
+     * **POM License: Bouncy Castle Licence** - [http://www.bouncycastle.org/licence.html](http://www.bouncycastle.org/licence.html)
 
 1. **Group:** org.checkerframework **Name:** checker-compat-qual **Version:** 2.5.3
      * **POM Project URL:** [https://checkerframework.org](https://checkerframework.org)
@@ -4676,12 +4632,16 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM License: GNU General Public License, version 2 (GPL2), with the classpath exception** - [http://www.gnu.org/software/classpath/license.html](http://www.gnu.org/software/classpath/license.html)
      * **POM License: The MIT License** - [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT)
 
-1. **Group:** org.codehaus.groovy **Name:** groovy **Version:** 2.4.15
-     * **POM Project URL:** [http://groovy-lang.org](http://groovy-lang.org)
+1. **Group:** org.codehaus.groovy **Name:** groovy **Version:** 2.5.8
+     * **POM Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.codehaus.groovy **Name:** groovy-json **Version:** 2.4.15
-     * **POM Project URL:** [http://groovy-lang.org](http://groovy-lang.org)
+1. **Group:** org.codehaus.groovy **Name:** groovy-cli-commons **Version:** 2.5.8
+     * **POM Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
+     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1. **Group:** org.codehaus.groovy **Name:** groovy-json **Version:** 2.5.8
+     * **POM Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.codehaus.mojo **Name:** animal-sniffer-annotations **Version:** 1.18
@@ -5223,63 +5183,55 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM Project URL:** [http://jstl.java.net](http://jstl.java.net)
      * **POM License: CDDL + GPLv2 with classpath exception** - [http://glassfish.dev.java.net/nonav/public/CDDL+GPL.html](http://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
-1. **Group:** org.gretty **Name:** gretty-core **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-core **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-jetty **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-jetty **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-jetty7 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-jetty7 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-jetty8 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-jetty8 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-jetty9 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-jetty9 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-jetty93 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-jetty93 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-jetty94 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-jetty94 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-tomcat **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-tomcat **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-tomcat7 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-tomcat85 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-tomcat8 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-tomcat8plus **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-tomcat85 **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-runner-tomcat9 **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1. **Group:** org.gretty **Name:** gretty-runner-tomcat8plus **Version:** 2.3.1
-     * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
-     * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
-
-1. **Group:** org.gretty **Name:** gretty-runner-tomcat9 **Version:** 2.3.1
-     * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
-     * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
-
-1. **Group:** org.gretty **Name:** gretty-starter **Version:** 2.3.1
+1. **Group:** org.gretty **Name:** gretty-starter **Version:** 3.0.1
      * **POM Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **POM License: MIT** - [https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
@@ -5352,12 +5304,6 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **POM License: The Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1. **Group:** org.ow2.asm **Name:** asm **Version:** 7.1
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
@@ -5371,12 +5317,6 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM License: BSD-3-Clause** - [https://asm.ow2.io/license.html](https://asm.ow2.io/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1. **Group:** org.ow2.asm **Name:** asm-analysis **Version:** 7.2
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **Manifest License:** BSD-3-Clause;link=https://asm.ow2.io/LICENSE.txt (Not packaged)
@@ -5384,23 +5324,11 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM License: BSD-3-Clause** - [https://asm.ow2.io/license.html](https://asm.ow2.io/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1. **Group:** org.ow2.asm **Name:** asm-commons **Version:** 7.2
      * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
      * **Manifest License:** BSD-3-Clause;link=https://asm.ow2.io/LICENSE.txt (Not packaged)
      * **POM Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **POM License: BSD-3-Clause** - [https://asm.ow2.io/license.html](https://asm.ow2.io/license.html)
-     * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.0
-     * **Manifest Project URL:** [http://asm.ow2.org](http://asm.ow2.org)
-     * **POM Project URL:** [http://asm.ow2.org/](http://asm.ow2.org/)
-     * **POM License: BSD** - [http://asm.ow2.org/license.html](http://asm.ow2.org/license.html)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1. **Group:** org.ow2.asm **Name:** asm-tree **Version:** 7.2
@@ -5431,23 +5359,27 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **Manifest Project URL:** [http://code.google.com/p/google-guice/](http://code.google.com/p/google-guice/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.springframework **Name:** spring-aop **Version:** 4.3.16.RELEASE
+1. **Group:** org.springframework **Name:** spring-aop **Version:** 5.0.6.RELEASE
      * **POM Project URL:** [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** org.springframework **Name:** spring-beans **Version:** 4.3.16.RELEASE
+1. **Group:** org.springframework **Name:** spring-beans **Version:** 5.0.6.RELEASE
      * **POM Project URL:** [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** org.springframework **Name:** spring-context **Version:** 4.3.16.RELEASE
+1. **Group:** org.springframework **Name:** spring-context **Version:** 5.0.6.RELEASE
      * **POM Project URL:** [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** org.springframework **Name:** spring-core **Version:** 4.3.16.RELEASE
+1. **Group:** org.springframework **Name:** spring-core **Version:** 5.0.6.RELEASE
      * **POM Project URL:** [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** org.springframework **Name:** spring-expression **Version:** 4.3.16.RELEASE
+1. **Group:** org.springframework **Name:** spring-expression **Version:** 5.0.6.RELEASE
+     * **POM Project URL:** [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
+     * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+1. **Group:** org.springframework **Name:** spring-jcl **Version:** 5.0.6.RELEASE
      * **POM Project URL:** [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -5455,16 +5387,16 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/spring-projects/spring-loaded](https://github.com/spring-projects/spring-loaded)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** org.springframework.boot **Name:** spring-boot **Version:** 1.5.12.RELEASE
-     * **POM Project URL:** [http://projects.spring.io/spring-boot/](http://projects.spring.io/spring-boot/)
+1. **Group:** org.springframework.boot **Name:** spring-boot **Version:** 2.0.2.RELEASE
+     * **POM Project URL:** [https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot](https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** org.springframework.boot **Name:** spring-boot-autoconfigure **Version:** 1.5.12.RELEASE
-     * **POM Project URL:** [http://projects.spring.io/spring-boot/](http://projects.spring.io/spring-boot/)
+1. **Group:** org.springframework.boot **Name:** spring-boot-autoconfigure **Version:** 2.0.2.RELEASE
+     * **POM Project URL:** [https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-autoconfigure](https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-autoconfigure)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** org.springframework.boot **Name:** spring-boot-devtools **Version:** 1.5.12.RELEASE
-     * **POM Project URL:** [http://projects.spring.io/spring-boot/](http://projects.spring.io/spring-boot/)
+1. **Group:** org.springframework.boot **Name:** spring-boot-devtools **Version:** 2.0.2.RELEASE
+     * **POM Project URL:** [https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-devtools](https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-devtools)
      * **POM License: Apache License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 1. **Group:** org.threeten **Name:** threetenbp **Version:** 1.3.3
@@ -5477,12 +5409,12 @@ This report was generated on **Tue Dec 03 13:00:22 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Dec 03 13:01:36 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Dec 05 13:18:19 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.2.6`
+# Dependencies of `io.spine:spine-testutil-web:1.2.9`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5949,12 +5881,12 @@ This report was generated on **Tue Dec 03 13:01:36 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Dec 03 13:01:46 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Dec 05 13:18:28 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.2.6`
+# Dependencies of `io.spine:spine-web:1.2.9`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -6497,4 +6429,4 @@ This report was generated on **Tue Dec 03 13:01:46 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Tue Dec 03 13:01:56 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Dec 05 13:18:39 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
