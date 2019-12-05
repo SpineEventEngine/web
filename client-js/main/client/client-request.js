@@ -375,7 +375,6 @@ export class CommandRequest extends ClientRequest{
         const command = this._requestFactory.command().create(this._commandMessage);
         const onAck =
             {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
-        this._client.post(command, onAck);
         const promises = [];
         this._observedTypes.forEach(type => {
             const originFilter = Filters.eq("context.past_message", this._asOrigin(command));
@@ -387,6 +386,7 @@ export class CommandRequest extends ClientRequest{
         if (promises.length === 1) {
             return promises[0];
         }
+        this._client.post(command, onAck);
         return Promise.all(promises);
     }
 

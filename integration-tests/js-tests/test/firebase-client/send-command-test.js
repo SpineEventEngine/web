@@ -132,7 +132,6 @@ describe('FirebaseClient command sending', function () {
         const taskId = command.getId();
 
         client.command(command)
-            .onOk(() => console.log('Create task command posted.'))
             .onError(fail(done))
             .onRejection(fail(done))
             .observe(TaskCreated)
