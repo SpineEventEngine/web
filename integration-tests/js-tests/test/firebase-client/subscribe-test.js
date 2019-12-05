@@ -285,9 +285,14 @@ describe('FirebaseClient subscription', function () {
         const updatedTaskName = "Renamed task";
 
         let taskId;
+        const createCommand = TestEnvironment.createTaskCommand({
+            withPrefix: 'spine-web-test-subscribe',
+            named: initialTaskName
+        });
+        taskId = createCommand.getId().getValue();
 
         client.subscribeToEvent(TaskRenamed)
-            .where(Filters.eq("name", updatedTaskName))
+            .where([Filters.eq("id.value", taskId), Filters.eq("name", updatedTaskName)])
             .post()
             .then(({eventEmitted, unsubscribe}) => {
                 eventEmitted.subscribe({
@@ -311,12 +316,6 @@ describe('FirebaseClient subscription', function () {
                    }
                 });
             });
-
-        const createCommand = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-subscribe',
-            named: initialTaskName
-        });
-        taskId = createCommand.getId().getValue();
         client.command(createCommand)
             .onOk(() => console.log(`Task '${createCommand.getId().getValue()}' created.`))
             .onError(fail(done, 'Unexpected error while creating a task.'))

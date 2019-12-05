@@ -21,6 +21,7 @@
 import assert from 'assert';
 import TestEnvironment from './given/test-environment';
 import {CommandHandlingError, CommandValidationError, ConnectionError} from '@lib/index';
+import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
@@ -31,7 +32,7 @@ import {Type} from '@lib/client/typed-message';
 describe('FirebaseClient command sending', function () {
 
     // Big timeout allows to receive model state changes during tests.
-    this.timeout(5000);
+    this.timeout(15000);
 
     it('completes with success', done => {
 
@@ -121,18 +122,17 @@ describe('FirebaseClient command sending', function () {
     });
 
     it('allows to observe the produced events of a given type', done => {
-        // TODO:2019-11-27:dmytro.kuzmin:WIP Enable when the latest `core-java` is published
-        //  enabling filtering events by `context.*some_field*`.
-        done();
+        const taskName = 'Implement Spine Web JS client tests';
         const command = TestEnvironment.createTaskCommand({
             withPrefix: 'spine-web-test-send-command',
-            named: 'Implement Spine Web JS client tests',
+            named: taskName,
             describedAs: 'Spine Web need integration tests'
         });
 
         const taskId = command.getId();
 
         client.command(command)
+            .onOk(() => console.log('Create task command posted.'))
             .onError(fail(done))
             .onRejection(fail(done))
             .observe(TaskCreated)
@@ -148,15 +148,15 @@ describe('FirebaseClient command sending', function () {
                             taskId, theTaskId,
                             `Expected the task ID to be ${taskId}, got ${theTaskId} instead.`
                         );
-                        const newTaskName = message.getName();
+                        const theTaskName = message.getName();
                         assert.equal(
-                            updatedTaskName, newTaskName,
-                            `Expected the new task name to be ${updatedTaskName}, got 
-                           ${newTaskName} instead.`
+                            taskName, theTaskName,
+                            `Expected the task name to be ${taskName}, got ${theTaskName} instead.`
                         );
-                        const origin = event.getPastMessage().getMessage();
+                        const origin = event.getContext().getPastMessage().getMessage();
                         const originType = origin.getTypeUrl();
-                        const expectedOriginType = taskCreatedType.url().value();
+                        const createTaskType = Type.forClass(CreateTask);
+                        const expectedOriginType = createTaskType.url().value();
                         assert.equal(
                             expectedOriginType, originType,
                             `Expected origin to be of type ${expectedOriginType}, got ${originType} 
@@ -169,7 +169,7 @@ describe('FirebaseClient command sending', function () {
             });
     });
 
-    it.only('fails when trying to observe a malformed event type', done => {
+    it('fails when trying to observe a malformed event type', done => {
         const Unknown = class {
             static typeUrl() {
                 return 'spine.web/fails.malformed.type'
