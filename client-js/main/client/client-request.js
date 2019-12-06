@@ -98,7 +98,7 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
-     * @param {!String[]} fieldNames
+     * @param {!String|String[]} fieldNames
      * @return {this} self for method chaining
      */
     withMask(fieldNames) {
@@ -192,12 +192,19 @@ export class QueryRequest extends FilteringRequest {
     }
 
     /**
+     * @return {spine.client.Query}
+     */
+    query() {
+        return this._builder().build();
+    }
+
+    /**
      * @return {Promise<<T extends Message>[]>}
      *
      * @template <T> a Protobuf type of entities being the target of a query
      */
     run() {
-        const query = this._builder().build();
+        const query = this.query();
         return this._client.read(query);
     }
 
@@ -225,13 +232,17 @@ export class QueryRequest extends FilteringRequest {
  */
 class SubscribingRequest extends FilteringRequest {
 
+    topic() {
+        return this._builder().build();
+    }
+
     /**
      * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
      *
      * @template <T> a Protobuf type of entities being the target of a subscription
      */
     post() {
-        const topic = this._builder().build();
+        const topic = this.topic();
         return this._subscribe(topic);
     }
 
