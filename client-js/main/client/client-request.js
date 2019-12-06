@@ -397,6 +397,7 @@ export class CommandRequest extends ClientRequest{
         const subscriptionPromise = promises.length === 1
             ? promises[0]
             : Promise.all(promises);
+
         // noinspection JSValidateTypes the types are actually correct.
         return subscriptionPromise.then((subscriptionObject) => {
             this._client.post(command, onAck);
