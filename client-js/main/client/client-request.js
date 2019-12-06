@@ -394,11 +394,14 @@ export class CommandRequest extends ClientRequest{
                 .post();
             promises.push(promise);
         });
-        if (promises.length === 1) {
-            return promises[0];
-        }
-        this._client.post(command, onAck);
-        return Promise.all(promises);
+        const subscriptionPromise = promises.length === 1
+            ? promises[0]
+            : Promise.all(promises);
+        // noinspection JSValidateTypes the types are actually correct.
+        return subscriptionPromise.then((subscriptionObject) => {
+            this._client.post(command, onAck);
+            return subscriptionObject;
+        });
     }
 
     /**
