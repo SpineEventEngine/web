@@ -77,7 +77,7 @@ export class FirebaseSubscriptionService {
   /**
    * Sends the "keep-up" request for all active subscriptions.
    *
-   * The non-`OK` response status means the subscription has already been canceled by the server,
+   * The non-`OK` response status means the subscription has already been canceled on the server,
    * most likely due to a timeout. So, in such case, the subscription is removed from the list of
    * active ones.
    *
