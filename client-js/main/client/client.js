@@ -172,7 +172,7 @@ export class Client {
   }
 
   /**
-   * Posts the given command to the Spine server.
+   * Posts a given command to the Spine server.
    *
    * @param {!spine.core.Command} command a Command sent to Spine server
    * @param {!AckCallback} onAck a command acknowledgement callback

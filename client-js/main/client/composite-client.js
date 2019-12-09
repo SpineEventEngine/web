@@ -139,6 +139,13 @@ export class QueryingClient {
         this._requestFactory = actorRequestFactory;
     }
 
+    /**
+     * Creates a new query request.
+     *
+     * @param {!Class<? extends Message>} entityType the target entity type
+     * @param {!Client} client the client which initiated the request
+     * @return {QueryRequest} a new query request
+     */
     select(entityType, client) {
         return new QueryRequest(entityType, client, this._requestFactory);
     }
@@ -174,16 +181,22 @@ export class SubscribingClient {
         this._requestFactory = actorRequestFactory;
     }
 
+    /**
+     * Creates a new subscription request.
+     *
+     * @param {!Class<? extends Message>} type the target entity type
+     * @param {!Client} client the client that initiated the request
+     * @return {SubscriptionRequest} a new subscription request
+     */
     subscribeTo(type, client) {
         return new SubscriptionRequest(type, client, this._requestFactory);
     }
 
-    subscribeToEvent(type, client) {
-        return new EventSubscriptionRequest(type, client, this._requestFactory);
-    }
-
     /**
-     * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+     * Subscribes to a given topic which targets an entity type.
+     *
+     * @param {!spine.client.Topic} topic a topic to subscribe to
+     * @return {Promise<EntitySubscriptionObject<T extends Message>>} a subscription object
      *
      * @template <T> a Protobuf type of entities being the target of a subscription
      */
@@ -192,7 +205,21 @@ export class SubscribingClient {
     }
 
     /**
-     * @return {Promise<EventSubscriptionObject>}
+     * Creates a new event subscription request.
+     *
+     * @param {!Class<? extends Message>} type the target event type
+     * @param {!Client} client the client that initiated the request
+     * @return {EventSubscriptionRequest} a new event subscription request
+     */
+    subscribeToEvent(type, client) {
+        return new EventSubscriptionRequest(type, client, this._requestFactory);
+    }
+
+    /**
+     * Subscribes to the given topic which targets an event type.
+     *
+     * @param {!spine.client.Topic} topic a topic to subscribe to
+     * @return {Promise<EventSubscriptionObject>} a subscription object
      */
     subscribeToEvents(topic) {
         throw new Error('Not implemented in abstract base.');
@@ -243,10 +270,23 @@ export class CommandingClient {
         this._endpoint = endpoint;
     }
 
+    /**
+     * Creates a new command request.
+     *
+     * @param {!Message} commandMessage the command to send to the server
+     * @param {!Client} client the client which initiated the request
+     * @return {CommandRequest} a new command request
+     */
     command(commandMessage, client) {
         return new CommandRequest(commandMessage, client, this._requestFactory);
     }
 
+    /**
+     * Posts a given command to the Spine server.
+     *
+     * @param {!spine.core.Command} command a Command sent to Spine server
+     * @param {!AckCallback} onAck a command acknowledgement callback
+     */
     post(command, onAck) {
         const cmd = TypedMessage.of(command);
         this._endpoint.command(cmd)
