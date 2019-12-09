@@ -30,24 +30,27 @@ import {Filters} from "./actor-request-factory";
 import {Type} from "./typed-message";
 
 /**
+ * A request from a client to the Spine backend.
+ *
  * @abstract
  */
 class ClientRequest {
 
     /**
-     * @param {!Client} client
-     * @param {!ActorRequestFactory} requestFactory
-     *
      * @protected
      */
     constructor(client, requestFactory) {
 
         /**
+         * @type Client
+         *
          * @protected
          */
         this._client = client;
 
         /**
+         * @type ActorRequestFactory
+         *
          * @protected
          */
         this._requestFactory = requestFactory;
@@ -55,14 +58,19 @@ class ClientRequest {
 }
 
 /**
+ * An abstract base for client requests that filter messages by certain criteria.
+ *
  * @abstract
+ *
+ * @template <B> the type of the builder wrapped by this request
+ * @template <T> the type of the messages that store the request data
  */
 class FilteringRequest extends ClientRequest {
 
     /**
-     * @param {!Class<? extends Message>} targetType
-     * @param {!Client} client
-     * @param {!ActorRequestFactory} actorRequestFactory
+     * @param {!Class<? extends Message>} targetType the target type of the request
+     * @param {!Client} client the client which initiated the request
+     * @param {!ActorRequestFactory} actorRequestFactory the request factory
      *
      * @protected
      */
@@ -72,10 +80,11 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
-     * @param ids {!<I extends Message>|Number|String|<I extends Message>[]|Number[]|String[]}
-     * @return {this} self for method chaining
+     * Adds filtering by IDs to the built request.
      *
-     * @template <I> a Protobuf type of IDs
+     * @param ids {!<? extends Message>|Number|String|<? extends Message>[]|Number[]|String[]}
+     *        the IDs of interest
+     * @return {this} self for method chaining
      */
     byId(ids) {
         ids = FilteringRequest._ensureArray(ids);
@@ -84,11 +93,11 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
-     * ...
+     * Adds filtering by predicates to the built request.
      *
-     * The subsequent calls override each other.
+     * Filters specified in a list are considered to be joined using `AND` operator.
      *
-     * @param {!Filter|CompositeFilter|Filter[]|CompositeFilter[]} predicates
+     * @param {!Filter|CompositeFilter|Filter[]|CompositeFilter[]} predicates the filters
      * @return {this} self for method chaining
      */
     where(predicates) {
@@ -98,19 +107,24 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
-     * @param {!String|String[]} fieldNames
+     * Applies a field mask to the request results.
+     *
+     * The names of the fields must be formatted according to the `google.protobuf.FieldMask`
+     * specification.
+     *
+     * @param {!String|String[]} fieldPaths the fields to include to the mask
      * @return {this} self for method chaining
      */
-    withMask(fieldNames) {
-        fieldNames = FilteringRequest._ensureArray(fieldNames);
-        this._builder().withMask(fieldNames);
+    withMask(fieldPaths) {
+        fieldPaths = FilteringRequest._ensureArray(fieldPaths);
+        this._builder().withMask(fieldPaths);
         return this._self();
     }
 
     /**
-     * @return {AbstractTargetBuilder<T extends Message>}
+     * Returns the builder for messages that store request data.
      *
-     * @template <T>
+     * @return {AbstractTargetBuilder<T extends Message>} the builder instance
      *
      * @protected
      */
@@ -123,11 +137,10 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
+     * Returns the function with which the {@link _builderInstance} can be created.
+     *
      * @abstract
-     *
-     * @return {Function<ActorRequestFactory, T extends AbstractTargetBuilder>}
-     *
-     * @template <T>
+     * @return {Function<ActorRequestFactory, B extends AbstractTargetBuilder>} the function
      *
      * @protected
      */
@@ -137,7 +150,6 @@ class FilteringRequest extends ClientRequest {
 
     /**
      * @abstract
-     *
      * @return {this}
      *
      * @protected
@@ -147,6 +159,12 @@ class FilteringRequest extends ClientRequest {
     }
 
     /**
+     * Wraps the passed argument into array if it's not an array already.
+     *
+     * The `null` values are converted into an empty array.
+     *
+     * @return {Array} the passed argument as an array
+     *
      * @private
      */
     static _ensureArray(values) {
@@ -160,17 +178,48 @@ class FilteringRequest extends ClientRequest {
     }
 }
 
+/**
+ * A request to retrieve entities of the given type.
+ *
+ * Allows to post the query data to the Spine backend and receive the entity states as `Promise`.
+ *
+ * A usage example:
+ * ```
+ * const customers =
+ *          client.select(Customer.class)
+ *                .byId(westCoastCustomerIds())
+ *                .withMask("name", "address", "email")
+ *                .where(Filters.eq("type", "permanent"),
+ *                       Filters.eq("discount_percent", 10),
+ *                       Filters.eq("company_size", Company.Size.SMALL))
+ *                .orderBy("name", OrderBy.Direction.ASCENDING)
+ *                .limit(20)
+ *                .run(); // The returned type is `Promise<Customer[]>`.
+ * }
+ * ```
+ *
+ * All of the called filtering methods are optional. If none of them are specified, all entities
+ * of type will be retrieved.
+ *
+ * @template <T> the query target type
+ */
 export class QueryRequest extends FilteringRequest {
 
+    /**
+     * @param {!Class<T extends Message>} targetType the target type of entities
+     * @param {!Client} client the client which initiated the request
+     * @param {!ActorRequestFactory} actorRequestFactory the request factory
+     */
     constructor(targetType, client, actorRequestFactory) {
         super(targetType, client, actorRequestFactory)
     }
 
     /**
+     * Sets the sorting order for the retrieved results.
      *
-     * @param {!String} column
-     * @param {!OrderBy.Direction} direction
-     * @return {QueryRequest} self
+     * @param {!String} column the column to order by
+     * @param {!OrderBy.Direction} direction the ascending/descending direction
+     * @return {this} self for method chaining
      */
     orderBy(column, direction) {
         if (direction === OrderBy.Direction.ASCENDING) {
@@ -182,8 +231,12 @@ export class QueryRequest extends FilteringRequest {
     }
 
     /**
+     * Sets the maximum number of returned entities.
+     *
+     * Can only be used in conjunction with the {@link #orderBy} condition.
+     *
      * @param {number} count the max number of response entities
-     * @return {QueryRequest} self
+     * @return {this} self for method chaining
      */
     limit(count) {
         this._builder().limit(count);
@@ -191,16 +244,18 @@ export class QueryRequest extends FilteringRequest {
     }
 
     /**
-     * @return {spine.client.Query}
+     * Builds a `Query` instance based on currently specified filters.
+     *
+     * @return {spine.client.Query} a `Query` instance
      */
     query() {
         return this._builder().build();
     }
 
     /**
-     * @return {Promise<<T extends Message>[]>}
+     * Runs the query and obtains the results as `Promise`.
      *
-     * @template <T> a Protobuf type of entities being the target of a query
+     * @return {Promise<<T extends Message>[]>} the asynchronously resolved query results
      */
     run() {
         const query = this.query();
@@ -209,8 +264,6 @@ export class QueryRequest extends FilteringRequest {
 
     /**
      * @inheritDoc
-     *
-     * @return {Function<ActorRequestFactory, QueryBuilder>}
      */
     _newBuilderFn() {
         return requestFactory => requestFactory.query().select(this.targetType);
@@ -218,8 +271,6 @@ export class QueryRequest extends FilteringRequest {
 
     /**
      * @inheritDoc
-     *
-     * @return {QueryRequest}
      */
     _self() {
         return this;
@@ -227,18 +278,27 @@ export class QueryRequest extends FilteringRequest {
 }
 
 /**
+ * An abstract base for requests that subscribe to messages of a certain type.
+ *
  * @abstract
+ * @template <T> the target type of messages, for events the type is always `spine.core.Event`
  */
 class SubscribingRequest extends FilteringRequest {
 
+    /**
+     * Builds a `Topic` instance based on the currently specified filters.
+     *
+     * @return {spine.client.Topic} a `Topic` instance
+     */
     topic() {
         return this._builder().build();
     }
 
     /**
-     * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
+     * Posts a subscription request and returns the result as `Promise`.
      *
-     * @template <T> a Protobuf type of entities being the target of a subscription
+     * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
+     *         the asynchronously resolved subscription object
      */
     post() {
         const topic = this.topic();
@@ -247,8 +307,6 @@ class SubscribingRequest extends FilteringRequest {
 
     /**
      * @inheritDoc
-     *
-     * @return {Function<ActorRequestFactory, TopicBuilder>}
      */
     _newBuilderFn() {
         return requestFactory => requestFactory.topic().select(this.targetType);
@@ -256,10 +314,7 @@ class SubscribingRequest extends FilteringRequest {
 
     /**
      * @abstract
-     *
      * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
-     *
-     * @template <T> a Protobuf type of entities being the target of a subscription
      *
      * @protected
      */
@@ -268,8 +323,42 @@ class SubscribingRequest extends FilteringRequest {
     }
 }
 
+/**
+ * A request to subscribe to updates of entity states of a certain type.
+ *
+ * Allows to obtain the `EntitySubscriptionObject` which exposes the entity changes in a form of
+ * callbacks which can be subscribed to.
+ *
+ * A usage example:
+ * ```
+ * client.subscribeTo(Task.class)
+ *       .where(Filters.eq("status", Task.Status.ACTIVE))
+ *       // Additional filtering can be done here.
+ *       .post()
+ *       .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+ *           itemAdded.subscribe(_addDisplayedTask);
+ *           itemChanged.subscribe(_changeDisplayedTask);
+ *           itemRemoved.subscribe(_removeDisplayedTask);
+ *       });
+ * }
+ * ```
+ *
+ * If the entity matched the subscription criteria at one point, but stopped to do so, the
+ * `itemRemoved` callback will be triggered for it. The callback will contain the last entity state
+ * that matched the subscription.
+ *
+ * Please note that the subscription object should be manually unsubscribed when it's no longer
+ * needed to receive the updates. This can be done with the help of `unsubscribe` callback.
+ *
+ * @template <T> the target entity type
+ */
 export class SubscriptionRequest extends SubscribingRequest {
 
+    /**
+     * @param {!Class<T extends Message>} entityType the target entity type
+     * @param {!Client} client the client which initiated the request
+     * @param {!ActorRequestFactory} actorRequestFactory the request factory
+     */
     constructor(entityType, client, actorRequestFactory) {
         super(entityType, client, actorRequestFactory)
     }
@@ -278,8 +367,6 @@ export class SubscriptionRequest extends SubscribingRequest {
      * @inheritDoc
      *
      * @return {Promise<EntitySubscriptionObject<T extends Message>>}
-     *
-     * @template <T>
      */
     _subscribe(topic) {
         return this._client.subscribe(topic);
@@ -287,16 +374,46 @@ export class SubscriptionRequest extends SubscribingRequest {
 
     /**
      * @inheritDoc
-     *
-     * @return {SubscriptionRequest}
      */
     _self() {
         return this;
     }
 }
 
+/**
+ * A request to subscribe to events of a certain type.
+ *
+ * Allows to obtain the `EventSubscriptionObject` which reflects the events that happened in the
+ * system and match the subscription criteria.
+ *
+ * A usage example:
+ * ```
+ * client.subscribeTo(TaskCreated.class)
+ *       .where([Filters.eq("task_priority", Task.Priority.HIGH),
+ *              Filters.eq("context.past_message.actor_context.actor", userId)])
+ *       .post()
+ *       .then(({eventEmitted, unsubscribe}) => {
+ *           eventEmitted.subscribe(_logEvent);
+ *       });
+ * }
+ * ```
+ *
+ * The fields specified to the `where` filters should either be a part of the event message or
+ * have a `context.` prefix and address one of the fields of the `EventContext` type.
+ *
+ * The `eventEmitted` callback reflects all the events that occurred in the system and match the
+ * subscription criteria, in the form of `spine.core.Event`.
+ *
+ * Please note that the subscription object should be manually unsubscribed when it's no longer
+ * needed to receive the updates. This can be done with the help of `unsubscribe` callback.
+ */
 export class EventSubscriptionRequest extends SubscribingRequest {
 
+    /**
+     * @param {!Class<? extends Message>} eventType the target event type
+     * @param {!Client} client the client which initiated the request
+     * @param {!ActorRequestFactory} actorRequestFactory the request factory
+     */
     constructor(eventType, client, actorRequestFactory) {
         super(eventType, client, actorRequestFactory)
     }
@@ -312,8 +429,6 @@ export class EventSubscriptionRequest extends SubscribingRequest {
 
     /**
      * @inheritDoc
-     *
-     * @return {EventSubscriptionRequest}
      */
     _self() {
         return this;
@@ -322,12 +437,40 @@ export class EventSubscriptionRequest extends SubscribingRequest {
 
 const NOOP_CALLBACK = () => {};
 
-export class CommandRequest extends ClientRequest{
+/**
+ * A request to post a command to the Spine backend.
+ *
+ * Optionally allows to subscribe to events that are the immediate results of handling the command.
+ *
+ * A usage example:
+ * ```
+ * client.command(logInUser)
+ *       .onOk(_logOk)
+ *       .onError(_logError)
+ *       .observe(UserLoggedIn.class)
+ *       .observe(UserAlreadyLoggedIn.class)
+ *       .post()
+ *       .then(([{eventEmitted1, unsubscribe1}, {eventEmitted2, unsubscribe2}]) => {
+ *           eventEmitted1.subscribe(_logUserLoggedIn);
+ *           eventEmitted2.subscribe(_logUserAlreadyLoggedIn);
+ *           unsubscribe1();
+ *           unsubscribe2();
+ *       });
+ * ```
+ *
+ * The `Promise` returned from `post` will be resolved with either a single
+ * `EventSubscriptionObject` if a single type is observed or with an array of
+ * `EventSubscriptionObject`s otherwise.
+ *
+ * Please note that the returned subscription objects should be manually unsubscribed with the help
+ * of `unsubscribe` callback.
+ */
+export class CommandRequest extends ClientRequest {
 
     /**
-     * @param {!Message} commandMessage
-     * @param {!Client} client
-     * @param {!ActorRequestFactory} actorRequestFactory
+     * @param {!Message} commandMessage the command to post
+     * @param {!Client} client the client which initiated the request
+     * @param {!ActorRequestFactory} actorRequestFactory the request factory
      */
     constructor(commandMessage, client, actorRequestFactory) {
         super(client, actorRequestFactory);
@@ -339,9 +482,10 @@ export class CommandRequest extends ClientRequest{
     }
 
     /**
-     * @param {!parameterlessCallback} callback
+     * Runs the callback if the command is successfully handled by the Spine server.
      *
-     * @return {CommandRequest} self
+     * @param {!parameterlessCallback} callback the callback to run
+     * @return {this} self for method chaining
      */
     onOk(callback) {
         this._onAck = callback;
@@ -349,9 +493,11 @@ export class CommandRequest extends ClientRequest{
     }
 
     /**
-     * @param {!consumerCallback} callback
+     * Runs the callback if the command could not be handled by the Spine server due to the
+     * technical error.
      *
-     * @return {CommandRequest} self
+     * @param {!consumerCallback<spine.base.Error>} callback the callback to run
+     * @return {this} self for method chaining
      */
     onError(callback) {
         this._onError = callback;
@@ -359,9 +505,14 @@ export class CommandRequest extends ClientRequest{
     }
 
     /**
-     * @param {!consumerCallback} callback
+     * Runs the callback if the server responded with the `rejection` status on a command.
      *
-     * @return {CommandRequest} self
+     * Note that with the current Spine server implementation this never happens. At the moment,
+     * prefer using the `observe` method if you need to check for the rejection being a command
+     * handling result.
+     *
+     * @param {!consumerCallback} callback
+     * @return {this} self for method chaining
      */
     onRejection(callback) {
         this._onRejection = callback;
@@ -369,9 +520,10 @@ export class CommandRequest extends ClientRequest{
     }
 
     /**
-     * @param {!Class<? extends Message>} eventType a Protobuf type of the observed events
+     * Adds the event type to the list of observed command handling results.
      *
-     * @return {CommandRequest} self
+     * @param {!Class<? extends Message>} eventType a type of the observed events
+     * @return {this} self for method chaining
      */
     observe(eventType) {
         this._observedTypes.push(eventType);
@@ -379,7 +531,11 @@ export class CommandRequest extends ClientRequest{
     }
 
     /**
-     * @return {Promise<EventSubscriptionObject[] | EventSubscriptionObject>}
+     * Posts the command to the server and subscribes to all observed types.
+     *
+     * @return {Promise<EventSubscriptionObject | EventSubscriptionObject[]>}
+     *         the asynchronously resolved subscription objects for the events specified in
+     *         the `observe`
      */
     post() {
         const command = this._requestFactory.command().create(this._commandMessage);
@@ -406,7 +562,6 @@ export class CommandRequest extends ClientRequest{
 
     /**
      * @param {!Command} command
-     *
      * @return {Origin}
      *
      * @private
