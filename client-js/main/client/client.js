@@ -40,14 +40,14 @@ import {Observable} from 'rxjs';
 /**
  * @typedef {Object} EntitySubscriptionObject
  *
- * An object representing a result of the subscription to entities state changes.
- * The entities that already exist will be initially passed to the `itemAdded` observer.
+ * An object representing a result of the subscription to entity state changes.
  *
  * @property {!Observable<T>} itemAdded emits new items matching the subscription topic
  * @property {!Observable<T>} itemChanged emits updated items matching the subscription topic
  * @property {!Observable<T>} itemRemoved emits removed items matching the subscription topic
  * @property {!parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
- *                                   stopping the subscribers from receiving new entities
+ *                                                stopping the subscribers from receiving new
+ *                                                entities
  *
  * @template <T> a type of the subscription target entities
  */
@@ -55,12 +55,20 @@ import {Observable} from 'rxjs';
 /**
  * @typedef {Object} EventSubscriptionObject
  *
- * @property <!Observable<spine.core.Event>> eventEmitted
- * @property {!parameterlessCallback} unsubscribe
+ * An object which represents a result of the subscription to events of a certain type.
+ *
+ * @property <!Observable<spine.core.Event>> eventEmitted emits new items when the new events
+ *                                                        matching the subscription topic occur in
+ *                                                        the system
+ * @property {!parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
+ *                                                stopping the subscribers from receiving new
+ *                                                entities
  */
 
 /**
  * @typedef AckCallback
+ *
+ * Represents a command acknowledgement callback.
  *
  * @property {!parameterlessCallback} onOk
  * @property {!consumerCallback<Error>} onError
@@ -76,8 +84,10 @@ import {Observable} from 'rxjs';
 export class Client {
 
   /**
+   * Creates a query request that allows to configure and post a new query.
+   *
    * @param {!Class<? extends Message>} entityType a Protobuf type of the query target entities
-   * @return {QueryRequest}
+   * @return {QueryRequest} the builder to construct and post a new query
    */
   select(entityType) {
     throw new Error('Not implemented in abstract base.');
@@ -99,25 +109,25 @@ export class Client {
   }
 
   /**
+   * Creates a subscription request that allows to configure and post a new entity subscription.
+   *
    * @param {!Class<? extends Message>} entityType a Protobuf type of the target entities
-   * @return {SubscriptionRequest}
+   * @return {SubscriptionRequest} the builder for the new entity subscription
    */
   subscribeTo(entityType) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
-   * @param {!Class<? extends Message>} eventType a Protobuf type of the target events
-   * @return {EventSubscriptionRequest}
-   */
-  subscribeToEvent(eventType) {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
-   * @param {!spine.client.Topic} topic
+   * Subscribes to the given `Topic` instance.
    *
-   * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+   * The topic should have an entity type as target. Use {@link #subscribeToEvents} to subscribe to
+   * the topic that targets events.
+   *
+   * @param {!spine.client.Topic} topic a topic to subscribe to
+   * @return {Promise<EntitySubscriptionObject<T extends Message>>} the subscription object which
+   *                                                                exposes entity changes via its
+   *                                                                callbacks
    *
    * @template <T> a Protobuf type of entities being the target of a subscription
    */
@@ -126,7 +136,23 @@ export class Client {
   }
 
   /**
-   * @param {!spine.client.Topic} topic
+   * Creates an event subscription request that allows to configure and post a new event
+   * subscription.
+   *
+   * @param {!Class<? extends Message>} eventType a Protobuf type of the target events
+   * @return {EventSubscriptionRequest} the builder for the new event subscription
+   */
+  subscribeToEvent(eventType) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Subscribes to the given `Topic` instance.
+   *
+   * The given topic should target an event type. To perform an entity subscription, use
+   * {@link #subscribe}.
+   *
+   * @param {!spine.client.Topic} topic a topic to subscribe to
    *
    * @return {Promise<EventSubscriptionObject>}
    */
@@ -135,16 +161,21 @@ export class Client {
   }
 
   /**
-   * @param {!Message} commandMessage a Protobuf type of the query target entities
-   * @return {CommandRequest}
+   * Creates a new command request which allows to post a command to the Spine server and
+   * configures the command handling callbacks.
+   *
+   * @param {!Message} commandMessage a command to post to the server
+   * @return {CommandRequest} a new command request
    */
   command(commandMessage) {
     throw new Error('Not implemented in abstract base.');
   }
 
   /**
+   * Posts the given command to the Spine server.
+   *
    * @param {!spine.core.Command} command a Command sent to Spine server
-   * @param {!AckCallback} onAck
+   * @param {!AckCallback} onAck a command acknowledgement callback
    */
   post(command, onAck) {
     throw new Error('Not implemented in abstract base.');
