@@ -50,9 +50,8 @@ import static io.spine.protobuf.AnyPacker.unpack;
  * <p>Consists of entities or events, which ought to be written into the Firebase database under
  * a certain path.
  *
- * <p>The entity state updates that render entity state
- * {@linkplain EntityStateUpdate#getNoLongerMatching() no longer matching} are stored as
- * {@link Empty}.
+ * <p>The updates about {@linkplain EntityStateUpdate#getNoLongerMatching() no longer matching}
+ * entity states are represented as {@link Empty}.
  */
 final class UpdatePayload {
 
@@ -148,8 +147,8 @@ final class UpdatePayload {
     /**
      * Adds an {@code <ID:message>} key-value pair as a child of the given node.
      *
-     * <p>If the message is {@link Empty}, adds a {@code null} child under the given key, deleting
-     * it from the database.
+     * <p>If the message is {@link Empty}, adds a {@code null} child under the given key,
+     * effectively deleting it from the database.
      */
     private static void addChildOrNull(NodeValue node, String id, Message message) {
         boolean isEmpty = Empty.getDefaultInstance()
@@ -162,7 +161,7 @@ final class UpdatePayload {
     }
 
     /**
-     * An identity function for {@link Event}-to-{@link Message} conversion.
+     * An identity {@link Event}-to-{@link Message} conversion.
      *
      * <p>The standard {@link Function#identity()} cannot be applied because of the type arguments
      * mismatch.

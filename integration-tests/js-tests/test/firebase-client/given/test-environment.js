@@ -63,8 +63,8 @@ export default class TestEnvironment {
 
         name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
         description = typeof description === 'undefined'
-                      ? this.DEFAULT_TASK_DESCRIPTION
-                      : description;
+            ? this.DEFAULT_TASK_DESCRIPTION
+            : description;
 
         const command = new CreateTask();
         command.setId(taskId);

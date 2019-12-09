@@ -82,14 +82,14 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const length = idList.length;
     assert.equal(
         1, length,
-        `Expected the ID list to contain a single ID, the actual length: ${length}.`
+        `Expected the ID list to contain a single ID, the actual length: '${length}'.`
     );
     const taskIdType = Type.forClass(TaskId);
     const targetId = AnyPacker.unpack(idList[0]).as(taskIdType);
     const actualId = targetId.getValue();
     assert.equal(
         idValue, actualId,
-        `Unexpected target ID ${actualId}, expected: ${idValue}.`
+        `Unexpected target ID '${actualId}', expected: '${idValue}'.`
     );
     done();
   });
@@ -111,7 +111,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const length = idList.length;
     assert.equal(
         2, length,
-        `Expected the ID list to contain two IDs, the actual length: ${length}.`
+        `Expected the ID list to contain two IDs, the actual length: '${length}'.`
     );
     done();
   });
@@ -142,18 +142,18 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     assert.equal(
         1, compositeFiltersLength,
         `Expected the composite filter list to contain a single filter, the actual 
-        length: ${compositeFiltersLength}.`
+        length: '${compositeFiltersLength}'.`
     );
     const filters = compositeFilters[0].getFilterList();
     const length = filters.length;
     assert.equal(
         1, length,
-        `Expected the filter list to contain a single filter, the actual length: ${length}.`
+        `Expected the filter list to contain a single filter, the actual length: '${length}'.`
     );
     const targetFilter = filters[0];
     assert.equal(
       filter, targetFilter,
-      `Unexpected filter value ${targetFilter}, expected: ${filter}.`
+      `Unexpected filter value '${targetFilter}', expected: '${filter}'.`
     );
     done();
   });
@@ -169,13 +169,13 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     assert.equal(
         1, compositeFiltersLength,
         `Expected the composite filter list to contain a single filter, the actual 
-        length: ${compositeFiltersLength}.`
+        length: '${compositeFiltersLength}'.`
     );
     const filters = compositeFilters[0].getFilterList();
     const length = filters.length;
     assert.equal(
         2, length,
-        `Expected the filter list to contain two filters, the actual length: ${length}.`
+        `Expected the filter list to contain two filters, the actual length: '${length}'.`
     );
     done();
   });
@@ -204,7 +204,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const pathList = fieldMask.getPathsList();
     assert.equal(
       fields, pathList,
-      `Unexpected list of fields in the field mask: ${pathList}, expected: ${fields}.`
+      `Unexpected list of fields in the field mask: '${pathList}', expected: '${fields}'.`
     );
     done();
   });
@@ -224,7 +224,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const actualType = target.getType();
     assert.equal(
         targetTypeUrl, actualType,
-        `The unexpected target type ${actualType}, expected: ${targetTypeUrl}.`
+        `The unexpected target type '${actualType}', expected: '${targetTypeUrl}'.`
     );
   }
 }

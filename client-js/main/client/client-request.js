@@ -115,10 +115,9 @@ class FilteringRequest extends ClientRequest {
      * @protected
      */
     _builder() {
-        // TODO:2019-11-27:dmytro.kuzmin:WIP Check that setting to some initial value is
-        //  unnecessary.
         if (!this._builderInstance) {
-            this._builderInstance = this._newBuilderFn()(this._requestFactory);
+            const newBuilderFn = this._newBuilderFn();
+            this._builderInstance = newBuilderFn(this._requestFactory);
         }
         return this._builderInstance;
     }
@@ -398,7 +397,7 @@ export class CommandRequest extends ClientRequest{
             ? promises[0]
             : Promise.all(promises);
 
-        // noinspection JSValidateTypes the types are actually correct.
+        // noinspection JSValidateTypes
         return subscriptionPromise.then((subscriptionObject) => {
             this._client.post(command, onAck);
             return subscriptionObject;

@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import assert from 'assert';
 import {QueryRequest} from "@lib/client/client-request";
 import {Duration} from "@lib/client/time-utils";
@@ -45,13 +44,13 @@ describe('QueryRequest', function () {
     const orderByColumn = orderBy.getColumn();
     assert.equal(
         column, orderByColumn,
-        `Unexpected column specified in the order by: ${orderByColumn}, expected: ${column}.`
+        `Unexpected column specified in the order by: '${orderByColumn}', expected: '${column}'.`
     );
     const orderByDirection = orderBy.getDirection();
     assert.equal(
         direction, orderByDirection,
-        `Unexpected direction specified in the order by: ${orderByDirection},
-        expected: ${direction}.`
+        `Unexpected direction specified in the order by: '${orderByDirection}',
+        expected: '${direction}'.`
     );
     done();
   });

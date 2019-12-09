@@ -24,7 +24,7 @@ import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-test-e
 import {client} from './given/direct-client';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
-describe('`DirectClient` executes query built', function () {
+describe('DirectClient executes query built', function () {
 
     let users;
 
@@ -32,7 +32,7 @@ describe('`DirectClient` executes query built', function () {
      * Prepares environment, where four users have one, two, three, and four tasks
      * assigned respectively.
      */
-    before(function(done) {
+    before(function (done) {
         // Big timeout allows to complete environment setup.
         this.timeout(10 * 1000);
 
@@ -59,12 +59,12 @@ describe('`DirectClient` executes query built', function () {
     it(`by IDs and returns correct values`, done => {
         const ids = users.map(user => user.id);
         client.select(UserTasks)
-              .byId(ids)
-              .run()
-              .then(userTasksList => {
-                  assert.ok(ensureUserTasks(userTasksList, users));
-                  done();
-              })
-              .catch(fail(done));
+            .byId(ids)
+            .run()
+            .then(userTasksList => {
+                assert.ok(ensureUserTasks(userTasksList, users));
+                done();
+            })
+            .catch(fail(done));
     });
 });

@@ -83,11 +83,10 @@ export class UserTasksTestEnvironment extends TestEnvironment {
             command.setId(taskId);
             command.setNewAssignee(newAssignee);
 
-            // TODO:2019-11-27:dmytro.kuzmin:WIP Try remove these lambdas.
             client.command(command)
-                .onOk(() => resolve())
-                .onError(() => reject())
-                .onRejection(() => reject())
+                .onOk(resolve)
+                .onError(reject)
+                .onRejection(reject)
                 .post();
         })
     }

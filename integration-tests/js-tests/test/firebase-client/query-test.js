@@ -171,7 +171,7 @@ describe('FirebaseClient executes query built', function () {
         });
     });
 
-    it('with Date-based filter and returns correct values', (done) => {
+    it('with `Date`-based filter and returns correct values', (done) => {
         const userIds = toUserIds(users);
 
         client.select(UserTasks)

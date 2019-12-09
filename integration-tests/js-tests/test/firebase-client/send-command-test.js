@@ -145,12 +145,13 @@ describe('FirebaseClient command sending', function () {
                         const theTaskId = message.getId().getValue();
                         assert.equal(
                             taskId, theTaskId,
-                            `Expected the task ID to be ${taskId}, got ${theTaskId} instead.`
+                            `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
                         );
                         const theTaskName = message.getName();
                         assert.equal(
                             taskName, theTaskName,
-                            `Expected the task name to be ${taskName}, got ${theTaskName} instead.`
+                            `Expected the task name to be '${taskName}', got '${theTaskName}' 
+                            instead.`
                         );
                         const origin = event.getContext().getPastMessage().getMessage();
                         const originType = origin.getTypeUrl();
@@ -158,8 +159,8 @@ describe('FirebaseClient command sending', function () {
                         const expectedOriginType = createTaskType.url().value();
                         assert.equal(
                             expectedOriginType, originType,
-                            `Expected origin to be of type ${expectedOriginType}, got ${originType} 
-                            instead.`
+                            `Expected origin to be of type '${expectedOriginType}', got 
+                            '${originType}' instead.`
                         );
                         unsubscribe();
                         done();

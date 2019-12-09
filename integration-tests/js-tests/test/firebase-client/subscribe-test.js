@@ -61,10 +61,12 @@ describe('FirebaseClient subscription', function () {
                     }
                 });
                 itemRemoved.subscribe({
-                    next: fail(done, 'Unexpected entity remove during entity create subscription test.')
+                    next: fail(done,
+                        'Unexpected entity remove during entity create subscription test.')
                 });
                 itemChanged.subscribe({
-                    next: fail(done, 'Unexpected entity change during entity create subscription test.')
+                    next: fail(done,
+                        'Unexpected entity change during entity create subscription test.')
                 });
                 commands.forEach(command => {
                     client.command(command)
@@ -116,7 +118,7 @@ describe('FirebaseClient subscription', function () {
                                 item.getName(), UPDATED_TASK_NAME,
                                 `Task is named "${item.getName()}", expected "${UPDATED_TASK_NAME}"`
                             );
-                            console.log(`Got task changes for ${id}.`);
+                            console.log(`Got task changes for '${id}'.`);
                             unsubscribe();
                             done();
                         }
@@ -296,24 +298,24 @@ describe('FirebaseClient subscription', function () {
             .post()
             .then(({eventEmitted, unsubscribe}) => {
                 eventEmitted.subscribe({
-                   next: event => {
-                       const packedMessage = event.getMessage();
-                       const taskRenamedType = Type.forClass(TaskRenamed);
-                       const message = AnyPacker.unpack(packedMessage).as(taskRenamedType);
-                       const theTaskId = message.getId().getValue();
-                       assert.equal(
-                         taskId, theTaskId,
-                         `Expected the task ID to be ${taskId}, got ${theTaskId} instead.`
-                       );
-                       const newTaskName = message.getName();
-                       assert.equal(
-                           updatedTaskName, newTaskName,
-                           `Expected the new task name to be ${updatedTaskName}, got 
+                    next: event => {
+                        const packedMessage = event.getMessage();
+                        const taskRenamedType = Type.forClass(TaskRenamed);
+                        const message = AnyPacker.unpack(packedMessage).as(taskRenamedType);
+                        const theTaskId = message.getId().getValue();
+                        assert.equal(
+                            taskId, theTaskId,
+                            `Expected the task ID to be ${taskId}, got ${theTaskId} instead.`
+                        );
+                        const newTaskName = message.getName();
+                        assert.equal(
+                            updatedTaskName, newTaskName,
+                            `Expected the new task name to be ${updatedTaskName}, got 
                            ${newTaskName} instead.`
-                       );
-                       unsubscribe();
-                       done();
-                   }
+                        );
+                        unsubscribe();
+                        done();
+                    }
                 });
             });
         client.command(createCommand)
