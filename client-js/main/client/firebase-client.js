@@ -40,11 +40,16 @@ import {
 } from "./composite-client";
 
 /**
+ * An abstract base for subscription objects.
+ *
  * @abstract
  */
 class SpineSubscription extends Subscription {
 
   /**
+   * @param {Function} unsubscribe the callbacks that allows to cancel the subscription
+   * @param {SubscriptionObject} subscription the wrapped subscription object
+   *
    * @protected
    */
   constructor(unsubscribe, subscription) {
@@ -75,9 +80,10 @@ class SpineSubscription extends Subscription {
 class EntitySubscription extends SpineSubscription {
 
   /**
-   * @param {Function} unsubscribe
+   * @param {Function} unsubscribe the callbacks that allows to cancel the subscription
    * @param {{itemAdded: Observable, itemChanged: Observable, itemRemoved: Observable}} observables
-   * @param {SubscriptionObject} subscription
+   *        the observables for entity changes
+   * @param {SubscriptionObject} subscription the wrapped subscription object
    */
   constructor({
                 unsubscribedBy: unsubscribe,
@@ -96,12 +102,15 @@ class EntitySubscription extends SpineSubscription {
   }
 }
 
+/**
+ * A subscription to events that occur in the system.
+ */
 class EventSubscription extends SpineSubscription {
 
   /**
-   * @param {Function} unsubscribe
-   * @param {Observable} eventEmitted
-   * @param {SubscriptionObject} subscription
+   * @param {Function} unsubscribe the callbacks that allows to cancel the subscription
+   * @param {Observable} eventEmitted the observable for the emitted events
+   * @param {SubscriptionObject} subscription the wrapped subscription object
    */
   constructor({
                 unsubscribedBy: unsubscribe,
