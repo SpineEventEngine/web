@@ -189,9 +189,9 @@ class FilteringRequest extends ClientRequest {
  *          client.select(Customer.class)
  *                .byId(westCoastCustomerIds())
  *                .withMask("name", "address", "email")
- *                .where(Filters.eq("type", "permanent"),
+ *                .where([Filters.eq("type", "permanent"),
  *                       Filters.eq("discount_percent", 10),
- *                       Filters.eq("company_size", Company.Size.SMALL))
+ *                       Filters.eq("company_size", Company.Size.SMALL)])
  *                .orderBy("name", OrderBy.Direction.ASCENDING)
  *                .limit(20)
  *                .run(); // The returned type is `Promise<Customer[]>`.
