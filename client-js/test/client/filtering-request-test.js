@@ -53,7 +53,7 @@ export class Given {
  *
  * @param newRequest a callback which accepts a target type, client and request factory and creates
  *                   a new filtering request
- * @param buildResult a callback which accepts a filtering request and builds the result message
+ * @param buildResult a callback which accepts a filtering request and builds the message
  *                    that is sent to the Spine server (e.g. `Query`, `Topic`)
  * @param getTarget a callback which extracts the target from the result message
  * @param getFieldMask a callback which extracts the field mask from the result message
@@ -221,6 +221,9 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     done();
   });
 
+  /**
+   * @param {!spine.client.Target} target
+   */
   function assertIsIncludeAll(target) {
     assertTargetTypeEquals(target);
     assert.equal(

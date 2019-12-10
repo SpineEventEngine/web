@@ -112,7 +112,7 @@ class FilteringRequest extends ClientRequest {
      * The names of the fields must be formatted according to the `google.protobuf.FieldMask`
      * specification.
      *
-     * @param {!String|String[]} fieldPaths the fields to include to the mask
+     * @param {!String|String[]} fieldPaths the fields to include in the mask
      * @return {this} self for method chaining
      */
     withMask(fieldPaths) {
@@ -140,7 +140,7 @@ class FilteringRequest extends ClientRequest {
      * Returns the function with which the {@link _builderInstance} can be created.
      *
      * @abstract
-     * @return {Function<ActorRequestFactory, B extends AbstractTargetBuilder>} the function
+     * @return {Function<ActorRequestFactory, B extends AbstractTargetBuilder>}
      *
      * @protected
      */
@@ -253,7 +253,7 @@ export class QueryRequest extends FilteringRequest {
     }
 
     /**
-     * Runs the query and obtains the results as `Promise`.
+     * Runs the query and obtains the results.
      *
      * @return {Promise<<T extends Message>[]>} the asynchronously resolved query results
      */
@@ -401,8 +401,8 @@ export class SubscriptionRequest extends SubscribingRequest {
  * The fields specified to the `where` filters should either be a part of the event message or
  * have a `context.` prefix and address one of the fields of the `EventContext` type.
  *
- * The `eventEmitted` callback reflects all the events that occurred in the system and match the
- * subscription criteria, in the form of `spine.core.Event`.
+ * The `eventEmitted` observable reflects all events that occurred in the system and match the
+ * subscription criteria, in a form of `spine.core.Event`.
  *
  * Please note that the subscription object should be manually unsubscribed when it's no longer
  * needed to receive the updates. This can be done with the help of `unsubscribe` callback.
@@ -496,7 +496,7 @@ export class CommandRequest extends ClientRequest {
      * Runs the callback if the command could not be handled by the Spine server due to the
      * technical error.
      *
-     * @param {!consumerCallback<spine.base.Error>} callback the callback to run
+     * @param {!consumerCallback<CommandHandlingError>} callback the callback to run
      * @return {this} self for method chaining
      */
     onError(callback) {
@@ -507,11 +507,11 @@ export class CommandRequest extends ClientRequest {
     /**
      * Runs the callback if the server responded with the `rejection` status on a command.
      *
-     * Note that with the current Spine server implementation this never happens. At the moment,
-     * prefer using the `observe` method if you need to check for the rejection being a command
-     * handling result.
+     * Note that with the current Spine server implementation the command being rejected right away
+     * is very unlikely. In most cases, the command will be acknowledged with `OK` status and only
+     * then lead to a business rejection. You can check this scenario using the `observe` method.
      *
-     * @param {!consumerCallback} callback
+     * @param {!consumerCallback<spine.core.Event>} callback
      * @return {this} self for method chaining
      */
     onRejection(callback) {

@@ -40,7 +40,7 @@ import {Observable} from 'rxjs';
 /**
  * @typedef {Object} EntitySubscriptionObject
  *
- * An object representing a result of the subscription to entity state changes.
+ * An object representing the result of a subscription to entity state changes.
  *
  * @property {!Observable<T>} itemAdded emits new items matching the subscription topic
  * @property {!Observable<T>} itemChanged emits updated items matching the subscription topic
@@ -55,7 +55,7 @@ import {Observable} from 'rxjs';
 /**
  * @typedef {Object} EventSubscriptionObject
  *
- * An object which represents a result of the subscription to events of a certain type.
+ * An object which represents the result of a subscription to events of a certain type.
  *
  * @property <!Observable<spine.core.Event>> eventEmitted emits new items when the new events
  *                                                        matching the subscription topic occur in
@@ -70,9 +70,12 @@ import {Observable} from 'rxjs';
  *
  * Represents a command acknowledgement callback.
  *
- * @property {!parameterlessCallback} onOk
- * @property {!consumerCallback<Error>} onError
- * @property {!consumerCallback<Message>} onRejection
+ * @property {!parameterlessCallback} onOk the callback to run when the command is handled properly
+ * @property {!consumerCallback<Error>} onError the callback to run when the command cannot be
+ *                                              handled due to a technical error
+ * @property {!consumerCallback<Message>} onRejection the callback to run when the command cannot
+ *                                                    be handled properly because of the business
+ *                                                    rejection
  */
 
 /**
@@ -125,9 +128,8 @@ export class Client {
    * the topic that targets events.
    *
    * @param {!spine.client.Topic} topic a topic to subscribe to
-   * @return {Promise<EntitySubscriptionObject<T extends Message>>} the subscription object which
-   *                                                                exposes entity changes via its
-   *                                                                callbacks
+   * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+   *         the subscription object which exposes entity changes via its callbacks
    *
    * @template <T> a Protobuf type of entities being the target of a subscription
    */
