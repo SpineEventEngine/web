@@ -386,7 +386,7 @@ export class SubscriptionRequest extends SubscribingRequest {
  *
  * A usage example:
  * ```
- * client.subscribeTo(TaskCreated.class)
+ * client.subscribeToEvent(TaskCreated.class)
  *       .where([Filters.eq("task_priority", Task.Priority.HIGH),
  *              Filters.eq("context.past_message.actor_context.actor", userId)])
  *       .post()
