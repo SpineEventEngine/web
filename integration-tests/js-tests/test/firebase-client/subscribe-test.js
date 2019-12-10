@@ -218,8 +218,6 @@ describe('FirebaseClient subscription', function () {
             .catch(fail(done));
     });
 
-    // TODO:2019-11-27:dmytro.kuzmin:WIP Resolve presence/absence of backticks in string messages,
-    //  formatting of chained method calls, at least in the modified files.
     it('is notified when the entity no longer matches the subscription criteria', done => {
         const initialTaskName = 'Initial task name';
         const nameAfterRenamed = 'Renamed task';
