@@ -195,7 +195,6 @@ class FilteringRequest extends ClientRequest {
  *                .orderBy("name", OrderBy.Direction.ASCENDING)
  *                .limit(20)
  *                .run(); // The returned type is `Promise<Customer[]>`.
- * }
  * ```
  *
  * All of the called filtering methods are optional. If none of them are specified, all entities
@@ -340,7 +339,6 @@ class SubscribingRequest extends FilteringRequest {
  *           itemChanged.subscribe(_changeDisplayedTask);
  *           itemRemoved.subscribe(_removeDisplayedTask);
  *       });
- * }
  * ```
  *
  * If the entity matched the subscription criteria at one point, but stopped to do so, the
@@ -395,7 +393,6 @@ export class SubscriptionRequest extends SubscribingRequest {
  *       .then(({eventEmitted, unsubscribe}) => {
  *           eventEmitted.subscribe(_logEvent);
  *       });
- * }
  * ```
  *
  * The fields specified to the `where` filters should either be a part of the event message or
