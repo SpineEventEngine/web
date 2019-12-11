@@ -50,9 +50,9 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export function fail(done, message = '') {
   return cause => {
     if (message) {
-     done(new Error(`Test failed. Cause: ${message}`));
+      done(new Error(`Test failed. Cause: ${message}`));
     } else {
-     done(new Error(`Test failed. Cause: ${cause ? cause : 'not identified'}`));
+      done(new Error(`Test failed. Cause: ${cause ? cause : 'not identified'}`));
     }
   };
 }
@@ -64,8 +64,8 @@ export function fail(done, message = '') {
  * @param {UserId[]} expected
  */
 export function ensureUserIds(actual, expected) {
-    return arraysEqualDeep(actual, expected, (userId1, userId2) =>
-        userId1.getValue() === userId2.getValue());
+  return arraysEqualDeep(actual, expected, (userId1, userId2) =>
+      userId1.getValue() === userId2.getValue());
 }
 
 /**
@@ -78,9 +78,9 @@ export function ensureUserIds(actual, expected) {
  * }[]} expectedUsers
  */
 export function ensureUserTasks(actualUserTasks, expectedUsers) {
-    const actualUserIds = actualUserTasks.map(userTasks => userTasks.getId());
-    const expectedUserIds = expectedUsers.map(user => user.id);
-    return ensureUserIds(actualUserIds, expectedUserIds);
+  const actualUserIds = actualUserTasks.map(userTasks => userTasks.getId());
+  const expectedUserIds = expectedUsers.map(user => user.id);
+  return ensureUserIds(actualUserIds, expectedUserIds);
 }
 
 /**
@@ -94,12 +94,12 @@ export function ensureUserTasks(actualUserTasks, expectedUsers) {
  * }[]} expectedUsers
  */
 export function ensureUserTasksCount(actualUserTasks, expectedUsers) {
-    return arraysEqualDeep(actualUserTasks,
-        expectedUsers,
-        (userTasks, expected) =>
-            userTasks.getId().getValue() === expected.id.getValue()
-            && userTasks.getTasksList().length === expected.tasksCount
-        );
+  return arraysEqualDeep(actualUserTasks,
+      expectedUsers,
+      (userTasks, expected) =>
+          userTasks.getId().getValue() === expected.id.getValue()
+          && userTasks.getTasksList().length === expected.tasksCount
+  );
 }
 
 /**
@@ -112,19 +112,19 @@ export function ensureUserTasksCount(actualUserTasks, expectedUsers) {
  * @return {boolean} `true` if arrays are equal; `false` otherwise;
  */
 function arraysEqualDeep(arr1, arr2, compare) {
-    if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
-        throw new Error('Unable to compare equality of non-array objects.');
-    }
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
+    throw new Error('Unable to compare equality of non-array objects.');
+  }
 
-    if (arr1.length === 0 && arr2.length === 0) {
-        return true;
-    }
+  if (arr1.length === 0 && arr2.length === 0) {
+    return true;
+  }
 
-    const intersection = arr1.filter(value1 => {
-        return arr2.findIndex(value2 => compare(value1, value2)) > -1;
-    });
+  const intersection = arr1.filter(value1 => {
+    return arr2.findIndex(value2 => compare(value1, value2)) > -1;
+  });
 
-    return intersection.length === arr1.length
+  return intersection.length === arr1.length
 }
 
 /**
@@ -139,41 +139,41 @@ function arraysEqualDeep(arr1, arr2, compare) {
  * @template <T> a class of a subscription target entities
  */
 export function toListObservable(subscription, compare) {
-    const list$ = new BehaviorSubject([]);
-    const {itemAdded, itemChanged, itemRemoved} = subscription;
+  const list$ = new BehaviorSubject([]);
+  const {itemAdded, itemChanged, itemRemoved} = subscription;
 
-    itemAdded.subscribe({
-        next: addedItem => {
-            const currentList = list$.getValue();
-            list$.next([...currentList, addedItem]);
-        }
-    });
+  itemAdded.subscribe({
+    next: addedItem => {
+      const currentList = list$.getValue();
+      list$.next([...currentList, addedItem]);
+    }
+  });
 
-    itemChanged.subscribe({
-        next: changedItem => {
-            const currentList = list$.getValue();
-            const changedItemIndex =_indexOf(changedItem, currentList, compare);
-            const updatedList = currentList.slice();
-            updatedList[changedItemIndex] = changedItem;
-            list$.next(updatedList);
-        }
-    });
+  itemChanged.subscribe({
+    next: changedItem => {
+      const currentList = list$.getValue();
+      const changedItemIndex = _indexOf(changedItem, currentList, compare);
+      const updatedList = currentList.slice();
+      updatedList[changedItemIndex] = changedItem;
+      list$.next(updatedList);
+    }
+  });
 
-    itemRemoved.subscribe({
-        next: removedItem => {
-            const currentList = list$.getValue();
-            const removedItemIndex = _indexOf(removedItem, currentList, compare);
-            const updatedList = [
-                ...currentList.slice(0, removedItemIndex),
-                ...currentList.slice(removedItemIndex + 1)
-            ];
-            list$.next(updatedList);
-        }
-    });
+  itemRemoved.subscribe({
+    next: removedItem => {
+      const currentList = list$.getValue();
+      const removedItemIndex = _indexOf(removedItem, currentList, compare);
+      const updatedList = [
+        ...currentList.slice(0, removedItemIndex),
+        ...currentList.slice(removedItemIndex + 1)
+      ];
+      list$.next(updatedList);
+    }
+  });
 
-    return list$.asObservable();
+  return list$.asObservable();
 }
 
 function _indexOf(item, items, compare) {
-    return items.findIndex(value => compare(value, item));
+  return items.findIndex(value => compare(value, item));
 }

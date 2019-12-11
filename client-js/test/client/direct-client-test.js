@@ -27,18 +27,18 @@ import {ActorProvider} from "../../main";
 
 describe('Direct client should', () => {
 
-    it('not support subscriptions', done => {
-        const client = DirectClientFactory.createClient({
-            endpointUrl: 'example.org',
-            protoIndexFiles: [types],
-            actorProvider: ActorProvider.ANONYMOUS
-        });
-        try {
-            client.subscribeTo(TaskCreated).post();
-            assert.fail();
-        } catch (e) {
-            assert.ok(e instanceof Error);
-            done();
-        }
+  it('not support subscriptions', done => {
+    const client = DirectClientFactory.createClient({
+      endpointUrl: 'example.org',
+      protoIndexFiles: [types],
+      actorProvider: ActorProvider.ANONYMOUS
     });
+    try {
+      client.subscribeTo(TaskCreated).post();
+      assert.fail();
+    } catch (e) {
+      assert.ok(e instanceof Error);
+      done();
+    }
+  });
 });

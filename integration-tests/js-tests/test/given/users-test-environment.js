@@ -30,86 +30,86 @@ import TestEnvironment from '../firebase-client/given/test-environment';
  */
 export class UserTasksTestEnvironment extends TestEnvironment {
 
-    /**
-     * Creates requested amount of tasks assigned to the given user.
-     *
-     * @param {User} user a user to create tasks for
-     * @param {number} taskCount an amount of tasks to be created and assigned
-     * @param {Client} client a Spine client to send commands
-     * @return {Promise} a promise to be resolved when all `CreateTask` commands acknowledged;
-     *                   rejected if an error occurs;
-     */
-    static createTaskFor(user, taskCount, client) {
-        const createTaskPromises = [];
-        for (let i = 0; i < taskCount; i++) {
-            const command = super.createTaskCommand({
-                named: `task#${i + 1}-for-${user.name}`,
-                assignedTo: user.id
-            });
-            const taskId = command.getId();
+  /**
+   * Creates requested amount of tasks assigned to the given user.
+   *
+   * @param {User} user a user to create tasks for
+   * @param {number} taskCount an amount of tasks to be created and assigned
+   * @param {Client} client a Spine client to send commands
+   * @return {Promise} a promise to be resolved when all `CreateTask` commands acknowledged;
+   *                   rejected if an error occurs;
+   */
+  static createTaskFor(user, taskCount, client) {
+    const createTaskPromises = [];
+    for (let i = 0; i < taskCount; i++) {
+      const command = super.createTaskCommand({
+        named: `task#${i + 1}-for-${user.name}`,
+        assignedTo: user.id
+      });
+      const taskId = command.getId();
 
-            let createTaskAcknowledged;
-            let createTaskFailed;
+      let createTaskAcknowledged;
+      let createTaskFailed;
 
-            const promise = new Promise((resolve, reject) => {
-                createTaskAcknowledged = resolve;
-                createTaskFailed = reject;
-            });
-            createTaskPromises.push(promise);
-            client.command(command)
-                .onOk(() => {
-                    user.tasks.push(taskId);
-                    createTaskAcknowledged();
-                })
-                .onError(createTaskFailed)
-                .onRejection(createTaskFailed)
-                .post();
-        }
-
-        return Promise.all(createTaskPromises);
+      const promise = new Promise((resolve, reject) => {
+        createTaskAcknowledged = resolve;
+        createTaskFailed = reject;
+      });
+      createTaskPromises.push(promise);
+      client.command(command)
+          .onOk(() => {
+            user.tasks.push(taskId);
+            createTaskAcknowledged();
+          })
+          .onError(createTaskFailed)
+          .onRejection(createTaskFailed)
+          .post();
     }
 
-    /**
-     * Sends a command to reassign the given task to the given user.
-     *
-     * @param {!TaskId} taskId
-     * @param {!UserId} newAssignee
-     * @param {!Client} client
-     * @return {Promise<any>}
-     */
-    static reassignTask(taskId, newAssignee, client) {
-        return new Promise((resolve, reject) => {
-            const command = new ReassignTask();
-            command.setId(taskId);
-            command.setNewAssignee(newAssignee);
+    return Promise.all(createTaskPromises);
+  }
 
-            client.command(command)
-                .onOk(resolve)
-                .onError(reject)
-                .onRejection(reject)
-                .post();
-        })
-    }
+  /**
+   * Sends a command to reassign the given task to the given user.
+   *
+   * @param {!TaskId} taskId
+   * @param {!UserId} newAssignee
+   * @param {!Client} client
+   * @return {Promise<any>}
+   */
+  static reassignTask(taskId, newAssignee, client) {
+    return new Promise((resolve, reject) => {
+      const command = new ReassignTask();
+      command.setId(taskId);
+      command.setNewAssignee(newAssignee);
 
-    /**
-     * @param {?String} withPrefix
-     * @return {UserId}
-     */
-    static userId(withPrefix) {
-        const id = new UserId();
-        id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuid.v4()}`);
-        return id;
-    }
+      client.command(command)
+          .onOk(resolve)
+          .onError(reject)
+          .onRejection(reject)
+          .post();
+    })
+  }
 
-    /**
-     * @param {?String} withName
-     * @return {User}
-     */
-    static newUser(withName) {
-        return {
-            name: withName,
-            id: UserTasksTestEnvironment.userId(withName),
-            tasks: []
-        }
+  /**
+   * @param {?String} withPrefix
+   * @return {UserId}
+   */
+  static userId(withPrefix) {
+    const id = new UserId();
+    id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuid.v4()}`);
+    return id;
+  }
+
+  /**
+   * @param {?String} withName
+   * @return {User}
+   */
+  static newUser(withName) {
+    return {
+      name: withName,
+      id: UserTasksTestEnvironment.userId(withName),
+      tasks: []
     }
+  }
 }

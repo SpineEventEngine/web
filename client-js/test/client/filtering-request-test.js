@@ -164,8 +164,8 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     );
     const targetFilter = filters[0];
     assert.equal(
-      filter, targetFilter,
-      `Unexpected filter value '${targetFilter}', expected: '${filter}'.`
+        filter, targetFilter,
+        `Unexpected filter value '${targetFilter}', expected: '${filter}'.`
     );
     done();
   });
@@ -215,8 +215,8 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const fieldMask = getFieldMask(result);
     const pathList = fieldMask.getPathsList();
     assert.equal(
-      fields, pathList,
-      `Unexpected list of fields in the field mask: '${pathList}', expected: '${fields}'.`
+        fields, pathList,
+        `Unexpected list of fields in the field mask: '${pathList}', expected: '${fields}'.`
     );
     done();
   });

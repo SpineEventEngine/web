@@ -29,14 +29,14 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
  * See `integration-tests/README.MD` for details.
  */
 export function initClient() {
-    return spineWeb.init({
-        protoIndexFiles: [testProtobuf],
-        endpointUrl: 'http://localhost:8080',
-        actorProvider: new ActorProvider(),
-        routing: {
-            query: '/direct-query'
-        }
-    });
+  return spineWeb.init({
+    protoIndexFiles: [testProtobuf],
+    endpointUrl: 'http://localhost:8080',
+    actorProvider: new ActorProvider(),
+    routing: {
+      query: '/direct-query'
+    }
+  });
 }
 
 /**

@@ -33,12 +33,12 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
  * @return {FirebaseClient} the Firebase client instance
  */
 export function initClient(endpointUrl = 'http://localhost:8080') {
-    return spineWeb.init({
-        protoIndexFiles: [testProtobuf],
-        endpointUrl: endpointUrl,
-        firebaseDatabase: firebaseDatabase,
-        actorProvider: new ActorProvider()
-    });
+  return spineWeb.init({
+    protoIndexFiles: [testProtobuf],
+    endpointUrl: endpointUrl,
+    firebaseDatabase: firebaseDatabase,
+    actorProvider: new ActorProvider()
+  });
 }
 
 /**

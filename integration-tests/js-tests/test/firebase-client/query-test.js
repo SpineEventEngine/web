@@ -39,168 +39,168 @@ import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
  */
 
 describe('FirebaseClient executes query built', function () {
-    let users;
+  let users;
 
-    function toUserIds(users) {
-        return users.map(user => user.id);
-    }
+  function toUserIds(users) {
+    return users.map(user => user.id);
+  }
 
-    /**
-     * Prepares environment, where four users have one, two, three, and four tasks
-     * assigned respectively.
-     */
-    before(function(done) {
-        // Big timeout allows complete environment setup.
-        this.timeout(10 * 1000);
+  /**
+   * Prepares environment, where four users have one, two, three, and four tasks
+   * assigned respectively.
+   */
+  before(function (done) {
+    // Big timeout allows complete environment setup.
+    this.timeout(10 * 1000);
 
-        users = [
-            TestEnvironment.newUser('query-tester1'),
-            TestEnvironment.newUser('query-tester2'),
-            TestEnvironment.newUser('query-tester3'),
-            TestEnvironment.newUser('query-tester4')
-        ];
-
-        const createTasksPromises = [];
-        users.forEach((user, index) => {
-            const tasksCount = index + 1;
-            const promise = TestEnvironment.createTaskFor(user, tasksCount, client);
-            createTasksPromises.push(promise);
-        });
-        Promise.all(createTasksPromises)
-            .then(() => {
-                // Gives time for the model state to be updated
-                setTimeout(done, 500);
-            });
-    });
-
-    /**
-     * @type {QueryTest[]}
-     */
-    const tests = [
-        {
-            message: 'by ID',
-            ids: () => toUserIds(users.slice(0, 1)),
-            expectedUsers: () => users.slice(0, 1)
-        },
-        {
-            message: 'by IDs',
-            ids: () => toUserIds(users.slice(0, 2)),
-            expectedUsers: () => users.slice(0, 2)
-        },
-        {
-            message: 'by missing ID',
-            ids: () => [
-                TestEnvironment.userId('user-without-tasks-assigned')
-            ],
-            expectedUsers: () => users.slice(0, 2)
-        },
-        {
-            message: 'with `eq` filter',
-            filters: [
-                Filters.eq('task_count', 3)
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length === 3)
-        },
-        {
-            message: 'with `lt` filter',
-            filters: [
-                Filters.lt('task_count', 3)
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length < 3)
-        },
-        {
-            message: 'with `gt` filter',
-            filters: [
-                Filters.gt('task_count', 3)
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length > 3)
-        },
-        {
-            message: 'with `le` filter',
-            filters: [
-                Filters.le('task_count', TypedMessage.int32(3))
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length <= 3)
-        },
-        {
-            message: 'with `ge` filter',
-            filters: [
-                Filters.ge('task_count', 3)
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length >= 3)
-        },
-        {
-            message: 'with several filters applied to the same column',
-            filters: [
-                Filters.gt('task_count', 1),
-                Filters.lt('task_count', 3)
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
-        },
-        {
-            message: 'with several filters applied to different column',
-            filters: [
-                Filters.gt('task_count', 1),
-                Filters.lt('is_overloaded', new BoolValue([true]))
-            ],
-            expectedUsers: () => users.filter(user => user.tasks.length > 1)
-        },
-        {
-            message: 'with inappropriate filter',
-            filters: [
-                Filters.ge('task_count', 100)
-            ],
-            expectedUsers: () => []
-        }
+    users = [
+      TestEnvironment.newUser('query-tester1'),
+      TestEnvironment.newUser('query-tester2'),
+      TestEnvironment.newUser('query-tester3'),
+      TestEnvironment.newUser('query-tester4')
     ];
 
-    tests.forEach(test => {
-        it(`${test.message} and returns correct values`, done => {
-            const ids = test.ids ? test.ids() : toUserIds(users);
-            const filters = test.filters;
-
-            client.select(UserTasks)
-                .byId(ids)
-                .where(filters)
-                .run()
-                .then(userTasksList => {
-                    assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
-                    done();
-                })
-                .catch(() => fail(done));
+    const createTasksPromises = [];
+    users.forEach((user, index) => {
+      const tasksCount = index + 1;
+      const promise = TestEnvironment.createTaskFor(user, tasksCount, client);
+      createTasksPromises.push(promise);
+    });
+    Promise.all(createTasksPromises)
+        .then(() => {
+          // Gives time for the model state to be updated
+          setTimeout(done, 500);
         });
+  });
+
+  /**
+   * @type {QueryTest[]}
+   */
+  const tests = [
+    {
+      message: 'by ID',
+      ids: () => toUserIds(users.slice(0, 1)),
+      expectedUsers: () => users.slice(0, 1)
+    },
+    {
+      message: 'by IDs',
+      ids: () => toUserIds(users.slice(0, 2)),
+      expectedUsers: () => users.slice(0, 2)
+    },
+    {
+      message: 'by missing ID',
+      ids: () => [
+        TestEnvironment.userId('user-without-tasks-assigned')
+      ],
+      expectedUsers: () => users.slice(0, 2)
+    },
+    {
+      message: 'with `eq` filter',
+      filters: [
+        Filters.eq('task_count', 3)
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length === 3)
+    },
+    {
+      message: 'with `lt` filter',
+      filters: [
+        Filters.lt('task_count', 3)
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length < 3)
+    },
+    {
+      message: 'with `gt` filter',
+      filters: [
+        Filters.gt('task_count', 3)
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length > 3)
+    },
+    {
+      message: 'with `le` filter',
+      filters: [
+        Filters.le('task_count', TypedMessage.int32(3))
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length <= 3)
+    },
+    {
+      message: 'with `ge` filter',
+      filters: [
+        Filters.ge('task_count', 3)
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length >= 3)
+    },
+    {
+      message: 'with several filters applied to the same column',
+      filters: [
+        Filters.gt('task_count', 1),
+        Filters.lt('task_count', 3)
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
+    },
+    {
+      message: 'with several filters applied to different column',
+      filters: [
+        Filters.gt('task_count', 1),
+        Filters.lt('is_overloaded', new BoolValue([true]))
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length > 1)
+    },
+    {
+      message: 'with inappropriate filter',
+      filters: [
+        Filters.ge('task_count', 100)
+      ],
+      expectedUsers: () => []
+    }
+  ];
+
+  tests.forEach(test => {
+    it(`${test.message} and returns correct values`, done => {
+      const ids = test.ids ? test.ids() : toUserIds(users);
+      const filters = test.filters;
+
+      client.select(UserTasks)
+          .byId(ids)
+          .where(filters)
+          .run()
+          .then(userTasksList => {
+            assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
+            done();
+          })
+          .catch(() => fail(done));
     });
+  });
 
-    it('with `Date`-based filter and returns correct values', (done) => {
-        const userIds = toUserIds(users);
+  it('with `Date`-based filter and returns correct values', (done) => {
+    const userIds = toUserIds(users);
 
-        client.select(UserTasks)
-            .byId(userIds)
-            .run()
-            .then(data => {
-                assert.ok(Array.isArray(data));
-                assert.equal(data.length, userIds.length);
+    client.select(UserTasks)
+        .byId(userIds)
+        .run()
+        .then(data => {
+          assert.ok(Array.isArray(data));
+          assert.equal(data.length, userIds.length);
 
-                const firstUserTasks = data[0];
+          const firstUserTasks = data[0];
 
-                const lastUpdatedTimestamp = firstUserTasks.getLastUpdated();
-                const seconds = lastUpdatedTimestamp.getSeconds();
-                const nanos = lastUpdatedTimestamp.getNanos();
-                const millis = seconds * 1000 + nanos / 1000000;
-                const whenFirstUserGotTask = new Date(millis);
+          const lastUpdatedTimestamp = firstUserTasks.getLastUpdated();
+          const seconds = lastUpdatedTimestamp.getSeconds();
+          const nanos = lastUpdatedTimestamp.getNanos();
+          const millis = seconds * 1000 + nanos / 1000000;
+          const whenFirstUserGotTask = new Date(millis);
 
-                client.select(UserTasks)
-                    .where(Filters.eq('last_updated', whenFirstUserGotTask))
-                    .run()
-                    .then(userTasksList => {
-                        assert.ok(Array.isArray(userTasksList));
-                        assert.equal(userTasksList.length, 1);
+          client.select(UserTasks)
+              .where(Filters.eq('last_updated', whenFirstUserGotTask))
+              .run()
+              .then(userTasksList => {
+                assert.ok(Array.isArray(userTasksList));
+                assert.equal(userTasksList.length, 1);
 
-                        const actualUserId = userTasksList[0].getId();
-                        assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
-                        done();
-                    })
-                    .catch(() => fail(done));
-            });
-    });
+                const actualUserId = userTasksList[0].getId();
+                assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
+                done();
+              })
+              .catch(() => fail(done));
+        });
+  });
 });

@@ -23,33 +23,33 @@ import {convertDateToTimestamp} from '@lib/client/time-utils';
 
 describe(`"convertDateToTimestamp" function`, () => {
 
-    const errorPrefix = 'Cannot convert to Timestamp.';
+  const errorPrefix = 'Cannot convert to Timestamp.';
 
-    it('throws a respective error when non-Date value passed', () => {
-        const nonDateValue = 'today at 14 pm';
-        const expectedErrorMessage =
-            `${errorPrefix} The given "${nonDateValue}" isn't of Date type.`;
-        assert.throws(() => convertDateToTimestamp(nonDateValue), null, expectedErrorMessage);
-    });
+  it('throws a respective error when non-Date value passed', () => {
+    const nonDateValue = 'today at 14 pm';
+    const expectedErrorMessage =
+        `${errorPrefix} The given "${nonDateValue}" isn't of Date type.`;
+    assert.throws(() => convertDateToTimestamp(nonDateValue), null, expectedErrorMessage);
+  });
 
-    it('throws a respective error when invalid Date value passed', () => {
-        const invalidDate = new Date('the day when I get rich');
-        const expectedErrorMessage =
-            `${errorPrefix} The given "${invalidDate}" is invalid.`;
+  it('throws a respective error when invalid Date value passed', () => {
+    const invalidDate = new Date('the day when I get rich');
+    const expectedErrorMessage =
+        `${errorPrefix} The given "${invalidDate}" is invalid.`;
 
-        assert.throws(() => convertDateToTimestamp(invalidDate), null, expectedErrorMessage);
-    });
+    assert.throws(() => convertDateToTimestamp(invalidDate), null, expectedErrorMessage);
+  });
 
-    it('converts to Timestamp correctly', () => {
-        const now = new Date(Date.now());
-        const timestamp = convertDateToTimestamp(now);
+  it('converts to Timestamp correctly', () => {
+    const now = new Date(Date.now());
+    const timestamp = convertDateToTimestamp(now);
 
-        const actualSeconds = timestamp.getSeconds();
-        const actualNanos = timestamp.getNanos();
-        const expectedSeconds = Math.trunc(now.getTime() / 1000);
-        const expectedNanos = (now.getTime() % 1000) * 1000000;
+    const actualSeconds = timestamp.getSeconds();
+    const actualNanos = timestamp.getNanos();
+    const expectedSeconds = Math.trunc(now.getTime() / 1000);
+    const expectedNanos = (now.getTime() % 1000) * 1000000;
 
-        assert.equal(actualSeconds, expectedSeconds);
-        assert.equal(actualNanos, expectedNanos);
-    });
+    assert.equal(actualSeconds, expectedSeconds);
+    assert.equal(actualNanos, expectedNanos);
+  });
 });

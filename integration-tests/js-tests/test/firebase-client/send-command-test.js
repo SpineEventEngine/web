@@ -31,166 +31,166 @@ import {Type} from '@lib/client/typed-message';
 
 describe('FirebaseClient command sending', function () {
 
-    // Big timeout allows to receive model state changes during tests.
-    this.timeout(15000);
+  // Big timeout allows to receive model state changes during tests.
+  this.timeout(15000);
 
-    it('completes with success', done => {
+  it('completes with success', done => {
 
-        const command = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-send-command',
-            named: 'Implement Spine Web JS client tests',
-            describedAs: 'Spine Web need integration tests'
-        });
-
-        const taskId = command.getId();
-
-        const fetchAndCheck = () => {
-            client.select(Task)
-                .byId(taskId)
-                .run()
-                .then(data => {
-                    assert.equal(data.length, 1);
-                    const item = data[0];
-                    assert.equal(item.getId().getValue(), taskId);
-                    assert.equal(item.getName(), command.getName());
-                    assert.equal(item.getDescription(), command.getDescription());
-
-                    done();
-
-                }, fail(done));
-        };
-
-        client.command(command)
-            .onOk(fetchAndCheck)
-            .onError(fail(done))
-            .onRejection(fail(done))
-            .post();
+    const command = TestEnvironment.createTaskCommand({
+      withPrefix: 'spine-web-test-send-command',
+      named: 'Implement Spine Web JS client tests',
+      describedAs: 'Spine Web need integration tests'
     });
 
-    it('fails when wrong server endpoint specified', done => {
-        const fakeBaseUrl = 'https://malformed-server-endpoint.com';
-        const malformedBackendClient = initClient(fakeBaseUrl);
-        const command = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-send-command',
-            named: 'Implement Spine Web JS client tests',
-            describedAs: 'Spine Web need integration tests'
-        });
+    const taskId = command.getId();
 
-        const checkError = error => {
-            try {
-                assert.ok(error instanceof CommandHandlingError);
-                assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
-                const connectionError = error.getCause();
-                assert.ok(connectionError instanceof ConnectionError);
-                done();
-            } catch (e) {
-                fail(done, e.message)
-            }
-        };
-        malformedBackendClient.command(command)
-            .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
-            .onError(checkError)
-            .onRejection(fail(done, 'A command was rejected when an error was expected.'))
-            .post();
+    const fetchAndCheck = () => {
+      client.select(Task)
+          .byId(taskId)
+          .run()
+          .then(data => {
+            assert.equal(data.length, 1);
+            const item = data[0];
+            assert.equal(item.getId().getValue(), taskId);
+            assert.equal(item.getName(), command.getName());
+            assert.equal(item.getDescription(), command.getDescription());
+
+            done();
+
+          }, fail(done));
+    };
+
+    client.command(command)
+        .onOk(fetchAndCheck)
+        .onError(fail(done))
+        .onRejection(fail(done))
+        .post();
+  });
+
+  it('fails when wrong server endpoint specified', done => {
+    const fakeBaseUrl = 'https://malformed-server-endpoint.com';
+    const malformedBackendClient = initClient(fakeBaseUrl);
+    const command = TestEnvironment.createTaskCommand({
+      withPrefix: 'spine-web-test-send-command',
+      named: 'Implement Spine Web JS client tests',
+      describedAs: 'Spine Web need integration tests'
     });
 
-    it('fails with `CommandValidationError` for invalid command message', done => {
-        const command = TestEnvironment.createTaskCommand({withId: null});
+    const checkError = error => {
+      try {
+        assert.ok(error instanceof CommandHandlingError);
+        assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
+        const connectionError = error.getCause();
+        assert.ok(connectionError instanceof ConnectionError);
+        done();
+      } catch (e) {
+        fail(done, e.message)
+      }
+    };
+    malformedBackendClient.command(command)
+        .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
+        .onError(checkError)
+        .onRejection(fail(done, 'A command was rejected when an error was expected.'))
+        .post();
+  });
 
-        const checkError = error => {
-            try {
-                assert.ok(error instanceof CommandValidationError);
-                assert.ok(error.validationError());
-                // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
-                // assert.ok(error.assuresCommandNeglected());
+  it('fails with `CommandValidationError` for invalid command message', done => {
+    const command = TestEnvironment.createTaskCommand({withId: null});
 
-                const cause = error.getCause();
-                assert.ok(cause);
-                assert.equal(cause.getCode(), 2);
-                assert.equal(cause.getType(), 'spine.core.CommandValidationError');
-                done();
-            } catch (e) {
-                fail(done, e.message)
-            }
-        };
+    const checkError = error => {
+      try {
+        assert.ok(error instanceof CommandValidationError);
+        assert.ok(error.validationError());
+        // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
+        // assert.ok(error.assuresCommandNeglected());
 
-        client.command(command)
-            .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
-            .onError(checkError)
-            .onRejection(fail(done, 'A command was rejected when an error was expected.'))
-            .post();
+        const cause = error.getCause();
+        assert.ok(cause);
+        assert.equal(cause.getCode(), 2);
+        assert.equal(cause.getType(), 'spine.core.CommandValidationError');
+        done();
+      } catch (e) {
+        fail(done, e.message)
+      }
+    };
+
+    client.command(command)
+        .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
+        .onError(checkError)
+        .onRejection(fail(done, 'A command was rejected when an error was expected.'))
+        .post();
+  });
+
+  it('allows to observe the produced events of a given type', done => {
+    const taskName = 'Implement Spine Web JS client tests';
+    const command = TestEnvironment.createTaskCommand({
+      withPrefix: 'spine-web-test-send-command',
+      named: taskName,
+      describedAs: 'Spine Web need integration tests'
     });
 
-    it('allows to observe the produced events of a given type', done => {
-        const taskName = 'Implement Spine Web JS client tests';
-        const command = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-send-command',
-            named: taskName,
-            describedAs: 'Spine Web need integration tests'
-        });
+    const taskId = command.getId();
 
-        const taskId = command.getId();
-
-        client.command(command)
-            .onError(fail(done))
-            .onRejection(fail(done))
-            .observe(TaskCreated, ({subscribe, unsubscribe}) => {
-                subscribe(event => {
-                    const packedMessage = event.getMessage();
-                    const taskCreatedType = Type.forClass(TaskCreated);
-                    const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
-                    const theTaskId = message.getId().getValue();
-                    assert.equal(
-                        taskId, theTaskId,
-                        `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
-                    );
-                    const theTaskName = message.getName();
-                    assert.equal(
-                        taskName, theTaskName,
-                        `Expected the task name to be '${taskName}', got '${theTaskName}' instead.`
-                    );
-                    const origin = event.getContext().getPastMessage().getMessage();
-                    const originType = origin.getTypeUrl();
-                    const createTaskType = Type.forClass(CreateTask);
-                    const expectedOriginType = createTaskType.url().value();
-                    assert.equal(
-                        expectedOriginType, originType,
-                        `Expected origin to be of type '${expectedOriginType}', got 
+    client.command(command)
+        .onError(fail(done))
+        .onRejection(fail(done))
+        .observe(TaskCreated, ({subscribe, unsubscribe}) => {
+          subscribe(event => {
+            const packedMessage = event.getMessage();
+            const taskCreatedType = Type.forClass(TaskCreated);
+            const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
+            const theTaskId = message.getId().getValue();
+            assert.equal(
+                taskId, theTaskId,
+                `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
+            );
+            const theTaskName = message.getName();
+            assert.equal(
+                taskName, theTaskName,
+                `Expected the task name to be '${taskName}', got '${theTaskName}' instead.`
+            );
+            const origin = event.getContext().getPastMessage().getMessage();
+            const originType = origin.getTypeUrl();
+            const createTaskType = Type.forClass(CreateTask);
+            const expectedOriginType = createTaskType.url().value();
+            assert.equal(
+                expectedOriginType, originType,
+                `Expected origin to be of type '${expectedOriginType}', got 
                             '${originType}' instead.`
-                    );
-                    unsubscribe();
-                    done();
-                });
-            })
-            .post()
+            );
+            unsubscribe();
+            done();
+          });
+        })
+        .post()
+  });
+
+  it('fails when trying to observe a malformed event type', done => {
+    const Unknown = class {
+      static typeUrl() {
+        return 'spine.web/fails.malformed.type'
+      }
+    };
+
+    const command = TestEnvironment.createTaskCommand({
+      withPrefix: 'spine-web-test-send-command',
+      named: 'Implement Spine Web JS client tests',
+      describedAs: 'Spine Web need integration tests'
     });
 
-    it('fails when trying to observe a malformed event type', done => {
-        const Unknown = class {
-            static typeUrl() {
-                return 'spine.web/fails.malformed.type'
-            }
-        };
-
-        const command = TestEnvironment.createTaskCommand({
-            withPrefix: 'spine-web-test-send-command',
-            named: 'Implement Spine Web JS client tests',
-            describedAs: 'Spine Web need integration tests'
-        });
-
-        client.command(command)
-            .onError(fail(done))
-            .onRejection(fail(done))
-            .observe(Unknown)
-            .post()
-            .then(() => {
-                done(new Error('An attempt to observe a malformed event type did not lead to an ' +
-                    'error.'));
-            })
-            .catch(() => {
-                assert.ok(true);
-                done();
+    client.command(command)
+        .onError(fail(done))
+        .onRejection(fail(done))
+        .observe(Unknown)
+        .post()
+        .then(() => {
+          done(new Error('An attempt to observe a malformed event type did not lead to an ' +
+              'error.'));
+        })
+        .catch(() => {
+              assert.ok(true);
+              done();
             }
         );
-    });
+  });
 });
