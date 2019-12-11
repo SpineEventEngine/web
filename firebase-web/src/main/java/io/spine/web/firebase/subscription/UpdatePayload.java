@@ -162,6 +162,9 @@ final class UpdatePayload {
 
     /**
      * An identity {@link Event}-to-{@link Message} conversion.
+     *
+     * <p>The standard {@link Function#identity()} can't be applied because it requires having the
+     * exact same type as input and output.
      */
     private static Function<Event, Message> identity() {
         return event -> event;
