@@ -120,6 +120,54 @@ export class Client {
   }
 
   /**
+   * Executes the given `Query` instance specifying the data to be retrieved from
+   * Spine server fulfilling a returned promise with an array of received objects.
+   *
+   * @param {!spine.client.Query} query a query instance to be executed
+   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   *        messages of a given type or with an empty list if no entities matching given query
+   *        were found; rejected with a `SpineError` if error occurs;
+   *
+   * @template <T> a Protobuf type of entities being the target of a query
+   *
+   * @deprecated Please use {@link Client#read()} instead
+   */
+  execute(query) {
+    return this.read(query);
+  }
+
+  /**
+   * Creates a new {@link QueryFactory} for creating `Query` instances specifying
+   * the data to be retrieved from Spine server.
+   *
+   * @example
+   * // Build a query for `Task` domain entity, specifying particular IDs.
+   * newQuery().select(Task)
+   *           .byIds([taskId1, taskId2])
+   *           .build()
+   *
+   * @example
+   * // Build a query for `Task` domain entity, selecting the instances which assigned to the
+   * // particular user.
+   * newQuery().select(Task)
+   *           .where([Filters.eq('assignee', userId)])
+   *           .build()
+   *
+   * To execute the resulting `Query` instance pass it to the {@link Client#execute()}.
+   *
+   * Alternatively, the `QueryRequest` API can be used. See {@link Client#select()}.
+   *
+   * @return {QueryFactory} a factory for creating queries to the Spine server
+   *
+   * @see QueryFactory
+   * @see QueryBuilder
+   * @see AbstractTargetBuilder
+   */
+  newQuery() {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * Creates a subscription request that allows to configure and post a new entity subscription.
    *
    * @param {!Class<? extends Message>} entityType a Protobuf type of the target entities
@@ -171,6 +219,38 @@ export class Client {
   }
 
   /**
+   * Creates a new {@link TopicFactory} for building subscription topics specifying
+   * the state changes to be observed from Spine server.
+   *
+   * @example
+   * // Build a subscription topic for `UserTasks` domain entity.
+   * newTopic().select(Task)
+   *           .build()
+   *
+   * @example
+   * // Build a subscription topic for `UserTasks` domain entity, selecting the instances
+   * // whose task count is greater than 3.
+   * newTopic().select(UserTasks)
+   *           .where(Filters.gt('tasksCount', 3))
+   *           .build()
+   *
+   * To turn the resulting `Topic` instance into a subscription pass it
+   * to the {@link Client#subscribe()}.
+   *
+   * Alternatively, the `SubscriptionRequest` API can be used. See {@link Client#subscribeTo()},
+   * {@link Client#subscribeToEvents()}.
+   *
+   * @return {TopicFactory} a factory for creating subscription topics to the Spine server
+   *
+   * @see TopicFactory
+   * @see TopicBuilder
+   * @see AbstractTargetBuilder
+   */
+  newTopic() {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * Creates a new command request which allows to post a command to the Spine server and
    * configures the command handling callbacks.
    *
@@ -189,5 +269,52 @@ export class Client {
    */
   post(command, onAck) {
     throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Sends the provided command to the server.
+   *
+   * After sending the command to the server the following scenarios are possible:
+   *
+   *  - the `acknowledgedCallback` is called if the command is acknowledged for further processing
+   *  - the `errorCallback` is called if sending of the command failed
+   *
+   * Invocation of the `acknowledgedCallback` and the `errorCallback` are mutually exclusive.
+   *
+   * If the command sending fails, the respective error is passed to the `errorCallback`. This error
+   * is always the type of `CommandHandlingError`. Its cause can be retrieved by `getCause()` method
+   * and can be represented with the following types of errors:
+   *
+   *  - `ConnectionError`  – if the connection error occurs;
+   *  - `ClientError`      – if the server responds with `4xx` HTTP status code;
+   *  - `ServerError`      – if the server responds with `5xx` HTTP status code;
+   *  - `spine.base.Error` – if the command message can't be processed by the server;
+   *  - `SpineError`       – if parsing of the response fails;
+   *
+   * If the command sending fails due to a command validation error, an error passed to the
+   * `errorCallback` is the type of `CommandValidationError` (inherited from
+   * `CommandHandlingError`). The validation error can be retrieved by `validationError()` method.
+   *
+   * The occurrence of an error does not guarantee that the command is not accepted by the server
+   * for further processing. To verify this, call the error `assuresCommandNeglected()` method.
+   *
+   * @param {!Message} commandMessage a Protobuf message representing the command
+   * @param {!parameterlessCallback} acknowledgedCallback
+   *        a no-argument callback invoked if the command is acknowledged
+   * @param {?consumerCallback<CommandHandlingError>} errorCallback
+   *        a callback receiving the errors executed if an error occurred when sending command
+   * @param {?consumerCallback<Rejection>} rejectionCallback
+   *        a callback executed if the command was rejected by Spine server
+   * @see CommandHandlingError
+   * @see CommandValidationError
+   *
+   * @deprecated Please use {@link Client#command()}
+   */
+  sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
+    this.command(commandMessage)
+        .onOk(acknowledgedCallback)
+        .onError(errorCallback)
+        .onRejection(rejectionCallback)
+        .post();
   }
 }

@@ -84,6 +84,13 @@ export class CompositeClient extends Client {
     /**
      * @override
      */
+    newQuery() {
+        return this._querying.newQuery();
+    }
+
+    /**
+     * @override
+     */
     subscribeTo(entityType) {
         return this._subscribing.subscribeTo(entityType, this);
     }
@@ -107,6 +114,13 @@ export class CompositeClient extends Client {
      */
     subscribeToEvents(topic) {
         return this._subscribing.subscribeToEvents(topic);
+    }
+
+    /**
+     * @override
+     */
+    newTopic() {
+        return this._subscribing.newTopic();
     }
 
     /**
@@ -163,6 +177,15 @@ export class QueryingClient {
      */
     read(query) {
         throw new Error('Not implemented in abstract base.');
+    }
+
+    /**
+     * Creates a new query factory instance which can be further used for the `Query` creation.
+     *
+     * @return {QueryFactory}
+     */
+    newQuery() {
+        return this._requestFactory.query();
     }
 }
 
@@ -223,6 +246,15 @@ export class SubscribingClient {
      */
     subscribeToEvents(topic) {
         throw new Error('Not implemented in abstract base.');
+    }
+
+    /**
+     * Returns a new topic factory instance which can be further used for the `Topic` creation.
+     *
+     * @return {TopicFactory}
+     */
+    newTopic() {
+        return this._requestFactory.topic();
     }
 }
 

@@ -154,6 +154,26 @@ describe('FirebaseClient "fetch"', function () {
             }, fail(done));
     });
 
+    it('fetches entities using a manually created `Query`', done => {
+        const query = client.newQuery()
+            .select(Task)
+            .byIds(taskIds)
+            .build();
+        client.read(query)
+            .then(data => {
+                assert.ok(Array.isArray(data));
+                assert.equal(data.length, taskIds.length);
+                taskIds.forEach(taskId => {
+                    const targetObject =
+                        data.find(item => item.getId().getValue() === taskId.getValue());
+                    assert.ok(targetObject);
+                });
+
+                done();
+            })
+            .catch(() => fail(done));
+    });
+
     it('fails a malformed query', done => {
         const command =
             TestEnvironment.createTaskCommand({withPrefix: 'spine-web-test-malformed-query'});

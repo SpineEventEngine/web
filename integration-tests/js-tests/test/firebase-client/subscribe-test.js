@@ -150,7 +150,7 @@ describe('FirebaseClient subscription', function () {
             named: INITIAL_TASK_NAME
         });
         const taskId = createCommand.getId();
-        const taskIdValue = createCommand.getId().getValue();
+        const taskIdValue = taskId.getValue();
 
         let changesCount = 0;
         client.subscribeTo(Task)
@@ -332,6 +332,36 @@ describe('FirebaseClient subscription', function () {
             .onRejection(fail(done,
                 'Unexpected rejection while renaming a task.'))
             .post();
+    });
+
+    it('subscribes to entities using a manually created `Topic`', done => {
+        const TASK_NAME = 'Task name';
+
+        const command = TestEnvironment.createTaskCommand({
+            withPrefix: 'spine-web-test-subscribe',
+            named: TASK_NAME
+        });
+        const taskId = command.getId();
+        const topic = client.newTopic()
+            .select(Task)
+            .byIds([taskId])
+            .build();
+        client.subscribe(topic)
+            .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+                itemAdded.subscribe({
+                    next: item => {
+                        if (taskId === item.getId()) {
+                            assert.equal(
+                                item.getName(), TASK_NAME,
+                                `Task is named '${item.getName()}', expected '${TASK_NAME}'.`
+                            );
+                        }
+                        unsubscribe();
+                        done();
+                    }
+                });
+                client.command(command).post();
+            });
     });
 
     it('fails for a malformed type', done => {
