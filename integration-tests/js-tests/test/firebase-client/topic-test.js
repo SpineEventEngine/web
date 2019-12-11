@@ -223,9 +223,6 @@ describe('FirebaseClient subscribes to topic', function () {
   });
 
   it('built by IDs and filters and updates data correctly when state changes', (done) => {
-    // TODO:2019-08-01:dmytro.dashenkov: Re-enable the test when columns filtering is implemented.
-    done();
-
     client.subscribeTo(UserTasks)
         .byId([user1.id, user2.id])
         .where(Filters.ge('task_count', 2))
