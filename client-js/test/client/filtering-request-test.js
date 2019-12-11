@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import assert from 'assert';
 import uuid from 'uuid';
 import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
