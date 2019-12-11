@@ -456,7 +456,7 @@ const NOOP_CALLBACK = () => {};
  * client.command(logInUser)
  *       .onOk(_logOk)
  *       .onError(_logError)
- *       .observe(UserLoggedIn.class, (({subscribe, unsubscribe}) => {
+ *       .observe(UserLoggedIn.class, ({subscribe, unsubscribe}) => {
  *           subscribe(event => _logAndUnsubscribe(event, unsubscribe));
  *           setTimeout(unsubscribe, EVENT_WAIT_TIMEOUT);
  *       })
