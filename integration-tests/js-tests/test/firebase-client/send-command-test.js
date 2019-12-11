@@ -101,8 +101,7 @@ describe('FirebaseClient command sending', function () {
       try {
         assert.ok(error instanceof CommandValidationError);
         assert.ok(error.validationError());
-        // TODO:2019-06-05:yegor.udovchenko: Find the reason of failing assertion
-        // assert.ok(error.assuresCommandNeglected());
+        assert.ok(error.assuresCommandNeglected());
 
         const cause = error.getCause();
         assert.ok(cause);
