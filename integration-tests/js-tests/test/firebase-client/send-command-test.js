@@ -134,39 +134,35 @@ describe('FirebaseClient command sending', function () {
         client.command(command)
             .onError(fail(done))
             .onRejection(fail(done))
-            .observe(TaskCreated)
-            .post()
-            .then(({eventEmitted, unsubscribe}) => {
-                eventEmitted.subscribe({
-                    next: event => {
-                        const packedMessage = event.getMessage();
-                        const taskCreatedType = Type.forClass(TaskCreated);
-                        const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
-                        const theTaskId = message.getId().getValue();
-                        assert.equal(
-                            taskId, theTaskId,
-                            `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
-                        );
-                        const theTaskName = message.getName();
-                        assert.equal(
-                            taskName, theTaskName,
-                            `Expected the task name to be '${taskName}', got '${theTaskName}' 
-                            instead.`
-                        );
-                        const origin = event.getContext().getPastMessage().getMessage();
-                        const originType = origin.getTypeUrl();
-                        const createTaskType = Type.forClass(CreateTask);
-                        const expectedOriginType = createTaskType.url().value();
-                        assert.equal(
-                            expectedOriginType, originType,
-                            `Expected origin to be of type '${expectedOriginType}', got 
+            .observe(TaskCreated, ({subscribe, unsubscribe}) => {
+                subscribe(event => {
+                    const packedMessage = event.getMessage();
+                    const taskCreatedType = Type.forClass(TaskCreated);
+                    const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
+                    const theTaskId = message.getId().getValue();
+                    assert.equal(
+                        taskId, theTaskId,
+                        `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
+                    );
+                    const theTaskName = message.getName();
+                    assert.equal(
+                        taskName, theTaskName,
+                        `Expected the task name to be '${taskName}', got '${theTaskName}' instead.`
+                    );
+                    const origin = event.getContext().getPastMessage().getMessage();
+                    const originType = origin.getTypeUrl();
+                    const createTaskType = Type.forClass(CreateTask);
+                    const expectedOriginType = createTaskType.url().value();
+                    assert.equal(
+                        expectedOriginType, originType,
+                        `Expected origin to be of type '${expectedOriginType}', got 
                             '${originType}' instead.`
-                        );
-                        unsubscribe();
-                        done();
-                    }
+                    );
+                    unsubscribe();
+                    done();
                 });
-            });
+            })
+            .post()
     });
 
     it('fails when trying to observe a malformed event type', done => {
@@ -188,12 +184,13 @@ describe('FirebaseClient command sending', function () {
             .observe(Unknown)
             .post()
             .then(() => {
-                done(new Error('An attempt to observe a malformed event type should not yield ' +
-                    'results.'));
+                done(new Error('An attempt to observe a malformed event type did not lead to an ' +
+                    'error.'));
             })
-            .catch(error => {
+            .catch(() => {
                 assert.ok(true);
                 done();
-            });
+            }
+        );
     });
 });

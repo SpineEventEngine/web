@@ -38,6 +38,14 @@ import {Observable} from 'rxjs';
  */
 
 /**
+ * The callback that accepts a single `Event` as a parameter.
+ *
+ * @callback eventConsumer
+ *
+ * @param {spine.core.Event} the event that is accepted by the callback
+ */
+
+/**
  * @typedef {Object} EntitySubscriptionObject
  *
  * An object representing the result of a subscription to entity state changes.

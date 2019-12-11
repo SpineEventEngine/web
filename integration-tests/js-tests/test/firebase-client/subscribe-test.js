@@ -309,7 +309,7 @@ describe('FirebaseClient subscription', function () {
                         assert.equal(
                             updatedTaskName, newTaskName,
                             `Expected the new task name to be ${updatedTaskName}, got 
-                           ${newTaskName} instead.`
+                            ${newTaskName} instead.`
                         );
                         unsubscribe();
                         done();

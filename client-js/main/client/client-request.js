@@ -30,6 +30,18 @@ import {Filters} from "./actor-request-factory";
 import {Type} from "./typed-message";
 
 /**
+ * @typedef EventSubscriptionCallbacks
+ *
+ * A pair of callbacks that allow to add an event consumer and cancel the subscription
+ * respectively.
+ *
+ * @property {consumerCallback<eventConsumer>} subscribe the callback which allows to setup an
+ *                                                       event consumer to use for the subscription
+ * @property {parameterlessCallback} unsubscribe the callback which allows to cancel the
+ *                                               subscription
+ */
+
+/**
  * A request from a client to the Spine backend.
  *
  * @abstract
@@ -444,23 +456,22 @@ const NOOP_CALLBACK = () => {};
  * client.command(logInUser)
  *       .onOk(_logOk)
  *       .onError(_logError)
- *       .observe(UserLoggedIn.class)
- *       .observe(UserAlreadyLoggedIn.class)
- *       .post()
- *       .then(([{eventEmitted1, unsubscribe1}, {eventEmitted2, unsubscribe2}]) => {
- *           eventEmitted1.subscribe(_logUserLoggedIn);
- *           eventEmitted2.subscribe(_logUserAlreadyLoggedIn);
- *           unsubscribe1();
- *           unsubscribe2();
- *       });
+ *       .observe(UserLoggedIn.class, (({subscribe, unsubscribe}) => {
+ *           subscribe(event => _logAndUnsubscribe(event, unsubscribe));
+ *           setTimeout(unsubscribe, EVENT_WAIT_TIMEOUT);
+ *       })
+ *       .observe(UserAlreadyLoggedIn.class, (({subscribe, unsubscribe}) => {
+ *           subscribe(event => _warnAboutAndUnsubscribe(event, unsubscribe));
+ *           setTimeout(unsubscribe, EVENT_WAIT_TIMEOUT);
+ *       })
+ *       .post();
  * ```
  *
- * The `Promise` returned from `post` will be resolved with either a single
- * `EventSubscriptionObject` if a single type is observed or with an array of
- * `EventSubscriptionObject`s otherwise.
+ * The `subscribe` callback provided to the consumer allows to configure an event receival process
+ * while the `unsubscribe` callback allows to cancel the subscription.
  *
- * Please note that the returned subscription objects should be manually unsubscribed with the help
- * of `unsubscribe` callback.
+ * Please note that in the example above we make sure the subscription is cancelled even if the
+ * specified event type is never received.
  */
 export class CommandRequest extends ClientRequest {
 
@@ -520,41 +531,44 @@ export class CommandRequest extends ClientRequest {
      * Adds the event type to the list of observed command handling results.
      *
      * @param {!Class<? extends Message>} eventType a type of the observed events
+     * @param {!consumerCallback<EventSubscriptionCallbacks>} consumer
+     *        a consumer of the `subscribe` and `unsubscribe` callbacks which are responsible for
+     *        accepting the incoming events and cancelling the subscription respectively
      * @return {this} self for method chaining
      */
-    observe(eventType) {
-        this._observedTypes.push(eventType);
+    observe(eventType, consumer) {
+        this._observedTypes.push({type: eventType, consumer: consumer});
         return this;
     }
 
     /**
      * Posts the command to the server and subscribes to all observed types.
      *
-     * @return {Promise<EventSubscriptionObject | EventSubscriptionObject[]>}
-     *         the asynchronously resolved subscription objects for the events specified in
-     *         the `observe`
+     * @return {Promise<void>} a promise that signals if the command posting was done successfully,
+     *                         may be ignored
      */
     post() {
         const command = this._requestFactory.command().create(this._commandMessage);
         const onAck =
             {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
         const promises = [];
-        this._observedTypes.forEach(type => {
+        this._observedTypes.forEach(({type, consumer}) => {
             const originFilter = Filters.eq("context.past_message", this._asOrigin(command));
             const promise = this._client.subscribeToEvent(type)
                 .where(originFilter)
-                .post();
+                .post()
+                .then(({eventEmitted, unsubscribe}) => {
+                    const subscribe = eventConsumer => {
+                        eventEmitted.subscribe({
+                            next: eventConsumer
+                        });
+                    };
+                    consumer({subscribe, unsubscribe});
+                });
             promises.push(promise);
         });
-        const subscriptionPromise = promises.length === 1
-            ? promises[0]
-            : Promise.all(promises);
-
-        // noinspection JSValidateTypes
-        return subscriptionPromise.then((subscriptionObject) => {
-            this._client.post(command, onAck);
-            return subscriptionObject;
-        });
+        const subscriptionPromise = Promise.all(promises);
+        return subscriptionPromise.then(() => this._client.post(command, onAck));
     }
 
     /**
