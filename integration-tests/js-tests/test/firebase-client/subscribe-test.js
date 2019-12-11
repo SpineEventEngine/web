@@ -61,12 +61,10 @@ describe('FirebaseClient subscription', function () {
             }
           });
           itemRemoved.subscribe({
-            next: fail(done,
-                'Unexpected entity remove during entity create subscription test.')
+            next: fail(done, 'Unexpected entity remove during entity create subscription test.')
           });
           itemChanged.subscribe({
-            next: fail(done,
-                'Unexpected entity change during entity create subscription test.')
+            next: fail(done, 'Unexpected entity change during entity create subscription test.')
           });
           commands.forEach(command => {
             client.command(command)
@@ -101,8 +99,7 @@ describe('FirebaseClient subscription', function () {
                 client.command(renameCommand)
                     .onOk(() => console.log(`Task '${taskId}' renamed.`))
                     .onError(fail(done, 'Unexpected error while renaming a task.'))
-                    .onRejection(fail(done,
-                        'Unexpected rejection while renaming a task.'))
+                    .onRejection(fail(done, 'Unexpected rejection while renaming a task.'))
                     .post();
               }
             }
@@ -172,8 +169,7 @@ describe('FirebaseClient subscription', function () {
                 to: UPDATED_NAMES[0]
               });
               client.command(renameCommand)
-                  .onOk(() => console.log(
-                      `Task '${taskIdValue}' renamed for the first time.`))
+                  .onOk(() => console.log(`Task '${taskIdValue}' renamed for the first time.`))
                   .onError(fail(done, 'Unexpected error while renaming a task.'))
                   .onRejection(fail(done, 'Unexpected rejection while renaming a task.'))
                   .post();
@@ -198,8 +194,7 @@ describe('FirebaseClient subscription', function () {
                     to: UPDATED_NAMES[1]
                   });
                   client.command(renameCommand)
-                      .onOk(() => console.log(
-                          `Task '${taskIdValue}' renamed for the second time.`))
+                      .onOk(() => console.log(`Task '${taskIdValue}' renamed for the second time.`))
                       .onError(fail(done,
                           'Unexpected error while renaming a task.'))
                       .onRejection(fail(done,
@@ -247,8 +242,8 @@ describe('FirebaseClient subscription', function () {
                 to: nameAfterRenamed
               });
               client.command(renameCommand)
-                  .onOk(() => console.log(
-                      `Task '${taskIdValue}' is renamed to '${nameAfterRenamed}'.`))
+                  .onOk(() =>
+                      console.log(`Task '${taskIdValue}' is renamed to '${nameAfterRenamed}'.`))
                   .onError(fail(done, 'Unexpected error while renaming a task.'))
                   .onRejection(fail(done, 'Unexpected rejection while renaming a task.'))
                   .post();
