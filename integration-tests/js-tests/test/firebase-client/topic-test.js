@@ -87,7 +87,7 @@ class UserTasksFlow {
   }
 
   static doNothing() {
-    // NoOp
+    // NO-OP.
   }
 
   waitFor(state) {
