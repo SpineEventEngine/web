@@ -27,8 +27,8 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {
   CommandingClient,
   CompositeClient,
-  QueryingClient,
-  NoOpSubscribingClient
+  NoOpSubscribingClient,
+  QueryingClient
 } from "./composite-client";
 import KnownTypes from "./known-types";
 import {AnyPacker} from "./any-packer";
