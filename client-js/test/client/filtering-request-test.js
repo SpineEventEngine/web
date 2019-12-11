@@ -152,8 +152,8 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const compositeFiltersLength = compositeFilters.length;
     assert.equal(
         1, compositeFiltersLength,
-        `Expected the composite filter list to contain a single filter, the actual 
-        length: '${compositeFiltersLength}'.`
+        `Expected the composite filter list to contain a single filter, the actual length: 
+        '${compositeFiltersLength}'.`
     );
     const filters = compositeFilters[0].getFilterList();
     const length = filters.length;

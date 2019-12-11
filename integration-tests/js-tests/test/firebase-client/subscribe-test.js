@@ -50,7 +50,7 @@ describe('FirebaseClient subscription', function () {
           itemAdded.subscribe({
             next: task => {
               const id = task.getId().getValue();
-              console.log(`Retrieved task '${id}'`);
+              console.log(`Retrieved task '${id}'.`);
               if (taskIds.includes(id)) {
                 receivedCount++;
                 if (receivedCount === newTasksCount) {
@@ -92,7 +92,7 @@ describe('FirebaseClient subscription', function () {
               if (taskId === id) {
                 assert.equal(
                     INITIAL_TASK_NAME, item.getName(),
-                    `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}"`
+                    `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}".`
                 );
                 const renameCommand = TestEnvironment.renameTaskCommand({
                   withId: taskId,
@@ -116,7 +116,7 @@ describe('FirebaseClient subscription', function () {
               if (taskId === id) {
                 assert.equal(
                     item.getName(), UPDATED_TASK_NAME,
-                    `Task is named "${item.getName()}", expected "${UPDATED_TASK_NAME}"`
+                    `Task is named "${item.getName()}", expected "${UPDATED_TASK_NAME}".`
                 );
                 console.log(`Got task changes for '${id}'.`);
                 unsubscribe();
@@ -164,7 +164,7 @@ describe('FirebaseClient subscription', function () {
               if (taskIdValue === id) {
                 assert.equal(
                     item.getName(), INITIAL_TASK_NAME,
-                    `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}"`
+                    `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}".`
                 );
               }
               const renameCommand = TestEnvironment.renameTaskCommand({
@@ -239,8 +239,7 @@ describe('FirebaseClient subscription', function () {
               if (taskIdValue === id) {
                 assert.equal(
                     initialTaskName, item.getName(),
-                    `Task is named "${item.getName()}", 
-                                expected "${initialTaskName}".`
+                    `Task is named "${item.getName()}", expected "${initialTaskName}".`
                 );
               }
               const renameCommand = TestEnvironment.renameTaskCommand({
@@ -261,8 +260,8 @@ describe('FirebaseClient subscription', function () {
               console.log('Task removed');
               assert.equal(
                   taskIdValue, id,
-                  `A wrong Task item is removed, expected the task with ID 
-                            "${taskIdValue}", received the task with ID "${id}".`
+                  `A wrong Task item is removed, expected the task with ID "${taskIdValue}", 
+                  received the task with ID "${id}".`
               );
               unsubscribe();
               done();
@@ -308,8 +307,7 @@ describe('FirebaseClient subscription', function () {
               const newTaskName = message.getName();
               assert.equal(
                   updatedTaskName, newTaskName,
-                  `Expected the new task name to be ${updatedTaskName}, got 
-                            ${newTaskName} instead.`
+                  `Expected the new task name to be ${updatedTaskName}, got ${newTaskName} instead.`
               );
               unsubscribe();
               done();
@@ -329,8 +327,7 @@ describe('FirebaseClient subscription', function () {
     client.command(renameCommand)
         .onOk(() => console.log(`Task '${taskId}' renamed.`))
         .onError(fail(done, 'Unexpected error while renaming a task.'))
-        .onRejection(fail(done,
-            'Unexpected rejection while renaming a task.'))
+        .onRejection(fail(done, 'Unexpected rejection while renaming a task.'))
         .post();
   });
 
