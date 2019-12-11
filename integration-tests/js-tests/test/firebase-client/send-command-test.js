@@ -32,7 +32,7 @@ import {Type} from '@lib/client/typed-message';
 describe('FirebaseClient command sending', function () {
 
   // Big timeout allows to receive model state changes during tests.
-  this.timeout(15000);
+  this.timeout(5000);
 
   it('completes with success', done => {
 
