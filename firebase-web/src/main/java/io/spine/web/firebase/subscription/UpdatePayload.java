@@ -145,7 +145,7 @@ final class UpdatePayload {
     }
 
     /**
-     * Adds an {@code <ID:message>} key-value pair as a child of the given node.
+     * Adds an {@code ID -> message} key-value pair as a child of the given node.
      *
      * <p>If the message is {@link Empty}, adds a {@code null} child under the given key,
      * effectively deleting it from the database.
