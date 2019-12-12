@@ -20,11 +20,11 @@
 
 "use strict";
 
+import {ActorRequestFactory} from "./actor-request-factory";
 import {Client} from './client';
+import {CommandingClient} from "./commanding-client";
 import {HttpClient} from "./http-client";
 import {HttpEndpoint} from "./http-endpoint";
-import {ActorRequestFactory} from "./actor-request-factory";
-import {CommandingClient} from "./composite-client";
 
 /**
  * @typedef {Object} ClientOptions a type of object for initialization of Spine client

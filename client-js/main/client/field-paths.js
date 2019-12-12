@@ -27,22 +27,22 @@ import {FieldPath} from "../proto/spine/base/field_path_pb";
  */
 export class FieldPaths {
 
-    constructor() {
-        throw new Error('Instantiating utility FieldPaths class.');
-    }
+  constructor() {
+    throw new Error('Instantiating utility FieldPaths class.');
+  }
 
-    /**
-     * Creates a new `FieldPath` from the given string.
-     *
-     * String examples: "owner.userId", "employeeCount".
-     */
-    static parse(stringPath) {
-        if (!stringPath) {
-            throw new Error('Constructing FieldPath from the invalid string');
-        }
-        const fieldPath = new FieldPath();
-        const pathElements = stringPath.split('.');
-        fieldPath.setFieldNameList(pathElements);
-        return fieldPath;
+  /**
+   * Creates a new `FieldPath` from the given string.
+   *
+   * String examples: "owner.userId", "employee_count".
+   */
+  static parse(stringPath) {
+    if (!stringPath) {
+      throw new Error('Constructing FieldPath from the invalid string');
     }
+    const fieldPath = new FieldPath();
+    const pathElements = stringPath.split('.');
+    fieldPath.setFieldNameList(pathElements);
+    return fieldPath;
+  }
 }

@@ -76,12 +76,12 @@ export function convertDateToTimestamp(date) {
   if (isNaN(date.getTime())) {
     throw new Error(errorMessage(`The given "${date}" is invalid.`));
   }
-    const millis = date.getTime();
+  const millis = date.getTime();
 
-    const timestamp = new Timestamp();
-    timestamp.setSeconds(Math.trunc(millis / 1000));
-    timestamp.setNanos((millis % 1000) * 1000000);
-    return timestamp;
+  const timestamp = new Timestamp();
+  timestamp.setSeconds(Math.trunc(millis / 1000));
+  timestamp.setNanos((millis % 1000) * 1000000);
+  return timestamp;
 }
 
 

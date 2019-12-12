@@ -18,32 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {firebaseDatabase} from "./firebase-database";
-import * as testProtobuf from '@testProto/index';
-import * as spineWeb from '@lib/index';
-import {ActorProvider} from '@lib/client/actor-request-factory';
+"use strict";
 
 /**
- * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
- * local backend server and the emulated Firebase application.
- * See `integration-tests/README.MD` for details.
+ * A request from a client to the Spine backend.
  *
- * @param endpointUrl the URL of a backend to interact with; has the default value
- *                    of a local backend server;
- * @return {FirebaseClient} the Firebase client instance
+ * @abstract
  */
-export function initClient(endpointUrl = 'http://localhost:8080') {
-  return spineWeb.init({
-    protoIndexFiles: [testProtobuf],
-    endpointUrl: endpointUrl,
-    firebaseDatabase: firebaseDatabase,
-    actorProvider: new ActorProvider()
-  });
+export class ClientRequest {
+
+  /**
+   * @protected
+   */
+  constructor(client, requestFactory) {
+
+    /**
+     * @type Client
+     *
+     * @protected
+     */
+    this._client = client;
+
+    /**
+     * @type ActorRequestFactory
+     *
+     * @protected
+     */
+    this._requestFactory = requestFactory;
+  }
 }
-
-/**
- * A {@link FirebaseClient client} instance for tests.
- *
- * @type {FirebaseClient}
- */
-export const client = initClient();

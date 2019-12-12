@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>1.2.1</version>
+<version>1.2.9</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -76,7 +76,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-server</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.9</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -100,13 +100,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-testutil-client</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.9</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-mute-logging</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.3</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -168,17 +168,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-client</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.9</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-errorprone-checks</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.3</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.3</version>
   </dependency>
   <dependency>
     <groupId>javax.servlet</groupId>
@@ -198,52 +198,42 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-jetty7</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-jetty8</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-jetty9</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-jetty93</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-jetty94</artifactId>
-    <version>2.3.1</version>
-  </dependency>
-  <dependency>
-    <groupId>org.gretty</groupId>
-    <artifactId>gretty-runner-tomcat7</artifactId>
-    <version>2.3.1</version>
-  </dependency>
-  <dependency>
-    <groupId>org.gretty</groupId>
-    <artifactId>gretty-runner-tomcat8</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-tomcat85</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-runner-tomcat9</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.gretty</groupId>
     <artifactId>gretty-starter</artifactId>
-    <version>2.3.1</version>
+    <version>3.0.1</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>

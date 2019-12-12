@@ -22,8 +22,6 @@
 
 import {Message} from 'google-protobuf';
 import {Observable} from 'rxjs';
-import {Query} from '../proto/spine/client/query_pb';
-import {Topic} from '../proto/spine/client/subscription_pb';
 
 /**
  * The callback that doesn't accept any parameters.
@@ -40,37 +38,52 @@ import {Topic} from '../proto/spine/client/subscription_pb';
  */
 
 /**
+ * The callback that accepts a single `Event` as a parameter.
+ *
+ * @callback eventConsumer
+ *
+ * @param {spine.core.Event} the event that is accepted by the callback
+ */
+
+/**
  * @typedef {Object} EntitySubscriptionObject
  *
- * An object representing a result of the subscription to entities state changes.
- * The entities that already exist will be initially passed to the `itemAdded` observer.
+ * An object representing the result of a subscription to entity state changes.
  *
  * @property {!Observable<T>} itemAdded emits new items matching the subscription topic
  * @property {!Observable<T>} itemChanged emits updated items matching the subscription topic
  * @property {!Observable<T>} itemRemoved emits removed items matching the subscription topic
  * @property {!parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
- *                                   stopping the subscribers from receiving new entities
+ *                                                stopping the subscribers from receiving new
+ *                                                entities
  *
  * @template <T> a type of the subscription target entities
  */
 
 /**
- * @typedef {Object} SimpleTarget
+ * @typedef {Object} EventSubscriptionObject
  *
- * An object representing a set of parameters for building a query or a subscription
- * topic specifying only a type and identifiers of the target entities.
+ * An object which represents the result of a subscription to events of a certain type.
  *
- * Target built from this object point either:
- *  - a single entity of a given type with a given ID;
- *  - several entities of a given type with given IDs;
- *  - all entities of a given type if no IDs specified;
+ * @property <!Observable<spine.core.Event>> eventEmitted emits new items when the new events
+ *                                                        matching the subscription topic occur in
+ *                                                        the system
+ * @property {!parameterlessCallback} unsubscribe a method to be called to cancel the subscription,
+ *                                                stopping the subscribers from receiving new
+ *                                                entities
+ */
+
+/**
+ * @typedef AckCallback
  *
- * @property {!Class<T extends Message>} entity a class of target entities
- * @property {?<I extends Message>[] | <I extends Message> | Number[] | Number | String[] | String} byIds
- *      a list of target entities IDs or an ID of a single target entity
+ * Represents a command acknowledgement callback.
  *
- * @template <T> a class of a query or subscription target entities
- * @template <I> a class of a query or subscription target entities identifiers
+ * @property {!parameterlessCallback} onOk the callback to run when the command is handled properly
+ * @property {!consumerCallback<Error>} onError the callback to run when the command cannot be
+ *                                              handled due to a technical error
+ * @property {!consumerCallback<Message>} onRejection the callback to run when the command cannot
+ *                                                    be handled properly because of the business
+ *                                                    rejection
  */
 
 /**
@@ -80,6 +93,48 @@ import {Topic} from '../proto/spine/client/subscription_pb';
  * @abstract
  */
 export class Client {
+
+  /**
+   * Creates a query request that allows to configure and post a new query.
+   *
+   * @param {!Class<? extends Message>} entityType a Protobuf type of the query target entities
+   * @return {QueryRequest} the builder to construct and post a new query
+   */
+  select(entityType) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Executes the given `Query` instance specifying the data to be retrieved from
+   * Spine server fulfilling a returned promise with an array of received objects.
+   *
+   * @param {!spine.client.Query} query a query instance to be executed
+   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   *        messages of a given type or with an empty list if no entities matching given query
+   *        were found; rejected with a `SpineError` if error occurs
+   *
+   * @template <T> a Protobuf type of entities being the target of a query
+   */
+  read(query) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Executes the given `Query` instance specifying the data to be retrieved from
+   * Spine server fulfilling a returned promise with an array of received objects.
+   *
+   * @param {!spine.client.Query} query a query instance to be executed
+   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   *        messages of a given type or with an empty list if no entities matching given query
+   *        were found; rejected with a `SpineError` if error occurs;
+   *
+   * @template <T> a Protobuf type of entities being the target of a query
+   *
+   * @deprecated Please use {@link Client#read()} instead
+   */
+  execute(query) {
+    return this.read(query);
+  }
 
   /**
    * Creates a new {@link QueryFactory} for creating `Query` instances specifying
@@ -100,6 +155,8 @@ export class Client {
    *
    * To execute the resulting `Query` instance pass it to the {@link Client#execute()}.
    *
+   * Alternatively, the `QueryRequest` API can be used. See {@link Client#select()}.
+   *
    * @return {QueryFactory} a factory for creating queries to the Spine server
    *
    * @see QueryFactory
@@ -111,17 +168,53 @@ export class Client {
   }
 
   /**
-   * Executes the given `Query` instance specifying the data to be retrieved from
-   * Spine server fulfilling a returned promise with an array of received objects.
+   * Creates a subscription request that allows to configure and post a new entity subscription.
    *
-   * @param {!Query} query a query instance to be executed
-   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
-   *        messages of a given type or with an empty list if no entities matching given query
-   *        were found; rejected with a `SpineError` if error occurs;
-   *
-   * @template <T> a Protobuf type of entities being the target of a query
+   * @param {!Class<? extends Message>} entityType a Protobuf type of the target entities
+   * @return {SubscriptionRequest} the builder for the new entity subscription
    */
-  execute(query) {
+  subscribeTo(entityType) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Subscribes to the given `Topic` instance.
+   *
+   * The topic should have an entity type as target. Use {@link #subscribeToEvents} to subscribe to
+   * the topic that targets events.
+   *
+   * @param {!spine.client.Topic} topic a topic to subscribe to
+   * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+   *         the subscription object which exposes entity changes via its callbacks
+   *
+   * @template <T> a Protobuf type of entities being the target of a subscription
+   */
+  subscribe(topic) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Creates an event subscription request that allows to configure and post a new event
+   * subscription.
+   *
+   * @param {!Class<? extends Message>} eventType a Protobuf type of the target events
+   * @return {EventSubscriptionRequest} the builder for the new event subscription
+   */
+  subscribeToEvent(eventType) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Subscribes to the given `Topic` instance.
+   *
+   * The given topic should target an event type. To perform an entity subscription, use
+   * {@link #subscribe}.
+   *
+   * @param {!spine.client.Topic} topic a topic to subscribe to
+   *
+   * @return {Promise<EventSubscriptionObject>}
+   */
+  subscribeToEvents(topic) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -136,13 +229,16 @@ export class Client {
    *
    * @example
    * // Build a subscription topic for `UserTasks` domain entity, selecting the instances
-   * // which task count is greater than 3.
+   * // with over 3 tasks.
    * newTopic().select(UserTasks)
    *           .where(Filters.gt('tasksCount', 3))
    *           .build()
    *
    * To turn the resulting `Topic` instance into a subscription pass it
-   * to the {@link Client#subscribeTo()}.
+   * to the {@link Client#subscribe()}.
+   *
+   * Alternatively, the `SubscriptionRequest` API can be used. See {@link Client#subscribeTo()},
+   * {@link Client#subscribeToEvents()}.
    *
    * @return {TopicFactory} a factory for creating subscription topics to the Spine server
    *
@@ -155,17 +251,23 @@ export class Client {
   }
 
   /**
-   * Creates a subscription to the topic which is updated with backend changes. Fulfills
-   * a returning promise with the created subscription.
+   * Creates a new command request which allows to post a command to the Spine server and
+   * configures the command handling callbacks.
    *
-   * @param {!Topic} topic a topic to subscribe
-   * @return {Promise<EntitySubscriptionObject<T>>} a promise to be resolved with an object
-   *        representing a result of the subscription to entities state changes; rejected with
-   *        a `SpineError` if error occurs;
-   *
-   * @template <T> a Protobuf type of entities being the target of a subscription
+   * @param {!Message} commandMessage a command to post to the server
+   * @return {CommandRequest} a new command request
    */
-  subscribeTo(topic) {
+  command(commandMessage) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * Posts a given command to the Spine server.
+   *
+   * @param {!spine.core.Command} command a Command sent to Spine server
+   * @param {!AckCallback} onAck a command acknowledgement callback
+   */
+  post(command, onAck) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -205,86 +307,14 @@ export class Client {
    *        a callback executed if the command was rejected by Spine server
    * @see CommandHandlingError
    * @see CommandValidationError
+   *
+   * @deprecated Please use {@link Client#command()}
    */
   sendCommand(commandMessage, acknowledgedCallback, errorCallback, rejectionCallback) {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
-   * Fetches entities of the given class type from the Spine backend.
-   *
-   * Optionally accepts entity identifiers targeting the objects to fetch. If no identifiers are
-   * passed, returns all entities of the selected type.
-   *
-   * The returned promise is fulfilled an array of objects, each representing an entity.
-   *
-   * This API call is a shortcut for {@link Client#newQuery()} followed by {@link Client#execute()}.
-   * It covers the most common use cases. If a more advanced fetch behaviour is required, the
-   * `Query` instance should be created and parameterized via {@link Client#newQuery()}.
-   *
-   * @example
-   * // Fetch all `Task` domain entities. Returning promise resolves with a list of entities
-   * // or with an empty list if no records of the specified type were found.
-   * fetch({entity: Task}).then(tasks => { ... })
-   *
-   * @example
-   * // Fetch a single `Task` domain entity by ID. Returning promise resolves with a list containing
-   * // the target entity or with an empty list if no record with the specified ID was found.
-   * fetch({entity: Task, byIds: taskId}).then(task => { ... })
-   *
-   * @example
-   * // Fetch several `Task` domain entities by IDs. Returning promise resolves with a list of
-   * // entities or with an empty list if no records with the specified IDs were found.
-   * fetch({entity: Task, byIds: [taskId1, taskId2]}).then(tasks => { ... })
-   *
-   * @param {SimpleTarget<T>} object representing a set of parameters for building a query by target
-   *      entities class type and IDs
-   * @return {Promise<T[] | T | null>} a promise to be fulfilled with a list of Protobuf messages
-   *        of a given type or with an empty list if no entities matching given class or IDs were
-   *        found; rejected with a `SpineError` if error occurs;
-   *
-   * @template <T> a Protobuf type of entities being the fetch target
-   */
-  fetch({entity: cls, byIds: ids}) {
-    throw new Error('Not implemented in abstract base.');
-  }
-
-  /**
-   * Creates a subscription to changes of entities of given class type from the Spine backend.
-   *
-   * Optionally accepts entity identifiers targeting the objects. If no identifiers are
-   * passed, subscribes to changes of all entities of the selected type.
-   *
-   * Fulfills a returning promise with the created subscription.
-   *
-   * The entities that already exist will be initially passed to the `itemAdded` observer.
-   *
-   * This API call is a shortcut for {@link Client#newTopic()} followed by
-   * {@link Client#subscribeTo()}. It covers the most common use cases. If a more advanced
-   * subscription behaviour is required, the `Topic` instance should be created and parameterized
-   * via {@link Client#newTopic()}.
-   *
-   * @example
-   * // Subscribe to changes of all `UserTasks` domain entities. Returning promise resolves with
-   * // an object representing a result of the subscription.
-   * subscribe({entity: UserTasks}).then(subscriptionObject => { ... })
-   *
-   * @example
-   * // Subscribe to changes of a single `UserTasks` domain entity by ID.
-   * subscribe({entity: Task, byIds: taskId}).then(subscriptionObject => { ... })
-   *
-   * @example
-   * // Subscribe to changes of several `UserTasks` domain entities by IDs.
-   * subscribe({entity: Task, byIds: [taskId1, taskId2]}).then(subscriptionObject => { ... })
-   *
-   * @param {SimpleTarget<T>} object representing a set of parameters for building a subscription
-   *    topic by target entities class type and IDs
-   * @return {Promise<EntitySubscriptionObject<T>>} a promise of means to observe the changes
-   *                                             and unsubscribe from the updated
-   *
-   * @template <T> a Protobuf type of entities being the subscription target
-   */
-  subscribe({entity: cls, byIds: ids}) {
-    throw new Error('Not implemented in abstract base.');
+    this.command(commandMessage)
+        .onOk(acknowledgedCallback)
+        .onError(errorCallback)
+        .onRejection(rejectionCallback)
+        .post();
   }
 }

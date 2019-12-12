@@ -20,18 +20,16 @@
 
 "use strict";
 
+import {ActorRequestFactory} from './actor-request-factory';
+import {AnyPacker} from "./any-packer";
 import {AbstractClientFactory} from './client-factory';
+import {CommandingClient} from "./commanding-client";
+import {CompositeClient} from "./composite-client";
 import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
-import {ActorRequestFactory} from './actor-request-factory';
-import {
-  CommandingClient,
-  CompositeClient,
-  QueryingClient,
-  NoOpSubscribingClient
-} from "./composite-client";
 import KnownTypes from "./known-types";
-import {AnyPacker} from "./any-packer";
+import {QueryingClient} from "./querying-client";
+import {NoOpSubscribingClient} from "./subscribing-client";
 import {Type} from "./typed-message";
 import TypeParsers from "./parser/type-parsers";
 
@@ -102,7 +100,7 @@ class DirectQueryingClient extends QueryingClient {
     this._endpoint = endpoint;
   }
 
-  execute(query) {
+  read(query) {
     const typeUrl = query.getTarget().getType();
     const targetClass = KnownTypes.classFor(typeUrl);
     const targetType = Type.of(targetClass, typeUrl);

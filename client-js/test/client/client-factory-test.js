@@ -31,29 +31,29 @@ class TestClient extends Client {}
 
 describe('Client factory should', () => {
 
-    it('create composite client', done => {
-        const endpoint = 'example.com';
-        const userId = new UserId();
-        userId.value = 'me';
-        const client = init({
-            protoIndexFiles: [types, testTypes],
-            forQueries: {
-                endpointUrl: `${endpoint}/q/`,
-                actorProvider: new ActorProvider(userId)
-            },
-            forSubscriptions: {
-                endpointUrl: `${endpoint}/q/`,
-                actorProvider: new ActorProvider(userId),
-                firebaseDatabase: "mock database"
-            },
-            forCommands: {
-                endpointUrl: `${endpoint}/c/`,
-                actorProvider: new ActorProvider(userId),
-                implementation: new TestClient()
-            }
-        });
-        assert.ok(client instanceof CompositeClient);
-        assert.ok(client._commanding instanceof TestClient);
-        done();
+  it('create composite client', done => {
+    const endpoint = 'example.com';
+    const userId = new UserId();
+    userId.value = 'me';
+    const client = init({
+      protoIndexFiles: [types, testTypes],
+      forQueries: {
+        endpointUrl: `${endpoint}/q/`,
+        actorProvider: new ActorProvider(userId)
+      },
+      forSubscriptions: {
+        endpointUrl: `${endpoint}/q/`,
+        actorProvider: new ActorProvider(userId),
+        firebaseDatabase: "mock database"
+      },
+      forCommands: {
+        endpointUrl: `${endpoint}/c/`,
+        actorProvider: new ActorProvider(userId),
+        implementation: new TestClient()
+      }
     });
+    assert.ok(client instanceof CompositeClient);
+    assert.ok(client._commanding instanceof TestClient);
+    done();
+  });
 });

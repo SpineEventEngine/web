@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.protobuf.Any;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.client.EntityStateUpdate;
 import io.spine.client.SubscriptionUpdate;
@@ -48,6 +49,9 @@ import static io.spine.protobuf.AnyPacker.unpack;
  *
  * <p>Consists of entities or events, which ought to be written into the Firebase database under
  * a certain path.
+ *
+ * <p>The updates about {@linkplain EntityStateUpdate#getNoLongerMatching() no longer matching}
+ * entity states are represented as {@link Empty}.
  */
 final class UpdatePayload {
 
@@ -63,9 +67,9 @@ final class UpdatePayload {
      */
     private static final HashFunction keyHashFunction = murmur3_128();
 
-    private final ImmutableMap<String, @Nullable Message> messages;
+    private final ImmutableMap<String, Message> messages;
 
-    private UpdatePayload(ImmutableMap<String, @Nullable Message> messages) {
+    private UpdatePayload(ImmutableMap<String, Message> messages) {
         this.messages = messages;
     }
 
@@ -83,15 +87,15 @@ final class UpdatePayload {
                 .getEntityUpdates()
                 .getUpdateList()
                 .stream()
-                .collect(toHashTable(EntityStateUpdate::getId, UpdatePayload::messageOrNull));
+                .collect(toHashTable(EntityStateUpdate::getId, UpdatePayload::messageOrEmpty));
         checkArgument(!messages.isEmpty(), "Empty subscription update: %s", update);
         return new UpdatePayload(messages);
     }
 
-    private static @Nullable Message messageOrNull(EntityStateUpdate update) {
+    private static Message messageOrEmpty(EntityStateUpdate update) {
         return update.hasState()
                ? unpack(update.getState())
-               : null;
+               : Empty.getDefaultInstance();
     }
 
     private static UpdatePayload eventUpdates(SubscriptionUpdate update) {
@@ -99,7 +103,7 @@ final class UpdatePayload {
                 .getEventUpdates()
                 .getEventList()
                 .stream()
-                .collect(toHashTable(Event::id, Event::enclosedMessage));
+                .collect(toHashTable(Event::id, identity()));
         return new UpdatePayload(messages);
     }
 
@@ -136,7 +140,33 @@ final class UpdatePayload {
      */
     NodeValue asNodeValue() {
         NodeValue node = NodeValue.empty();
-        messages.forEach((id, message) -> node.addChild(id, StoredJson.encodeOrNull(message)));
+        messages.forEach((id, message) -> addChildOrNull(node, id, message));
         return node;
+    }
+
+    /**
+     * Adds an {@code ID -> message} key-value pair as a child of the given node.
+     *
+     * <p>If the message is {@link Empty}, adds a {@code null} child under the given key,
+     * effectively deleting it from the database.
+     */
+    private static void addChildOrNull(NodeValue node, String id, Message message) {
+        boolean isEmpty = Empty.getDefaultInstance()
+                               .equals(message);
+        if (isEmpty) {
+            node.addNullChild(id);
+        } else {
+            node.addChild(id, StoredJson.encode(message));
+        }
+    }
+
+    /**
+     * An identity {@link Event}-to-{@link Message} conversion.
+     *
+     * <p>The standard {@link Function#identity()} can't be applied because it requires having the
+     * exact same type as input and output.
+     */
+    private static Function<Event, Message> identity() {
+        return event -> event;
     }
 }

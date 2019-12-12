@@ -37,88 +37,90 @@ import {UserId} from '@testProto/spine/core/user_id_pb';
  */
 export default class TestEnvironment {
 
-    constructor() {
-        throw new Error('A utility TestEnvironment class cannot be instantiated.');
+  constructor() {
+    throw new Error('A utility `TestEnvironment` class cannot be instantiated.');
+  }
+
+  /**
+   * @param {{
+   *     withId?: String,
+   *     withPrefix?: String,
+   *     named?: String,
+   *     describedAs: String,
+   *     assignedTo: UserId
+   * }}
+   *
+   * @return {CreateTask}
+   */
+  static createTaskCommand({
+                             withId: id,
+                             withPrefix: idPrefix,
+                             named: name,
+                             describedAs: description,
+                             assignedTo: userId
+                           }) {
+    const taskId = this.taskId({value: id, withPrefix: idPrefix});
+
+    name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
+    description = typeof description === 'undefined'
+        ? this.DEFAULT_TASK_DESCRIPTION
+        : description;
+
+    const command = new CreateTask();
+    command.setId(taskId);
+    command.setName(name);
+    command.setDescription(description);
+
+    if (!!userId) {
+      command.setAssignee(userId);
     }
 
-    /**
-     * @param {{
-     *     withId?: String,
-     *     withPrefix?: String,
-     *     named?: String,
-     *     describedAs: String,
-     *     assignedTo: UserId
-     * }}
-     *
-     * @return {CreateTask}
-     */
-    static createTaskCommand({
-                                 withId: id,
-                                 withPrefix: idPrefix,
-                                 named: name,
-                                 describedAs: description,
-                                 assignedTo: userId
-                             }) {
-        const taskId = this.taskId({value: id, withPrefix: idPrefix});
+    return command;
+  }
 
-        name = typeof name === 'undefined' ? this.DEFAULT_TASK_NAME : name;
-        description = typeof description === 'undefined' ? this.DEFAULT_TASK_DESCRIPTION : description;
+  /**
+   * @param {{
+   *     withId!: String,
+   *     to!: String
+   * }}
+   *
+   * @return {RenameTask}
+   */
+  static renameTaskCommand({withId: id, to: newName}) {
+    const taskId = this.taskId({value: id});
 
-        const command = new CreateTask();
-        command.setId(taskId);
-        command.setName(name);
-        command.setDescription(description);
+    const command = new RenameTask();
+    command.setId(taskId);
+    command.setName(newName);
 
-        if (!!userId) {
-            command.setAssignee(userId);
-        }
+    return command;
 
-        return command;
+  }
+
+  /**
+   * @param value
+   * @param withPrefix
+   *
+   * @return {TaskId}
+   */
+  static taskId({value, withPrefix: prefix}) {
+    if (typeof value === 'undefined') {
+      value = uuid.v4();
     }
-
-    /**
-     * @param {{
-     *     withId!: String,
-     *     to!: String
-     * }}
-     *
-     * @return {RenameTask}
-     */
-    static renameTaskCommand({withId: id, to: newName}) {
-        const taskId = this.taskId({value: id});
-
-        const command = new RenameTask();
-        command.setId(taskId);
-        command.setName(newName);
-
-        return command;
-
+    if (typeof prefix !== 'undefined') {
+      value = `${prefix}-${value}`;
     }
+    const taskId = new TaskId();
+    taskId.setValue(value);
+    return taskId;
+  }
 
-    /**
-     * @param value
-     * @param withPrefix
-     *
-     * @return {TaskId}
-     */
-    static taskId({value, withPrefix: prefix}) {
-        if (typeof value === 'undefined') {
-            value = uuid.v4();
-        }
-        if (typeof prefix !== 'undefined') {
-            value = `${prefix}-${value}`;
-        }
-        const taskId = new TaskId();
-        taskId.setValue(value);
-        return taskId;
-    }
-
-    /**
-     * A function that does nothing.
-     */
-    static noop() {
-        // Do nothing.
-    }
+  /**
+   * A function that does nothing.
+   */
+  static noop() {
+    // Do nothing.
+  }
 }
 
 TestEnvironment.DEFAULT_TASK_NAME = 'Get to Mount Doom';

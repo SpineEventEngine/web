@@ -21,11 +21,15 @@
 "use strict";
 
 import {Duration} from './time-utils';
+import ObjectToProto from "./object-to-proto";
+import {Status} from '../proto/spine/core/response_pb';
+
 
 const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
 /**
- * A service that manages the subscriptions periodically sending requests to keep them running.
+ * A service that manages the active subscriptions periodically sending requests to keep them
+ * running.
  */
 export class FirebaseSubscriptionService {
   /**
@@ -33,7 +37,7 @@ export class FirebaseSubscriptionService {
    */
   constructor(endpoint) {
     /**
-     * @type {EntitySubscription[]}
+     * @type {SpineSubscription[]}
      * @private
      */
     this._subscriptions = [];
@@ -48,7 +52,7 @@ export class FirebaseSubscriptionService {
    * Add a subscription to the service to handle the keep-up requests and cancel in
    * case of unsubscribe.
    *
-   * @param {EntitySubscription} subscription an entity subscription to keep running
+   * @param {SpineSubscription} subscription an active subscription to keep running
    */
   add(subscription) {
     if (this._isRegistered(subscription)) {
@@ -70,6 +74,15 @@ export class FirebaseSubscriptionService {
     }, SUBSCRIPTION_KEEP_UP_INTERVAL.inMs());
   }
 
+  /**
+   * Sends the "keep-up" request for all active subscriptions.
+   *
+   * The non-`OK` response status means the subscription has already been canceled on the server,
+   * most likely due to a timeout. So, in such case, the subscription is removed from the list of
+   * active ones.
+   *
+   * @private
+   */
   _keepUpSubscriptions() {
     this._subscriptions.forEach(subscription => {
       const spineSubscription = subscription.internal();
@@ -78,7 +91,13 @@ export class FirebaseSubscriptionService {
           this._removeSubscription(subscription);
         });
       } else {
-        this._endpoint.keepUpSubscription(spineSubscription);
+        this._endpoint.keepUpSubscription(spineSubscription).then(response => {
+          const responseStatus = response.status;
+          const responseStatusProto = ObjectToProto.convert(responseStatus, _statusType);
+          if (responseStatusProto.getStatusCase() !== Status.StatusCase.OK) {
+            this._removeSubscription(subscription)
+          }
+        });
       }
     });
   }

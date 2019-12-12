@@ -25,12 +25,7 @@ import {HttpEndpoint} from '@lib/client/http-endpoint';
 import {HttpClient} from '@lib/client/http-client';
 import {TypedMessage} from '@lib/client/typed-message';
 import {CreateTask} from '@testProto/spine/test/js/commands_pb';
-import {
-  SpineError,
-  ConnectionError,
-  ClientError,
-  ServerError
-} from '@lib/client/errors';
+import {ClientError, ConnectionError, ServerError, SpineError} from '@lib/client/errors';
 import {Duration} from '@lib/client/time-utils';
 import {fail} from './test-helpers';
 
@@ -68,24 +63,24 @@ class Given {
 
   static response() {
     return this._mockResponse()
-               .withStatus(Given.HTTP_RESPONSE.STATUS.OK)
-               .withBodyContent(Given.HTTP_RESPONSE.BODY_CONTENT);
+        .withStatus(Given.HTTP_RESPONSE.STATUS.OK)
+        .withBodyContent(Given.HTTP_RESPONSE.BODY_CONTENT);
   }
 
   static responseWithClientError() {
     return this._mockResponse()
-               .withStatus(Given.HTTP_RESPONSE.STATUS.CLIENT_ERROR);
+        .withStatus(Given.HTTP_RESPONSE.STATUS.CLIENT_ERROR);
   }
 
   static responseWithServerError() {
     return this._mockResponse()
-               .withStatus(Given.HTTP_RESPONSE.STATUS.SERVER_ERROR);
+        .withStatus(Given.HTTP_RESPONSE.STATUS.SERVER_ERROR);
   }
 
   static responseWithMalformedBody() {
     return this._mockResponse()
-               .withStatus(Given.HTTP_RESPONSE.STATUS.OK)
-               .withMalformedBodyContent();
+        .withStatus(Given.HTTP_RESPONSE.STATUS.OK)
+        .withMalformedBodyContent();
   }
 
   static _mockResponse() {
@@ -131,11 +126,11 @@ describe('HttpEndpoint.command', function () {
     httpClientBehavior.resolves(Given.response());
 
     sendCommand()
-      .then(responseParsedValue => {
-        assert.equal(responseParsedValue, Given.HTTP_RESPONSE.BODY_CONTENT);
-        done();
-      })
-      .catch(fail(done, 'A message sending failed when it was expected to complete.'));
+        .then(responseParsedValue => {
+          assert.equal(responseParsedValue, Given.HTTP_RESPONSE.BODY_CONTENT);
+          done();
+        })
+        .catch(fail(done, 'A message sending failed when it was expected to complete.'));
   });
 
   it('rejects with `SpineError` when response body parsing fails', done => {
@@ -143,26 +138,26 @@ describe('HttpEndpoint.command', function () {
     httpClientBehavior.resolves(malformedResponse);
 
     sendCommand()
-      .then(fail(done, 'A message sending was completed when it was expected to fail.'))
-      .catch(error => {
-        assert.ok(error instanceof SpineError);
-        assert.ok(error.getCause() instanceof Error);
-        assert.equal(error.message, 'Failed to parse response JSON');
-        done();
-      });
+        .then(fail(done, 'A message sending was completed when it was expected to fail.'))
+        .catch(error => {
+          assert.ok(error instanceof SpineError);
+          assert.ok(error.getCause() instanceof Error);
+          assert.equal(error.message, 'Failed to parse response JSON');
+          done();
+        });
   });
 
   it('rejects with `ConnectionError` when message sending fails', done => {
     httpClientBehavior.rejects(Given.CONNECTION_ERROR);
 
     sendCommand()
-      .then(fail(done, 'A message sending was completed when it was expected to fail.'))
-      .catch(error => {
-        assert.ok(error instanceof ConnectionError);
-        assert.ok(error.getCause() instanceof Error);
-        assert.equal(error.message, Given.CONNECTION_ERROR.message);
-        done();
-      });
+        .then(fail(done, 'A message sending was completed when it was expected to fail.'))
+        .catch(error => {
+          assert.ok(error instanceof ConnectionError);
+          assert.ok(error.getCause() instanceof Error);
+          assert.equal(error.message, Given.CONNECTION_ERROR.message);
+          done();
+        });
   });
 
   it('rejects with `ClientError` when response with status 400 received', done => {
@@ -170,13 +165,13 @@ describe('HttpEndpoint.command', function () {
     httpClientBehavior.resolves(responseWithClientError);
 
     sendCommand()
-      .then(fail(done, 'A message sending was completed when it was expected to fail.'))
-      .catch(error => {
-        assert.ok(error instanceof ClientError);
-        assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
-        assert.equal(error.getCause(), responseWithClientError);
-        done();
-      });
+        .then(fail(done, 'A message sending was completed when it was expected to fail.'))
+        .catch(error => {
+          assert.ok(error instanceof ClientError);
+          assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
+          assert.equal(error.getCause(), responseWithClientError);
+          done();
+        });
   });
 
   it('rejects with `ServerError` when response with status 500 received', done => {
@@ -184,12 +179,12 @@ describe('HttpEndpoint.command', function () {
     httpClientBehavior.resolves(responseWithServerError);
 
     sendCommand()
-      .then(fail(done, 'A message sending was completed when it was expected to fail.'))
-      .catch(error => {
-        assert.ok(error instanceof ServerError);
-        assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
-        assert.equal(error.getCause(), responseWithServerError);
-        done();
-      });
+        .then(fail(done, 'A message sending was completed when it was expected to fail.'))
+        .catch(error => {
+          assert.ok(error instanceof ServerError);
+          assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
+          assert.equal(error.getCause(), responseWithServerError);
+          done();
+        });
   });
 });
