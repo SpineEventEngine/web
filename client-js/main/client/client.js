@@ -229,7 +229,7 @@ export class Client {
    *
    * @example
    * // Build a subscription topic for `UserTasks` domain entity, selecting the instances
-   * // whose task count is greater than 3.
+   * // with over 3 tasks.
    * newTopic().select(UserTasks)
    *           .where(Filters.gt('tasksCount', 3))
    *           .build()
