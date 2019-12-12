@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Filters} from "./actor-request-factory";
-import {MessageId, Origin} from "../proto/spine/core/diagnostics_pb";
-import {Type} from "./typed-message";
 import {CommandId} from "../proto/spine/core/command_pb";
+import {MessageId, Origin} from "../proto/spine/core/diagnostics_pb";
+import {Filters} from "./actor-request-factory";
 import {AnyPacker} from "./any-packer";
 import {ClientRequest} from "./client-request";
+import {Type} from "./typed-message";
 
 const NOOP_CALLBACK = () => {};
 

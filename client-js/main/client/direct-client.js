@@ -20,11 +20,11 @@
 
 "use strict";
 
-import {AnyPacker} from "./any-packer";
 import {ActorRequestFactory} from './actor-request-factory';
+import {AnyPacker} from "./any-packer";
 import {AbstractClientFactory} from './client-factory';
-import {CompositeClient} from "./composite-client";
 import {CommandingClient} from "./commanding-client";
+import {CompositeClient} from "./composite-client";
 import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import KnownTypes from "./known-types";
