@@ -20,18 +20,16 @@
 
 "use strict";
 
+import {AnyPacker} from "./any-packer";
+import {ActorRequestFactory} from './actor-request-factory';
 import {AbstractClientFactory} from './client-factory';
+import {CompositeClient} from "./composite-client";
+import {CommandingClient} from "./commanding-client";
 import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
-import {ActorRequestFactory} from './actor-request-factory';
-import {
-  CommandingClient,
-  CompositeClient,
-  NoOpSubscribingClient,
-  QueryingClient
-} from "./composite-client";
 import KnownTypes from "./known-types";
-import {AnyPacker} from "./any-packer";
+import {QueryingClient} from "./querying-client";
+import {NoOpSubscribingClient} from "./subscribing-client";
 import {Type} from "./typed-message";
 import TypeParsers from "./parser/type-parsers";
 

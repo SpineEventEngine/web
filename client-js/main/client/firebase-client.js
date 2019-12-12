@@ -25,19 +25,17 @@ import {
   Subscription as SubscriptionObject,
   SubscriptionId
 } from '../proto/spine/client/subscription_pb';
+import {ActorRequestFactory} from './actor-request-factory';
 import {AbstractClientFactory} from './client-factory';
-import ObjectToProto from './object-to-proto';
+import {CommandingClient} from "./commanding-client";
+import {CompositeClient} from "./composite-client";
 import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {FirebaseDatabaseClient} from './firebase-database-client';
-import {ActorRequestFactory} from './actor-request-factory';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
-import {
-  CommandingClient,
-  CompositeClient,
-  QueryingClient,
-  SubscribingClient
-} from "./composite-client";
+import ObjectToProto from './object-to-proto';
+import {QueryingClient} from "./querying-client";
+import {SubscribingClient} from "./subscribing-client";
 
 /**
  * An abstract base for subscription objects.
