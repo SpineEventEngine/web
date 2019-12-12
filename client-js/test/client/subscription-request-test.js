@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {SubscriptionRequest} from "@lib/client/client-request";
+import {SubscriptionRequest} from "@lib/client/subscribing-request";
 import {Duration} from "@lib/client/time-utils";
 import {filteringRequestTest} from "./filtering-request-test";
 

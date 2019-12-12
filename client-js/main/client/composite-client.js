@@ -25,13 +25,10 @@ import ObjectToProto from "./object-to-proto";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import {Status} from '../proto/spine/core/response_pb';
 import {Client} from "./client";
-import {
-  CommandRequest,
-  EventSubscriptionRequest,
-  QueryRequest,
-  SubscriptionRequest
-} from "./client-request";
 import {TypedMessage} from "./typed-message";
+import {QueryRequest} from "./query-request";
+import {EventSubscriptionRequest, SubscriptionRequest} from "./subscribing-request";
+import {CommandRequest} from "./command-request";
 
 /**
  * A {@link Client} that delegates requests to case-specific client implementations.

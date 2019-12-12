@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import {QueryRequest} from "@lib/client/client-request";
+import {QueryRequest} from "@lib/client/query-request";
 import {Duration} from "@lib/client/time-utils";
 import {OrderBy} from '@proto/spine/client/query_pb';
 import {filteringRequestTest, Given} from "./filtering-request-test";
