@@ -29,7 +29,8 @@ const _statusType = Status.typeUrl();
 /**
  * A client which posts commands.
  *
- * This class has a default implementation. Override it to change the behaviour.
+ * This class has a default implementation but is intended to be overridden as necessary if it's
+ * required to change the behavior.
  */
 export class CommandingClient {
 
