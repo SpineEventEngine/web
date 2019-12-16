@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.2.9`
+# Dependencies of `io.spine:spine-client-js:1.2.10`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -376,14 +376,14 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Dec 16 23:16:04 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.2.9`
+#NPM dependencies of `spine-web@1.2.10`
 
 ## `Production` dependencies:
 
-1. **base64-js@1.3.1**
+1. **base64-js@1.3.0**
      * Licenses: MIT
      * Repository: [https://github.com/beatgammit/base64-js](https://github.com/beatgammit/base64-js)
 1. **encoding@0.1.12**
@@ -410,10 +410,10 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **safer-buffer@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)
-1. **spine-web@1.2.9**
+1. **spine-web@1.2.10**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
-1. **tslib@1.10.0**
+1. **tslib@1.9.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/Microsoft/tslib](https://github.com/Microsoft/tslib)
 1. **uuid@3.3.2**
@@ -661,13 +661,13 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **@firebase/database-types@0.4.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/database@0.4.12**
+1. **@firebase/database@0.5.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/firestore-types@1.4.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore@1.4.9**
+1. **@firebase/firestore@1.4.10**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/functions-types@0.3.8**
@@ -745,103 +745,106 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **@protobufjs/utf8@1.1.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/dcodeIO/protobuf.js](https://github.com/dcodeIO/protobuf.js)
-1. **@sinonjs/commons@1.4.0**
+1. **@sinonjs/commons@1.3.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/commons](https://github.com/sinonjs/commons)
-1. **@sinonjs/formatio@3.2.1**
+1. **@sinonjs/formatio@3.1.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/formatio](https://github.com/sinonjs/formatio)
-1. **@sinonjs/samsam@3.3.2**
+1. **@sinonjs/samsam@3.1.1**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/samsam](https://github.com/sinonjs/samsam)
-1. **@sinonjs/text-encoding@0.7.1**
-     * Licenses: (Unlicense OR Apache-2.0)
-     * Repository: [https://github.com/inexorabletash/text-encoding](https://github.com/inexorabletash/text-encoding)
 1. **@types/long@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@types/node@10.14.15**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@webassemblyjs/ast@1.8.5**
+1. **@webassemblyjs/ast@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/floating-point-hex-parser@1.8.5**
+1. **@webassemblyjs/floating-point-hex-parser@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/helper-api-error@1.8.5**
+1. **@webassemblyjs/helper-api-error@1.7.11**
      * Licenses: MIT
      * Repository: unknown
-1. **@webassemblyjs/helper-buffer@1.8.5**
+1. **@webassemblyjs/helper-buffer@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/helper-code-frame@1.8.5**
+1. **@webassemblyjs/helper-code-frame@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/helper-fsm@1.8.5**
+1. **@webassemblyjs/helper-fsm@1.7.11**
      * Licenses: ISC
      * Repository: unknown
-1. **@webassemblyjs/helper-module-context@1.8.5**
+1. **@webassemblyjs/helper-module-context@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/helper-wasm-bytecode@1.8.5**
+1. **@webassemblyjs/helper-wasm-bytecode@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/helper-wasm-section@1.8.5**
+1. **@webassemblyjs/helper-wasm-section@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/ieee754@1.8.5**
+1. **@webassemblyjs/ieee754@1.7.11**
      * Licenses: MIT
      * Repository: unknown
-1. **@webassemblyjs/leb128@1.8.5**
+1. **@webassemblyjs/leb128@1.7.11**
      * Licenses: MIT
      * Repository: unknown
-1. **@webassemblyjs/utf8@1.8.5**
+1. **@webassemblyjs/utf8@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/wasm-edit@1.8.5**
+1. **@webassemblyjs/wasm-edit@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/wasm-gen@1.8.5**
+1. **@webassemblyjs/wasm-gen@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/wasm-opt@1.8.5**
+1. **@webassemblyjs/wasm-opt@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/wasm-parser@1.8.5**
+1. **@webassemblyjs/wasm-parser@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/wast-parser@1.8.5**
+1. **@webassemblyjs/wast-parser@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
-1. **@webassemblyjs/wast-printer@1.8.5**
+1. **@webassemblyjs/wast-printer@1.7.11**
      * Licenses: MIT
      * Repository: [https://github.com/xtuc/webassemblyjs](https://github.com/xtuc/webassemblyjs)
 1. **@xtuc/ieee754@1.2.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/feross/ieee754](https://github.com/feross/ieee754)
-1. **@xtuc/long@4.2.2**
+1. **@xtuc/long@4.2.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/dcodeIO/long.js](https://github.com/dcodeIO/long.js)
 1. **abbrev@1.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/abbrev-js](https://github.com/isaacs/abbrev-js)
-1. **acorn@6.3.0**
+1. **acorn-dynamic-import@4.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/kesne/acorn-dynamic-import](https://github.com/kesne/acorn-dynamic-import)
+1. **acorn@6.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/acornjs/acorn](https://github.com/acornjs/acorn)
-1. **agent-base@4.3.0**
+1. **agent-base@4.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/TooTallNate/node-agent-base](https://github.com/TooTallNate/node-agent-base)
 1. **ajv-errors@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv-errors](https://github.com/epoberezkin/ajv-errors)
-1. **ajv-keywords@3.4.1**
+1. **ajv-keywords@3.4.0**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv-keywords](https://github.com/epoberezkin/ajv-keywords)
-1. **ajv@6.10.2**
+1. **ajv@6.9.1**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv](https://github.com/epoberezkin/ajv)
 1. **ansi-regex@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)
+1. **ansi-regex@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)
 1. **ansi-regex@4.1.0**
@@ -901,13 +904,13 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **asn1.js@4.10.1**
      * Licenses: MIT
      * Repository: [https://github.com/indutny/asn1.js](https://github.com/indutny/asn1.js)
-1. **assert@1.5.0**
+1. **assert@1.4.1**
      * Licenses: MIT
-     * Repository: [https://github.com/browserify/commonjs-assert](https://github.com/browserify/commonjs-assert)
+     * Repository: [https://github.com/defunctzombie/commonjs-assert](https://github.com/defunctzombie/commonjs-assert)
 1. **assign-symbols@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/assign-symbols](https://github.com/jonschlinkert/assign-symbols)
-1. **async-each@1.0.3**
+1. **async-each@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/paulmillr/async-each](https://github.com/paulmillr/async-each)
 1. **atob@2.1.2**
@@ -955,10 +958,10 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **big.js@5.2.2**
      * Licenses: MIT
      * Repository: [https://github.com/MikeMcl/big.js](https://github.com/MikeMcl/big.js)
-1. **binary-extensions@1.13.1**
+1. **binary-extensions@1.13.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/binary-extensions](https://github.com/sindresorhus/binary-extensions)
-1. **bluebird@3.5.5**
+1. **bluebird@3.5.3**
      * Licenses: MIT
      * Repository: [https://github.com/petkaantonov/bluebird](https://github.com/petkaantonov/bluebird)
 1. **bn.js@4.11.8**
@@ -1012,9 +1015,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **bytebuffer@5.0.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/dcodeIO/bytebuffer.js](https://github.com/dcodeIO/bytebuffer.js)
-1. **cacache@12.0.2**
+1. **cacache@11.3.2**
      * Licenses: ISC
-     * Repository: [https://github.com/npm/cacache](https://github.com/npm/cacache)
+     * Repository: [https://github.com/zkat/cacache](https://github.com/zkat/cacache)
 1. **cache-base@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/cache-base](https://github.com/jonschlinkert/cache-base)
@@ -1022,6 +1025,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
      * Licenses: MIT
      * Repository: [https://github.com/istanbuljs/caching-transform](https://github.com/istanbuljs/caching-transform)
 1. **camelcase@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
+1. **camelcase@5.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
 1. **camelcase@5.3.1**
@@ -1036,16 +1042,16 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **chalk@2.4.2**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/chalk](https://github.com/chalk/chalk)
+1. **chokidar@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/paulmillr/chokidar](https://github.com/paulmillr/chokidar)
 1. **chokidar@2.1.6**
      * Licenses: MIT
      * Repository: [https://github.com/paulmillr/chokidar](https://github.com/paulmillr/chokidar)
 1. **chownr@1.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/chownr](https://github.com/isaacs/chownr)
-1. **chownr@1.1.2**
-     * Licenses: ISC
-     * Repository: [https://github.com/isaacs/chownr](https://github.com/isaacs/chownr)
-1. **chrome-trace-event@1.0.2**
+1. **chrome-trace-event@1.0.0**
      * Licenses: MIT
      * Repository: [github.com:samccone/chrome-trace-event](github.com:samccone/chrome-trace-event)
 1. **cipher-base@1.0.4**
@@ -1057,13 +1063,16 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **cliui@3.2.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
+1. **cliui@4.1.0**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
 1. **cliui@5.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
 1. **code-point-at@1.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/code-point-at](https://github.com/sindresorhus/code-point-at)
-1. **codecov@3.5.0**
+1. **codecov@3.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/codecov/codecov-node](https://github.com/codecov/codecov-node)
 1. **collection-visit@1.0.0**
@@ -1081,13 +1090,19 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **commander@2.15.1**
      * Licenses: MIT
      * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
+1. **commander@2.17.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
+1. **commander@2.19.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
 1. **commander@2.20.0**
      * Licenses: MIT
      * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
 1. **commondir@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/substack/node-commondir](https://github.com/substack/node-commondir)
-1. **component-emitter@1.3.0**
+1. **component-emitter@1.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/component/emitter](https://github.com/component/emitter)
 1. **concat-map@0.0.1**
@@ -1114,16 +1129,16 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **copy-descriptor@0.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/copy-descriptor](https://github.com/jonschlinkert/copy-descriptor)
-1. **core-js-compat@3.2.0**
+1. **core-js-compat@3.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
-1. **core-js@2.6.9**
+1. **core-js@2.5.5**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
 1. **core-js@3.1.4**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
-1. **core-js@3.2.0**
+1. **core-js@3.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
 1. **core-util-is@1.0.2**
@@ -1225,10 +1240,10 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.224**
+1. **electron-to-chromium@1.3.233**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
-1. **elliptic@6.5.0**
+1. **elliptic@6.4.1**
      * Licenses: MIT
      * Repository: [https://github.com/indutny/elliptic](https://github.com/indutny/elliptic)
 1. **emoji-regex@7.0.3**
@@ -1252,7 +1267,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **es6-error@4.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/bjyoungblood/es6-error](https://github.com/bjyoungblood/es6-error)
-1. **es6-promise@4.2.8**
+1. **es6-promise@4.2.5**
      * Licenses: MIT
      * Repository: [https://github.com/stefanpenner/es6-promise](https://github.com/stefanpenner/es6-promise)
 1. **es6-promisify@5.0.0**
@@ -1261,7 +1276,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **escape-string-regexp@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/escape-string-regexp](https://github.com/sindresorhus/escape-string-regexp)
-1. **eslint-scope@4.0.3**
+1. **eslint-scope@4.0.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/eslint/eslint-scope](https://github.com/eslint/eslint-scope)
 1. **esprima@4.0.1**
@@ -1273,8 +1288,8 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **estraverse@4.2.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/estools/estraverse](https://github.com/estools/estraverse)
-1. **esutils@2.0.3**
-     * Licenses: BSD-2-Clause
+1. **esutils@2.0.2**
+     * Licenses: BSD
      * Repository: [https://github.com/estools/esutils](https://github.com/estools/esutils)
 1. **events@3.0.0**
      * Licenses: MIT
@@ -1315,9 +1330,12 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **fill-range@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/fill-range](https://github.com/jonschlinkert/fill-range)
-1. **find-babel-config@1.2.0**
+1. **find-babel-config@1.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/tleunen/find-babel-config](https://github.com/tleunen/find-babel-config)
+1. **find-cache-dir@2.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/avajs/find-cache-dir](https://github.com/avajs/find-cache-dir)
 1. **find-cache-dir@2.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/avajs/find-cache-dir](https://github.com/avajs/find-cache-dir)
@@ -1327,10 +1345,10 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **find-up@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/find-up](https://github.com/sindresorhus/find-up)
-1. **findup-sync@3.0.0**
+1. **findup-sync@2.0.0**
      * Licenses: MIT
-     * Repository: [https://github.com/gulpjs/findup-sync](https://github.com/gulpjs/findup-sync)
-1. **firebase@6.3.5**
+     * Repository: [https://github.com/js-cli/node-findup-sync](https://github.com/js-cli/node-findup-sync)
+1. **firebase@6.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **flush-write-stream@1.1.1**
@@ -1366,6 +1384,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **gauge@2.7.4**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/gauge](https://github.com/iarna/gauge)
+1. **get-caller-file@1.0.3**
+     * Licenses: ISC
+     * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
 1. **get-caller-file@2.0.5**
      * Licenses: ISC
      * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
@@ -1381,19 +1402,13 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **glob@7.1.2**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-glob](https://github.com/isaacs/node-glob)
-1. **glob@7.1.4**
+1. **glob@7.1.3**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-glob](https://github.com/isaacs/node-glob)
 1. **global-modules@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/global-modules](https://github.com/jonschlinkert/global-modules)
-1. **global-modules@2.0.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/jonschlinkert/global-modules](https://github.com/jonschlinkert/global-modules)
 1. **global-prefix@1.0.2**
-     * Licenses: MIT
-     * Repository: [https://github.com/jonschlinkert/global-prefix](https://github.com/jonschlinkert/global-prefix)
-1. **global-prefix@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/global-prefix](https://github.com/jonschlinkert/global-prefix)
 1. **globals@11.12.0**
@@ -1402,7 +1417,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **globals@9.18.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/globals](https://github.com/sindresorhus/globals)
-1. **graceful-fs@4.2.1**
+1. **graceful-fs@4.1.15**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-graceful-fs](https://github.com/isaacs/node-graceful-fs)
 1. **growl@1.10.5**
@@ -1411,7 +1426,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **grpc@1.22.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/grpc/grpc-node](https://github.com/grpc/grpc-node)
-1. **handlebars@4.3.1**
+1. **handlebars@4.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/wycats/handlebars.js](https://github.com/wycats/handlebars.js)
 1. **has-ansi@2.0.0**
@@ -1453,10 +1468,10 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **hmac-drbg@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/indutny/hmac-drbg](https://github.com/indutny/hmac-drbg)
-1. **homedir-polyfill@1.0.3**
+1. **homedir-polyfill@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/doowb/homedir-polyfill](https://github.com/doowb/homedir-polyfill)
-1. **hosted-git-info@2.8.2**
+1. **hosted-git-info@2.8.4**
      * Licenses: ISC
      * Repository: [https://github.com/npm/hosted-git-info](https://github.com/npm/hosted-git-info)
 1. **http-parser-js@0.4.10**
@@ -1465,7 +1480,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **https-browserify@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/substack/https-browserify](https://github.com/substack/https-browserify)
-1. **https-proxy-agent@2.2.2**
+1. **https-proxy-agent@2.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/TooTallNate/node-https-proxy-agent](https://github.com/TooTallNate/node-https-proxy-agent)
 1. **iconv-lite@0.4.23**
@@ -1474,7 +1489,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **idb@3.0.2**
      * Licenses: ISC
      * Repository: [https://github.com/jakearchibald/indexeddb-promised](https://github.com/jakearchibald/indexeddb-promised)
-1. **ieee754@1.1.13**
+1. **ieee754@1.1.12**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/feross/ieee754](https://github.com/feross/ieee754)
 1. **iferr@0.1.5**
@@ -1489,9 +1504,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **imurmurhash@0.1.4**
      * Licenses: MIT
      * Repository: [https://github.com/jensyt/imurmurhash-js](https://github.com/jensyt/imurmurhash-js)
-1. **infer-owner@1.0.4**
-     * Licenses: ISC
-     * Repository: [https://github.com/npm/infer-owner](https://github.com/npm/infer-owner)
+1. **indexof@0.0.1**
+     * Licenses: MIT*
+     * Repository: unknown
 1. **inflight@1.0.6**
      * Licenses: ISC
      * Repository: [https://github.com/npm/inflight](https://github.com/npm/inflight)
@@ -1499,9 +1514,6 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/inherits](https://github.com/isaacs/inherits)
 1. **inherits@2.0.3**
-     * Licenses: ISC
-     * Repository: [https://github.com/isaacs/inherits](https://github.com/isaacs/inherits)
-1. **inherits@2.0.4**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/inherits](https://github.com/isaacs/inherits)
 1. **ini@1.3.5**
@@ -1564,6 +1576,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **is-glob@3.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/is-glob](https://github.com/jonschlinkert/is-glob)
+1. **is-glob@4.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/jonschlinkert/is-glob](https://github.com/jonschlinkert/is-glob)
 1. **is-glob@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/micromatch/is-glob](https://github.com/micromatch/is-glob)
@@ -1579,9 +1594,6 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **is-windows@1.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/is-windows](https://github.com/jonschlinkert/is-windows)
-1. **is-wsl@1.1.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/is-wsl](https://github.com/sindresorhus/is-wsl)
 1. **isarray@0.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/juliangruber/isarray](https://github.com/juliangruber/isarray)
@@ -1624,6 +1636,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **js-tokens@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/js-tokens](https://github.com/lydell/js-tokens)
+1. **js-yaml@3.12.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/nodeca/js-yaml](https://github.com/nodeca/js-yaml)
 1. **js-yaml@3.13.1**
      * Licenses: MIT
      * Repository: [https://github.com/nodeca/js-yaml](https://github.com/nodeca/js-yaml)
@@ -1696,10 +1711,16 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **lodash.flattendeep@4.4.0**
      * Licenses: MIT
      * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
+1. **lodash@4.17.11**
+     * Licenses: MIT
+     * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
 1. **lodash@4.17.15**
      * Licenses: MIT
      * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
-1. **lolex@4.2.0**
+1. **lolex@2.7.5**
+     * Licenses: BSD-3-Clause
+     * Repository: [https://github.com/sinonjs/lolex](https://github.com/sinonjs/lolex)
+1. **lolex@3.1.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/lolex](https://github.com/sinonjs/lolex)
 1. **long@3.2.0**
@@ -1717,12 +1738,12 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **lru-cache@5.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-lru-cache](https://github.com/isaacs/node-lru-cache)
+1. **make-dir@1.3.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/make-dir](https://github.com/sindresorhus/make-dir)
 1. **make-dir@2.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/make-dir](https://github.com/sindresorhus/make-dir)
-1. **mamacro@0.0.3**
-     * Licenses: MIT
-     * Repository: unknown
 1. **map-age-cleaner@0.1.3**
      * Licenses: MIT
      * Repository: [https://github.com/SamVerschueren/map-age-cleaner](https://github.com/SamVerschueren/map-age-cleaner)
@@ -1735,7 +1756,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **md5.js@1.3.5**
      * Licenses: MIT
      * Repository: [https://github.com/crypto-browserify/md5.js](https://github.com/crypto-browserify/md5.js)
-1. **mem@4.3.0**
+1. **mem@4.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/mem](https://github.com/sindresorhus/mem)
 1. **memory-fs@0.4.1**
@@ -1750,7 +1771,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **miller-rabin@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/indutny/miller-rabin](https://github.com/indutny/miller-rabin)
-1. **mimic-fn@2.1.0**
+1. **mimic-fn@1.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/mimic-fn](https://github.com/sindresorhus/mimic-fn)
 1. **minimalistic-assert@1.0.1**
@@ -1777,7 +1798,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **mississippi@3.0.0**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/maxogden/mississippi](https://github.com/maxogden/mississippi)
-1. **mixin-deep@1.3.2**
+1. **mixin-deep@1.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/mixin-deep](https://github.com/jonschlinkert/mixin-deep)
 1. **mkdirp@0.5.1**
@@ -1792,6 +1813,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **ms@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/zeit/ms](https://github.com/zeit/ms)
+1. **ms@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/zeit/ms](https://github.com/zeit/ms)
 1. **ms@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/zeit/ms](https://github.com/zeit/ms)
@@ -1804,7 +1828,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **needle@2.4.0**
      * Licenses: MIT
      * Repository: [https://github.com/tomas/needle](https://github.com/tomas/needle)
-1. **neo-async@2.6.1**
+1. **neo-async@2.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/suguru03/neo-async](https://github.com/suguru03/neo-async)
 1. **nested-error-stacks@2.1.0**
@@ -1813,13 +1837,13 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **nice-try@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/electerious/nice-try](https://github.com/electerious/nice-try)
-1. **nise@1.5.1**
+1. **nise@1.4.8**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/nise](https://github.com/sinonjs/nise)
-1. **node-fetch@2.6.0**
+1. **node-fetch@2.3.0**
      * Licenses: MIT
      * Repository: [https://github.com/bitinn/node-fetch](https://github.com/bitinn/node-fetch)
-1. **node-libs-browser@2.2.1**
+1. **node-libs-browser@2.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/node-libs-browser](https://github.com/webpack/node-libs-browser)
 1. **node-modules-regexp@1.0.0**
@@ -1915,10 +1939,13 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **p-finally@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/p-finally](https://github.com/sindresorhus/p-finally)
-1. **p-is-promise@2.1.0**
+1. **p-is-promise@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/p-is-promise](https://github.com/sindresorhus/p-is-promise)
 1. **p-limit@1.3.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/p-limit](https://github.com/sindresorhus/p-limit)
+1. **p-limit@2.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/p-limit](https://github.com/sindresorhus/p-limit)
 1. **p-limit@2.2.0**
@@ -1933,13 +1960,16 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **p-try@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/p-try](https://github.com/sindresorhus/p-try)
+1. **p-try@2.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/p-try](https://github.com/sindresorhus/p-try)
 1. **p-try@2.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/p-try](https://github.com/sindresorhus/p-try)
 1. **package-hash@3.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/novemberborn/package-hash](https://github.com/novemberborn/package-hash)
-1. **pako@1.0.10**
+1. **pako@1.0.8**
      * Licenses: (MIT AND Zlib)
      * Repository: [https://github.com/nodeca/pako](https://github.com/nodeca/pako)
 1. **parallel-transform@1.1.0**
@@ -1957,7 +1987,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **pascalcase@0.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/pascalcase](https://github.com/jonschlinkert/pascalcase)
-1. **path-browserify@0.0.1**
+1. **path-browserify@0.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/substack/path-browserify](https://github.com/substack/path-browserify)
 1. **path-dirname@1.0.2**
@@ -2005,6 +2035,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **private@0.1.8**
      * Licenses: MIT
      * Repository: [https://github.com/benjamn/private](https://github.com/benjamn/private)
+1. **process-nextick-args@2.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/calvinmetcalf/process-nextick-args](https://github.com/calvinmetcalf/process-nextick-args)
 1. **process-nextick-args@2.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/calvinmetcalf/process-nextick-args](https://github.com/calvinmetcalf/process-nextick-args)
@@ -2056,7 +2089,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **querystring@0.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/Gozala/querystring](https://github.com/Gozala/querystring)
-1. **randombytes@2.1.0**
+1. **randombytes@2.0.6**
      * Licenses: MIT
      * Repository: [https://github.com/crypto-browserify/randombytes](https://github.com/crypto-browserify/randombytes)
 1. **randomfill@1.0.4**
@@ -2068,7 +2101,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **read-installed@4.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/read-installed](https://github.com/isaacs/read-installed)
-1. **read-package-json@2.0.13**
+1. **read-package-json@2.1.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/read-package-json](https://github.com/npm/read-package-json)
 1. **read-pkg-up@4.0.0**
@@ -2128,6 +2161,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **require-directory@2.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/troygoode/node-require-directory](https://github.com/troygoode/node-require-directory)
+1. **require-main-filename@1.0.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)
 1. **require-main-filename@2.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)
@@ -2149,7 +2185,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **resolve-url@0.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/resolve-url](https://github.com/lydell/resolve-url)
-1. **resolve@1.12.0**
+1. **resolve@1.10.0**
      * Licenses: MIT
      * Repository: [https://github.com/browserify/resolve](https://github.com/browserify/resolve)
 1. **ret@0.1.15**
@@ -2179,19 +2215,25 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **schema-utils@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack-contrib/schema-utils](https://github.com/webpack-contrib/schema-utils)
+1. **semver@5.6.0**
+     * Licenses: ISC
+     * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
 1. **semver@5.7.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
 1. **semver@6.3.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
-1. **serialize-javascript@1.7.0**
+1. **serialize-javascript@1.6.1**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/yahoo/serialize-javascript](https://github.com/yahoo/serialize-javascript)
 1. **set-blocking@2.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/set-blocking](https://github.com/yargs/set-blocking)
-1. **set-value@2.0.1**
+1. **set-value@0.4.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
+1. **set-value@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/set-value](https://github.com/jonschlinkert/set-value)
 1. **setimmediate@1.0.5**
@@ -2212,7 +2254,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **signal-exit@3.0.2**
      * Licenses: ISC
      * Repository: [https://github.com/tapjs/signal-exit](https://github.com/tapjs/signal-exit)
-1. **sinon@7.4.1**
+1. **sinon@7.2.3**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/sinon](https://github.com/sinonjs/sinon)
 1. **slash@1.0.0**
@@ -2239,6 +2281,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **source-map-resolve@0.5.2**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/source-map-resolve](https://github.com/lydell/source-map-resolve)
+1. **source-map-support@0.5.10**
+     * Licenses: MIT
+     * Repository: [https://github.com/evanw/node-source-map-support](https://github.com/evanw/node-source-map-support)
 1. **source-map-support@0.5.13**
      * Licenses: MIT
      * Repository: [https://github.com/evanw/node-source-map-support](https://github.com/evanw/node-source-map-support)
@@ -2251,7 +2296,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **source-map@0.6.1**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/mozilla/source-map](https://github.com/mozilla/source-map)
-1. **spawn-wrap@1.4.3**
+1. **spawn-wrap@1.4.2**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/spawn-wrap](https://github.com/isaacs/spawn-wrap)
 1. **spdx-compare@1.0.0**
@@ -2275,7 +2320,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.2.9**
+1. **spine-web@1.2.10**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **split-string@3.1.0**
@@ -2305,6 +2350,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **string-width@1.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
+1. **string-width@2.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
 1. **string-width@3.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)
@@ -2312,6 +2360,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
      * Licenses: MIT
      * Repository: [https://github.com/nodejs/string_decoder](https://github.com/nodejs/string_decoder)
 1. **strip-ansi@3.0.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/chalk/strip-ansi](https://github.com/chalk/strip-ansi)
+1. **strip-ansi@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/strip-ansi](https://github.com/chalk/strip-ansi)
 1. **strip-ansi@5.2.0**
@@ -2338,7 +2389,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **supports-color@6.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/supports-color](https://github.com/chalk/supports-color)
-1. **tapable@1.1.3**
+1. **tapable@1.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/tapable](https://github.com/webpack/tapable)
 1. **tar@4.4.10**
@@ -2347,19 +2398,22 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **teeny-request@3.11.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/fhinkel/teeny-request](https://github.com/fhinkel/teeny-request)
-1. **terser-webpack-plugin@1.4.1**
+1. **terser-webpack-plugin@1.2.2**
      * Licenses: MIT
      * Repository: [https://github.com/webpack-contrib/terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
-1. **terser@4.1.4**
+1. **terser@3.16.1**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/fabiosantoscode/terser](https://github.com/fabiosantoscode/terser)
 1. **test-exclude@5.2.3**
      * Licenses: ISC
      * Repository: [https://github.com/istanbuljs/istanbuljs](https://github.com/istanbuljs/istanbuljs)
+1. **text-encoding@0.6.4**
+     * Licenses: Unlicense
+     * Repository: [https://github.com/inexorabletash/text-encoding](https://github.com/inexorabletash/text-encoding)
 1. **through2@2.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/rvagg/through2](https://github.com/rvagg/through2)
-1. **timers-browserify@2.0.11**
+1. **timers-browserify@2.0.10**
      * Licenses: MIT
      * Repository: [https://github.com/jryans/timers-browserify](https://github.com/jryans/timers-browserify)
 1. **to-arraybuffer@1.0.1**
@@ -2386,6 +2440,9 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **trim-right@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/trim-right](https://github.com/sindresorhus/trim-right)
+1. **tslib@1.10.0**
+     * Licenses: Apache-2.0
+     * Repository: [https://github.com/Microsoft/tslib](https://github.com/Microsoft/tslib)
 1. **tty-browserify@0.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/substack/tty-browserify](https://github.com/substack/tty-browserify)
@@ -2410,18 +2467,21 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **unicode-property-aliases-ecmascript@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-property-aliases-ecmascript](https://github.com/mathiasbynens/unicode-property-aliases-ecmascript)
-1. **union-value@1.0.1**
+1. **union-value@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/union-value](https://github.com/jonschlinkert/union-value)
 1. **unique-filename@1.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/unique-filename](https://github.com/iarna/unique-filename)
-1. **unique-slug@2.0.2**
+1. **unique-slug@2.0.1**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/unique-slug](https://github.com/iarna/unique-slug)
 1. **unset-value@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/unset-value](https://github.com/jonschlinkert/unset-value)
+1. **upath@1.1.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/anodynos/upath](https://github.com/anodynos/upath)
 1. **upath@1.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/anodynos/upath](https://github.com/anodynos/upath)
@@ -2452,28 +2512,28 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **util@0.11.1**
      * Licenses: MIT
      * Repository: [https://github.com/defunctzombie/node-util](https://github.com/defunctzombie/node-util)
-1. **v8-compile-cache@2.0.3**
+1. **v8-compile-cache@2.0.2**
      * Licenses: MIT
-     * Repository: [https://github.com/zertosh/v8-compile-cache](https://github.com/zertosh/v8-compile-cache)
+     * Repository: unknown
 1. **validate-npm-package-license@3.0.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/kemitchell/validate-npm-package-license.js](https://github.com/kemitchell/validate-npm-package-license.js)
-1. **vm-browserify@1.1.0**
+1. **vm-browserify@0.0.4**
      * Licenses: MIT
      * Repository: [https://github.com/substack/vm-browserify](https://github.com/substack/vm-browserify)
 1. **watchpack@1.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/watchpack](https://github.com/webpack/watchpack)
-1. **webpack-cli@3.3.6**
+1. **webpack-cli@3.2.3**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-cli](https://github.com/webpack/webpack-cli)
 1. **webpack-merge@4.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/survivejs/webpack-merge](https://github.com/survivejs/webpack-merge)
-1. **webpack-sources@1.4.3**
+1. **webpack-sources@1.3.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-sources](https://github.com/webpack/webpack-sources)
-1. **webpack@4.39.1**
+1. **webpack@4.29.3**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack](https://github.com/webpack/webpack)
 1. **websocket-driver@0.7.3**
@@ -2500,7 +2560,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **wordwrap@0.0.3**
      * Licenses: MIT
      * Repository: [https://github.com/substack/node-wordwrap](https://github.com/substack/node-wordwrap)
-1. **worker-farm@1.7.0**
+1. **worker-farm@1.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/rvagg/node-worker-farm](https://github.com/rvagg/node-worker-farm)
 1. **wrap-ansi@2.1.0**
@@ -2518,7 +2578,7 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **xmlhttprequest@1.8.0**
      * Licenses: MIT
      * Repository: [https://github.com/driverdan/node-XMLHttpRequest](https://github.com/driverdan/node-XMLHttpRequest)
-1. **xtend@4.0.2**
+1. **xtend@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/Raynos/xtend](https://github.com/Raynos/xtend)
 1. **y18n@3.2.1**
@@ -2533,10 +2593,13 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
 1. **yallist@3.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/yallist](https://github.com/isaacs/yallist)
+1. **yargs-parser@11.1.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
 1. **yargs-parser@13.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
-1. **yargs@13.2.4**
+1. **yargs@12.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
 1. **yargs@13.3.0**
@@ -2547,12 +2610,12 @@ This report was generated on **Thu Dec 05 13:15:44 EET 2019** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Thu Dec 05 2019 13:15:47 GMT+0200 (Eastern European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Mon Dec 16 2019 23:16:10 GMT+0200 (FLE Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.2.9`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.2.10`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -3395,12 +3458,12 @@ This report was generated on **Thu Dec 05 2019 13:15:47 GMT+0200 (Eastern Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Dec 05 13:16:39 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Dec 16 23:16:28 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.2.9`
+# Dependencies of `io.spine:spine-js-tests:1.2.10`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3806,12 +3869,12 @@ This report was generated on **Thu Dec 05 13:16:39 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Dec 05 13:17:11 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Dec 16 23:16:37 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.2.9`
+# Dependencies of `io.spine:spine-test-app:1.2.10`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -5409,12 +5472,12 @@ This report was generated on **Thu Dec 05 13:17:11 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Dec 05 13:18:19 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Dec 16 23:17:16 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.2.9`
+# Dependencies of `io.spine:spine-testutil-web:1.2.10`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5881,12 +5944,12 @@ This report was generated on **Thu Dec 05 13:18:19 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Dec 05 13:18:28 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Dec 16 23:17:26 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.2.9`
+# Dependencies of `io.spine:spine-web:1.2.10`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -6429,4 +6492,4 @@ This report was generated on **Thu Dec 05 13:18:28 EET 2019** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Dec 05 13:18:39 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Mon Dec 16 23:17:37 EET 2019** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
