@@ -47,7 +47,7 @@ import {EnumValue} from 'google-protobuf/google/protobuf/type_pb';
  * Wraps the passed enum value as Protobuf `EnumValue` so it can be correctly processed by the
  * server.
  *
- * As enums in Protobuf JS are declared as plain numbers, their values can be passed to their
+ * As enums in Protobuf JS are declared as plain `number`s, their values can be passed to this
  * method as-is, for example: `enumValueOf(Task.Severity.HIGH)`.
  *
  * @param {!number} value the enum value
