@@ -28,6 +28,10 @@ import io.spine.server.projection.Projection;
 
 import java.util.List;
 
+import static io.spine.web.test.given.UserTasks.Load.HIGH;
+import static io.spine.web.test.given.UserTasks.Load.LOW;
+import static io.spine.web.test.given.UserTasks.Load.VERY_HIGH;
+
 /**
  * A projection representing a user and a list of {@link TaskId tasks} assigned to him.
  *
@@ -79,6 +83,17 @@ public class UserTasksProjection
     @Override
     public boolean getIsOverloaded() {
         return state().getTasksCount() > 1;
+    }
+
+    @Override
+    public UserTasks.Load getLoad() {
+        if (getTaskCount() == 0) {
+            return LOW;
+        } else if (getTaskCount() == 1) {
+            return HIGH;
+        } else {
+            return VERY_HIGH;
+        }
     }
 
     private boolean reassignedFromThisUser(TaskReassigned event) {

@@ -41,6 +41,25 @@ import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {isProtobufMessage, Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
+import {EnumValue} from 'google-protobuf/google/protobuf/type_pb';
+
+/**
+ * Wraps the passed enum value as Protobuf `EnumValue` so it can be correctly processed by the
+ * server.
+ *
+ * As enums in Protobuf JS are declared as plain `number`s, their values can be passed to this
+ * method as-is, for example: `enumValueOf(Task.Severity.HIGH)`.
+ *
+ * @param {!number} value the enum value
+ * @returns {EnumValue} the `EnumValue` instance
+ */
+export function enumValueOf(value) {
+  const result = new EnumValue();
+  result.setNumber(value);
+  return result;
+}
+
+const ENUM_VALUE_TYPE_URL = 'type.googleapis.com/google.protobuf.EnumValue';
 
 // TODO:2019-06-07:yegor.udovchenko: Cover `Filters` class with the unit tests
 // https://github.com/SpineEventEngine/web/issues/100
@@ -166,6 +185,9 @@ export class Filters {
       typedValue = TypedMessage.bool(value);
     } else if (value instanceof Date) {
       typedValue = TypedMessage.timestamp(value);
+    } else if (value instanceof EnumValue) {
+      const type = Type.of(EnumValue, ENUM_VALUE_TYPE_URL);
+      typedValue = new TypedMessage(value, type);
     } else if (value instanceof TypedMessage) {
       typedValue = value;
     } else if(isProtobufMessage(value)) {
