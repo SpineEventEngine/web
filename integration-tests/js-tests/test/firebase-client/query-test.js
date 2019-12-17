@@ -22,7 +22,7 @@ import assert from 'assert';
 import {ensureUserTasks, fail} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-test-environment';
 import {client} from './given/firebase-client';
-import {Filters} from '@lib/client/actor-request-factory';
+import {enumValueOf, Filters} from '@lib/client/actor-request-factory';
 import {TypedMessage} from '@lib/client/typed-message';
 import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
@@ -100,6 +100,13 @@ describe('FirebaseClient executes query built', function () {
         Filters.eq('task_count', 3)
       ],
       expectedUsers: () => users.filter(user => user.tasks.length === 3)
+    },
+    {
+      message: 'with `eq` filter targeting a enum column',
+      filters: [
+        Filters.eq('load', enumValueOf(UserTasks.Load.VERY_HIGH))
+      ],
+      expectedUsers: () => users.filter(user => user.tasks.length > 1)
     },
     {
       message: 'with `lt` filter',

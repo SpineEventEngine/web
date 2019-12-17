@@ -19,10 +19,10 @@
  */
 
 ext {
-    spineVersion = '1.2.9'
-    spineBaseVersion = '1.2.3'
+    spineVersion = '1.2.10'
+    spineBaseVersion = '1.2.4'
     
-    versionToPublish = '1.2.9'
+    versionToPublish = '1.2.10'
     versionToPublishJs = versionToPublish
 
     servletApiVersion = '3.1.0'
