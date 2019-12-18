@@ -1,6 +1,6 @@
 {
   "name": "client-js-tests",
-  "version": "1.2.10",
+  "version": "1.3.0",
   "license": "Apache-2.0",
   "description": "Tests of a `spine-web` JS library against the Spine-based application.",
   "scripts": {
