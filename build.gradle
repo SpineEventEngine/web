@@ -124,16 +124,16 @@ subprojects {
             /**
              * Force transitive dependencies.
              * Common 3rd party dependencies are forced by {@code forceConfiguration()} calls above.
-             * 
-             * The forced versions are selected as the highest among detected in the version 
+             *
+             * The forced versions are selected as the highest among detected in the version
              * conflict. Developers <em>may</em> select a higher version as the dependency in
-             * this project <em>IFF</em> this dependency is used directly or a newer version 
+             * this project <em>IFF</em> this dependency is used directly or a newer version
              * fixes a security issue.
-             * 
+             *
              * {@code proto-google-common-protos} starting with version {@code 1.1.0}
              * and {@code proto-google-iam-v1} starting with version {@code 0.1.29}
              * include Protobuf message definitions alongside with compiled Java.
-             * This breaks the Spine compiler which searches for all Protobuf definitions 
+             * This breaks the Spine compiler which searches for all Protobuf definitions
              * in classpath, and assumes they implement the Type URLs.
              */
             force (
@@ -155,16 +155,19 @@ subprojects {
                     "com.google.api.grpc:proto-google-common-protos:1.0.0",
                     "com.google.api.grpc:proto-google-iam-v1:0.1.28",
 
+                    "com.google.cloud:google-cloud-core:1.91.3",
+                    "com.google.api:gax:1.49.1",
+
                     "com.google.oauth-client:google-oauth-client:1.25.0",
 
                     "com.google.auth:google-auth-library-credentials:0.11.0",
                     "com.google.auth:google-auth-library-oauth2-http:0.11.0",
-                    
+
                     "com.google.j2objc:j2objc-annotations:1.3",
 
                     "com.google.http-client:google-http-client:1.29.0",
                     "com.google.http-client:google-http-client-jackson2:1.29.0",
-                    
+
                     "com.google.api-client:google-api-client:1.25.0",
 
                     "org.apache.httpcomponents:httpclient:4.5.5",
@@ -177,7 +180,7 @@ subprojects {
                     "io.netty:netty-transport:4.1.34.Final",
                     "io.netty:netty-handler:4.1.34.Final",
                     "io.netty:netty-codec-http:4.1.34.Final",
-                    
+
                     "javax.servlet:javax.servlet-api:$servletApiVersion", // see version.gradle
 
                     "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
