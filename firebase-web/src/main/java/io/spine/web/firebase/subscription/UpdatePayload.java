@@ -103,7 +103,7 @@ final class UpdatePayload {
                 .getEventUpdates()
                 .getEventList()
                 .stream()
-                .collect(toHashTable(Event::id, identity()));
+                .collect(toHashTable(Event::id, e -> e));
         return new UpdatePayload(messages);
     }
 
@@ -158,15 +158,5 @@ final class UpdatePayload {
         } else {
             node.addChild(id, StoredJson.encode(message));
         }
-    }
-
-    /**
-     * An identity {@link Event}-to-{@link Message} conversion.
-     *
-     * <p>The standard {@link Function#identity()} can't be applied because it requires having the
-     * exact same type as input and output.
-     */
-    private static Function<Event, Message> identity() {
-        return event -> event;
     }
 }
