@@ -126,7 +126,7 @@ class ListValueParser extends ObjectParser {
     object.forEach(
       function callback(currentValue, index, array) {
         let valueParser = new ValueParser();
-        array[index] = valueParser.parse(currentValue);
+        array[index] = valueParser.fromObject(currentValue);
       }
     );
     listValue.setValuesList(object);
@@ -160,11 +160,11 @@ class ValueParser extends ObjectParser {
       result.setBoolValue(object);
     } else if (Array.isArray(object)) {
       let parser = new ListValueParser(object);
-      let listValue = parser.parse(object);
+      let listValue = parser.fromObject(object);
       result.setListValue(listValue);
     } else {
       let parser = new StructParser(object);
-      let structValue = parser.parse(object);
+      let structValue = parser.fromObject(object);
       result.setStructValue(structValue);
     }
     return result;
