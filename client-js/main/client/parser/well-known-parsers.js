@@ -134,6 +134,18 @@ class ListValueParser extends ObjectParser {
   }
 }
 
+class StructParser extends ObjectParser {
+
+  fromObject(object) {
+    let result = new struct.Struct();
+    let values = new ValueParser();
+    for (let fieldName in object) {
+      result.getFieldsMap().set(fieldName, values.fromObject(object[fieldName]));
+    }
+    return result;
+  }
+}
+
 class ValueParser extends ObjectParser {
 
   fromObject(object) {
@@ -151,7 +163,9 @@ class ValueParser extends ObjectParser {
       let listValue = parser.parse(object);
       result.setListValue(listValue);
     } else {
-      // Is a Struct, unhandled for now.
+      let parser = new StructParser(object);
+      let structValue = parser.parse(object);
+      result.setStructValue(structValue);
     }
     return result;
   }
@@ -238,6 +252,7 @@ export const wellKnownParsers = new Map([
   ['type.googleapis.com/google.protobuf.Int64Value', new Int64ValueParser()],
   ['type.googleapis.com/google.protobuf.UInt32Value', new UInt32ValueParser()],
   ['type.googleapis.com/google.protobuf.UInt64Value', new UInt64ValueParser()],
+  ['type.googleapis.com/google.protobuf.Struct', new StructParser()],
   ['type.googleapis.com/google.protobuf.Value', new ValueParser()],
   ['type.googleapis.com/google.protobuf.ListValue', new ListValueParser()],
   ['type.googleapis.com/google.protobuf.Empty', new EmptyParser()],

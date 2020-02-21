@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.4.0`
+# Dependencies of `io.spine:spine-client-js:1.4.1`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -128,15 +128,15 @@
      * **POM Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.3
      * **POM Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -390,10 +390,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Feb 21 12:15:51 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.4.0`
+#NPM dependencies of `spine-web@1.4.1`
 
 ## `Production` dependencies:
 
@@ -403,7 +403,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **encoding@0.1.12**
      * Licenses: MIT
      * Repository: [https://github.com/andris9/encoding](https://github.com/andris9/encoding)
-1. **google-protobuf@3.11.2**
+1. **google-protobuf@3.11.4**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/protocolbuffers/protobuf/tree/master/js](https://github.com/protocolbuffers/protobuf/tree/master/js)
 1. **iconv-lite@0.4.24**
@@ -424,15 +424,15 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **safer-buffer@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)
-1. **spine-web@1.4.0**
+1. **spine-web@1.4.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tslib@1.10.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/Microsoft/tslib](https://github.com/Microsoft/tslib)
-1. **uuid@3.3.3**
+1. **uuid@3.4.0**
      * Licenses: MIT
-     * Repository: [https://github.com/kelektiv/node-uuid](https://github.com/kelektiv/node-uuid)
+     * Repository: [https://github.com/uuidjs/uuid](https://github.com/uuidjs/uuid)
 1. **whatwg-fetch@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/github/fetch](https://github.com/github/fetch)
@@ -441,229 +441,247 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 
 ## `Development` dependencies:
 
-1. **@babel/cli@7.7.7**
+1. **@babel/cli@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](https://github.com/babel/babel/tree/master/packages/babel-cli)
-1. **@babel/code-frame@7.5.5**
+1. **@babel/code-frame@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-code-frame](https://github.com/babel/babel/tree/master/packages/babel-code-frame)
-1. **@babel/core@7.7.7**
+1. **@babel/compat-data@7.8.5**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-compat-data](https://github.com/babel/babel/tree/master/packages/babel-compat-data)
+1. **@babel/core@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
-1. **@babel/generator@7.7.7**
+1. **@babel/generator@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-generator](https://github.com/babel/babel/tree/master/packages/babel-generator)
-1. **@babel/helper-annotate-as-pure@7.7.4**
+1. **@babel/helper-annotate-as-pure@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-annotate-as-pure](https://github.com/babel/babel/tree/master/packages/babel-helper-annotate-as-pure)
-1. **@babel/helper-builder-binary-assignment-operator-visitor@7.7.4**
+1. **@babel/helper-builder-binary-assignment-operator-visitor@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor](https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor)
-1. **@babel/helper-call-delegate@7.7.4**
+1. **@babel/helper-call-delegate@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-call-delegate](https://github.com/babel/babel/tree/master/packages/babel-helper-call-delegate)
-1. **@babel/helper-create-regexp-features-plugin@7.7.4**
+1. **@babel/helper-compilation-targets@7.8.4**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-compilation-targets](https://github.com/babel/babel/tree/master/packages/babel-helper-compilation-targets)
+1. **@babel/helper-create-regexp-features-plugin@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
-1. **@babel/helper-define-map@7.7.4**
+1. **@babel/helper-define-map@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-define-map](https://github.com/babel/babel/tree/master/packages/babel-helper-define-map)
-1. **@babel/helper-explode-assignable-expression@7.7.4**
+1. **@babel/helper-explode-assignable-expression@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression](https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression)
-1. **@babel/helper-function-name@7.7.4**
+1. **@babel/helper-function-name@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-function-name](https://github.com/babel/babel/tree/master/packages/babel-helper-function-name)
-1. **@babel/helper-get-function-arity@7.7.4**
+1. **@babel/helper-get-function-arity@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity](https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity)
-1. **@babel/helper-hoist-variables@7.7.4**
+1. **@babel/helper-hoist-variables@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables](https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables)
-1. **@babel/helper-member-expression-to-functions@7.7.4**
+1. **@babel/helper-member-expression-to-functions@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions](https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions)
-1. **@babel/helper-module-imports@7.7.4**
+1. **@babel/helper-module-imports@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports](https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports)
-1. **@babel/helper-module-transforms@7.7.5**
+1. **@babel/helper-module-transforms@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms](https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms)
-1. **@babel/helper-optimise-call-expression@7.7.4**
+1. **@babel/helper-optimise-call-expression@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression](https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression)
-1. **@babel/helper-plugin-utils@7.0.0**
+1. **@babel/helper-plugin-utils@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-plugin-utils](https://github.com/babel/babel/tree/master/packages/babel-helper-plugin-utils)
-1. **@babel/helper-regex@7.5.5**
+1. **@babel/helper-regex@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-regex](https://github.com/babel/babel/tree/master/packages/babel-helper-regex)
-1. **@babel/helper-remap-async-to-generator@7.7.4**
+1. **@babel/helper-remap-async-to-generator@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-remap-async-to-generator](https://github.com/babel/babel/tree/master/packages/babel-helper-remap-async-to-generator)
-1. **@babel/helper-replace-supers@7.7.4**
+1. **@babel/helper-replace-supers@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers](https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers)
-1. **@babel/helper-simple-access@7.7.4**
+1. **@babel/helper-simple-access@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access](https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access)
-1. **@babel/helper-split-export-declaration@7.7.4**
+1. **@babel/helper-split-export-declaration@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration](https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration)
-1. **@babel/helper-wrap-function@7.7.4**
+1. **@babel/helper-wrap-function@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function](https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function)
-1. **@babel/helpers@7.7.4**
+1. **@babel/helpers@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helpers](https://github.com/babel/babel/tree/master/packages/babel-helpers)
-1. **@babel/highlight@7.5.0**
+1. **@babel/highlight@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-highlight](https://github.com/babel/babel/tree/master/packages/babel-highlight)
-1. **@babel/parser@7.7.7**
+1. **@babel/parser@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-parser](https://github.com/babel/babel/tree/master/packages/babel-parser)
-1. **@babel/plugin-proposal-async-generator-functions@7.7.4**
+1. **@babel/plugin-proposal-async-generator-functions@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-async-generator-functions](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-async-generator-functions)
-1. **@babel/plugin-proposal-dynamic-import@7.7.4**
+1. **@babel/plugin-proposal-dynamic-import@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-dynamic-import](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-dynamic-import)
-1. **@babel/plugin-proposal-json-strings@7.7.4**
+1. **@babel/plugin-proposal-json-strings@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-json-strings](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-json-strings)
-1. **@babel/plugin-proposal-object-rest-spread@7.7.7**
+1. **@babel/plugin-proposal-nullish-coalescing-operator@7.8.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-nullish-coalescing-operator](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-nullish-coalescing-operator)
+1. **@babel/plugin-proposal-object-rest-spread@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread)
-1. **@babel/plugin-proposal-optional-catch-binding@7.7.4**
+1. **@babel/plugin-proposal-optional-catch-binding@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-catch-binding](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-catch-binding)
-1. **@babel/plugin-proposal-unicode-property-regex@7.7.7**
+1. **@babel/plugin-proposal-optional-chaining@7.8.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining)
+1. **@babel/plugin-proposal-unicode-property-regex@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-unicode-property-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-unicode-property-regex)
-1. **@babel/plugin-syntax-async-generators@7.7.4**
+1. **@babel/plugin-syntax-async-generators@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-async-generators](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-async-generators)
-1. **@babel/plugin-syntax-dynamic-import@7.7.4**
+1. **@babel/plugin-syntax-dynamic-import@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import)
-1. **@babel/plugin-syntax-json-strings@7.7.4**
+1. **@babel/plugin-syntax-json-strings@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-json-strings](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-json-strings)
-1. **@babel/plugin-syntax-object-rest-spread@7.7.4**
+1. **@babel/plugin-syntax-nullish-coalescing-operator@7.8.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-nullish-coalescing-operator](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-nullish-coalescing-operator)
+1. **@babel/plugin-syntax-object-rest-spread@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-object-rest-spread)
-1. **@babel/plugin-syntax-optional-catch-binding@7.7.4**
+1. **@babel/plugin-syntax-optional-catch-binding@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-catch-binding)
-1. **@babel/plugin-syntax-top-level-await@7.7.4**
+1. **@babel/plugin-syntax-optional-chaining@7.8.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-chaining](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-optional-chaining)
+1. **@babel/plugin-syntax-top-level-await@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-top-level-await](https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-top-level-await)
-1. **@babel/plugin-transform-arrow-functions@7.7.4**
+1. **@babel/plugin-transform-arrow-functions@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-arrow-functions](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-arrow-functions)
-1. **@babel/plugin-transform-async-to-generator@7.7.4**
+1. **@babel/plugin-transform-async-to-generator@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator)
-1. **@babel/plugin-transform-block-scoped-functions@7.7.4**
+1. **@babel/plugin-transform-block-scoped-functions@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoped-functions](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoped-functions)
-1. **@babel/plugin-transform-block-scoping@7.7.4**
+1. **@babel/plugin-transform-block-scoping@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping)
-1. **@babel/plugin-transform-classes@7.7.4**
+1. **@babel/plugin-transform-classes@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes)
-1. **@babel/plugin-transform-computed-properties@7.7.4**
+1. **@babel/plugin-transform-computed-properties@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties)
-1. **@babel/plugin-transform-destructuring@7.7.4**
+1. **@babel/plugin-transform-destructuring@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring)
-1. **@babel/plugin-transform-dotall-regex@7.7.7**
+1. **@babel/plugin-transform-dotall-regex@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-dotall-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-dotall-regex)
-1. **@babel/plugin-transform-duplicate-keys@7.7.4**
+1. **@babel/plugin-transform-duplicate-keys@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-duplicate-keys](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-duplicate-keys)
-1. **@babel/plugin-transform-exponentiation-operator@7.7.4**
+1. **@babel/plugin-transform-exponentiation-operator@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-exponentiation-operator](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-exponentiation-operator)
-1. **@babel/plugin-transform-for-of@7.7.4**
+1. **@babel/plugin-transform-for-of@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-for-of](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-for-of)
-1. **@babel/plugin-transform-function-name@7.7.4**
+1. **@babel/plugin-transform-function-name@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-function-name](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-function-name)
-1. **@babel/plugin-transform-literals@7.7.4**
+1. **@babel/plugin-transform-literals@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-literals](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-literals)
-1. **@babel/plugin-transform-member-expression-literals@7.7.4**
+1. **@babel/plugin-transform-member-expression-literals@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-member-expression-literals](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-member-expression-literals)
-1. **@babel/plugin-transform-modules-amd@7.7.5**
+1. **@babel/plugin-transform-modules-amd@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-amd](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-amd)
-1. **@babel/plugin-transform-modules-commonjs@7.7.5**
+1. **@babel/plugin-transform-modules-commonjs@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-commonjs](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-commonjs)
-1. **@babel/plugin-transform-modules-systemjs@7.7.4**
+1. **@babel/plugin-transform-modules-systemjs@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-systemjs](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-systemjs)
-1. **@babel/plugin-transform-modules-umd@7.7.4**
+1. **@babel/plugin-transform-modules-umd@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-umd](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-modules-umd)
-1. **@babel/plugin-transform-named-capturing-groups-regex@7.7.4**
+1. **@babel/plugin-transform-named-capturing-groups-regex@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
-1. **@babel/plugin-transform-new-target@7.7.4**
+1. **@babel/plugin-transform-new-target@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-new-target](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-new-target)
-1. **@babel/plugin-transform-object-super@7.7.4**
+1. **@babel/plugin-transform-object-super@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super)
-1. **@babel/plugin-transform-parameters@7.7.7**
+1. **@babel/plugin-transform-parameters@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters)
-1. **@babel/plugin-transform-property-literals@7.7.4**
+1. **@babel/plugin-transform-property-literals@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-property-literals](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-property-literals)
-1. **@babel/plugin-transform-regenerator@7.7.5**
+1. **@babel/plugin-transform-regenerator@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-regenerator](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-regenerator)
-1. **@babel/plugin-transform-reserved-words@7.7.4**
+1. **@babel/plugin-transform-reserved-words@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-reserved-words](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-reserved-words)
-1. **@babel/plugin-transform-shorthand-properties@7.7.4**
+1. **@babel/plugin-transform-shorthand-properties@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-shorthand-properties](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-shorthand-properties)
-1. **@babel/plugin-transform-spread@7.7.4**
+1. **@babel/plugin-transform-spread@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-spread](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-spread)
-1. **@babel/plugin-transform-sticky-regex@7.7.4**
+1. **@babel/plugin-transform-sticky-regex@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-sticky-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-sticky-regex)
-1. **@babel/plugin-transform-template-literals@7.7.4**
+1. **@babel/plugin-transform-template-literals@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-template-literals](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-template-literals)
-1. **@babel/plugin-transform-typeof-symbol@7.7.4**
+1. **@babel/plugin-transform-typeof-symbol@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-typeof-symbol](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-typeof-symbol)
-1. **@babel/plugin-transform-unicode-regex@7.7.4**
+1. **@babel/plugin-transform-unicode-regex@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex)
-1. **@babel/preset-env@7.7.7**
+1. **@babel/preset-env@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-env](https://github.com/babel/babel/tree/master/packages/babel-preset-env)
-1. **@babel/register@7.7.7**
+1. **@babel/register@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-register](https://github.com/babel/babel/tree/master/packages/babel-register)
-1. **@babel/template@7.7.4**
+1. **@babel/template@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-template](https://github.com/babel/babel/tree/master/packages/babel-template)
-1. **@babel/traverse@7.7.4**
+1. **@babel/traverse@7.8.4**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-traverse](https://github.com/babel/babel/tree/master/packages/babel-traverse)
-1. **@babel/types@7.7.4**
+1. **@babel/types@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-types](https://github.com/babel/babel/tree/master/packages/babel-types)
 1. **@firebase/app-types@0.4.3**
@@ -765,7 +783,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **@protobufjs/utf8@1.1.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/dcodeIO/protobuf.js](https://github.com/dcodeIO/protobuf.js)
-1. **@sinonjs/commons@1.7.0**
+1. **@sinonjs/commons@1.7.1**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/commons](https://github.com/sinonjs/commons)
 1. **@sinonjs/formatio@3.2.2**
@@ -777,13 +795,16 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **@sinonjs/text-encoding@0.7.1**
      * Licenses: (Unlicense OR Apache-2.0)
      * Repository: [https://github.com/inexorabletash/text-encoding](https://github.com/inexorabletash/text-encoding)
+1. **@tootallnate/once@1.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/TooTallNate/once](https://github.com/TooTallNate/once)
 1. **@types/bytebuffer@5.0.40**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/long@4.0.0**
+1. **@types/long@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/node@10.17.13**
+1. **@types/node@10.17.16**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@webassemblyjs/ast@1.8.5**
@@ -852,7 +873,10 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **acorn@6.4.0**
      * Licenses: MIT
      * Repository: [https://github.com/acornjs/acorn](https://github.com/acornjs/acorn)
-1. **agent-base@4.3.0**
+1. **agent-base@5.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/TooTallNate/node-agent-base](https://github.com/TooTallNate/node-agent-base)
+1. **agent-base@6.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/TooTallNate/node-agent-base](https://github.com/TooTallNate/node-agent-base)
 1. **ajv-errors@1.0.1**
@@ -861,7 +885,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **ajv-keywords@3.4.1**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv-keywords](https://github.com/epoberezkin/ajv-keywords)
-1. **ajv@6.10.2**
+1. **ajv@6.11.0**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/ajv](https://github.com/epoberezkin/ajv)
 1. **ansi-regex@2.1.1**
@@ -1017,7 +1041,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **browserify-zlib@0.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/devongovett/browserify-zlib](https://github.com/devongovett/browserify-zlib)
-1. **browserslist@4.8.3**
+1. **browserslist@4.8.7**
      * Licenses: MIT
      * Repository: [https://github.com/browserslist/browserslist](https://github.com/browserslist/browserslist)
 1. **buffer-from@1.1.1**
@@ -1050,7 +1074,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **camelcase@5.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
-1. **caniuse-lite@1.0.30001019**
+1. **caniuse-lite@1.0.30001028**
      * Licenses: CC-BY-4.0
      * Repository: [https://github.com/ben-eb/caniuse-lite](https://github.com/ben-eb/caniuse-lite)
 1. **chalk@1.1.3**
@@ -1065,7 +1089,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **chownr@1.1.2**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/chownr](https://github.com/isaacs/chownr)
-1. **chownr@1.1.3**
+1. **chownr@1.1.4**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/chownr](https://github.com/isaacs/chownr)
 1. **chrome-trace-event@1.0.2**
@@ -1086,7 +1110,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **code-point-at@1.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/code-point-at](https://github.com/sindresorhus/code-point-at)
-1. **codecov@3.6.1**
+1. **codecov@3.6.5**
      * Licenses: MIT
      * Repository: [https://github.com/codecov/codecov-node](https://github.com/codecov/codecov-node)
 1. **collection-visit@1.0.0**
@@ -1107,7 +1131,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **commander@2.20.3**
      * Licenses: MIT
      * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
-1. **commander@4.1.0**
+1. **commander@4.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
 1. **commondir@1.0.1**
@@ -1140,7 +1164,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **copy-descriptor@0.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/copy-descriptor](https://github.com/jonschlinkert/copy-descriptor)
-1. **core-js-compat@3.6.2**
+1. **core-js-compat@3.6.4**
      * Licenses: MIT
      * Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
 1. **core-js@2.6.11**
@@ -1245,7 +1269,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.328**
+1. **electron-to-chromium@1.3.356**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.5.2**
@@ -1255,6 +1279,9 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/emoji-regex](https://github.com/mathiasbynens/emoji-regex)
 1. **emojis-list@2.1.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/kikobeats/emojis-list](https://github.com/kikobeats/emojis-list)
+1. **emojis-list@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/kikobeats/emojis-list](https://github.com/kikobeats/emojis-list)
 1. **end-of-stream@1.4.4**
@@ -1275,12 +1302,6 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **es6-error@4.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/bjyoungblood/es6-error](https://github.com/bjyoungblood/es6-error)
-1. **es6-promise@4.2.8**
-     * Licenses: MIT
-     * Repository: [https://github.com/stefanpenner/es6-promise](https://github.com/stefanpenner/es6-promise)
-1. **es6-promisify@5.0.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/digitaldesignlabs/es6-promisify](https://github.com/digitaldesignlabs/es6-promisify)
 1. **escape-string-regexp@1.0.5**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/escape-string-regexp](https://github.com/sindresorhus/escape-string-regexp)
@@ -1299,7 +1320,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **esutils@2.0.3**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/estools/esutils](https://github.com/estools/esutils)
-1. **events@3.0.0**
+1. **events@3.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/Gozala/events](https://github.com/Gozala/events)
 1. **evp_bytestokey@1.0.3**
@@ -1323,7 +1344,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **extglob@2.0.4**
      * Licenses: MIT
      * Repository: [https://github.com/micromatch/extglob](https://github.com/micromatch/extglob)
-1. **fast-deep-equal@2.0.1**
+1. **fast-deep-equal@3.1.1**
      * Licenses: MIT
      * Repository: [https://github.com/epoberezkin/fast-deep-equal](https://github.com/epoberezkin/fast-deep-equal)
 1. **fast-json-stable-stringify@2.1.0**
@@ -1389,6 +1410,9 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **gauge@2.7.4**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/gauge](https://github.com/iarna/gauge)
+1. **gensync@1.0.0-beta.1**
+     * Licenses: MIT
+     * Repository: unknown
 1. **get-caller-file@2.0.5**
      * Licenses: ISC
      * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
@@ -1437,9 +1461,6 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **grpc@1.23.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/grpc/grpc-node](https://github.com/grpc/grpc-node)
-1. **handlebars@4.5.3**
-     * Licenses: MIT
-     * Repository: [https://github.com/wycats/handlebars.js](https://github.com/wycats/handlebars.js)
 1. **has-ansi@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/has-ansi](https://github.com/sindresorhus/has-ansi)
@@ -1485,13 +1506,19 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **hosted-git-info@2.8.5**
      * Licenses: ISC
      * Repository: [https://github.com/npm/hosted-git-info](https://github.com/npm/hosted-git-info)
+1. **html-escaper@2.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/WebReflection/html-escaper](https://github.com/WebReflection/html-escaper)
 1. **http-parser-js@0.4.10**
      * Licenses: MIT
      * Repository: [https://github.com/creationix/http-parser-js](https://github.com/creationix/http-parser-js)
+1. **http-proxy-agent@4.0.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/TooTallNate/node-http-proxy-agent](https://github.com/TooTallNate/node-http-proxy-agent)
 1. **https-browserify@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/substack/https-browserify](https://github.com/substack/https-browserify)
-1. **https-proxy-agent@2.2.4**
+1. **https-proxy-agent@4.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/TooTallNate/node-https-proxy-agent](https://github.com/TooTallNate/node-https-proxy-agent)
 1. **iconv-lite@0.4.24**
@@ -1638,12 +1665,9 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **istanbul-lib-source-maps@3.0.6**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/istanbuljs/istanbuljs](https://github.com/istanbuljs/istanbuljs)
-1. **istanbul-reports@2.2.6**
+1. **istanbul-reports@2.2.7**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/istanbuljs/istanbuljs](https://github.com/istanbuljs/istanbuljs)
-1. **js-levenshtein@1.1.6**
-     * Licenses: MIT
-     * Repository: [https://github.com/gustf/js-levenshtein](https://github.com/gustf/js-levenshtein)
 1. **js-tokens@3.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/js-tokens](https://github.com/lydell/js-tokens)
@@ -1686,7 +1710,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **kind-of@5.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/kind-of](https://github.com/jonschlinkert/kind-of)
-1. **kind-of@6.0.2**
+1. **kind-of@6.0.3**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/kind-of](https://github.com/jonschlinkert/kind-of)
 1. **lcid@1.0.0**
@@ -1695,6 +1719,12 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **lcid@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/lcid](https://github.com/sindresorhus/lcid)
+1. **leven@3.1.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/sindresorhus/leven](https://github.com/sindresorhus/leven)
+1. **levenary@1.1.1**
+     * Licenses: MIT
+     * Repository: [https://github.com/tanhauhau/levenary](https://github.com/tanhauhau/levenary)
 1. **license-checker@25.0.1**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/davglass/license-checker](https://github.com/davglass/license-checker)
@@ -1705,6 +1735,9 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
      * Licenses: MIT
      * Repository: [https://github.com/webpack/loader-runner](https://github.com/webpack/loader-runner)
 1. **loader-utils@1.2.3**
+     * Licenses: MIT
+     * Repository: [https://github.com/webpack/loader-utils](https://github.com/webpack/loader-utils)
+1. **loader-utils@1.4.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/loader-utils](https://github.com/webpack/loader-utils)
 1. **locate-path@2.0.0**
@@ -1794,9 +1827,6 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **minimatch@3.0.4**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/minimatch](https://github.com/isaacs/minimatch)
-1. **minimist@0.0.10**
-     * Licenses: MIT
-     * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
 1. **minimist@0.0.8**
      * Licenses: MIT
      * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
@@ -1863,7 +1893,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **node-pre-gyp@0.13.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/mapbox/node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
-1. **node-releases@1.1.44**
+1. **node-releases@1.1.49**
      * Licenses: MIT
      * Repository: [https://github.com/chicoxyzzy/node-releases](https://github.com/chicoxyzzy/node-releases)
 1. **nopt@4.0.1**
@@ -1920,9 +1950,6 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **once@1.4.0**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/once](https://github.com/isaacs/once)
-1. **optimist@0.6.1**
-     * Licenses: MIT*
-     * Repository: [https://github.com/substack/node-optimist](https://github.com/substack/node-optimist)
 1. **optjs@3.2.2**
      * Licenses: MIT
      * Repository: [https://github.com/dcodeIO/opt.js](https://github.com/dcodeIO/opt.js)
@@ -1974,7 +2001,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **package-hash@3.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/novemberborn/package-hash](https://github.com/novemberborn/package-hash)
-1. **pako@1.0.10**
+1. **pako@1.0.11**
      * Licenses: (MIT AND Zlib)
      * Repository: [https://github.com/nodeca/pako](https://github.com/nodeca/pako)
 1. **parallel-transform@1.2.0**
@@ -2145,7 +2172,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **regjsgen@0.5.1**
      * Licenses: MIT
      * Repository: [https://github.com/bnjmnt4n/regjsgen](https://github.com/bnjmnt4n/regjsgen)
-1. **regjsparser@0.6.2**
+1. **regjsparser@0.6.3**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/jviereck/regjsparser](https://github.com/jviereck/regjsparser)
 1. **release-zalgo@1.0.0**
@@ -2184,7 +2211,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **resolve-url@0.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/lydell/resolve-url](https://github.com/lydell/resolve-url)
-1. **resolve@1.14.2**
+1. **resolve@1.15.1**
      * Licenses: MIT
      * Repository: [https://github.com/browserify/resolve](https://github.com/browserify/resolve)
 1. **ret@0.1.15**
@@ -2307,7 +2334,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.4.0**
+1. **spine-web@1.4.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **split-string@3.1.0**
@@ -2328,6 +2355,9 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **stream-each@1.2.3**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/stream-each](https://github.com/mafintosh/stream-each)
+1. **stream-events@1.0.5**
+     * Licenses: MIT
+     * Repository: [https://github.com/stephenplusplus/stream-events](https://github.com/stephenplusplus/stream-events)
 1. **stream-http@2.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/jhiesey/stream-http](https://github.com/jhiesey/stream-http)
@@ -2358,6 +2388,9 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **strip-json-comments@2.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/strip-json-comments](https://github.com/sindresorhus/strip-json-comments)
+1. **stubs@3.0.0**
+     * Licenses: MIT
+     * Repository: [https://github.com/stephenplusplus/stubs](https://github.com/stephenplusplus/stubs)
 1. **supports-color@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/supports-color](https://github.com/chalk/supports-color)
@@ -2376,13 +2409,13 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **tar@4.4.10**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-tar](https://github.com/npm/node-tar)
-1. **teeny-request@3.11.3**
+1. **teeny-request@6.0.1**
      * Licenses: Apache-2.0
-     * Repository: [https://github.com/fhinkel/teeny-request](https://github.com/fhinkel/teeny-request)
+     * Repository: [https://github.com/googleapis/teeny-request](https://github.com/googleapis/teeny-request)
 1. **terser-webpack-plugin@1.4.3**
      * Licenses: MIT
      * Repository: [https://github.com/webpack-contrib/terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
-1. **terser@4.6.1**
+1. **terser@4.6.3**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/terser/terser](https://github.com/terser/terser)
 1. **test-exclude@5.2.3**
@@ -2424,9 +2457,6 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **typedarray@0.0.6**
      * Licenses: MIT
      * Repository: [https://github.com/substack/typedarray](https://github.com/substack/typedarray)
-1. **uglify-js@3.7.4**
-     * Licenses: BSD-2-Clause
-     * Repository: [https://github.com/mishoo/UglifyJS2](https://github.com/mishoo/UglifyJS2)
 1. **unicode-canonical-property-names-ecmascript@1.0.4**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-canonical-property-names-ecmascript](https://github.com/mathiasbynens/unicode-canonical-property-names-ecmascript)
@@ -2493,7 +2523,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **watchpack@1.6.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/watchpack](https://github.com/webpack/watchpack)
-1. **webpack-cli@3.3.10**
+1. **webpack-cli@3.3.11**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-cli](https://github.com/webpack/webpack-cli)
 1. **webpack-merge@4.2.2**
@@ -2502,7 +2532,7 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **webpack-sources@1.4.3**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack-sources](https://github.com/webpack/webpack-sources)
-1. **webpack@4.41.5**
+1. **webpack@4.41.6**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/webpack](https://github.com/webpack/webpack)
 1. **websocket-driver@0.7.3**
@@ -2526,9 +2556,6 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
 1. **window-size@0.1.4**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/window-size](https://github.com/jonschlinkert/window-size)
-1. **wordwrap@0.0.3**
-     * Licenses: MIT
-     * Repository: [https://github.com/substack/node-wordwrap](https://github.com/substack/node-wordwrap)
 1. **worker-farm@1.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/rvagg/node-worker-farm](https://github.com/rvagg/node-worker-farm)
@@ -2579,15 +2606,15 @@ This report was generated on **Wed Jan 08 12:29:03 EET 2020** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Fri Feb 21 2020 12:15:53 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.4.0`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.4.1`
 
 ## Runtime
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2595,7 +2622,7 @@ This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2739,11 +2766,11 @@ This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [
      * **Manifest Project URL:** [http://www.google.com/](http://www.google.com/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -2872,7 +2899,7 @@ This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [
      * **POM Project URL:** [http://jcommander.org](http://jcommander.org)
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2880,7 +2907,7 @@ This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3066,15 +3093,15 @@ This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [
      * **POM Project URL:** [https://github.com/google/protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin)
      * **POM License: BSD 3-Clause** - [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.3
      * **POM Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -3394,12 +3421,12 @@ This report was generated on **Wed Jan 08 2020 12:29:06 GMT+0200 (EET)** using [
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 08 12:29:16 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Feb 21 12:15:57 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.4.0`
+# Dependencies of `io.spine:spine-js-tests:1.4.1`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3441,7 +3468,7 @@ This report was generated on **Wed Jan 08 12:29:16 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [http://jcommander.org](http://jcommander.org)
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3449,7 +3476,7 @@ This report was generated on **Wed Jan 08 12:29:16 EET 2020** using [Gradle-Lice
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3542,15 +3569,15 @@ This report was generated on **Wed Jan 08 12:29:16 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.3
      * **POM Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -3819,15 +3846,15 @@ This report was generated on **Wed Jan 08 12:29:16 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Feb 21 12:16:11 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.4.0`
+# Dependencies of `io.spine:spine-test-app:1.4.1`
 
 ## Runtime
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3835,7 +3862,7 @@ This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-Lice
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3979,11 +4006,11 @@ This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-Lice
      * **Manifest Project URL:** [http://www.google.com/](http://www.google.com/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -4129,7 +4156,7 @@ This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [http://jcommander.org](http://jcommander.org)
      * **POM License: Apache 2.0** - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4137,7 +4164,7 @@ This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-Lice
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.10.1
+1. **Group:** com.fasterxml.jackson.core **Name:** jackson-databind **Version:** 2.9.10.1
      * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4323,15 +4350,15 @@ This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/google/protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin)
      * **POM License: BSD 3-Clause** - [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.3
      * **POM Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -5389,12 +5416,12 @@ This report was generated on **Wed Jan 08 12:29:35 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Feb 21 12:16:13 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.4.0`
+# Dependencies of `io.spine:spine-testutil-web:1.4.1`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5449,11 +5476,11 @@ This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -5618,11 +5645,11 @@ This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -5875,12 +5902,12 @@ This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Feb 21 12:16:14 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.4.0`
+# Dependencies of `io.spine:spine-web:1.4.1`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5935,11 +5962,11 @@ This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -6112,15 +6139,15 @@ This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/google/protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin)
      * **POM License: BSD 3-Clause** - [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protobuf-java-util **Version:** 3.11.3
      * **Manifest Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.1
+1. **Group:** com.google.protobuf **Name:** protoc **Version:** 3.11.3
      * **POM Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **POM License: 3-Clause BSD License** - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -6390,4 +6417,4 @@ This report was generated on **Wed Jan 08 12:29:38 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 08 12:29:43 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Feb 21 12:16:16 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
