@@ -88,11 +88,22 @@ describe('TypeParsers', () => {
     };
     const parser = TypeParsers.parserFor(Struct.typeUrl());
     const parsed = parser.fromObject(struct);
-    console.log(parsed);
-    console.log(parsed.getFieldsMap());
-    assert.equal(parsed.getFieldsMap().get('foo').getNumberValue(), struct['foo']);
-    assert.equal(parsed.getFieldsMap().get('bar').getStructValue().getFieldsMap().get('baz').getStringValue(), struct['bar']['baz']);
-    assert.equal(parsed.getFieldsMap().get('newValue').getStringValue(), struct['newValue']);
-    assert.equal(parsed.getFieldsMap().get('anArray').getListValue().getValuesList(), struct['anArray']);
+    const map = parsed.getFieldsMap();
+    assert.equal(
+        map.get('foo').getNumberValue(),
+        struct['foo']
+    );
+    assert.equal(
+        map.get('bar').getStructValue().getFieldsMap().get('baz').getStringValue(),
+        struct['bar']['baz']
+    );
+    assert.equal(
+        map.get('newValue').getStringValue(),
+        struct['newValue']
+    );
+    assert.equal(
+        map.get('anArray').getListValue().getValuesList(),
+        struct['anArray']
+    );
   });
 });
