@@ -20,7 +20,7 @@
 
 ext {
     spineVersion = '1.4.8'
-    spineBaseVersion = '1.4.6'
+    spineBaseVersion = '1.4.7'
     
     versionToPublish = '1.4.1'
     versionToPublishJs = versionToPublish
