@@ -74,9 +74,12 @@ describe('FirebaseClient "fetch"', function () {
             );
             assert.ok(targetObject);
           });
-
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+           console.error(e);
+           fail(done);
+        });
   });
 
   it('returns the correct value by a single ID', done => {
@@ -90,7 +93,11 @@ describe('FirebaseClient "fetch"', function () {
           const item = data[0];
           assert.ok(item.getId().getValue() === id.getValue());
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('ignores `byId` parameter when an empty list is specified', done => {
@@ -101,7 +108,11 @@ describe('FirebaseClient "fetch"', function () {
           assert.ok(Array.isArray(data));
           assert.ok(data.length >= taskIds.length);
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('ignores `byId` parameter when a `null` value is specified', done => {
@@ -112,7 +123,11 @@ describe('FirebaseClient "fetch"', function () {
           assert.ok(Array.isArray(data));
           assert.ok(data.length >= taskIds.length);
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('returns empty list when fetches entity by a single ID that is missing', done => {
@@ -125,7 +140,11 @@ describe('FirebaseClient "fetch"', function () {
           assert.ok(Array.isArray(data));
           assert.ok(data.length === 0);
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('returns correct values by multiple IDs', done => {
@@ -141,7 +160,11 @@ describe('FirebaseClient "fetch"', function () {
           });
 
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('retrieves an empty list for an entity type that does not get instantiated', done => {
@@ -150,7 +173,11 @@ describe('FirebaseClient "fetch"', function () {
         .then(data => {
           assert.ok(data.length === 0);
           done();
-        }, fail(done));
+        })
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('fetches entities using a manually created `Query`', done => {
@@ -166,10 +193,12 @@ describe('FirebaseClient "fetch"', function () {
             const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
             assert.ok(targetObject);
           });
-
           done();
         })
-        .catch(() => fail(done));
+        .catch((e) => {
+            console.error(e);
+            fail(done);
+        });
   });
 
   it('fails a malformed query', done => {
