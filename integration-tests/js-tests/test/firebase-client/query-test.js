@@ -194,7 +194,7 @@ describe('FirebaseClient executes query built', function () {
           const seconds = lastUpdatedTimestamp.getSeconds();
           const nanos = lastUpdatedTimestamp.getNanos();
           const millis = seconds * 1000 + nanos / 1000000;
-          const lowerBound = new Date(millis);
+          const lowerBound = new Date(millis - 1);
           const higherBound = new Date(millis + 1);
 
           client.select(UserTasks)
