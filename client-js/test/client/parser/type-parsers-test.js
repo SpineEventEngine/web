@@ -24,6 +24,7 @@ import TypeParsers from '@lib/client/parser/type-parsers';
 
 import {Any} from '@proto/google/protobuf/any_pb';
 import {StringValue} from '@proto/google/protobuf/wrappers_pb';
+import {Struct} from '@proto/google/protobuf/struct_pb';
 import {StringChange} from '@proto/spine/change/change_pb';
 
 import {registerProtobufTypes} from './../test-helpers';
@@ -74,5 +75,35 @@ describe('TypeParsers', () => {
     assert.equal(parsedAny.getTypeUrl(), StringChange.typeUrl());
     assert.equal(packagedMessage.getPreviousValue(), anyObject.previousValue);
     assert.equal(packagedMessage.getNewValue(), anyObject.newValue);
+  });
+
+  it('parses Structs and Values', () => {
+    const struct = {
+      'foo': 42,
+      'bar': {
+        'baz': 'my-string'
+      },
+      'newValue': 'new value',
+      'anArray': ['eins', 'zwei', 'drei']
+    };
+    const parser = TypeParsers.parserFor(Struct.typeUrl());
+    const parsed = parser.fromObject(struct);
+    const map = parsed.getFieldsMap();
+    assert.equal(
+        map.get('foo').getNumberValue(),
+        struct['foo']
+    );
+    assert.equal(
+        map.get('bar').getStructValue().getFieldsMap().get('baz').getStringValue(),
+        struct['bar']['baz']
+    );
+    assert.equal(
+        map.get('newValue').getStringValue(),
+        struct['newValue']
+    );
+    assert.equal(
+        map.get('anArray').getListValue().getValuesList(),
+        struct['anArray']
+    );
   });
 });

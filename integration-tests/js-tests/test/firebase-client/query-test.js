@@ -194,10 +194,11 @@ describe('FirebaseClient executes query built', function () {
           const seconds = lastUpdatedTimestamp.getSeconds();
           const nanos = lastUpdatedTimestamp.getNanos();
           const millis = seconds * 1000 + nanos / 1000000;
-          const whenFirstUserGotTask = new Date(millis);
+          const flukeMillis = 1;
 
           client.select(UserTasks)
-              .where(Filters.eq('last_updated', whenFirstUserGotTask))
+              .where([Filters.gt('last_updated', new Date(millis - flukeMillis)),
+                      Filters.lt('last_updated', new Date(millis + flukeMillis))])
               .run()
               .then(userTasksList => {
                 assert.ok(Array.isArray(userTasksList));
@@ -207,7 +208,14 @@ describe('FirebaseClient executes query built', function () {
                 assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
                 done();
               })
-              .catch(() => fail(done));
+              .catch((e) => {
+                console.error("Failed 2nd query: " + e);
+                fail(done);
+              });
+        })
+        .catch((e) => {
+          console.error("Failed 1st query: " + e);
+          fail(done);
         });
   });
 });
