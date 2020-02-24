@@ -194,10 +194,12 @@ describe('FirebaseClient executes query built', function () {
           const seconds = lastUpdatedTimestamp.getSeconds();
           const nanos = lastUpdatedTimestamp.getNanos();
           const millis = seconds * 1000 + nanos / 1000000;
-          const whenFirstUserGotTask = new Date(millis);
+          const lowerBound = new Date(millis);
+          const higherBound = new Date(millis + 1);
 
           client.select(UserTasks)
-              .where(Filters.eq('last_updated', whenFirstUserGotTask))
+              .where([Filters.gt('last_updated', lowerBound),
+                      Filters.lt('last_updated', higherBound)])
               .run()
               .then(userTasksList => {
                 assert.ok(Array.isArray(userTasksList));
