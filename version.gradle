@@ -19,8 +19,8 @@
  */
 
 ext {
-    spineVersion = '1.4.8'
-    spineBaseVersion = '1.4.7'
+    spineVersion = '1.4.12'
+    spineBaseVersion = '1.4.10'
     
     versionToPublish = '1.4.1'
     versionToPublishJs = versionToPublish
