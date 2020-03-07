@@ -48,7 +48,7 @@ import {FilteringRequest} from "./filtering-request";
 export class QueryRequest extends FilteringRequest {
 
   /**
-   * @param {!Class<T extends Message>} targetType the target type of entities
+   * @param {!Class<Message>} targetType the target type of entities
    * @param {!Client} client the client which initiated the request
    * @param {!ActorRequestFactory} actorRequestFactory the request factory
    */
@@ -97,7 +97,7 @@ export class QueryRequest extends FilteringRequest {
   /**
    * Runs the query and obtains the results.
    *
-   * @return {Promise<<T extends Message>[]>} the asynchronously resolved query results
+   * @return {Promise<Message[]>} the asynchronously resolved query results
    */
   run() {
     const query = this.query();

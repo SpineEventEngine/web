@@ -97,7 +97,7 @@ export class Client {
   /**
    * Creates a query request that allows to configure and post a new query.
    *
-   * @param {!Class<? extends Message>} entityType a Protobuf type of the query target entities
+   * @param {!Class<Message>} entityType a Protobuf type of the query target entities
    * @return {QueryRequest} the builder to construct and post a new query
    */
   select(entityType) {
@@ -109,7 +109,7 @@ export class Client {
    * Spine server fulfilling a returned promise with an array of received objects.
    *
    * @param {!spine.client.Query} query a query instance to be executed
-   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   * @return {Promise<Message[]>} a promise to be fulfilled with a list of Protobuf
    *        messages of a given type or with an empty list if no entities matching given query
    *        were found; rejected with a `SpineError` if error occurs
    *
@@ -124,7 +124,7 @@ export class Client {
    * Spine server fulfilling a returned promise with an array of received objects.
    *
    * @param {!spine.client.Query} query a query instance to be executed
-   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   * @return {Promise<Message[]>} a promise to be fulfilled with a list of Protobuf
    *        messages of a given type or with an empty list if no entities matching given query
    *        were found; rejected with a `SpineError` if error occurs;
    *
@@ -170,7 +170,7 @@ export class Client {
   /**
    * Creates a subscription request that allows to configure and post a new entity subscription.
    *
-   * @param {!Class<? extends Message>} entityType a Protobuf type of the target entities
+   * @param {!Class<Message>} entityType a Protobuf type of the target entities
    * @return {SubscriptionRequest} the builder for the new entity subscription
    */
   subscribeTo(entityType) {
@@ -184,7 +184,7 @@ export class Client {
    * the topic that targets events.
    *
    * @param {!spine.client.Topic} topic a topic to subscribe to
-   * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+   * @return {Promise<EntitySubscriptionObject<Message>>}
    *         the subscription object which exposes entity changes via its callbacks
    *
    * @template <T> a Protobuf type of entities being the target of a subscription
@@ -197,7 +197,7 @@ export class Client {
    * Creates an event subscription request that allows to configure and post a new event
    * subscription.
    *
-   * @param {!Class<? extends Message>} eventType a Protobuf type of the target events
+   * @param {!Class<Message>} eventType a Protobuf type of the target events
    * @return {EventSubscriptionRequest} the builder for the new event subscription
    */
   subscribeToEvent(eventType) {

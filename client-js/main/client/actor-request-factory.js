@@ -69,7 +69,7 @@ const ENUM_VALUE_TYPE_URL = 'type.googleapis.com/google.protobuf.EnumValue';
 export class Filters {
 
   /**
-   * @typedef {string | number | boolean | Date | TypedMessage<T> | <T extends Message>} FieldValue
+   * @typedef {string | number | boolean | Date | TypedMessage<T> | Message} FieldValue
    *
    * Represents all types acceptable as a value for filtering.
    *
@@ -382,11 +382,13 @@ const INVALID_FILTER_TYPE =
 class AbstractTargetBuilder {
 
   /**
-   * @param {!Class<T extends Message>} entity a Protobuf type of the target entities
+   * @param {!Class<Message>} entity a Protobuf type of the target entities
    */
   constructor(entity) {
     /**
-     * @type {Type} a type composed from the target entity class
+     * A type composed from the target entity class.
+     * 
+     * @type {Type}
      * @private
      */
     this._type = Type.forClass(entity);
@@ -417,7 +419,7 @@ class AbstractTargetBuilder {
    *
    * If number IDs are passed they are assumed to be of `int64` Protobuf type.
    *
-   * @param {!<T extends Message>[]|Number[]|String[]} ids an array with identifiers to query
+   * @param {!Message[]|!Number[]|!String[]} ids an array with identifiers to query
    * @return {this} the current builder instance
    * @throws if this method is executed more than once
    * @throws if the provided IDs are not an instance of `Array`
@@ -554,7 +556,7 @@ class AbstractTargetBuilder {
    * Checks that each provided item is an instance of the provided class. In case the check does
    * not pass an error is thrown.
    *
-   * @param {![]} items an array of objects that are expected to be of the provided type
+   * @param {!Array} items an array of objects that are expected to be of the provided type
    * @param {!Object} cls a class each item is required to be instance of
    * @param {!String} message an error message thrown on type mismatch
    * @private
@@ -572,7 +574,7 @@ class AbstractTargetBuilder {
   }
 
   /**
-   * @param {![]} items an array of objects that are expected to be strings
+   * @param {!Array} items an array of objects that are expected to be strings
    * @param {!String} message an error message thrown on type mismatch
    * @private
    */
@@ -585,7 +587,7 @@ class AbstractTargetBuilder {
   }
 
   /**
-   * @param {![]} items an array of objects that are expected to be numbers
+   * @param {!Array} items an array of objects that are expected to be numbers
    * @param {!String} message an error message thrown on type mismatch
    * @private
    */
@@ -598,7 +600,7 @@ class AbstractTargetBuilder {
   }
 
   /**
-   * @param {![]} items an array of objects that are expected to be booleans
+   * @param {!Array} items an array of objects that are expected to be booleans
    * @param {!String} message an error message thrown on type mismatch
    * @private
    */
@@ -612,7 +614,7 @@ class AbstractTargetBuilder {
 
   /**
    * @param {!Object} cls a class tyo check items against
-   * @param {![]} items an array of objects that are expected to instances of class
+   * @param {!Array} items an array of objects that are expected to instances of class
    * @param {!String} message an error message thrown on type mismatch
    * @private
    */
@@ -635,7 +637,7 @@ class AbstractTargetBuilder {
 class QueryBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Class<T extends Message>} entity a Protobuf type of the query target entities
+   * @param {!Class<Message>} entity a Protobuf type of the query target entities
    * @param {!QueryFactory} queryFactory
    */
   constructor(entity, queryFactory) {
@@ -760,7 +762,7 @@ class QueryFactory {
   /**
    * Creates a new builder of `Query` instances of the provided type.
    *
-   * @param {!Class<T extend Message>} entity a Protobuf type of the query target entities
+   * @param {!Class<Message>} entity a Protobuf type of the query target entities
    * @return {QueryBuilder}
    */
   select(entity) {
@@ -878,7 +880,7 @@ class CommandFactory {
 class TopicBuilder extends AbstractTargetBuilder {
 
   /**
-   * @param {!Class<T extends Message>} entity a Protobuf type of the subscription target entities
+   * @param {!Class<Message>} entity a Protobuf type of the subscription target entities
    * @param {!TopicFactory} topicFactory
    */
   constructor(entity, topicFactory) {
@@ -925,7 +927,7 @@ class TopicFactory {
   /**
    * Creates a new builder of `Topic` instances of the provided type.
    *
-   * @param {!Class<T extend Message>} entity a Protobuf type of the subscription target entities
+   * @param {!Class<Message>} entity a Protobuf type of the subscription target entities
    * @return {TopicBuilder}
    */
   select(entity) {

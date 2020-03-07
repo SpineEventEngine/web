@@ -52,7 +52,7 @@ class SubscribingRequest extends FilteringRequest {
   /**
    * Posts a subscription request and returns the result as `Promise`.
    *
-   * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
+   * @return {Promise<EntitySubscriptionObject<Message> | EventSubscriptionObject>}
    *         the asynchronously resolved subscription object
    */
   post() {
@@ -69,7 +69,7 @@ class SubscribingRequest extends FilteringRequest {
 
   /**
    * @abstract
-   * @return {Promise<EntitySubscriptionObject<T extends Message> | EventSubscriptionObject>}
+   * @return {Promise<EntitySubscriptionObject<Message> | EventSubscriptionObject>}
    *
    * @protected
    */
@@ -109,7 +109,7 @@ class SubscribingRequest extends FilteringRequest {
 export class SubscriptionRequest extends SubscribingRequest {
 
   /**
-   * @param {!Class<T extends Message>} entityType the target entity type
+   * @param {!Class<Message>} entityType the target entity type
    * @param {!Client} client the client which initiated the request
    * @param {!ActorRequestFactory} actorRequestFactory the request factory
    */
@@ -120,7 +120,7 @@ export class SubscriptionRequest extends SubscribingRequest {
   /**
    * @inheritDoc
    *
-   * @return {Promise<EntitySubscriptionObject<T extends Message>>}
+   * @return {Promise<EntitySubscriptionObject<Message>>}
    */
   _subscribe(topic) {
     return this._client.subscribe(topic);
@@ -163,7 +163,7 @@ export class SubscriptionRequest extends SubscribingRequest {
 export class EventSubscriptionRequest extends SubscribingRequest {
 
   /**
-   * @param {!Class<? extends Message>} eventType the target event type
+   * @param {!Class<Message>} eventType the target event type
    * @param {!Client} client the client which initiated the request
    * @param {!ActorRequestFactory} actorRequestFactory the request factory
    */

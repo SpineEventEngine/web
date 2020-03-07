@@ -90,10 +90,14 @@ export class DirectClientFactory extends AbstractClientFactory {
 class DirectQueryingClient extends QueryingClient {
 
   /**
+   * An internal `DirectQueryingClient` constructor.
+   *
+   * Use `FirebaseClient#usingFirebase()` for instantiation.
+   *
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
    *
-   * @protected use `FirebaseClient#usingFirebase()` for instantiation
+   * @protected
    */
   constructor(endpoint, actorRequestFactory) {
     super(actorRequestFactory);

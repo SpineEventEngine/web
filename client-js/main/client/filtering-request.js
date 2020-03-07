@@ -31,7 +31,7 @@ import {ClientRequest} from "./client-request";
 export class FilteringRequest extends ClientRequest {
 
   /**
-   * @param {!Class<? extends Message>} targetType the target type of the request
+   * @param {!Class<Message>} targetType the target type of the request
    * @param {!Client} client the client which initiated the request
    * @param {!ActorRequestFactory} actorRequestFactory the request factory
    *
@@ -45,7 +45,7 @@ export class FilteringRequest extends ClientRequest {
   /**
    * Adds filtering by IDs to the built request.
    *
-   * @param ids {!<? extends Message>|Number|String|<? extends Message>[]|Number[]|String[]}
+   * @param ids {!Message|Number|String|Message[]|Number[]|String[]}
    *        the IDs of interest
    * @return {this} self for method chaining
    */
@@ -87,7 +87,7 @@ export class FilteringRequest extends ClientRequest {
   /**
    * Returns the builder for messages that store request data.
    *
-   * @return {AbstractTargetBuilder<T extends Message>} the builder instance
+   * @return {AbstractTargetBuilder<Message>} the builder instance
    *
    * @protected
    */
@@ -100,10 +100,17 @@ export class FilteringRequest extends ClientRequest {
   }
 
   /**
+   * @callback _NewBuilderFn
+   *
+   * @param {ActorRequestFactory}
+   * @return {AbstractTargetBuilder}
+   */
+
+  /**
    * Returns the function with which the {@link _builderInstance} can be created.
    *
    * @abstract
-   * @return {Function<ActorRequestFactory, B extends AbstractTargetBuilder>}
+   * @return {_NewBuilderFn}
    *
    * @protected
    */
