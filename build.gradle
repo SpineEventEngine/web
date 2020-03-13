@@ -114,7 +114,7 @@ subprojects {
         testImplementation deps.test.junit5Runner
         testImplementation deps.test.mockito
         testImplementation deps.test.hamcrest
-        testImplementation "io.spine:spine-testutil-client:$spineVersion"
+        testImplementation "io.spine:spine-testutil-client:$spineCoreVersion"
     }
 
     forceConfiguration(project)

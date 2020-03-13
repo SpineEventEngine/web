@@ -24,8 +24,8 @@ apply plugin: 'com.google.protobuf'
 
 dependencies {
     protobuf project(':web')
-    protobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
-    testProtobuf group: 'io.spine', name: 'spine-client', version: spineVersion, classifier: 'proto'
+    protobuf group: 'io.spine', name: 'spine-client', version: spineCoreVersion, classifier: 'proto'
+    testProtobuf group: 'io.spine', name: 'spine-client', version: spineCoreVersion, classifier: 'proto'
 }
 
 idea.module {
