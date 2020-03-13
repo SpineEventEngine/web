@@ -29,7 +29,7 @@ apply from: deps.scripts.modelCompiler
 
 dependencies {
     api "javax.servlet:javax.servlet-api:$servletApiVersion"
-    api "io.spine:spine-server:$spineVersion"
+    api "io.spine:spine-server:$spineCoreVersion"
     api deps.build.googleHttpClient
 
     implementation deps.build.googleHttpClientApache
