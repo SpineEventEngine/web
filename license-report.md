@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.4.1`
+# Dependencies of `io.spine:spine-client-js:1.5.1`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -390,10 +390,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.4.1`
+#NPM dependencies of `spine-web@1.5.1`
 
 ## `Production` dependencies:
 
@@ -424,7 +424,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **safer-buffer@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)
-1. **spine-web@1.4.1**
+1. **spine-web@1.5.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tslib@1.10.0**
@@ -453,7 +453,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **@babel/core@7.8.7**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
-1. **@babel/generator@7.8.7**
+1. **@babel/generator@7.8.8**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-generator](https://github.com/babel/babel/tree/master/packages/babel-generator)
 1. **@babel/helper-annotate-as-pure@7.8.3**
@@ -468,7 +468,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **@babel/helper-compilation-targets@7.8.7**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-helper-compilation-targets](https://github.com/babel/babel/tree/master/packages/babel-helper-compilation-targets)
-1. **@babel/helper-create-regexp-features-plugin@7.8.6**
+1. **@babel/helper-create-regexp-features-plugin@7.8.8**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 1. **@babel/helper-define-map@7.8.3**
@@ -525,7 +525,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **@babel/highlight@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-highlight](https://github.com/babel/babel/tree/master/packages/babel-highlight)
-1. **@babel/parser@7.8.7**
+1. **@babel/parser@7.8.8**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-parser](https://github.com/babel/babel/tree/master/packages/babel-parser)
 1. **@babel/plugin-proposal-async-generator-functions@7.8.3**
@@ -549,7 +549,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **@babel/plugin-proposal-optional-chaining@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining)
-1. **@babel/plugin-proposal-unicode-property-regex@7.8.3**
+1. **@babel/plugin-proposal-unicode-property-regex@7.8.8**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-unicode-property-regex](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-unicode-property-regex)
 1. **@babel/plugin-syntax-async-generators@7.8.4**
@@ -594,7 +594,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **@babel/plugin-transform-computed-properties@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties)
-1. **@babel/plugin-transform-destructuring@7.8.3**
+1. **@babel/plugin-transform-destructuring@7.8.8**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring)
 1. **@babel/plugin-transform-dotall-regex@7.8.3**
@@ -639,7 +639,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **@babel/plugin-transform-object-super@7.8.3**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super)
-1. **@babel/plugin-transform-parameters@7.8.7**
+1. **@babel/plugin-transform-parameters@7.8.8**
      * Licenses: MIT
      * Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters)
 1. **@babel/plugin-transform-property-literals@7.8.3**
@@ -873,7 +873,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **abbrev@1.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/abbrev-js](https://github.com/isaacs/abbrev-js)
-1. **acorn@6.4.0**
+1. **acorn@6.4.1**
      * Licenses: MIT
      * Repository: [https://github.com/acornjs/acorn](https://github.com/acornjs/acorn)
 1. **agent-base@5.1.1**
@@ -1077,7 +1077,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **camelcase@5.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
-1. **caniuse-lite@1.0.30001032**
+1. **caniuse-lite@1.0.30001035**
      * Licenses: CC-BY-4.0
      * Repository: [https://github.com/ben-eb/caniuse-lite](https://github.com/ben-eb/caniuse-lite)
 1. **chalk@1.1.3**
@@ -1272,7 +1272,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.368**
+1. **electron-to-chromium@1.3.376**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.5.2**
@@ -1836,6 +1836,9 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **minimist@1.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
+1. **minimist@1.2.5**
+     * Licenses: MIT
+     * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
 1. **minipass@2.3.5**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/minipass](https://github.com/isaacs/minipass)
@@ -1896,10 +1899,13 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **node-pre-gyp@0.13.0**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/mapbox/node-pre-gyp](https://github.com/mapbox/node-pre-gyp)
-1. **node-releases@1.1.50**
+1. **node-releases@1.1.52**
      * Licenses: MIT
      * Repository: [https://github.com/chicoxyzzy/node-releases](https://github.com/chicoxyzzy/node-releases)
 1. **nopt@4.0.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/npm/nopt](https://github.com/npm/nopt)
+1. **nopt@4.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/npm/nopt](https://github.com/npm/nopt)
 1. **normalize-package-data@2.5.0**
@@ -2085,9 +2091,9 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **protobufjs@5.0.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/dcodeIO/protobuf.js](https://github.com/dcodeIO/protobuf.js)
-1. **protobufjs@6.8.8**
+1. **protobufjs@6.8.9**
      * Licenses: BSD-3-Clause
-     * Repository: [https://github.com/dcodeIO/protobuf.js](https://github.com/dcodeIO/protobuf.js)
+     * Repository: [https://github.com/protobufjs/protobuf.js](https://github.com/protobufjs/protobuf.js)
 1. **prr@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/rvagg/prr](https://github.com/rvagg/prr)
@@ -2154,7 +2160,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **readdirp@2.2.1**
      * Licenses: MIT
      * Repository: [https://github.com/paulmillr/readdirp](https://github.com/paulmillr/readdirp)
-1. **regenerate-unicode-properties@8.1.0**
+1. **regenerate-unicode-properties@8.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/regenerate-unicode-properties](https://github.com/mathiasbynens/regenerate-unicode-properties)
 1. **regenerate@1.4.0**
@@ -2163,22 +2169,22 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **regenerator-runtime@0.11.1**
      * Licenses: MIT
      * Repository: [https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime)
-1. **regenerator-runtime@0.13.4**
+1. **regenerator-runtime@0.13.5**
      * Licenses: MIT
      * Repository: [https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime](https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime)
-1. **regenerator-transform@0.14.2**
+1. **regenerator-transform@0.14.3**
      * Licenses: MIT
      * Repository: [https://github.com/facebook/regenerator/tree/master/packages/regenerator-transform](https://github.com/facebook/regenerator/tree/master/packages/regenerator-transform)
 1. **regex-not@1.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/regex-not](https://github.com/jonschlinkert/regex-not)
-1. **regexpu-core@4.6.0**
+1. **regexpu-core@4.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/regexpu-core](https://github.com/mathiasbynens/regexpu-core)
 1. **regjsgen@0.5.1**
      * Licenses: MIT
      * Repository: [https://github.com/bnjmnt4n/regjsgen](https://github.com/bnjmnt4n/regjsgen)
-1. **regjsparser@0.6.3**
+1. **regjsparser@0.6.4**
      * Licenses: BSD-2-Clause
      * Repository: [https://github.com/jviereck/regjsparser](https://github.com/jviereck/regjsparser)
 1. **release-zalgo@1.0.0**
@@ -2340,7 +2346,7 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.4.1**
+1. **spine-web@1.5.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **split-string@3.1.0**
@@ -2469,10 +2475,10 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
 1. **unicode-match-property-ecmascript@1.0.4**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-match-property-ecmascript](https://github.com/mathiasbynens/unicode-match-property-ecmascript)
-1. **unicode-match-property-value-ecmascript@1.1.0**
+1. **unicode-match-property-value-ecmascript@1.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-match-property-value-ecmascript](https://github.com/mathiasbynens/unicode-match-property-value-ecmascript)
-1. **unicode-property-aliases-ecmascript@1.0.5**
+1. **unicode-property-aliases-ecmascript@1.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/mathiasbynens/unicode-property-aliases-ecmascript](https://github.com/mathiasbynens/unicode-property-aliases-ecmascript)
 1. **union-value@1.0.1**
@@ -2612,12 +2618,12 @@ This report was generated on **Fri Mar 06 15:00:39 EET 2020** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Fri Mar 06 2020 15:00:42 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Fri Mar 13 2020 18:29:46 GMT+0200 (Eastern European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.4.1`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.5.1`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -3427,12 +3433,12 @@ This report was generated on **Fri Mar 06 2020 15:00:42 GMT+0200 (EET)** using [
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Mar 05 19:16:42 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Mar 13 18:29:57 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.4.1`
+# Dependencies of `io.spine:spine-js-tests:1.5.1`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3852,12 +3858,12 @@ This report was generated on **Thu Mar 05 19:16:42 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Mar 05 19:16:58 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Mar 13 18:30:51 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.4.1`
+# Dependencies of `io.spine:spine-test-app:1.5.1`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -5422,12 +5428,12 @@ This report was generated on **Thu Mar 05 19:16:58 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Mar 05 19:17:00 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Mar 13 18:30:57 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.4.1`
+# Dependencies of `io.spine:spine-testutil-web:1.5.1`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5908,12 +5914,12 @@ This report was generated on **Thu Mar 05 19:17:00 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Mar 05 19:17:01 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Mar 13 18:30:58 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.4.1`
+# Dependencies of `io.spine:spine-web:1.5.1`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -6423,4 +6429,4 @@ This report was generated on **Thu Mar 05 19:17:01 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Thu Mar 05 19:17:03 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Mar 13 18:31:02 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
