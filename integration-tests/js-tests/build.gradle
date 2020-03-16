@@ -27,7 +27,6 @@ ext {
     genProtoSubDir = "proto"
     genProtoTestDir = "$testSrcDir/$genProtoSubDir"
     nycOutputDir = "$projectDir/.nyc_output"
-    packageLockFile = "$projectDir/package-lock.json"
 }
 
 dependencies {
@@ -46,7 +45,6 @@ task deleteCompiled {
 
     doLast {
         delete genProtoTestDir
-        delete packageLockFile
         delete nycOutputDir
     }
 }
