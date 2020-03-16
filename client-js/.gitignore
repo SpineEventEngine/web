@@ -1,6 +1,0 @@
-node_modules
-dist
-main/proto
-test/proto
-package-lock.json
-.nyc_output
