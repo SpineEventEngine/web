@@ -20,18 +20,22 @@
 
 package io.spine.web.firebase;
 
+import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FirebaseCredentials should")
+@DisplayName("`FirebaseCredentials` should")
 class FirebaseCredentialsTest {
 
     @Test
@@ -40,9 +44,43 @@ class FirebaseCredentialsTest {
         new NullPointerTester().testAllPublicStaticMethods(FirebaseCredentials.class);
     }
 
+    @Nested
+    @DisplayName("be created")
+    class BeCreated {
+
+        @Test
+        @DisplayName("without credentials")
+        void empty() {
+            FirebaseCredentials credentials = FirebaseCredentials.empty();
+            assertThat(credentials.isEmpty()).isTrue();
+        }
+
+        @Test
+        @DisplayName("from `GoogleCredentials` instance")
+        void fromGoogleCredentials() {
+            GoogleCredentials googleCredentials = GoogleCredentials.newBuilder()
+                                                                   .build();
+            FirebaseCredentials credentials =
+                    FirebaseCredentials.fromGoogleCredentials(googleCredentials);
+            assertThat(credentials.isEmpty()).isFalse();
+            assertThat(credentials.isOldStyle()).isFalse();
+        }
+
+        @SuppressWarnings("deprecation") // This test checks the deprecated method.
+        @Test
+        @DisplayName("from `GoogleCredential` instance")
+        void fromOldStyleCredentials() {
+            MockGoogleCredential googleCredential = new MockGoogleCredential.Builder().build();
+            FirebaseCredentials credentials =
+                    FirebaseCredentials.fromGoogleCredentials(googleCredential);
+            assertThat(credentials.isEmpty()).isFalse();
+            assertThat(credentials.isOldStyle()).isTrue();
+        }
+    }
+
     @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
     @Test
-    @DisplayName("throw IAE when created from invalid data")
+    @DisplayName("throw `IAE` when created from invalid data")
     void throwOnInvalidData() {
         String invalidCredentials = "invalid_credentials";
         InputStream stream = toInputStream(invalidCredentials);

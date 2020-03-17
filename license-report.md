@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.5.1`
+# Dependencies of `io.spine:spine-client-js:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -390,10 +390,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 02:55:29 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.5.1`
+#NPM dependencies of `spine-web@1.5.2`
 
 ## `Production` dependencies:
 
@@ -424,7 +424,7 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **safer-buffer@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)
-1. **spine-web@1.5.1**
+1. **spine-web@1.5.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tslib@1.10.0**
@@ -801,12 +801,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **@tootallnate/once@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/TooTallNate/once](https://github.com/TooTallNate/once)
-1. **@types/bytebuffer@5.0.40**
-     * Licenses: MIT
-     * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-1. **@types/long@4.0.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 1. **@types/node@10.17.17**
      * Licenses: MIT
      * Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
@@ -945,9 +939,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **asap@2.0.6**
      * Licenses: MIT
      * Repository: [https://github.com/kriskowal/asap](https://github.com/kriskowal/asap)
-1. **ascli@1.0.1**
-     * Licenses: Apache-2.0
-     * Repository: [https://github.com/dcodeIO/ascli](https://github.com/dcodeIO/ascli)
 1. **asn1.js@4.10.1**
      * Licenses: MIT
      * Repository: [https://github.com/indutny/asn1.js](https://github.com/indutny/asn1.js)
@@ -1059,9 +1050,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **builtin-status-codes@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/bendrucker/builtin-status-codes](https://github.com/bendrucker/builtin-status-codes)
-1. **bytebuffer@5.0.1**
-     * Licenses: Apache-2.0
-     * Repository: [https://github.com/dcodeIO/bytebuffer.js](https://github.com/dcodeIO/bytebuffer.js)
 1. **cacache@12.0.3**
      * Licenses: ISC
      * Repository: [https://github.com/npm/cacache](https://github.com/npm/cacache)
@@ -1071,9 +1059,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **caching-transform@3.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/istanbuljs/caching-transform](https://github.com/istanbuljs/caching-transform)
-1. **camelcase@2.1.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
 1. **camelcase@5.3.1**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)
@@ -1104,9 +1089,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **class-utils@0.3.6**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/class-utils](https://github.com/jonschlinkert/class-utils)
-1. **cliui@3.2.0**
-     * Licenses: ISC
-     * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
 1. **cliui@5.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
@@ -1125,9 +1107,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **color-name@1.1.3**
      * Licenses: MIT
      * Repository: [https://github.com/dfcreative/color-name](https://github.com/dfcreative/color-name)
-1. **colour@0.7.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/dcodeIO/colour.js](https://github.com/dcodeIO/colour.js)
 1. **commander@2.15.1**
      * Licenses: MIT
      * Repository: [https://github.com/tj/commander.js](https://github.com/tj/commander.js)
@@ -1218,9 +1197,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **debuglog@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/sam-github/node-debuglog](https://github.com/sam-github/node-debuglog)
-1. **decamelize@1.2.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/decamelize](https://github.com/sindresorhus/decamelize)
 1. **decode-uri-component@0.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/SamVerschueren/decode-uri-component](https://github.com/SamVerschueren/decode-uri-component)
@@ -1287,9 +1263,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **emojis-list@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/kikobeats/emojis-list](https://github.com/kikobeats/emojis-list)
-1. **end-of-stream@1.4.4**
-     * Licenses: MIT
-     * Repository: [https://github.com/mafintosh/end-of-stream](https://github.com/mafintosh/end-of-stream)
 1. **enhanced-resolve@4.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/webpack/enhanced-resolve](https://github.com/webpack/enhanced-resolve)
@@ -1419,9 +1392,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **get-caller-file@2.0.5**
      * Licenses: ISC
      * Repository: [https://github.com/stefanpenner/get-caller-file](https://github.com/stefanpenner/get-caller-file)
-1. **get-stream@4.1.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/get-stream](https://github.com/sindresorhus/get-stream)
 1. **get-value@2.0.6**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/get-value](https://github.com/jonschlinkert/get-value)
@@ -1432,9 +1402,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-glob](https://github.com/isaacs/node-glob)
 1. **glob@7.1.4**
-     * Licenses: ISC
-     * Repository: [https://github.com/isaacs/node-glob](https://github.com/isaacs/node-glob)
-1. **glob@7.1.6**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/node-glob](https://github.com/isaacs/node-glob)
 1. **global-modules@1.0.0**
@@ -1572,9 +1539,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **invariant@2.2.4**
      * Licenses: MIT
      * Repository: [https://github.com/zertosh/invariant](https://github.com/zertosh/invariant)
-1. **invert-kv@1.0.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/invert-kv](https://github.com/sindresorhus/invert-kv)
 1. **invert-kv@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/invert-kv](https://github.com/sindresorhus/invert-kv)
@@ -1716,9 +1680,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **kind-of@6.0.3**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/kind-of](https://github.com/jonschlinkert/kind-of)
-1. **lcid@1.0.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/lcid](https://github.com/sindresorhus/lcid)
 1. **lcid@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/lcid](https://github.com/sindresorhus/lcid)
@@ -1749,12 +1710,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **locate-path@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/locate-path](https://github.com/sindresorhus/locate-path)
-1. **lodash.camelcase@4.3.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
-1. **lodash.clone@4.5.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
 1. **lodash.flattendeep@4.4.0**
      * Licenses: MIT
      * Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
@@ -1767,9 +1722,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **lolex@5.1.2**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/sinonjs/lolex](https://github.com/sinonjs/lolex)
-1. **long@3.2.0**
-     * Licenses: Apache-2.0
-     * Repository: [https://github.com/dcodeIO/long.js](https://github.com/dcodeIO/long.js)
 1. **long@4.0.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/dcodeIO/long.js](https://github.com/dcodeIO/long.js)
@@ -1836,9 +1788,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **minimist@1.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
-1. **minimist@1.2.5**
-     * Licenses: MIT
-     * Repository: [https://github.com/substack/minimist](https://github.com/substack/minimist)
 1. **minipass@2.3.5**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/minipass](https://github.com/isaacs/minipass)
@@ -1866,9 +1815,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **ms@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/zeit/ms](https://github.com/zeit/ms)
-1. **nan@2.14.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/nodejs/nan](https://github.com/nodejs/nan)
 1. **nanomatch@1.2.13**
      * Licenses: MIT
      * Repository: [https://github.com/micromatch/nanomatch](https://github.com/micromatch/nanomatch)
@@ -1959,18 +1905,12 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **once@1.4.0**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/once](https://github.com/isaacs/once)
-1. **optjs@3.2.2**
-     * Licenses: MIT
-     * Repository: [https://github.com/dcodeIO/opt.js](https://github.com/dcodeIO/opt.js)
 1. **os-browserify@0.3.0**
      * Licenses: MIT
      * Repository: [https://github.com/CoderPuppy/os-browserify](https://github.com/CoderPuppy/os-browserify)
 1. **os-homedir@1.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/os-homedir](https://github.com/sindresorhus/os-homedir)
-1. **os-locale@1.4.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/sindresorhus/os-locale](https://github.com/sindresorhus/os-locale)
 1. **os-locale@3.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/os-locale](https://github.com/sindresorhus/os-locale)
@@ -2088,9 +2028,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **promise-polyfill@8.1.3**
      * Licenses: MIT
      * Repository: [https://github.com/taylorhakes/promise-polyfill](https://github.com/taylorhakes/promise-polyfill)
-1. **protobufjs@5.0.3**
-     * Licenses: Apache-2.0
-     * Repository: [https://github.com/dcodeIO/protobuf.js](https://github.com/dcodeIO/protobuf.js)
 1. **protobufjs@6.8.9**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/protobufjs/protobuf.js](https://github.com/protobufjs/protobuf.js)
@@ -2104,9 +2041,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
      * Licenses: MIT
      * Repository: [https://github.com/crypto-browserify/publicEncrypt](https://github.com/crypto-browserify/publicEncrypt)
 1. **pump@2.0.1**
-     * Licenses: MIT
-     * Repository: [https://github.com/mafintosh/pump](https://github.com/mafintosh/pump)
-1. **pump@3.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/pump](https://github.com/mafintosh/pump)
 1. **pumpify@1.5.1**
@@ -2256,9 +2190,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **semver@5.7.1**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
-1. **semver@6.3.0**
-     * Licenses: ISC
-     * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
 1. **semver@7.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/npm/node-semver](https://github.com/npm/node-semver)
@@ -2346,7 +2277,7 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.5.1**
+1. **spine-web@1.5.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **split-string@3.1.0**
@@ -2565,15 +2496,9 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **wide-align@1.1.3**
      * Licenses: ISC
      * Repository: [https://github.com/iarna/wide-align](https://github.com/iarna/wide-align)
-1. **window-size@0.1.4**
-     * Licenses: MIT
-     * Repository: [https://github.com/jonschlinkert/window-size](https://github.com/jonschlinkert/window-size)
 1. **worker-farm@1.7.0**
      * Licenses: MIT
      * Repository: [https://github.com/rvagg/node-worker-farm](https://github.com/rvagg/node-worker-farm)
-1. **wrap-ansi@2.1.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/chalk/wrap-ansi](https://github.com/chalk/wrap-ansi)
 1. **wrap-ansi@5.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/chalk/wrap-ansi](https://github.com/chalk/wrap-ansi)
@@ -2589,9 +2514,6 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **xtend@4.0.2**
      * Licenses: MIT
      * Repository: [https://github.com/Raynos/xtend](https://github.com/Raynos/xtend)
-1. **y18n@3.2.1**
-     * Licenses: ISC
-     * Repository: [https://github.com/yargs/y18n](https://github.com/yargs/y18n)
 1. **y18n@4.0.0**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/y18n](https://github.com/yargs/y18n)
@@ -2604,26 +2526,23 @@ This report was generated on **Fri Mar 13 18:29:40 EET 2020** using [Gradle-Lice
 1. **yallist@3.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/isaacs/yallist](https://github.com/isaacs/yallist)
-1. **yargs-parser@13.1.1**
+1. **yargs-parser@13.1.2**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
 1. **yargs@13.2.4**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
-1. **yargs@13.3.0**
+1. **yargs@13.3.2**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
-1. **yargs@3.32.0**
-     * Licenses: MIT
-     * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Fri Mar 13 2020 18:29:46 GMT+0200 (Eastern European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Tue Mar 17 2020 02:55:34 GMT+0200 (Eastern European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.5.1`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.5.2`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -2658,7 +2577,7 @@ This report was generated on **Fri Mar 13 2020 18:29:46 GMT+0200 (Eastern Europe
      * **POM Project URL:** [https://github.com/googleapis/gax-java](https://github.com/googleapis/gax-java)
      * **POM License: BSD** - [https://github.com/googleapis/gax-java/blob/master/LICENSE](https://github.com/googleapis/gax-java/blob/master/LICENSE)
 
-1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.25.0
+1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.30.9
      * **Manifest Project URL:** [https://developers.google.com/api-client-library/java/](https://developers.google.com/api-client-library/java/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2951,7 +2870,7 @@ This report was generated on **Fri Mar 13 2020 18:29:46 GMT+0200 (Eastern Europe
      * **POM Project URL:** [https://github.com/googleapis/gax-java](https://github.com/googleapis/gax-java)
      * **POM License: BSD** - [https://github.com/googleapis/gax-java/blob/master/LICENSE](https://github.com/googleapis/gax-java/blob/master/LICENSE)
 
-1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.25.0
+1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.30.9
      * **Manifest Project URL:** [https://developers.google.com/api-client-library/java/](https://developers.google.com/api-client-library/java/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3433,12 +3352,12 @@ This report was generated on **Fri Mar 13 2020 18:29:46 GMT+0200 (Eastern Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 13 18:29:57 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 02:55:41 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.5.1`
+# Dependencies of `io.spine:spine-js-tests:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3858,12 +3777,12 @@ This report was generated on **Fri Mar 13 18:29:57 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 13 18:30:51 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 02:57:09 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.5.1`
+# Dependencies of `io.spine:spine-test-app:1.5.2`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -3898,7 +3817,7 @@ This report was generated on **Fri Mar 13 18:30:51 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/googleapis/gax-java](https://github.com/googleapis/gax-java)
      * **POM License: BSD** - [https://github.com/googleapis/gax-java/blob/master/LICENSE](https://github.com/googleapis/gax-java/blob/master/LICENSE)
 
-1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.25.0
+1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.30.9
      * **Manifest Project URL:** [https://developers.google.com/api-client-library/java/](https://developers.google.com/api-client-library/java/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4208,7 +4127,7 @@ This report was generated on **Fri Mar 13 18:30:51 EET 2020** using [Gradle-Lice
      * **POM Project URL:** [https://github.com/googleapis/gax-java](https://github.com/googleapis/gax-java)
      * **POM License: BSD** - [https://github.com/googleapis/gax-java/blob/master/LICENSE](https://github.com/googleapis/gax-java/blob/master/LICENSE)
 
-1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.25.0
+1. **Group:** com.google.api-client **Name:** google-api-client **Version:** 1.30.9
      * **Manifest Project URL:** [https://developers.google.com/api-client-library/java/](https://developers.google.com/api-client-library/java/)
      * **POM License: The Apache Software License, Version 2.0** - [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5428,12 +5347,12 @@ This report was generated on **Fri Mar 13 18:30:51 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 13 18:30:57 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 02:57:14 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.5.1`
+# Dependencies of `io.spine:spine-testutil-web:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5914,12 +5833,12 @@ This report was generated on **Fri Mar 13 18:30:57 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 13 18:30:58 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 02:57:15 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.5.1`
+# Dependencies of `io.spine:spine-web:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -6429,4 +6348,4 @@ This report was generated on **Fri Mar 13 18:30:58 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri Mar 13 18:31:02 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 02:57:19 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

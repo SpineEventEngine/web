@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.testing.NullPointerTester;
@@ -39,16 +38,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.web.firebase.FirebaseCredentials.fromGoogleCredentials;
 import static org.mockito.Mockito.mock;
 
-@DisplayName("FirebaseClientFactory should")
+@DisplayName("`FirebaseClientFactory` should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
 
-    private static final MockGoogleCredential GOOGLE_CREDENTIALS =
-            new MockGoogleCredential.Builder().build();
-    private static final FirebaseCredentials CREDENTIALS =
-            fromGoogleCredentials(GOOGLE_CREDENTIALS);
+    private static final FirebaseCredentials CREDENTIALS = FirebaseCredentials.empty();
     private static final String FIREBASE_APP_NAME = FirebaseClientFactoryTest.class.getSimpleName();
     private FirebaseDatabase database = mock(FirebaseDatabase.class);
 
