@@ -21,25 +21,32 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import io.spine.annotation.Internal;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.util.Arrays.asList;
 
 /**
  * A Firebase Database credentials.
  *
- * <p>The underlying Google OAuth 2.0 service can be used as an authentication facility for the
- * requests to Firebase REST API.
+ * <p>This type can be used as an authentication facility for the requests to Firebase REST API.
  *
  * <p>See <a href="https://firebase.google.com/docs/database/rest/auth">Firebase REST docs</a>.
  */
-public final class FirebaseCredentials {
+@SuppressWarnings("deprecation")
+// Use deprecated `GoogleCredential` for backward compatibility with downstream projects.
+public final class FirebaseCredentials implements HttpRequestInitializer {
 
     private static final String AUTH_DATABASE = "https://www.googleapis.com/auth/firebase.database";
     private static final String AUTH_USER_EMAIL = "https://www.googleapis.com/auth/userinfo.email";
@@ -49,14 +56,33 @@ public final class FirebaseCredentials {
      */
     private static final Collection<String> AUTH_SCOPES = asList(AUTH_DATABASE, AUTH_USER_EMAIL);
 
-    private final GoogleCredential credentials;
+    /**
+     * The credential used for authentication.
+     *
+     * <p>Either this field or {@link #oldStyleCredential} will always be {@code null}.
+     */
+    private final @Nullable GoogleCredentials credentials;
+
+    /**
+     * The credential used for authentication.
+     *
+     * <p>Either this field or {@link #credentials} will always be {@code null}.
+     */
+    private final @Nullable GoogleCredential oldStyleCredential;
 
     private FirebaseCredentials() {
         this.credentials = null;
+        this.oldStyleCredential = null;
     }
 
-    private FirebaseCredentials(GoogleCredential credentials) {
+    private FirebaseCredentials(GoogleCredentials credentials) {
         this.credentials = credentials;
+        this.oldStyleCredential = null;
+    }
+
+    private FirebaseCredentials(GoogleCredential credential) {
+        this.credentials = null;
+        this.oldStyleCredential = credential;
     }
 
     /**
@@ -69,16 +95,32 @@ public final class FirebaseCredentials {
     }
 
     /**
-     * Creates a new {@code FirebaseCredentials} from the given {@link GoogleCredential}.
+     * Creates a new {@code FirebaseCredentials} from the given {@link GoogleCredentials}.
      *
-     * <p>The method sets scopes required for Firebase.
+     * <p>This method sets scopes required to use the Firebase database.
      *
-     * <p>The method is useful to create credentials from the
-     * {@linkplain GoogleCredential#getApplicationDefault() application default credentials}.
+     * <p>This method is useful to create credentials from the
+     * {@linkplain GoogleCredentials#getApplicationDefault() application default credentials}.
      *
-     * @param credentials the credentials to create from
+     * @param credentials
+     *         the credentials to create from
      * @return a new instance of {@code FirebaseCredentials}
      */
+    public static FirebaseCredentials fromGoogleCredentials(GoogleCredentials credentials) {
+        checkNotNull(credentials);
+        GoogleCredentials scopedCredential = credentials.createScoped(AUTH_SCOPES);
+        return new FirebaseCredentials(scopedCredential);
+    }
+
+    /**
+     * Creates a new {@code FirebaseCredentials} from the given {@link GoogleCredentials}.
+     *
+     * <p>This method sets scopes required to use the Firebase database.
+     *
+     * @deprecated please use {@link #fromGoogleCredentials(GoogleCredentials)} or any other
+     *             alternative instead
+     */
+    @Deprecated
     public static FirebaseCredentials fromGoogleCredentials(GoogleCredential credentials) {
         checkNotNull(credentials);
         GoogleCredential scopedCredential = credentials.createScoped(AUTH_SCOPES);
@@ -98,12 +140,31 @@ public final class FirebaseCredentials {
      * @return a new instance of {@code FirebaseCredentials}
      * @throws java.lang.IllegalArgumentException
      *         in case there are problems with parsing the given stream into
-     *         {@link GoogleCredential}
+     *         {@link GoogleCredentials}
      */
     public static FirebaseCredentials fromStream(InputStream credentialStream) {
         checkNotNull(credentialStream);
-        GoogleCredential credentials = parseCredentials(credentialStream);
+        GoogleCredentials credentials = parseCredentials(credentialStream);
         return fromGoogleCredentials(credentials);
+    }
+
+    /**
+     * Authenticates a given {@link HttpRequest} with the wrapped Google credentials instance.
+     *
+     * @throws IllegalStateException
+     *         if this instance of {@code FirebaseCredentials} is {@linkplain #isEmpty() empty}
+     */
+    @Internal
+    @Override
+    public void initialize(HttpRequest request) throws IOException {
+        checkState(!isEmpty(),
+                   "An empty credentials instance cannot serve as HTTP request initializer.");
+        if (isOldStyle()) {
+            oldStyleCredential.initialize(request);
+        } else {
+            HttpRequestInitializer adapter = new HttpCredentialsAdapter(credentials);
+            adapter.initialize(request);
+        }
     }
 
     /**
@@ -112,23 +173,16 @@ public final class FirebaseCredentials {
      * @return {@code true} if {@code FirebaseCredentials} are empty and {@code false} otherwise
      */
     public boolean isEmpty() {
-        return credentials == null;
+        return credentials == null && oldStyleCredential == null;
     }
 
-    /**
-     * Returns the underlying Google credentials.
-     *
-     * @return the underlying credentials or {@code null} if the credentials are
-     *         {@linkplain #isEmpty() empty}
-     */
-    @Nullable
-    GoogleCredential credentials() {
-        return credentials;
+    private boolean isOldStyle() {
+        return oldStyleCredential != null;
     }
 
-    private static GoogleCredential parseCredentials(InputStream credentialStream) {
+    private static GoogleCredentials parseCredentials(InputStream credentialStream) {
         try {
-            GoogleCredential credentials = GoogleCredential.fromStream(credentialStream);
+            GoogleCredentials credentials = GoogleCredentials.fromStream(credentialStream);
             return credentials;
         } catch (IOException e) {
             throw newIllegalArgumentException(

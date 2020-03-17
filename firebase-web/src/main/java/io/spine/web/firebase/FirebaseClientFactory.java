@@ -21,7 +21,6 @@
 package io.spine.web.firebase;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
@@ -149,8 +148,7 @@ public final class FirebaseClientFactory {
                                                    FirebaseDatabase database,
                                                    FirebaseCredentials credentials,
                                                    Supplier<BackOff> backOff) {
-        GoogleCredential googleCredentials = credentials.credentials();
-        HttpRequestFactory requestFactory = httpTransport.createRequestFactory(googleCredentials);
+        HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credentials);
         return RemoteDatabaseClient
                 .newBuilder()
                 .setDatabase(database)
