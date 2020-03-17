@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.5.3`
+# Dependencies of `io.spine:spine-client-js:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -393,7 +393,7 @@
 This report was generated on **Tue Mar 17 02:55:29 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.5.3`
+#NPM dependencies of `spine-web@1.5.2`
 
 ## `Production` dependencies:
 
@@ -424,7 +424,7 @@ This report was generated on **Tue Mar 17 02:55:29 EET 2020** using [Gradle-Lice
 1. **safer-buffer@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)
-1. **spine-web@1.5.3**
+1. **spine-web@1.5.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tslib@1.10.0**
@@ -2277,7 +2277,7 @@ This report was generated on **Tue Mar 17 02:55:29 EET 2020** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.5.3**
+1. **spine-web@1.5.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **split-string@3.1.0**
@@ -2542,7 +2542,7 @@ This report was generated on **Tue Mar 17 2020 02:55:34 GMT+0200 (Eastern Europe
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.5.3`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.5.2`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -3357,7 +3357,7 @@ This report was generated on **Tue Mar 17 02:55:41 EET 2020** using [Gradle-Lice
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.5.3`
+# Dependencies of `io.spine:spine-js-tests:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3782,7 +3782,7 @@ This report was generated on **Tue Mar 17 02:57:09 EET 2020** using [Gradle-Lice
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.5.3`
+# Dependencies of `io.spine:spine-test-app:1.5.2`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -5352,7 +5352,7 @@ This report was generated on **Tue Mar 17 02:57:14 EET 2020** using [Gradle-Lice
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.5.3`
+# Dependencies of `io.spine:spine-testutil-web:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5838,7 +5838,7 @@ This report was generated on **Tue Mar 17 02:57:15 EET 2020** using [Gradle-Lice
 
 
     
-# Dependencies of `io.spine:spine-web:1.5.3`
+# Dependencies of `io.spine:spine-web:1.5.2`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
