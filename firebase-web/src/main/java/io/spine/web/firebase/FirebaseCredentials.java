@@ -25,6 +25,7 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -176,7 +177,8 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
         return credentials == null && oldStyleCredential == null;
     }
 
-    private boolean isOldStyle() {
+    @VisibleForTesting
+    boolean isOldStyle() {
         return oldStyleCredential != null;
     }
 
