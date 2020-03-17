@@ -390,7 +390,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Mar 16 19:45:31 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 15:49:35 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 #NPM dependencies of `spine-web@1.5.2`
@@ -1272,7 +1272,7 @@ This report was generated on **Mon Mar 16 19:45:31 EET 2020** using [Gradle-Lice
 1. **duplexify@3.7.1**
      * Licenses: MIT
      * Repository: [https://github.com/mafintosh/duplexify](https://github.com/mafintosh/duplexify)
-1. **electron-to-chromium@1.3.376**
+1. **electron-to-chromium@1.3.377**
      * Licenses: ISC
      * Repository: [https://github.com/kilian/electron-to-chromium](https://github.com/kilian/electron-to-chromium)
 1. **elliptic@6.5.2**
@@ -1698,7 +1698,7 @@ This report was generated on **Mon Mar 16 19:45:31 EET 2020** using [Gradle-Lice
 1. **json5@1.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/json5/json5](https://github.com/json5/json5)
-1. **json5@2.1.1**
+1. **json5@2.1.2**
      * Licenses: MIT
      * Repository: [https://github.com/json5/json5](https://github.com/json5/json5)
 1. **just-extend@4.1.0**
@@ -2618,7 +2618,7 @@ This report was generated on **Mon Mar 16 19:45:31 EET 2020** using [Gradle-Lice
      * Repository: [https://github.com/bcoe/yargs](https://github.com/bcoe/yargs)
 
 
-This report was generated on **Mon Mar 16 2020 19:45:33 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Tue Mar 17 2020 15:49:37 GMT+0200 (EET)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
@@ -3433,7 +3433,7 @@ This report was generated on **Mon Mar 16 2020 19:45:33 GMT+0200 (EET)** using [
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Mar 16 19:45:37 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 15:49:41 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3858,7 +3858,7 @@ This report was generated on **Mon Mar 16 19:45:37 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Mar 16 19:45:55 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 15:49:59 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5428,7 +5428,7 @@ This report was generated on **Mon Mar 16 19:45:55 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Mar 16 19:45:57 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 15:50:02 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5914,7 +5914,7 @@ This report was generated on **Mon Mar 16 19:45:57 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Mar 16 19:45:58 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 15:50:03 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6429,4 +6429,4 @@ This report was generated on **Mon Mar 16 19:45:58 EET 2020** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Mon Mar 16 19:46:01 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Mar 17 15:50:05 EET 2020** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
