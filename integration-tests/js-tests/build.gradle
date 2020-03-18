@@ -140,3 +140,6 @@ idea.module {
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
+
+// Suppress audit for a test project.
+project.auditNodePackages.enabled = false
