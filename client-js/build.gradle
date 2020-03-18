@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.common.io.Files
+
 apply from: "$rootDir/scripts/js.gradle"
 
 apply plugin: 'com.google.protobuf'
@@ -60,3 +62,13 @@ sourceSets {
 // Suppress building the JS project as a Java module.
 project.compileJava.enabled = false
 project.compileTestJava.enabled = false
+
+final File jsDocDir = Files.createTempDir()
+
+afterEvaluate {
+    generatedDocs += files(jsDocDir)
+}
+
+task jsDoc(type: Exec) {
+    commandLine 'jsdoc', '-d', jsDocDir.path, "$projectDir/main/*"
+}
