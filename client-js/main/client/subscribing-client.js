@@ -38,7 +38,7 @@ export class SubscribingClient {
   /**
    * Creates a new subscription request.
    *
-   * @param {!Class<? extends Message>} type the target entity type
+   * @param {!Class<Message>} type the target entity type
    * @param {!Client} client the client that initiated the request
    * @return {SubscriptionRequest} a new subscription request
    */
@@ -50,7 +50,7 @@ export class SubscribingClient {
    * Subscribes to a given topic which targets an entity type.
    *
    * @param {!spine.client.Topic} topic a topic to subscribe to
-   * @return {Promise<EntitySubscriptionObject<T extends Message>>} a subscription object
+   * @return {Promise<EntitySubscriptionObject<Message>>} a subscription object
    *
    * @template <T> a Protobuf type of entities being the target of a subscription
    */
@@ -61,7 +61,7 @@ export class SubscribingClient {
   /**
    * Creates a new event subscription request.
    *
-   * @param {!Class<? extends Message>} type the target event type
+   * @param {!Class<Message>} type the target event type
    * @param {!Client} client the client that initiated the request
    * @return {EventSubscriptionRequest} a new event subscription request
    */

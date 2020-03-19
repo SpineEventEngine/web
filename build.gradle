@@ -243,6 +243,12 @@ subprojects {
             }
         }
     }
+
+    final def projectsWithDocs = ['client-js', 'firebase-web', 'web']
+    if (projectsWithDocs.contains(project.name)) {
+        apply from: deps.scripts.updateGitHubPages
+        project.tasks.getByName('publish').dependsOn("$project.path:updateGitHubPages")
+    }
 }
 
 apply from: deps.scripts.jacoco

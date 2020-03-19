@@ -111,7 +111,7 @@ export class CommandRequest extends ClientRequest {
   /**
    * Adds the event type to the list of observed command handling results.
    *
-   * @param {!Class<? extends Message>} eventType a type of the observed events
+   * @param {!Class<Message>} eventType a type of the observed events
    * @param {!consumerCallback<EventSubscriptionCallbacks>} consumer
    *        a consumer of the `subscribe` and `unsubscribe` callbacks which are responsible for
    *        accepting the incoming events and cancelling the subscription respectively

@@ -38,7 +38,7 @@ export class QueryingClient {
   /**
    * Creates a new query request.
    *
-   * @param {!Class<? extends Message>} entityType the target entity type
+   * @param {!Class<Message>} entityType the target entity type
    * @param {!Client} client the client which initiated the request
    * @return {QueryRequest} a new query request
    */
@@ -51,7 +51,7 @@ export class QueryingClient {
    * Spine server fulfilling a returned promise with an array of received objects.
    *
    * @param {!spine.client.Query} query a query instance to be executed
-   * @return {Promise<<T extends Message>[]>} a promise to be fulfilled with a list of Protobuf
+   * @return {Promise<Message[]>} a promise to be fulfilled with a list of Protobuf
    *        messages of a given type or with an empty list if no entities matching given query
    *        were found; rejected with a `SpineError` if error occurs
    *
