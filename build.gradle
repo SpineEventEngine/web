@@ -246,7 +246,7 @@ subprojects {
 
     final def projectsWithDocs = ['client-js', 'firebase-web', 'web']
     if (projectsWithDocs.contains(project.name)) {
-        apply from: deps.scripts.updateGitHubPages
+        apply from: "$rootDir/temp-script.gradle"
         project.tasks.getByName('publish').dependsOn("$project.path:updateGitHubPages")
     }
 }
