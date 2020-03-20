@@ -122,7 +122,8 @@ String execute(final File baseDir, final String... command) {
         return result.out
     } else {
         final String errorMsg = "Command `$command` finished with exit code $result.exitCode:" +
-                " ${System.lineSeparator()}${result.error}"
+                " ${System.lineSeparator()}${result.error}" +
+                " ${System.lineSeparator()}${result.out}"
         throw new IllegalStateException(errorMsg)
     }
 }

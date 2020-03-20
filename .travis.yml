@@ -33,7 +33,7 @@ script:
   - ./gradlew integrationTest
 
   # Test publishing.
-  - ./gradlew publish
+  - ./gradlew updateGitHubPages
 
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
