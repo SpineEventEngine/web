@@ -66,7 +66,7 @@ project.compileTestJava.enabled = false
 final File jsDocDir = Files.createTempDir()
 
 task jsDoc(type: Exec) {
-    commandLine 'jsdoc', '-d', jsDocDir.path, "$projectDir/main/*"
+    commandLine "$projectDir/node_modules/.bin/jsdoc", '-r', '-d', jsDocDir.path, "$projectDir/main/"
 }
 
 afterEvaluate {
