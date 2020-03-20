@@ -31,6 +31,9 @@ script:
   # Run integration tests of `spine-web` library.
   - ./gradlew integrationTest
 
+  # Test publishing.
+  - ./gradlew publish
+
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
   - chmod +x ./config/scripts/publish-artifacts.sh
