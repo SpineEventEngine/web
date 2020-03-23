@@ -12,6 +12,7 @@ env:
 
 before_install:
   - chmod +x gradlew
+  - chmod +x config/scripts/register-ssh-key.sh
 
   # Upgrade the `npm` version shipped with Travis to the latest.
   - npm install -g npm@latest

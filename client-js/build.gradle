@@ -65,10 +65,11 @@ project.compileTestJava.enabled = false
 
 final File jsDocDir = Files.createTempDir()
 
-afterEvaluate {
-    generatedDocs += files(jsDocDir)
+task jsDoc(type: Exec) {
+    commandLine "$projectDir/node_modules/.bin/jsdoc", '-r', '-d', jsDocDir.path, "$projectDir/main/"
 }
 
-task jsDoc(type: Exec) {
-    commandLine 'jsdoc', '-d', jsDocDir.path, "$projectDir/main/*"
+afterEvaluate {
+    generatedDocs += files(jsDocDir)
+    tasks.updateGitHubPages.dependsOn jsDoc
 }
