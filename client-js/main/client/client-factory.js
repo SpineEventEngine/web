@@ -41,6 +41,8 @@ import {HttpEndpoint} from "./http-endpoint";
  *  the custom implementation of `Client`
  * @property {?Routing} routing
  *  custom configuration of HTTP endpoints
+ * @property {?TenantProvider} tenantProvider
+ *  the provider of active tenant ID; if not specified, the application is considered single-tenant
  */
 
 /**

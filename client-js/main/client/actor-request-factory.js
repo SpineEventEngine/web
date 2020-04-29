@@ -23,9 +23,8 @@
 import uuid from 'uuid';
 
 import {Message} from 'google-protobuf';
+import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
-import {OrderBy, Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
-import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {
   CompositeFilter,
   Filter,
@@ -33,11 +32,12 @@ import {
   Target,
   TargetFilters
 } from '../proto/spine/client/filters_pb';
+import {OrderBy, Query, QueryId, ResponseFormat} from '../proto/spine/client/query_pb';
+import {Topic, TopicId} from '../proto/spine/client/subscription_pb';
 import {ActorContext} from '../proto/spine/core/actor_context_pb';
 import {Command, CommandContext, CommandId} from '../proto/spine/core/command_pb';
 import {UserId} from '../proto/spine/core/user_id_pb';
 import {ZoneId, ZoneOffset} from '../proto/spine/time/time_pb';
-import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
 import {isProtobufMessage, Type, TypedMessage} from './typed-message';
 import {AnyPacker} from './any-packer';
 import {FieldPaths} from './field-paths';
