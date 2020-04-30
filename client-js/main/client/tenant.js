@@ -23,7 +23,9 @@ import {TenantId} from "../proto/spine/core/tenant_id_pb";
 export class TenantIds {
 
   /**
-   * @param {!string} tenantIdValue
+   * Constructs a `TenantId` which is a plain string value.
+   *
+   * @param {!string} tenantIdValue the tenant ID
    * @return {TenantId} a new `TenantId` instance
    */
   static plainString(tenantIdValue) {
@@ -62,6 +64,11 @@ export class TenantProvider {
     this._tenantId = tenantId;
   }
 
+  /**
+   * Returns the currently active tenant ID.
+   *
+   * @return {TenantId}
+   */
   tenantId() {
     return this._tenantId;
   }

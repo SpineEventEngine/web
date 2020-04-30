@@ -1044,9 +1044,30 @@ export class ActorRequestFactory {
    * Creates a new instance of ActorRequestFactory for the given actor.
    *
    * @param {!ActorProvider} actorProvider a provider of an actor
+   * @param {?TenantProvider} tenantProvider a provider of the current tenant; if omitted, the
+   *                                         application is considered single-tenant
    */
-  constructor(actorProvider) {
+  constructor(actorProvider, tenantProvider) {
     this._actorProvider = actorProvider;
+    this._tenantProvider = tenantProvider;
+  }
+
+  /**
+   * Creates a new `ActorRequestFactory` based on the passed options.
+   *
+   * @param {!ClientOptions} options the client initialization options
+   * @return {ActorRequestFactory} a new `ActorRequestFactory` instance
+   */
+  static create(options) {
+    if (!options) {
+      throw new Error('Client options are not defined.')
+    }
+    const actorProvider = options.actorProvider;
+    if (!actorProvider) {
+      throw new Error('The actor provider should be set in the client options in order to ' +
+          'construct an `ActorRequestFactory`.');
+    }
+    return new ActorRequestFactory(actorProvider, options.tenantProvider);
   }
 
   /**
@@ -1081,6 +1102,9 @@ export class ActorRequestFactory {
 
   _actorContext() {
     const result = new ActorContext();
+    if (this._tenantProvider) {
+      result.setTenantId(this._tenantProvider.tenantId());
+    }
     result.setActor(this._actorProvider.get());
     const seconds = Math.round(new Date().getTime() / 1000);
     const time = new Timestamp();

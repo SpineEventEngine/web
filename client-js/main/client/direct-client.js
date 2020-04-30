@@ -47,7 +47,7 @@ export class DirectClientFactory extends AbstractClientFactory {
   static _clientFor(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
-    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const requestFactory = ActorRequestFactory.create(options);
 
     const querying = new DirectQueryingClient(endpoint, requestFactory);
     const subscribing = new NoOpSubscribingClient(requestFactory);
@@ -58,13 +58,13 @@ export class DirectClientFactory extends AbstractClientFactory {
   static createQuerying(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
-    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const requestFactory = ActorRequestFactory.create(options);
 
     return new DirectQueryingClient(endpoint, requestFactory);
   }
 
   static createSubscribing(options) {
-    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const requestFactory = ActorRequestFactory.create(options);
     return new NoOpSubscribingClient(requestFactory);
   }
 
