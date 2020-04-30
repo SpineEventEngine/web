@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 import {ensureUserTasks, fail} from '../test-helpers';
-import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-test-environment';
+import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-tasks-test-environment';
 import {client} from './given/direct-client';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 

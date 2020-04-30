@@ -20,40 +20,31 @@
 
 package io.spine.web.test.given;
 
-import io.spine.server.BoundedContext;
+import io.spine.core.UserId;
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
-/**
- * The test application server.
- */
-final class Server {
+@SuppressWarnings("unused") // Reflective access.
+public class UserInfoAggregate extends Aggregate<UserId, UserInfo, UserInfo.Builder> {
 
-    private static final Application app = createApplication();
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Server() {
+    public UserInfoAggregate(UserId id) {
+        super(id);
     }
 
-    /**
-     * Retrieves the {@link Application} instance.
-     */
-    static Application application() {
-        return app;
+    @Assign
+    UserInfoAdded handle(AddUserInfo command) {
+        UserInfoAdded event = UserInfoAdded
+                .newBuilder()
+                .setId(command.getId())
+                .setFullName(command.getFullName())
+                .vBuild();
+        return event;
     }
 
-    private static Application createApplication() {
-        BoundedContext tasks = BoundedContext
-                .multitenant("Tasks Context")
-                .add(new TaskRepository())
-                .add(new ProjectRepository())
-                .add(new UserTasksProjectionRepository())
-                .build();
-        BoundedContext users = BoundedContext
-                .singleTenant("Users Context")
-                .add(new UserInfoRepository())
-                .build();
-        Application app = Application.create(tasks, users);
-        return app;
+    @Apply
+    private void on(UserInfoAdded event) {
+        builder().setId(event.getId())
+                 .setFullName(event.getFullName());
     }
 }

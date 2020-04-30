@@ -33,7 +33,7 @@ import TestEnvironment from "../../given/test-environment";
 export function initClient() {
   return spineWeb.init({
     protoIndexFiles: [testProtobuf],
-    endpointUrl: 'http://localhost:8080',
+    endpointUrl: TestEnvironment.ENDPOINT,
     actorProvider: new ActorProvider(),
     tenantProvider: new TenantProvider(TestEnvironment.tenantId()),
     routing: {
