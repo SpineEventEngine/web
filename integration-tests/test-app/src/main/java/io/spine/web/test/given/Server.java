@@ -45,7 +45,7 @@ final class Server {
     private static Application createApplication() {
         String name = "Test Bounded Context";
         BoundedContext context = BoundedContext
-                .singleTenant(name)
+                .multitenant(name)
                 .add(new TaskRepository())
                 .add(new ProjectRepository())
                 .add(new UserTasksProjectionRepository())

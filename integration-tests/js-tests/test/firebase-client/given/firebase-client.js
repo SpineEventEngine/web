@@ -22,6 +22,8 @@ import {firebaseDatabase} from "./firebase-database";
 import * as testProtobuf from '@testProto/index';
 import * as spineWeb from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
+import {TenantProvider} from '@lib/client/tenant';
+import TestEnvironment from "../../given/test-environment";
 
 /**
  * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
@@ -37,7 +39,8 @@ export function initClient(endpointUrl = 'http://localhost:8080') {
     protoIndexFiles: [testProtobuf],
     endpointUrl: endpointUrl,
     firebaseDatabase: firebaseDatabase,
-    actorProvider: new ActorProvider()
+    actorProvider: new ActorProvider(),
+    tenantProvider: new TenantProvider(TestEnvironment.tenantId())
   });
 }
 

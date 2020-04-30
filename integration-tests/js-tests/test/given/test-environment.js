@@ -19,6 +19,7 @@
  */
 
 import uuid from 'uuid';
+import {TenantIds} from '@lib/client/tenant';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {UserId} from '@testProto/spine/core/user_id_pb';
@@ -116,10 +117,13 @@ export default class TestEnvironment {
   }
 
   /**
-   * A function that does nothing.
+   * The tenant ID to use in multitenant tests.
+   *
+   * Please, make sure that the root with the same name is accessible for reading in the test
+   * Firebase database.
    */
-  static noop() {
-    // Do nothing.
+  static tenantId() {
+    return TenantIds.plainString('maia');
   }
 }
 

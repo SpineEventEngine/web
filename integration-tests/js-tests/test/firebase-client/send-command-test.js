@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import TestEnvironment from './given/test-environment';
+import TestEnvironment from '../given/test-environment';
 import {CommandHandlingError, CommandValidationError, ConnectionError} from '@lib/index';
 import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
