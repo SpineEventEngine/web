@@ -13,7 +13,14 @@ option java_generate_equals_and_hash = true;
 
 message UserInfo {
     option (entity).kind = AGGREGATE;
-    option (entity).visibility = FULL;
+
+    spine.core.UserId id = 1;
+
+    string full_name = 2;
+}
+
+message UserInfoView {
+    option (entity).kind = PROJECTION;
 
     spine.core.UserId id = 1;
 

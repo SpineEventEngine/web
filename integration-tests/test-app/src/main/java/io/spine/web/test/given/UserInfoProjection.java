@@ -20,41 +20,20 @@
 
 package io.spine.web.test.given;
 
-import io.spine.server.BoundedContext;
+import io.spine.core.Subscribe;
+import io.spine.core.UserId;
+import io.spine.server.projection.Projection;
 
-/**
- * The test application server.
- */
-final class Server {
+@SuppressWarnings("unused") // Reflective access.
+public class UserInfoProjection extends Projection<UserId, UserInfoView, UserInfoView.Builder> {
 
-    private static final Application app = createApplication();
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Server() {
+    public UserInfoProjection(UserId id) {
+        super(id);
     }
 
-    /**
-     * Retrieves the {@link Application} instance.
-     */
-    static Application application() {
-        return app;
-    }
-
-    private static Application createApplication() {
-        BoundedContext users = BoundedContext
-                .singleTenant("Users Context")
-                .add(new UserInfoRepository())
-                .add(new UserInfoViewRepository())
-                .build();
-        BoundedContext tasks = BoundedContext
-                .multitenant("Tasks Context")
-                .add(new TaskRepository())
-                .add(new ProjectRepository())
-                .add(new UserTasksProjectionRepository())
-                .build();
-        Application app = Application.create(tasks, users);
-        return app;
+    @Subscribe
+    void on(UserInfoAdded event) {
+        builder().setId(event.getId())
+                 .setFullName(event.getFullName());
     }
 }

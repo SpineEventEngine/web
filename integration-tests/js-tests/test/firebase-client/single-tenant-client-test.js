@@ -20,24 +20,29 @@
 
 import assert from 'assert';
 import TestEnvironment from '../given/test-environment';
+import {AnyPacker} from '@lib/client/any-packer';
+import {Type} from '@lib/client/typed-message';
 import {UserInfoAdded} from '@testProto/spine/web/test/given/user_events_pb';
-import {UserInfo} from '@testProto/spine/web/test/given/user_info_pb';
+import {UserInfoView} from '@testProto/spine/web/test/given/user_info_pb';
 import {initClient} from './given/firebase-client';
+import {fail} from "../test-helpers";
 
 const singleTenantClient = initClient(TestEnvironment.ENDPOINT);
+const userInfoAddedType = Type.forClass(UserInfoAdded);
 
-xdescribe('Single-tenant client', function () {
-
-  // Big timeout allows to receive model state changes during tests.
-  this.timeout(5000);
+describe('Single-tenant client', function () {
 
   it('sends a command', done => {
     const fullName = 'John Smith';
     const cmd = TestEnvironment.addUserInfoCommand(fullName);
-    singleTenantClient.command(cmd)
+    singleTenantClient
+        .command(cmd)
+        .onError(fail(done))
+        .onRejection(fail(done))
         .observe(UserInfoAdded, ({subscribe, unsubscribe}) =>
             subscribe(event => {
-              assert.equal(event.getFullName(), fullName);
+              const eventMessage = AnyPacker.unpack(event.getMessage()).as(userInfoAddedType);
+              assert.equal(eventMessage.getFullName(), fullName);
               unsubscribe();
               done();
             }))
@@ -47,12 +52,16 @@ xdescribe('Single-tenant client', function () {
   it('performs a query', done => {
     const fullName = 'John Smith 2';
     const cmd = TestEnvironment.addUserInfoCommand(fullName);
-    singleTenantClient.command(cmd)
+    singleTenantClient
+        .command(cmd)
+        .onError(fail(done))
+        .onRejection(fail(done))
         .observe(UserInfoAdded, ({subscribe, unsubscribe}) =>
             subscribe(event => {
+              const eventMessage = AnyPacker.unpack(event.getMessage()).as(userInfoAddedType);
               singleTenantClient
-                  .select(UserInfo)
-                  .byId(event.getId())
+                  .select(UserInfoView)
+                  .byId(eventMessage.getId())
                   .run()
                   .then(messages => {
                     assert.equal(messages.length, 1);
@@ -67,7 +76,7 @@ xdescribe('Single-tenant client', function () {
   it('subscribes to an entity state', done => {
     const fullName = 'John Smith 3';
     singleTenantClient
-        .subscribeTo(UserInfo)
+        .subscribeTo(UserInfoView)
         .post()
         .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
           itemAdded.subscribe({

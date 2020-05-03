@@ -20,41 +20,9 @@
 
 package io.spine.web.test.given;
 
-import io.spine.server.BoundedContext;
+import io.spine.core.UserId;
+import io.spine.server.projection.ProjectionRepository;
 
-/**
- * The test application server.
- */
-final class Server {
-
-    private static final Application app = createApplication();
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Server() {
-    }
-
-    /**
-     * Retrieves the {@link Application} instance.
-     */
-    static Application application() {
-        return app;
-    }
-
-    private static Application createApplication() {
-        BoundedContext users = BoundedContext
-                .singleTenant("Users Context")
-                .add(new UserInfoRepository())
-                .add(new UserInfoViewRepository())
-                .build();
-        BoundedContext tasks = BoundedContext
-                .multitenant("Tasks Context")
-                .add(new TaskRepository())
-                .add(new ProjectRepository())
-                .add(new UserTasksProjectionRepository())
-                .build();
-        Application app = Application.create(tasks, users);
-        return app;
-    }
+class UserInfoViewRepository
+        extends ProjectionRepository<UserId, UserInfoProjection, UserInfoView> {
 }
