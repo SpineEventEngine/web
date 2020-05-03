@@ -33,7 +33,7 @@ const userInfoAddedType = Type.forClass(UserInfoAdded);
 describe('Single-tenant client', function () {
 
   // Big timeout allows to receive model state changes during tests.
-  this.timeout(5000);
+  this.timeout(10000);
 
   it('sends a command', done => {
     const fullName = 'John Smith';
