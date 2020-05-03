@@ -59,4 +59,9 @@ describe('TenantProvider', function () {
     const tenantProvider = new TenantProvider();
     assert.throws(() => tenantProvider.update(undefined));
   });
+
+  it('throws an `Error` when updating with tenant ID which is not a valid tenant ID', () => {
+    const tenantProvider = new TenantProvider();
+    assert.throws(() => tenantProvider.update('plain-string'));
+  });
 });
