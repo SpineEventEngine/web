@@ -26,11 +26,7 @@ import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 
 @SuppressWarnings("unused") // Reflective access.
-public class UserInfoAggregate extends Aggregate<UserId, UserInfo, UserInfo.Builder> {
-
-    public UserInfoAggregate(UserId id) {
-        super(id);
-    }
+final class UserInfoAggregate extends Aggregate<UserId, UserInfo, UserInfo.Builder> {
 
     @Assign
     UserInfoAdded handle(AddUserInfo command) {

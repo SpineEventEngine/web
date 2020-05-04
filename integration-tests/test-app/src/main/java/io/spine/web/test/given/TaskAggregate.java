@@ -30,11 +30,7 @@ import static io.spine.base.Time.currentTime;
  * An aggregate with the state of type {@code spine.web.test.Task}.
  */
 @SuppressWarnings("unused") // Reflective access.
-public class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
-
-    public TaskAggregate(TaskId id) {
-        super(id);
-    }
+final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     @Assign
     TaskCreated handle(CreateTask command) {

@@ -25,11 +25,7 @@ import io.spine.core.UserId;
 import io.spine.server.projection.Projection;
 
 @SuppressWarnings("unused") // Reflective access.
-public class UserInfoProjection extends Projection<UserId, UserInfoView, UserInfoView.Builder> {
-
-    public UserInfoProjection(UserId id) {
-        super(id);
-    }
+final class UserInfoProjection extends Projection<UserId, UserInfoView, UserInfoView.Builder> {
 
     @Subscribe
     void on(UserInfoAdded event) {
