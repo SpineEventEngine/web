@@ -35,7 +35,7 @@ describe('TenantProvider', function () {
 
   const tenantId = Given.tenantId();
 
-  it('can be constructed with custom tenant ID', done => {
+  it('can be constructed with a custom tenant ID', done => {
     const tenantProvider = new TenantProvider(tenantId);
     assert.equal(tenantProvider.tenantId(), tenantId);
     done();

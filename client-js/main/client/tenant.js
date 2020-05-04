@@ -24,7 +24,7 @@ import {isProtobufMessage, Type} from "./typed-message";
 /**
  * A factory of `TenantId` instances.
  *
- * Exposes methods that are "shortcuts" for the convenient creation of the `TenantId` message
+ * Exposes methods that are "shortcuts" for the convenient creation of TenantId` message
  * instances.
  */
 export class TenantIds {
