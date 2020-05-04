@@ -52,29 +52,23 @@ describe('Single-tenant client', function () {
         .post();
   });
 
-  it('performs a query', done => {
-    const fullName = 'John Smith 2';
-    const cmd = TestEnvironment.addUserInfoCommand(fullName);
-    singleTenantClient
-        .command(cmd)
-        .onError(fail(done))
-        .onRejection(fail(done))
-        .observe(UserInfoAdded, ({subscribe, unsubscribe}) =>
-            subscribe(event => {
-              const eventMessage = AnyPacker.unpack(event.getMessage()).as(userInfoAddedType);
-              singleTenantClient
-                  .select(UserInfoView)
-                  .byId(eventMessage.getId())
-                  .run()
-                  .then(messages => {
-                    assert.equal(messages.length, 1);
-                    assert.equal(messages[0].getFullName(), fullName);
-                    done();
-                  })
-              unsubscribe();
-            }))
-        .post();
-  });
+    it('performs a query', done => {
+        const fullName = 'John Smith 2';
+        const cmd = TestEnvironment.addUserInfoCommand(fullName);
+        singleTenantClient
+            .command(cmd)
+            .onAck(() => setTimeout(done, 5000))
+            .post();
+        singleTenantClient
+            .select(UserInfoView)
+            .byId(cmd.getId())
+            .run()
+            .then(messages => {
+                assert.equal(messages.length, 1);
+                assert.equal(messages[0].getFullName(), fullName);
+                done();
+            });
+    });
 
   it('subscribes to an entity state', done => {
     const fullName = 'John Smith 3';
