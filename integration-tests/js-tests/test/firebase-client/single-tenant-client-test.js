@@ -57,7 +57,7 @@ describe('Single-tenant client', function () {
         const cmd = TestEnvironment.addUserInfoCommand(fullName);
         singleTenantClient
             .command(cmd)
-            .onAck(() => setTimeout(done, 5000))
+            .onOk(() => setTimeout(done, 5000))
             .post();
         singleTenantClient
             .select(UserInfoView)
