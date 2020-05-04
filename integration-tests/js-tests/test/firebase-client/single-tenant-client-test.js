@@ -57,7 +57,8 @@ describe('Single-tenant client', function () {
         const cmd = TestEnvironment.addUserInfoCommand(fullName);
         singleTenantClient
             .command(cmd)
-            .onOk(() => setTimeout(done, 5000))
+            // Allow the model to receive the updates.
+            .onOk(() => setTimeout(done, 1000))
             .post();
         singleTenantClient
             .select(UserInfoView)
