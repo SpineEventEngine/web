@@ -1044,7 +1044,7 @@ export class ActorRequestFactory {
    * Creates a new instance of ActorRequestFactory for the given actor.
    *
    * @param {!ActorProvider} actorProvider a provider of an actor
-   * @param {?TenantProvider} tenantProvider a provider of the current tenant; if omitted, the
+   * @param {?TenantProvider} tenantProvider a provider of the current tenant, if omitted, the
    *                                         application is considered single-tenant
    */
   constructor(actorProvider, tenantProvider) {

@@ -42,7 +42,7 @@ import {HttpEndpoint} from "./http-endpoint";
  * @property {?Routing} routing
  *  custom configuration of HTTP endpoints
  * @property {?TenantProvider} tenantProvider
- *  the provider of an active tenant ID; if not specified, the application is considered
+ *  the provider of an active tenant ID, if not specified, the application is considered
  *  single-tenant
  */
 
