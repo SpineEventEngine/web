@@ -19,6 +19,8 @@
  */
 
 import {TenantId} from "../proto/spine/core/tenant_id_pb";
+import {EmailAddress} from "../proto/spine/net/email_address_pb";
+import {InternetDomain} from "../proto/spine/net/internet_domain_pb";
 import {isProtobufMessage, Type} from "./typed-message";
 
 /**
@@ -28,6 +30,40 @@ import {isProtobufMessage, Type} from "./typed-message";
  * instances.
  */
 export class TenantIds {
+
+  /**
+   * Constructs a `TenantId` which represents an internet domain.
+   *
+   * @param {!string} domainName the domain name as a plain string
+   * @return {TenantId} a new `TenantId` instance
+   */
+  static internetDomain(domainName) {
+    if (!domainName) {
+      throw new Error('Expected a non-empty internet domain name.');
+    }
+    const domain = new InternetDomain();
+    domain.setValue(domainName);
+    const result = new TenantId();
+    result.setDomain(domain);
+    return result;
+  }
+
+  /**
+   * Constructs a `TenantId` which represents an email address.
+   *
+   * @param {!string} address the email address as a plain string
+   * @return {TenantId} a new `TenantId` instance
+   */
+  static emailAddress(address) {
+    if (!address) {
+      throw new Error('Expected a non-empty email address value.');
+    }
+    const emailAddress = new EmailAddress();
+    emailAddress.setValue(address);
+    const result = new TenantId();
+    result.setEmail(emailAddress);
+    return result;
+  }
 
   /**
    * Constructs a `TenantId` which is a plain string value.

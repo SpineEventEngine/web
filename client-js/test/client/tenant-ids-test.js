@@ -23,9 +23,46 @@ import {TenantIds} from "../../main/client/tenant";
 
 describe('TenantIds', function () {
 
-  const tenantIdValue = "some-tenant-ID";
+  it('create a tenant ID which represents an internet domain', done => {
+    const internetDomain = "en.wikipedia.org";
+    const tenantId = TenantIds.internetDomain(internetDomain);
+    assert.equal(tenantId.getDomain(), internetDomain);
+    done();
+  });
+
+  it('throws an `Error` when the passed internet domain name is not defined', () => {
+    assert.throws(
+        () => TenantIds.internetDomain(undefined)
+    );
+  });
+
+  it('throws an `Error` when the passed internet domain name is empty', () => {
+    assert.throws(
+        () => TenantIds.internetDomain('')
+    );
+  });
+
+  it('create a tenant ID which represents an email address', done => {
+    const emailAddress = "user@test.com";
+    const tenantId = TenantIds.emailAddress(emailAddress);
+    assert.equal(tenantId.getEmail(), emailAddress);
+    done();
+  });
+
+  it('throws an `Error` when the passed email address value is not defined', () => {
+    assert.throws(
+        () => TenantIds.emailAddress(undefined)
+    );
+  });
+
+  it('throws an `Error` when the passed email address value is empty', () => {
+    assert.throws(
+        () => TenantIds.emailAddress('')
+    );
+  });
 
   it('create a plain string tenant ID', done => {
+    const tenantIdValue = "some-tenant-ID";
     const tenantId = TenantIds.plainString(tenantIdValue);
     assert.equal(tenantId.getValue(), tenantIdValue);
     done();
