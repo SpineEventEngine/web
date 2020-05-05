@@ -25,5 +25,5 @@ import io.spine.server.aggregate.AggregateRepository;
 /**
  * A repository for the task aggregates.
  */
-class TaskRepository extends AggregateRepository<TaskId, TaskAggregate> {
+final class TaskRepository extends AggregateRepository<TaskId, TaskAggregate> {
 }

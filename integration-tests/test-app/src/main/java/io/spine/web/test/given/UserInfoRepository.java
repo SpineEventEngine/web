@@ -23,5 +23,5 @@ package io.spine.web.test.given;
 import io.spine.core.UserId;
 import io.spine.server.aggregate.AggregateRepository;
 
-class UserInfoRepository extends AggregateRepository<UserId, UserInfoAggregate> {
+final class UserInfoRepository extends AggregateRepository<UserId, UserInfoAggregate> {
 }

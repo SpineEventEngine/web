@@ -23,6 +23,6 @@ package io.spine.web.test.given;
 import io.spine.core.UserId;
 import io.spine.server.projection.ProjectionRepository;
 
-class UserInfoViewRepository
+final class UserInfoViewRepository
         extends ProjectionRepository<UserId, UserInfoProjection, UserInfoView> {
 }
