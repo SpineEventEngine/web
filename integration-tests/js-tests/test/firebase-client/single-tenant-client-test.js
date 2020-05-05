@@ -55,7 +55,7 @@ describe('Single-tenant client', function () {
   it('performs a query', done => {
     const fullName = 'John Smith 2';
     const cmd = TestEnvironment.addUserInfoCommand(fullName);
-    const queryTimeoutMs = 5000;
+    const queryTimeoutMs = 1000;
     singleTenantClient
       .command(cmd)
       // Allow the model to receive the updates.
