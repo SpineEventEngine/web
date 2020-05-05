@@ -28,11 +28,7 @@ import io.spine.server.command.Assign;
  * An aggregate that is used to create projects.
  */
 @SuppressWarnings("unused") // Reflective access.
-public class ProjectAggregate extends Aggregate<ProjectId, Project, Project.Builder> {
-
-    public ProjectAggregate(ProjectId id) {
-        super(id);
-    }
+final class ProjectAggregate extends Aggregate<ProjectId, Project, Project.Builder> {
 
     @Assign
     ProjectCreated handle(CreateProject command) {

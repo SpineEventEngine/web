@@ -21,6 +21,8 @@
 import * as testProtobuf from '@testProto/index';
 import * as spineWeb from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
+import {TenantProvider} from '@lib/client/tenant';
+import TestEnvironment from "../../given/test-environment";
 
 /**
  * Initializes the {@link DirectClientFactory client} that interacts with Gretty-based
@@ -31,8 +33,9 @@ import {ActorProvider} from '@lib/client/actor-request-factory';
 export function initClient() {
   return spineWeb.init({
     protoIndexFiles: [testProtobuf],
-    endpointUrl: 'http://localhost:8080',
+    endpointUrl: TestEnvironment.ENDPOINT,
     actorProvider: new ActorProvider(),
+    tenantProvider: new TenantProvider(TestEnvironment.tenantId()),
     routing: {
       query: '/direct-query'
     }

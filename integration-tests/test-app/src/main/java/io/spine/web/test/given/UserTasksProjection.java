@@ -38,13 +38,9 @@ import static io.spine.web.test.given.UserTasks.Load.VERY_HIGH;
  * <p>Assigned tasks count and indication of several tasks assigned are exposed as
  * {@linkplain Column columns} allowing ordering and filtering when user tasks are queried.
  */
-public class UserTasksProjection
+final class UserTasksProjection
         extends Projection<UserId, UserTasks, UserTasks.Builder>
         implements UserTasksWithColumns {
-
-    protected UserTasksProjection(UserId id) {
-        super(id);
-    }
 
     @Subscribe
     void on(TaskCreated event) {

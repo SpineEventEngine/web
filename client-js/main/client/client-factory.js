@@ -41,6 +41,9 @@ import {HttpEndpoint} from "./http-endpoint";
  *  the custom implementation of `Client`
  * @property {?Routing} routing
  *  custom configuration of HTTP endpoints
+ * @property {?TenantProvider} tenantProvider
+ *  the provider of an active tenant ID, if not specified, the application is considered
+ *  single-tenant
  */
 
 /**
@@ -105,7 +108,7 @@ export class AbstractClientFactory {
   static createCommanding(options) {
     const httpClient = new HttpClient(options.endpointUrl);
     const endpoint = new HttpEndpoint(httpClient, options.routing);
-    const requestFactory = new ActorRequestFactory(options.actorProvider);
+    const requestFactory = ActorRequestFactory.create(options);
 
     return new CommandingClient(endpoint, requestFactory);
   }

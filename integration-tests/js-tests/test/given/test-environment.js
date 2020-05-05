@@ -19,8 +19,10 @@
  */
 
 import uuid from 'uuid';
+import {TenantIds} from '@lib/client/tenant';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskId} from '@testProto/spine/web/test/given/task_pb';
+import {AddUserInfo} from '@testProto/spine/web/test/given/user_commands_pb';
 import {UserId} from '@testProto/spine/core/user_id_pb';
 
 /**
@@ -98,6 +100,18 @@ export default class TestEnvironment {
   }
 
   /**
+   * @param {!string} fullName
+   * @return {AddUserInfo}
+   */
+  static addUserInfoCommand(fullName) {
+    const userId = TestEnvironment.userId();
+    const cmd = new AddUserInfo();
+    cmd.setId(userId);
+    cmd.setFullName(fullName);
+    return cmd;
+  }
+
+  /**
    * @param value
    * @param withPrefix
    *
@@ -116,12 +130,27 @@ export default class TestEnvironment {
   }
 
   /**
-   * A function that does nothing.
+   * @param {?String} withPrefix
+   * @return {UserId}
    */
-  static noop() {
-    // Do nothing.
+  static userId(withPrefix) {
+    const id = new UserId();
+    id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuid.v4()}`);
+    return id;
+  }
+
+  /**
+   * The tenant ID to use in multitenant tests.
+   *
+   * Please, make sure that the root with the same name is accessible for reading in the test
+   * Firebase database.
+   */
+  static tenantId() {
+    return TenantIds.plainString('maia');
   }
 }
 
 TestEnvironment.DEFAULT_TASK_NAME = 'Get to Mount Doom';
 TestEnvironment.DEFAULT_TASK_DESCRIPTION = 'There seems to be a bug with the rings that needs to be fixed';
+
+TestEnvironment.ENDPOINT = 'http://localhost:8080';

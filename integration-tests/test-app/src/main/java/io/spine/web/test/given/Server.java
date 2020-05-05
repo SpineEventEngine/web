@@ -21,6 +21,7 @@
 package io.spine.web.test.given;
 
 import io.spine.server.BoundedContext;
+import io.spine.server.DefaultRepository;
 
 /**
  * The test application server.
@@ -43,14 +44,18 @@ final class Server {
     }
 
     private static Application createApplication() {
-        String name = "Test Bounded Context";
-        BoundedContext context = BoundedContext
-                .singleTenant(name)
-                .add(new TaskRepository())
-                .add(new ProjectRepository())
+        BoundedContext users = BoundedContext
+                .singleTenant("Users Context")
+                .add(DefaultRepository.of(UserInfoAggregate.class))
+                .add(DefaultRepository.of(UserInfoProjection.class))
+                .build();
+        BoundedContext tasks = BoundedContext
+                .multitenant("Tasks Context")
+                .add(DefaultRepository.of(TaskAggregate.class))
+                .add(DefaultRepository.of(ProjectAggregate.class))
                 .add(new UserTasksProjectionRepository())
                 .build();
-        Application app = Application.create(context);
+        Application app = Application.create(tasks, users);
         return app;
     }
 }

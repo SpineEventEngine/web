@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import TestEnvironment from './given/test-environment';
+import TestEnvironment from '../given/test-environment';
 import {CommandHandlingError, CommandValidationError, ConnectionError} from '@lib/index';
 import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
@@ -27,6 +27,7 @@ import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
 import {AnyPacker} from '@lib/client/any-packer';
+import {TenantProvider} from '@lib/client/tenant';
 import {Type} from '@lib/client/typed-message';
 
 describe('FirebaseClient command sending', function () {
@@ -69,7 +70,8 @@ describe('FirebaseClient command sending', function () {
 
   it('fails when wrong server endpoint specified', done => {
     const fakeBaseUrl = 'https://malformed-server-endpoint.com';
-    const malformedBackendClient = initClient(fakeBaseUrl);
+    const malformedBackendClient =
+        initClient(fakeBaseUrl, new TenantProvider(TestEnvironment.tenantId()));
     const command = TestEnvironment.createTaskCommand({
       withPrefix: 'spine-web-test-send-command',
       named: 'Implement Spine Web JS client tests',

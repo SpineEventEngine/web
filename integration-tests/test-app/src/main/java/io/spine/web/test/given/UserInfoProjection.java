@@ -20,10 +20,16 @@
 
 package io.spine.web.test.given;
 
-import io.spine.server.aggregate.AggregateRepository;
+import io.spine.core.Subscribe;
+import io.spine.core.UserId;
+import io.spine.server.projection.Projection;
 
-/**
- * A repository for the task aggregates.
- */
-class TaskRepository extends AggregateRepository<TaskId, TaskAggregate> {
+@SuppressWarnings("unused") // Reflective access.
+final class UserInfoProjection extends Projection<UserId, UserInfoView, UserInfoView.Builder> {
+
+    @Subscribe
+    void on(UserInfoAdded event) {
+        builder().setId(event.getId())
+                 .setFullName(event.getFullName());
+    }
 }

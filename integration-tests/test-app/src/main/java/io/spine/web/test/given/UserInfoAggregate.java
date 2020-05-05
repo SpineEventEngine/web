@@ -20,10 +20,27 @@
 
 package io.spine.web.test.given;
 
-import io.spine.server.aggregate.AggregateRepository;
+import io.spine.core.UserId;
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.command.Assign;
 
-/**
- * A repository for the project aggregates.
- */
-class ProjectRepository extends AggregateRepository<ProjectId, ProjectAggregate> {
+@SuppressWarnings("unused") // Reflective access.
+final class UserInfoAggregate extends Aggregate<UserId, UserInfo, UserInfo.Builder> {
+
+    @Assign
+    UserInfoAdded handle(AddUserInfo command) {
+        UserInfoAdded event = UserInfoAdded
+                .newBuilder()
+                .setId(command.getId())
+                .setFullName(command.getFullName())
+                .vBuild();
+        return event;
+    }
+
+    @Apply
+    private void on(UserInfoAdded event) {
+        builder().setId(event.getId())
+                 .setFullName(event.getFullName());
+    }
 }

@@ -20,7 +20,7 @@
 
 import assert from 'assert';
 import {fail} from '../test-helpers';
-import TestEnvironment from './given/test-environment';
+import TestEnvironment from '../given/test-environment';
 import {TaskRenamed} from '@testProto/spine/web/test/given/events_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {client} from './given/firebase-client';

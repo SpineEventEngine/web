@@ -73,19 +73,23 @@ final class Application {
                 .build();
     }
 
-    static Application create(BoundedContext boundedContext) {
-        checkNotNull(boundedContext);
+    static Application create(BoundedContext tasksContext, BoundedContext usersContext) {
+        checkNotNull(tasksContext);
+        checkNotNull(usersContext);
         CommandService commandService = CommandService
                 .newBuilder()
-                .add(boundedContext)
+                .add(tasksContext)
+                .add(usersContext)
                 .build();
         QueryService queryService = QueryService
                 .newBuilder()
-                .add(boundedContext)
+                .add(tasksContext)
+                .add(usersContext)
                 .build();
         SubscriptionService subscriptionService = SubscriptionService
                 .newBuilder()
-                .add(boundedContext)
+                .add(tasksContext)
+                .add(usersContext)
                 .build();
         FirebaseClient retryingClient = buildClient();
         return new Application(commandService, queryService, subscriptionService, retryingClient);

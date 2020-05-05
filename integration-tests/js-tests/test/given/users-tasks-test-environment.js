@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import uuid from 'uuid';
 import {UserId} from '@testProto/spine/core/user_id_pb';
 import {ReassignTask} from '@testProto/spine/web/test/given/commands_pb';
-import TestEnvironment from '../firebase-client/given/test-environment';
+import TestEnvironment from './test-environment';
 
 /**
  * The class for preparation of a test environment using a sample application
@@ -92,23 +91,13 @@ export class UserTasksTestEnvironment extends TestEnvironment {
   }
 
   /**
-   * @param {?String} withPrefix
-   * @return {UserId}
-   */
-  static userId(withPrefix) {
-    const id = new UserId();
-    id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuid.v4()}`);
-    return id;
-  }
-
-  /**
    * @param {?String} withName
    * @return {User}
    */
   static newUser(withName) {
     return {
       name: withName,
-      id: UserTasksTestEnvironment.userId(withName),
+      id: TestEnvironment.userId(withName),
       tasks: []
     }
   }

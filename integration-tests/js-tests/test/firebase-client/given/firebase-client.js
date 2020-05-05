@@ -22,22 +22,25 @@ import {firebaseDatabase} from "./firebase-database";
 import * as testProtobuf from '@testProto/index';
 import * as spineWeb from '@lib/index';
 import {ActorProvider} from '@lib/client/actor-request-factory';
+import {TenantProvider} from '@lib/client/tenant';
+import TestEnvironment from "../../given/test-environment";
 
 /**
  * Initializes the {@link FirebaseClient client} that interacts with Gretty-based
  * local backend server and the emulated Firebase application.
  * See `integration-tests/README.MD` for details.
  *
- * @param endpointUrl the URL of a backend to interact with; has the default value
- *                    of a local backend server;
+ * @param {!string} endpointUrl the URL of a backend to interact with
+ * @param {?TenantProvider} tenantProvider the tenant provider for multitenant context tests
  * @return {FirebaseClient} the Firebase client instance
  */
-export function initClient(endpointUrl = 'http://localhost:8080') {
+export function initClient(endpointUrl, tenantProvider) {
   return spineWeb.init({
     protoIndexFiles: [testProtobuf],
     endpointUrl: endpointUrl,
     firebaseDatabase: firebaseDatabase,
-    actorProvider: new ActorProvider()
+    actorProvider: new ActorProvider(),
+    tenantProvider: tenantProvider
   });
 }
 
@@ -46,4 +49,5 @@ export function initClient(endpointUrl = 'http://localhost:8080') {
  *
  * @type {FirebaseClient}
  */
-export const client = initClient();
+export const client =
+    initClient(TestEnvironment.ENDPOINT, new TenantProvider(TestEnvironment.tenantId()));

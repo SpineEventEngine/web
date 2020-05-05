@@ -32,7 +32,8 @@ import static io.spine.server.route.EventRoute.withId;
 /**
  * A repository for the user tasks projections.
  */
-public class UserTasksProjectionRepository extends ProjectionRepository<UserId, UserTasksProjection, UserTasks> {
+final class UserTasksProjectionRepository
+        extends ProjectionRepository<UserId, UserTasksProjection, UserTasks> {
 
     /**
      * Sets up the event routing for all the types of events handled by {@link UserTasksProjection}.
