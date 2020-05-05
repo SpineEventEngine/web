@@ -70,7 +70,7 @@ describe('Single-tenant client', function () {
              done();
           })
           .catch((e) => {
-             console.error("Failed 1st query: " + e);
+             console.error("Failed the single-tenant client query: " + e);
              fail(done);
           });
       }, queryTimeoutMs))
