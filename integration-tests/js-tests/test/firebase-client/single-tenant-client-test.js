@@ -52,24 +52,30 @@ describe('Single-tenant client', function () {
         .post();
   });
 
-    it('performs a query', done => {
-        const fullName = 'John Smith 2';
-        const cmd = TestEnvironment.addUserInfoCommand(fullName);
+  it('performs a query', done => {
+    const fullName = 'John Smith 2';
+    const cmd = TestEnvironment.addUserInfoCommand(fullName);
+    const queryTimeoutMs = 5000;
+    singleTenantClient
+      .command(cmd)
+      // Allow the model to receive the updates.
+      .onOk(() => setTimeout(() => {
         singleTenantClient
-            .command(cmd)
-            // Allow the model to receive the updates.
-            .onOk(() => setTimeout(done, 1000))
-            .post();
-        singleTenantClient
-            .select(UserInfoView)
-            .byId(cmd.getId())
-            .run()
-            .then(messages => {
-                assert.equal(messages.length, 1);
-                assert.equal(messages[0].getFullName(), fullName);
-                done();
-            });
-    });
+          .select(UserInfoView)
+          .byId(cmd.getId())
+          .run()
+          .then(messages => {
+             assert.equal(messages.length, 1);
+             assert.equal(messages[0].getFullName(), fullName);
+             done();
+          })
+          .catch((e) => {
+             console.error("Failed 1st query: " + e);
+             fail(done);
+          });
+      }, queryTimeoutMs))
+      .post();
+  });
 
   it('subscribes to an entity state', done => {
     const fullName = 'John Smith 3';
