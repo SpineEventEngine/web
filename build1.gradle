@@ -20,20 +20,20 @@
 
 buildscript { final scriptHandler ->
     apply from: "$rootDir/config/gradle/dependencies.gradle"
-    apply from: "$rootDir/version.gradle"
+    apply from: "$rootDir/version.gradle.kts"
 
     defaultRepositories(scriptHandler)
     dependencies {
-        classpath deps.build.guava
-        classpath deps.build.gradlePlugins.protobuf
-        classpath deps.build.gradlePlugins.errorProne
-        classpath "io.spine.tools:spine-model-compiler:$spineBaseVersion"
-        classpath "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"
+        classpath
+        classpath
+        classpath
+        classpath
+        classpath
     }
     forceConfiguration(scriptHandler)
 }
 
-apply from: 'version.gradle'
+apply from: 'version.gradle.kts'
 
 ext {
     credentialsPropertyFile = 'credentials.properties'
@@ -57,7 +57,7 @@ allprojects {
 
 subprojects {
     buildscript { final scriptHandler ->
-        apply from: "$rootDir/version.gradle"
+        apply from: "$rootDir/version.gradle.kts"
 
         defaultRepositories(scriptHandler)
 
@@ -181,7 +181,7 @@ subprojects {
                     "io.netty:netty-handler:4.1.34.Final",
                     "io.netty:netty-codec-http:4.1.34.Final",
 
-                    "javax.servlet:javax.servlet-api:$servletApiVersion", // see version.gradle
+                    "javax.servlet:javax.servlet-api:3.1.0", // TODO:2020-06-01:dmytro.dashenkov: Use version from Deps.
 
                     "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
                     "org.eclipse.jetty.toolchain:jetty-schemas:3.1",

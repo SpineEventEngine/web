@@ -18,16 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-web'
+import java.io.File
 
-include 'web'
-include 'firebase-web'
+rootProject.name = "spine-web"
 
-include 'client-js'
+include("web")
+include("firebase-web")
+include("testutil-web")
+include("client-js")
+include("js-tests")
+include("test-app")
 
-include 'js-tests'
-include 'test-app'
-
-project(':js-tests').projectDir = "integration-tests/js-tests" as File
-project(':test-app').projectDir = "integration-tests/test-app" as File
-include 'testutil-web'
+project(":js-tests").projectDir = File("integration-tests/js-tests")
+project(":test-app").projectDir = File("integration-tests/test-app")

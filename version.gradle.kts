@@ -18,13 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    spineVersion = '1.5.4'
-    spineBaseVersion = '1.5.11'
-    spineCoreVersion = '1.5.10'
+val spineBaseVersion: String by extra("1.5.12")
+val spineCoreVersion: String by extra("1.5.14")
+val spineVersion: String by extra(spineCoreVersion)
 
-    versionToPublish = spineVersion
-    versionToPublishJs = versionToPublish
-
-    servletApiVersion = '3.1.0'
-}
+val versionToPublish: String by extra(spineVersion)
+val versionToPublishJs: String by extra(spineVersion)

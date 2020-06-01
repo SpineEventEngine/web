@@ -26,7 +26,7 @@ configurations {
     testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
 }
 
-apply plugin: spineProtobufPluginId
+apply plugin: "io.spine.tools.spine-model-compiler"
 apply from: deps.scripts.modelCompiler
 
 dependencies {
