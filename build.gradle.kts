@@ -25,7 +25,9 @@ buildscript {
     apply(from = "$rootDir/config/gradle/dependencies.gradle")
     apply(from = "$rootDir/version.gradle.kts")
 
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val resolution = io.spine.gradle.internal.DependencyResolution
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val deps = io.spine.gradle.internal.Deps
 
     resolution.defaultRepositories(repositories)
@@ -49,7 +51,9 @@ plugins {
     idea
     pmd
     `project-report`
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     id("net.ltgt.errorprone").version(io.spine.gradle.internal.Deps.versions.errorPronePlugin)
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
 }
 
@@ -65,7 +69,7 @@ allprojects {
         from("$rootDir/version.gradle.kts")
     }
 
-    version = extra["versionToPublish"]
+    version = extra["versionToPublish"]!!
     group = "io.spine"
 }
 
@@ -74,8 +78,6 @@ subprojects {
     val generatedRootDir = "$projectDir/generated"
     val generatedJavaDir = "$generatedRootDir/main/java"
     val generatedTestJavaDir = "$generatedRootDir/test/java"
-    val generatedGrpcDir = "$generatedRootDir/main/grpc"
-    val generatedTestGrpcDir = "$generatedRootDir/test/grpc"
     val generatedSpineDir = "$generatedRootDir/main/spine"
     val generatedTestSpineDir = "$generatedRootDir/test/spine"
 
@@ -113,13 +115,13 @@ subprojects {
         Deps.test.junit5Api.forEach { testImplementation(it) }
         testImplementation(Deps.test.junit5Runner)
         testImplementation(Deps.test.mockito)
-        testImplementation(Deps.test.hamcrest) // TODO:2020-06-01:dmytro.dashenkov: Retain or remove.
+        testImplementation(Deps.test.hamcrest)
         testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
     }
 
     DependencyResolution.forceConfiguration(configurations)
 
-    configurations.all({
+    configurations.all {
         resolutionStrategy {
 
             /**
@@ -182,7 +184,7 @@ subprojects {
                     "io.netty:netty-handler:4.1.34.Final",
                     "io.netty:netty-codec-http:4.1.34.Final",
 
-                    "javax.servlet:javax.servlet-api:3.1.0", // TODO:2020-06-01:dmytro.dashenkov: Use version from Deps.
+                    Deps.build.servletApi,
 
                     "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
                     "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
@@ -192,7 +194,7 @@ subprojects {
                     "io.spine:spine-testlib:$spineBaseVersion"
             )
         }
-    })
+    }
 
     sourceSets {
         main {
