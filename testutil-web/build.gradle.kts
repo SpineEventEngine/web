@@ -18,10 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.internal
-
-@Suppress("unused")
-    // Receiver parameter is never used. We only want to make dependency declaration uniform.
-val Build.servletApi: String
-    get() = "javax.servlet:javax.servlet-api:3.1.0"
-
+dependencies {
+    implementation(project(":web"))
+}

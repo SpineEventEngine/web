@@ -18,6 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    implementation project(':web')
-}
+// "Receiver parameter is never used." We only want to make dependency declaration uniform.
+@file:Suppress("unused")
+
+package io.spine.gradle.internal
+
+val Build.servletApi: String
+    get() = "javax.servlet:javax.servlet-api:3.1.0"
+
+@Suppress("DEPRECATION")
+// SLF4J version.
+val Runtime.slf4jJul: String
+    get() = "org.slf4j:slf4j-jdk14:${Deps.versions.slf4j}"
+
