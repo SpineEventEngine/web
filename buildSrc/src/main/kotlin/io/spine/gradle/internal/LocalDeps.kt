@@ -26,8 +26,7 @@ package io.spine.gradle.internal
 val Build.servletApi: String
     get() = "javax.servlet:javax.servlet-api:3.1.0"
 
-@Suppress("DEPRECATION")
-// SLF4J version.
+@Suppress("DEPRECATION") // SLF4J version.
 val Runtime.slf4jJul: String
     get() = "org.slf4j:slf4j-jdk14:${Deps.versions.slf4j}"
 
