@@ -19,26 +19,27 @@
  */
 
 plugins {
-    id 'java'
-    id 'org.gretty' version '3.0.1'
-    id "com.github.psxpaul.execfork" version '0.1.12'
+    id("org.gretty").version("3.0.1")
+    id("com.github.psxpaul.execfork").version("0.1.12")
+    id("io.spine.tools.spine-model-compiler")
 }
 
-apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: "$rootDir/config/gradle/model-compiler.gradle"
+apply(from = "$rootDir/config/gradle/model-compiler.gradle")
+
+val spineCoreVersion: String by extra
 
 dependencies {
-    implementation project(":firebase-web")
-    implementation "io.spine:spine-server:$spineCoreVersion"
+    implementation(project(":firebase-web"))
+    implementation("io.spine:spine-server:$spineCoreVersion")
 }
 
 gretty {
-    contextPath = '/'
+    contextPath = "/"
     httpPort = 8080
     debugPort = 5005
     debugSuspend = true
-    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
-    servletContainer = 'jetty9'
+    jvmArgs = listOf("-Dio.spine.tests=true", "-Xverify:none")
+    servletContainer = "jetty9"
     managedClassReload = false
     fastReload = false
 }
