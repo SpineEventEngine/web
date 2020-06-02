@@ -21,6 +21,7 @@
 import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
+import io.spine.gradle.internal.IncrementGuard
 import io.spine.gradle.internal.servletApi
 
 plugins {
@@ -29,6 +30,7 @@ plugins {
 
 DependencyResolution.excludeProtobufLite(configurations)
 
+apply<IncrementGuard>()
 apply(from = Deps.scripts.modelCompiler(project))
 
 val spineBaseVersion: String by extra
