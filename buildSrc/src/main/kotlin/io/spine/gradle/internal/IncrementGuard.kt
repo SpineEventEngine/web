@@ -18,13 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    spineVersion = '1.5.4'
-    spineBaseVersion = '1.5.11'
-    spineCoreVersion = '1.5.10'
+package io.spine.gradle.internal
 
-    versionToPublish = spineVersion
-    versionToPublishJs = versionToPublish
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-    servletApiVersion = '3.1.0'
+/**
+ * Gradle plugin which adds a [CheckVersionIncrement] task.
+ *
+ * The task is called `checkVersionIncrement` inserted before the `check` task.
+ */
+class IncrementGuard : Plugin<Project> {
+
+    companion object {
+        const val taskName = "checkVersionIncrement"
+    }
+
+    override fun apply(target: Project) {
+        val tasks = target.tasks
+        tasks.register(taskName, CheckVersionIncrement::class.java) {
+            repository = PublishingRepos.cloudRepo
+            tasks.getByName("check").dependsOn(this)
+
+            shouldRunAfter("test")
+        }
+    }
 }

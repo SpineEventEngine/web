@@ -18,6 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    implementation project(':web')
-}
+import java.io.File
+
+rootProject.name = "spine-web"
+
+include("web")
+include("firebase-web")
+include("testutil-web")
+include("client-js")
+include("js-tests")
+include("test-app")
+
+project(":js-tests").projectDir = File("integration-tests/js-tests")
+project(":test-app").projectDir = File("integration-tests/test-app")

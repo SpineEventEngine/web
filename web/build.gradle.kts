@@ -18,44 +18,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-configurations {
-    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-    testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+import com.google.protobuf.gradle.*
+import io.spine.gradle.internal.DependencyResolution
+import io.spine.gradle.internal.Deps
+import io.spine.gradle.internal.IncrementGuard
+import io.spine.gradle.internal.servletApi
+
+plugins {
+    id("io.spine.tools.spine-model-compiler")
 }
 
-apply plugin: spineProtobufPluginId
-apply from: deps.scripts.modelCompiler
+DependencyResolution.excludeProtobufLite(configurations)
+
+apply<IncrementGuard>()
+apply(from = Deps.scripts.modelCompiler(project))
+
+val spineBaseVersion: String by extra
+val spineCoreVersion: String by extra
 
 dependencies {
-    api "javax.servlet:javax.servlet-api:$servletApiVersion"
-    api "io.spine:spine-server:$spineCoreVersion"
-    api deps.build.googleHttpClient
+    api(Deps.build.servletApi)
+    api("io.spine:spine-server:$spineCoreVersion")
+    api(Deps.build.googleHttpClient)
 
-    implementation deps.build.googleHttpClientApache
+    implementation(Deps.build.googleHttpClientApache)
 
-    testImplementation project(':testutil-web')
-    testImplementation "io.spine.tools:spine-mute-logging:$spineBaseVersion"
+    testImplementation(project(":testutil-web"))
+    testImplementation("io.spine.tools:spine-mute-logging:$spineBaseVersion")
 }
 
-task compileProtoToJs {
+val compileProtoToJs by tasks.registering {
     description = "Compiles Protobuf sources into JavaScript."
 }
 
 protobuf {
     protoc {
-        artifact = deps.build.protoc
+        artifact = Deps.build.protoc
     }
     generateProtoTasks {
-        all().each { final task ->
+        all().forEach { task ->
             task.builtins {
-                // For information on JavaScript code generation please see
-                // https://github.com/google/protobuf/blob/master/js/README.md
-                js {
-                    option "import_style=commonjs"
+                id("js") {
+                    // For information on JavaScript code generation please see
+                    // https://github.com/google/protobuf/blob/master/js/README.md
+                    option("import_style=commonjs")
                 }
             }
-            compileProtoToJs.dependsOn task
+            compileProtoToJs {
+                dependsOn(task)
+            }
         }
     }
 }

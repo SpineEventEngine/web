@@ -18,16 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-web'
+val spineBaseVersion: String by extra("1.5.12")
+val spineCoreVersion: String by extra("1.5.14")
+val spineVersion: String by extra(spineCoreVersion)
 
-include 'web'
-include 'firebase-web'
-
-include 'client-js'
-
-include 'js-tests'
-include 'test-app'
-
-project(':js-tests').projectDir = "integration-tests/js-tests" as File
-project(':test-app').projectDir = "integration-tests/test-app" as File
-include 'testutil-web'
+val versionToPublish: String by extra(spineVersion)
+val versionToPublishJs: String by extra(spineVersion)

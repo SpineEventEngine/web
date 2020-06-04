@@ -18,36 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply from: "$rootDir/config/gradle/js/build-tasks.gradle"
-apply plugin: 'com.google.protobuf'
+import com.google.protobuf.gradle.*
+import groovy.lang.Closure
+import io.spine.gradle.internal.Deps
 
-ext {
-    testSrcDir = "$projectDir/test"
-    genProtoBaseDir = projectDir
-    genProtoSubDir = "proto"
-    genProtoTestDir = "$testSrcDir/$genProtoSubDir"
-    nycOutputDir = "$projectDir/.nyc_output"
+plugins {
+    id("io.spine.tools.proto-js-plugin")
 }
+
+apply(from = "$rootDir/config/gradle/js/build-tasks.gradle")
+
+val testSrcDir: String = "$projectDir/test"
+val genProtoBaseDir: String = projectDir.path
+val genProtoSubDir: String = "proto"
+val genProtoTestDir: String = "$testSrcDir/$genProtoSubDir"
+val nycOutputDir: String = "$projectDir/.nyc_output"
 
 dependencies {
     testProtobuf(project(":test-app")) {
-        exclude group: 'com.google.firebase'
+        exclude(group = "com.google.firebase")
     }
 }
 
 /**
  * Cleans old module dependencies and build outputs.
  */
-task deleteCompiled {
-    description = 'Cleans old module dependencies and build outputs.'
-
-    clean.dependsOn deleteCompiled
-
-    doLast {
-        delete genProtoTestDir
-        delete nycOutputDir
-    }
+tasks.register(name = "deleteCompiled", type = Delete::class ) {
+    description = "Cleans old module dependencies and build outputs."
+    delete(genProtoTestDir, nycOutputDir)
+    tasks.clean.get().dependsOn(this)
 }
+
+val npm: Closure<*> by extra
 
 /**
  * Installs unpublished artifact of `spine-web` library as a module dependency.
@@ -55,13 +57,13 @@ task deleteCompiled {
  * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
  * the current project. See https://docs.npmjs.com/cli/link for details.
  */
-task installLinkedLib {
-    description = 'Install unpublished artifact of `spine-web` library as a module dependency.'
+tasks.register("installLinkedLib") {
+    description = "Install unpublished artifact of `spine-web` library as a module dependency."
 
-    dependsOn ':client-js:link'
+    dependsOn(":client-js:link")
 
     doLast {
-        npm 'run', 'installLinkedLib'
+        npm.call("run", "installLinkedLib")
     }
 }
 
@@ -70,76 +72,68 @@ task installLinkedLib {
 // See https://github.com/SpineEventEngine/web/issues/96
 /**
  * Runs integration tests of the `spine-web` library against the sample Spine-based application.
- * 
+ *
  * Runs the sample Spine-based application from the `test-app` module before integration
  * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
  */
-task integrationTest {
-    description = 'Runs integration tests of the `spine-web` library against the sample application.'
+tasks.register("integrationTest") {
+    description = "Runs integration tests of the `spine-web` library against the sample application."
 
-    dependsOn build, installLinkedLib, ':test-app:appBeforeIntegrationTest'
-    finalizedBy ':test-app:appAfterIntegrationTest'
+    dependsOn("build", "installLinkedLib", ":test-app:appBeforeIntegrationTest")
+    finalizedBy(":test-app:appAfterIntegrationTest")
 
     doLast {
-        npm 'run', 'test'
+        npm.call("run", "test")
     }
 }
-
-apply plugin: 'io.spine.tools.proto-js-plugin'
 
 protoJs {
     testGenProtoDir = genProtoTestDir
 
-    generateParsersTask().dependsOn compileProtoToJs
-    buildJs.dependsOn generateParsersTask()
+    generateParsersTask().dependsOn("compileProtoToJs")
+    tasks["buildJs"].dependsOn(generateParsersTask())
 }
 
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
-        artifact = deps.build.protoc
+        artifact = Deps.build.protoc
     }
     generateProtoTasks {
-        all().each { final task ->
+        all().forEach { task ->
             task.builtins {
                 // Do not use java builtin output in this project.
-                remove java
+                remove("java")
 
                 // For information on JavaScript code generation please see
                 // https://github.com/google/protobuf/blob/master/js/README.md
-                js {
-                    option "import_style=commonjs"
+                id("js") {
+                    option("import_style=commonjs")
                     outputSubDir = genProtoSubDir
                 }
 
                 task.generateDescriptorSet = true
-                final def testClassifier = task.sourceSet.name == "test" ? "_test" : ""
-                final def descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
-                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}"
+                val testClassifier = if (task.sourceSet.name == "test") "_test" else ""
+                val descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
+                task.descriptorSetOptions.path = groovy.lang.GString.EMPTY.plus("${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}")
             }
-            compileProtoToJs.dependsOn task
+            tasks["compileProtoToJs"].dependsOn(task)
         }
     }
 }
 
 idea.module {
-    testSourceDirs += file(testSrcDir)
-
-    excludeDirs += file(genProtoTestDir)
-
-    iml {
-        beforeMerged { module ->
-            module.dependencies.clear()
-        }
-        whenMerged { module ->
-            module.dependencies*.exported = true
-        }
-    }
+    testSourceDirs.add(file(testSrcDir))
+    excludeDirs.add(file(genProtoTestDir))
 }
 
 // Suppress building the JS project as a Java module.
-project.compileJava.enabled = false
-project.compileTestJava.enabled = false
+tasks.compileJava {
+    enabled = false
+}
+tasks.compileTestJava {
+    enabled = false
+}
 
 // Suppress audit for a test project.
-project.auditNodePackages.enabled = false
+tasks["auditNodePackages"].enabled = false

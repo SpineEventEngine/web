@@ -18,27 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id 'java'
-    id 'org.gretty' version '3.0.1'
-    id "com.github.psxpaul.execfork" version '0.1.12'
-}
-
-apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: "$rootDir/config/gradle/model-compiler.gradle"
-
 dependencies {
-    implementation project(":firebase-web")
-    implementation "io.spine:spine-server:$spineCoreVersion"
-}
-
-gretty {
-    contextPath = '/'
-    httpPort = 8080
-    debugPort = 5005
-    debugSuspend = true
-    jvmArgs = ['-Dio.spine.tests=true', '-Xverify:none']
-    servletContainer = 'jetty9'
-    managedClassReload = false
-    fastReload = false
+    implementation(project(":web"))
 }

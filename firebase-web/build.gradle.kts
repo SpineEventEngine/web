@@ -18,52 +18,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group 'io.spine.gcloud'
+import com.google.protobuf.gradle.*
+import io.spine.gradle.internal.DependencyResolution
+import io.spine.gradle.internal.Deps
+import io.spine.gradle.internal.slf4jJul
 
-configurations {
-    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-    testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+plugins {
+    id("io.spine.tools.spine-model-compiler")
 }
 
-apply plugin: spineProtobufPluginId
-apply from: deps.scripts.modelCompiler
+apply(from = Deps.scripts.modelCompiler(project))
+
+group = "io.spine.gcloud"
+
+DependencyResolution.excludeProtobufLite(configurations)
 
 dependencies {
-    api project(':web')
-    api(deps.build.firebaseAdmin) {
-        exclude group: 'com.google.guava', module: 'guava'
-        exclude group: 'io.grpc'
+    api(project(":web"))
+    api(Deps.build.firebaseAdmin) {
+        exclude(group = "com.google.guava", module = "guava")
+        exclude(group = "io.grpc")
     }
 
-    implementation deps.build.jacksonDatabind
-    implementation deps.build.googleHttpClientApache
-    implementation deps.build.appengineApi
+    implementation(Deps.build.jacksonDatabind)
+    implementation(Deps.build.googleHttpClientApache)
+    implementation(Deps.build.appengineApi)
 
-    // Add an SLF4J binding because it's required by the Firebase Admin SDK.
-    runtimeOnly "org.slf4j:slf4j-jdk14:$deps.versions.slf4j"
+    // Required by the Firebase Admin SDK.
+    runtimeOnly(Deps.runtime.slf4jJul)
 
-    testImplementation project(':testutil-web')
+    testImplementation(project(":testutil-web"))
 }
 
-task compileProtoToJs {
+val compileProtoToJs by tasks.registering {
     description = "Compiles Protobuf sources into JavaScript."
 }
 
 protobuf {
     protoc {
-        artifact = deps.build.protoc
+        artifact = Deps.build.protoc
     }
     generateProtoTasks {
-        all().each { final task ->
+        all().forEach { task ->
             task.builtins {
-                // For information on JavaScript code generation please see
-                // https://github.com/google/protobuf/blob/master/js/README.md
-                js {
-                    option "import_style=commonjs"
+                id("js") {
+                    // For information on JavaScript code generation please see
+                    // https://github.com/google/protobuf/blob/master/js/README.md
+                    option("import_style=commonjs")
                 }
             }
-            compileProtoToJs.dependsOn task
+            compileProtoToJs {
+                dependsOn(task)
+            }
         }
     }
 }
