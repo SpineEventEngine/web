@@ -1,0 +1,4 @@
+io.spine.web.firebase
+io.spine.web.firebase.query
+io.spine.web.firebase.rest
+io.spine.web.firebase.subscription
