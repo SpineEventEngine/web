@@ -28,7 +28,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.9.10.4</version>
+    <version>2.10.0.pr1</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
