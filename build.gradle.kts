@@ -18,7 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.*
+import io.spine.gradle.internal.DependencyResolution
+import io.spine.gradle.internal.Deps
+import io.spine.gradle.internal.PublishingRepos
+import io.spine.gradle.internal.servletApi
 
 buildscript {
 
@@ -27,6 +30,7 @@ buildscript {
 
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val resolution = io.spine.gradle.internal.DependencyResolution
+
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val deps = io.spine.gradle.internal.Deps
 
@@ -139,7 +143,7 @@ subprojects {
              * This breaks the Spine compiler which searches for all Protobuf definitions
              * in classpath, and assumes they implement the Type URLs.
              */
-            force (
+            force(
                     "io.opencensus:opencensus-api:0.21.0",
                     "io.opencensus:opencensus-contrib-http-util:0.18.0",
 
@@ -191,7 +195,8 @@ subprojects {
 
                     // Transitive dependencies from `core-java` may have different (older) versions.
                     "io.spine:spine-base:$spineBaseVersion",
-                    "io.spine:spine-testlib:$spineBaseVersion"
+                    "io.spine:spine-testlib:$spineBaseVersion",
+                    "io.spine:spine-time:$spineBaseVersion"
             )
         }
     }
