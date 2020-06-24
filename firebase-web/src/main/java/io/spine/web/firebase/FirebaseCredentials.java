@@ -20,7 +20,6 @@
 
 package io.spine.web.firebase;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -69,7 +68,8 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
      *
      * <p>Either this field or {@link #credentials} will always be {@code null}.
      */
-    private final @Nullable GoogleCredential oldStyleCredential;
+    private final com.google.api.client.googleapis.auth.oauth2.@Nullable GoogleCredential
+            oldStyleCredential;
 
     private FirebaseCredentials() {
         this.credentials = null;
@@ -81,7 +81,7 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
         this.oldStyleCredential = null;
     }
 
-    private FirebaseCredentials(GoogleCredential credential) {
+    private FirebaseCredentials(com.google.api.client.googleapis.auth.oauth2.GoogleCredential credential) {
         this.credentials = null;
         this.oldStyleCredential = credential;
     }
@@ -122,9 +122,10 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
      *             alternative instead
      */
     @Deprecated
-    public static FirebaseCredentials fromGoogleCredentials(GoogleCredential credentials) {
+    public static FirebaseCredentials fromGoogleCredentials(com.google.api.client.googleapis.auth.oauth2.GoogleCredential credentials) {
         checkNotNull(credentials);
-        GoogleCredential scopedCredential = credentials.createScoped(AUTH_SCOPES);
+        com.google.api.client.googleapis.auth.oauth2.GoogleCredential scopedCredential
+                = credentials.createScoped(AUTH_SCOPES);
         return new FirebaseCredentials(scopedCredential);
     }
 
