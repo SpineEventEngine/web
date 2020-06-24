@@ -4,6 +4,8 @@ jdk:
   - openjdk8
 
 env:
+  # LTS version of Node.
+  - NODE_VERSION="12.8.1"
   global:
     - PATH="$PATH:/usr/lib/dart/bin"
     # Encrypted `NPM_TOKEN` variable to enable JS publishing.
@@ -14,6 +16,7 @@ before_install:
   - chmod +x gradlew
   - chmod +x config/scripts/register-ssh-key.sh
 
+  - nvm install $NODE_VERSION
   # Upgrade the `npm` version shipped with Travis to the latest.
   - npm install -g npm@latest
 
