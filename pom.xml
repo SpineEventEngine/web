@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>1.5.21</version>
+<version>1.5.23</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -28,7 +28,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.9.10.4</version>
+    <version>2.9.10.5</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
