@@ -73,6 +73,8 @@ val jsDoc by tasks.registering(type = Exec::class) {
 afterEvaluate {
     val generatedDocs = "generatedDocs"
     val predefinedDocs = extra[generatedDocs] as Iterable<File>
-    extra[generatedDocs] = Lists.newArrayList(predefinedDocs).add(file(jsDocDir))
+    val newDocs = Lists.newArrayList(predefinedDocs)
+    newDocs.add(file(jsDocDir))
+    extra[generatedDocs] = newDocs
     tasks.getByName("updateGitHubPages").dependsOn(jsDoc)
 }
