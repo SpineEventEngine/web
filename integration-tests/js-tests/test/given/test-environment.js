@@ -81,7 +81,6 @@ export default class TestEnvironment {
     if (reject) {
       command.setReject(true);
     }
-
     return command;
   }
 
