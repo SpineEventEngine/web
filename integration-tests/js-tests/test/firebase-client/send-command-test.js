@@ -64,7 +64,7 @@ describe('FirebaseClient command sending', function () {
     client.command(command)
         .onOk(fetchAndCheck)
         .onError(fail(done))
-        .onRejection(fail(done))
+        .onImmediateRejection(fail(done))
         .post();
   });
 
@@ -92,7 +92,7 @@ describe('FirebaseClient command sending', function () {
     malformedBackendClient.command(command)
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
         .onError(checkError)
-        .onRejection(fail(done, 'A command was rejected when an error was expected.'))
+        .onImmediateRejection(fail(done, 'A command was rejected when an error was expected.'))
         .post();
   });
 
@@ -118,7 +118,7 @@ describe('FirebaseClient command sending', function () {
     client.command(command)
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
         .onError(checkError)
-        .onRejection(fail(done, 'A command was rejected when an error was expected.'))
+        .onImmediateRejection(fail(done, 'A command was rejected when an error was expected.'))
         .post();
   });
 
@@ -134,7 +134,7 @@ describe('FirebaseClient command sending', function () {
 
     client.command(command)
         .onError(fail(done))
-        .onRejection(fail(done))
+        .onImmediateRejection(fail(done))
         .observe(TaskCreated, ({subscribe, unsubscribe}) => {
           subscribe(event => {
             const packedMessage = event.getMessage();
@@ -181,7 +181,7 @@ describe('FirebaseClient command sending', function () {
 
     client.command(command)
         .onError(fail(done))
-        .onRejection(fail(done))
+        .onImmediateRejection(fail(done))
         .observe(Unknown)
         .post()
         .then(() => {

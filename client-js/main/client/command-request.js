@@ -37,6 +37,7 @@ const NOOP_CALLBACK = () => {};
  * client.command(logInUser)
  *       .onOk(_logOk)
  *       .onError(_logError)
+ *       .onImmediateRejection(_warnAboutRejection)
  *       .observe(UserLoggedIn.class, ({subscribe, unsubscribe}) => {
  *           subscribe(event => _logAndUnsubscribe(event, unsubscribe));
  *           setTimeout(unsubscribe, EVENT_WAIT_TIMEOUT);
@@ -66,7 +67,7 @@ export class CommandRequest extends ClientRequest {
     this._commandMessage = commandMessage;
     this._onAck = NOOP_CALLBACK;
     this._onError = NOOP_CALLBACK;
-    this._onRejection = NOOP_CALLBACK;
+    this._onImmediateRejection = NOOP_CALLBACK;
     this._observedTypes = [];
   }
 
@@ -82,7 +83,7 @@ export class CommandRequest extends ClientRequest {
   }
 
   /**
-   * Runs the callback if the command could not be handled by the Spine server due to the
+   * Runs the callback if the command could not be handled by the Spine server due to a
    * technical error.
    *
    * @param {!consumerCallback<CommandHandlingError>} callback the callback to run
@@ -94,17 +95,23 @@ export class CommandRequest extends ClientRequest {
   }
 
   /**
-   * Runs the callback if the server responded with the `rejection` status on a command.
+   * Runs the callback if the server responded on a command with an immediate rejection.
    *
-   * Note that with the current Spine server implementation it's rare for the command to be
-   * rejected right away. In most cases, the command will be acknowledged with the `OK` status and
-   * only then lead to a business rejection. You can check this scenario using the `observe` method.
+   * The immediate rejection means the command did not pass the command filters set up in the
+   * bounded context and was disqualified from execution right away.
+   *
+   * A typical example of this would be the command not passing filters due to user permissions
+   * being not broad enough.
+   *
+   * Please note that this rejection is different to a "normal" rejection when the command is
+   * acknowledged with the `OK` status and then reaches the handler method which processes it. Such
+   * rejections can be tracked using the `observe(...)` method of this request.
    *
    * @param {!consumerCallback<spine.core.Event>} callback
    * @return {this} self for method chaining
    */
-  onRejection(callback) {
-    this._onRejection = callback;
+  onImmediateRejection(callback) {
+    this._onImmediateRejection = callback;
     return this;
   }
 
@@ -130,7 +137,11 @@ export class CommandRequest extends ClientRequest {
    */
   post() {
     const command = this._requestFactory.command().create(this._commandMessage);
-    const onAck = {onOk: this._onAck, onError: this._onError, onRejection: this._onRejection};
+    const onAck = {
+      onOk: this._onAck,
+      onError: this._onError,
+      onImmediateRejection: this._onImmediateRejection
+    };
     const promises = [];
     this._observedTypes.forEach(({type, consumer}) => {
       const originFilter = Filters.eq("context.past_message", this._asOrigin(command));

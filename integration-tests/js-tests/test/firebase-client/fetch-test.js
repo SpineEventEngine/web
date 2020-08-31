@@ -53,7 +53,7 @@ describe('FirebaseClient "fetch"', function () {
             client.command(command)
                 .onOk(() => reportTaskCreated())
                 .onError(fail(done))
-                .onRejection(fail(done))
+                .onImmediateRejection(fail(done))
                 .post();
         });
 
@@ -220,7 +220,7 @@ describe('FirebaseClient "fetch"', function () {
         client.command(command)
             .onOk(selectAndCheckFailed)
             .onError(fail(done))
-            .onRejection(fail(done))
+            .onImmediateRejection(fail(done))
             .post();
     });
 });

@@ -61,7 +61,7 @@ export class UserTasksTestEnvironment extends TestEnvironment {
             createTaskAcknowledged();
           })
           .onError(createTaskFailed)
-          .onRejection(createTaskFailed)
+          .onImmediateRejection(createTaskFailed)
           .post();
     }
 
@@ -85,7 +85,7 @@ export class UserTasksTestEnvironment extends TestEnvironment {
       client.command(command)
           .onOk(resolve)
           .onError(reject)
-          .onRejection(reject)
+          .onImmediateRejection(reject)
           .post();
     })
   }
