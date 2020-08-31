@@ -123,7 +123,7 @@ describe('FirebaseClient command sending', function () {
         .post();
   });
 
-  it('calls `onImmediateRejection` callback when the command is rejected by a filter', done => {
+  it('runs `onImmediateRejection` callback when the command is rejected by a filter', done => {
     const command = TestEnvironment.createTaskCommand({
       withPrefix: 'spine-web-test-send-command',
       named: 'Reject this command on purpose',
