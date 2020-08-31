@@ -23,6 +23,7 @@ import TestEnvironment from '../given/test-environment';
 import {CommandHandlingError, CommandValidationError, ConnectionError} from '@lib/index';
 import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
+import {TaskCannotBeCreated} from '@testProto/spine/web/test/given/rejections_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
@@ -119,6 +120,32 @@ describe('FirebaseClient command sending', function () {
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
         .onError(checkError)
         .onImmediateRejection(fail(done, 'A command was rejected when an error was expected.'))
+        .post();
+  });
+
+  it('calls `onImmediateRejection` callback when the command is rejected by a filter', done => {
+    const command = TestEnvironment.createTaskCommand({
+      withPrefix: 'spine-web-test-send-command',
+      named: 'Reject this command on purpose',
+      describedAs: 'Spine Web need integration tests',
+      rejectCommand: true
+    });
+    const taskId = command.getId();
+    const checkRejection = rejection => {
+      try {
+        const rejectionType = Type.forClass(TaskCannotBeCreated);
+        const unpacked = AnyPacker.unpack(rejection.getMessage()).as(rejectionType);
+        assert.ok(unpacked);
+        assert.equal(unpacked.getId().getValue(), taskId.getValue());
+        done();
+      } catch (e) {
+        fail(done, e.message)
+      }
+    };
+    client.command(command)
+        .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
+        .onError(fail(done, 'An error occurred when a business rejection was expected.'))
+        .onImmediateRejection(checkRejection)
         .post();
   });
 

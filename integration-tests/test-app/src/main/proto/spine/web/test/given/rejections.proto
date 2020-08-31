@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package spine.web.test.given;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web.test.given";
+
+import "spine/web/test/given/task.proto";
+
+message TaskCannotBeCreated {
+
+    TaskId id = 1;
+    string reason = 2;
+}

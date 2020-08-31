@@ -54,6 +54,7 @@ final class Server {
                 .add(DefaultRepository.of(TaskAggregate.class))
                 .add(DefaultRepository.of(ProjectAggregate.class))
                 .add(new UserTasksProjectionRepository())
+                .addCommandFilter(new CreateTaskCommandFilter())
                 .build();
         Application app = Application.create(tasks, users);
         return app;

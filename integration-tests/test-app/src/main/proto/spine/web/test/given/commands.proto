@@ -23,6 +23,8 @@ message CreateTask {
     spine.core.UserId assignee = 3;
 
     string description = 4;
+
+    bool reject = 5;
 }
 
 message RenameTask {
