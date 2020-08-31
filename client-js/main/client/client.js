@@ -78,12 +78,12 @@ import {Observable} from 'rxjs';
  *
  * Represents a command acknowledgement callback.
  *
- * @property {!parameterlessCallback} onOk the callback to run when the command is handled properly
- * @property {!consumerCallback<Error>} onError the callback to run when the command cannot be
- *                                              handled due to a technical error
- * @property {!consumerCallback<Message>} onImmediateRejection the callback to run when the command
- *                                                             is denied execution due to a
- *                                                             business rejection
+ * @property {!parameterlessCallback} onOk
+ *           the callback to run when the command is handled properly
+ * @property {!consumerCallback<Error>} onError
+ *           the callback to run when the command cannot be handled due to a technical error
+ * @property {!consumerCallback<Message>} onImmediateRejection
+ *           the callback to run when the command is denied execution due to a business rejection
  */
 
 /**
