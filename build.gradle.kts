@@ -107,6 +107,7 @@ subprojects {
     DependencyResolution.defaultRepositories(repositories)
 
     val spineBaseVersion: String by extra
+    val spineTimeVersion: String by extra
     val spineCoreVersion: String by extra
 
     dependencies {
@@ -196,7 +197,7 @@ subprojects {
                     // Transitive dependencies from `core-java` may have different (older) versions.
                     "io.spine:spine-base:$spineBaseVersion",
                     "io.spine:spine-testlib:$spineBaseVersion",
-                    "io.spine:spine-time:$spineBaseVersion"
+                    "io.spine:spine-time:$spineTimeVersion"
             )
         }
     }

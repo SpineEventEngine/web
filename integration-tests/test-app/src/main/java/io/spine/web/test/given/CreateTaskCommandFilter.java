@@ -18,10 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("1.5.29")
-val spineTimeVersion: String by extra("1.5.24")
-val spineCoreVersion: String by extra("1.5.27")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.web.test.given;
 
-val versionToPublish: String by extra("1.5.25")
-val versionToPublishJs: String by extra("1.5.25")
+import io.spine.base.CommandMessage;
+import io.spine.core.Ack;
+import io.spine.server.bus.BusFilter;
+import io.spine.server.type.CommandEnvelope;
+
+import java.util.Optional;
+
+final class CreateTaskCommandFilter implements BusFilter<CommandEnvelope> {
+
+    @Override
+    public Optional<Ack> filter(CommandEnvelope envelope) {
+        CommandMessage message = envelope.message();
+        if (!(message instanceof CreateTask)) {
+            return letPass();
+        }
+        CreateTask command = (CreateTask) message;
+        if (!command.getReject()) {
+            return letPass();
+        }
+        TaskCannotBeCreated rejection = TaskCannotBeCreated
+                .newBuilder()
+                .setId(command.getId())
+                .setReason("Reject this command just for test.")
+                .build();
+        return reject(envelope, rejection);
+    }
+}

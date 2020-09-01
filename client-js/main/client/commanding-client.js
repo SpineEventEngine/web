@@ -82,7 +82,7 @@ export class CommandingClient {
             : new CommandHandlingError(message, error));
         break;
       case Status.StatusCase.REJECTION:
-        onAck.onRejection(responseStatusProto.getRejection());
+        onAck.onImmediateRejection(responseStatusProto.getRejection());
         break;
       default:
         onAck.onError(

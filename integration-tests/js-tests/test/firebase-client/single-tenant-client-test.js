@@ -41,7 +41,7 @@ describe('Single-tenant client', function () {
     singleTenantClient
         .command(cmd)
         .onError(fail(done))
-        .onRejection(fail(done))
+        .onImmediateRejection(fail(done))
         .observe(UserInfoAdded, ({subscribe, unsubscribe}) =>
             subscribe(event => {
               const eventMessage = AnyPacker.unpack(event.getMessage()).as(userInfoAddedType);

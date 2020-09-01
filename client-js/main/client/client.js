@@ -78,12 +78,12 @@ import {Observable} from 'rxjs';
  *
  * Represents a command acknowledgement callback.
  *
- * @property {!parameterlessCallback} onOk the callback to run when the command is handled properly
- * @property {!consumerCallback<Error>} onError the callback to run when the command cannot be
- *                                              handled due to a technical error
- * @property {!consumerCallback<Message>} onRejection the callback to run when the command cannot
- *                                                    be handled properly because of the business
- *                                                    rejection
+ * @property {!parameterlessCallback} onOk
+ *           the callback to run when the command is handled properly
+ * @property {!consumerCallback<Error>} onError
+ *           the callback to run when the command cannot be handled due to a technical error
+ * @property {!consumerCallback<Message>} onImmediateRejection
+ *           the callback to run when the command is denied execution due to a business rejection
  */
 
 /**
@@ -304,7 +304,7 @@ export class Client {
    * @param {?consumerCallback<CommandHandlingError>} errorCallback
    *        a callback receiving the errors executed if an error occurred when sending command
    * @param {?consumerCallback<Rejection>} rejectionCallback
-   *        a callback executed if the command was rejected by Spine server
+   *        a callback executed if the command is denied processing due to a business rejection
    * @see CommandHandlingError
    * @see CommandValidationError
    *
@@ -314,7 +314,7 @@ export class Client {
     this.command(commandMessage)
         .onOk(acknowledgedCallback)
         .onError(errorCallback)
-        .onRejection(rejectionCallback)
+        .onImmediateRejection(rejectionCallback)
         .post();
   }
 }

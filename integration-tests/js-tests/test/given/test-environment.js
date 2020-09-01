@@ -49,7 +49,8 @@ export default class TestEnvironment {
    *     withPrefix?: String,
    *     named?: String,
    *     describedAs: String,
-   *     assignedTo: UserId
+   *     assignedTo: UserId,
+   *     rejectCommand: Boolean
    * }}
    *
    * @return {CreateTask}
@@ -59,7 +60,8 @@ export default class TestEnvironment {
                              withPrefix: idPrefix,
                              named: name,
                              describedAs: description,
-                             assignedTo: userId
+                             assignedTo: userId,
+                             rejectCommand: reject
                            }) {
     const taskId = this.taskId({value: id, withPrefix: idPrefix});
 
@@ -76,7 +78,9 @@ export default class TestEnvironment {
     if (!!userId) {
       command.setAssignee(userId);
     }
-
+    if (reject) {
+      command.setReject(true);
+    }
     return command;
   }
 
