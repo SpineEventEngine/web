@@ -12,5 +12,6 @@ import "spine/web/test/given/task.proto";
 message TaskCannotBeCreated {
 
     TaskId id = 1;
+
     string reason = 2;
 }

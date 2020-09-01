@@ -16,14 +16,19 @@ import "spine/web/test/given/project.proto";
 
 message CreateTask {
 
+    // The task ID.
     TaskId id = 1;
 
+    // The task name.
     string name = 2 [(required) = true];
 
+    // The task assignee.
     spine.core.UserId assignee = 3;
 
+    // The task description.
     string description = 4;
 
+    // Reject the command with the help of bus filters.
     bool reject = 5;
 }
 
