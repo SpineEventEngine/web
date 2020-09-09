@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("1.5.29")
-val spineTimeVersion: String by extra("1.5.24")
-val spineCoreVersion: String by extra("1.5.27")
+val spineBaseVersion: String by extra("1.6.0")
+val spineTimeVersion: String by extra("1.6.0")
+val spineCoreVersion: String by extra("1.6.0")
 val spineVersion: String by extra(spineCoreVersion)
 
-val versionToPublish: String by extra("1.5.25")
-val versionToPublishJs: String by extra("1.5.25")
+val versionToPublish: String by extra("1.6.0")
+val versionToPublishJs: String by extra("1.6.0")
