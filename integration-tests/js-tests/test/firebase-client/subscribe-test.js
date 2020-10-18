@@ -19,11 +19,12 @@
  */
 
 import assert from 'assert';
+import sinon from 'sinon';
 import {fail} from '../test-helpers';
 import TestEnvironment from '../given/test-environment';
 import {TaskRenamed} from '@testProto/spine/web/test/given/events_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
-import {client} from './given/firebase-client';
+import {client, initClient} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Type} from '@lib/client/typed-message';
@@ -372,5 +373,152 @@ describe('FirebaseClient subscription', function () {
           assert.ok(true);
           done();
         });
+  });
+
+  describe('should be kept up', () => {
+
+    const TEST_KEEP_UP_INTERVAL = 2000;
+    let client;
+    let sandbox;
+
+    beforeEach(() => {
+      client = initClient(TestEnvironment.ENDPOINT);
+      // Decrease subscription keep up interval for tests.
+      client._subscribing._subscriptionService._keepUpInterval = () => {
+        return TEST_KEEP_UP_INTERVAL;
+      };
+
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      client = null;
+      sandbox.restore();
+    });
+
+    it('with requests sent with correct interval', done => {
+      const keepUpEndpoint = keepUpEndpointSpy();
+
+      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        assert.ok(keepUpEndpoint.notCalled);
+        await nextInterval();
+        assert.ok(keepUpEndpoint.calledOnce);
+        await nextInterval();
+        assert.ok(keepUpEndpoint.calledTwice);
+        unsubscribe();
+        done();
+      });
+    });
+
+    it('with correct request', done => {
+      const keepUpEndpoint = keepUpEndpointSpy();
+
+      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        await nextInterval();
+        assert.ok(keepUpEndpoint.calledOnce);
+        const subscriptionMessage = keepUpEndpoint.getCall(0).args[0];
+        check(subscriptionMessage);
+        unsubscribe();
+        done();
+      });
+    });
+
+    it('and canceled on the next keep up interval if unsubscribed', done => {
+      const cancelEndpoint = cancelEndpointSpy();
+
+      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        assert.ok(cancelEndpoint.notCalled);
+        unsubscribe();
+        await nextInterval();
+        assert.ok(cancelEndpoint.calledOnce);
+        const subscriptionMessage = cancelEndpoint.getCall(0).args[0];
+        check(subscriptionMessage);
+        done();
+      });
+    });
+
+    it('and stop sending requests when unsubscribed', done => {
+      const keepUpEndpoint = keepUpEndpointSpy();
+      const cancelEndpoint = cancelEndpointSpy();
+
+      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        assert.ok(keepUpEndpoint.notCalled);
+        assert.ok(cancelEndpoint.notCalled);
+        await nextInterval();
+        assert.ok(keepUpEndpoint.calledOnce);
+        assert.ok(cancelEndpoint.notCalled);
+        unsubscribe();
+
+        await nextInterval();
+        assert.ok(keepUpEndpoint.calledOnce);
+        assert.ok(cancelEndpoint.calledOnce);
+
+        await nextInterval();
+        assert.ok(keepUpEndpoint.calledOnce);
+        assert.ok(cancelEndpoint.calledOnce);
+
+        done();
+      });
+    });
+
+    it('and close child subscriptions when unsubscribed', done => {
+      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        const subscriptionClosed = observable => {
+          return new Promise((resolve, reject) => {
+            const onNext = reject;
+            const onError = reject;
+            const onComplete = resolve;
+            observable.subscribe(onNext, onError, onComplete);
+          });
+        };
+        const allSubscriptionsClosed = Promise.all([
+          subscriptionClosed(itemAdded),
+          subscriptionClosed(itemChanged),
+          subscriptionClosed(itemRemoved)
+        ]);
+
+        unsubscribe();
+        await allSubscriptionsClosed;
+        done();
+      });
+    });
+
+    function subscribe() {
+      const topic = client.newTopic()
+          .select(Task)
+          .build();
+      return client.subscribe(topic);
+    }
+
+    /**
+     * @param {!spine.client.Subscription} subscriptionMessage a message sent to endpoint
+     */
+    function check(subscriptionMessage) {
+      const id = subscriptionMessage.getId();
+      const topic = subscriptionMessage.getTopic();
+      assert.ok(id.getValue());
+      const targetType = topic.getTarget().getType();
+      assert.equal(targetType, Task.typeUrl());
+    }
+
+    function keepUpEndpointSpy() {
+      const httpEndpoint = client._subscribing._endpoint;
+      return sandbox.spy(httpEndpoint, 'keepUpSubscription');
+    }
+
+    function cancelEndpointSpy() {
+      const httpEndpoint = client._subscribing._endpoint;
+      return sandbox.spy(httpEndpoint, 'cancelSubscription');
+    }
+
+    /**
+     * Returns a promise to be resolved after `TEST_KEEP_UP_INTERVAL`.
+     *
+     * @returns {Promise<void>}
+     */
+    function nextInterval() {
+      return new Promise(resolve =>
+          setTimeout(() => resolve(), TEST_KEEP_UP_INTERVAL + 1))
+    }
   });
 });
