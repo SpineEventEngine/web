@@ -24,7 +24,6 @@ import {Duration} from './time-utils';
 import ObjectToProto from "./object-to-proto";
 import {Status} from '../proto/spine/core/response_pb';
 
-
 const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
 /**
@@ -83,7 +82,12 @@ export class FirebaseSubscriptionService {
   _run() {
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
-    }, SUBSCRIPTION_KEEP_UP_INTERVAL.inMs());
+    }, this._keepUpInterval());
+  }
+
+  /** Interval in milliseconds for sending subscription keep up requests. */
+  _keepUpInterval() {
+    return SUBSCRIPTION_KEEP_UP_INTERVAL.inMs();
   }
 
   /**
@@ -115,7 +119,7 @@ export class FirebaseSubscriptionService {
       } else {
         this._endpoint.keepUpSubscription(spineSubscription).then(response => {
           const responseStatus = response.status;
-          const responseStatusProto = ObjectToProto.convert(responseStatus, _statusType);
+          const responseStatusProto = ObjectToProto.convert(responseStatus, Status.typeUrl());
           if (responseStatusProto.getStatusCase() !== Status.StatusCase.OK) {
             this._removeSubscription(subscription)
           }
