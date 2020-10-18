@@ -59,19 +59,41 @@ export class FirebaseSubscriptionService {
       throw new Error('This subscription is already registered in subscription service');
     }
     this._subscriptions.push(subscription);
+
+    if (!this._isRunning()) {
+      this._run();
+    }
+  }
+
+  /**
+   * Indicates whether this service is running keeping up subscriptions.
+   *
+   * @returns {boolean}
+   * @private
+   */
+  _isRunning() {
+     return !!this._interval;
   }
 
   /**
    * Starts the subscription service, keeping up the added subscriptions.
+   *
+   * @private
    */
-  run() {
-    if (this._interval) {
-      throw new Error('The FirebaseSubscriptionService is already running');
-    }
-
+  _run() {
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
     }, SUBSCRIPTION_KEEP_UP_INTERVAL.inMs());
+  }
+
+  /**
+   * Stops the subscription service.
+   *
+   * @private
+   */
+  _stop() {
+    clearInterval(this._interval);
+    this._interval = null;
   }
 
   /**
@@ -103,29 +125,18 @@ export class FirebaseSubscriptionService {
   }
 
   /**
-   * Stops the subscription service unsubscribing and removing all added subscriptions.
-   */
-  stop() {
-    if (!this._interval) {
-      throw new Error('The FirebaseSubscriptionService was stopped when it was not running');
-    }
-    clearInterval(this._interval);
-    this._subscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-      this._removeSubscription(subscription);
-    });
-    this._interval = null;
-  }
-
-  /**
    * Removes the provided subscription from subscriptions list, which stops any attempts
-   * to update it.
+   * to update it. In case no more subscriptions are left, stops this service.
    *
    * @private
    */
   _removeSubscription(subscription) {
     const index = this._subscriptions.indexOf(subscription);
     this._subscriptions.splice(index, 1);
+
+    if (this._subscriptions.length === 0) {
+      this._stop();
+    }
   }
 
   /**
