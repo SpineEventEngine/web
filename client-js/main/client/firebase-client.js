@@ -235,12 +235,9 @@ class FirebaseSubscribingClient extends SubscribingClient {
     const itemRemoved = new Subject();
 
     const pathSubscriptions = [
-      this._firebase
-          .onChildAdded(path, itemAdded.next.bind(itemAdded)),
-      this._firebase
-          .onChildChanged(path, itemChanged.next.bind(itemChanged)),
-      this._firebase
-          .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
+      this._firebase.onChildAdded(path, itemAdded),
+      this._firebase.onChildChanged(path, itemChanged),
+      this._firebase.onChildRemoved(path, itemRemoved)
     ];
 
     const typeUrl = subscription.getTopic().getTarget().getType();
@@ -263,8 +260,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
    */
   _eventSubscription(path, subscription) {
     const itemAdded = new Subject();
-    const pathSubscription =
-        this._firebase.onChildAdded(path, itemAdded.next.bind(itemAdded));
+    const pathSubscription = this._firebase.onChildAdded(path, itemAdded);
 
     return new EventSubscription({
       unsubscribedBy: () => {

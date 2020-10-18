@@ -20,7 +20,7 @@
 
 "use strict";
 
-import {Subscription} from 'rxjs';
+import {Subscription, Subject} from 'rxjs';
 
 /**
  * The client of a Firebase Realtime database.
@@ -42,12 +42,12 @@ export class FirebaseDatabaseClient {
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
    * @param {!string} path the path to the watched node
-   * @param {!consumerCallback<Object>} dataCallback the child value callback
+   * @param {!Subject<Object>} dataSubject the subject receiving child values
    *
    * @return {Subscription} a Subscription that can be unsubscribed
    */
-  onChildAdded(path, dataCallback) {
-    return this._subscribeToChildEvent('child_added', path, dataCallback);
+  onChildAdded(path, dataSubject) {
+    return this._subscribeToChildEvent('child_added', path, dataSubject);
   }
 
   /**
@@ -56,12 +56,12 @@ export class FirebaseDatabaseClient {
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
    * @param {!string} path the path to the watched node
-   * @param {!consumerCallback<Object>} dataCallback the child value callback
+   * @param {!Subject<Object>} dataSubject the subject receiving child values
    *
    * @return {Subscription} a Subscription that can be unsubscribed
    */
-  onChildChanged(path, dataCallback) {
-    return this._subscribeToChildEvent('child_changed', path, dataCallback);
+  onChildChanged(path, dataSubject) {
+    return this._subscribeToChildEvent('child_changed', path, dataSubject);
   }
 
   /**
@@ -70,23 +70,24 @@ export class FirebaseDatabaseClient {
    * Each child's value is parsed as a JSON and dispatched to the given callback
    *
    * @param {!string} path the path to the watched node
-   * @param {!consumerCallback<Object>} dataCallback the child value callback
+   * @param {!Subject<Object>} dataSubject the subject receiving child values
    *
    * @return {Subscription} a Subscription that can be unsubscribed
    */
-  onChildRemoved(path, dataCallback) {
-    return this._subscribeToChildEvent('child_removed', path, dataCallback);
+  onChildRemoved(path, dataSubject) {
+    return this._subscribeToChildEvent('child_removed', path, dataSubject);
   }
 
-  _subscribeToChildEvent(childEvent, path, dataCallback) {
+  _subscribeToChildEvent(childEvent, path, dataSubject) {
     const dbRef = this._database.ref(path);
     const callback = dbRef.on(childEvent, response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
-      dataCallback(message);
+      dataSubject.next(message);
     });
     return new Subscription(() => {
       dbRef.off(childEvent, callback);
+      dataSubject.complete();
     });
   }
 
