@@ -399,7 +399,7 @@ describe('FirebaseClient subscription', function () {
     it('with requests sent with correct interval', done => {
       const keepUpEndpoint = keepUpEndpointSpy();
 
-      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+      subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         assert.ok(keepUpEndpoint.notCalled);
         await nextInterval();
         assert.ok(keepUpEndpoint.calledOnce);
@@ -413,11 +413,11 @@ describe('FirebaseClient subscription', function () {
     it('with correct request', done => {
       const keepUpEndpoint = keepUpEndpointSpy();
 
-      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+      subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         await nextInterval();
         assert.ok(keepUpEndpoint.calledOnce);
         const subscriptionMessage = keepUpEndpoint.getCall(0).args[0];
-        check(subscriptionMessage);
+        checkAllTasks(subscriptionMessage);
         unsubscribe();
         done();
       });
@@ -426,13 +426,13 @@ describe('FirebaseClient subscription', function () {
     it('and canceled on the next keep up interval if unsubscribed', done => {
       const cancelEndpoint = cancelEndpointSpy();
 
-      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+      subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         assert.ok(cancelEndpoint.notCalled);
         unsubscribe();
         await nextInterval();
         assert.ok(cancelEndpoint.calledOnce);
         const subscriptionMessage = cancelEndpoint.getCall(0).args[0];
-        check(subscriptionMessage);
+        checkAllTasks(subscriptionMessage);
         done();
       });
     });
@@ -441,7 +441,7 @@ describe('FirebaseClient subscription', function () {
       const keepUpEndpoint = keepUpEndpointSpy();
       const cancelEndpoint = cancelEndpointSpy();
 
-      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+      subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         assert.ok(keepUpEndpoint.notCalled);
         assert.ok(cancelEndpoint.notCalled);
         await nextInterval();
@@ -461,9 +461,9 @@ describe('FirebaseClient subscription', function () {
       });
     });
 
-    it('and close child subscriptions when unsubscribed', done => {
-      subscribe().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
-        const subscriptionClosed = observable => {
+    it('and complete child observables when unsubscribed', done => {
+      subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+        const observableCompleted = observable => {
           return new Promise((resolve, reject) => {
             const onNext = reject;
             const onError = reject;
@@ -471,29 +471,26 @@ describe('FirebaseClient subscription', function () {
             observable.subscribe(onNext, onError, onComplete);
           });
         };
-        const allSubscriptionsClosed = Promise.all([
-          subscriptionClosed(itemAdded),
-          subscriptionClosed(itemChanged),
-          subscriptionClosed(itemRemoved)
+        const allObservablesCompleted = Promise.all([
+          observableCompleted(itemAdded),
+          observableCompleted(itemChanged),
+          observableCompleted(itemRemoved)
         ]);
 
         unsubscribe();
-        await allSubscriptionsClosed;
+        await allObservablesCompleted;
         done();
       });
     });
 
-    function subscribe() {
+    function subscribeToAllTasks() {
       const topic = client.newTopic()
           .select(Task)
           .build();
       return client.subscribe(topic);
     }
 
-    /**
-     * @param {!spine.client.Subscription} subscriptionMessage a message sent to endpoint
-     */
-    function check(subscriptionMessage) {
+    function checkAllTasks(subscriptionMessage) {
       const id = subscriptionMessage.getId();
       const topic = subscriptionMessage.getTopic();
       assert.ok(id.getValue());
