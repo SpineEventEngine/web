@@ -24,17 +24,25 @@ import {Duration} from './time-utils';
 import ObjectToProto from "./object-to-proto";
 import {Status} from '../proto/spine/core/response_pb';
 
-const SUBSCRIPTION_KEEP_UP_INTERVAL = new Duration({minutes: 2});
-
 /**
  * A service that manages the active subscriptions periodically sending requests to keep them
  * running.
  */
 export class FirebaseSubscriptionService {
+
+  /**
+   * The default interval for sending subscription keep up requests.
+   *
+   * @type {Duration}
+   * @private
+   */
+  static DEFAULT_KEEP_UP_INTERVAL = new Duration({minutes: 2});
+
   /**
    * @param {Endpoint} endpoint an endpoint to communicate with
+   * @param {?Duration} keepUpInterval an custom interval for sending subscription keep up requests
    */
-  constructor(endpoint) {
+  constructor(endpoint, keepUpInterval) {
     /**
      * @type {SpineSubscription[]}
      * @private
@@ -45,6 +53,13 @@ export class FirebaseSubscriptionService {
      * @private
      */
     this._endpoint = endpoint;
+    /**
+     * @type {Duration}
+     * @private
+     */
+    this._keepUpInterval = keepUpInterval
+        ? keepUpInterval
+        : FirebaseSubscriptionService.DEFAULT_KEEP_UP_INTERVAL;
   }
 
   /**
@@ -82,12 +97,7 @@ export class FirebaseSubscriptionService {
   _run() {
     this._interval = setInterval(() => {
       this._keepUpSubscriptions();
-    }, this._keepUpInterval());
-  }
-
-  /** Interval in milliseconds for sending subscription keep up requests. */
-  _keepUpInterval() {
-    return SUBSCRIPTION_KEEP_UP_INTERVAL.inMs();
+    }, this._keepUpInterval.inMs());
   }
 
   /**

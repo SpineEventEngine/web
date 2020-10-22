@@ -28,3 +28,4 @@ export {Client} from './client/client';
 export {init} from './client/spine';
 export {TenantIds, TenantProvider} from './client/tenant';
 export * from './client/errors';
+export {Duration} from './client/time-utils';

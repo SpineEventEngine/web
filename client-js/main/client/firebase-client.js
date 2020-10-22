@@ -326,7 +326,8 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
-    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+    const subscriptionService =
+        new FirebaseSubscriptionService(endpoint, options.subscriptionKeepUpInterval);
 
     const querying = new FirebaseQueryingClient(endpoint, firebaseDatabaseClient, requestFactory);
     const subscribing = new FirebaseSubscribingClient(endpoint,
@@ -351,7 +352,8 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
-    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+    const subscriptionService =
+        new FirebaseSubscriptionService(endpoint, options.subscriptionKeepUpInterval);
 
     return new FirebaseSubscribingClient(endpoint,
                                          firebaseDatabaseClient,
