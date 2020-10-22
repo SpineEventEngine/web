@@ -28,6 +28,7 @@ import {client, initClient} from './given/firebase-client';
 import {Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Type} from '@lib/client/typed-message';
+import {Duration} from '@lib/client/time-utils';
 
 describe('FirebaseClient subscription', function () {
 
@@ -377,17 +378,12 @@ describe('FirebaseClient subscription', function () {
 
   describe('should be kept up', () => {
 
-    const TEST_KEEP_UP_INTERVAL = 2000;
+    const TEST_KEEP_UP_INTERVAL = new Duration({seconds: 2});
     let client;
     let sandbox;
 
     beforeEach(() => {
-      client = initClient(TestEnvironment.ENDPOINT);
-      // Decrease subscription keep up interval for tests.
-      client._subscribing._subscriptionService._keepUpInterval = () => {
-        return TEST_KEEP_UP_INTERVAL;
-      };
-
+      client = initClient(TestEnvironment.ENDPOINT, undefined, TEST_KEEP_UP_INTERVAL);
       sandbox = sinon.createSandbox();
     });
 
@@ -515,7 +511,7 @@ describe('FirebaseClient subscription', function () {
      */
     function nextInterval() {
       return new Promise(resolve =>
-          setTimeout(() => resolve(), TEST_KEEP_UP_INTERVAL + 1))
+          setTimeout(() => resolve(), TEST_KEEP_UP_INTERVAL.inMs() + 1))
     }
   });
 });
