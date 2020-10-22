@@ -480,10 +480,7 @@ describe('FirebaseClient subscription', function () {
     });
 
     function subscribeToAllTasks() {
-      const topic = client.newTopic()
-          .select(Task)
-          .build();
-      return client.subscribe(topic);
+      return client.subscribeTo(Task).post();
     }
 
     function checkAllTasks(subscriptionMessage) {
