@@ -1,0 +1,7 @@
+io.spine.web
+io.spine.web.command
+io.spine.web.future
+io.spine.web.parser
+io.spine.web.query
+io.spine.web.subscription
+io.spine.web.subscription.servlet
