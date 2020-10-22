@@ -44,6 +44,8 @@ import {HttpEndpoint} from "./http-endpoint";
  * @property {?TenantProvider} tenantProvider
  *  the provider of an active tenant ID, if not specified, the application is considered
  *  single-tenant
+ * @property {?Duration} subscriptionKeepUpInterval
+ *  the custom interval for sending requests to keep up subscriptions
  */
 
 /**

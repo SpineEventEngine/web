@@ -235,12 +235,9 @@ class FirebaseSubscribingClient extends SubscribingClient {
     const itemRemoved = new Subject();
 
     const pathSubscriptions = [
-      this._firebase
-          .onChildAdded(path, itemAdded.next.bind(itemAdded)),
-      this._firebase
-          .onChildChanged(path, itemChanged.next.bind(itemChanged)),
-      this._firebase
-          .onChildRemoved(path, itemRemoved.next.bind(itemRemoved))
+      this._firebase.onChildAdded(path, itemAdded),
+      this._firebase.onChildChanged(path, itemChanged),
+      this._firebase.onChildRemoved(path, itemRemoved)
     ];
 
     const typeUrl = subscription.getTopic().getTarget().getType();
@@ -263,8 +260,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
    */
   _eventSubscription(path, subscription) {
     const itemAdded = new Subject();
-    const pathSubscription =
-        this._firebase.onChildAdded(path, itemAdded.next.bind(itemAdded));
+    const pathSubscription = this._firebase.onChildAdded(path, itemAdded);
 
     return new EventSubscription({
       unsubscribedBy: () => {
@@ -330,7 +326,8 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
-    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+    const subscriptionService =
+        new FirebaseSubscriptionService(endpoint, options.subscriptionKeepUpInterval);
 
     const querying = new FirebaseQueryingClient(endpoint, firebaseDatabaseClient, requestFactory);
     const subscribing = new FirebaseSubscribingClient(endpoint,
@@ -355,7 +352,8 @@ export class FirebaseClientFactory extends AbstractClientFactory {
     const endpoint = new HttpEndpoint(httpClient, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
-    const subscriptionService = new FirebaseSubscriptionService(endpoint);
+    const subscriptionService =
+        new FirebaseSubscriptionService(endpoint, options.subscriptionKeepUpInterval);
 
     return new FirebaseSubscribingClient(endpoint,
                                          firebaseDatabaseClient,

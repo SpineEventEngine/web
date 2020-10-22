@@ -32,15 +32,18 @@ import TestEnvironment from "../../given/test-environment";
  *
  * @param {!string} endpointUrl the URL of a backend to interact with
  * @param {?TenantProvider} tenantProvider the tenant provider for multitenant context tests
+ * @param {?Duration} keepUpInterval the custom interval for sending requests to
+ *                    keep up subscriptions in tests
  * @return {FirebaseClient} the Firebase client instance
  */
-export function initClient(endpointUrl, tenantProvider) {
+export function initClient(endpointUrl, tenantProvider, keepUpInterval) {
   return spineWeb.init({
     protoIndexFiles: [testProtobuf],
     endpointUrl: endpointUrl,
     firebaseDatabase: firebaseDatabase,
     actorProvider: new ActorProvider(),
-    tenantProvider: tenantProvider
+    tenantProvider: tenantProvider,
+    subscriptionKeepUpInterval: keepUpInterval
   });
 }
 
