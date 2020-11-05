@@ -1028,6 +1028,8 @@ export class ActorProvider {
  * The anonymous backend actor.
  *
  * It is needed for requests to the backend when the particular user is undefined.
+ *
+ * @type UserId
  */
 ActorProvider.ANONYMOUS = function () {
   const actor = new UserId();
