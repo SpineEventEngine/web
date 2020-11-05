@@ -22,16 +22,13 @@
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
-import {Type, TypedMessage} from '@lib/client/typed-message';
-import {ActorRequestFactory, ActorProvider, Filters} from '@lib/client/actor-request-factory';
+import {Type} from '@lib/client/typed-message';
+import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
+import {ActorContext} from '@proto/spine/core/actor_context_pb';
 import {Task, TaskId} from '@testProto/spine/test/js/task_pb';
-import {
-  Filter,
-  CompositeFilter,
-  TargetFilters
-} from '@proto/spine/client/filters_pb';
+import {CompositeFilter, Filter, Target, TargetFilters} from '@proto/spine/client/filters_pb';
 
 
 class Given {
@@ -64,7 +61,7 @@ class Given {
   static assertActorContextCorrect(context) {
     assert.ok(context);
     assert.ok(context.getTimestamp().getSeconds() <= new Date().getTime());
-    assert.strictEqual(context.getActor().getValue(), ActorProvider.ANONYMOUS);
+    assert.strictEqual(context.getActor(), ActorProvider.ANONYMOUS);
   }
 
   /**

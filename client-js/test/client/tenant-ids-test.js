@@ -19,14 +19,14 @@
  */
 
 import assert from 'assert';
-import {TenantIds} from "../../main/client/tenant";
+import {TenantIds} from "@lib/client/tenant";
 
 describe('TenantIds', function () {
 
   it('create a tenant ID which represents an internet domain', done => {
     const internetDomain = "en.wikipedia.org";
     const tenantId = TenantIds.internetDomain(internetDomain);
-    assert.strictEqual(tenantId.getDomain(), internetDomain);
+    assert.strictEqual(tenantId.getDomain().getValue(), internetDomain);
     done();
   });
 
@@ -45,7 +45,8 @@ describe('TenantIds', function () {
   it('create a tenant ID which represents an email address', done => {
     const emailAddress = "user@test.com";
     const tenantId = TenantIds.emailAddress(emailAddress);
-    assert.strictEqual(tenantId.getEmail(), emailAddress);
+
+    assert.strictEqual(tenantId.getEmail().getValue(), emailAddress);
     done();
   });
 
