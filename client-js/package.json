@@ -24,6 +24,10 @@
     "test": "mocha --require @babel/register --recursive --exit --full-trace ./test",
     "license-report": "node ./license-report/generate-license-report-md.js"
   },
+  "engines": {
+    "node": ">=12.19.0",
+    "npm": ">=6.14.7"
+  },
   "peerDependencies": {
     "rxjs": "6.5.x"
   },
