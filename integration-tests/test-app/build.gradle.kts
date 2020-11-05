@@ -19,7 +19,7 @@
  */
 
 plugins {
-    id("org.gretty").version("3.0.1")
+    id("org.gretty").version("3.0.3")
     id("com.github.psxpaul.execfork").version("0.1.13")
     id("io.spine.tools.spine-model-compiler")
 }
