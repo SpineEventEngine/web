@@ -37,14 +37,14 @@ describe('FieldPaths', () => {
   it('creates a FieldPath from a simple path string', () => {
     const pathStr = "fieldPath";
     const fieldPath = FieldPaths.parse(pathStr);
-    assert.equal(fieldPath.getFieldNameList()[0], pathStr);
+    assert.strictEqual(fieldPath.getFieldNameList()[0], pathStr);
   });
 
   it('creates a FieldPath from a composite path string', () => {
     const pathStr = "field1.field2";
     const fieldPath = FieldPaths.parse(pathStr);
-    assert.equal(fieldPath.getFieldNameList()[0], "field1");
-    assert.equal(fieldPath.getFieldNameList()[1], "field2");
+    assert.strictEqual(fieldPath.getFieldNameList()[0], "field1");
+    assert.strictEqual(fieldPath.getFieldNameList()[1], "field2");
   });
 
   it('throws on parsing invalid string', done => {

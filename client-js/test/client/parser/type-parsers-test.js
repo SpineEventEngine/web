@@ -48,7 +48,7 @@ describe('TypeParsers', () => {
     const stringToParse = "Protobuf String";
     const parser = TypeParsers.parserFor(StringValue.typeUrl());
     const parsedString = parser.fromObject(stringToParse);
-    assert.equal(parsedString.getValue(), stringToParse);
+    assert.strictEqual(parsedString.getValue(), stringToParse);
   });
 
   it('parses any with a well known message inside', () => {
@@ -59,8 +59,8 @@ describe('TypeParsers', () => {
     const parser = TypeParsers.parserFor(Any.typeUrl());
     const parsedAny = parser.fromObject(anyObject);
     const packedString = StringValue.deserializeBinary(parsedAny.getValue());
-    assert.equal(parsedAny.getTypeUrl(), StringValue.typeUrl());
-    assert.equal(packedString.getValue(), anyObject.value);
+    assert.strictEqual(parsedAny.getTypeUrl(), StringValue.typeUrl());
+    assert.strictEqual(packedString.getValue(), anyObject.value);
   });
 
   it('parses any with a custom message inside', () => {
@@ -72,9 +72,9 @@ describe('TypeParsers', () => {
     const parser = TypeParsers.parserFor(Any.typeUrl());
     const parsedAny = parser.fromObject(anyObject);
     const packagedMessage = StringChange.deserializeBinary(parsedAny.getValue());
-    assert.equal(parsedAny.getTypeUrl(), StringChange.typeUrl());
-    assert.equal(packagedMessage.getPreviousValue(), anyObject.previousValue);
-    assert.equal(packagedMessage.getNewValue(), anyObject.newValue);
+    assert.strictEqual(parsedAny.getTypeUrl(), StringChange.typeUrl());
+    assert.strictEqual(packagedMessage.getPreviousValue(), anyObject.previousValue);
+    assert.strictEqual(packagedMessage.getNewValue(), anyObject.newValue);
   });
 
   it('parses Structs and Values', () => {
@@ -89,19 +89,19 @@ describe('TypeParsers', () => {
     const parser = TypeParsers.parserFor(Struct.typeUrl());
     const parsed = parser.fromObject(struct);
     const map = parsed.getFieldsMap();
-    assert.equal(
+    assert.strictEqual(
         map.get('foo').getNumberValue(),
         struct['foo']
     );
-    assert.equal(
+    assert.strictEqual(
         map.get('bar').getStructValue().getFieldsMap().get('baz').getStringValue(),
         struct['bar']['baz']
     );
-    assert.equal(
+    assert.strictEqual(
         map.get('newValue').getStringValue(),
         struct['newValue']
     );
-    assert.equal(
+    assert.strictEqual(
         map.get('anArray').getListValue().getValuesList(),
         struct['anArray']
     );

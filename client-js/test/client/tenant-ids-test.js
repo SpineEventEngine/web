@@ -26,7 +26,7 @@ describe('TenantIds', function () {
   it('create a tenant ID which represents an internet domain', done => {
     const internetDomain = "en.wikipedia.org";
     const tenantId = TenantIds.internetDomain(internetDomain);
-    assert.equal(tenantId.getDomain(), internetDomain);
+    assert.strictEqual(tenantId.getDomain(), internetDomain);
     done();
   });
 
@@ -45,7 +45,7 @@ describe('TenantIds', function () {
   it('create a tenant ID which represents an email address', done => {
     const emailAddress = "user@test.com";
     const tenantId = TenantIds.emailAddress(emailAddress);
-    assert.equal(tenantId.getEmail(), emailAddress);
+    assert.strictEqual(tenantId.getEmail(), emailAddress);
     done();
   });
 
@@ -64,7 +64,7 @@ describe('TenantIds', function () {
   it('create a plain string tenant ID', done => {
     const tenantIdValue = "some-tenant-ID";
     const tenantId = TenantIds.plainString(tenantIdValue);
-    assert.equal(tenantId.getValue(), tenantIdValue);
+    assert.strictEqual(tenantId.getValue(), tenantIdValue);
     done();
   });
 

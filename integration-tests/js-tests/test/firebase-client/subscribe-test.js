@@ -90,7 +90,7 @@ describe('FirebaseClient subscription', function () {
               const id = item.getId().getValue();
               console.log(`Retrieved new task '${id}'.`);
               if (taskId === id) {
-                assert.equal(
+                assert.strictEqual(
                     INITIAL_TASK_NAME, item.getName(),
                     `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}".`
                 );
@@ -113,7 +113,7 @@ describe('FirebaseClient subscription', function () {
             next: item => {
               const id = item.getId().getValue();
               if (taskId === id) {
-                assert.equal(
+                assert.strictEqual(
                     item.getName(), UPDATED_TASK_NAME,
                     `Task is named "${item.getName()}", expected "${UPDATED_TASK_NAME}".`
                 );
@@ -161,7 +161,7 @@ describe('FirebaseClient subscription', function () {
               const id = item.getId().getValue();
               console.log(`Retrieved new task '${id}'.`);
               if (taskIdValue === id) {
-                assert.equal(
+                assert.strictEqual(
                     item.getName(), INITIAL_TASK_NAME,
                     `Task is named "${item.getName()}", expected "${INITIAL_TASK_NAME}".`
                 );
@@ -185,7 +185,7 @@ describe('FirebaseClient subscription', function () {
               const id = item.getId().getValue();
               if (taskIdValue === id) {
                 console.log(`Got task changes for ${id}.`);
-                assert.equal(item.getName(), UPDATED_NAMES[changesCount]);
+                assert.strictEqual(item.getName(), UPDATED_NAMES[changesCount]);
                 changesCount++;
                 if (changesCount === expectedChangesCount) {
                   unsubscribe();
@@ -234,7 +234,7 @@ describe('FirebaseClient subscription', function () {
               const id = item.getId().getValue();
               console.log(`Retrieved new task '${id}'.`);
               if (taskIdValue === id) {
-                assert.equal(
+                assert.strictEqual(
                     initialTaskName, item.getName(),
                     `Task is named "${item.getName()}", expected "${initialTaskName}".`
                 );
@@ -255,7 +255,7 @@ describe('FirebaseClient subscription', function () {
             next: item => {
               const id = item.getId().getValue();
               console.log('Task removed');
-              assert.equal(
+              assert.strictEqual(
                   taskIdValue, id,
                   `A wrong Task item is removed, expected the task with ID "${taskIdValue}", 
                   received the task with ID "${id}".`
@@ -297,12 +297,12 @@ describe('FirebaseClient subscription', function () {
               const taskRenamedType = Type.forClass(TaskRenamed);
               const message = AnyPacker.unpack(packedMessage).as(taskRenamedType);
               const theTaskId = message.getId().getValue();
-              assert.equal(
+              assert.strictEqual(
                   taskId, theTaskId,
                   `Expected the task ID to be ${taskId}, got ${theTaskId} instead.`
               );
               const newTaskName = message.getName();
-              assert.equal(
+              assert.strictEqual(
                   updatedTaskName, newTaskName,
                   `Expected the new task name to be ${updatedTaskName}, got ${newTaskName} instead.`
               );
@@ -345,7 +345,7 @@ describe('FirebaseClient subscription', function () {
           itemAdded.subscribe({
             next: item => {
               if (taskId === item.getId()) {
-                assert.equal(
+                assert.strictEqual(
                     item.getName(), TASK_NAME,
                     `Task is named '${item.getName()}', expected '${TASK_NAME}'.`
                 );
@@ -488,7 +488,7 @@ describe('FirebaseClient subscription', function () {
       const topic = subscriptionMessage.getTopic();
       assert.ok(id.getValue());
       const targetType = topic.getTarget().getType();
-      assert.equal(targetType, Task.typeUrl());
+      assert.strictEqual(targetType, Task.typeUrl());
     }
 
     function keepUpEndpointSpy() {

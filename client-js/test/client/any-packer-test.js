@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import uuid from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
@@ -35,13 +35,13 @@ class Given {
   static newTask() {
     const task = new Task();
     task.setId(Given.newTaskId());
-    task.setName(uuid.v4());
+    task.setName(uuidv4());
     return task;
   }
 
   static newTaskId() {
     const taskId = new TaskId();
-    taskId.setValue(uuid.v4());
+    taskId.setValue(uuidv4());
     return taskId;
   }
 
@@ -50,7 +50,7 @@ class Given {
    * @param {Type} expected
    */
   static assertTypeUrlForType(actual, expected) {
-    assert.equal(actual, expected.url().value());
+    assert.strictEqual(actual, expected.url().value());
   }
 
   /**
@@ -114,7 +114,7 @@ describe('AnyPacker', function () {
     Given.assertTypeUrlForType(any.getTypeUrl(), Type.STRING);
 
     const actualValue = AnyPacker.unpack(any).asString();
-    assert.equal(actualValue, value);
+    assert.strictEqual(actualValue, value);
   });
 
   it('packs an int32', () => {
@@ -125,7 +125,7 @@ describe('AnyPacker', function () {
     Given.assertTypeUrlForType(any.getTypeUrl(), Type.INT32);
 
     const actualValue = AnyPacker.unpack(any).asInt32();
-    assert.equal(actualValue, value);
+    assert.strictEqual(actualValue, value);
   });
 
   it('packs an int64', () => {
@@ -136,7 +136,7 @@ describe('AnyPacker', function () {
     Given.assertTypeUrlForType(any.getTypeUrl(), Type.INT64);
 
     const actualValue = AnyPacker.unpack(any).asInt64();
-    assert.equal(actualValue, value);
+    assert.strictEqual(actualValue, value);
   });
 
   it('packs an uint32', () => {
@@ -147,7 +147,7 @@ describe('AnyPacker', function () {
     Given.assertTypeUrlForType(any.getTypeUrl(), Type.UINT32);
 
     const actualValue = AnyPacker.unpack(any).asUInt32();
-    assert.equal(actualValue, value);
+    assert.strictEqual(actualValue, value);
   });
 
   it('packs an uint64', () => {
@@ -158,7 +158,7 @@ describe('AnyPacker', function () {
     Given.assertTypeUrlForType(any.getTypeUrl(), Type.UINT64);
 
     const actualValue = AnyPacker.unpack(any).asUInt64();
-    assert.equal(actualValue, value);
+    assert.strictEqual(actualValue, value);
   });
 
   it('packs a float', () => {
@@ -181,7 +181,7 @@ describe('AnyPacker', function () {
     Given.assertTypeUrlForType(any.getTypeUrl(), Type.DOUBLE);
 
     const actualValue = AnyPacker.unpack(any).asDouble();
-    assert.equal(actualValue, value);
+    assert.strictEqual(actualValue, value);
   });
 
   it('packs a boolean true value', () => {

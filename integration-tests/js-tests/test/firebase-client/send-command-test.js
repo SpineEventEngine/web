@@ -51,11 +51,11 @@ describe('FirebaseClient command sending', function () {
           .byId(taskId)
           .run()
           .then(data => {
-            assert.equal(data.length, 1);
+            assert.strictEqual(data.length, 1);
             const item = data[0];
-            assert.equal(item.getId().getValue(), taskId);
-            assert.equal(item.getName(), command.getName());
-            assert.equal(item.getDescription(), command.getDescription());
+            assert.strictEqual(item.getId().getValue(), taskId);
+            assert.strictEqual(item.getName(), command.getName());
+            assert.strictEqual(item.getDescription(), command.getDescription());
 
             done();
 
@@ -108,8 +108,8 @@ describe('FirebaseClient command sending', function () {
 
         const cause = error.getCause();
         assert.ok(cause);
-        assert.equal(cause.getCode(), 2);
-        assert.equal(cause.getType(), 'spine.core.CommandValidationError');
+        assert.strictEqual(cause.getCode(), 2);
+        assert.strictEqual(cause.getType(), 'spine.core.CommandValidationError');
         done();
       } catch (e) {
         fail(done, e.message)
@@ -136,7 +136,7 @@ describe('FirebaseClient command sending', function () {
         const rejectionType = Type.forClass(TaskCannotBeCreated);
         const unpacked = AnyPacker.unpack(rejection.getMessage()).as(rejectionType);
         assert.ok(unpacked);
-        assert.equal(unpacked.getId().getValue(), taskId.getValue());
+        assert.strictEqual(unpacked.getId().getValue(), taskId.getValue());
         done();
       } catch (e) {
         fail(done, e.message)
@@ -168,12 +168,12 @@ describe('FirebaseClient command sending', function () {
             const taskCreatedType = Type.forClass(TaskCreated);
             const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
             const theTaskId = message.getId().getValue();
-            assert.equal(
+            assert.strictEqual(
                 taskId, theTaskId,
                 `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
             );
             const theTaskName = message.getName();
-            assert.equal(
+            assert.strictEqual(
                 taskName, theTaskName,
                 `Expected the task name to be '${taskName}', got '${theTaskName}' instead.`
             );
@@ -181,7 +181,7 @@ describe('FirebaseClient command sending', function () {
             const originType = origin.getTypeUrl();
             const createTaskType = Type.forClass(CreateTask);
             const expectedOriginType = createTaskType.url().value();
-            assert.equal(
+            assert.strictEqual(
                 expectedOriginType, originType,
                 `Expected origin to be of type '${expectedOriginType}', got 
                             '${originType}' instead.`

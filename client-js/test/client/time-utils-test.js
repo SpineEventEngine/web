@@ -49,7 +49,7 @@ describe(`"convertDateToTimestamp" function`, () => {
     const expectedSeconds = Math.trunc(now.getTime() / 1000);
     const expectedNanos = (now.getTime() % 1000) * 1000000;
 
-    assert.equal(actualSeconds, expectedSeconds);
-    assert.equal(actualNanos, expectedNanos);
+    assert.strictEqual(actualSeconds, expectedSeconds);
+    assert.strictEqual(actualNanos, expectedNanos);
   });
 });
