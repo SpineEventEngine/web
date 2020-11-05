@@ -39,7 +39,7 @@ gretty {
     debugPort = 5005
     debugSuspend = true
     jvmArgs = listOf("-Dio.spine.tests=true", "-Xverify:none")
-    servletContainer = "jetty9"
+    servletContainer = "jetty9.4"
     managedClassReload = false
     fastReload = false
 }
