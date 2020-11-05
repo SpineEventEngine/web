@@ -25,7 +25,7 @@ import {Error as SpineBaseError} from '@proto/spine/base/error_pb';
 
 describe('CommandHandlingError', () => {
 
-    describe('assures a command is neglected with a', () => {
+    describe('assures a command is neglected with', () => {
         it('`ClientError`', done => {
             const error = new CommandHandlingError(
                 'Unable to process command', new ClientError('Test Client Error')
