@@ -44,13 +44,6 @@ describe('CommandHandlingError', () => {
     })
 
     describe('assures a command is not neglected when', () => {
-        it('no cause set', done => {
-            const error = new CommandHandlingError(
-                'Unable to process command'
-            );
-            assert.ok(error.assuresCommandNeglected() === false);
-            done();
-        });
 
         it('a generic `Error` is the cause', done => {
             const error = new CommandHandlingError(
