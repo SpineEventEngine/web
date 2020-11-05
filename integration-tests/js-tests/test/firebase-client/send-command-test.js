@@ -53,7 +53,7 @@ describe('FirebaseClient command sending', function () {
           .then(data => {
             assert.strictEqual(data.length, 1);
             const item = data[0];
-            assert.strictEqual(item.getId().getValue(), taskId);
+            assert.strictEqual(item.getId().getValue(), taskId.getValue());
             assert.strictEqual(item.getName(), command.getName());
             assert.strictEqual(item.getDescription(), command.getDescription());
 
