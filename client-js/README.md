@@ -57,10 +57,15 @@ You can also run tests from IntelliJ IDEA. To do so:
 
 1. Install [NodeJs Plugin][idea-nodejs]. The plugin adds `Mocha` configuration.
 
-2. Update `Mocha` configuration template:
+2. Use [`webpack-test.config.js`](./test/webpack-test.config.js) as IDEA Webpack configuration.
+   
+  This allows IDEA resolve aliases the very same way Babel does for us in tests.
 
-  * Add `--require @babel/register` to `node options`. It is required to support 
-    all ES6 features in Node.js environment.
+3. Update `Mocha` configuration template:
+
+  * Add `--require @babel/register` to `Extra Mocha options`. 
+  
+    It is required to support all ES6 features in Node.js environment.
   
   * Specify the path to `Mocha` package: `~\IdeaProjects\Spine\web\client-js\node_modules\mocha`.
 
