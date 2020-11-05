@@ -16,12 +16,12 @@
     "test": "test"
   },
   "scripts": {
-    "build": "webpack --config webpack-prod.config.js",
-    "build-dev": "webpack --config webpack-dev.config.js",
-    "transpile-before-publish": "babel main --out-dir build/npm-publication --source-maps",
-    "coverage:unix": "nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
-    "coverage:win": "nyc --reporter=text-lcov npm run test > build/coverage.lcov",
-    "test": "mocha --require @babel/register --recursive --exit --full-trace ./test",
+    "build": "npx webpack --config webpack-prod.config.js",
+    "build-dev": "npx webpack --config webpack-dev.config.js",
+    "transpile-before-publish": "npx babel main --out-dir build/npm-publication --source-maps",
+    "coverage:unix": "npx nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
+    "coverage:win": "npx nyc --reporter=text-lcov npm run test > build/coverage.lcov",
+    "test": "npx mocha --require @babel/register --recursive --exit --full-trace ./test",
     "license-report": "node ./license-report/generate-license-report-md.js"
   },
   "engines": {
