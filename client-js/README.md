@@ -48,6 +48,7 @@ For a full list of peer dependencies, see [package.json](./package.json).
 ## Testing
 
 Run the tests using the following command:
+
 ```bash
 npm run test
 ```
@@ -76,5 +77,5 @@ To publish a new version to NPM:
 3. Execute Gradle `publishJs` task from a project root:
    
    ```bash
-    ./gradlew publishJs
-   ``` 
+   ./gradlew publishJs
+   ```
