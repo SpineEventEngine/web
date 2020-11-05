@@ -169,7 +169,7 @@ describe('FirebaseClient command sending', function () {
             const message = AnyPacker.unpack(packedMessage).as(taskCreatedType);
             const theTaskId = message.getId().getValue();
             assert.strictEqual(
-                taskId, theTaskId,
+                taskId.getValue(), theTaskId,
                 `Expected the task ID to be '${taskId}', got '${theTaskId}' instead.`
             );
             const theTaskName = message.getName();
