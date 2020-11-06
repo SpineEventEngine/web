@@ -20,7 +20,12 @@
 
 import {firebaseDatabase} from "./firebase-database";
 import * as testProtobuf from '@testProto/index';
-import {ActorProvider, Client as FirebaseClient, init as initSpineWeb, TenantProvider} from '@lib';
+import {
+  ActorProvider,
+  Client as FirebaseClient,
+  init as initSpineWebClient,
+  TenantProvider
+} from '@lib';
 import TestEnvironment from "../../given/test-environment";
 
 /**
@@ -35,7 +40,7 @@ import TestEnvironment from "../../given/test-environment";
  * @return {FirebaseClient} the Firebase client instance
  */
 export function initClient(endpointUrl, tenantProvider, keepUpInterval) {
-  return initSpineWeb({
+  return initSpineWebClient({
     protoIndexFiles: [testProtobuf],
     endpointUrl: endpointUrl,
     firebaseDatabase: firebaseDatabase,
