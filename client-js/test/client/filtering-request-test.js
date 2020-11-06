@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import {v4 as uuidv4} from 'uuid';
+import {v4 as newUuid} from 'uuid';
 import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Type} from "@lib/client/typed-message";
@@ -81,7 +81,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
 
   it('creates a target filtering entities by a single ID', done => {
     const taskId = new TaskId();
-    const idValue = uuidv4();
+    const idValue = newUuid();
     taskId.setValue(idValue);
     request.byId(taskId);
 
@@ -107,10 +107,10 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
 
   it('creates a target filtering entities by a group of IDs', done => {
     const taskId1 = new TaskId();
-    const idValue1 = uuidv4();
+    const idValue1 = newUuid();
     taskId1.setValue(idValue1);
     const taskId2 = new TaskId();
-    const idValue2 = uuidv4();
+    const idValue2 = newUuid();
     taskId2.setValue(idValue2);
 
     request.byId([taskId1, taskId2]);

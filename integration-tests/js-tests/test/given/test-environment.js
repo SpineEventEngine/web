@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {v4 as uuidv4} from 'uuid';
+import {v4 as newUuid} from 'uuid';
 import {TenantIds} from '@lib/client/tenant';
 import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskId} from '@testProto/spine/web/test/given/task_pb';
@@ -123,7 +123,7 @@ export default class TestEnvironment {
    */
   static taskId({value, withPrefix: prefix}) {
     if (typeof value === 'undefined') {
-      value = uuidv4();
+      value = newUuid();
     }
     if (typeof prefix !== 'undefined') {
       value = `${prefix}-${value}`;
@@ -139,7 +139,7 @@ export default class TestEnvironment {
    */
   static userId(withPrefix) {
     const id = new UserId();
-    id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${uuidv4()}`);
+    id.setValue(`${withPrefix ? withPrefix : 'ANONYMOUS'}-${newUuid()}`);
     return id;
   }
 

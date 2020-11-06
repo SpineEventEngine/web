@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {v4 as uuidv4} from 'uuid';
+import {v4 as newUuid} from 'uuid';
 import assert from 'assert';
 
 import {Message} from 'google-protobuf';
@@ -35,13 +35,13 @@ class Given {
   static newTask() {
     const task = new Task();
     task.setId(Given.newTaskId());
-    task.setName(uuidv4());
+    task.setName(newUuid());
     return task;
   }
 
   static newTaskId() {
     const taskId = new TaskId();
-    taskId.setValue(uuidv4());
+    taskId.setValue(newUuid());
     return taskId;
   }
 
