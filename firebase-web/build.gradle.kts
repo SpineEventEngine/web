@@ -42,7 +42,6 @@ dependencies {
 
     implementation(Deps.build.jacksonDatabind)
     implementation(Deps.build.googleHttpClientApache)
-    implementation(Deps.build.appengineApi)
 
     // Required by the Firebase Admin SDK.
     runtimeOnly(Deps.runtime.slf4jJul)

@@ -19,7 +19,7 @@
  */
 
 import assert from 'assert';
-import uuid from 'uuid';
+import {v4 as newUuid} from 'uuid';
 import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-request-factory';
 import {AnyPacker} from '@lib/client/any-packer';
 import {Type} from "@lib/client/typed-message";
@@ -81,7 +81,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
 
   it('creates a target filtering entities by a single ID', done => {
     const taskId = new TaskId();
-    const idValue = uuid.v4();
+    const idValue = newUuid();
     taskId.setValue(idValue);
     request.byId(taskId);
 
@@ -91,14 +91,14 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const idFilter = target.getFilters().getIdFilter();
     const idList = idFilter.getIdList();
     const length = idList.length;
-    assert.equal(
+    assert.strictEqual(
         1, length,
         `Expected the ID list to contain a single ID, the actual length: '${length}'.`
     );
     const taskIdType = Type.forClass(TaskId);
     const targetId = AnyPacker.unpack(idList[0]).as(taskIdType);
     const actualId = targetId.getValue();
-    assert.equal(
+    assert.strictEqual(
         idValue, actualId,
         `Unexpected target ID '${actualId}', expected: '${idValue}'.`
     );
@@ -107,10 +107,10 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
 
   it('creates a target filtering entities by a group of IDs', done => {
     const taskId1 = new TaskId();
-    const idValue1 = uuid.v4();
+    const idValue1 = newUuid();
     taskId1.setValue(idValue1);
     const taskId2 = new TaskId();
-    const idValue2 = uuid.v4();
+    const idValue2 = newUuid();
     taskId2.setValue(idValue2);
 
     request.byId([taskId1, taskId2]);
@@ -120,7 +120,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const idFilter = target.getFilters().getIdFilter();
     const idList = idFilter.getIdList();
     const length = idList.length;
-    assert.equal(
+    assert.strictEqual(
         2, length,
         `Expected the ID list to contain two IDs, the actual length: '${length}'.`
     );
@@ -150,19 +150,19 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const target = getTarget(result);
     const compositeFilters = target.getFilters().getFilterList();
     const compositeFiltersLength = compositeFilters.length;
-    assert.equal(
+    assert.strictEqual(
         1, compositeFiltersLength,
         `Expected the composite filter list to contain a single filter, the actual length: 
         '${compositeFiltersLength}'.`
     );
     const filters = compositeFilters[0].getFilterList();
     const length = filters.length;
-    assert.equal(
+    assert.strictEqual(
         1, length,
         `Expected the filter list to contain a single filter, the actual length: '${length}'.`
     );
     const targetFilter = filters[0];
-    assert.equal(
+    assert.strictEqual(
         filter, targetFilter,
         `Unexpected filter value '${targetFilter}', expected: '${filter}'.`
     );
@@ -177,14 +177,14 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const target = getTarget(result);
     const compositeFilters = target.getFilters().getFilterList();
     const compositeFiltersLength = compositeFilters.length;
-    assert.equal(
+    assert.strictEqual(
         1, compositeFiltersLength,
         `Expected the composite filter list to contain a single filter, the actual 
         length: '${compositeFiltersLength}'.`
     );
     const filters = compositeFilters[0].getFilterList();
     const length = filters.length;
-    assert.equal(
+    assert.strictEqual(
         2, length,
         `Expected the filter list to contain two filters, the actual length: '${length}'.`
     );
@@ -213,7 +213,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
     const result = buildResult(request);
     const fieldMask = getFieldMask(result);
     const pathList = fieldMask.getPathsList();
-    assert.equal(
+    assert.strictEqual(
         fields, pathList,
         `Unexpected list of fields in the field mask: '${pathList}', expected: '${fields}'.`
     );
@@ -225,7 +225,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
    */
   function assertIsIncludeAll(target) {
     assertTargetTypeEquals(target);
-    assert.equal(
+    assert.strictEqual(
         true, target.getIncludeAll(),
         'Expected `target.include_all` to be `true`.'
     );
@@ -236,7 +236,7 @@ export function filteringRequestTest(newRequest, buildResult, getTarget, getFiel
    */
   function assertTargetTypeEquals(target) {
     const actualType = target.getType();
-    assert.equal(
+    assert.strictEqual(
         targetTypeUrl, actualType,
         `The unexpected target type '${actualType}', expected: '${targetTypeUrl}'.`
     );

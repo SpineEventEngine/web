@@ -20,15 +20,9 @@
 
 "use strict";
 
-import '../proto/spine/base/error_pb';
-// noinspection JSUnresolvedVariable
-/**
- * The class of errors that can be received from the server in response to the command sent.
- *
- * Imported from the global namespace to provide error instances type comparison
- * using `instanceof` operator.
- */
-const SpineBaseError = proto.spine.base.Error;
+import {Error as SpineBaseError} from '../proto/spine/base/error_pb';
+import {ValidationError} from '../proto/spine/validate/validation_error_pb';
+import {isProtobufMessage} from './typed-message';
 
 /**
  * The base error type of Spine Web. This error type is only used directly when a
@@ -133,8 +127,9 @@ export class CommandHandlingError extends SpineError {
    * @return {boolean}
    */
   assuresCommandNeglected() {
-    return this.getCause() instanceof SpineBaseError
-           || this.getCause() instanceof ClientError;
+    const cause = this.getCause();
+    return cause instanceof ClientError
+        || isProtobufMessage(cause) && cause.constructor.typeUrl() === SpineBaseError.typeUrl();
   }
 }
 
@@ -156,7 +151,7 @@ export class CommandValidationError extends CommandHandlingError {
   }
 
   /**
-   * @return {spine.validate.ValidationError} command validation error
+   * @return {ValidationError} command validation error
    */
   validationError() {
     return this.getCause().getValidationError();

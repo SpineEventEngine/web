@@ -37,21 +37,21 @@ describe('TenantProvider', function () {
 
   it('can be constructed with a custom tenant ID', done => {
     const tenantProvider = new TenantProvider(tenantId);
-    assert.equal(tenantProvider.tenantId(), tenantId);
+    assert.strictEqual(tenantProvider.tenantId(), tenantId);
     done();
   });
 
   it('returns `undefined` tenant ID when constructed with no arguments', done => {
     const tenantProvider = new TenantProvider();
-    assert.equal(tenantProvider.tenantId(), undefined);
+    assert.strictEqual(tenantProvider.tenantId(), undefined);
     done();
   });
 
   it('allows to update the current tenant ID', done => {
     const tenantProvider = new TenantProvider();
-    assert.equal(tenantProvider.tenantId(), undefined);
+    assert.strictEqual(tenantProvider.tenantId(), undefined);
     tenantProvider.update(tenantId);
-    assert.equal(tenantProvider.tenantId(), tenantId);
+    assert.strictEqual(tenantProvider.tenantId(), tenantId);
     done();
   });
 

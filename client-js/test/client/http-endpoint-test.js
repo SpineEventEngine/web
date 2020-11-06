@@ -127,7 +127,7 @@ describe('HttpEndpoint.command', function () {
 
     sendCommand()
         .then(responseParsedValue => {
-          assert.equal(responseParsedValue, Given.HTTP_RESPONSE.BODY_CONTENT);
+          assert.strictEqual(responseParsedValue, Given.HTTP_RESPONSE.BODY_CONTENT);
           done();
         })
         .catch(fail(done, 'A message sending failed when it was expected to complete.'));
@@ -142,7 +142,7 @@ describe('HttpEndpoint.command', function () {
         .catch(error => {
           assert.ok(error instanceof SpineError);
           assert.ok(error.getCause() instanceof Error);
-          assert.equal(error.message, 'Failed to parse response JSON');
+          assert.strictEqual(error.message, 'Failed to parse response JSON');
           done();
         });
   });
@@ -155,7 +155,7 @@ describe('HttpEndpoint.command', function () {
         .catch(error => {
           assert.ok(error instanceof ConnectionError);
           assert.ok(error.getCause() instanceof Error);
-          assert.equal(error.message, Given.CONNECTION_ERROR.message);
+          assert.strictEqual(error.message, Given.CONNECTION_ERROR.message);
           done();
         });
   });
@@ -168,8 +168,8 @@ describe('HttpEndpoint.command', function () {
         .then(fail(done, 'A message sending was completed when it was expected to fail.'))
         .catch(error => {
           assert.ok(error instanceof ClientError);
-          assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
-          assert.equal(error.getCause(), responseWithClientError);
+          assert.strictEqual(error.message, MOCK_RESPONSE_STATUS_TEXT);
+          assert.strictEqual(error.getCause(), responseWithClientError);
           done();
         });
   });
@@ -182,8 +182,8 @@ describe('HttpEndpoint.command', function () {
         .then(fail(done, 'A message sending was completed when it was expected to fail.'))
         .catch(error => {
           assert.ok(error instanceof ServerError);
-          assert.equal(error.message, MOCK_RESPONSE_STATUS_TEXT);
-          assert.equal(error.getCause(), responseWithServerError);
+          assert.strictEqual(error.message, MOCK_RESPONSE_STATUS_TEXT);
+          assert.strictEqual(error.getCause(), responseWithServerError);
           done();
         });
   });

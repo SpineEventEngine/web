@@ -18,10 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("1.6.6")
-val spineTimeVersion: String by extra("1.6.0")
-val spineCoreVersion: String by extra("1.6.6")
-val spineVersion: String by extra(spineCoreVersion)
+// This script provides a way to resolve Babel-like modules while using a JetBrains IDE.
+//
+// One should point the IDE Webpack configuration to this file in order to receive same aliases
+// as configured in the `.babelrc`.
+//
+// The resolved aliases below must be always in sync with the `.babelrc` content.
+//
 
-val versionToPublish: String by extra("1.6.6")
-val versionToPublishJs: String by extra("1.6.6")
+const path = require('path');
+
+module.exports = {
+    resolve: {
+        alias: {
+            '@testProto': path.resolve(__dirname, './test/proto'),
+            '@lib': path.resolve(__dirname, './node_modules/spine-web')
+        }
+    }
+}

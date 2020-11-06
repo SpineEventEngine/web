@@ -27,8 +27,9 @@ import {ActorProvider, ActorRequestFactory, Filters} from '@lib/client/actor-req
 import {AnyPacker} from '@lib/client/any-packer';
 import {Duration} from '@lib/client/time-utils';
 import {OrderBy} from '@proto/spine/client/query_pb';
+import {ActorContext} from '@proto/spine/core/actor_context_pb';
 import {Task, TaskId} from '@testProto/spine/test/js/task_pb';
-import {CompositeFilter, Filter, TargetFilters} from '@proto/spine/client/filters_pb';
+import {CompositeFilter, Filter, Target, TargetFilters} from '@proto/spine/client/filters_pb';
 
 class Given {
 
@@ -60,7 +61,7 @@ class Given {
   static assertActorContextCorrect(context) {
     assert.ok(context);
     assert.ok(context.getTimestamp().getSeconds() <= new Date().getTime());
-    assert.equal(context.getActor().getValue(), ActorProvider.ANONYMOUS);
+    assert.strictEqual(context.getActor(), ActorProvider.ANONYMOUS);
   }
 
   /**
@@ -79,7 +80,7 @@ class Given {
    * @param {Type} type
    */
   static assertTargetTypeEqual(target, type) {
-    assert.equal(target.getType(), type.url().value());
+    assert.strictEqual(target.getType(), type.url().value());
   }
 
   /**
@@ -538,9 +539,9 @@ describe('QueryBuilder', function () {
     Given.assertActorContextCorrect(query.getContext());
 
     const format = query.getFormat();
-    assert.equal(limit, format.getLimit());
-    assert.equal(fieldName, format.getOrderBy().getColumn());
-    assert.equal(OrderBy.Direction.ASCENDING, format.getOrderBy().getDirection());
+    assert.strictEqual(limit, format.getLimit());
+    assert.strictEqual(fieldName, format.getOrderBy().getColumn());
+    assert.strictEqual(OrderBy.Direction.ASCENDING, format.getOrderBy().getDirection());
 
     done();
   });
@@ -560,9 +561,9 @@ describe('QueryBuilder', function () {
     Given.assertActorContextCorrect(query.getContext());
 
     const format = query.getFormat();
-    assert.equal(limit, format.getLimit());
-    assert.equal(fieldName, format.getOrderBy().getColumn());
-    assert.equal(OrderBy.Direction.DESCENDING, format.getOrderBy().getDirection());
+    assert.strictEqual(limit, format.getLimit());
+    assert.strictEqual(fieldName, format.getOrderBy().getColumn());
+    assert.strictEqual(OrderBy.Direction.DESCENDING, format.getOrderBy().getDirection());
 
     done();
   });

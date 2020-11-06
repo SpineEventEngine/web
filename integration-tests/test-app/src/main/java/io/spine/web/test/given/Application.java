@@ -96,7 +96,9 @@ final class Application {
     }
 
     private static FirebaseClient buildClient() {
-        Resource googleCredentialsFile = Resource.file("spine-dev.json");
+        Resource googleCredentialsFile = Resource.file(
+                "spine-dev.json", Application.class.getClassLoader()
+        );
 
         GoogleCredentials credentials;
         try {

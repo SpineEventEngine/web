@@ -19,8 +19,8 @@
  */
 
 plugins {
-    id("org.gretty").version("3.0.1")
-    id("com.github.psxpaul.execfork").version("0.1.12")
+    id("org.gretty").version("3.0.3")
+    id("com.github.psxpaul.execfork").version("0.1.13")
     id("io.spine.tools.spine-model-compiler")
 }
 
@@ -39,7 +39,7 @@ gretty {
     debugPort = 5005
     debugSuspend = true
     jvmArgs = listOf("-Dio.spine.tests=true", "-Xverify:none")
-    servletContainer = "jetty9"
+    servletContainer = "jetty9.4"
     managedClassReload = false
     fastReload = false
 }

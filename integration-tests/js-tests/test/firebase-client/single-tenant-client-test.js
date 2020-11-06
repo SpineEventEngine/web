@@ -45,7 +45,7 @@ describe('Single-tenant client', function () {
         .observe(UserInfoAdded, ({subscribe, unsubscribe}) =>
             subscribe(event => {
               const eventMessage = AnyPacker.unpack(event.getMessage()).as(userInfoAddedType);
-              assert.equal(eventMessage.getFullName(), fullName);
+              assert.strictEqual(eventMessage.getFullName(), fullName);
               unsubscribe();
               done();
             }))
@@ -65,8 +65,8 @@ describe('Single-tenant client', function () {
           .byId(cmd.getId())
           .run()
           .then(messages => {
-             assert.equal(messages.length, 1);
-             assert.equal(messages[0].getFullName(), fullName);
+             assert.strictEqual(messages.length, 1);
+             assert.strictEqual(messages[0].getFullName(), fullName);
              done();
           })
           .catch((e) => {
@@ -85,7 +85,7 @@ describe('Single-tenant client', function () {
         .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
           itemAdded.subscribe({
             next: item => {
-              assert.equal(item.getFullName(), fullName);
+              assert.strictEqual(item.getFullName(), fullName);
               done();
             }
           });

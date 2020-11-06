@@ -42,12 +42,12 @@ describe('QueryRequest', function () {
     const responseFormat = query.getFormat();
     const orderBy = responseFormat.getOrderBy();
     const orderByColumn = orderBy.getColumn();
-    assert.equal(
+    assert.strictEqual(
         column, orderByColumn,
         `Unexpected column specified in the order by: '${orderByColumn}', expected: '${column}'.`
     );
     const orderByDirection = orderBy.getDirection();
-    assert.equal(
+    assert.strictEqual(
         direction, orderByDirection,
         `Unexpected direction specified in the order by: '${orderByDirection}',
         expected: '${direction}'.`

@@ -186,7 +186,7 @@ describe('FirebaseClient executes query built', function () {
         .run()
         .then(data => {
           assert.ok(Array.isArray(data));
-          assert.equal(data.length, userIds.length);
+          assert.strictEqual(data.length, userIds.length);
 
           const firstUserTasks = data[0];
 
@@ -202,10 +202,10 @@ describe('FirebaseClient executes query built', function () {
               .run()
               .then(userTasksList => {
                 assert.ok(Array.isArray(userTasksList));
-                assert.equal(userTasksList.length, 1);
+                assert.strictEqual(userTasksList.length, 1);
 
                 const actualUserId = userTasksList[0].getId();
-                assert.equal(actualUserId.getValue(), firstUserTasks.getId().getValue());
+                assert.strictEqual(actualUserId.getValue(), firstUserTasks.getId().getValue());
                 done();
               })
               .catch((e) => {

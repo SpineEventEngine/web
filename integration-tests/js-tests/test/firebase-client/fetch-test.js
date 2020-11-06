@@ -89,7 +89,7 @@ describe('FirebaseClient "fetch"', function () {
             .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
-                assert.equal(data.length, 1);
+                assert.strictEqual(data.length, 1);
                 const item = data[0];
                 assert.ok(item.getId().getValue() === id.getValue());
                 done();
@@ -153,7 +153,7 @@ describe('FirebaseClient "fetch"', function () {
             .run()
             .then(data => {
                 assert.ok(Array.isArray(data));
-                assert.equal(data.length, taskIds.length);
+                assert.strictEqual(data.length, taskIds.length);
                 taskIds.forEach(taskId => {
                     const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
                     assert.ok(targetObject);
@@ -188,7 +188,7 @@ describe('FirebaseClient "fetch"', function () {
         client.read(query)
             .then(data => {
                 assert.ok(Array.isArray(data));
-                assert.equal(data.length, taskIds.length);
+                assert.strictEqual(data.length, taskIds.length);
                 taskIds.forEach(taskId => {
                     const targetObject = data.find(item => item.getId().getValue() === taskId.getValue());
                     assert.ok(targetObject);
@@ -214,7 +214,7 @@ describe('FirebaseClient "fetch"', function () {
             .run()
             .then(fail(done), error => {
                 assert.ok(error instanceof ServerError);
-                assert.equal(error.message, 'Server Error');
+                assert.strictEqual(error.message, 'Server Error');
                 done();
             });
         client.command(command)

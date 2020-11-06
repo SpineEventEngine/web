@@ -20,7 +20,7 @@
 
 "use strict";
 
-import uuid from 'uuid';
+import {v4 as newUuid} from 'uuid';
 
 import {Message} from 'google-protobuf';
 import {FieldMask} from '../proto/google/protobuf/field_mask_pb';
@@ -815,7 +815,7 @@ class QueryFactory {
    */
   static _newId() {
     const result = new QueryId();
-    result.setValue(`q-${uuid.v4()}`);
+    result.setValue(`q-${newUuid()}`);
     return result;
   }
 }
@@ -865,7 +865,7 @@ class CommandFactory {
    */
   static _newCommandId() {
     const result = new CommandId();
-    result.setUuid(uuid.v4());
+    result.setUuid(newUuid());
     return result;
   }
 }
@@ -957,7 +957,7 @@ class TopicFactory {
    */
   static _generateId() {
     const topicId = new TopicId();
-    topicId.setValue(`t-${uuid.v4()}`);
+    topicId.setValue(`t-${newUuid()}`);
     return topicId;
   }
 }
@@ -1028,6 +1028,8 @@ export class ActorProvider {
  * The anonymous backend actor.
  *
  * It is needed for requests to the backend when the particular user is undefined.
+ *
+ * @type UserId
  */
 ActorProvider.ANONYMOUS = function () {
   const actor = new UserId();
