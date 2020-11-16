@@ -47,7 +47,10 @@ final class UserTasksProjectionRepository
                .route(TaskReassigned.class, (e, ctx) -> e.hasFrom()
                                                         ? ImmutableSet.of(e.getFrom(),
                                                                           e.getTo())
-                                                        : withId(e.getTo()));
+                                                        : withId(e.getTo()))
+               .route(TaskDeleted.class, (e, ctx) -> e.hasAssignee()
+                                                     ? withId(e.getAssignee())
+                                                     : noTargets());
         super.setupEventRouting(routing);
     }
 }

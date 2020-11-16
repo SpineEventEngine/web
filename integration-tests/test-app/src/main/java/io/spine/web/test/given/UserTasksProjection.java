@@ -66,6 +66,14 @@ final class UserTasksProjection
         builder().setLastUpdated(event.getWhen());
     }
 
+    @Subscribe
+    void on(TaskDeleted event) {
+        TaskId taskId = event.getId();
+        List<TaskId> tasks = state().getTasksList();
+        int deleted = tasks.indexOf(taskId);
+        builder().removeTasks(deleted);
+    }
+
     @Override
     public int getTaskCount() {
         return state().getTasksCount();
