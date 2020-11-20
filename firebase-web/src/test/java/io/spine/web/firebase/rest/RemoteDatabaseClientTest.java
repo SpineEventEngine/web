@@ -77,6 +77,7 @@ class RemoteDatabaseClientTest {
     private NodeValue value;
 
     @BeforeAll
+    @SuppressWarnings("JdkObsolete") // we're forced to use `Date` for the `AccessToken`.
     static void initFirebase() {
         GoogleCredentials fakeCredentials =
                 GoogleCredentials.create(new AccessToken("obviously fake", new Date()));

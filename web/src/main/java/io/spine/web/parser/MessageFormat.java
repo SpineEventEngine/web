@@ -30,13 +30,12 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static com.google.common.net.MediaType.create;
 import static java.util.Optional.empty;
 
 /**
  * Message formats supported by the Spine web API.
  */
-@SuppressWarnings("NonSerializableFieldInSerializableClass")
+@SuppressWarnings({"NonSerializableFieldInSerializableClass", "UnstableApiUsage"})
 public enum MessageFormat {
 
     /**
@@ -52,7 +51,7 @@ public enum MessageFormat {
     /**
      * The Base64 bytes message stringification format.
      */
-    BASE64(create("application", "x-protobuf")) {
+    BASE64(MediaType.create("application", "x-protobuf")) {
         @Override
         <M extends Message> MessageParser<M> parserFor(Class<M> type) {
             return new Base64MessageParser<>(type);
