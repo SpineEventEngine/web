@@ -115,7 +115,7 @@ protobuf {
                 task.generateDescriptorSet = true
                 val testClassifier = if (task.sourceSet.name == "test") "_test" else ""
                 val descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
-                task.descriptorSetOptions.path = groovy.lang.GString.EMPTY.plus("${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}")
+                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}"
             }
             tasks["compileProtoToJs"].dependsOn(task)
         }
