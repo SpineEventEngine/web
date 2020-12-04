@@ -21,7 +21,7 @@
 package io.spine.web.firebase;
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import io.spine.web.firebase.given.TestFirebaseClient;
+import io.spine.web.firebase.given.MemoizedFirebase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 @DisplayName("Async Firebase client should")
 class AsyncClientTest {
 
-    private TestFirebaseClient delegate;
+    private MemoizedFirebase delegate;
     private NodePath path;
     private ExecutorService executor;
     private Duration latency;
@@ -45,7 +45,7 @@ class AsyncClientTest {
     @BeforeEach
     void setUp() {
         latency = ofSeconds(2);
-        delegate = TestFirebaseClient.withSimulatedLatency(latency);
+        delegate = MemoizedFirebase.withSimulatedLatency(latency);
         path = NodePaths.of("some/kind/of/path");
         executor = newSingleThreadExecutor();
     }
@@ -78,14 +78,14 @@ class AsyncClientTest {
     void allowDirectExecutor() {
         AsyncClient asyncClient = new AsyncClient(delegate, directExecutor());
         asyncClient.create(path, NodeValue.empty());
-        assertThat(delegate.writes()).contains(path);
+        assertThat(delegate.writes()).containsKey(path);
     }
 
     private void checkAsync(AsyncClient asyncClient) {
         asyncClient.update(path, NodeValue.empty());
-        assertThat(delegate.writes()).doesNotContain(path);
+        assertThat(delegate.writes()).doesNotContainKey(path);
         Duration surefireTime = latency.plusSeconds(1);
         Uninterruptibles.sleepUninterruptibly(surefireTime);
-        assertThat(delegate.writes()).contains(path);
+        assertThat(delegate.writes()).containsKey(path);
     }
 }

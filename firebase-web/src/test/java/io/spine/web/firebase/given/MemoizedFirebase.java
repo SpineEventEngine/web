@@ -21,39 +21,52 @@
 package io.spine.web.firebase.given;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.firebase.database.ChildEventListener;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
-public final class TestFirebaseClient implements FirebaseClient {
+/**
+ * A Firebase client that memoizes read and write operations.
+ *
+ * <p>Supports having a custom write latency through {@linkplain #withSimulatedLatency(Duration)
+ * setting} a particular write operations duration.
+ */
+public final class MemoizedFirebase implements FirebaseClient {
 
+    private final Map<NodePath, NodeValue> writes = new HashMap<>();
     private final List<NodePath> reads = newArrayList();
-    private final List<NodePath> writes = newArrayList();
 
     private final Duration writeLatency;
 
-    private TestFirebaseClient(Duration latency) {
+    private MemoizedFirebase(Duration latency) {
         this.writeLatency = latency;
     }
 
-    public static TestFirebaseClient withSimulatedLatency(Duration latency) {
+    public static MemoizedFirebase withNoLatency() {
+        return withSimulatedLatency(Duration.ZERO);
+    }
+
+    public static MemoizedFirebase withSimulatedLatency(Duration latency) {
         checkNotNull(latency);
-        return new TestFirebaseClient(latency);
+        return new MemoizedFirebase(latency);
     }
 
     @Override
     public Optional<NodeValue> fetchNode(NodePath nodePath) {
         reads.add(nodePath);
-        return Optional.empty();
+        return Optional.ofNullable(writes.get(nodePath));
     }
 
     @Override
@@ -64,26 +77,26 @@ public final class TestFirebaseClient implements FirebaseClient {
     @Override
     public void create(NodePath nodePath, NodeValue value) {
         sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        writes.put(nodePath, value);
     }
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
         sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        writes.put(nodePath, value);
     }
 
     @Override
     public void delete(NodePath nodePath) {
         sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        writes.remove(nodePath);
     }
 
     public ImmutableList<NodePath> reads() {
         return ImmutableList.copyOf(reads);
     }
 
-    public ImmutableList<NodePath> writes() {
-        return ImmutableList.copyOf(writes);
+    public ImmutableMap<NodePath, NodeValue> writes() {
+        return ImmutableMap.copyOf(writes);
     }
 }
