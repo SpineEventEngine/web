@@ -28,12 +28,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterators.asEnumeration;
 import static com.google.common.collect.Iterators.singletonIterator;
-import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.emptyIterator;
 
 /**
@@ -86,7 +86,7 @@ public final class FixedContentRequest implements MockedRequest {
         checkNotNull(content);
         checkNotNull(type);
         checkNotNull(headers);
-        return create(content.getBytes(defaultCharset()), type, headers);
+        return create(content.getBytes(StandardCharsets.UTF_8), type, headers);
     }
 
     /**
@@ -143,6 +143,10 @@ public final class FixedContentRequest implements MockedRequest {
 
     @Override
     public BufferedReader getReader() {
-        return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content)));
+        return new BufferedReader(
+                new InputStreamReader(
+                        new ByteArrayInputStream(content), StandardCharsets.UTF_8
+                )
+        );
     }
 }
