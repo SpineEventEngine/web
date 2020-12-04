@@ -6,7 +6,6 @@
 
 package io.spine.web.given;
 
-import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.servlet.ServletOutputStream;
@@ -17,192 +16,177 @@ import java.util.Collection;
 import java.util.Locale;
 
 /**
- * A mock servlet request that returns pre-defined request URI.
+ * A mocked no-op servlet response.
  *
  * @apiNote Some of the methods are marked as {@linkplain Deprecated deprecated} to avoid
  *         the deprecation warnings, as their {@code super} methods are marked as such.
  */
-public class MockedResponse implements HttpServletResponse {
-
-    private final int status;
-
-    private MockedResponse(int status) {
-        this.status = status;
-    }
-
-    /**
-     * Creates a mock response that always returns the given status.
-     */
-    public static MockedResponse create(int status) {
-        return new MockedResponse(status);
-    }
+public interface MockedResponse extends HttpServletResponse {
 
     @Override
-    public int getStatus() {
-        return status;
-    }
-
-    // All methods below are intentionally no-op.
-
-    @Override
-    public void addCookie(Cookie cookie) {
-    }
-
-    @Override
-    public boolean containsHeader(String name) {
-        return false;
-    }
-
-    @Override
-    public @Nullable String encodeURL(String url) {
-        return null;
-    }
-
-    @Override
-    public @Nullable String encodeRedirectURL(String url) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public @Nullable String encodeUrl(String url) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public @Nullable String encodeRedirectUrl(String url) {
-        return null;
-    }
-
-    @Override
-    public void sendError(int sc, String msg) {
-    }
-
-    @Override
-    public void sendError(int sc) {
-    }
-
-    @Override
-    public void sendRedirect(String location) {
-    }
-
-    @Override
-    public void setDateHeader(String name, long date) {
-    }
-
-    @Override
-    public void addDateHeader(String name, long date) {
-    }
-
-    @Override
-    public void setHeader(String name, String value) {
-    }
-
-    @Override
-    public void addHeader(String name, String value) {
-    }
-
-    @Override
-    public void setIntHeader(String name, int value) {
-    }
-
-    @Override
-    public void addIntHeader(String name, int value) {
-    }
-
-    @Override
-    public void setStatus(int sc) {
-    }
-
-    @Deprecated
-    @Override
-    public void setStatus(int sc, String sm) {
-    }
-
-    @Override
-    public @Nullable String getHeader(String name) {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getHeaders(String name) {
-        return ImmutableList.of();
-    }
-
-    @Override
-    public Collection<String> getHeaderNames() {
-        return ImmutableList.of();
-    }
-
-    @Override
-    public @Nullable String getCharacterEncoding() {
-        return null;
-    }
-
-    @Override
-    public @Nullable String getContentType() {
-        return null;
-    }
-
-    @Override
-    public @Nullable ServletOutputStream getOutputStream() {
-        return null;
-    }
-
-    @Override
-    public @Nullable PrintWriter getWriter() {
-        return null;
-    }
-
-    @Override
-    public void setCharacterEncoding(String charset) {
-    }
-
-    @Override
-    public void setContentLength(int len) {
-    }
-
-    @Override
-    public void setContentLengthLong(long len) {
-    }
-
-    @Override
-    public void setContentType(String type) {
-    }
-
-    @Override
-    public void setBufferSize(int size) {
-    }
-
-    @Override
-    public int getBufferSize() {
+    default int getStatus() {
         return 0;
     }
 
     @Override
-    public void flushBuffer() {
+    default void addCookie(Cookie cookie) {
     }
 
     @Override
-    public void resetBuffer() {
-    }
-
-    @Override
-    public boolean isCommitted() {
+    default boolean containsHeader(String name) {
         return false;
     }
 
     @Override
-    public void reset() {
+    default @Nullable String encodeURL(String url) {
+        return null;
     }
 
     @Override
-    public void setLocale(Locale loc) {
+    default @Nullable String encodeRedirectURL(String url) {
+        return null;
+    }
+
+    @Deprecated
+    @Override
+    default @Nullable String encodeUrl(String url) {
+        return null;
+    }
+
+    @Deprecated
+    @Override
+    default @Nullable String encodeRedirectUrl(String url) {
+        return null;
     }
 
     @Override
-    public @Nullable Locale getLocale() {
+    default void sendError(int sc, String msg) {
+    }
+
+    @Override
+    default void sendError(int sc) {
+    }
+
+    @Override
+    default void sendRedirect(String location) {
+    }
+
+    @Override
+    default void setDateHeader(String name, long date) {
+    }
+
+    @Override
+    default void addDateHeader(String name, long date) {
+    }
+
+    @Override
+    default void setHeader(String name, String value) {
+    }
+
+    @Override
+    default void addHeader(String name, String value) {
+    }
+
+    @Override
+    default void setIntHeader(String name, int value) {
+    }
+
+    @Override
+    default void addIntHeader(String name, int value) {
+    }
+
+    @Override
+    default void setStatus(int sc) {
+    }
+
+    @Deprecated
+    @Override
+    default void setStatus(int sc, String sm) {
+    }
+
+    @Override
+    default @Nullable String getHeader(String name) {
+        return null;
+    }
+
+    @Override
+    default @Nullable Collection<String> getHeaders(String name) {
+        return null;
+    }
+
+    @Override
+    default @Nullable Collection<String> getHeaderNames() {
+        return null;
+    }
+
+    @Override
+    default @Nullable String getCharacterEncoding() {
+        return null;
+    }
+
+    @Override
+    default @Nullable String getContentType() {
+        return null;
+    }
+
+    @Override
+    default @Nullable ServletOutputStream getOutputStream() {
+        return null;
+    }
+
+    @Override
+    default @Nullable PrintWriter getWriter() {
+        return null;
+    }
+
+    @Override
+    default void setCharacterEncoding(String charset) {
+    }
+
+    @Override
+    default void setContentLength(int len) {
+    }
+
+    @Override
+    default void setContentLengthLong(long len) {
+    }
+
+    @Override
+    default void setContentType(String type) {
+    }
+
+    @Override
+    default void setBufferSize(int size) {
+    }
+
+    @Override
+    default int getBufferSize() {
+        return 0;
+    }
+
+    @Override
+    default void flushBuffer() {
+    }
+
+    @Override
+    default void resetBuffer() {
+    }
+
+    @Override
+    default boolean isCommitted() {
+        return false;
+    }
+
+    @Override
+    default void reset() {
+    }
+
+    @Override
+    default void setLocale(Locale loc) {
+    }
+
+    @Override
+    default @Nullable Locale getLocale() {
         return null;
     }
 }

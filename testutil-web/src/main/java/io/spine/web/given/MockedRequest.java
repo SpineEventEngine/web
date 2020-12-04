@@ -6,7 +6,6 @@
 
 package io.spine.web.given;
 
-import com.google.common.collect.ImmutableMap;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.servlet.AsyncContext;
@@ -30,378 +29,356 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * A mock servlet request that returns a pre-defined request URI and headers.
+ * A mocked no-op servlet request that returns.
  *
  * @apiNote Some of the methods are marked as {@linkplain Deprecated deprecated} to avoid
  *         the deprecation warnings, as their {@code super} methods are marked as such.
  */
-public class MockedRequest implements HttpServletRequest {
-
-    private final ImmutableMap<String, String> headers;
-    private final String requestUri;
-
-    private MockedRequest(Map<String, String> headers, String uri) {
-        this.headers = ImmutableMap.copyOf(headers);
-        this.requestUri = uri;
-    }
-
-    /**
-     * Creates a new mock request.
-     */
-    public static ServletRequest create(String requestUri) {
-        return create(ImmutableMap.of(), requestUri);
-    }
-
-    /**
-     * Creates a new mock request with headers.
-     */
-    public static ServletRequest create(Map<String, String> headers, String requestUri) {
-        return new MockedRequest(headers, requestUri);
-    }
+public interface MockedRequest extends HttpServletRequest {
 
     @Override
-    public String getRequestURI() {
-        return requestUri;
-    }
-
-    // All methods below are intentionally no-op.
-
-    @Override
-    public @Nullable String getAuthType() {
+    default @Nullable String getRequestURI() {
         return null;
     }
 
     @Override
-    public @Nullable Cookie[] getCookies() {
+    default @Nullable String getAuthType() {
         return null;
     }
 
     @Override
-    public long getDateHeader(String name) {
+    @SuppressWarnings("ReturnOfNull") // we're explicitly returning `null`.
+    default @Nullable Cookie[] getCookies() {
+        return null;
+    }
+
+    @Override
+    default long getDateHeader(String name) {
         return 0;
     }
 
     @Override
-    public @Nullable String getHeader(String name) {
-        return headers.get(name);
-    }
-
-    @Override
-    public @Nullable Enumeration<String> getHeaders(String name) {
+    default @Nullable String getHeader(String name) {
         return null;
     }
 
     @Override
-    public @Nullable Enumeration<String> getHeaderNames() {
+    default @Nullable Enumeration<String> getHeaders(String name) {
         return null;
     }
 
     @Override
-    public int getIntHeader(String name) {
+    default @Nullable Enumeration<String> getHeaderNames() {
+        return null;
+    }
+
+    @Override
+    default int getIntHeader(String name) {
         return 0;
     }
 
     @Override
-    public @Nullable String getMethod() {
+    default @Nullable String getMethod() {
         return null;
     }
 
     @Override
-    public @Nullable String getPathInfo() {
+    default @Nullable String getPathInfo() {
         return null;
     }
 
     @Override
-    public @Nullable String getPathTranslated() {
+    default @Nullable String getPathTranslated() {
         return null;
     }
 
     @Override
-    public @Nullable String getContextPath() {
+    default @Nullable String getContextPath() {
         return null;
     }
 
     @Override
-    public @Nullable String getQueryString() {
+    default @Nullable String getQueryString() {
         return null;
     }
 
     @Override
-    public @Nullable String getRemoteUser() {
+    default @Nullable String getRemoteUser() {
         return null;
     }
 
     @Override
-    public boolean isUserInRole(String role) {
+    default boolean isUserInRole(String role) {
         return false;
     }
 
     @Override
-    public @Nullable Principal getUserPrincipal() {
+    default @Nullable Principal getUserPrincipal() {
         return null;
     }
 
     @Override
-    public @Nullable String getRequestedSessionId() {
+    default @Nullable String getRequestedSessionId() {
         return null;
     }
 
     @Override
-    public @Nullable StringBuffer getRequestURL() {
+    default @Nullable StringBuffer getRequestURL() {
         return null;
     }
 
     @Override
-    public @Nullable String getServletPath() {
+    default @Nullable String getServletPath() {
         return null;
     }
 
     @Override
-    public @Nullable HttpSession getSession(boolean create) {
+    default @Nullable HttpSession getSession(boolean create) {
         return null;
     }
 
     @Override
-    public @Nullable HttpSession getSession() {
+    default @Nullable HttpSession getSession() {
         return null;
     }
 
     @Override
-    public @Nullable String changeSessionId() {
+    default @Nullable String changeSessionId() {
         return null;
     }
 
     @Override
-    public boolean isRequestedSessionIdValid() {
+    default boolean isRequestedSessionIdValid() {
         return false;
     }
 
     @Override
-    public boolean isRequestedSessionIdFromCookie() {
+    default boolean isRequestedSessionIdFromCookie() {
         return false;
     }
 
     @Override
-    public boolean isRequestedSessionIdFromURL() {
+    default boolean isRequestedSessionIdFromURL() {
         return false;
     }
 
     @Deprecated
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
+    default boolean isRequestedSessionIdFromUrl() {
         return false;
     }
 
     @Override
-    public boolean authenticate(HttpServletResponse response) {
+    default boolean authenticate(HttpServletResponse response) {
         return false;
     }
 
     @Override
-    public void login(String username, String password) {
+    default void login(String username, String password) {
     }
 
     @Override
-    public void logout() {
+    default void logout() {
     }
 
     @Override
-    public @Nullable Collection<Part> getParts() {
+    default @Nullable Collection<Part> getParts() {
         return null;
     }
 
     @Override
-    public @Nullable Part getPart(String name) {
+    default @Nullable Part getPart(String name) {
         return null;
     }
 
     @Override
-    public @Nullable <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) {
+    default @Nullable <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) {
         return null;
     }
 
     @Override
-    public @Nullable Object getAttribute(String name) {
+    default @Nullable Object getAttribute(String name) {
         return null;
     }
 
     @Override
-    public @Nullable Enumeration<String> getAttributeNames() {
+    default @Nullable Enumeration<String> getAttributeNames() {
         return null;
     }
 
     @Override
-    public @Nullable String getCharacterEncoding() {
+    default @Nullable String getCharacterEncoding() {
         return null;
     }
 
     @Override
-    public void setCharacterEncoding(String env) {
+    default void setCharacterEncoding(String env) {
     }
 
     @Override
-    public int getContentLength() {
+    default int getContentLength() {
         return 0;
     }
 
     @Override
-    public long getContentLengthLong() {
+    default long getContentLengthLong() {
         return 0;
     }
 
     @Override
-    public @Nullable String getContentType() {
+    default @Nullable String getContentType() {
         return null;
     }
 
     @Override
-    public @Nullable ServletInputStream getInputStream() {
+    default @Nullable ServletInputStream getInputStream() {
         return null;
     }
 
     @Override
-    public @Nullable String getParameter(String name) {
+    default @Nullable String getParameter(String name) {
         return null;
     }
 
     @Override
-    public @Nullable Enumeration<String> getParameterNames() {
+    default @Nullable Enumeration<String> getParameterNames() {
         return null;
     }
 
     @Override
-    public @Nullable String[] getParameterValues(String name) {
+    @SuppressWarnings("ReturnOfNull") // we're explicitly returning `null`.
+    default @Nullable String[] getParameterValues(String name) {
         return null;
     }
 
     @Override
-    public @Nullable Map<String, String[]> getParameterMap() {
+    default @Nullable Map<String, String[]> getParameterMap() {
         return null;
     }
 
     @Override
-    public @Nullable String getProtocol() {
+    default @Nullable String getProtocol() {
         return null;
     }
 
     @Override
-    public @Nullable String getScheme() {
+    default @Nullable String getScheme() {
         return null;
     }
 
     @Override
-    public @Nullable String getServerName() {
+    default @Nullable String getServerName() {
         return null;
     }
 
     @Override
-    public int getServerPort() {
+    default int getServerPort() {
         return 0;
     }
 
     @Override
-    public @Nullable BufferedReader getReader() {
+    default @Nullable BufferedReader getReader() {
         return null;
     }
 
     @Override
-    public @Nullable String getRemoteAddr() {
+    default @Nullable String getRemoteAddr() {
         return null;
     }
 
     @Override
-    public @Nullable String getRemoteHost() {
+    default @Nullable String getRemoteHost() {
         return null;
     }
 
     @Override
-    public void setAttribute(String name, Object o) {
+    default void setAttribute(String name, Object o) {
     }
 
     @Override
-    public void removeAttribute(String name) {
+    default void removeAttribute(String name) {
     }
 
     @Override
-    public @Nullable Locale getLocale() {
+    default @Nullable Locale getLocale() {
         return null;
     }
 
     @Override
-    public @Nullable Enumeration<Locale> getLocales() {
+    default @Nullable Enumeration<Locale> getLocales() {
         return null;
     }
 
     @Override
-    public boolean isSecure() {
+    default boolean isSecure() {
         return false;
     }
 
     @Override
-    public @Nullable RequestDispatcher getRequestDispatcher(String path) {
+    default @Nullable RequestDispatcher getRequestDispatcher(String path) {
         return null;
     }
 
     @Deprecated
     @Override
-    public @Nullable String getRealPath(String path) {
+    default @Nullable String getRealPath(String path) {
         return null;
     }
 
     @Override
-    public int getRemotePort() {
+    default int getRemotePort() {
         return 0;
     }
 
     @Override
-    public @Nullable String getLocalName() {
+    default @Nullable String getLocalName() {
         return null;
     }
 
     @Override
-    public @Nullable String getLocalAddr() {
+    default @Nullable String getLocalAddr() {
         return null;
     }
 
     @Override
-    public int getLocalPort() {
+    default int getLocalPort() {
         return 0;
     }
 
     @Override
-    public @Nullable ServletContext getServletContext() {
+    default @Nullable ServletContext getServletContext() {
         return null;
     }
 
     @Override
-    public @Nullable AsyncContext startAsync() throws IllegalStateException {
+    default @Nullable AsyncContext startAsync() throws IllegalStateException {
         return null;
     }
 
     @Override
-    public @Nullable AsyncContext
+    default @Nullable AsyncContext
     startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
             throws IllegalStateException {
         return null;
     }
 
     @Override
-    public boolean isAsyncStarted() {
+    default boolean isAsyncStarted() {
         return false;
     }
 
     @Override
-    public boolean isAsyncSupported() {
+    default boolean isAsyncSupported() {
         return false;
     }
 
     @Override
-    public @Nullable AsyncContext getAsyncContext() {
+    default @Nullable AsyncContext getAsyncContext() {
         return null;
     }
 
     @Override
-    public @Nullable DispatcherType getDispatcherType() {
+    default @Nullable DispatcherType getDispatcherType() {
         return null;
     }
 }
