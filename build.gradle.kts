@@ -115,15 +115,17 @@ subprojects {
         errorproneJavac(Deps.build.errorProneJavac)
 
         implementation(Deps.build.guava)
-        implementation(Deps.build.checkerAnnotations)
-        Deps.build.errorProneAnnotations.forEach { implementation(it) }
 
+        compileOnlyApi(Deps.build.checkerAnnotations)
+        compileOnlyApi(Deps.build.jsr305Annotations)
+        Deps.build.errorProneAnnotations.forEach { compileOnlyApi(it) }
+
+        testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
         testImplementation(Deps.test.guavaTestlib)
         Deps.test.junit5Api.forEach { testImplementation(it) }
         testImplementation(Deps.test.junit5Runner)
         testImplementation(Deps.test.mockito)
         testImplementation(Deps.test.hamcrest)
-        testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
     }
 
     DependencyResolution.forceConfiguration(configurations)
