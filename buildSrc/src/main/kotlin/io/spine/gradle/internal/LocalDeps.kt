@@ -28,4 +28,4 @@ val Build.servletApi: String
 
 val Runtime.slf4jJul: String
     get() = @Suppress("DEPRECATION") // SLF4J version.
-            "org.slf4j:slf4j-jdk14:${Deps.versions.slf4j}"
+    "org.slf4j:slf4j-jdk14:${Deps.versions.slf4j}"

@@ -18,8 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.common.io.Files
 import com.google.common.collect.Lists
+import com.google.common.io.Files
 
 
 apply(from = "$rootDir/scripts/js.gradle")
@@ -28,19 +28,31 @@ val spineCoreVersion: String by extra
 
 dependencies {
     protobuf(project(":web"))
-    protobuf(group = "io.spine", name = "spine-client", version = spineCoreVersion, classifier = "proto")
-    testProtobuf(group = "io.spine", name = "spine-client", version = spineCoreVersion, classifier = "proto")
+    protobuf(
+        group = "io.spine",
+        name = "spine-client",
+        version = spineCoreVersion,
+        classifier = "proto"
+    )
+    testProtobuf(
+        group = "io.spine",
+        name = "spine-client",
+        version = spineCoreVersion,
+        classifier = "proto"
+    )
 }
 
 idea.module {
     sourceDirs.add(file(project.extra["srcDir"]))
     testSourceDirs.add(file(project.extra["testSrcDir"]))
 
-    excludeDirs.addAll(files(
+    excludeDirs.addAll(
+        files(
             project.extra["nycOutputDir"],
             project.extra["genProtoMain"],
             project.extra["genProtoTest"]
-    ))
+        )
+    )
 }
 
 
@@ -67,7 +79,13 @@ tasks.compileTestJava {
 val jsDocDir = Files.createTempDir()
 
 val jsDoc by tasks.registering(type = Exec::class) {
-    commandLine("$projectDir/node_modules/.bin/jsdoc", "-r", "-d", jsDocDir.path, "$projectDir/main/")
+    commandLine(
+        "$projectDir/node_modules/.bin/jsdoc",
+        "-r",
+        "-d",
+        jsDocDir.path,
+        "$projectDir/main/"
+    )
 }
 
 afterEvaluate {

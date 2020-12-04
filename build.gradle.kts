@@ -50,7 +50,7 @@ buildscript {
 }
 
 plugins {
-    java
+    `java-library`
     jacoco
     idea
     pmd
@@ -113,9 +113,11 @@ subprojects {
     dependencies {
         errorprone(Deps.build.errorProneCore)
         errorproneJavac(Deps.build.errorProneJavac)
+
         implementation(Deps.build.guava)
         implementation(Deps.build.checkerAnnotations)
         Deps.build.errorProneAnnotations.forEach { implementation(it) }
+
         testImplementation(Deps.test.guavaTestlib)
         Deps.test.junit5Api.forEach { testImplementation(it) }
         testImplementation(Deps.test.junit5Runner)
@@ -145,59 +147,59 @@ subprojects {
              * in classpath, and assumes they implement the Type URLs.
              */
             force(
-                    "io.opencensus:opencensus-api:0.21.0",
-                    "io.opencensus:opencensus-contrib-http-util:0.18.0",
+                "io.opencensus:opencensus-api:0.21.0",
+                "io.opencensus:opencensus-contrib-http-util:0.18.0",
 
-                    "io.grpc:grpc-core:${Deps.versions.grpc}",
-                    "io.grpc:grpc-stub:${Deps.versions.grpc}",
-                    "io.grpc:grpc-okhttp:${Deps.versions.grpc}",
-                    "io.grpc:grpc-protobuf:${Deps.versions.grpc}",
-                    "io.grpc:grpc-netty:${Deps.versions.grpc}",
-                    "io.grpc:grpc-context:${Deps.versions.grpc}",
-                    "io.grpc:grpc-stub:${Deps.versions.grpc}",
-                    "io.grpc:grpc-protobuf:${Deps.versions.grpc}",
-                    "io.grpc:grpc-core:${Deps.versions.grpc}",
+                "io.grpc:grpc-core:${Deps.versions.grpc}",
+                "io.grpc:grpc-stub:${Deps.versions.grpc}",
+                "io.grpc:grpc-okhttp:${Deps.versions.grpc}",
+                "io.grpc:grpc-protobuf:${Deps.versions.grpc}",
+                "io.grpc:grpc-netty:${Deps.versions.grpc}",
+                "io.grpc:grpc-context:${Deps.versions.grpc}",
+                "io.grpc:grpc-stub:${Deps.versions.grpc}",
+                "io.grpc:grpc-protobuf:${Deps.versions.grpc}",
+                "io.grpc:grpc-core:${Deps.versions.grpc}",
 
-                    "com.google.code.gson:gson:2.7",
-                    "com.google.api:api-common:1.7.0",
-                    "com.google.api.grpc:proto-google-common-protos:1.0.0",
-                    "com.google.api.grpc:proto-google-iam-v1:0.1.28",
+                "com.google.code.gson:gson:2.7",
+                "com.google.api:api-common:1.7.0",
+                "com.google.api.grpc:proto-google-common-protos:1.0.0",
+                "com.google.api.grpc:proto-google-iam-v1:0.1.28",
 
-                    "com.google.cloud:google-cloud-core:1.91.3",
-                    "com.google.api:gax:1.49.1",
+                "com.google.cloud:google-cloud-core:1.91.3",
+                "com.google.api:gax:1.49.1",
 
-                    "com.google.oauth-client:google-oauth-client:1.25.0",
+                "com.google.oauth-client:google-oauth-client:1.25.0",
 
-                    "com.google.auth:google-auth-library-credentials:0.11.0",
-                    "com.google.auth:google-auth-library-oauth2-http:0.11.0",
+                "com.google.auth:google-auth-library-credentials:0.11.0",
+                "com.google.auth:google-auth-library-oauth2-http:0.11.0",
 
-                    "com.google.j2objc:j2objc-annotations:1.3",
+                "com.google.j2objc:j2objc-annotations:1.3",
 
-                    "com.google.http-client:google-http-client:1.29.0",
-                    "com.google.http-client:google-http-client-jackson2:1.29.0",
+                "com.google.http-client:google-http-client:1.29.0",
+                "com.google.http-client:google-http-client-jackson2:1.29.0",
 
-                    "com.google.api-client:google-api-client:1.30.9",
+                "com.google.api-client:google-api-client:1.30.9",
 
-                    "org.apache.httpcomponents:httpclient:4.5.5",
+                "org.apache.httpcomponents:httpclient:4.5.5",
 
-                    "com.fasterxml.jackson.core:jackson-core:2.9.9",
-                    "commons-collections:commons-collections:3.2.2",
+                "com.fasterxml.jackson.core:jackson-core:2.9.9",
+                "commons-collections:commons-collections:3.2.2",
 
-                    "io.netty:netty-common:4.1.34.Final",
-                    "io.netty:netty-buffer:4.1.34.Final",
-                    "io.netty:netty-transport:4.1.34.Final",
-                    "io.netty:netty-handler:4.1.34.Final",
-                    "io.netty:netty-codec-http:4.1.34.Final",
+                "io.netty:netty-common:4.1.34.Final",
+                "io.netty:netty-buffer:4.1.34.Final",
+                "io.netty:netty-transport:4.1.34.Final",
+                "io.netty:netty-handler:4.1.34.Final",
+                "io.netty:netty-codec-http:4.1.34.Final",
 
-                    Deps.build.servletApi,
+                Deps.build.servletApi,
 
-                    "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
-                    "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
+                "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
+                "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
 
-                    // Transitive dependencies from `core-java` may have different (older) versions.
-                    "io.spine:spine-base:$spineBaseVersion",
-                    "io.spine:spine-testlib:$spineBaseVersion",
-                    "io.spine:spine-time:$spineTimeVersion"
+                // Transitive dependencies from `core-java` may have different (older) versions.
+                "io.spine:spine-base:$spineBaseVersion",
+                "io.spine:spine-testlib:$spineBaseVersion",
+                "io.spine:spine-time:$spineTimeVersion"
             )
         }
     }
