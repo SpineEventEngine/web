@@ -38,14 +38,14 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.mock;
 
 @DisplayName("`FirebaseClientFactory` should")
 class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> {
 
     private static final FirebaseCredentials CREDENTIALS = FirebaseCredentials.empty();
     private static final String FIREBASE_APP_NAME = FirebaseClientFactoryTest.class.getSimpleName();
-    private FirebaseDatabase database = mock(FirebaseDatabase.class);
+    private final FirebaseApp app = FirebaseApp.getInstance(FIREBASE_APP_NAME);
+    private FirebaseDatabase database;
 
     FirebaseClientFactoryTest() {
         super(FirebaseClientFactory.class);
@@ -66,19 +66,20 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
 
     @Override
     protected void configure(NullPointerTester tester) {
-        tester.setDefault(FirebaseDatabase.class, mock(FirebaseDatabase.class))
+        tester.setDefault(FirebaseDatabase.class, FirebaseDatabase.getInstance(app))
               .setDefault(FirebaseCredentials.class, CREDENTIALS);
     }
 
     @BeforeEach
-    void configureFirebaseMock() {
-        FirebaseApp app = FirebaseApp.getInstance(FIREBASE_APP_NAME);
+    void configureDatabase() {
         database = FirebaseDatabase.getInstance(app);
     }
 
     @AfterEach
-    void cleanUp() {
-        ServerEnvironment.instance().reset();
+    void resetEnvironment() {
+        ServerEnvironment
+                .instance()
+                .reset();
     }
 
     @Test
