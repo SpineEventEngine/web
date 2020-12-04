@@ -122,10 +122,10 @@ subprojects {
 
         testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
         testImplementation(Deps.test.guavaTestlib)
-        Deps.test.junit5Api.forEach { testImplementation(it) }
-        testImplementation(Deps.test.junit5Runner)
         testImplementation(Deps.test.mockito)
-        testImplementation(Deps.test.hamcrest)
+        Deps.test.junit5Api.forEach { testImplementation(it) }
+        Deps.test.truth.forEach { testImplementation(it) }
+        testRuntimeOnly(Deps.test.junit5Runner)
     }
 
     DependencyResolution.forceConfiguration(configurations)
