@@ -36,8 +36,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class FixedContentResponse implements MockedResponse {
 
-    private static final int SUCCESS = 200;
-
     private final ImmutableMap<String, String> headers;
     private final int status;
     private final Writer writer;
@@ -52,11 +50,11 @@ public final class FixedContentResponse implements MockedResponse {
 
     /**
      * Creates a new mocked response with specified {@code writer} and default
-     * {@code 200} status.
+     * {@linkplain #SC_OK OK} status.
      */
     public static FixedContentResponse create(Writer writer) {
         checkNotNull(writer);
-        return create(writer, SUCCESS);
+        return create(writer, SC_OK);
     }
 
     /**
