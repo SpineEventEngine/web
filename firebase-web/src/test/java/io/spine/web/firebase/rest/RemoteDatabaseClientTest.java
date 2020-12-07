@@ -128,7 +128,7 @@ class RemoteDatabaseClientTest {
 
         Optional<NodeValue> result = client.fetchNode(path);
         assertThat(result)
-                .isPresent();
+                .isEmpty();
     }
 
     @Test
