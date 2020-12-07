@@ -50,6 +50,11 @@ public final class SettableResponse implements MockedResponse {
     }
 
     @Override
+    public void addHeader(String name, String value) {
+        headers.put(name, value);
+    }
+
+    @Override
     public void sendError(int sc) {
         status = sc;
     }
