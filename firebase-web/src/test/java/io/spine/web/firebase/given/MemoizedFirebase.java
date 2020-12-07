@@ -55,10 +55,16 @@ public final class MemoizedFirebase implements FirebaseClient {
         this.writeLatency = latency;
     }
 
+    /**
+     * Creates a new instance with zero latency.
+     */
     public static MemoizedFirebase withNoLatency() {
         return withSimulatedLatency(Duration.ZERO);
     }
 
+    /**
+     * Creates a new instance with simulated {@code latency}.
+     */
     public static MemoizedFirebase withSimulatedLatency(Duration latency) {
         checkNotNull(latency);
         return new MemoizedFirebase(latency);
