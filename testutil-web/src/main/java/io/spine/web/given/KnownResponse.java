@@ -22,7 +22,6 @@ package io.spine.web.given;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.Immutable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.PrintWriter;
@@ -39,7 +38,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         is being created.
  *         See {@linkplain MemoizingResponse memoizing response} if mutability is required.
  */
-@Immutable
 public final class KnownResponse implements MockedResponse {
 
     private final ImmutableMap<String, String> headers;

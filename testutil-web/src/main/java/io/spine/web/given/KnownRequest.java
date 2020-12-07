@@ -23,7 +23,6 @@ package io.spine.web.given;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-import com.google.errorprone.annotations.Immutable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
@@ -45,7 +44,6 @@ import static java.util.Collections.emptyIterator;
  *         one do not care if anything may be adjusted in the request while the request
  *         is being processed.
  */
-@Immutable
 @SuppressWarnings("UnstableApiUsage") // we're OK using Guava's beta APIs
 public final class KnownRequest implements MockedRequest {
 
