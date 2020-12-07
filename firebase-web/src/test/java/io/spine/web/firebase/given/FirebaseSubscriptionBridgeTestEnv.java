@@ -36,17 +36,12 @@ import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.core.Responses.statusOk;
-import static org.mockito.Mockito.when;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
 public final class FirebaseSubscriptionBridgeTestEnv {
@@ -88,13 +83,6 @@ public final class FirebaseSubscriptionBridgeTestEnv {
                 .newBuilder()
                 .setStatus(statusOk())
                 .vBuild();
-    }
-
-    public static StringWriter mockWriter(ServletResponse response) throws IOException {
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-        return stringWriter;
     }
 
     public static Subscription newSubscription(Topic topic) {

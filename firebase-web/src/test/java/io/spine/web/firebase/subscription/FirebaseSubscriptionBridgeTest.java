@@ -28,6 +28,7 @@ import io.spine.core.Response;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.given.MemoizedFirebase;
 import io.spine.web.firebase.subscription.given.InMemFirebaseClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,9 +44,8 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newS
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newTarget;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.topicFactory;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
-@DisplayName("FirebaseSubscriptionBridge should")
+@DisplayName("`FirebaseSubscriptionBridge` should")
 class FirebaseSubscriptionBridgeTest {
 
     private FirebaseSubscriptionBridge bridge;
@@ -59,19 +59,19 @@ class FirebaseSubscriptionBridgeTest {
         topicFactory = topicFactory();
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Query Service set in Builder")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireQueryService() {
         FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
                 .newBuilder()
-                .setFirebaseClient(mock(FirebaseClient.class));
+                .setFirebaseClient(MemoizedFirebase.withNoLatency());
         assertThrows(IllegalStateException.class, builder::build);
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Firebase Client set in Builder")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
         SubscriptionService subscriptionService = SubscriptionService
                 .newBuilder()

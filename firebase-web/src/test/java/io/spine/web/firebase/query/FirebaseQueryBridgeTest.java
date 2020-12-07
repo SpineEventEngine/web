@@ -32,7 +32,6 @@ import io.spine.json.Json;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePaths;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
@@ -50,7 +49,6 @@ import java.util.Set;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 @DisplayName("FirebaseQueryBridge should")
 class FirebaseQueryBridgeTest {
@@ -71,7 +69,7 @@ class FirebaseQueryBridgeTest {
     void requireQueryService() {
         FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
                 .newBuilder()
-                .setFirebaseClient(mock(FirebaseClient.class));
+                .setFirebaseClient(firebaseClient);
         assertThrows(IllegalStateException.class, builder::build);
     }
 
