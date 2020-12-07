@@ -49,7 +49,7 @@ import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FirebaseQueryBridge should")
+@DisplayName("`FirebaseQueryBridge` should")
 class FirebaseQueryBridgeTest {
 
     private static final QueryFactory queryFactory =
@@ -58,7 +58,7 @@ class FirebaseQueryBridgeTest {
     private MemoizedFirebase firebaseClient;
 
     @BeforeEach
-    void setUp() {
+    void initClient() {
         firebaseClient = MemoizedFirebase.withNoLatency();
     }
 
@@ -72,9 +72,9 @@ class FirebaseQueryBridgeTest {
         assertThrows(IllegalStateException.class, builder::build);
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Firebase Client set in class Builder")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
         QueryService queryService = QueryService
                 .newBuilder()
