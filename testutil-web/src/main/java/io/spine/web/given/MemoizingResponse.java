@@ -30,9 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A mocked response whose {@code status} and {@code type} could be set.
+ * A mocked response that attempts to save all the actions done to it.
  */
-public final class SettableResponse implements MockedResponse {
+public final class MemoizingResponse implements MockedResponse {
 
     private final StringWriter writer = new StringWriter();
     private final Map<String, String> headers = new HashMap<>();

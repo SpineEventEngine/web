@@ -30,7 +30,7 @@ import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.client.command.TestCommandMessage;
 import io.spine.testing.logging.MuteLogging;
 import io.spine.web.command.given.DetachedCommandServlet;
-import io.spine.web.given.SettableResponse;
+import io.spine.web.given.MemoizingResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +84,7 @@ class CommandServletTest {
     @DisplayName("respond 400 to an invalid command")
     void testInvalidCommand() throws IOException {
         CommandServlet servlet = new DetachedCommandServlet();
-        SettableResponse response = new SettableResponse();
+        MemoizingResponse response = new MemoizingResponse();
         servlet.doPost(request(Time.currentTime()), response);
         assertThat(response.getStatus())
                 .isEqualTo(SC_BAD_REQUEST);

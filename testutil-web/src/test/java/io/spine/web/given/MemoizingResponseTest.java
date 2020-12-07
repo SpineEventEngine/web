@@ -28,8 +28,8 @@ import java.io.PrintWriter;
 import static com.google.common.truth.Truth.assertThat;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_GATEWAY;
 
-@DisplayName("`SettableResponse` should")
-class SettableResponseTest {
+@DisplayName("`MemoizingResponse` should")
+class MemoizingResponseTest {
 
     @Test
     @DisplayName("return set values")
@@ -37,7 +37,7 @@ class SettableResponseTest {
     void returnSetValues() {
         String headerName = "custom";
         String headerValue = "header";
-        SettableResponse response = new SettableResponse();
+        MemoizingResponse response = new MemoizingResponse();
         response.sendError(SC_BAD_GATEWAY);
         assertThat(response.getStatus())
                 .isEqualTo(SC_BAD_GATEWAY);

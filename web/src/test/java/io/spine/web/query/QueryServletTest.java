@@ -26,7 +26,7 @@ import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.logging.MuteLogging;
-import io.spine.web.given.SettableResponse;
+import io.spine.web.given.MemoizingResponse;
 import io.spine.web.query.given.QueryServletTestEnv.TestQueryServlet;
 import io.spine.web.test.Task;
 import io.spine.web.test.TaskId;
@@ -84,7 +84,7 @@ class QueryServletTest {
     @DisplayName("respond 400 to an invalid query")
     void testInvalidQuery() throws IOException {
         QueryServlet<Message> servlet = new TestQueryServlet();
-        SettableResponse response = new SettableResponse();
+        MemoizingResponse response = new MemoizingResponse();
         servlet.doPost(request(currentTime()), response);
         assertThat(response.getStatus())
                 .isEqualTo(SC_BAD_REQUEST);
