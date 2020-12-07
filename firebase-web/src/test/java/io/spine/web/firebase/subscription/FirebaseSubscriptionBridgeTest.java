@@ -27,7 +27,7 @@ import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
-import io.spine.web.firebase.given.MemoizedFirebase;
+import io.spine.web.firebase.given.MemoizingFirebase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class FirebaseSubscriptionBridgeTest {
     @BeforeEach
     void setUp() {
         SubscriptionServiceImplBase subscriptionService = new TestSubscriptionService();
-        bridge = newBridge(MemoizedFirebase.withNoLatency(), subscriptionService);
+        bridge = newBridge(MemoizingFirebase.withNoLatency(), subscriptionService);
         topicFactory = topicFactory();
     }
 
@@ -62,7 +62,7 @@ class FirebaseSubscriptionBridgeTest {
     void requireQueryService() {
         FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
                 .newBuilder()
-                .setFirebaseClient(MemoizedFirebase.withNoLatency());
+                .setFirebaseClient(MemoizingFirebase.withNoLatency());
         assertThrows(IllegalStateException.class, builder::build);
     }
 

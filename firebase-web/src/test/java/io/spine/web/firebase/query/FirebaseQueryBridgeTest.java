@@ -36,7 +36,7 @@ import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.given.BookId;
-import io.spine.web.firebase.given.MemoizedFirebase;
+import io.spine.web.firebase.given.MemoizingFirebase;
 import io.spine.web.given.TestQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,11 +55,11 @@ class FirebaseQueryBridgeTest {
     private static final QueryFactory queryFactory =
             new TestActorRequestFactory(FirebaseQueryBridgeTest.class).query();
 
-    private MemoizedFirebase firebaseClient;
+    private MemoizingFirebase firebaseClient;
 
     @BeforeEach
     void initClient() {
-        firebaseClient = MemoizedFirebase.withNoLatency();
+        firebaseClient = MemoizingFirebase.withNoLatency();
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.

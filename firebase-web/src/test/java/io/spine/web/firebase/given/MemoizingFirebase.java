@@ -44,30 +44,30 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>Supports having a custom write latency through {@linkplain #withSimulatedLatency(Duration)
  * setting} a particular write operations duration.
  */
-public final class MemoizedFirebase implements FirebaseClient {
+public final class MemoizingFirebase implements FirebaseClient {
 
     private final Map<NodePath, NodeValue> writes = new HashMap<>();
     private final Collection<NodePath> reads = new ArrayList<>();
 
     private final Duration writeLatency;
 
-    private MemoizedFirebase(Duration latency) {
+    private MemoizingFirebase(Duration latency) {
         this.writeLatency = latency;
     }
 
     /**
      * Creates a new instance with zero latency.
      */
-    public static MemoizedFirebase withNoLatency() {
+    public static MemoizingFirebase withNoLatency() {
         return withSimulatedLatency(Duration.ZERO);
     }
 
     /**
      * Creates a new instance with simulated {@code latency}.
      */
-    public static MemoizedFirebase withSimulatedLatency(Duration latency) {
+    public static MemoizingFirebase withSimulatedLatency(Duration latency) {
         checkNotNull(latency);
-        return new MemoizedFirebase(latency);
+        return new MemoizingFirebase(latency);
     }
 
     @Override

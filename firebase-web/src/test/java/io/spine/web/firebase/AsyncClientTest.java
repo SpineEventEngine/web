@@ -21,7 +21,7 @@
 package io.spine.web.firebase;
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import io.spine.web.firebase.given.MemoizedFirebase;
+import io.spine.web.firebase.given.MemoizingFirebase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 @DisplayName("`AsyncClient` should")
 class AsyncClientTest {
 
-    private MemoizedFirebase delegate;
+    private MemoizingFirebase delegate;
     private NodePath path;
     private ExecutorService executor;
     private Duration latency;
@@ -45,7 +45,7 @@ class AsyncClientTest {
     @BeforeEach
     void setUp() {
         latency = ofSeconds(2);
-        delegate = MemoizedFirebase.withSimulatedLatency(latency);
+        delegate = MemoizingFirebase.withSimulatedLatency(latency);
         path = NodePaths.of("some/kind/of/path");
         executor = newSingleThreadExecutor();
     }
