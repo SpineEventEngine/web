@@ -28,13 +28,13 @@ import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -47,7 +47,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 public final class MemoizedFirebase implements FirebaseClient {
 
     private final Map<NodePath, NodeValue> writes = new HashMap<>();
-    private final List<NodePath> reads = newArrayList();
+    private final Collection<NodePath> reads = new ArrayList<>();
 
     private final Duration writeLatency;
 
