@@ -27,9 +27,7 @@ import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
-import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.given.MemoizedFirebase;
-import io.spine.web.firebase.subscription.given.InMemFirebaseClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,8 +52,7 @@ class FirebaseSubscriptionBridgeTest {
     @BeforeEach
     void setUp() {
         SubscriptionServiceImplBase subscriptionService = new TestSubscriptionService();
-        FirebaseClient firebaseClient = new InMemFirebaseClient();
-        bridge = newBridge(firebaseClient, subscriptionService);
+        bridge = newBridge(MemoizedFirebase.withNoLatency(), subscriptionService);
         topicFactory = topicFactory();
     }
 
