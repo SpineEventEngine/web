@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * A mocked no-op servlet request that returns.
+ * A mocked no-op servlet request.
  *
  * @apiNote Some of the methods are marked as {@linkplain Deprecated deprecated} to avoid
  *         the deprecation warnings, as their {@code super} methods are marked as such.
