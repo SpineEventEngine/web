@@ -22,6 +22,7 @@ package io.spine.web.given;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.PrintWriter;
@@ -32,17 +33,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A mocked servlet response with pre-defined {@code writer}, {@code status} and {@code headers}.
  *
- * <p>In most cases this implementation should be sufficient enough for local tests.
+ * @implNote The response is effectively immutable and does not pay attention to any
+ *         modification attempts. Such a mocked implementation may be used for tests where
+ *         we do not care if anything may be adjusted in the response while the response
+ *         is being created.
+ *         See {@linkplain MemoizingResponse memoizing response} if mutability is required.
  */
-public final class FixedContentResponse implements MockedResponse {
+@Immutable
+public final class KnownResponse implements MockedResponse {
 
     private final ImmutableMap<String, String> headers;
     private final int status;
     private final Writer writer;
 
-    private FixedContentResponse(ImmutableMap<String, String> headers,
-                                 Writer writer,
-                                 int status) {
+    private KnownResponse(ImmutableMap<String, String> headers,
+                          Writer writer,
+                          int status) {
         this.headers = headers;
         this.writer = writer;
         this.status = status;
@@ -52,7 +58,7 @@ public final class FixedContentResponse implements MockedResponse {
      * Creates a new mocked response with specified {@code writer} and default
      * {@linkplain #SC_OK OK} status.
      */
-    public static FixedContentResponse create(Writer writer) {
+    public static KnownResponse create(Writer writer) {
         checkNotNull(writer);
         return create(writer, SC_OK);
     }
@@ -60,7 +66,7 @@ public final class FixedContentResponse implements MockedResponse {
     /**
      * Creates a new mocked response with specified {@code writer} and {@code status}.
      */
-    public static FixedContentResponse create(Writer writer, int status) {
+    public static KnownResponse create(Writer writer, int status) {
         checkNotNull(writer);
         return create(writer, status, ImmutableMap.of());
     }
@@ -69,12 +75,12 @@ public final class FixedContentResponse implements MockedResponse {
      * Creates a new mocked response with specified {@code writer}, {@code status}
      * and {@code headers}.
      */
-    public static FixedContentResponse create(Writer writer,
-                                              int status,
-                                              ImmutableMap<String, String> headers) {
+    public static KnownResponse create(Writer writer,
+                                       int status,
+                                       ImmutableMap<String, String> headers) {
         checkNotNull(writer);
         checkNotNull(headers);
-        return new FixedContentResponse(headers, writer, status);
+        return new KnownResponse(headers, writer, status);
     }
 
     @Override

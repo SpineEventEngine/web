@@ -31,6 +31,11 @@ import java.util.Set;
 
 /**
  * A mocked response that attempts to save all the actions done to it.
+ *
+ * @implNote The response mutates its state and holds the latest changes. Such an
+ *         implementation may be useful to verify that e.g. a particular error code was set
+ *         to the response or a particular content was written.
+ *         See {@linkplain KnownResponse known response} if an immutable implementation is required.
  */
 public final class MemoizingResponse implements MockedResponse {
 

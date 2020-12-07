@@ -30,14 +30,14 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("`FixedContentRequest` should")
-class FixedContentRequestTest {
+@DisplayName("`KnownRequest` should")
+class KnownRequestTest {
 
     @Test
     @DisplayName("not tolerate `null`s")
     void notTolerateNull() {
         NullPointerTester tester = new NullPointerTester();
-        tester.testAllPublicStaticMethods(FixedContentRequest.class);
+        tester.testAllPublicStaticMethods(KnownRequest.class);
     }
 
     @Test
@@ -49,7 +49,7 @@ class FixedContentRequestTest {
         String headerName = "custom";
         String headerValue = "header";
         ImmutableMap<String, String> headers = ImmutableMap.of(headerName, headerValue);
-        FixedContentRequest request = FixedContentRequest.create(text, type, headers);
+        KnownRequest request = KnownRequest.create(text, type, headers);
         assertThat(request.getContentLength())
                 .isEqualTo(text.length());
         assertThat(request.getContentLengthLong())

@@ -41,15 +41,15 @@ public final class Servlets {
     /**
      * Creates a new request with the supplied {@code content}.
      */
-    public static FixedContentRequest request(Message content) {
+    public static KnownRequest request(Message content) {
         String json = Json.toJson(content);
-        return FixedContentRequest.create(json, MediaType.JSON_UTF_8);
+        return KnownRequest.create(json, MediaType.JSON_UTF_8);
     }
 
     /**
      * Creates a new response with the supplied {@code writer}.
      */
     public static HttpServletResponse response(StringWriter writer) {
-        return FixedContentResponse.create(writer);
+        return KnownResponse.create(writer);
     }
 }

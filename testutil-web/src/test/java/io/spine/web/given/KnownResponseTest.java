@@ -32,14 +32,14 @@ import java.io.StringWriter;
 import static com.google.common.truth.Truth.assertThat;
 import static javax.servlet.http.HttpServletResponse.SC_ACCEPTED;
 
-@DisplayName("`FixedContentResponse` should")
-class FixedContentResponseTest {
+@DisplayName("`KnownResponse` should")
+class KnownResponseTest {
 
     @Test
     @DisplayName("not tolerate `null`s")
     void notTolerateNull() {
         NullPointerTester tester = new NullPointerTester();
-        tester.testAllPublicStaticMethods(FixedContentResponse.class);
+        tester.testAllPublicStaticMethods(KnownResponse.class);
     }
 
     @Test
@@ -50,7 +50,7 @@ class FixedContentResponseTest {
         String headerValue = "header";
         ImmutableMap<String, String> headers = ImmutableMap.of(headerName, headerValue);
         StringWriter writer = new StringWriter();
-        FixedContentResponse response = FixedContentResponse.create(writer, SC_ACCEPTED, headers);
+        KnownResponse response = KnownResponse.create(writer, SC_ACCEPTED, headers);
         assertThat(response.getStatus())
                 .isEqualTo(SC_ACCEPTED);
         assertThat(response.getHeader(headerName))

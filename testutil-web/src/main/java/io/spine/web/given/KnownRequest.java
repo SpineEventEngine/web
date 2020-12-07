@@ -23,6 +23,7 @@ package io.spine.web.given;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+import com.google.errorprone.annotations.Immutable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
@@ -39,10 +40,14 @@ import static java.util.Collections.emptyIterator;
 /**
  * A mocked servlet request with pre-defined {@code content}, {@code type} and {@code headers}.
  *
- * <p>In most cases this implementation should be sufficient enough for local tests.
+ * @implNote The request is effectively immutable and does not pay attention to any
+ *         modification attempts. Such a mocked implementation may be used for tests where
+ *         we do not care if anything may be adjusted in the request while the request
+ *         is being processed.
  */
+@Immutable
 @SuppressWarnings("UnstableApiUsage") // we're OK using Guava's beta APIs
-public final class FixedContentRequest implements MockedRequest {
+public final class KnownRequest implements MockedRequest {
 
     private static final String CONTENT_TYPE = "Content-Type";
 
@@ -50,9 +55,9 @@ public final class FixedContentRequest implements MockedRequest {
     private final byte[] content;
     private final MediaType type;
 
-    private FixedContentRequest(ImmutableMap<String, String> headers,
-                                byte[] content,
-                                MediaType type) {
+    private KnownRequest(ImmutableMap<String, String> headers,
+                         byte[] content,
+                         MediaType type) {
         this.headers = headers;
         this.content = content;
         this.type = type;
@@ -62,7 +67,7 @@ public final class FixedContentRequest implements MockedRequest {
      * Creates a new mocked request with specified {@code content} and default
      * {@linkplain MediaType#ANY_TYPE any} type.
      */
-    public static FixedContentRequest create(String content) {
+    public static KnownRequest create(String content) {
         checkNotNull(content);
         return create(content, MediaType.ANY_TYPE);
     }
@@ -70,7 +75,7 @@ public final class FixedContentRequest implements MockedRequest {
     /**
      * Creates a new mocked request with specified {@code content} and {@code type}.
      */
-    public static FixedContentRequest create(String content, MediaType type) {
+    public static KnownRequest create(String content, MediaType type) {
         checkNotNull(content);
         checkNotNull(type);
         return create(content, type, contentTypeHeader(type));
@@ -80,9 +85,9 @@ public final class FixedContentRequest implements MockedRequest {
      * Creates a new mocked request with specified {@code content}, {@code type}
      * and {@code headers}.
      */
-    public static FixedContentRequest create(String content,
-                                             MediaType type,
-                                             ImmutableMap<String, String> headers) {
+    public static KnownRequest create(String content,
+                                      MediaType type,
+                                      ImmutableMap<String, String> headers) {
         checkNotNull(content);
         checkNotNull(type);
         checkNotNull(headers);
@@ -93,13 +98,13 @@ public final class FixedContentRequest implements MockedRequest {
      * Creates a new mocked request with specified {@code content}, {@code type}
      * and {@code headers}.
      */
-    public static FixedContentRequest create(byte[] content,
-                                             MediaType type,
-                                             ImmutableMap<String, String> headers) {
+    public static KnownRequest create(byte[] content,
+                                      MediaType type,
+                                      ImmutableMap<String, String> headers) {
         checkNotNull(content);
         checkNotNull(type);
         checkNotNull(headers);
-        return new FixedContentRequest(headers, content, type);
+        return new KnownRequest(headers, content, type);
     }
 
     private static ImmutableMap<String, String> contentTypeHeader(MediaType type) {
