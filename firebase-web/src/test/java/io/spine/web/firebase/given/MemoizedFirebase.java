@@ -36,6 +36,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A Firebase client that memoizes read and write operations.
@@ -92,11 +93,33 @@ public final class MemoizedFirebase implements FirebaseClient {
         writes.remove(nodePath);
     }
 
+    /**
+     * Returns a copy of all made read operations.
+     */
     public ImmutableList<NodePath> reads() {
         return ImmutableList.copyOf(reads);
     }
 
+    /**
+     * Returns a copy of all made write operation.
+     */
     public ImmutableMap<NodePath, NodeValue> writes() {
         return ImmutableMap.copyOf(writes);
+    }
+
+    /**
+     * Returns a {@code NodeValue} written to a specific {@code path}.
+     *
+     * @throws IllegalStateException
+     *         if no value is present for the path.
+     */
+    public NodeValue valueFor(NodePath path) {
+        NodeValue result = writes.get(path);
+        if (result == null) {
+            throw newIllegalStateException(
+                    "A value is expected to be present at path `%s`.", path.getValue()
+            );
+        }
+        return result;
     }
 }
