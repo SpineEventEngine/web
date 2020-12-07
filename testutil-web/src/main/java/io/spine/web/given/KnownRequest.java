@@ -55,9 +55,7 @@ public final class KnownRequest implements MockedRequest {
     private final byte[] content;
     private final MediaType type;
 
-    private KnownRequest(ImmutableMap<String, String> headers,
-                         byte[] content,
-                         MediaType type) {
+    private KnownRequest(ImmutableMap<String, String> headers, byte[] content, MediaType type) {
         this.headers = headers;
         this.content = content;
         this.type = type;

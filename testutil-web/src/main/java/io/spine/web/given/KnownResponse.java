@@ -46,9 +46,7 @@ public final class KnownResponse implements MockedResponse {
     private final int status;
     private final Writer writer;
 
-    private KnownResponse(ImmutableMap<String, String> headers,
-                          Writer writer,
-                          int status) {
+    private KnownResponse(ImmutableMap<String, String> headers, Writer writer, int status) {
         this.headers = headers;
         this.writer = writer;
         this.status = status;
