@@ -117,7 +117,7 @@ public final class MemoizingFirebase implements FirebaseClient {
      * Returns a {@code NodeValue} written to a specific {@code path}.
      *
      * @throws IllegalStateException
-     *         if no value is present for the path
+     *         if no value is present for the {@code path}
      */
     public NodeValue valueFor(NodePath path) {
         NodeValue result = writes.get(path);
