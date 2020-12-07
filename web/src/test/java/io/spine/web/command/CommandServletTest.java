@@ -41,11 +41,11 @@ import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`CommandServlet` should")
@@ -75,7 +75,8 @@ class CommandServletTest {
         Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);
-        assertEquals(command.getId(), AnyPacker.unpack(ack.getMessageId()));
+        assertThat(command.getId())
+                .isEqualTo(AnyPacker.unpack(ack.getMessageId()));
     }
 
     @MuteLogging
@@ -85,6 +86,7 @@ class CommandServletTest {
         CommandServlet servlet = new DetachedCommandServlet();
         SettableResponse response = new SettableResponse();
         servlet.doPost(request(Time.currentTime()), response);
-        assertThat(response.getStatus()).isEqualTo(SC_BAD_REQUEST);
+        assertThat(response.getStatus())
+                .isEqualTo(SC_BAD_REQUEST);
     }
 }

@@ -41,9 +41,11 @@ class FutureObserverTest {
         FutureObserver<String> observer = FutureObserver.create();
         String value = "hello";
         observer.onNext(value);
-        assertResult(observer).isEqualTo(value);
+        assertResult(observer)
+                .isEqualTo(value);
         observer.onCompleted();
-        assertResult(observer).isEqualTo(value);
+        assertResult(observer)
+                .isEqualTo(value);
     }
 
     @Test
@@ -51,7 +53,8 @@ class FutureObserverTest {
     void testDefaultNull() {
         FutureObserver<String> observer = FutureObserver.create();
         observer.onCompleted();
-        assertResult(observer).isNull();
+        assertResult(observer)
+                .isNull();
     }
 
     @Test
@@ -60,7 +63,8 @@ class FutureObserverTest {
         String defaultValue = "Aquaman";
         FutureObserver<String> observer = FutureObserver.withDefault(defaultValue);
         observer.onCompleted();
-        assertResult(observer).isEqualTo(defaultValue);
+        assertResult(observer)
+                .isEqualTo(defaultValue);
     }
 
     @Test
@@ -77,15 +81,17 @@ class FutureObserverTest {
         FutureObserver<String> observer = FutureObserver.create();
         String value = "Titanic";
         observer.onNext(value);
-        assertEquals(value, observer.toFuture()
-                                    .join());
+        assertResult(observer)
+                .isEqualTo(value);
+
         observer.onError(new IcebergCollisionException());
         Throwable thrown = assertThrows(
                 CompletionException.class,
                 () -> observerResult(observer)
         );
         Throwable rootCause = getRootCause(thrown);
-        assertThat(rootCause).isInstanceOf(IcebergCollisionException.class);
+        assertThat(rootCause)
+                .isInstanceOf(IcebergCollisionException.class);
     }
 
     private static StringSubject assertResult(FutureObserver<String> observer) {

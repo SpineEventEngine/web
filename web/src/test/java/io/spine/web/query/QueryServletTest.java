@@ -20,7 +20,6 @@
 
 package io.spine.web.query;
 
-import com.google.common.truth.Truth;
 import com.google.protobuf.Message;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Time.currentTime;
 import static io.spine.web.given.Servlets.request;
@@ -86,7 +86,7 @@ class QueryServletTest {
         QueryServlet<Message> servlet = new TestQueryServlet();
         SettableResponse response = new SettableResponse();
         servlet.doPost(request(currentTime()), response);
-        Truth.assertThat(response.getStatus())
-             .isEqualTo(SC_BAD_REQUEST);
+        assertThat(response.getStatus())
+                .isEqualTo(SC_BAD_REQUEST);
     }
 }
