@@ -34,7 +34,7 @@ import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static java.time.Duration.ofSeconds;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
-@DisplayName("Async Firebase client should")
+@DisplayName("`AsyncClient` should")
 class AsyncClientTest {
 
     private MemoizedFirebase delegate;
@@ -56,7 +56,8 @@ class AsyncClientTest {
     void readDirectly() {
         AsyncClient asyncClient = new AsyncClient(delegate);
         asyncClient.fetchNode(path);
-        assertThat(delegate.reads()).contains(path);
+        assertThat(delegate.reads())
+                .contains(path);
     }
 
     @Test
@@ -78,14 +79,17 @@ class AsyncClientTest {
     void allowDirectExecutor() {
         AsyncClient asyncClient = new AsyncClient(delegate, directExecutor());
         asyncClient.create(path, NodeValue.empty());
-        assertThat(delegate.writes()).containsKey(path);
+        assertThat(delegate.writes())
+                .containsKey(path);
     }
 
     private void checkAsync(AsyncClient asyncClient) {
         asyncClient.update(path, NodeValue.empty());
-        assertThat(delegate.writes()).doesNotContainKey(path);
+        assertThat(delegate.writes())
+                .doesNotContainKey(path);
         Duration surefireTime = latency.plusSeconds(1);
         Uninterruptibles.sleepUninterruptibly(surefireTime);
-        assertThat(delegate.writes()).containsKey(path);
+        assertThat(delegate.writes())
+                .containsKey(path);
     }
 }

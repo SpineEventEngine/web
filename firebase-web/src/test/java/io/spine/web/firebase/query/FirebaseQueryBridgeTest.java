@@ -21,7 +21,6 @@
 package io.spine.web.firebase.query;
 
 import com.google.common.collect.Iterators;
-import com.google.common.truth.Truth;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.protobuf.Message;
@@ -79,8 +78,7 @@ class FirebaseQueryBridgeTest {
     void requireFirebaseClient() {
         QueryService queryService = QueryService
                 .newBuilder()
-                .add(BoundedContextBuilder.assumingTests()
-                                          .build())
+                .add(BoundedContextBuilder.assumingTests().build())
                 .build();
         FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
                 .newBuilder()
@@ -99,7 +97,7 @@ class FirebaseQueryBridgeTest {
                 .build();
         Query query = queryFactory.all(Event.class);
         FirebaseQueryResponse response = bridge.send(query);
-        Truth.assertThat(response)
+        assertThat(response)
              .isNotNull();
     }
 
@@ -125,7 +123,8 @@ class FirebaseQueryBridgeTest {
         FirebaseQueryResponse response = bridge.send(query);
         NodeValue nodeValue = firebaseClient.valueFor(NodePaths.of(response.getPath()));
         Book actual = firstFieldOf(nodeValue, Book.class);
-        assertThat(actual).isEqualTo(book);
+        assertThat(actual)
+                .isEqualTo(book);
     }
 
     /**

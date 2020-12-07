@@ -47,14 +47,13 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.web.firebase.rest.HttpClientMockFactory.mockHttpClient;
 import static io.spine.web.firebase.rest.HttpClientMockFactory.noOpClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`RemoteDatabaseClient` should")
 class RemoteDatabaseClientTest {
@@ -113,7 +112,8 @@ class RemoteDatabaseClientTest {
         FirebaseClient client = new RemoteDatabaseClient(database, NODE_FACTORY, httpClient);
 
         Optional<NodeValue> result = client.fetchNode(path);
-        assertTrue(result.isPresent());
+        assertThat(result)
+                .isPresent();
         NodeValue value = result.get();
         String contentString = value.underlyingJson()
                                     .toString();
@@ -127,15 +127,18 @@ class RemoteDatabaseClientTest {
         FirebaseClient client = new RemoteDatabaseClient(database, NODE_FACTORY, httpClient);
 
         Optional<NodeValue> result = client.fetchNode(path);
-        assertFalse(result.isPresent());
+        assertThat(result)
+                .isPresent();
     }
 
     @Test
     @DisplayName("store data via PUT method when node is not present")
     void storeNewViaPut() {
         HttpClient httpClient = mockHttpClient(NULL_ENTRY, (method, url) -> {
-            assertThat(method).isEqualTo(HttpMethods.PUT);
-            assertThat(url).isEqualTo(EXPECTED_NODE_URL.build());
+            assertThat(method)
+                    .isEqualTo(HttpMethods.PUT);
+            assertThat(url)
+                    .isEqualTo(EXPECTED_NODE_URL.build());
         });
         FirebaseClient client = new RemoteDatabaseClient(database, NODE_FACTORY, httpClient);
 
@@ -146,8 +149,10 @@ class RemoteDatabaseClientTest {
     @DisplayName("store data via PATCH method when node already exists")
     void updateExistingViaPatch() {
         HttpClient httpClient = mockHttpClient(NULL_ENTRY, (method, url) -> {
-            assertThat(method).isEqualTo(HttpMethods.PATCH);
-            assertThat(url).isEqualTo(EXPECTED_NODE_URL.build());
+            assertThat(method)
+                    .isEqualTo(HttpMethods.PATCH);
+            assertThat(url)
+                    .isEqualTo(EXPECTED_NODE_URL.build());
         });
         FirebaseClient client = new RemoteDatabaseClient(database, NODE_FACTORY, httpClient);
 

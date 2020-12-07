@@ -89,7 +89,8 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
                 .instance()
                 .configureDeployment(() -> DeploymentType.APPENGINE_CLOUD);
         FirebaseClient client = FirebaseClientFactory.remoteClient(database);
-        assertThat(client).isNotNull();
+        assertThat(client)
+                .isNotNull();
     }
 
     @Test
@@ -99,6 +100,7 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
                 .instance()
                 .configureDeployment(() -> DeploymentType.STANDALONE);
         FirebaseClient client = FirebaseClientFactory.remoteClient(database);
-        assertThat(client).isNotNull();
+        assertThat(client)
+                .isNotNull();
     }
 }

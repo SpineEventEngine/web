@@ -87,7 +87,8 @@ class FirebaseSubscriptionBridgeTest {
         FirebaseSubscription subscription = bridge.subscribe(topic);
         Response keptUp = bridge.keepUp(subscription.getSubscription());
         Response responseMessage = newResponse();
-        assertThat(keptUp).isEqualTo(responseMessage);
+        assertThat(keptUp)
+                .isEqualTo(responseMessage);
     }
 
     @Test
@@ -96,7 +97,8 @@ class FirebaseSubscriptionBridgeTest {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
         Response keptUp = bridge.keepUp(subscription);
-        assertThat(keptUp.getStatus().getStatusCase()).isEqualTo(ERROR);
+        assertThat(keptUp.getStatus().getStatusCase())
+                .isEqualTo(ERROR);
     }
 
     @Test
@@ -110,7 +112,8 @@ class FirebaseSubscriptionBridgeTest {
         Response canceled = bridge.cancel(subscription);
         Response responseMessage = newResponse();
 
-        assertThat(canceled).isEqualTo(responseMessage);
+        assertThat(canceled)
+                .isEqualTo(responseMessage);
     }
 
     @Test
@@ -119,7 +122,8 @@ class FirebaseSubscriptionBridgeTest {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
         Response canceled = bridge.cancel(subscription);
-        assertThat(canceled.getStatus().getStatusCase()).isEqualTo(ERROR);
+        assertThat(canceled.getStatus().getStatusCase())
+                .isEqualTo(ERROR);
     }
 
     @Test
@@ -127,11 +131,16 @@ class FirebaseSubscriptionBridgeTest {
     void failDoubleCancellation() {
         Topic topic = topicFactory.forTarget(newTarget());
         FirebaseSubscription subscriptionResult = bridge.subscribe(topic);
-        assertThat(subscriptionResult).isNotNull();
+        assertThat(subscriptionResult)
+                .isNotNull();
+
         Response canceled = bridge.cancel(subscriptionResult.getSubscription());
-        assertThat(canceled.getStatus().getStatusCase()).isEqualTo(OK);
+        assertThat(canceled.getStatus().getStatusCase())
+                .isEqualTo(OK);
+
         Response canceledAgain = bridge.cancel(subscriptionResult.getSubscription());
-        assertThat(canceledAgain.getStatus().getStatusCase()).isEqualTo(ERROR);
+        assertThat(canceledAgain.getStatus().getStatusCase())
+                .isEqualTo(ERROR);
     }
 
     @Test
@@ -141,7 +150,8 @@ class FirebaseSubscriptionBridgeTest {
 
         FirebaseSubscription firebaseSubscription = bridge.subscribe(topic);
         Subscription subscription = firebaseSubscription.getSubscription();
-        assertThat(subscription.getTopic()).isEqualTo(topic);
+        assertThat(subscription.getTopic())
+                .isEqualTo(topic);
         assertSubscriptionPointsToFirebase(firebaseSubscription.getNodePath(), topic);
     }
 }

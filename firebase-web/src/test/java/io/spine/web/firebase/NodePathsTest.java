@@ -21,10 +21,12 @@
 package io.spine.web.firebase;
 
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("`NodePaths` should")
 class NodePathsTest extends UtilityClassTest<NodePaths> {
 
     NodePathsTest() {
@@ -32,12 +34,13 @@ class NodePathsTest extends UtilityClassTest<NodePaths> {
     }
 
     @Test
+    @DisplayName("create a valid `NodePath` message")
     void createsNodePath() {
         String testPath = "test-path";
         NodePath expected = NodePath
                 .newBuilder()
                 .setValue(testPath)
-                .build();
+                .vBuild();
         assertEquals(expected, NodePaths.of(testPath));
     }
 }
