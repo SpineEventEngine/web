@@ -122,7 +122,6 @@ subprojects {
 
         testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
         testImplementation(Deps.test.guavaTestlib)
-        testImplementation(Deps.test.mockito)
         Deps.test.junit5Api.forEach { testImplementation(it) }
         Deps.test.truth.forEach { testImplementation(it) }
         testRuntimeOnly(Deps.test.junit5Runner)
