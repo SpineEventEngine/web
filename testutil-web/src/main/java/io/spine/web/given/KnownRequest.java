@@ -42,7 +42,7 @@ import static java.util.Collections.emptyIterator;
  *
  * @implNote The request is effectively immutable and does not pay attention to any
  *         modification attempts. Such a mocked implementation may be used for tests where
- *         we do not care if anything may be adjusted in the request while the request
+ *         one do not care if anything may be adjusted in the request while the request
  *         is being processed.
  */
 @Immutable

@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @implNote The response is effectively immutable and does not pay attention to any
  *         modification attempts. Such a mocked implementation may be used for tests where
- *         we do not care if anything may be adjusted in the response while the response
+ *         one do not care if anything may be adjusted in the response while the response
  *         is being created.
  *         See {@linkplain MemoizingResponse memoizing response} if mutability is required.
  */
