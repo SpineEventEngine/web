@@ -21,6 +21,7 @@ import java.util.Locale;
  * @apiNote Some of the methods are marked as {@linkplain Deprecated deprecated} to avoid
  *         the deprecation warnings, as their {@code super} methods are marked as such.
  */
+@SuppressWarnings("PMD.UncommentedEmptyMethodBody") // default implementations are empty on purpose.
 public interface MockedResponse extends HttpServletResponse {
 
     @Override
