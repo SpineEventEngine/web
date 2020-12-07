@@ -59,20 +59,23 @@ final class HttpClientMockFactory {
     /**
      * Creates an {@code HttpClient} mock which returns the specified {@code content}
      * on every request and uses supplied {@code observer} while building requests.
+     *
+     * <p>The observer is called by the underlying {@code HttpRequestFactory} whenever a new
+     * HTTP request is being built.
      */
-    static HttpClient mockHttpClient(String content, RequestObserver observer) {
+    static HttpClient mockHttpClient(String content, HttpRequestObserver observer) {
         return HttpClient.using(mockRequestFactory(content, observer));
     }
 
     private static HttpRequestFactory
-    mockRequestFactory(String content, RequestObserver observer) {
+    mockRequestFactory(String content, HttpRequestObserver observer) {
         HttpTransport transportMock = mockHttpTransport(content, observer);
         HttpRequestFactory requestFactoryMock = transportMock.createRequestFactory();
         return requestFactoryMock;
     }
 
     private static HttpTransport
-    mockHttpTransport(String content, RequestObserver observer) {
+    mockHttpTransport(String content, HttpRequestObserver observer) {
         final MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
         response.setContent(content);
         return new MockHttpTransport() {
@@ -114,15 +117,20 @@ final class HttpClientMockFactory {
     }
 
     /**
-     * Observes built HTTP requests.
+     * An observer that is called by the underlying
+     * {@linkplain #mockHttpTransport(String, HttpRequestObserver) transport} whenever a request
+     * is being built.
+     *
+     * @implNote The observer allows the caller to sneak-peak into the request creation
+     *         process and verify that a particular request is being built.
      */
-    interface RequestObserver {
+    interface HttpRequestObserver {
 
         /**
          * A callback that is executed whenever an HTTP request is built.
          *
          * @param method
-         *         the HTTP method being used
+         *         the HTTP method being used to build a request
          * @param url
          *         the request URL
          */
