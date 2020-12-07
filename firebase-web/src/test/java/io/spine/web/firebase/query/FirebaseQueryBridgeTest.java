@@ -133,7 +133,7 @@ class FirebaseQueryBridgeTest {
      * <p>The node has a single randomized field with the field value being a serialized
      * processed message.
      *
-     * @implNote the {@code nodeValue} holds data as a JSON primitive string (i.e. an
+     * @implNote The {@code nodeValue} holds data as a JSON primitive string (i.e. an
      *         escaped string that actually holds a JSON object), thus we're forced to parse
      *         the string into a JSON object first and then convert it back to a string.
      */
