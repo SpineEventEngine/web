@@ -20,13 +20,14 @@
 
 package io.spine.web.firebase;
 
+import io.spine.net.Urls;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
-@DisplayName("DatabaseUrls should")
+@DisplayName("`DatabaseUrls` should")
 class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
 
     private static final String VALID_URL = "https://spine-dev.appspot.com/";
@@ -39,7 +40,7 @@ class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
     @DisplayName("be successfully created from valid URL")
     void acceptValidUrl() {
         DatabaseUrl url = DatabaseUrls.from(VALID_URL);
-        assertEquals(VALID_URL, url.getUrl()
-                                   .getSpec());
+        assertThat(url.getUrl())
+                .isEqualTo(Urls.create(VALID_URL));
     }
 }

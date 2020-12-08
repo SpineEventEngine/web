@@ -22,25 +22,18 @@ package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.LowLevelHttpRequest;
-import com.google.api.client.http.LowLevelHttpResponse;
-import com.google.api.client.testing.http.MockHttpTransport;
-import com.google.api.client.testing.http.MockLowLevelHttpRequest;
-import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static io.spine.web.firebase.rest.HttpClientMockFactory.mockHttpClient;
+import static io.spine.web.firebase.rest.HttpClientMockFactory.throwingClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("`HttpClient` should")
 @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Calling methods to throw.
-@DisplayName("HttpClient should")
 class HttpClientTest {
 
     private static final GenericUrl URL = new GenericUrl("https://localhost:8080");
@@ -50,8 +43,7 @@ class HttpClientTest {
     @Test
     @DisplayName("execute GET request")
     void executeGetRequest() {
-        HttpRequestFactory transport = mockRequestFactory(RESPONSE);
-        HttpClient requestExecutor = HttpClient.using(transport);
+        HttpClient requestExecutor = mockHttpClient(RESPONSE);
         String content = requestExecutor.get(URL);
         assertEquals(RESPONSE, content);
     }
@@ -59,16 +51,14 @@ class HttpClientTest {
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on GET request")
     void throwIfErrorOnGet() {
-        HttpRequestFactory transport = throwingRequestFactory();
-        HttpClient requestExecutor = HttpClient.using(transport);
+        HttpClient requestExecutor = throwingClient();
         assertThrows(RequestToFirebaseFailedException.class, () -> requestExecutor.get(URL));
     }
 
     @Test
     @DisplayName("execute PUT request")
     void executePutRequest() {
-        HttpRequestFactory transport = mockRequestFactory(RESPONSE);
-        HttpClient requestExecutor = HttpClient.using(transport);
+        HttpClient requestExecutor = mockHttpClient(RESPONSE);
         String content = requestExecutor.put(URL, CONTENT);
         assertEquals(RESPONSE, content);
     }
@@ -76,8 +66,7 @@ class HttpClientTest {
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PUT request")
     void throwIfErrorOnPut() {
-        HttpRequestFactory transport = throwingRequestFactory();
-        HttpClient requestExecutor = HttpClient.using(transport);
+        HttpClient requestExecutor = throwingClient();
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.put(URL, CONTENT));
     }
@@ -85,8 +74,7 @@ class HttpClientTest {
     @Test
     @DisplayName("execute PATCH request")
     void executePatchRequest() {
-        HttpRequestFactory transport = mockRequestFactory(RESPONSE);
-        HttpClient requestExecutor = HttpClient.using(transport);
+        HttpClient requestExecutor = mockHttpClient(RESPONSE);
         String content = requestExecutor.patch(URL, CONTENT);
         assertEquals(RESPONSE, content);
     }
@@ -94,55 +82,8 @@ class HttpClientTest {
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PATCH request")
     void throwIfErrorOnPatch() {
-        HttpRequestFactory transport = throwingRequestFactory();
-        HttpClient requestExecutor = HttpClient.using(transport);
+        HttpClient requestExecutor = throwingClient();
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.patch(URL, CONTENT));
-    }
-
-    /**
-     * Returns an {@code HttpRequestFactory} mock which returns the specified content on every
-     * request.
-     */
-    private static HttpRequestFactory mockRequestFactory(String content) {
-        HttpTransport transportMock = mockHttpTransport(content);
-        HttpRequestFactory requestFactoryMock = transportMock.createRequestFactory();
-        return requestFactoryMock;
-    }
-
-    /**
-     * Returns an {@code HttpRequestFactory} mock which throws {@link java.io.IOException} on every
-     * request.
-     */
-    private static HttpRequestFactory throwingRequestFactory() {
-        HttpRequestFactory result = throwingHttpTransport().createRequestFactory();
-        return result;
-    }
-
-    private static HttpTransport mockHttpTransport(String content) {
-        return new MockHttpTransport() {
-            @Override
-            public LowLevelHttpRequest
-            buildRequest(String method, String url) {
-                return new MockLowLevelHttpRequest() {
-                    @Override
-                    public LowLevelHttpResponse execute() {
-                        MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-                        response.setContent(content);
-                        return response;
-                    }
-                };
-            }
-        };
-    }
-
-    private static MockHttpTransport throwingHttpTransport() {
-        return new MockHttpTransport() {
-            @Override
-            public LowLevelHttpRequest
-            buildRequest(String method, String url) throws IOException {
-                throw new IOException("Intended exception");
-            }
-        };
     }
 }

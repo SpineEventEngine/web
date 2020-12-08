@@ -20,19 +20,12 @@
 
 package io.spine.web.given;
 
+import com.google.common.net.MediaType;
 import com.google.protobuf.Message;
 import io.spine.json.Json;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * The factory of mock servlet API objects, such as requests and responses.
@@ -45,16 +38,18 @@ public final class Servlets {
     private Servlets() {
     }
 
-    public static HttpServletRequest request(Message contents) throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        String content = Json.toJson(contents);
-        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(content)));
-        return request;
+    /**
+     * Creates a new request with the supplied {@code content}.
+     */
+    public static KnownRequest request(Message content) {
+        String json = Json.toJson(content);
+        return KnownRequest.create(json, MediaType.JSON_UTF_8);
     }
 
-    public static HttpServletResponse response(StringWriter writer) throws IOException {
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        when(response.getWriter()).thenReturn(new PrintWriter(writer));
-        return response;
+    /**
+     * Creates a new response with the supplied {@code writer}.
+     */
+    public static HttpServletResponse response(StringWriter writer) {
+        return KnownResponse.create(writer);
     }
 }

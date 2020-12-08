@@ -20,46 +20,46 @@
 
 package io.spine.web.firebase.query;
 
+import com.google.common.collect.Iterators;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.protobuf.Message;
 import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.core.Event;
+import io.spine.json.Json;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.web.firebase.FirebaseClient;
+import io.spine.web.firebase.NodePaths;
+import io.spine.web.firebase.NodeValue;
+import io.spine.web.firebase.StoredJson;
 import io.spine.web.firebase.given.Book;
 import io.spine.web.firebase.given.BookId;
-import io.spine.web.given.TestQueryService;
-import io.spine.web.firebase.subscription.given.HasChildren;
+import io.spine.web.firebase.given.MemoizingFirebase;
 import io.spine.web.given.TestQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.json.Json.toCompactJson;
-import static io.spine.web.firebase.subscription.given.HasChildren.anyKey;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-@DisplayName("FirebaseQueryBridge should")
+@DisplayName("`FirebaseQueryBridge` should")
 class FirebaseQueryBridgeTest {
 
     private static final QueryFactory queryFactory =
             new TestActorRequestFactory(FirebaseQueryBridgeTest.class).query();
 
-    private FirebaseClient firebaseClient;
+    private MemoizingFirebase firebaseClient;
 
     @BeforeEach
-    void setUp() {
-        firebaseClient = mock(FirebaseClient.class);
+    void initClient() {
+        firebaseClient = MemoizingFirebase.withNoLatency();
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
@@ -68,13 +68,13 @@ class FirebaseQueryBridgeTest {
     void requireQueryService() {
         FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
                 .newBuilder()
-                .setFirebaseClient(mock(FirebaseClient.class));
+                .setFirebaseClient(firebaseClient);
         assertThrows(IllegalStateException.class, builder::build);
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Firebase Client set in class Builder")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
         QueryService queryService = QueryService
                 .newBuilder()
@@ -90,13 +90,15 @@ class FirebaseQueryBridgeTest {
     @DisplayName("produce a database path for the given query results")
     void testMediate() {
         TestQueryService queryService = new TestQueryService();
-        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                        .setQueryService(queryService)
-                                                        .setFirebaseClient(firebaseClient)
-                                                        .build();
+        FirebaseQueryBridge bridge = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(firebaseClient)
+                .build();
         Query query = queryFactory.all(Event.class);
         FirebaseQueryResponse response = bridge.send(query);
-        assertThat(response).isNotNull();
+        assertThat(response)
+             .isNotNull();
     }
 
     @Test
@@ -112,15 +114,39 @@ class FirebaseQueryBridgeTest {
                 .setName(newUuid())
                 .build();
         TestQueryService queryService = new TestQueryService(book);
-        FirebaseQueryBridge bridge = FirebaseQueryBridge.newBuilder()
-                                                        .setQueryService(queryService)
-                                                        .setFirebaseClient(firebaseClient)
-                                                        .build();
+        FirebaseQueryBridge bridge = FirebaseQueryBridge
+                .newBuilder()
+                .setQueryService(queryService)
+                .setFirebaseClient(firebaseClient)
+                .build();
         Query query = queryFactory.all(Book.class);
-        bridge.send(query);
+        FirebaseQueryResponse response = bridge.send(query);
+        NodeValue nodeValue = firebaseClient.valueFor(NodePaths.of(response.getPath()));
+        Book actual = firstFieldOf(nodeValue, Book.class);
+        assertThat(actual)
+                .isEqualTo(book);
+    }
 
-        Map<String, String> expected = new HashMap<>();
-        expected.put(anyKey(), toCompactJson(book));
-        verify(firebaseClient).create(any(), argThat(new HasChildren(expected)));
+    /**
+     * Returns the {@code message} stored in the first JSON element of the {@code nodeValue}.
+     *
+     * <p>The node has a single randomized field with the field value being a serialized
+     * processed message.
+     *
+     * @implNote The {@code nodeValue} holds data as a JSON primitive string (i.e. an
+     *         escaped string that actually holds a JSON object), thus we're forced to parse
+     *         the string into a JSON object first and then convert it back to a string.
+     */
+    private static <T extends Message> T firstFieldOf(NodeValue nodeValue, Class<T> message) {
+        JsonObject json = nodeValue.underlyingJson();
+        Set<Map.Entry<String, JsonElement>> entries = json.entrySet();
+        JsonElement value = Iterators
+                .getOnlyElement(entries.iterator())
+                .getValue();
+        String messageJson = StoredJson
+                .from(value.getAsString())
+                .asJsonObject()
+                .toString();
+        return Json.fromJson(messageJson, message);
     }
 }

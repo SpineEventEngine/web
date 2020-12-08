@@ -20,19 +20,19 @@
 
 package io.spine.web.future;
 
+import com.google.common.truth.StringSubject;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Throwables.getRootCause;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FutureObserver should")
+@DisplayName("`FutureObserver` should")
 class FutureObserverTest {
 
     @Test
@@ -41,9 +41,11 @@ class FutureObserverTest {
         FutureObserver<String> observer = FutureObserver.create();
         String value = "hello";
         observer.onNext(value);
-        assertEquals(value, observer.toFuture().join());
+        assertResult(observer)
+                .isEqualTo(value);
         observer.onCompleted();
-        assertEquals(value, observer.toFuture().join());
+        assertResult(observer)
+                .isEqualTo(value);
     }
 
     @Test
@@ -51,7 +53,8 @@ class FutureObserverTest {
     void testDefaultNull() {
         FutureObserver<String> observer = FutureObserver.create();
         observer.onCompleted();
-        assertNull(observer.toFuture().join());
+        assertResult(observer)
+                .isNull();
     }
 
     @Test
@@ -60,7 +63,8 @@ class FutureObserverTest {
         String defaultValue = "Aquaman";
         FutureObserver<String> observer = FutureObserver.withDefault(defaultValue);
         observer.onCompleted();
-        assertEquals(defaultValue, observer.toFuture().join());
+        assertResult(observer)
+                .isEqualTo(defaultValue);
     }
 
     @Test
@@ -77,13 +81,28 @@ class FutureObserverTest {
         FutureObserver<String> observer = FutureObserver.create();
         String value = "Titanic";
         observer.onNext(value);
-        assertEquals(value, observer.toFuture().join());
+        assertResult(observer)
+                .isEqualTo(value);
+
         observer.onError(new IcebergCollisionException());
-        Throwable thrown = assertThrows(CompletionException.class,
-                                        () -> observer.toFuture()
-                                                      .join());
+        Throwable thrown = assertThrows(
+                CompletionException.class,
+                () -> observerResult(observer)
+        );
         Throwable rootCause = getRootCause(thrown);
-        assertThat(rootCause, instanceOf(IcebergCollisionException.class));
+        assertThat(rootCause)
+                .isInstanceOf(IcebergCollisionException.class);
+    }
+
+    private static StringSubject assertResult(FutureObserver<String> observer) {
+        return assertThat(observerResult(observer));
+    }
+
+    @CanIgnoreReturnValue
+    private static <T> T observerResult(FutureObserver<T> observer) {
+        return observer
+                .toFuture()
+                .join();
     }
 
     /**
@@ -92,6 +111,7 @@ class FutureObserverTest {
      * <p>This exception type exists in order to uniquely flag an error origin.
      */
     private static final class IcebergCollisionException extends Exception {
+
         private static final long serialVersionUID = 0L;
     }
 }

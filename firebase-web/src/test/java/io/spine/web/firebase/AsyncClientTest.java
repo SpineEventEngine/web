@@ -21,7 +21,7 @@
 package io.spine.web.firebase;
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import io.spine.web.firebase.given.TestFirebaseClient;
+import io.spine.web.firebase.given.MemoizingFirebase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,10 +34,10 @@ import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static java.time.Duration.ofSeconds;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
-@DisplayName("Async Firebase client should")
+@DisplayName("`AsyncClient` should")
 class AsyncClientTest {
 
-    private TestFirebaseClient delegate;
+    private MemoizingFirebase delegate;
     private NodePath path;
     private ExecutorService executor;
     private Duration latency;
@@ -45,7 +45,7 @@ class AsyncClientTest {
     @BeforeEach
     void setUp() {
         latency = ofSeconds(2);
-        delegate = TestFirebaseClient.withSimulatedLatency(latency);
+        delegate = MemoizingFirebase.withSimulatedLatency(latency);
         path = NodePaths.of("some/kind/of/path");
         executor = newSingleThreadExecutor();
     }
@@ -56,7 +56,8 @@ class AsyncClientTest {
     void readDirectly() {
         AsyncClient asyncClient = new AsyncClient(delegate);
         asyncClient.fetchNode(path);
-        assertThat(delegate.reads()).contains(path);
+        assertThat(delegate.reads())
+                .contains(path);
     }
 
     @Test
@@ -78,14 +79,17 @@ class AsyncClientTest {
     void allowDirectExecutor() {
         AsyncClient asyncClient = new AsyncClient(delegate, directExecutor());
         asyncClient.create(path, NodeValue.empty());
-        assertThat(delegate.writes()).contains(path);
+        assertThat(delegate.writes())
+                .containsKey(path);
     }
 
     private void checkAsync(AsyncClient asyncClient) {
         asyncClient.update(path, NodeValue.empty());
-        assertThat(delegate.writes()).doesNotContain(path);
+        assertThat(delegate.writes())
+                .doesNotContainKey(path);
         Duration surefireTime = latency.plusSeconds(1);
         Uninterruptibles.sleepUninterruptibly(surefireTime);
-        assertThat(delegate.writes()).contains(path);
+        assertThat(delegate.writes())
+                .containsKey(path);
     }
 }

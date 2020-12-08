@@ -27,8 +27,7 @@ import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
-import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.subscription.given.InMemFirebaseClient;
+import io.spine.web.firebase.given.MemoizingFirebase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,9 +42,8 @@ import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newS
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.newTarget;
 import static io.spine.web.firebase.given.FirebaseSubscriptionBridgeTestEnv.topicFactory;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
-@DisplayName("FirebaseSubscriptionBridge should")
+@DisplayName("`FirebaseSubscriptionBridge` should")
 class FirebaseSubscriptionBridgeTest {
 
     private FirebaseSubscriptionBridge bridge;
@@ -54,24 +52,23 @@ class FirebaseSubscriptionBridgeTest {
     @BeforeEach
     void setUp() {
         SubscriptionServiceImplBase subscriptionService = new TestSubscriptionService();
-        FirebaseClient firebaseClient = new InMemFirebaseClient();
-        bridge = newBridge(firebaseClient, subscriptionService);
+        bridge = newBridge(MemoizingFirebase.withNoLatency(), subscriptionService);
         topicFactory = topicFactory();
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Query Service set in Builder")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireQueryService() {
         FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
                 .newBuilder()
-                .setFirebaseClient(mock(FirebaseClient.class));
+                .setFirebaseClient(MemoizingFirebase.withNoLatency());
         assertThrows(IllegalStateException.class, builder::build);
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     @Test
     @DisplayName("require Firebase Client set in Builder")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
         SubscriptionService subscriptionService = SubscriptionService
                 .newBuilder()
@@ -90,7 +87,8 @@ class FirebaseSubscriptionBridgeTest {
         FirebaseSubscription subscription = bridge.subscribe(topic);
         Response keptUp = bridge.keepUp(subscription.getSubscription());
         Response responseMessage = newResponse();
-        assertThat(keptUp).isEqualTo(responseMessage);
+        assertThat(keptUp)
+                .isEqualTo(responseMessage);
     }
 
     @Test
@@ -99,7 +97,8 @@ class FirebaseSubscriptionBridgeTest {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
         Response keptUp = bridge.keepUp(subscription);
-        assertThat(keptUp.getStatus().getStatusCase()).isEqualTo(ERROR);
+        assertThat(keptUp.getStatus().getStatusCase())
+                .isEqualTo(ERROR);
     }
 
     @Test
@@ -113,7 +112,8 @@ class FirebaseSubscriptionBridgeTest {
         Response canceled = bridge.cancel(subscription);
         Response responseMessage = newResponse();
 
-        assertThat(canceled).isEqualTo(responseMessage);
+        assertThat(canceled)
+                .isEqualTo(responseMessage);
     }
 
     @Test
@@ -122,7 +122,8 @@ class FirebaseSubscriptionBridgeTest {
         Topic topic = topicFactory.forTarget(newTarget());
         Subscription subscription = newSubscription(topic);
         Response canceled = bridge.cancel(subscription);
-        assertThat(canceled.getStatus().getStatusCase()).isEqualTo(ERROR);
+        assertThat(canceled.getStatus().getStatusCase())
+                .isEqualTo(ERROR);
     }
 
     @Test
@@ -130,11 +131,16 @@ class FirebaseSubscriptionBridgeTest {
     void failDoubleCancellation() {
         Topic topic = topicFactory.forTarget(newTarget());
         FirebaseSubscription subscriptionResult = bridge.subscribe(topic);
-        assertThat(subscriptionResult).isNotNull();
+        assertThat(subscriptionResult)
+                .isNotNull();
+
         Response canceled = bridge.cancel(subscriptionResult.getSubscription());
-        assertThat(canceled.getStatus().getStatusCase()).isEqualTo(OK);
+        assertThat(canceled.getStatus().getStatusCase())
+                .isEqualTo(OK);
+
         Response canceledAgain = bridge.cancel(subscriptionResult.getSubscription());
-        assertThat(canceledAgain.getStatus().getStatusCase()).isEqualTo(ERROR);
+        assertThat(canceledAgain.getStatus().getStatusCase())
+                .isEqualTo(ERROR);
     }
 
     @Test
@@ -144,7 +150,8 @@ class FirebaseSubscriptionBridgeTest {
 
         FirebaseSubscription firebaseSubscription = bridge.subscribe(topic);
         Subscription subscription = firebaseSubscription.getSubscription();
-        assertThat(subscription.getTopic()).isEqualTo(topic);
+        assertThat(subscription.getTopic())
+                .isEqualTo(topic);
         assertSubscriptionPointsToFirebase(firebaseSubscription.getNodePath(), topic);
     }
 }

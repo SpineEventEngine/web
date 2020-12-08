@@ -30,24 +30,25 @@ import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.client.command.TestCommandMessage;
 import io.spine.testing.logging.MuteLogging;
 import io.spine.web.command.given.DetachedCommandServlet;
+import io.spine.web.given.MemoizingResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.web.given.Servlets.request;
 import static io.spine.web.given.Servlets.response;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
 
-@DisplayName("CommandServlet should")
+@DisplayName("`CommandServlet` should")
 class CommandServletTest {
 
     private static final CommandFactory commandFactory =
@@ -74,7 +75,8 @@ class CommandServletTest {
         Command command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
         Ack ack = Json.fromJson(response.toString(), Ack.class);
-        assertEquals(command.getId(), AnyPacker.unpack(ack.getMessageId()));
+        assertThat(command.getId())
+                .isEqualTo(AnyPacker.unpack(ack.getMessageId()));
     }
 
     @MuteLogging
@@ -82,8 +84,9 @@ class CommandServletTest {
     @DisplayName("respond 400 to an invalid command")
     void testInvalidCommand() throws IOException {
         CommandServlet servlet = new DetachedCommandServlet();
-        HttpServletResponse response = response(new StringWriter());
+        MemoizingResponse response = new MemoizingResponse();
         servlet.doPost(request(Time.currentTime()), response);
-        verify(response).sendError(400);
+        assertThat(response.getStatus())
+                .isEqualTo(SC_BAD_REQUEST);
     }
 }

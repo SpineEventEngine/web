@@ -21,39 +21,59 @@
 package io.spine.web.firebase.given;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.firebase.database.ChildEventListener;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodeValue;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
-public final class TestFirebaseClient implements FirebaseClient {
+/**
+ * A Firebase client that memoizes read and write operations.
+ *
+ * <p>Supports having a custom write latency through {@linkplain #withSimulatedLatency(Duration)
+ * setting} a particular write operations duration.
+ */
+public final class MemoizingFirebase implements FirebaseClient {
 
-    private final List<NodePath> reads = newArrayList();
-    private final List<NodePath> writes = newArrayList();
+    private final Map<NodePath, NodeValue> writes = new HashMap<>();
+    private final Collection<NodePath> reads = new ArrayList<>();
 
     private final Duration writeLatency;
 
-    private TestFirebaseClient(Duration latency) {
+    private MemoizingFirebase(Duration latency) {
         this.writeLatency = latency;
     }
 
-    public static TestFirebaseClient withSimulatedLatency(Duration latency) {
+    /**
+     * Creates a new instance with zero latency.
+     */
+    public static MemoizingFirebase withNoLatency() {
+        return withSimulatedLatency(Duration.ZERO);
+    }
+
+    /**
+     * Creates a new instance with simulated {@code latency}.
+     */
+    public static MemoizingFirebase withSimulatedLatency(Duration latency) {
         checkNotNull(latency);
-        return new TestFirebaseClient(latency);
+        return new MemoizingFirebase(latency);
     }
 
     @Override
     public Optional<NodeValue> fetchNode(NodePath nodePath) {
         reads.add(nodePath);
-        return Optional.empty();
+        return Optional.ofNullable(writes.get(nodePath));
     }
 
     @Override
@@ -64,26 +84,48 @@ public final class TestFirebaseClient implements FirebaseClient {
     @Override
     public void create(NodePath nodePath, NodeValue value) {
         sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        writes.put(nodePath, value);
     }
 
     @Override
     public void update(NodePath nodePath, NodeValue value) {
         sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        writes.put(nodePath, value);
     }
 
     @Override
     public void delete(NodePath nodePath) {
         sleepUninterruptibly(writeLatency);
-        writes.add(nodePath);
+        writes.remove(nodePath);
     }
 
+    /**
+     * Returns a copy of all made read operations.
+     */
     public ImmutableList<NodePath> reads() {
         return ImmutableList.copyOf(reads);
     }
 
-    public ImmutableList<NodePath> writes() {
-        return ImmutableList.copyOf(writes);
+    /**
+     * Returns a copy of all made write operation.
+     */
+    public ImmutableMap<NodePath, NodeValue> writes() {
+        return ImmutableMap.copyOf(writes);
+    }
+
+    /**
+     * Returns a {@code NodeValue} written to a specific {@code path}.
+     *
+     * @throws IllegalStateException
+     *         if no value is present for the {@code path}
+     */
+    public NodeValue valueFor(NodePath path) {
+        NodeValue result = writes.get(path);
+        if (result == null) {
+            throw newIllegalStateException(
+                    "A value is expected to be present at path `%s`.", path.getValue()
+            );
+        }
+        return result;
     }
 }

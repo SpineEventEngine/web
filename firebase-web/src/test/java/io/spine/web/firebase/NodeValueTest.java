@@ -20,18 +20,20 @@
 
 package io.spine.web.firebase;
 
+import com.google.common.collect.Iterators;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.testing.Helpers.assertEmpty;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("NodeValue should")
+@DisplayName("`NodeValue` should")
 class NodeValueTest {
 
     private static final String KEY = "theKey";
@@ -71,14 +73,16 @@ class NodeValueTest {
 
     private static void assertSingleChild(NodeValue value, StoredJson childValue) {
         JsonObject underlyingJson = value.underlyingJson();
-        assertEquals(1, underlyingJson.entrySet()
-                                      .size());
-        Map.Entry<String, JsonElement> entry = underlyingJson.entrySet()
-                                                             .iterator()
-                                                             .next();
-        String valueString = entry.getValue()
-                                  .getAsString();
-        assertEquals(childValue.value(), valueString);
+        Set<Map.Entry<String, JsonElement>> entries = underlyingJson.entrySet();
+        assertThat(entries)
+                .hasSize(1);
+
+        String valueString = Iterators
+                .getOnlyElement(entries.iterator())
+                .getValue()
+                .getAsString();
+        assertThat(valueString)
+                .isEqualTo(childValue.value());
     }
 
     private static void
@@ -87,6 +91,7 @@ class NodeValueTest {
         assertTrue(underlyingJson.has(childKey));
         String actual = underlyingJson.get(childKey)
                                       .getAsString();
-        assertEquals(childValue.value(), actual);
+        assertThat(actual)
+                .isEqualTo(childValue.value());
     }
 }

@@ -18,29 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.given;
 
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.PrintWriter;
 
-@DisplayName("`NodePaths` should")
-class NodePathsTest extends UtilityClassTest<NodePaths> {
+import static com.google.common.truth.Truth.assertThat;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_GATEWAY;
 
-    NodePathsTest() {
-        super(NodePaths.class);
-    }
+@DisplayName("`MemoizingResponse` should")
+class MemoizingResponseTest {
 
     @Test
-    @DisplayName("create a valid `NodePath` message")
-    void createsNodePath() {
-        String testPath = "test-path";
-        NodePath expected = NodePath
-                .newBuilder()
-                .setValue(testPath)
-                .vBuild();
-        assertEquals(expected, NodePaths.of(testPath));
+    @DisplayName("return set values")
+    @SuppressWarnings("JdkObsolete") // we're force to follow the contract
+    void returnSetValues() {
+        String headerName = "custom";
+        String headerValue = "header";
+        MemoizingResponse response = new MemoizingResponse();
+        response.sendError(SC_BAD_GATEWAY);
+        assertThat(response.getStatus())
+                .isEqualTo(SC_BAD_GATEWAY);
+        response.addHeader(headerName, headerValue);
+        assertThat(response.getHeader(headerName))
+                .isEqualTo(headerValue);
+        PrintWriter printWriter = response.getWriter();
+        printWriter.print("I'm writing you!");
+        assertThat(response.writerContent())
+                .isEqualTo("I'm writing you!");
     }
 }

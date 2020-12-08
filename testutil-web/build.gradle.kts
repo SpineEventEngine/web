@@ -19,5 +19,5 @@
  */
 
 dependencies {
-    implementation(project(":web"))
+    api(project(":web"))
 }
