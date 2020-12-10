@@ -170,7 +170,6 @@ export class CommandRequest extends ClientRequest {
    */
   _asOrigin(command) {
     const result = new Origin();
-
     const messageId = new MessageId();
     const commandIdType = Type.forClass(CommandId);
     const packedId = AnyPacker.pack(command.getId()).as(commandIdType);
@@ -178,13 +177,6 @@ export class CommandRequest extends ClientRequest {
     const typeUrl = command.getMessage().getTypeUrl();
     messageId.setTypeUrl(typeUrl);
     result.setMessage(messageId);
-
-    let grandOrigin = command.getContext().getOrigin();
-    if (!grandOrigin) {
-      grandOrigin = new Origin();
-    }
-    result.setGrandOrigin(grandOrigin);
-
     const actorContext = command.getContext().getActorContext();
     result.setActorContext(actorContext);
     return result;
