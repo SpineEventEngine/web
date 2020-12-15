@@ -12,8 +12,9 @@ application as a test backend. The application uses the Spine `web` API (with th
 library). The application model contains a minimal set of commands, events, and projections that
 allows to test functionality of the `spine-web` library.
 
-The application uses Firebase application emulated locally with a [`firebase-server`](https://www.npmjs.com/package/firebase-server)
-tool. This tool is executed from the `js-tests` module `node_modules` folder.
+The application uses Firebase application emulated locally with a 
+[`firebase-server`](https://www.npmjs.com/package/firebase-server) tool. 
+This tool is executed from the `js-tests` module `node_modules` folder.
 
 ### Running the application locally
 
@@ -25,6 +26,7 @@ should be called `spine-dev.json` and be a valid service account credential. The
 privileges read data from Firebase. The default Firebase service account will do.
 
 2. Assemble the application:
+   
     ```bash
     ./gradlew clean assemble
     ```
@@ -32,7 +34,8 @@ privileges read data from Firebase. The default Firebase service account will do
 3. Start the local server:
 
     The following command runs the server on `localhost:8080`. It also runs
-    the the local Firebase server on `localhost:5000`:
+    the local Firebase server on `localhost:5000`:
+   
     ```bash
     ./gradlew appStart
     ```
@@ -65,14 +68,17 @@ should be called `spine-dev.json` and be a valid service account credential. The
 privileges read data from Firebase. The default Firebase service account will do.
 
 2. Assemble the application:
+   
     ```bash
     ./gradlew clean assemble
     ```
 
 3. Run tests:
+   
     ```bash
     ./gradlew js-tests:integrationTest
     ```
+   
     This command does the following:
      - installs the unpublished artifact of the `spine-web` library form the `client-js` module 
        as module NPM dependency by call to `npm link spine-web` command. For details about
