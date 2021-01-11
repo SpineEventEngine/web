@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("1.7.0")
-val spineTimeVersion: String by extra("1.7.0")
-val spineCoreVersion: String by extra("1.7.0")
+val spineBaseVersion: String by extra("1.7.4")
+val spineTimeVersion: String by extra("1.7.1")
+val spineCoreVersion: String by extra("1.7.1")
 val spineVersion: String by extra(spineCoreVersion)
 
-val versionToPublish: String by extra("1.7.0")
+val versionToPublish: String by extra("1.7.1")
 val versionToPublishJs: String by extra(versionToPublish)
