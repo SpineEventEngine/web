@@ -27,13 +27,13 @@
 package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.GenericUrl;
-import com.google.common.base.Preconditions;
 import io.spine.net.Url;
 import io.spine.net.Urls;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.NodePath;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 
 /**
@@ -42,14 +42,13 @@ import static java.lang.String.format;
  */
 final class RestNodeUrls {
 
-    private final String template;
+    private final DatabaseUrl database;
 
     /**
-     * Creates a new factory for the specified database {@code url}.
+     * Creates a new factory for the specified {@code database}.
      */
-    RestNodeUrls(DatabaseUrl url) {
-        checkNotNull(url);
-        this.template = Urls.toString(url.getUrl()) + "/%s.json";
+    RestNodeUrls(DatabaseUrl database) {
+        this.database = checkNotNull(database);
     }
 
     /**
@@ -57,12 +56,25 @@ final class RestNodeUrls {
      */
     RestNodeUrl with(NodePath path) {
         checkNotNull(path);
-        Url url = Urls.create(format(template, path.getValue()));
+        Url url = withDatabase(path);
         RestNodeUrl node = RestNodeUrl
                 .newBuilder()
                 .setUrl(url)
                 .vBuild();
         return node;
+    }
+
+    private Url withDatabase(NodePath path) {
+        Url dbUrl = database.getUrl();
+        String result;
+        if (isNullOrEmpty(database.getNamespace())) {
+            result = format("%s/%s.json", dbUrl.getSpec(), path.getValue());
+        } else {
+            result = format(
+                    "%s/%s.json?ns=%s", dbUrl.getSpec(), path.getValue(), database.getNamespace()
+            );
+        }
+        return Urls.create(result);
     }
 
     /**
