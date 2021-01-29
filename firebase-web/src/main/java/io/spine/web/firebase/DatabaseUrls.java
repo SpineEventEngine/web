@@ -28,7 +28,7 @@ package io.spine.web.firebase;
 
 import io.spine.net.Urls;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Utilities and static factories dealing with {@link DatabaseUrl}.
@@ -50,7 +50,7 @@ public final class DatabaseUrls {
      * @see com.google.firebase.database.util.EmulatorHelper
      */
     public static DatabaseUrl from(String dbUrl) {
-        checkNotNull(dbUrl);
+        checkNotEmptyOrBlank(dbUrl);
         String namespace = "";
         String url = dbUrl;
         String namespaceQuery = "?ns=";
