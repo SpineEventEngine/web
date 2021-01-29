@@ -31,22 +31,35 @@ import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 @DisplayName("`DatabaseUrls` should")
 class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
-
-    private static final String VALID_URL = "https://spine-dev.appspot.com/";
 
     DatabaseUrlsTest() {
         super(DatabaseUrls.class);
     }
 
     @Test
-    @DisplayName("be successfully created from valid URL")
+    @DisplayName("be successfully created from a valid URL")
     void acceptValidUrl() {
-        DatabaseUrl url = DatabaseUrls.from(VALID_URL);
+        String dbUrl = "https://spine-dev.firebaseio.com";
+        DatabaseUrl url = DatabaseUrls.from(dbUrl);
         assertThat(url.getUrl())
-                .isEqualTo(Urls.create(VALID_URL));
+                .isEqualTo(Urls.create(dbUrl));
+        assertThat(url.getNamespace())
+                .isEmpty();
+    }
+
+    @Test
+    @DisplayName("parse a namespace if any is specified in the query")
+    void parseNamespace() {
+        String dbUrl = "http://localhost:5000?ns=spine-dev";
+        DatabaseUrl url = DatabaseUrls.from(dbUrl);
+        assertThat(url.getUrl())
+                .isEqualTo(Urls.create("http://localhost:5000"));
+        assertThat(url.getNamespace())
+                .isEqualTo("spine-dev");
     }
 }

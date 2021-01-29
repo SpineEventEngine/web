@@ -35,22 +35,34 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class DatabaseUrls {
 
-    /** Prevents instantiation of this utility class. */
+    /**
+     * Prevents instantiation of this utility class.
+     */
     private DatabaseUrls() {
     }
 
     /**
-     * Creates a {@code DatabaseUrls} instance from the given string.
+     * Creates a {@code DatabaseUrl} instance from the given string.
      *
-     * @param url
+     * @param dbUrl
      *         a {@code String} containing database URL
-     * @return a new instance of {@code DatabaseUrls}
+     * @return a new instance of {@code DatabaseUrl}
+     * @see com.google.firebase.database.util.EmulatorHelper
      */
-    public static DatabaseUrl from(String url) {
-        checkNotNull(url);
+    public static DatabaseUrl from(String dbUrl) {
+        checkNotNull(dbUrl);
+        String namespace = "";
+        String url = dbUrl;
+        String namespaceQuery = "?ns=";
+        int queryIndex = dbUrl.indexOf(namespaceQuery);
+        if (queryIndex > 0) {
+            namespace = dbUrl.substring(queryIndex + namespaceQuery.length());
+            url = dbUrl.substring(0, queryIndex);
+        }
         return DatabaseUrl
                 .newBuilder()
                 .setUrl(Urls.create(url))
+                .setNamespace(namespace)
                 .vBuild();
     }
 }
