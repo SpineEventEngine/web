@@ -27,11 +27,13 @@
 package io.spine.web.firebase.rest;
 
 import com.google.api.client.http.GenericUrl;
+import com.google.common.base.Preconditions;
 import io.spine.net.Url;
 import io.spine.net.Urls;
 import io.spine.web.firebase.DatabaseUrl;
 import io.spine.web.firebase.NodePath;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
@@ -42,7 +44,11 @@ final class RestNodeUrls {
 
     private final String template;
 
+    /**
+     * Creates a new factory for the specified database {@code url}.
+     */
     RestNodeUrls(DatabaseUrl url) {
+        checkNotNull(url);
         this.template = Urls.toString(url.getUrl()) + "/%s.json";
     }
 
@@ -50,6 +56,7 @@ final class RestNodeUrls {
      * Creates a new {@link RestNodeUrl} for a node at the specified {@link NodePath path}.
      */
     RestNodeUrl with(NodePath path) {
+        checkNotNull(path);
         Url url = Urls.create(format(template, path.getValue()));
         RestNodeUrl node = RestNodeUrl
                 .newBuilder()
@@ -58,7 +65,11 @@ final class RestNodeUrls {
         return node;
     }
 
+    /**
+     * Converts supplied {@code node} into a {@code GenericUrl}.
+     */
     static GenericUrl asGenericUrl(RestNodeUrl node) {
+        checkNotNull(node);
         GenericUrl url = new GenericUrl(Urls.toString(node.getUrl()));
         return url;
     }
