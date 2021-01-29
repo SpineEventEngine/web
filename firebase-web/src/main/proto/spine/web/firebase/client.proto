@@ -38,8 +38,20 @@ import "spine/net/url.proto";
 
 // A Firebase database URL.
 //
+// The Firebase endpoint URL may be of two formats.
+// The first one is a URL to connect to a remote database which must be specified as
+// `https://<project-id>.firebaseio.com` or `https://<database-alias>.firebaseio.com`.
+// The second one is a URL to connect to an emulator database that has the following format:
+// `http://<local-ip>:<local-port>?ns=<database-alias>`. The `ns` stands for a `namespace`
+// and by default is set to the project ID.
+//
 message DatabaseUrl {
+
+    // The Firebase RDB endpoint.
     spine.net.Url url = 1 [(required) = true];
+
+    // The namespace to connect to.
+    string namespace = 2;
 }
 
 // A path in a Firebase Realtime Database.
