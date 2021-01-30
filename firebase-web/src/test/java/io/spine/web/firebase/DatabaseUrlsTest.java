@@ -42,8 +42,8 @@ class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
     }
 
     @Test
-    @DisplayName("be successfully created from a valid URL")
-    void acceptValidUrl() {
+    @DisplayName("be created from a remote RDB URL")
+    void acceptRemoteRdb() {
         String dbUrl = "https://spine-dev.firebaseio.com";
         DatabaseUrl url = DatabaseUrls.from(dbUrl);
         assertThat(url.getUrl())
@@ -53,8 +53,8 @@ class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
     }
 
     @Test
-    @DisplayName("parse a namespace if any is specified in the query")
-    void parseNamespace() {
+    @DisplayName("be created from a local emulator URL")
+    void acceptLocalEmulator() {
         String dbUrl = "http://localhost:5000?ns=spine-dev";
         DatabaseUrl url = DatabaseUrls.from(dbUrl);
         assertThat(url.getUrl())
