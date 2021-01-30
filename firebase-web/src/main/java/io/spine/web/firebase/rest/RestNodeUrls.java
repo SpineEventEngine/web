@@ -56,7 +56,7 @@ final class RestNodeUrls {
      */
     RestNodeUrl with(NodePath path) {
         checkNotNull(path);
-        Url url = withDatabase(path);
+        Url url = withinDatabase(path);
         RestNodeUrl node = RestNodeUrl
                 .newBuilder()
                 .setUrl(url)
@@ -64,7 +64,7 @@ final class RestNodeUrls {
         return node;
     }
 
-    private Url withDatabase(NodePath path) {
+    private Url withinDatabase(NodePath path) {
         Url dbUrl = database.getUrl();
         String result;
         if (isNullOrEmpty(database.getNamespace())) {
