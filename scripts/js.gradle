@@ -189,7 +189,7 @@ protoJs {
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
-        artifact = deps.build.protoc
+        artifact = io.spine.gradle.internal.Deps.build.protoc
     }
     generateProtoTasks {
         all().each { final task ->
