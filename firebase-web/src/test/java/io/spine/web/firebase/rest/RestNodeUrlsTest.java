@@ -24,42 +24,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web.firebase;
+package io.spine.web.firebase.rest;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 import io.spine.net.Urls;
-import io.spine.testing.UtilityClassTest;
+import io.spine.web.firebase.DatabaseUrl;
+import io.spine.web.firebase.DatabaseUrls;
+import io.spine.web.firebase.NodePaths;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
-@DisplayName("`DatabaseUrls` should")
-class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
+@DisplayName("`RestNodeUrls` should")
+final class RestNodeUrlsTest {
 
-    DatabaseUrlsTest() {
-        super(DatabaseUrls.class);
+    @Test
+    @DisplayName("not accept `null`s")
+    void notAcceptNulls() {
+        NullPointerTester tester = new NullPointerTester();
+        tester.testConstructors(RestNodeUrls.class, Visibility.PACKAGE);
+        tester.testAllPublicInstanceMethods(new RestNodeUrls(DatabaseUrl.getDefaultInstance()));
     }
 
     @Test
-    @DisplayName("be created from a remote RDB URL")
-    void acceptRemoteRdb() {
+    @DisplayName("create a `RestNodeUrl` for the specified `NodePath` and remote RDB")
+    void createRemoteDbUrl() {
         String dbUrl = "https://spine-dev.firebaseio.com";
-        DatabaseUrl url = DatabaseUrls.from(dbUrl);
-        assertThat(url.getUrl())
-                .isEqualTo(Urls.create(dbUrl));
-        assertThat(url.getNamespace())
-                .isEmpty();
+        RestNodeUrls factory = new RestNodeUrls(DatabaseUrls.from(dbUrl));
+        String node = "subscriptions/111";
+        RestNodeUrl result = factory.with(NodePaths.of(node));
+        assertThat(result.getUrl())
+                .isEqualTo(Urls.create(dbUrl + '/' + node + ".json"));
     }
 
     @Test
-    @DisplayName("be created from a local emulator URL")
-    void acceptLocalEmulator() {
+    @DisplayName("create a `RestNodeUrl` for the specified `NodePath` and local emulator")
+    void createEmulatorUrl() {
         String dbUrl = "http://localhost:5000?ns=spine-dev";
-        DatabaseUrl url = DatabaseUrls.from(dbUrl);
-        assertThat(url.getUrl())
-                .isEqualTo(Urls.create("http://localhost:5000"));
-        assertThat(url.getNamespace())
-                .isEqualTo("spine-dev");
+        RestNodeUrls factory = new RestNodeUrls(DatabaseUrls.from(dbUrl));
+        String node = "query/currentYear";
+        RestNodeUrl result = factory.with(NodePaths.of(node));
+        assertThat(result.getUrl())
+                .isEqualTo(Urls.create("http://localhost:5000/" + node + ".json?ns=spine-dev"));
     }
 }
