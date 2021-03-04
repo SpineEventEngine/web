@@ -84,36 +84,10 @@ public final class KnownRequest implements MockedRequest {
     public static KnownRequest create(String content, MediaType type) {
         checkNotNull(content);
         checkNotNull(type);
-        return create(content, type, contentTypeHeader(type));
-    }
-
-    /**
-     * Creates a new mocked request with specified {@code content}, {@code type}
-     * and {@code headers}.
-     */
-    public static KnownRequest create(String content,
-                                      MediaType type,
-                                      ImmutableMap<String, String> headers) {
-        checkNotNull(content);
-        checkNotNull(type);
-        checkNotNull(headers);
-        return create(content.getBytes(StandardCharsets.UTF_8), type, headers);
-    }
-
-    /**
-     * Creates a new mocked request with specified {@code content}, {@code type}
-     * and {@code headers}.
-     */
-    public static KnownRequest create(byte[] content,
-                                      MediaType type,
-                                      ImmutableMap<String, String> headers) {
-        checkNotNull(content);
-        checkNotNull(type);
-        checkNotNull(headers);
         return newBuilder()
-                .withBinaryContent(content)
+                .withContent(content)
                 .withType(type)
-                .withHeaders(headers)
+                .withHeaders(contentTypeHeader(type))
                 .build();
     }
 

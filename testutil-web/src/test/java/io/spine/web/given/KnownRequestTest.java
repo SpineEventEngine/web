@@ -55,7 +55,12 @@ class KnownRequestTest {
         String headerName = "custom";
         String headerValue = "header";
         ImmutableMap<String, String> headers = ImmutableMap.of(headerName, headerValue);
-        KnownRequest request = KnownRequest.create(text, type, headers);
+        KnownRequest request = KnownRequest
+                .newBuilder()
+                .withContent(text)
+                .withType(type)
+                .withHeaders(headers)
+                .build();
         assertThat(request.getContentLength())
                 .isEqualTo(text.length());
         assertThat(request.getContentLengthLong())
