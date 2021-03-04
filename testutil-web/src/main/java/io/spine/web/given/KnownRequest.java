@@ -45,7 +45,7 @@ import static com.google.common.collect.Iterators.singletonIterator;
 import static java.util.Collections.emptyIterator;
 
 /**
- * A mocked servlet request with pre-defined {@code content}, {@code type} and {@code headers}.
+ * A mocked servlet request with pre-defined content.
  *
  * @implNote The request is effectively immutable and does not pay attention to any
  *         modification attempts. Such a mocked implementation may be used for tests where
