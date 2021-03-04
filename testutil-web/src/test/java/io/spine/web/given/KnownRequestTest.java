@@ -37,13 +37,14 @@ import java.io.IOException;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("`KnownRequest` should")
-class KnownRequestTest {
+final class KnownRequestTest {
 
     @Test
     @DisplayName("not tolerate `null`s")
     void notTolerateNull() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicStaticMethods(KnownRequest.class);
+        tester.testAllPublicInstanceMethods(KnownRequest.newBuilder());
     }
 
     @Test
