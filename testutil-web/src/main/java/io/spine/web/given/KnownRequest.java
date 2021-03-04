@@ -29,6 +29,7 @@ package io.spine.web.given;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
@@ -151,7 +152,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     @Override
-    public @Nullable String getContentType() {
+    public @NonNull String getContentType() {
         return type.toString();
     }
 
@@ -162,6 +163,11 @@ public final class KnownRequest implements MockedRequest {
                         new ByteArrayInputStream(content), StandardCharsets.UTF_8
                 )
         );
+    }
+
+    @Override
+    public @NonNull String getRequestURI() {
+        return uri;
     }
 
     /**

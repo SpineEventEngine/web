@@ -73,5 +73,7 @@ class KnownRequestTest {
         assertThat(request.getReader()
                           .readLine())
                 .isEqualTo(text);
+        assertThat(request.getRequestURI())
+                .isEmpty();
     }
 }
