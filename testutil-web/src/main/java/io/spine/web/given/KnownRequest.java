@@ -29,6 +29,7 @@ package io.spine.web.given;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
@@ -36,6 +37,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterators.asEnumeration;
@@ -43,7 +45,7 @@ import static com.google.common.collect.Iterators.singletonIterator;
 import static java.util.Collections.emptyIterator;
 
 /**
- * A mocked servlet request with pre-defined {@code content}, {@code type} and {@code headers}.
+ * A mocked servlet request with pre-defined content.
  *
  * @implNote The request is effectively immutable and does not pay attention to any
  *         modification attempts. Such a mocked implementation may be used for tests where
@@ -58,11 +60,27 @@ public final class KnownRequest implements MockedRequest {
     private final ImmutableMap<String, String> headers;
     private final byte[] content;
     private final MediaType type;
+    private final String uri;
 
-    private KnownRequest(ImmutableMap<String, String> headers, byte[] content, MediaType type) {
-        this.headers = headers;
-        this.content = content;
-        this.type = type;
+    private KnownRequest(Builder builder) {
+        this.headers = builder.headers;
+        this.content = builder.content;
+        this.type = builder.type;
+        this.uri = builder.uri;
+    }
+
+    /**
+     * Creates an empty request.
+     */
+    public static KnownRequest empty() {
+        return newBuilder().build();
+    }
+
+    /**
+     * Creates a new request builder.
+     */
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
@@ -80,33 +98,11 @@ public final class KnownRequest implements MockedRequest {
     public static KnownRequest create(String content, MediaType type) {
         checkNotNull(content);
         checkNotNull(type);
-        return create(content, type, contentTypeHeader(type));
-    }
-
-    /**
-     * Creates a new mocked request with specified {@code content}, {@code type}
-     * and {@code headers}.
-     */
-    public static KnownRequest create(String content,
-                                      MediaType type,
-                                      ImmutableMap<String, String> headers) {
-        checkNotNull(content);
-        checkNotNull(type);
-        checkNotNull(headers);
-        return create(content.getBytes(StandardCharsets.UTF_8), type, headers);
-    }
-
-    /**
-     * Creates a new mocked request with specified {@code content}, {@code type}
-     * and {@code headers}.
-     */
-    public static KnownRequest create(byte[] content,
-                                      MediaType type,
-                                      ImmutableMap<String, String> headers) {
-        checkNotNull(content);
-        checkNotNull(type);
-        checkNotNull(headers);
-        return new KnownRequest(headers, content, type);
+        return newBuilder()
+                .withContent(content)
+                .withType(type)
+                .withHeaders(contentTypeHeader(type))
+                .build();
     }
 
     private static ImmutableMap<String, String> contentTypeHeader(MediaType type) {
@@ -144,7 +140,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     @Override
-    public @Nullable String getContentType() {
+    public @NonNull String getContentType() {
         return type.toString();
     }
 
@@ -155,5 +151,79 @@ public final class KnownRequest implements MockedRequest {
                         new ByteArrayInputStream(content), StandardCharsets.UTF_8
                 )
         );
+    }
+
+    @Override
+    public @NonNull String getRequestURI() {
+        return uri;
+    }
+
+    /**
+     * A builder for producing {@code KnownRequest} instances.
+     */
+    public static class Builder {
+
+        private ImmutableMap<String, String> headers = ImmutableMap.of();
+        private MediaType type = MediaType.ANY_TYPE;
+        private byte[] content = "".getBytes(StandardCharsets.UTF_8);
+        private String uri = "";
+
+        /**
+         * Prevents instantiation outside of the class.
+         *
+         * @see #newBuilder()
+         */
+        private Builder() {
+        }
+
+        /**
+         * Sets the request content.
+         */
+        public Builder withContent(String content) {
+            checkNotNull(content);
+            this.content = content.getBytes(StandardCharsets.UTF_8);
+            return this;
+        }
+
+        /**
+         * Sets the request content bytes.
+         */
+        public Builder withBinaryContent(byte[] content) {
+            checkNotNull(content);
+            this.content = content.clone();
+            return this;
+        }
+
+        /**
+         * Sets the request headers.
+         */
+        public Builder withHeaders(Map<String, String> headers) {
+            checkNotNull(headers);
+            this.headers = ImmutableMap.copyOf(headers);
+            return this;
+        }
+
+        /**
+         * Sets the request media type.
+         */
+        public Builder withType(MediaType type) {
+            this.type = checkNotNull(type);
+            return this;
+        }
+
+        /**
+         * Sets the request URI.
+         */
+        public Builder withUri(String uri) {
+            this.uri = checkNotNull(uri);
+            return this;
+        }
+
+        /**
+         * Creates a request out of this builder.
+         */
+        public KnownRequest build() {
+            return new KnownRequest(this);
+        }
     }
 }

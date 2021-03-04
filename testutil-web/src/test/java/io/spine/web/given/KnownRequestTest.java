@@ -27,6 +27,7 @@
 package io.spine.web.given;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.CharStreams;
 import com.google.common.net.MediaType;
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
@@ -37,25 +38,34 @@ import java.io.IOException;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("`KnownRequest` should")
-class KnownRequestTest {
+final class KnownRequestTest {
 
     @Test
     @DisplayName("not tolerate `null`s")
     void notTolerateNull() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicStaticMethods(KnownRequest.class);
+        tester.testAllPublicInstanceMethods(KnownRequest.newBuilder());
     }
 
     @Test
     @DisplayName("return set values")
-    @SuppressWarnings("JdkObsolete") // we're force to follow the contract
+    @SuppressWarnings("JdkObsolete")
+        // we're force to follow the contract
     void returnSetValues() throws IOException {
         String text = "some text";
+        String uri = "/perform/action";
         MediaType type = MediaType.PLAIN_TEXT_UTF_8;
         String headerName = "custom";
         String headerValue = "header";
         ImmutableMap<String, String> headers = ImmutableMap.of(headerName, headerValue);
-        KnownRequest request = KnownRequest.create(text, type, headers);
+        KnownRequest request = KnownRequest
+                .newBuilder()
+                .withContent(text)
+                .withType(type)
+                .withHeaders(headers)
+                .withUri(uri)
+                .build();
         assertThat(request.getContentLength())
                 .isEqualTo(text.length());
         assertThat(request.getContentLengthLong())
@@ -73,5 +83,23 @@ class KnownRequestTest {
         assertThat(request.getReader()
                           .readLine())
                 .isEqualTo(text);
+        assertThat(request.getRequestURI())
+                .isEqualTo(uri);
+    }
+
+    @Test
+    @DisplayName("create empty request")
+    void empty() throws IOException {
+        KnownRequest request = KnownRequest.empty();
+        assertThat(request.getContentLength())
+                .isEqualTo(0);
+        assertThat(request.getContentLengthLong())
+                .isEqualTo(0);
+        assertThat(request.getContentType())
+                .isEqualTo(MediaType.ANY_TYPE.toString());
+        assertThat(CharStreams.toString(request.getReader()))
+                .isEmpty();
+        assertThat(request.getRequestURI())
+                .isEmpty();
     }
 }

@@ -68,7 +68,7 @@ plugins {
 }
 
 extra["credentialsPropertyFile"] = PublishingRepos.cloudRepo.credentials
-extra["projectsToPublish"] = listOf("web", "firebase-web")
+extra["projectsToPublish"] = listOf("web", "firebase-web", "testutil-web")
 
 allprojects {
     apply {
