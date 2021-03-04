@@ -70,6 +70,20 @@ public final class KnownRequest implements MockedRequest {
     }
 
     /**
+     * Creates an empty request.
+     */
+    public static KnownRequest empty() {
+        return newBuilder().build();
+    }
+
+    /**
+     * Creates a new request builder.
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
      * Creates a new mocked request with specified {@code content} and default
      * {@linkplain MediaType#ANY_TYPE any} type.
      */
@@ -142,20 +156,6 @@ public final class KnownRequest implements MockedRequest {
     @Override
     public @NonNull String getRequestURI() {
         return uri;
-    }
-
-    /**
-     * Creates an empty request.
-     */
-    public static KnownRequest empty() {
-        return newBuilder().build();
-    }
-
-    /**
-     * Creates a new request builder.
-     */
-    public static Builder newBuilder() {
-        return new Builder();
     }
 
     /**
