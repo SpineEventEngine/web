@@ -159,7 +159,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     /**
-     * The request builder.
+     * A builder for producing {@code KnownRequest} instances.
      */
     public static class Builder {
 
