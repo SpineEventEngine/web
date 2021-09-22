@@ -49,7 +49,7 @@ ext {
     nycOutputDir = "$projectDir/.nyc_output"
 }
 
-apply from: io.spine.internal.gradle.Scripts.npmPublishTasks(project)
+apply from: "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "/js/npm-publish-tasks.gradle"
 
 /**
  * Cleans old module dependencies and build outputs.
@@ -172,7 +172,8 @@ task npmLicenseReport {
 /**
  * Runs NPM license report straight after the Gradle license report.
  */
-generateLicenseReport.finalizedBy npmLicenseReport
+//TODO:2021-09-22:alexander.yevsyukov: Resolve this dependency.
+//generateLicenseReport.finalizedBy npmLicenseReport
 
 apply plugin: 'io.spine.tools.mc-js'
 
