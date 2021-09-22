@@ -207,16 +207,6 @@ subprojects {
                 "io.opencensus:opencensus-api:0.21.0",
                 "io.opencensus:opencensus-contrib-http-util:0.18.0",
 
-//                "io.grpc:grpc-core:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-stub:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-okhttp:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-protobuf:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-netty:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-context:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-stub:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-protobuf:${io.spine.gradle.internal.Deps.versions.grpc}",
-//                "io.grpc:grpc-core:${io.spine.gradle.internal.Deps.versions.grpc}",
-
                 "com.google.code.gson:gson:2.7",
                 "com.google.api:api-common:1.7.0",
                 "com.google.api.grpc:proto-google-common-protos:1.0.0",
@@ -247,8 +237,6 @@ subprojects {
                 "io.netty:netty-transport:4.1.34.Final",
                 "io.netty:netty-handler:4.1.34.Final",
                 "io.netty:netty-codec-http:4.1.34.Final",
-
-//                io.spine.gradle.internal.Deps.build.servletApi,
 
                 "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
                 "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
@@ -315,6 +303,7 @@ subprojects {
 
 apply {
     with(Scripts) {
+//TODO:2021-09-23:alexander.yevsyukov: Uncomment when NPE issue is solved.
 //        from(jacoco(project))
         //from(publish(project))
 //        from(repoLicenseReport(project))
