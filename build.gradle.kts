@@ -24,51 +24,81 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.DependencyResolution
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.PublishingRepos
-import io.spine.gradle.internal.servletApi
+import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.PublishingRepos
+import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.applyGitHubPackages
+import io.spine.internal.gradle.applyStandard
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.gradle.forceVersions
+import io.spine.internal.gradle.spinePublishing
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.kotlin.dsl.accessors.AccessorFormats.internal
 
+@Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 buildscript {
-
-    apply(from = "$rootDir/config/gradle/dependencies.gradle")
     apply(from = "$rootDir/version.gradle.kts")
 
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    val resolution = io.spine.gradle.internal.DependencyResolution
-
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    val deps = io.spine.gradle.internal.Deps
-
-    resolution.defaultRepositories(repositories)
+    io.spine.internal.gradle.doApplyStandard(repositories)
+    io.spine.internal.gradle.doApplyGitHubPackages(repositories, rootProject)
+    io.spine.internal.gradle.doForceVersions(configurations)
 
     val spineBaseVersion: String by extra
 
     dependencies {
-        classpath(deps.build.guava)
-        classpath(deps.build.gradlePlugins.protobuf)
-        classpath(deps.build.gradlePlugins.errorProne)
-        classpath("io.spine.tools:spine-model-compiler:$spineBaseVersion")
-        classpath("io.spine.tools:spine-proto-js-plugin:$spineBaseVersion")
+        classpath(io.spine.internal.dependency.Guava.lib)
+        classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib)
+        classpath("io.spine.tools:spine-mc-java:$spineBaseVersion")
+        classpath("io.spine.tools:spine-mc-js:$spineBaseVersion")
     }
 
-    resolution.forceConfiguration(configurations)
+    configurations.all {
+        resolutionStrategy {
+            force(
+                "com.google.gradle:osdetector-gradle-plugin:1.7.0"
+            )
+        }
+    }
 }
 
 plugins {
     `java-library`
     jacoco
+    kotlin("jvm") version io.spine.internal.dependency.Kotlin.version
     idea
     pmd
     `project-report`
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("net.ltgt.errorprone").version(io.spine.gradle.internal.Deps.versions.errorPronePlugin)
+    io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
+        id(id) version version
+    }
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
+        id(id) version version
+    }
 }
 
-extra["credentialsPropertyFile"] = PublishingRepos.cloudRepo.credentials
-extra["projectsToPublish"] = listOf("web", "firebase-web", "testutil-web")
+spinePublishing {
+    with(PublishingRepos) {
+        targetRepositories.addAll(setOf(
+            cloudRepo,
+            gitHub("web"),
+            cloudArtifactRegistry
+        ))
+    }
+
+    projectsToPublish.addAll(
+        "web",
+        "firebase-web",
+        "testutil-web"
+    )
+}
 
 allprojects {
     apply {
@@ -93,16 +123,18 @@ subprojects {
 
     apply {
         plugin("java-library")
+        plugin("kotlin")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
         plugin("maven-publish")
         plugin("pmd")
+        plugin("pmd-settings")
 
-        from(Deps.scripts.testOutput(project))
-        from(Deps.scripts.javadocOptions(project))
-        from(Deps.scripts.javacArgs(project))
-        from(Deps.scripts.pmd(project))
-        from(Deps.scripts.projectLicenseReport(project))
+        with(Scripts) {
+            from(testOutput(project))
+            from(javadocOptions(project))
+            from(javacArgs(project))
+        }
     }
 
     java {
@@ -110,31 +142,44 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    DependencyResolution.defaultRepositories(repositories)
+    kotlin {
+        explicitApi()
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            freeCompilerArgs = listOf("-Xskip-prerelease-check")
+        }
+    }
+
+    repositories.applyGitHubPackages(rootProject)
+    repositories.applyStandard()
 
     val spineBaseVersion: String by extra
     val spineTimeVersion: String by extra
     val spineCoreVersion: String by extra
 
     dependencies {
-        errorprone(Deps.build.errorProneCore)
-        errorproneJavac(Deps.build.errorProneJavac)
+        ErrorProne.apply {
+            errorprone(core)
+            errorproneJavac(javacPlugin)
+        }
 
-        implementation(Deps.build.guava)
+        Protobuf.libs.forEach { api(it) }
+        api(Flogger.lib)
+        api(Guava.lib)
+        api(CheckerFramework.annotations)
+        api(JavaX.annotations)
+        ErrorProne.annotations.forEach { api(it) }
+        api(kotlin("stdlib-jdk8"))
 
-        compileOnlyApi(Deps.build.checkerAnnotations)
-        compileOnlyApi(Deps.build.jsr305Annotations)
-        Deps.build.errorProneAnnotations.forEach { compileOnlyApi(it) }
-
+        testImplementation(JUnit.runner)
+        testImplementation("io.spine.tools:spine-testlib:$spineBaseVersion")
         testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
-        testImplementation(Deps.test.guavaTestlib)
-        Deps.test.junit5Api.forEach { testImplementation(it) }
-        Deps.test.truth.forEach { testImplementation(it) }
-        testRuntimeOnly(Deps.test.junit5Runner)
     }
 
-    DependencyResolution.forceConfiguration(configurations)
-
+    configurations.forceVersions()
     configurations.all {
         resolutionStrategy {
 
@@ -157,15 +202,15 @@ subprojects {
                 "io.opencensus:opencensus-api:0.21.0",
                 "io.opencensus:opencensus-contrib-http-util:0.18.0",
 
-                "io.grpc:grpc-core:${Deps.versions.grpc}",
-                "io.grpc:grpc-stub:${Deps.versions.grpc}",
-                "io.grpc:grpc-okhttp:${Deps.versions.grpc}",
-                "io.grpc:grpc-protobuf:${Deps.versions.grpc}",
-                "io.grpc:grpc-netty:${Deps.versions.grpc}",
-                "io.grpc:grpc-context:${Deps.versions.grpc}",
-                "io.grpc:grpc-stub:${Deps.versions.grpc}",
-                "io.grpc:grpc-protobuf:${Deps.versions.grpc}",
-                "io.grpc:grpc-core:${Deps.versions.grpc}",
+//                "io.grpc:grpc-core:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-stub:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-okhttp:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-protobuf:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-netty:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-context:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-stub:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-protobuf:${io.spine.gradle.internal.Deps.versions.grpc}",
+//                "io.grpc:grpc-core:${io.spine.gradle.internal.Deps.versions.grpc}",
 
                 "com.google.code.gson:gson:2.7",
                 "com.google.api:api-common:1.7.0",
@@ -198,10 +243,12 @@ subprojects {
                 "io.netty:netty-handler:4.1.34.Final",
                 "io.netty:netty-codec-http:4.1.34.Final",
 
-                Deps.build.servletApi,
+//                io.spine.gradle.internal.Deps.build.servletApi,
 
                 "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
                 "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
+
+                "com.google.gradle:osdetector-gradle-plugin:1.7.0",
 
                 // Transitive dependencies from `core-java` may have different (older) versions.
                 "io.spine:spine-base:$spineBaseVersion",
@@ -256,14 +303,16 @@ subprojects {
 
     val projectsWithDocs = setOf("client-js", "firebase-web", "web")
     if (projectsWithDocs.contains(project.name)) {
-        apply(from = Deps.scripts.updateGitHubPages(project))
+        apply(from = Scripts.updateGitHubPages(project))
         project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
     }
 }
 
 apply {
-    from(Deps.scripts.jacoco(project))
-    from(Deps.scripts.publish(project))
-    from(Deps.scripts.repoLicenseReport(project))
-    from(Deps.scripts.generatePom(project))
+    with(Scripts) {
+        from(jacoco(project))
+        from(publish(project))
+        from(repoLicenseReport(project))
+        from(generatePom(project))
+    }
 }
