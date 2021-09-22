@@ -26,9 +26,12 @@
 
 import com.google.common.collect.Lists
 import com.google.common.io.Files
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.testProtobuf
+import io.spine.tools.gradle.sourceSets
+import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
 
-
-apply(from = "$rootDir/scripts/js.gradle")
+apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
 val spineCoreVersion: String by extra
 

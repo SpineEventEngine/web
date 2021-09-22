@@ -39,8 +39,6 @@
  * <p>The script is based on other scripts from `config` submodule.
  */
 
-apply from: deps.scripts.npmPublishTasks
-
 ext {
     srcDir = "$projectDir/main"
     testSrcDir = "$projectDir/test"
@@ -50,6 +48,8 @@ ext {
     genProtoTest = "$genProtoBaseDir/test/$genProtoSubDir"
     nycOutputDir = "$projectDir/.nyc_output"
 }
+
+apply from: io.spine.internal.gradle.Scripts.npmPublishTasks((org.gradle.api.Project) project)
 
 /**
  * Cleans old module dependencies and build outputs.
@@ -174,7 +174,7 @@ task npmLicenseReport {
  */
 generateLicenseReport.finalizedBy npmLicenseReport
 
-apply plugin: 'io.spine.tools.proto-js-plugin'
+apply plugin: 'io.spine.tools.mc-js'
 
 protoJs {
     mainGenProtoDir = genProtoMain
@@ -189,7 +189,7 @@ protoJs {
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
-        artifact = io.spine.gradle.internal.Deps.build.protoc
+        artifact = io.spine.internal.dependency.Protobuf.protoc
     }
     generateProtoTasks {
         all().each { final task ->
