@@ -29,32 +29,33 @@ import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
-import io.spine.gradle.internal.DependencyResolution
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.IncrementGuard
-import io.spine.gradle.internal.servletApi
+
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.dependency.HttpClient
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.IncrementGuard
 
 plugins {
-    id("io.spine.tools.spine-model-compiler")
+    id("io.spine.mc-java")
 }
 
-DependencyResolution.excludeProtobufLite(configurations)
+configurations.excludeProtobufLite()
 
 apply<IncrementGuard>()
-apply(from = Deps.scripts.modelCompiler(project))
+//apply(from = Deps.scripts.modelCompiler(project))
 
 val spineBaseVersion: String by extra
 val spineCoreVersion: String by extra
 
 dependencies {
-    api(Deps.build.servletApi)
+    api("javax.servlet:javax.servlet-api:3.0.1")
     api("io.spine:spine-server:$spineCoreVersion")
-    api(Deps.build.googleHttpClient)
+    api(HttpClient.google)
 
-    implementation(Deps.build.googleHttpClientApache)
+    implementation(HttpClient.apache)
 
     testImplementation(project(":testutil-web"))
-    testImplementation("io.spine.tools:spine-mute-logging:$spineBaseVersion")
+    testImplementation("io.spine.tools:testlib:$spineBaseVersion")
 }
 
 val compileProtoToJs by tasks.registering {
@@ -63,7 +64,7 @@ val compileProtoToJs by tasks.registering {
 
 protobuf {
     protoc {
-        artifact = Deps.build.protoc
+        artifact = Protobuf.compiler
     }
     generateProtoTasks {
         all().forEach { task ->

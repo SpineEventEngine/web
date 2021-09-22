@@ -175,11 +175,11 @@ task npmLicenseReport {
 //TODO:2021-09-22:alexander.yevsyukov: Resolve this dependency.
 //generateLicenseReport.finalizedBy npmLicenseReport
 
-apply plugin: 'io.spine.tools.mc-js'
+apply plugin: 'io.spine.mc-js'
 
 protoJs {
-    mainGenProtoDir = genProtoMain
-    testGenProtoDir = genProtoTest
+    generatedMainDir = genProtoMain
+    generatedTestDir = genProtoTest
 
     generateParsersTask().dependsOn compileProtoToJs
     buildJs.dependsOn generateParsersTask()
@@ -190,7 +190,7 @@ protoJs {
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
-        artifact = io.spine.internal.dependency.Protobuf.protoc
+        artifact = io.spine.internal.dependency.Protobuf.compiler
     }
     generateProtoTasks {
         all().each { final task ->

@@ -26,13 +26,12 @@
 
 import com.google.protobuf.gradle.*
 import groovy.lang.Closure
-import io.spine.gradle.internal.Deps
 
 plugins {
-    id("io.spine.tools.proto-js-plugin")
+    id("io.spine.mc-js")
 }
 
-apply(from = "$rootDir/config/gradle/js/build-tasks.gradle")
+apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/build-tasks.gradle")
 
 val testSrcDir: String = "$projectDir/test"
 val genProtoBaseDir: String = projectDir.path
@@ -94,7 +93,7 @@ tasks.register("integrationTest") {
 }
 
 protoJs {
-    testGenProtoDir = genProtoTestDir
+    generatedTestDir = genProtoTestDir
 
     generateParsersTask().dependsOn("compileProtoToJs")
     tasks["buildJs"].dependsOn(generateParsersTask())
@@ -103,7 +102,7 @@ protoJs {
 protobuf {
     generatedFilesBaseDir = genProtoBaseDir
     protoc {
-        artifact = Deps.build.protoc
+        artifact = io.spine.internal.dependency.Protobuf.compiler
     }
     generateProtoTasks {
         all().forEach { task ->

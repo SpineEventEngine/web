@@ -67,6 +67,11 @@ buildscript {
     }
 }
 
+repositories {
+    repositories.applyStandard()
+    repositories.applyGitHubPackages(project)
+}
+
 plugins {
     `java-library`
     jacoco
@@ -84,14 +89,14 @@ plugins {
     }
 }
 
+apply(from = "$rootDir/version.gradle.kts")
+
 spinePublishing {
-    with(PublishingRepos) {
-        targetRepositories.addAll(setOf(
-            cloudRepo,
-            gitHub("web"),
-            cloudArtifactRegistry
-        ))
-    }
+    targetRepositories.addAll(
+        PublishingRepos.cloudRepo,
+        PublishingRepos.gitHub("web"),
+        PublishingRepos.cloudArtifactRegistry
+    )
 
     projectsToPublish.addAll(
         "web",
@@ -310,9 +315,9 @@ subprojects {
 
 apply {
     with(Scripts) {
-        from(jacoco(project))
-        from(publish(project))
-        from(repoLicenseReport(project))
-        from(generatePom(project))
+//        from(jacoco(project))
+        //from(publish(project))
+//        from(repoLicenseReport(project))
+//        from(generatePom(project))
     }
 }

@@ -29,32 +29,36 @@ import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
-import io.spine.gradle.internal.DependencyResolution
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.slf4jJul
+
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.dependency.Jackson
+import io.spine.internal.dependency.Firebase
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.HttpClient
+import io.spine.internal.dependency.Slf4J
 
 plugins {
-    id("io.spine.tools.spine-model-compiler")
+    id("io.spine.mc-java")
 }
 
-apply(from = Deps.scripts.modelCompiler(project))
+//apply(from = Deps.scripts.modelCompiler(project))
 
 group = "io.spine.gcloud"
 
-DependencyResolution.excludeProtobufLite(configurations)
+configurations.excludeProtobufLite()
 
 dependencies {
     api(project(":web"))
-    api(Deps.build.firebaseAdmin) {
+    api(Firebase.admin) {
         exclude(group = "com.google.guava", module = "guava")
         exclude(group = "io.grpc")
     }
 
-    implementation(Deps.build.jacksonDatabind)
-    implementation(Deps.build.googleHttpClientApache)
+    implementation(Jackson.databind)
+    implementation(HttpClient.apache)
 
     // Required by the Firebase Admin SDK.
-    runtimeOnly(Deps.runtime.slf4jJul)
+    runtimeOnly(Slf4J.lib)
 
     testImplementation(project(":testutil-web"))
 }
@@ -65,7 +69,7 @@ val compileProtoToJs by tasks.registering {
 
 protobuf {
     protoc {
-        artifact = Deps.build.protoc
+        artifact = Protobuf.compiler
     }
     generateProtoTasks {
         all().forEach { task ->
