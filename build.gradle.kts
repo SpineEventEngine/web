@@ -35,11 +35,9 @@ import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyGitHubPackages
 import io.spine.internal.gradle.applyStandard
-import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.kotlin.dsl.accessors.AccessorFormats.internal
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 buildscript {
