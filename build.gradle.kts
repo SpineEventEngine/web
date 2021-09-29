@@ -205,7 +205,7 @@ subprojects {
                 "io.opencensus:opencensus-api:0.21.0",
                 "io.opencensus:opencensus-contrib-http-util:0.18.0",
 
-                "com.google.code.gson:gson:2.7",
+                "com.google.code.gson:gson:2.8.6",
                 "com.google.api:api-common:1.7.0",
                 "com.google.api.grpc:proto-google-common-protos:1.0.0",
                 "com.google.api.grpc:proto-google-iam-v1:0.1.28",
@@ -235,6 +235,8 @@ subprojects {
                 "io.netty:netty-transport:4.1.34.Final",
                 "io.netty:netty-handler:4.1.34.Final",
                 "io.netty:netty-codec-http:4.1.34.Final",
+
+                "javax.servlet:javax.servlet-api:3.1.0",
 
                 "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
                 "org.eclipse.jetty.toolchain:jetty-schemas:3.1",

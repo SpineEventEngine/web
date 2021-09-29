@@ -31,7 +31,7 @@ import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
-import io.spine.testing.logging.MuteLogging;
+import io.spine.testing.logging.mute.MuteLogging;
 import io.spine.web.given.MemoizingResponse;
 import io.spine.web.query.given.QueryServletTestEnv.TestQueryServlet;
 import io.spine.web.test.Task;

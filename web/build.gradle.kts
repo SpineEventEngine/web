@@ -48,7 +48,7 @@ val spineBaseVersion: String by extra
 val spineCoreVersion: String by extra
 
 dependencies {
-    api("javax.servlet:javax.servlet-api:3.0.1")
+    api("javax.servlet:javax.servlet-api:3.1.0")
     api("io.spine:spine-server:$spineCoreVersion")
     api(HttpClient.google)
 
@@ -80,3 +80,11 @@ protobuf {
         }
     }
 }
+
+//TODO:2021-09-29:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy
+tasks.jar.get().duplicatesStrategy = dupStrategy

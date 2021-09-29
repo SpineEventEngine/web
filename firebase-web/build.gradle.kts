@@ -35,19 +35,19 @@ import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.Firebase
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.HttpClient
-import io.spine.internal.dependency.Slf4J
 
 plugins {
     id("io.spine.mc-java")
 }
 
-//apply(from = Deps.scripts.modelCompiler(project))
-
 group = "io.spine.gcloud"
 
 configurations.excludeProtobufLite()
 
+val spineBaseTypesVersion: String by extra
+
 dependencies {
+    api("io.spine:spine-base-types:$spineBaseTypesVersion")
     api(project(":web"))
     api(Firebase.admin) {
         exclude(group = "com.google.guava", module = "guava")
@@ -58,7 +58,8 @@ dependencies {
     implementation(HttpClient.apache)
 
     // Required by the Firebase Admin SDK.
-    runtimeOnly(Slf4J.lib)
+    @Suppress("DEPRECATION", "RemoveRedundantQualifierName")
+    runtimeOnly(io.spine.internal.dependency.Slf4J.lib)
 
     testImplementation(project(":testutil-web"))
 }
@@ -86,3 +87,11 @@ protobuf {
         }
     }
 }
+
+//TODO:2021-09-29:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy
+tasks.jar.get().duplicatesStrategy = dupStrategy

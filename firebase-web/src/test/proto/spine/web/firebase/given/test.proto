@@ -37,21 +37,29 @@ option java_outer_classname = "FirebaseProto";
 import "spine/people/person_name.proto";
 
 message BookId {
-
     string value = 1 [(required) = true];
 }
 
+message AuthorId {
+    string value = 1 [(required) = true];
+}
+
+
 message Author {
-    spine.people.PersonName name = 1 [(required) = true];
+    option (entity).kind = ENTITY;
+
+    AuthorId id = 1;
+
+    spine.people.PersonName name = 2 [(required) = true];
 }
 
 message Book {
     option (entity).kind = ENTITY;
 
-    // The ID of the message which has been posted.
     BookId id = 1 [(required) = true];
 
     string name = 2 [(required) = true];
     
     repeated Author authors = 3;
 }
+

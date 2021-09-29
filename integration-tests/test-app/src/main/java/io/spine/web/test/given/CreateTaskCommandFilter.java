@@ -27,6 +27,7 @@
 package io.spine.web.test.given;
 
 import io.spine.base.CommandMessage;
+import io.spine.base.Errors;
 import io.spine.core.Ack;
 import io.spine.server.bus.BusFilter;
 import io.spine.server.type.CommandEnvelope;
@@ -45,11 +46,10 @@ final class CreateTaskCommandFilter implements BusFilter<CommandEnvelope> {
         if (!command.getReject()) {
             return letPass();
         }
-        TaskCannotBeCreated rejection = TaskCannotBeCreated
-                .newBuilder()
+        TaskCannotBeCreated rejection = TaskCannotBeCreated.newBuilder()
                 .setId(command.getId())
                 .setReason("Reject this command just for test.")
                 .build();
-        return reject(envelope, rejection);
+        return reject(envelope, Errors.causeOf(rejection));
     }
 }

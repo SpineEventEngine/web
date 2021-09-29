@@ -28,8 +28,6 @@ import com.google.common.collect.Lists
 import com.google.common.io.Files
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
-import io.spine.tools.gradle.sourceSets
-import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
@@ -52,8 +50,8 @@ dependencies {
 }
 
 idea.module {
-    sourceDirs.add(file(project.extra["srcDir"]))
-    testSourceDirs.add(file(project.extra["testSrcDir"]))
+    sourceDirs.add(file(project.extra["srcDir"]!!))
+    testSourceDirs.add(file(project.extra["testSrcDir"]!!))
 
     excludeDirs.addAll(
         files(
