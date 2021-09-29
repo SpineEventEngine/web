@@ -55,7 +55,6 @@ dependencies {
     implementation(HttpClient.apache)
 
     testImplementation(project(":testutil-web"))
-    testImplementation("io.spine.tools:testlib:$spineBaseVersion")
 }
 
 val compileProtoToJs by tasks.registering {

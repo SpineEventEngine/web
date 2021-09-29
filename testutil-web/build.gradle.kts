@@ -24,6 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+val spineBaseVersion: String by extra
+
 dependencies {
     api(project(":web"))
+    api("io.spine.tools:spine-testlib:$spineBaseVersion")
 }

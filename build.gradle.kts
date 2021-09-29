@@ -179,7 +179,7 @@ subprojects {
 
         testImplementation(JUnit.runner)
         testImplementation("io.spine.tools:spine-testlib:$spineBaseVersion")
-        testImplementation("io.spine:spine-testutil-client:$spineCoreVersion")
+        testImplementation("io.spine.tools:spine-testutil-client:$spineCoreVersion")
     }
 
     configurations.forceVersions()
@@ -241,10 +241,12 @@ subprojects {
 
                 "com.google.gradle:osdetector-gradle-plugin:1.7.0",
 
+                "io.grpc:grpc-context:1.38.0",
+
                 // Transitive dependencies from `core-java` may have different (older) versions.
                 "io.spine:spine-base:$spineBaseVersion",
-                "io.spine:spine-testlib:$spineBaseVersion",
-                "io.spine:spine-time:$spineTimeVersion"
+                "io.spine:spine-time:$spineTimeVersion",
+                "io.spine.tools:spine-testlib:$spineBaseVersion"
             )
         }
     }
