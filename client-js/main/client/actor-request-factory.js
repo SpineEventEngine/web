@@ -804,7 +804,7 @@ class QueryFactory {
     const format = new ResponseFormat();
     format.setFieldMask(fieldMask);
     format.setLimit(limit);
-    format.setOrderBy(orderBy);
+    format.addOrderBy(orderBy);
 
     const result = new Query();
     result.setId(id);

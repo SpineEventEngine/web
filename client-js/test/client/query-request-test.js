@@ -46,7 +46,7 @@ describe('QueryRequest', function () {
         .limit(2)
         .query();
     const responseFormat = query.getFormat();
-    const orderBy = responseFormat.getOrderBy();
+    const orderBy = responseFormat.getOrderByList()[0];
     const orderByColumn = orderBy.getColumn();
     assert.strictEqual(
         column, orderByColumn,
