@@ -24,21 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.publish
 
-// https://github.com/grpc/grpc-java
-@Suppress("unused")
-object Grpc {
-    @Suppress("MemberVisibilityCanBePrivate")
-    const val version        = "1.38.0"
-    const val api            = "io.grpc:grpc-api:${version}"
-    const val core           = "io.grpc:grpc-core:${version}"
-    const val context        = "io.grpc:grpc-context:${version}"
-    const val stub           = "io.grpc:grpc-stub:${version}"
-    const val okHttp         = "io.grpc:grpc-okhttp:${version}"
-    const val protobuf       = "io.grpc:grpc-protobuf:${version}"
-    const val protobufLite   = "io.grpc:grpc-protobuf-lite:${version}"
-    const val protobufPlugin = "io.grpc:protoc-gen-grpc-java:${version}"
-    const val netty          = "io.grpc:grpc-netty:${version}"
-    const val nettyShaded    = "io.grpc:grpc-netty-shaded:${version}"
+import io.spine.internal.gradle.Repository
+
+/**
+ * Repositories to which we may publish.
+ */
+object PublishingRepos {
+
+    @Suppress("HttpUrlsUsage") // HTTPS is not supported by this repository.
+    val mavenTeamDev = Repository(
+        name = "maven.teamdev.com",
+        releases = "http://maven.teamdev.com/repository/spine",
+        snapshots = "http://maven.teamdev.com/repository/spine-snapshots",
+        credentialsFile = "credentials.properties"
+    )
+
+    val cloudRepo = Repository(
+        name = "CloudRepo",
+        releases = "https://spine.mycloudrepo.io/public/repositories/releases",
+        snapshots = "https://spine.mycloudrepo.io/public/repositories/snapshots",
+        credentialsFile = "cloudrepo.properties"
+    )
+
+    val cloudArtifactRegistry = CloudArtifactRegistry.repository
+
+    /**
+     * Obtains a GitHub repository by the given name.
+     */
+    fun gitHub(repoName: String): Repository = GitHubPackages.repository(repoName)
 }
+
