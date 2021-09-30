@@ -26,17 +26,14 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
-object Jackson {
-    private const val version = "2.12.4"
-    // https://github.com/FasterXML/jackson-core
-    const val core = "com.fasterxml.jackson.core:jackson-core:${version}"
-    // https://github.com/FasterXML/jackson-databind
-    const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
-    // https://github.com/FasterXML/jackson-dataformat-xml/releases
-    const val dataformatXml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
-    // https://github.com/FasterXML/jackson-dataformats-text/releases
-    const val dataformatYaml = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version}"
-    // https://github.com/FasterXML/jackson-module-kotlin/releases
-    const val moduleKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:${version}"
+/**
+ * Apache [HTTP Components](https://hc.apache.org/)
+ */
+object HttpComponents {
+
+    // https://hc.apache.org/httpcomponents-client-4.5.x/index.html
+    const val client = "org.apache.httpcomponents:httpclient:4.5.5"
+
+    // https://hc.apache.org/httpcomponents-core-4.4.x/index.html
+    const val core = "org.apache.httpcomponents:httpcore:4.4.14"
 }

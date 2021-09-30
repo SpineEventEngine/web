@@ -32,6 +32,7 @@ import com.google.protobuf.gradle.protoc
 
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.dependency.HttpClient
+import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 
@@ -42,13 +43,12 @@ plugins {
 configurations.excludeProtobufLite()
 
 apply<IncrementGuard>()
-//apply(from = Deps.scripts.modelCompiler(project))
 
 val spineBaseVersion: String by extra
 val spineCoreVersion: String by extra
 
 dependencies {
-    api("javax.servlet:javax.servlet-api:3.1.0")
+    api(JavaX.servletApi)
     api("io.spine:spine-server:$spineCoreVersion")
     api(HttpClient.google)
 

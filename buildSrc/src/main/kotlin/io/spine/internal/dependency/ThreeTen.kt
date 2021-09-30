@@ -26,17 +26,12 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
-object Jackson {
-    private const val version = "2.12.4"
-    // https://github.com/FasterXML/jackson-core
-    const val core = "com.fasterxml.jackson.core:jackson-core:${version}"
-    // https://github.com/FasterXML/jackson-databind
-    const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
-    // https://github.com/FasterXML/jackson-dataformat-xml/releases
-    const val dataformatXml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
-    // https://github.com/FasterXML/jackson-dataformats-text/releases
-    const val dataformatYaml = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version}"
-    // https://github.com/FasterXML/jackson-module-kotlin/releases
-    const val moduleKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:${version}"
+/**
+ * A [JSR-310 replacement](https://github.com/ThreeTen/threetenbp), which is used by some
+ * Google APIs. This object is used for forcing the version of this transitive dependency.
+ */
+object ThreeTen {
+    // https://github.com/ThreeTen/threetenbp
+    private const val version = "1.5.1"
+    const val lib = "org.threeten:threetenbp:${version}"
 }

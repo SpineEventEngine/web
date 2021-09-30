@@ -26,17 +26,11 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
-object Jackson {
-    private const val version = "2.12.4"
-    // https://github.com/FasterXML/jackson-core
-    const val core = "com.fasterxml.jackson.core:jackson-core:${version}"
-    // https://github.com/FasterXML/jackson-databind
-    const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
-    // https://github.com/FasterXML/jackson-dataformat-xml/releases
-    const val dataformatXml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
-    // https://github.com/FasterXML/jackson-dataformats-text/releases
-    const val dataformatYaml = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version}"
-    // https://github.com/FasterXML/jackson-module-kotlin/releases
-    const val moduleKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:${version}"
+/**
+ * https://www.eclipse.org/jetty/
+ * https://github.com/eclipse/jetty.project
+ */
+object Jetty {
+    const val orbitServletJsp = "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158"
+    const val toolchainSchemas = "org.eclipse.jetty.toolchain:jetty-schemas:3.1"
 }

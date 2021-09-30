@@ -25,12 +25,26 @@
  */
 
 import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.CommonsCollections
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.GoogleApis
+import io.spine.internal.dependency.GoogleCloud
+import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.HttpClient
+import io.spine.internal.dependency.HttpComponents
+import io.spine.internal.dependency.J2ObjC
 import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Jetty
+import io.spine.internal.dependency.Netty
+import io.spine.internal.dependency.OpenCensus
+import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.ThreeTen
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyGitHubPackages
@@ -202,48 +216,53 @@ subprojects {
              * in classpath, and assumes they implement the Type URLs.
              */
             force(
-                "io.opencensus:opencensus-api:0.21.0",
-                "io.opencensus:opencensus-contrib-http-util:0.18.0",
+                OpenCensus.api,
+                OpenCensus.contribHttpUtil,
 
-                "com.google.code.gson:gson:2.8.6",
-                "com.google.api:api-common:1.7.0",
-                "com.google.api.grpc:proto-google-common-protos:1.0.0",
-                "com.google.api.grpc:proto-google-iam-v1:0.1.28",
+                Gson.lib,
+                GoogleApis.common,
+                GoogleApis.commonProtos,
+                GoogleApis.protoAim,
 
-                "com.google.cloud:google-cloud-core:1.91.3",
-                "com.google.api:gax:1.49.1",
+                GoogleCloud.core,
+                GoogleApis.gax,
 
-                "com.google.oauth-client:google-oauth-client:1.25.0",
+                GoogleApis.oAuthClient,
 
-                "com.google.auth:google-auth-library-credentials:0.11.0",
-                "com.google.auth:google-auth-library-oauth2-http:0.11.0",
+                GoogleApis.AuthLibrary.credentials,
+                GoogleApis.AuthLibrary.oAuth2Http,
 
-                "com.google.j2objc:j2objc-annotations:1.3",
+                J2ObjC.lib,
 
-                "com.google.http-client:google-http-client:1.29.0",
-                "com.google.http-client:google-http-client-jackson2:1.29.0",
+                HttpClient.google,
+                HttpClient.jackson2,
+                HttpClient.gson,
 
-                "com.google.api-client:google-api-client:1.30.9",
+                GoogleApis.client,
 
-                "org.apache.httpcomponents:httpclient:4.5.5",
+                ThreeTen.lib,
 
-                "com.fasterxml.jackson.core:jackson-core:2.9.9",
-                "commons-collections:commons-collections:3.2.2",
+                HttpComponents.client,
+                HttpComponents.core,
 
-                "io.netty:netty-common:4.1.34.Final",
-                "io.netty:netty-buffer:4.1.34.Final",
-                "io.netty:netty-transport:4.1.34.Final",
-                "io.netty:netty-handler:4.1.34.Final",
-                "io.netty:netty-codec-http:4.1.34.Final",
+                Jackson.core,
 
-                "javax.servlet:javax.servlet-api:3.1.0",
+                CommonsCollections.lib,
 
-                "org.eclipse.jetty.orbit:javax.servlet.jsp:2.2.0.v201112011158",
-                "org.eclipse.jetty.toolchain:jetty-schemas:3.1",
+                Netty.common,
+                Netty.buffer,
+                Netty.transport,
+                Netty.handler,
+                Netty.codecHttp,
 
-                "com.google.gradle:osdetector-gradle-plugin:1.7.0",
+                JavaX.servletApi,
 
-                "io.grpc:grpc-context:1.38.0",
+                Jetty.orbitServletJsp,
+                Jetty.toolchainSchemas,
+
+                OsDetector.lib,
+
+                Grpc.context,
 
                 // Transitive dependencies from `core-java` may have different (older) versions.
                 "io.spine:spine-base:$spineBaseVersion",
@@ -296,7 +315,11 @@ subprojects {
         }
     }
 
-    val projectsWithDocs = setOf("client-js", "firebase-web", "web")
+    val projectsWithDocs = setOf(
+        "client-js",
+        "firebase-web",
+        "web"
+    )
     if (projectsWithDocs.contains(project.name)) {
         apply(from = Scripts.updateGitHubPages(project))
         project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
