@@ -26,10 +26,9 @@
 
 package io.spine.web.test.given;
 
-import com.google.protobuf.Timestamp;
+import io.spine.base.Time;
 import io.spine.core.Subscribe;
 import io.spine.core.UserId;
-import io.spine.server.entity.storage.Column;
 import io.spine.server.projection.Projection;
 
 import java.util.List;
@@ -41,12 +40,11 @@ import static io.spine.web.test.given.UserTasks.Load.VERY_HIGH;
 /**
  * A projection representing a user and a list of {@link TaskId tasks} assigned to him.
  *
- * <p>Assigned tasks count and indication of several tasks assigned are exposed as
- * {@linkplain Column columns} allowing ordering and filtering when user tasks are queried.
+ * <p>Assigned tasks count and indication of several tasks assigned are exposed as columns
+ * allowing ordering and filtering when user tasks are queried.
  */
 final class UserTasksProjection
-        extends Projection<UserId, UserTasks, UserTasks.Builder>
-        implements UserTasksWithColumns {
+        extends Projection<UserId, UserTasks, UserTasks.Builder> {
 
     @Subscribe
     void on(TaskCreated event) {
@@ -55,8 +53,6 @@ final class UserTasksProjection
                  .setLastUpdated(event.getWhen());
     }
 
-    // TODO 5/31/2019[yegor.udovchenko]: Remove @CheckReturnValue suppression
-    // for `remove` operation
     @SuppressWarnings("CheckReturnValue")
     @Subscribe
     void on(TaskReassigned event) {
@@ -64,34 +60,29 @@ final class UserTasksProjection
             List<TaskId> tasks = state().getTasksList();
             final int reassigned = tasks.indexOf(event.getId());
             builder().removeTasks(reassigned);
-        } else if (reassignedToThisUser(event)){
+        } else if (reassignedToThisUser(event)) {
             builder().setId(event.getTo())
                      .addTasks(event.getId());
         }
 
-        builder().setLastUpdated(event.getWhen());
+        int taskTotal = countTasks();
+        builder().setLastUpdated(event.getWhen())
+                 .setTaskCount(taskTotal)
+                 .setLastUpdated(Time.currentTime())
+                 .setIsOverloaded(taskTotal > 1)
+                 .setLoad(loadWith(taskTotal));
+
     }
 
-    @Override
-    public int getTaskCount() {
-        return state().getTasksCount();
+    private int countTasks() {
+        List<TaskId> tasks = builder().getTasksList();
+        return tasks.size();
     }
 
-    @Override
-    public Timestamp getLastUpdated() {
-        return state().getLastUpdated();
-    }
-
-    @Override
-    public boolean getIsOverloaded() {
-        return state().getTasksCount() > 1;
-    }
-
-    @Override
-    public UserTasks.Load getLoad() {
-        if (getTaskCount() == 0) {
+    private static UserTasks.Load loadWith(int taskTotal) {
+        if (taskTotal == 0) {
             return LOW;
-        } else if (getTaskCount() == 1) {
+        } else if (taskTotal == 1) {
             return HIGH;
         } else {
             return VERY_HIGH;
@@ -99,10 +90,12 @@ final class UserTasksProjection
     }
 
     private boolean reassignedFromThisUser(TaskReassigned event) {
-        return event.hasFrom() && event.getFrom().equals(id());
+        return event.hasFrom() && event.getFrom()
+                                       .equals(id());
     }
 
     private boolean reassignedToThisUser(TaskReassigned event) {
-        return event.hasTo() && event.getTo().equals(id());
+        return event.hasTo() && event.getTo()
+                                     .equals(id());
     }
 }

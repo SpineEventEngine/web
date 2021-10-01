@@ -105,6 +105,19 @@ class Given {
   }
 }
 
+class Ordering {
+
+  /**
+   * Returns the first element of the list of `OrderBy` elements.
+   *
+   * @param {Array<OrderBy>} orderByList
+   * @returns {OrderBy}
+   */
+  static firstOrderBy(orderByList) {
+    return orderByList[0]
+  }
+}
+
 Given.ENTITY_CLASS = {
   TASK_ID: TaskId,
   TASK: Task,
@@ -546,8 +559,10 @@ describe('QueryBuilder', function () {
 
     const format = query.getFormat();
     assert.strictEqual(limit, format.getLimit());
-    assert.strictEqual(fieldName, format.getOrderBy().getColumn());
-    assert.strictEqual(OrderBy.Direction.ASCENDING, format.getOrderBy().getDirection());
+
+    let orderBy = Ordering.firstOrderBy(format.getOrderByList());
+    assert.strictEqual(fieldName, orderBy.getColumn());
+    assert.strictEqual(OrderBy.Direction.ASCENDING, orderBy.getDirection());
 
     done();
   });
@@ -568,8 +583,10 @@ describe('QueryBuilder', function () {
 
     const format = query.getFormat();
     assert.strictEqual(limit, format.getLimit());
-    assert.strictEqual(fieldName, format.getOrderBy().getColumn());
-    assert.strictEqual(OrderBy.Direction.DESCENDING, format.getOrderBy().getDirection());
+
+    let orderBy = Ordering.firstOrderBy(format.getOrderByList());
+    assert.strictEqual(fieldName, orderBy.getColumn());
+    assert.strictEqual(OrderBy.Direction.DESCENDING, orderBy.getDirection());
 
     done();
   });

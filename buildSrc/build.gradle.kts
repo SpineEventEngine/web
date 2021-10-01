@@ -24,17 +24,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This script uses three declarations of the constant [licenseReportVersion] because
+ * currently there is no way to define a constant _before_ a build script of `buildSrc`.
+ * We cannot use imports or do something else before the `buildscript` or `plugin` clauses.
+ *
+ * Therefore, when a version of [io.spine.internal.dependency.LicenseReport] changes, it should be
+ * changed in the Kotlin object _and_ in this file below thrice.
+ */
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    val licenseReportVersion = "1.16"
+    dependencies {
+        classpath("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+    }
+}
+
 plugins {
+    java
+    groovy
     `kotlin-dsl`
+    pmd
+    val licenseReportVersion = "1.16"
+    id("com.github.jk1.dependency-license-report").version(licenseReportVersion)
 }
 
 repositories {
     mavenLocal()
-    jcenter()
+    gradlePluginPortal()
+    mavenCentral()
 }
 
 val jacksonVersion = "2.11.0"
+val googleAuthToolVersion = "2.1.2"
+val licenseReportVersion = "1.16"
+val grGitVersion = "3.1.1"
+
+/**
+ * The version of Guava used in `buildSrc`.
+ *
+ * Always use the same version as the one specified in `io.spine.internal.dependency.Guava`.
+ * Otherwise, when testing Gradle plugins, clashes may occur.
+ */
+val guavaVersion = "30.1.1-jre"
 
 dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
+    implementation("com.google.cloud.artifactregistry:artifactregistry-auth-common:$googleAuthToolVersion") {
+        exclude(group = "com.google.guava")
+    }
+    implementation("com.google.guava:guava:$guavaVersion")
+    api("com.github.jk1:gradle-license-report:$licenseReportVersion")
+    implementation("org.ajoberstar.grgit:grgit-core:${grGitVersion}")
 }

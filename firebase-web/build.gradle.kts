@@ -29,32 +29,37 @@ import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
-import io.spine.gradle.internal.DependencyResolution
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.slf4jJul
+
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.dependency.Jackson
+import io.spine.internal.dependency.Firebase
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.HttpClient
 
 plugins {
-    id("io.spine.tools.spine-model-compiler")
+    id("io.spine.mc-java")
 }
-
-apply(from = Deps.scripts.modelCompiler(project))
 
 group = "io.spine.gcloud"
 
-DependencyResolution.excludeProtobufLite(configurations)
+configurations.excludeProtobufLite()
+
+val spineBaseTypesVersion: String by extra
 
 dependencies {
+    api("io.spine:spine-base-types:$spineBaseTypesVersion")
     api(project(":web"))
-    api(Deps.build.firebaseAdmin) {
+    api(Firebase.admin) {
         exclude(group = "com.google.guava", module = "guava")
         exclude(group = "io.grpc")
     }
 
-    implementation(Deps.build.jacksonDatabind)
-    implementation(Deps.build.googleHttpClientApache)
+    implementation(Jackson.databind)
+    implementation(HttpClient.apache)
 
     // Required by the Firebase Admin SDK.
-    runtimeOnly(Deps.runtime.slf4jJul)
+    @Suppress("DEPRECATION", "RemoveRedundantQualifierName")
+    runtimeOnly(io.spine.internal.dependency.Slf4J.lib)
 
     testImplementation(project(":testutil-web"))
 }
@@ -65,7 +70,7 @@ val compileProtoToJs by tasks.registering {
 
 protobuf {
     protoc {
-        artifact = Deps.build.protoc
+        artifact = Protobuf.compiler
     }
     generateProtoTasks {
         all().forEach { task ->
@@ -82,3 +87,11 @@ protobuf {
         }
     }
 }
+
+//TODO:2021-09-29:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy
+tasks.jar.get().duplicatesStrategy = dupStrategy

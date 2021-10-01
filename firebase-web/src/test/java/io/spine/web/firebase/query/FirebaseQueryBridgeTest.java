@@ -101,7 +101,7 @@ class FirebaseQueryBridgeTest {
                 .setQueryService(queryService)
                 .setFirebaseClient(firebaseClient)
                 .build();
-        Query query = queryFactory.all(Event.class);
+        Query query = queryFactory.all(Book.class);
         FirebaseQueryResponse response = bridge.send(query);
         assertThat(response)
              .isNotNull();

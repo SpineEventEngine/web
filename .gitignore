@@ -107,3 +107,8 @@ pubspec.lock
 **/*.pbjson.dart
 **/*.pbserver.dart
 **/types.dart
+
+**/node_modules
+
+# Ingore for the purpose of the integration tests.
+/integration-tests/web-tests/package-lock.json

@@ -24,11 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.common.collect.Lists
-import com.google.common.io.Files
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.testProtobuf
+import io.spine.internal.gradle.fs.LazyTempPath
+import io.spine.internal.gradle.github.pages.updateGitHubPages
 
-
-apply(from = "$rootDir/scripts/js.gradle")
+apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
 val spineCoreVersion: String by extra
 
@@ -49,8 +50,8 @@ dependencies {
 }
 
 idea.module {
-    sourceDirs.add(file(project.extra["srcDir"]))
-    testSourceDirs.add(file(project.extra["testSrcDir"]))
+    sourceDirs.add(file(project.extra["srcDir"]!!))
+    testSourceDirs.add(file(project.extra["testSrcDir"]!!))
 
     excludeDirs.addAll(
         files(
@@ -82,23 +83,21 @@ tasks.compileTestJava {
     enabled = false
 }
 
-val jsDocDir = Files.createTempDir()
+val jsDocDir = LazyTempPath("jsDocs")
 
 val jsDoc by tasks.registering(type = Exec::class) {
     commandLine(
         "$projectDir/node_modules/.bin/jsdoc",
         "-r",
         "-d",
-        jsDocDir.path,
+        jsDocDir,
         "$projectDir/main/"
     )
 }
 
 afterEvaluate {
-    val generatedDocs = "generatedDocs"
-    val predefinedDocs = extra[generatedDocs] as Iterable<File>
-    val newDocs = Lists.newArrayList(predefinedDocs)
-    newDocs.add(file(jsDocDir))
-    extra[generatedDocs] = newDocs
+    updateGitHubPages {
+        includeInputs.add(jsDocDir)
+    }
     tasks.getByName("updateGitHubPages").dependsOn(jsDoc)
 }

@@ -58,7 +58,7 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
     }
 
     @BeforeAll
-    @SuppressWarnings("JdkObsolete") // we're forced to use `Date` for the `AccessToken`.
+    @SuppressWarnings({"JdkObsolete", "JavaUtilDate" })  /* Comply with Google API. */
     static void initApp() {
         GoogleCredentials fakeCredentials =
                 GoogleCredentials.create(new AccessToken("apparently fake", new Date()));
