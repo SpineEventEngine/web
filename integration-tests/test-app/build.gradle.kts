@@ -30,8 +30,6 @@ plugins {
     id("io.spine.mc-java")
 }
 
-//apply(from = "$rootDir/config/gradle/model-compiler.gradle")
-
 val spineCoreVersion: String by extra
 
 dependencies {
