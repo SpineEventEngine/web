@@ -26,6 +26,7 @@
 
 package io.spine.internal.dependency
 
+@Suppress("unused")
 object Netty {
     // https://github.com/netty/netty/releases
     private const val version = "4.1.68.Final"
