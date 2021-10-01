@@ -96,8 +96,7 @@ public final class StoredJson extends StringTypeValue {
      */
     @Internal
     public JsonObject asJsonObject() {
-        JsonParser parser = new JsonParser();
-        JsonElement object = parser.parse(value());
+        JsonElement object = JsonParser.parseString(value());
         return object.getAsJsonObject();
     }
 
