@@ -292,6 +292,7 @@ apply {
  */
 fun ResolutionStrategy.forceTransitiveDependencies() {
     val spineBaseVersion: String by extra
+    val spineBaseTypesVersion: String by extra
     val spineTimeVersion: String by extra
 
     force(
@@ -345,6 +346,7 @@ fun ResolutionStrategy.forceTransitiveDependencies() {
 
         // Transitive dependencies from `core-java` may have different (older) versions.
         "io.spine:spine-base:$spineBaseVersion",
+        "io.spine:spine-base-types:$spineBaseTypesVersion",
         "io.spine:spine-time:$spineTimeVersion",
         "io.spine.tools:spine-testlib:$spineBaseVersion"
     )
