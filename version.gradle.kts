@@ -24,11 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.65")
+val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
 val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
 val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
 val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.61")
 val spineVersion: String by extra(spineCoreVersion)
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.65")
+val versionToPublish: String by extra("2.0.0-SNAPSHOT.67")
 val versionToPublishJs: String by extra(versionToPublish)
