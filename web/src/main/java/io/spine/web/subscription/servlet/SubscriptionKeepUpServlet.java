@@ -34,7 +34,7 @@ import io.spine.web.subscription.SubscriptionBridge;
 /**
  * An abstract servlet for a client request to keep up an existing {@link Subscription}.
  *
- * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
+ * <p>This servlet parses the client request and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
  *
  * @param <T>
