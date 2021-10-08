@@ -24,11 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle
 
-// https://checkstyle.sourceforge.io/
-// See `io.spine.internal.gradle.checkstyle.CheckStyleConfig`.
-@Suppress("unused")
-object CheckStyle {
-    const val version = "8.29"
+/**
+ * Returns `true` if the version of a project contains `snapshot` (in any case),
+ * `false` otherwise.
+ */
+fun String.isSnapshot(): Boolean {
+    return contains("snapshot", true)
 }

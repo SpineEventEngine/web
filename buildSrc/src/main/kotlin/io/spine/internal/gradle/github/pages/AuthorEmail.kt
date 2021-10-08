@@ -24,11 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.github.pages
 
-// https://checkstyle.sourceforge.io/
-// See `io.spine.internal.gradle.checkstyle.CheckStyleConfig`.
-@Suppress("unused")
-object CheckStyle {
-    const val version = "8.29"
+/**
+ * An author of updates to GitHub pages.
+ */
+class AuthorEmail(val value: String) {
+
+    companion object {
+
+        /**
+         * The name of the environment variable that contains the email to use for authoring
+         * the commits to the GitHub Pages branch.
+         */
+        @Suppress("MemberVisibilityCanBePrivate") // for documentation purposes.
+        const val environmentVariable = "FORMAL_GIT_HUB_PAGES_AUTHOR"
+
+        /**
+         * Obtains the author from the system [environment variable][environmentVariable].
+         */
+        fun fromVar() : AuthorEmail {
+            val envValue = System.getenv(environmentVariable)
+            if (envValue.isNullOrEmpty()) {
+                throw IllegalStateException(
+                    "Unable to obtain an author from `${environmentVariable}`."
+                )
+            }
+            return AuthorEmail(envValue)
+        }
+    }
+
+    override fun toString(): String = value
 }

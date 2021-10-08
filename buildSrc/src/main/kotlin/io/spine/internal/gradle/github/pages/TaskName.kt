@@ -24,11 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.github.pages
 
-// https://checkstyle.sourceforge.io/
-// See `io.spine.internal.gradle.checkstyle.CheckStyleConfig`.
-@Suppress("unused")
-object CheckStyle {
-    const val version = "8.29"
+object TaskName {
+
+    /**
+     * The name of the task which updates the GitHub Pages.
+     */
+    const val updateGitHubPages = "updateGitHubPages"
+
+    /**
+     * The name of the helper task to gather the generated Javadoc before updating GitHub Pages.
+     */
+    const val copyJavadoc = "copyJavadoc"
 }

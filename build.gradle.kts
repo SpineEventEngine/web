@@ -46,12 +46,13 @@ import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.ThreeTen
 import io.spine.internal.gradle.JavadocConfig
-import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyGitHubPackages
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
+import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.report.pom.PomGenerator
 import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -132,13 +133,6 @@ allprojects {
 }
 
 subprojects {
-    val sourcesRootDir = "$projectDir/src"
-    val generatedRootDir = "$projectDir/generated"
-    val generatedJavaDir = "$generatedRootDir/main/java"
-    val generatedTestJavaDir = "$generatedRootDir/test/java"
-    val generatedSpineDir = "$generatedRootDir/main/spine"
-    val generatedTestSpineDir = "$generatedRootDir/test/spine"
-
     apply {
         plugin("java-library")
         plugin("kotlin")
@@ -173,7 +167,10 @@ subprojects {
 
     JavadocConfig.applyTo(project)
 
-    updateGitHubPages {
+    val spineBaseVersion: String by extra
+    val spineCoreVersion: String by extra
+
+    updateGitHubPages(spineBaseVersion) {
         allowInternalJavadoc.set(true)
         rootFolder.set(rootDir)
     }
@@ -193,9 +190,6 @@ subprojects {
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
         }
     }
-
-    val spineBaseVersion: String by extra
-    val spineCoreVersion: String by extra
 
     dependencies {
         ErrorProne.apply {
@@ -224,31 +218,13 @@ subprojects {
     }
 
     sourceSets {
+        val generatedRootDir = "$projectDir/generated"
         main {
-            java.srcDirs(generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir)
-            resources.srcDirs("$sourcesRootDir/main/resources", "$generatedRootDir/main/resources")
+            java.srcDirs("$generatedRootDir/main/spine")
         }
         test {
-            java.srcDirs(generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir)
-            resources.srcDirs("$sourcesRootDir/test/resources", "$generatedRootDir/test/resources")
+            java.srcDirs("$generatedRootDir/test/spine")
         }
-    }
-
-    tasks.register("sourceJar", Jar::class) {
-        from(sourceSets.main.get().allJava)
-        archiveClassifier.set("sources")
-    }
-
-    tasks.register("testOutputJar", Jar::class) {
-        from(sourceSets.main.get().output)
-        archiveClassifier.set("test")
-    }
-
-    tasks.register("javadocJar", Jar::class) {
-        from("$projectDir/build/docs/javadoc")
-        archiveClassifier.set("javadoc")
-
-        dependsOn(tasks.javadoc)
     }
 
     tasks.test {
@@ -257,23 +233,24 @@ subprojects {
         }
     }
 
-    idea {
-        module {
-            generatedSourceDirs.add(file(generatedJavaDir))
-            testSourceDirs.add(file(generatedTestJavaDir))
-            isDownloadJavadoc = true
-            isDownloadSources = true
-        }
-    }
+//    idea {
+//        module {
+//            generatedSourceDirs.add(file(generatedJavaDir))
+//            testSourceDirs.add(file(generatedTestJavaDir))
+//            isDownloadJavadoc = true
+//            isDownloadSources = true
+//        }
+//    }
 }
 
 apply {
     with(Scripts) {
         from(jacoco(project))
         from(repoLicenseReport(project))
-        from(generatePom(project))
     }
 }
+
+PomGenerator.applyTo(project)
 
 /**
  * Force transitive dependencies.

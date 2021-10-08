@@ -24,11 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.javadoc
 
-// https://checkstyle.sourceforge.io/
-// See `io.spine.internal.gradle.checkstyle.CheckStyleConfig`.
-@Suppress("unused")
-object CheckStyle {
-    const val version = "8.29"
-}
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.javadoc.Javadoc
+
+/**
+ * Finds a [Javadoc] Gradle task by the passed name.
+ */
+fun TaskContainer.javadocTask(named: String) = this.getByName(named) as Javadoc
+
+/**
+ * Finds a default [Javadoc] Gradle task.
+ */
+fun TaskContainer.javadocTask() = this.getByName("javadoc") as Javadoc

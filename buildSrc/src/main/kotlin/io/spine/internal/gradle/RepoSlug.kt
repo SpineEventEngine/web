@@ -24,11 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle
 
-// https://checkstyle.sourceforge.io/
-// See `io.spine.internal.gradle.checkstyle.CheckStyleConfig`.
-@Suppress("unused")
-object CheckStyle {
-    const val version = "8.29"
+import org.gradle.api.GradleException
+
+/**
+ * A name of a repository.
+ */
+class RepoSlug(val value: String) {
+
+    companion object {
+
+        /**
+         * The name of the environment variable containing the repository slug, for which
+         * the Gradle build is performed.
+         */
+        private const val environmentVariable = "REPO_SLUG"
+
+        /**
+         * Reads `REPO_SLUG` environment variable and returns its value.
+         *
+         * In case it is not set, a [GradleException] is thrown.
+         */
+        fun fromVar(): RepoSlug {
+            val envValue = System.getenv(environmentVariable)
+            if (envValue.isNullOrEmpty()) {
+                throw GradleException("`REPO_SLUG` environment variable is not set.")
+            }
+            return RepoSlug(envValue)
+        }
+    }
+
+    override fun toString(): String = value
+
+    /**
+     * Returns the GitHub URL to the project repository.
+     */
+    fun gitHost(): String {
+        return "git@github.com-publish:${value}.git"
+    }
 }
