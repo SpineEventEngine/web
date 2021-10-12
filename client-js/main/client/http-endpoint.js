@@ -290,7 +290,7 @@ export class HttpEndpoint extends Endpoint {
         || '/subscription/keep-up-all';
     const request = new Subscriptions()
     request.setSubscriptionList(subscriptions);
-    const typed = TypedMessage.of(request)
+    const typed = TypedMessage.of(request);
     return this._sendMessage(path, typed);
   }
 
