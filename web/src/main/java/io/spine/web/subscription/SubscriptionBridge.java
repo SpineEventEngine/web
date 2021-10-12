@@ -66,8 +66,8 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      * cannot be trusted to cancel every subscription it creates.
      *
      * <p>Also, in some environments, HTTP requests to the server are required in order for a server
-     * instance to stay alive. If the environment kills off a server instance, it would not be able
-     * to propagate subscription updates to the clients.
+     * instance to stay alive. If the environment kills off all server instances,
+     * there would be no one to propagate subscription updates to the clients.
      *
      * @param subscription
      *         a subscription that should stay open
@@ -83,8 +83,8 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      * cannot be trusted to cancel every subscription it creates.
      *
      * <p>Also, in some environments, HTTP requests to the server are required in order for a server
-     * instance to stay alive. If the environment kills off a server instance, it would not be able
-     * to propagate subscription updates to the clients.
+     * instance to stay alive. If the environment kills off all server instances,
+     * there would be no one to propagate subscription updates to the clients.
      *
      * @param subscription
      *         a subscription that should stay open
