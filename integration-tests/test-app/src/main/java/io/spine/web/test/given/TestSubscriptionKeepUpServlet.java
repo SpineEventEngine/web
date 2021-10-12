@@ -26,8 +26,7 @@
 
 package io.spine.web.test.given;
 
-import io.spine.core.Response;
-import io.spine.web.subscription.servlet.SubscriptionKeepUpServlet;
+import io.spine.web.subscription.servlet.SubscriptionBulkKeepUpServlet;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -36,9 +35,9 @@ import static io.spine.web.test.given.Server.application;
 /**
  * An endpoint for client requests to keep subscription running.
  */
-@WebServlet("/subscription/keep-up")
+@WebServlet("/subscription/keep-up-all")
 @SuppressWarnings("serial")
-public class TestSubscriptionKeepUpServlet extends SubscriptionKeepUpServlet<Response> {
+public class TestSubscriptionKeepUpServlet extends SubscriptionBulkKeepUpServlet {
 
     public TestSubscriptionKeepUpServlet() {
         super(application().subscriptionBridge());

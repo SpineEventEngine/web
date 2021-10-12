@@ -128,17 +128,21 @@ export class FirebaseSubscriptionService {
     this._subscriptions.forEach(subscription => {
       const spineSubscription = subscription.internal();
       if (subscription.closed) {
-        this._endpoint.cancelSubscription(spineSubscription).then(() => {
-          this._removeSubscription(subscription);
-        });
-      } else {
-        this._endpoint.keepUpSubscription(spineSubscription).then(response => {
-          const responseStatus = response.status;
-          const responseStatusProto = ObjectToProto.convert(responseStatus, Status.typeUrl());
-          if (responseStatusProto.getStatusCase() !== Status.StatusCase.OK) {
-            this._removeSubscription(subscription)
-          }
-        });
+        this._removeSubscription(subscription);
+        this._endpoint.cancelSubscription(spineSubscription);
+      }
+    });
+    const subscriptions = [...this._subscriptions.map(value => value.internal())]
+    if (subscriptions.length === 0) {
+      return;
+    }
+    this._endpoint.keepUpSubscriptions(subscriptions).then(response => {
+      for (let i = 0; i < response.response.length; i++) {
+        const r = response.response[i];
+        const status = ObjectToProto.convert(r.status, Status.typeUrl());
+        if (status.getStatusCase() !== Status.StatusCase.OK) {
+          this._removeSubscription(subscriptions[i])
+        }
       }
     });
   }

@@ -28,6 +28,7 @@
 
 import {TypedMessage} from './typed-message';
 import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
+import {Subscriptions} from '../proto/spine/web/keeping_up_pb';
 
 /**
  * @typedef {Object} SubscriptionRouting
@@ -36,6 +37,8 @@ import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
  *  the name of the subscription creation endpoint; defaults to "/subscription/create"
  * @property {string} keepUp
  *  the name of the subscription keep up endpoint; defaults to "/subscription/keep-up"
+ * @property {string} keepUpAll
+ *  the name of the subscription bulk keep up endpoint; defaults to "/subscription/keep-up-all"
  * @property {string} cancel
  *  the name of the subscription cancellation endpoint; defaults to "/subscription/cancel"
  */
@@ -100,6 +103,19 @@ class Endpoint {
     return this._keepUp(typedSubscription);
   }
 
+
+  /**
+   * Sends a request to keep a number of subscriptions, stopping them from being closed by
+   * the server.
+   *
+   * @param {!Array<spine.client.Subscription>} subscriptions a subscription that should be kept open
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  keepUpSubscriptions(subscriptions) {
+    return this._keepUpAll(subscriptions);
+  }
+
   /**
    * Sends off a request to cancel an existing subscription.
    *
@@ -156,6 +172,18 @@ class Endpoint {
    * @abstract
    */
   _keepUp(subscription) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+
+  /**
+   * @param {!Array<TypedMessage<spine.client.Subscription>>} subscriptions subscriptions to keep up
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _keepUpAll(subscriptions) {
     throw new Error('Not implemented in abstract base.');
   }
 
@@ -244,6 +272,26 @@ export class HttpEndpoint extends Endpoint {
     const path = (this._routing && this._routing.subscription && this._routing.subscription.keepUp)
         || '/subscription/keep-up';
     return this._sendMessage(path, subscription);
+  }
+
+
+  /**
+   * Sends off a request to keep alive given subscriptions.
+   *
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions that are prevented
+   *                                                          from being closed by the server
+   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
+   *                                      rejected if the client response is not 2xx or a
+   *                                      connection error occurs
+   * @protected
+   */
+  _keepUpAll(subscriptions) {
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.keepUpAll)
+        || '/subscription/keep-up-all';
+    const request = new Subscriptions()
+    request.setSubscriptionList(subscriptions);
+    const typed = TypedMessage.of(request)
+    return this._sendMessage(path, typed);
   }
 
   /**
