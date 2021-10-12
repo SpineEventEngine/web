@@ -59,11 +59,15 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     S subscribe(Topic topic);
 
     /**
-     * Keep up the subscription, prohibiting it from closing from the server-side.
+     * Keep up the subscription, preventing it from closing from the server.
      *
-     * <p>This operation is performed because subscription can only live some finite amount of time.
-     * Server cancels the subscription at some point, because maintaining the subscription requires
-     * resources and the client cannot be trusted to cancel every subscription it creates.
+     * <p>This operation is performed because a subscription lifetime is finite. Server cancels
+     * all subscriptions at some point, because maintaining them requires resources and the client
+     * cannot be trusted to cancel every subscription it creates.
+     *
+     * <p>Also, in some environments, HTTP requests to the server are required in order for a server
+     * instance to stay alive. If the environment kills off a server instance, it would not be able
+     * to propagate subscription updates to the clients.
      *
      * @param subscription
      *         a subscription that should stay open
@@ -72,11 +76,15 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     K keepUp(Subscription subscription);
 
     /**
-     * Keep up the subscription, prohibiting it from closing from the server-side.
+     * Keep up given subscriptions, preventing them from closing from the server.
      *
-     * <p>This operation is performed because subscription can only live some finite amount of time.
-     * Server cancels the subscription at some point, because maintaining the subscription requires
-     * resources and the client cannot be trusted to cancel every subscription it creates.
+     * <p>This operation is performed because a subscription lifetime is finite. Server cancels
+     * all subscriptions at some point, because maintaining them requires resources and the client
+     * cannot be trusted to cancel every subscription it creates.
+     *
+     * <p>Also, in some environments, HTTP requests to the server are required in order for a server
+     * instance to stay alive. If the environment kills off a server instance, it would not be able
+     * to propagate subscription updates to the clients.
      *
      * @param subscription
      *         a subscription that should stay open
