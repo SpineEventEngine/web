@@ -72,6 +72,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      * @param subscription
      *         a subscription that should stay open
      * @return the keep-up response
+     * @see #keepUpAll(Subscriptions) for the preferable batched way of keeping up the subscriptions
      */
     K keepUp(Subscription subscription);
 
@@ -89,6 +90,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      * @param subscription
      *         a subscription that should stay open
      * @return the keep-up response
+     * @see #keepUp(Subscription)
      */
     Responses keepUpAll(Subscriptions subscription);
 
