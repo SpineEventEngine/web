@@ -132,7 +132,7 @@ export class FirebaseSubscriptionService {
         this._endpoint.cancelSubscription(spineSubscription);
       }
     });
-    const subscriptions = [...this._subscriptions.map(value => value.internal())]
+    const subscriptions = this._subscriptions.map(value => value.internal());
     if (subscriptions.length === 0) {
       return;
     }
