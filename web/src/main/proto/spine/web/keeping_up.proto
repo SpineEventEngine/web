@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package spine.web;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web";
+option java_outer_classname = "KeepingUpProto";
+option java_multiple_files = true;
+
+import "spine/client/subscription.proto";
+import "spine/core/response.proto";
+
+// A list of subscriptions to keep up.
+message Subscriptions {
+    repeated client.Subscription subscription = 1 [(required) = true, (validate) = true];
+}
+
+// A list of keep up responses.
+//
+// The order of responses corresponds to the order of subscriptions in the `Subscriptions` request.
+//
+message Responses {
+    repeated core.Response response = 1 [(required) = true, (validate) = true];
+}

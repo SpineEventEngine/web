@@ -29,6 +29,8 @@ package io.spine.web.subscription;
 import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
+import io.spine.web.Responses;
+import io.spine.web.Subscriptions;
 
 /**
  * A bridge for requests to a subscription {@link io.spine.server.SubscriptionService}.
@@ -68,6 +70,19 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      * @return the keep-up response
      */
     K keepUp(Subscription subscription);
+
+    /**
+     * Keep up the subscription, prohibiting it from closing from the server-side.
+     *
+     * <p>This operation is performed because subscription can only live some finite amount of time.
+     * Server cancels the subscription at some point, because maintaining the subscription requires
+     * resources and the client cannot be trusted to cancel every subscription it creates.
+     *
+     * @param subscription
+     *         a subscription that should stay open
+     * @return the keep-up response
+     */
+    Responses keepUpAll(Subscriptions subscription);
 
     /**
      * Cancel the existing subscription, which stopping sending new data updates to the client.

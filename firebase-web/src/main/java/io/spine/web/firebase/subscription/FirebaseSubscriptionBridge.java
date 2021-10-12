@@ -36,6 +36,8 @@ import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
 import io.spine.core.Status;
 import io.spine.type.TypeUrl;
+import io.spine.web.Responses;
+import io.spine.web.Subscriptions;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
@@ -106,6 +108,19 @@ public final class FirebaseSubscriptionBridge
         boolean exists = repository.updateExisting(topic.buildPartial());
         return exists ? ok() : missing(subscription);
     }
+
+    @Override
+    public Responses keepUpAll(Subscriptions subscriptions) {
+        checkNotNull(subscriptions);
+        return subscriptions.getSubscriptionList()
+                .stream()
+                .map(this::keepUp)
+                .collect(Responses::newBuilder,
+                         Responses.Builder::addResponse,
+                         (l, r) -> l.addAllResponse(r.getResponseList()))
+                .vBuild();
+    }
+
 
     @Override
     public Response cancel(Subscription subscription) {
