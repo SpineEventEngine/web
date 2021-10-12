@@ -92,19 +92,6 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to keep a subscription, stopping it from being closed by server.
-   *
-   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
-   * @return {Promise<Object>} a promise of a successful server response, rejected if
-   *                           an error occurs
-   */
-  keepUpSubscription(subscription) {
-    const typedSubscription = TypedMessage.of(subscription);
-    return this._keepUp(typedSubscription);
-  }
-
-
-  /**
    * Sends a request to keep a number of subscriptions, stopping them from being closed by
    * the server.
    *
