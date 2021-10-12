@@ -30,15 +30,15 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Subscription;
+import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
-import io.spine.client.TopicId;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.util.Durations.compare;
-import static com.google.protobuf.util.Timestamps.between;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.protobuf.util.Timestamps.compare;
 import static java.util.Collections.synchronizedMap;
 
 /**
@@ -52,25 +52,7 @@ import static java.util.Collections.synchronizedMap;
  */
 final class HealthLog {
 
-    private final Map<TopicId, Timestamp> updateTimes;
-    private final Duration expirationTimeout;
-
-    private HealthLog(Map<TopicId, Timestamp> updateTimes, Duration expirationTimeout) {
-        this.updateTimes = checkNotNull(updateTimes);
-        this.expirationTimeout = checkNotNull(expirationTimeout);
-    }
-
-    /**
-     * Creates a {@code HealthLog} with a certain topic expiration timeout.
-     *
-     * @param expirationTimeout
-     *         a duration of a timeout to count a {@code Topic} active since its last {@code keepUp}
-     *         request is received
-     * @return a new instance of {@code HealthLog}
-     */
-    static HealthLog withTimeout(Duration expirationTimeout) {
-        return new HealthLog(synchronizedMap(new HashMap<>()), expirationTimeout);
-    }
+    private final Map<SubscriptionId, Timestamp> expirationTimes = synchronizedMap(new HashMap<>());
 
     /**
      * Updates the health record for the given {@code Topic} by recording the timestamp of its
@@ -79,19 +61,32 @@ final class HealthLog {
      * @param topic
      *         the topic to update.
      */
-    void put(Topic topic) {
-        TopicId id = topic.getId();
-        Timestamp updateTime = topic.getContext()
-                                    .getTimestamp();
-        updateTimes.put(id, updateTime);
+    void put(SubscriptionId subscription, Timestamp validThru) {
+        checkNotNull(subscription);
+        checkNotNull(validThru);
+        checkState(!expirationTimes.containsKey(subscription),
+                   "Such a subscription already exists.");
+        expirationTimes.put(subscription, validThru);
+    }
+
+    void put(TimedSubscription timed) {
+        checkNotNull(timed);
+        put(timed.getSubscription().getId(), timed.getValidThru());
+    }
+
+    void prolong(SubscriptionId subscription, Timestamp validThru) {
+        checkNotNull(subscription);
+        checkNotNull(validThru);
+        checkState(expirationTimes.containsKey(subscription), "No such subscription.");
+        expirationTimes.put(subscription, validThru);
     }
 
     /**
      * Tells whether any activity has been recorded for the given {@code Topic}.
      */
-    boolean isKnown(Topic topic) {
-        TopicId id = topic.getId();
-        return updateTimes.containsKey(id);
+    boolean isKnown(SubscriptionId subscription) {
+        checkNotNull(subscription);
+        return expirationTimes.containsKey(subscription);
     }
 
     /**
@@ -105,12 +100,11 @@ final class HealthLog {
      *         the topic to detect staleness
      * @return {@code true} if the topic is stale, {@code false} otherwise
      */
-    boolean isStale(Topic topic) {
-        TopicId id = topic.getId();
-        Timestamp lastUpdate = updateTimes.get(id);
-        checkNotNull(lastUpdate);
+    boolean isStale(SubscriptionId subscription) {
+        checkNotNull(subscription);
+        Timestamp validThru = expirationTimes.get(subscription);
+        checkNotNull(validThru);
         Timestamp now = Time.currentTime();
-        Duration elapsed = between(lastUpdate, now);
-        return compare(elapsed, expirationTimeout) > 0;
+        return compare(validThru, now) > 0;
     }
 }

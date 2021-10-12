@@ -33,6 +33,7 @@ import com.google.gson.JsonParser;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
 
@@ -98,6 +99,11 @@ public final class StoredJson extends StringTypeValue {
     public JsonObject asJsonObject() {
         JsonElement object = JsonParser.parseString(value());
         return object.getAsJsonObject();
+    }
+
+    @Internal
+    public <M extends Message> M as(Class<M> cls) {
+        return Json.fromJson(value(), cls);
     }
 
     /**

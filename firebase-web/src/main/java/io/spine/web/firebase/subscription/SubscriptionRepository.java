@@ -31,17 +31,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.protobuf.Duration;
 import io.spine.client.Subscription;
+import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
 import io.spine.json.Json;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
+import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.subscription.BlockingSubscriptionService;
 
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -69,11 +71,10 @@ final class SubscriptionRepository {
 
     SubscriptionRepository(FirebaseClient firebase,
                            BlockingSubscriptionService service,
-                           Duration expirationTimeout,
                            LocalSubscriptionRegistry subscriptionRegistry) {
         this.firebase = checkNotNull(firebase);
         this.subscriptionService = checkNotNull(service);
-        this.healthLog = HealthLog.withTimeout(checkNotNull(expirationTimeout));
+        this.healthLog = new HealthLog();
         this.updateObserver = new UpdateObserver(firebase, healthLog, lazy(() -> this));
         this.subscriptionRegistry = subscriptionRegistry;
     }
@@ -85,10 +86,6 @@ final class SubscriptionRepository {
      * server instance.
      */
     void subscribeToAll() {
-        subscribeToSubscriptionUpdates();
-    }
-
-    private void subscribeToSubscriptionUpdates() {
         ChildEventListener observer = new SubscriptionChangeObserver(this);
         firebase.subscribeTo(SUBSCRIPTIONS_ROOT, observer);
     }
@@ -99,15 +96,21 @@ final class SubscriptionRepository {
      * <p>The topic may be a new one received from the client or an existing one, fetched from the
      * storage.
      *
-     * @param topic
-     *         the subscription topic
+     * @param subscription
+     *         the subscription to store
      */
-    void write(Topic topic) {
-        healthLog.put(topic);
-        StoredJson jsonSubscription = StoredJson.encode(topic);
-        NodePath path = pathForSubscription(topic);
-        subscribe(topic);
+    void write(TimedSubscription subscription) {
+        healthLog.put(subscription);
+        StoredJson jsonSubscription = StoredJson.encode(subscription);
+        NodePath path = pathForMeta(subscription.id());
+        subscribe(subscription);
         firebase.update(path, jsonSubscription.asNodeValue());
+    }
+
+    Optional<TimedSubscription> find(SubscriptionId id) {
+        NodePath path = pathForMeta(id);
+        return firebase.fetchNode(path)
+                .map(node -> node.as(TimedSubscription.class));
     }
 
     /**
@@ -117,19 +120,36 @@ final class SubscriptionRepository {
      *         the subscription topic
      * @return {@code true} if a subscription with such a topic ID exists, {@code false} otherwise
      */
-    boolean updateExisting(Topic topic) {
-        NodePath path = pathForSubscription(topic);
+    boolean updateExisting(TimedSubscription subscription) {
+        NodePath path = pathForMeta(subscription.getSubscription());
         Optional<?> existing = firebase.fetchNode(path);
         if (existing.isPresent()) {
-            healthLog.put(topic);
-            StoredJson jsonSubscription = StoredJson.encode(topic);
+            healthLog.put(subscription);
+            StoredJson jsonSubscription = StoredJson.encode(subscription);
             firebase.update(path, jsonSubscription.asNodeValue());
         }
         return existing.isPresent();
     }
 
-    private void subscribe(Topic topic) {
-        Optional<Subscription> localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
+    Optional<TimedSubscription> updateExisting(SubscriptionId id,
+                                               UnaryOperator<TimedSubscription> update) {
+        NodePath path = pathForMeta(id);
+        Optional<NodeValue> existing = firebase.fetchNode(path);
+        if (existing.isPresent()) {
+            TimedSubscription oldValue = existing.get().as(TimedSubscription.class);
+            TimedSubscription newValue = update.apply(oldValue);
+            healthLog.prolong(newValue.id(), newValue.getValidThru());
+            StoredJson jsonSubscription = StoredJson.encode(newValue);
+            firebase.update(path, jsonSubscription.asNodeValue());
+            return Optional.of(newValue);
+        }
+        return Optional.empty();
+    }
+
+    private void subscribe(TimedSubscription timedSubscription) {
+        Topic topic = timedSubscription.topic();
+        Optional<Subscription> localSubscription =
+                subscriptionRegistry.localSubscriptionFor(topic);
         if (!localSubscription.isPresent()) {
             Subscription subscription = subscriptionService.subscribe(topic, updateObserver);
             subscriptionRegistry.register(subscription);
@@ -145,18 +165,23 @@ final class SubscriptionRepository {
     void cancel(Subscription subscription) {
         subscriptionService.cancel(subscription);
         subscriptionRegistry.unregister(subscription);
-        delete(subscription.getTopic());
+        delete(subscription.getId());
     }
 
-    private void delete(Topic topic) {
-        checkNotNull(topic);
-        NodePath path = pathForSubscription(topic);
+    private void delete(SubscriptionId subscription) {
+        NodePath path = pathForMeta(subscription);
         firebase.delete(path);
     }
 
-    private static NodePath pathForSubscription(Topic topic) {
-        String topicId = topic.getId().getValue();
-        return SUBSCRIPTIONS_ROOT.append(topicId);
+    /**
+     * Obtains the Firebase Realtime DB path where the subscription metadata is stored.
+     */
+    private static NodePath pathForMeta(Subscription subscription) {
+        return pathForMeta(subscription.getId());
+    }
+
+    private static NodePath pathForMeta(SubscriptionId subscription) {
+        return SUBSCRIPTIONS_ROOT.append(subscription.getValue());
     }
 
     /**
@@ -185,8 +210,8 @@ final class SubscriptionRepository {
 
         private void updateSubscription(DataSnapshot snapshot) {
             String json = asJson(snapshot);
-            Topic topic = loadTopic(json);
-            deleteOrActivate(topic);
+            TimedSubscription subscription = loadSubscription(json);
+            deleteOrActivate(subscription);
         }
 
         private static String asJson(DataSnapshot snapshot) {
@@ -199,18 +224,18 @@ final class SubscriptionRepository {
             }
         }
 
-        private Topic loadTopic(String json) {
-            Topic topic = Json.fromJson(json, Topic.class);
-            repository.healthLog.put(topic);
-            return topic;
+        private TimedSubscription loadSubscription(String json) {
+            TimedSubscription subscription = Json.fromJson(json, TimedSubscription.class);
+            repository.healthLog.put(subscription);
+            return subscription;
         }
 
-        private void deleteOrActivate(Topic topic) {
+        private void deleteOrActivate(TimedSubscription subscription) {
             HealthLog healthLog = repository.healthLog;
-            if (healthLog.isKnown(topic) && healthLog.isStale(topic)) {
-                repository.delete(topic);
+            if (healthLog.isKnown(subscription.id()) && subscription.isExpired()) {
+                repository.delete(subscription.id());
             } else {
-                repository.subscribe(topic);
+                repository.subscribe(subscription);
             }
         }
 

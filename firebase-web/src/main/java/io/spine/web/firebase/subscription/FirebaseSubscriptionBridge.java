@@ -27,15 +27,28 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Duration;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Durations;
+import com.google.protobuf.util.Timestamps;
 import io.spine.base.Error;
+import io.spine.base.Time;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
+import io.spine.client.SubscriptionValidationError;
 import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Response;
+import io.spine.core.Responses;
 import io.spine.core.Status;
 import io.spine.type.TypeUrl;
+import io.spine.web.Cancel;
+import io.spine.web.Cancelling;
+import io.spine.web.KeepUp;
+import io.spine.web.KeepUpOutcome;
+import io.spine.web.KeepingUp;
+import io.spine.web.Subscribe;
+import io.spine.web.Subscribing;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
@@ -47,8 +60,15 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Durations.fromMinutes;
+import static com.google.protobuf.util.Durations.isNegative;
+import static com.google.protobuf.util.Durations.toNanos;
+import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Time.currentTime;
+import static io.spine.client.SubscriptionValidationError.UNKNOWN_SUBSCRIPTION_VALUE;
+import static io.spine.core.Responses.errorWith;
 import static io.spine.core.Responses.ok;
+import static io.spine.protobuf.AnyPacker.pack;
+import static java.lang.Math.abs;
 import static java.lang.String.format;
 
 /**
@@ -61,16 +81,18 @@ import static java.lang.String.format;
 public final class FirebaseSubscriptionBridge
         implements SubscriptionBridge<FirebaseSubscription, Response, Response> {
 
+    private static final Duration MIN_PROLONGATION = Durations.fromSeconds(1);
     private final FirebaseClient firebaseClient;
     private final SubscriptionRepository repository;
     private final LocalSubscriptionRegistry subscriptionRegistry;
+    private final Duration maxProlongation;
 
     private FirebaseSubscriptionBridge(Builder builder) {
         this.firebaseClient = builder.firebaseClient;
+        this.maxProlongation = builder.maxProlongation;
         this.subscriptionRegistry = new LocalSubscriptionRegistry();
         this.repository = new SubscriptionRepository(firebaseClient,
                                                      builder.subscriptionService,
-                                                     builder.subscriptionLifeSpan,
                                                      subscriptionRegistry);
         repository.subscribeToAll();
     }
@@ -78,18 +100,28 @@ public final class FirebaseSubscriptionBridge
     @Override
     public FirebaseSubscription subscribe(Topic topic) {
         validateTarget(topic.getTarget());
-        repository.write(topic);
         NodePath path = RequestNodePath.of(topic);
         Subscription subscription = Subscription
                 .newBuilder()
                 .setId(SubscriptionId.newBuilder().setValue(path.getValue()))
                 .setTopic(topic)
                 .buildPartial();
+        Timestamp validThru = add(currentTime(), maxProlongation);
+        TimedSubscription timed = TimedSubscription.newBuilder()
+                .setSubscription(subscription)
+                .setValidThru(validThru)
+                .build();
+        repository.write(timed);
         return FirebaseSubscription
                 .newBuilder()
                 .setSubscription(subscription)
                 .setNodePath(path)
                 .vBuild();
+    }
+
+    @Override
+    public Subscribing subscribe(Subscribe request) {
+        return Subscribing.getDefaultInstance();
     }
 
     private static void validateTarget(Target target) {
@@ -100,11 +132,56 @@ public final class FirebaseSubscriptionBridge
 
     @Override
     public Response keepUp(Subscription subscription) {
-        Topic.Builder topic = subscription.getTopic()
-                                          .toBuilder();
-        topic.getContextBuilder().setTimestamp(currentTime());
-        boolean exists = repository.updateExisting(topic.buildPartial());
-        return exists ? ok() : missing(subscription);
+        KeepUp request = KeepUp.newBuilder()
+                .addSubscription(subscription.getId())
+                .setAddToLifetime(maxProlongation)
+                .build();
+        KeepingUp response = keepUp(request);
+        KeepUpOutcome outcome = response.getOutcome(0);
+        if (outcome.hasError()) {
+            return Response
+                    .newBuilder()
+                    .setStatus(errorWith(outcome.getError()))
+                    .build();
+        }
+        return ok();
+    }
+
+    @Override
+    public KeepingUp keepUp(KeepUp request) {
+        Duration prolongation = normalizedProlongationFrom(request);
+        KeepingUp.Builder response = KeepingUp.newBuilder();
+        for (SubscriptionId id : request.getSubscriptionList()) {
+            Optional<TimedSubscription> newSubscription = repository.updateExisting(id, old -> {
+                Timestamp newTime = add(old.getValidThru(), prolongation);
+                return old.toBuilder()
+                        .setValidThru(newTime)
+                        .build();
+            });
+            KeepUpOutcome.Builder outcome = KeepUpOutcome.newBuilder()
+                    .setId(id);
+            if (newSubscription.isPresent()) {
+                outcome.setNewValidThru(newSubscription.get().getValidThru());
+            } else {
+                outcome.setError(missingError(id));
+            }
+            response.addOutcome(outcome);
+        }
+        return response.build();
+    }
+
+    private Duration normalizedProlongationFrom(KeepUp request) {
+        Duration requested = request.getAddToLifetime();
+        if (isNegative(requested)) {
+            return requested;
+        }
+        if (Durations.compare(MIN_PROLONGATION, requested) > 0) {
+            return MIN_PROLONGATION;
+        }
+        if (Durations.compare(maxProlongation, requested) < 0) {
+            return maxProlongation;
+        }
+        return requested;
     }
 
     @Override
@@ -117,17 +194,29 @@ public final class FirebaseSubscriptionBridge
             NodePath updatesPath = RequestNodePath.of(topic);
             firebaseClient.delete(updatesPath);
         });
-        return localSubscription.isPresent() ? ok() : missing(subscription);
+        return localSubscription.isPresent() ? ok() : missing(subscription.getId());
     }
 
-    private static Response missing(Subscription subscription) {
+    @Override
+    public Cancelling cancel(Cancel request) {
+        return Cancelling.getDefaultInstance();
+    }
+
+    private static Error missingError(SubscriptionId subscription) {
         String errorMessage =
                 format("Subscription `%s` is unknown or already canceled.",
-                       subscription.getId().getValue());
+                       subscription.getValue());
         Error error = Error
                 .newBuilder()
                 .setMessage(errorMessage)
-                .buildPartial();
+                .setType(SubscriptionValidationError.getDescriptor().getFullName())
+                .setCode(UNKNOWN_SUBSCRIPTION_VALUE)
+                .build();
+        return error;
+    }
+
+    private static Response missing(SubscriptionId subscription) {
+        Error error = missingError(subscription);
         Status errorStatus = Status
                 .newBuilder()
                 .setError(error)
@@ -152,11 +241,12 @@ public final class FirebaseSubscriptionBridge
      */
     public static final class Builder {
 
-        private static final Duration DEFAULT_SUBSCRIPTION_LIFE_SPAN = fromMinutes(10);
+        private static final Duration DEFAULT_TIME_BETWEEN_KEEP_UPS = fromMinutes(10);
 
         private FirebaseClient firebaseClient;
         private BlockingSubscriptionService subscriptionService;
-        private Duration subscriptionLifeSpan = DEFAULT_SUBSCRIPTION_LIFE_SPAN;
+        private Duration subscriptionLifespan = DEFAULT_TIME_BETWEEN_KEEP_UPS;
+        private Duration maxProlongation = DEFAULT_TIME_BETWEEN_KEEP_UPS;
 
         /**
          * Prevents local instantiation.
@@ -175,8 +265,19 @@ public final class FirebaseSubscriptionBridge
             return this;
         }
 
+        /**
+         * Configures the amount of lifetime a subscription gains after a keep-up request.
+         *
+         * @deprecated Use {@link #setMaxProlongation} to manage subscription lifespans.
+         */
+        @Deprecated
         public Builder setSubscriptionLifeSpan(Duration subscriptionLifeSpan) {
-            this.subscriptionLifeSpan = checkNotNull(subscriptionLifeSpan);
+            this.subscriptionLifespan = checkNotNull(subscriptionLifeSpan);
+            return this;
+        }
+
+        public Builder setMaxProlongation(Duration maxProlongation) {
+            this.maxProlongation = checkNotNull(maxProlongation);
             return this;
         }
 

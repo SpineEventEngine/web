@@ -32,11 +32,17 @@ import com.google.firebase.database.utilities.Clock;
 import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
+import com.google.protobuf.Message;
+import io.spine.json.Json;
+import io.spine.protobuf.Messages;
+
+import javax.annotation.Nullable;
 
 import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
+import static io.spine.json.Json.fromJson;
 
 /**
  * The Firebase database node value.
@@ -44,13 +50,15 @@ import static com.google.firebase.database.utilities.PushIdGenerator.generatePus
 public final class NodeValue {
 
     private final JsonObject value;
+    private final @Nullable StoredJson originalJson;
 
-    private NodeValue(JsonObject value) {
+    private NodeValue(JsonObject value, @Nullable StoredJson originalJson) {
         this.value = value;
+        this.originalJson = originalJson;
     }
 
     private NodeValue() {
-        this(new JsonObject());
+        this(new JsonObject(), null);
     }
 
     /**
@@ -69,7 +77,7 @@ public final class NodeValue {
      */
     static NodeValue from(StoredJson json) {
         JsonObject value = json.asJsonObject();
-        return new NodeValue(value);
+        return new NodeValue(value, json);
     }
 
     /**
@@ -95,6 +103,15 @@ public final class NodeValue {
     public ByteArrayContent toByteArray() {
         ByteArrayContent result = fromString(JSON_UTF_8.toString(), value.toString());
         return result;
+    }
+
+    public <M extends Message> M as(Class<M> cls) {
+        if (originalJson != null) {
+            return originalJson.as(cls);
+        } else {
+            String jsonMessage = value.toString();
+            return fromJson(jsonMessage, cls);
+        }
     }
 
     /**

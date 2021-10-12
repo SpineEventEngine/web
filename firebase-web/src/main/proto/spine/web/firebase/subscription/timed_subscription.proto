@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package spine.web.firebase;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web.firebase.subscription";
+option java_outer_classname = "TimedSubscriptionProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "spine/client/subscription.proto";
+
+message TimedSubscription {
+    option (internal_type) = true;
+    option (is).java_type = "TimedSubscriptionMixin";
+
+    client.Subscription subscription = 1;
+
+    google.protobuf.Timestamp valid_thru = 2;
+}

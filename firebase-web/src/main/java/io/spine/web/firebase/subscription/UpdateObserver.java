@@ -58,8 +58,7 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
     @Override
     public void onNext(SubscriptionUpdate update) {
         Subscription subscription = update.getSubscription();
-        Topic topic = subscription.getTopic();
-        if (!healthLog.isStale(topic)) {
+        if (!healthLog.isStale(subscription.getId())) {
             UpdatePayload payload = UpdatePayload.from(update);
             NodePath path = RequestNodePath.of(subscription.getTopic());
             SubscriptionRecord record = new SubscriptionRecord(path, payload);
