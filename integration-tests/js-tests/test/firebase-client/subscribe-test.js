@@ -418,8 +418,8 @@ describe('FirebaseClient subscription', function () {
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         await nextInterval();
         assert.ok(keepUpEndpoint.calledOnce);
-        const subscriptionMessage = keepUpEndpoint.getCall(0).args[0];
-        checkAllTasks(subscriptionMessage);
+        const subscriptionList = keepUpEndpoint.getCall(0).args[0][0];
+        checkAllTasks(subscriptionList);
         unsubscribe();
         done();
       });
@@ -433,8 +433,8 @@ describe('FirebaseClient subscription', function () {
         unsubscribe();
         await nextInterval();
         assert.ok(cancelEndpoint.calledOnce);
-        const subscriptionMessage = cancelEndpoint.getCall(0).args[0];
-        checkAllTasks(subscriptionMessage);
+        const subscriptionList = cancelEndpoint.getCall(0).args[0];
+        checkAllTasks(subscriptionList);
         done();
       });
     });
@@ -489,9 +489,9 @@ describe('FirebaseClient subscription', function () {
       return client.subscribeTo(Task).post();
     }
 
-    function checkAllTasks(subscriptionMessage) {
-      const id = subscriptionMessage.getId();
-      const topic = subscriptionMessage.getTopic();
+    function checkAllTasks(subscription) {
+      const id = subscription.getId();
+      const topic = subscription.getTopic();
       assert.ok(id.getValue());
       const targetType = topic.getTarget().getType();
       assert.strictEqual(targetType, Task.typeUrl());
@@ -499,7 +499,7 @@ describe('FirebaseClient subscription', function () {
 
     function keepUpEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'keepUpSubscription');
+      return sandbox.spy(httpEndpoint, 'keepUpSubscriptions');
     }
 
     function cancelEndpointSpy() {
