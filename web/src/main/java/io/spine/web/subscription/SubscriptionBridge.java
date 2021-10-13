@@ -95,11 +95,24 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     Responses keepUpAll(Subscriptions subscription);
 
     /**
-     * Cancel the existing subscription, which stopping sending new data updates to the client.
+     * Cancel the existing subscription.
+     *
+     * <p>After this call, the server will stop sending subscription updates to the client.
      *
      * @param subscription
-     *         a subscription that should be stopped from receiving updates
+     *         a subscription that should be cancelled
      * @return the cancellation response
      */
     C cancel(Subscription subscription);
+
+    /**
+     * Cancel existing subscriptions.
+     *
+     * <p>After this call, the server will stop sending subscription updates to the clients.
+     *
+     * @param request
+     *         subscriptions that should be cancelled
+     * @return the cancellation response
+     */
+    Responses cancelAll(Subscriptions request);
 }

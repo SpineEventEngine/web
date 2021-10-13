@@ -134,6 +134,17 @@ public final class FirebaseSubscriptionBridge
         return localSubscription.isPresent() ? ok() : missing(subscription);
     }
 
+    @Override
+    public Responses cancelAll(Subscriptions request) {
+        checkNotNull(request);
+        Responses.Builder result = Responses.newBuilder();
+        for (Subscription subscription : request.getSubscriptionList()) {
+            Response response = cancel(subscription);
+            result.addResponse(response);
+        }
+        return result.build();
+    }
+
     private static Response missing(Subscription subscription) {
         String errorMessage =
                 format("Subscription `%s` is unknown or already canceled.",
