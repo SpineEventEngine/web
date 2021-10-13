@@ -121,7 +121,6 @@ public final class FirebaseSubscriptionBridge
                 .vBuild();
     }
 
-
     @Override
     public Response cancel(Subscription subscription) {
         checkNotNull(subscription);
