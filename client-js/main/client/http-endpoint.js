@@ -41,6 +41,8 @@ import {Subscriptions} from '../proto/spine/web/keeping_up_pb';
  *  the name of the subscription bulk keep up endpoint; defaults to "/subscription/keep-up-all"
  * @property {string} cancel
  *  the name of the subscription cancellation endpoint; defaults to "/subscription/cancel"
+ * @property {string} cancelAll
+ *  the name of the subscription bulk cancellation endpoint; defaults to "/subscription/cancel-all"
  */
 
 /**
@@ -106,9 +108,9 @@ class Endpoint {
   /**
    * Sends off a request to cancel an existing subscription.
    *
-   * Cancelling subscription stops the server updating subscription with new values.
+   * Cancelling subscription stops the server from updating subscription with new values.
    *
-   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @param {!spine.client.Subscription} subscription a subscription that should be cancelled
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
@@ -117,6 +119,19 @@ class Endpoint {
     return this._cancel(typedSubscription);
   }
 
+  /**
+   * Sends a request to cancel all the given subscriptions.
+   *
+   * Cancelling subscriptions stops the server from updating subscription with new values.
+   *
+   * @param {!Array<spine.client.Subscription>>} subscriptions subscriptions that should
+   *                                                           be cancelled
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  cancelAll(subscriptions) {
+    return this._cancelAll(subscriptions);
+  }
 
   /**
    * @param {!TypedMessage<Command>} command a Command to send to the Spine server
@@ -162,7 +177,6 @@ class Endpoint {
     throw new Error('Not implemented in abstract base.');
   }
 
-
   /**
    * @param {!Array<TypedMessage<spine.client.Subscription>>} subscriptions subscriptions to keep up
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -182,6 +196,17 @@ class Endpoint {
    * @abstract
    */
   _cancel(subscription) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions to be canceled
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _cancelAll(subscriptions) {
     throw new Error('Not implemented in abstract base.');
   }
 }
@@ -261,7 +286,6 @@ export class HttpEndpoint extends Endpoint {
     return this._sendMessage(path, subscription);
   }
 
-
   /**
    * Sends off a request to keep alive given subscriptions.
    *
@@ -294,6 +318,15 @@ export class HttpEndpoint extends Endpoint {
     const path = (this._routing && this._routing.subscription && this._routing.subscription.cancel)
         || '/subscription/cancel';
     return this._sendMessage(path, subscription);
+  }
+
+  _cancelAll(subscriptions) {
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.cancelAll)
+        || '/subscription/cancel-all';
+    const request = new Subscriptions();
+    request.setSubscriptionList(subscriptions);
+    const typed = TypedMessage.of(request);
+    return this._sendMessage(path, typed);
   }
 
   /**

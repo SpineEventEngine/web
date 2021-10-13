@@ -125,13 +125,13 @@ export class FirebaseSubscriptionService {
    * @private
    */
   _keepUpSubscriptions() {
-    this._subscriptions.forEach(subscription => {
-      const spineSubscription = subscription.internal();
-      if (subscription.closed) {
-        this._removeSubscription(subscription);
-        this._endpoint.cancelSubscription(spineSubscription);
-      }
-    });
+    const cancelledSubscriptions = this._subscriptions
+        .filter(s => s.closed);
+    if (cancelledSubscriptions.length > 0) {
+      const subscriptionMessages = cancelledSubscriptions.map(s => s.internal())
+      this._endpoint.cancelAll(subscriptionMessages);
+      cancelledSubscriptions.forEach(s => this._removeSubscription(s))
+    }
     const subscriptions = this._subscriptions.map(value => value.internal());
     if (subscriptions.length === 0) {
       return;

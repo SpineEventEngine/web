@@ -142,7 +142,7 @@ public final class FirebaseSubscriptionBridge
             Response response = cancel(subscription);
             result.addResponse(response);
         }
-        return result.build();
+        return result.vBuild();
     }
 
     private static Response missing(Subscription subscription) {

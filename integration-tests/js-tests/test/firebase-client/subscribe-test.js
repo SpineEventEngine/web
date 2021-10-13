@@ -433,8 +433,8 @@ describe('FirebaseClient subscription', function () {
         unsubscribe();
         await nextInterval();
         assert.ok(cancelEndpoint.calledOnce);
-        const subscriptionList = cancelEndpoint.getCall(0).args[0];
-        checkAllTasks(subscriptionList);
+        const subscription = cancelEndpoint.getCall(0).args[0][0];
+        checkAllTasks(subscription);
         done();
       });
     });
@@ -504,7 +504,7 @@ describe('FirebaseClient subscription', function () {
 
     function cancelEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'cancelSubscription');
+      return sandbox.spy(httpEndpoint, 'cancelAll');
     }
 
     /**
