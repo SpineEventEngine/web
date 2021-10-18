@@ -35,7 +35,7 @@ import io.spine.web.subscription.SubscriptionBridge;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An abstract servlet for a client request to keep up an existing {@link Subscription}.
+ * An abstract servlet handling the bulk {@link Subscription} keep-up requests.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
@@ -47,11 +47,11 @@ public abstract class SubscriptionBulkKeepUpServlet
     private final SubscriptionBridge<?, ?, ?> bridge;
 
     /**
-     * Creates a new instance of {@code SubscriptionBulkKeepUpServlet} with the given
-     * {@link SubscriptionBridge}.
+     * Creates a new instance of {@code SubscriptionBulkKeepUpServlet} with
+     * the given {@link SubscriptionBridge}.
      *
      * @param bridge
-     *         the subscription bridge to be used to keep-up subscriptions
+     *         the subscription bridge to be used to keep up subscriptions
      */
     protected SubscriptionBulkKeepUpServlet(SubscriptionBridge<?, ?, ?> bridge) {
         super();

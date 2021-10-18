@@ -49,7 +49,7 @@ public abstract class SubscriptionCancelAllServlet
      * {@link SubscriptionBridge}.
      *
      * @param bridge
-     *         the subscription bridge to be used in to cancel subscriptions
+     *         the subscription bridge to be used to cancel subscriptions
      */
     protected SubscriptionCancelAllServlet(SubscriptionBridge<?, ?, ?> bridge) {
         super();

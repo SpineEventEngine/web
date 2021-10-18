@@ -51,7 +51,7 @@ public abstract class SubscriptionKeepUpServlet<T extends Message>
      * {@link SubscriptionBridge}.
      *
      * @param bridge
-     *         the subscription bridge to be used to keep-up subscriptions
+     *         the subscription bridge to be used to keep up subscriptions
      */
     protected SubscriptionKeepUpServlet(SubscriptionBridge<?, T, ?> bridge) {
         super();

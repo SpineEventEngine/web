@@ -59,7 +59,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     S subscribe(Topic topic);
 
     /**
-     * Keep up the subscription, preventing it from closing from the server.
+     * Keeps up the subscription, preventing it from closing from the server.
      *
      * <p>This operation is performed because a subscription lifetime is finite. Server cancels
      * all subscriptions at some point, because maintaining them requires resources and the client
@@ -77,7 +77,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     K keepUp(Subscription subscription);
 
     /**
-     * Keep up given subscriptions, preventing them from closing from the server.
+     * Keeps up given subscriptions, preventing them from closing from the server.
      *
      * <p>This operation is performed because a subscription lifetime is finite. Server cancels
      * all subscriptions at some point, because maintaining them requires resources and the client
@@ -95,7 +95,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     Responses keepUpAll(Subscriptions subscription);
 
     /**
-     * Cancel the existing subscription.
+     * Cancels the existing subscription.
      *
      * <p>After this call, the server will stop sending subscription updates to the client.
      *
@@ -106,7 +106,7 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     C cancel(Subscription subscription);
 
     /**
-     * Cancel existing subscriptions.
+     * Cancels existing subscriptions.
      *
      * <p>After this call, the server will stop sending subscription updates to the clients.
      *
