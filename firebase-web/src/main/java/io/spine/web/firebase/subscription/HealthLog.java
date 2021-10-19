@@ -26,12 +26,9 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
-import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
-import io.spine.client.Topic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,12 +40,6 @@ import static java.util.Collections.synchronizedMap;
 
 /**
  * The log of the {@code Topic}s to which the clients are still subscribed.
- *
- * <p>To understand whether a client is still listening to the {@code Topic} updates, she
- * periodically sends a {@link FirebaseSubscriptionBridge#keepUp(Subscription) keepUp(Subscription)}
- * request. The server records the timestamps of these requests in this log and counts the client
- * alive, as long as the {@linkplain #withTimeout(Duration)} configured} timeout does not pass
- * since the last request.
  */
 final class HealthLog {
 
@@ -58,27 +49,20 @@ final class HealthLog {
      * Updates the health record for the given {@code Topic} by recording the timestamp of its
      * context as a time of update.
      *
-     * @param topic
-     *         the topic to update.
+     * @param subscription
+     *         the ID of the subscription
+     * @param validThru
+     *         the subscription expiration time
      */
     void put(SubscriptionId subscription, Timestamp validThru) {
         checkNotNull(subscription);
         checkNotNull(validThru);
-        checkState(!expirationTimes.containsKey(subscription),
-                   "Such a subscription already exists.");
         expirationTimes.put(subscription, validThru);
     }
 
     void put(TimedSubscription timed) {
         checkNotNull(timed);
         put(timed.getSubscription().getId(), timed.getValidThru());
-    }
-
-    void prolong(SubscriptionId subscription, Timestamp validThru) {
-        checkNotNull(subscription);
-        checkNotNull(validThru);
-        checkState(expirationTimes.containsKey(subscription), "No such subscription.");
-        expirationTimes.put(subscription, validThru);
     }
 
     /**
@@ -93,11 +77,11 @@ final class HealthLog {
      * Tells whether this topic is already stale, meaning that no updates were received for it for
      * longer than an expiration timeout set for this instance of {@code HealthLog}.
      *
-     * <p>If the given {@code topic} isn't {@linkplain #isKnown(Topic) known} to this log,
+     * <p>If the given {@code topic} isn't {@linkplain #isKnown known} to this log,
      * a {@linkplain NullPointerException} is thrown.
      *
-     * @param topic
-     *         the topic to detect staleness
+     * @param subscription
+     *         the ID of the subscription to detect staleness
      * @return {@code true} if the topic is stale, {@code false} otherwise
      */
     boolean isStale(SubscriptionId subscription) {

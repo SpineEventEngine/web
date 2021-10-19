@@ -29,6 +29,8 @@ package io.spine.web.subscription.servlet;
 import com.google.protobuf.Message;
 import io.spine.client.Topic;
 import io.spine.web.MessageServlet;
+import io.spine.web.Subscribe;
+import io.spine.web.Subscribing;
 import io.spine.web.subscription.SubscriptionBridge;
 
 /**
@@ -37,14 +39,12 @@ import io.spine.web.subscription.SubscriptionBridge;
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
- *
- * @param <T>
- *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class SubscribeServlet<T extends Message> extends MessageServlet<Topic, T> {
+public abstract class SubscribeServlet
+        extends MessageServlet<Subscribe, Subscribing> {
 
-    private final SubscriptionBridge<T, ?, ?> bridge;
+    private final SubscriptionBridge bridge;
 
     /**
      * Creates a new instance of {@code SubscribeServlet} with the given
@@ -53,13 +53,13 @@ public abstract class SubscribeServlet<T extends Message> extends MessageServlet
      * @param bridge
      *         the subscription bridge to be used to create subscriptions
      */
-    protected SubscribeServlet(SubscriptionBridge<T, ?, ?> bridge) {
+    protected SubscribeServlet(SubscriptionBridge bridge) {
         super();
         this.bridge = bridge;
     }
 
     @Override
-    protected T handle(Topic request) {
+    protected Subscribing handle(Subscribe request) {
         return bridge.subscribe(request);
     }
 }

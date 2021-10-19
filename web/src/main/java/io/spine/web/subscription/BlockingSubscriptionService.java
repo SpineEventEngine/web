@@ -29,6 +29,7 @@ package io.spine.web.subscription;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.grpc.stub.StreamObserver;
 import io.spine.annotation.Internal;
+import io.spine.base.Errors;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.client.Topic;
@@ -36,12 +37,15 @@ import io.spine.client.TopicId;
 import io.spine.client.grpc.SubscriptionServiceGrpc;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.grpc.MemoizingObserver;
+import io.spine.web.SubscriptionOrError;
+import io.spine.web.WebSubscription;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.base.Errors.causeOf;
 import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -75,17 +79,26 @@ public final class BlockingSubscriptionService {
      * @return new subscription
      */
     @CanIgnoreReturnValue
-    public Subscription subscribe(Topic topic, StreamObserver<SubscriptionUpdate> updateObserver) {
+    public SubscriptionOrError subscribe(Topic topic,
+                                         StreamObserver<SubscriptionUpdate> updateObserver) {
         checkNotNull(topic);
         checkNotNull(updateObserver);
 
         MemoizingObserver<Subscription> subscriptionObserver = memoizingObserver();
         subscriptionService.subscribe(topic, subscriptionObserver);
+        Throwable error = subscriptionObserver.getError();
+        if (error != null) {
+            return SubscriptionOrError.newBuilder()
+                    .setError(causeOf(error))
+                    .build();
+        }
         checkObserver(subscriptionObserver);
         Subscription subscription = subscriptionObserver.firstResponse();
         subscriptionService.activate(subscription, updateObserver);
         activeTopics.add(topic.getId());
-        return subscription;
+        return SubscriptionOrError.newBuilder()
+                .setSubscription(WebSubscription.newBuilder().setSubscription(subscription))
+                .build();
     }
 
     private void checkObserver(MemoizingObserver<Subscription> observer) {

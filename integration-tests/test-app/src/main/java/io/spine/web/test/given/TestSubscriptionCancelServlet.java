@@ -38,7 +38,7 @@ import static io.spine.web.test.given.Server.application;
  */
 @WebServlet("/subscription/cancel")
 @SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends SubscriptionCancelServlet<Response> {
+public class TestSubscriptionCancelServlet extends SubscriptionCancelServlet {
 
     public TestSubscriptionCancelServlet() {
         super(application().subscriptionBridge());

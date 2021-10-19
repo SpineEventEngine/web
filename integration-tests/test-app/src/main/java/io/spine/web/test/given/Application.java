@@ -74,7 +74,7 @@ final class Application {
         this.subscriptionBridge = FirebaseSubscriptionBridge
                 .newBuilder()
                 .setSubscriptionService(subscriptionService)
-                .setSubscriptionLifeSpan(Durations.fromMinutes(2))
+                .setMaxProlongation(Durations.fromMinutes(30))
                 .setFirebaseClient(client)
                 .build();
     }

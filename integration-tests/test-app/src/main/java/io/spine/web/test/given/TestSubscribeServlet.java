@@ -26,7 +26,6 @@
 
 package io.spine.web.test.given;
 
-import io.spine.web.firebase.subscription.FirebaseSubscription;
 import io.spine.web.subscription.servlet.SubscribeServlet;
 
 import javax.servlet.annotation.WebServlet;
@@ -38,7 +37,7 @@ import static io.spine.web.test.given.Server.application;
  */
 @WebServlet("/subscription/create")
 @SuppressWarnings("serial")
-public class TestSubscribeServlet extends SubscribeServlet<FirebaseSubscription> {
+public class TestSubscribeServlet extends SubscribeServlet {
 
     public TestSubscribeServlet() {
         super(application().subscriptionBridge());

@@ -26,7 +26,6 @@
 
 package io.spine.web.subscription;
 
-import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.web.Cancel;
@@ -39,30 +38,11 @@ import io.spine.web.Subscribing;
 /**
  * A bridge for requests to a subscription {@link io.spine.server.SubscriptionService}.
  *
- * <p>Defines an interface for {@link #subscribe(Topic) subscribing} to a {@link Topic},
- * {@link #keepUp(Subscription) keeping up} an existing {@link Subscription}
- * and {@link #cancel(Subscription) canceling} an existing {@code Subscription}.
- *
- * @param <S>
- *         response type for {@link #subscribe(Topic)} requests
- * @param <K>
- *         response type for {@link #keepUp(Subscription)} requests
- * @param <C>
- *         response type for {@link #cancel(Subscription)} requests
+ * <p>Defines an interface for {@link #subscribe subscribing} to a {@link Topic},
+ * {@link #keepUp keeping up} an existing {@link Subscription}
+ * and {@link #cancel canceling} an existing {@code Subscription}.
  */
-public interface SubscriptionBridge<S extends Message, K extends Message, C extends Message> {
-
-    /**
-     * Creates a new {@link Subscription} to a provided topic supplying this subscription to the
-     * client as a result.
-     *
-     * @param topic
-     *         a topic to subscribe the client to
-     * @return a message describing the created subscription
-     * @deprecated Use {@link #subscribe(Subscribe)} instead.
-     */
-    @Deprecated
-    S subscribe(Topic topic);
+public interface SubscriptionBridge {
 
     Subscribing subscribe(Subscribe request);
 
@@ -76,34 +56,8 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
      * @param subscription
      *         a subscription that should stay open
      * @return the keep-up response.
-     * @deprecated Use {@link #keepUp(KeepUp)} instead.
-     */
-    @Deprecated
-    K keepUp(Subscription subscription);
-
-    /**
-     * Keep up the subscription, preventing its expiration.
-     *
-     * <p>This operation is performed because subscription can only live some finite amount of time.
-     * Server cancels the subscription at some point, because maintaining the subscription requires
-     * resources and the client cannot be trusted to cancel every subscription it creates.
-     *
-     * @param subscription
-     *         a subscription that should stay open
-     * @return the keep-up response.
      */
     KeepingUp keepUp(KeepUp request);
-
-    /**
-     * Cancel the existing subscription and stop sending new data updates to the client.
-     *
-     * @param subscription
-     *         a subscription that should be stopped from receiving updates
-     * @return the cancellation response.
-     * @deprecated Use {@link #cancel(Cancel)} instead.
-     */
-    @Deprecated
-    C cancel(Subscription subscription);
 
     Cancelling cancel(Cancel request);
 }

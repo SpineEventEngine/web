@@ -28,6 +28,7 @@ package io.spine.web.firebase.subscription;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,15 +36,15 @@ import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
 import io.spine.json.Json;
+import io.spine.web.SubscriptionOrError;
+import io.spine.web.WebSubscription;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
-import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
 import io.spine.web.subscription.BlockingSubscriptionService;
 
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -70,13 +71,12 @@ final class SubscriptionRepository {
     private final HealthLog healthLog;
 
     SubscriptionRepository(FirebaseClient firebase,
-                           BlockingSubscriptionService service,
-                           LocalSubscriptionRegistry subscriptionRegistry) {
+                           BlockingSubscriptionService service) {
         this.firebase = checkNotNull(firebase);
         this.subscriptionService = checkNotNull(service);
         this.healthLog = new HealthLog();
         this.updateObserver = new UpdateObserver(firebase, healthLog, lazy(() -> this));
-        this.subscriptionRegistry = subscriptionRegistry;
+        this.subscriptionRegistry = new LocalSubscriptionRegistry();
     }
 
     /**
@@ -99,12 +99,15 @@ final class SubscriptionRepository {
      * @param subscription
      *         the subscription to store
      */
-    void write(TimedSubscription subscription) {
-        healthLog.put(subscription);
-        StoredJson jsonSubscription = StoredJson.encode(subscription);
-        NodePath path = pathForMeta(subscription.id());
-        subscribe(subscription);
-        firebase.update(path, jsonSubscription.asNodeValue());
+    SubscriptionOrError create(TimedSubscription subscription) {
+        SubscriptionOrError response = subscribe(subscription);
+        if (response.hasSubscription()) {
+            healthLog.put(subscription);
+            StoredJson jsonSubscription = StoredJson.encode(subscription);
+            NodePath path = pathForMeta(subscription.id());
+            firebase.update(path, jsonSubscription.asNodeValue());
+        }
+        return response;
     }
 
     Optional<TimedSubscription> find(SubscriptionId id) {
@@ -113,47 +116,37 @@ final class SubscriptionRepository {
                 .map(node -> node.as(TimedSubscription.class));
     }
 
-    /**
-     * Updates a subscription topic only if it already exists.
-     *
-     * @param topic
-     *         the subscription topic
-     * @return {@code true} if a subscription with such a topic ID exists, {@code false} otherwise
-     */
-    boolean updateExisting(TimedSubscription subscription) {
+    void update(TimedSubscription subscription) {
         NodePath path = pathForMeta(subscription.getSubscription());
-        Optional<?> existing = firebase.fetchNode(path);
-        if (existing.isPresent()) {
-            healthLog.put(subscription);
-            StoredJson jsonSubscription = StoredJson.encode(subscription);
-            firebase.update(path, jsonSubscription.asNodeValue());
-        }
-        return existing.isPresent();
+        healthLog.put(subscription);
+        StoredJson jsonSubscription = StoredJson.encode(subscription);
+        firebase.update(path, jsonSubscription.asNodeValue());
     }
 
-    Optional<TimedSubscription> updateExisting(SubscriptionId id,
-                                               UnaryOperator<TimedSubscription> update) {
-        NodePath path = pathForMeta(id);
-        Optional<NodeValue> existing = firebase.fetchNode(path);
-        if (existing.isPresent()) {
-            TimedSubscription oldValue = existing.get().as(TimedSubscription.class);
-            TimedSubscription newValue = update.apply(oldValue);
-            healthLog.prolong(newValue.id(), newValue.getValidThru());
-            StoredJson jsonSubscription = StoredJson.encode(newValue);
-            firebase.update(path, jsonSubscription.asNodeValue());
-            return Optional.of(newValue);
-        }
-        return Optional.empty();
-    }
-
-    private void subscribe(TimedSubscription timedSubscription) {
+    @CanIgnoreReturnValue
+    private SubscriptionOrError subscribe(TimedSubscription timedSubscription) {
         Topic topic = timedSubscription.topic();
         Optional<Subscription> localSubscription =
                 subscriptionRegistry.localSubscriptionFor(topic);
-        if (!localSubscription.isPresent()) {
-            Subscription subscription = subscriptionService.subscribe(topic, updateObserver);
-            subscriptionRegistry.register(subscription);
+        if (localSubscription.isPresent()) {
+            Subscription existing = localSubscription.get();
+            return SubscriptionOrError.newBuilder()
+                    .setSubscription(WebSubscription.newBuilder().setSubscription(existing))
+                    .build();
         }
+        SubscriptionOrError response = newSubscription(timedSubscription, topic);
+        subscriptionRegistry.register(response.getSubscription().getSubscription());
+        return response;
+    }
+
+    private SubscriptionOrError newSubscription(TimedSubscription timedSubscription, Topic topic) {
+        SubscriptionOrError newSubscription = subscriptionService.subscribe(topic, updateObserver);
+        SubscriptionOrError.Builder responseBuilder = newSubscription.toBuilder();
+        responseBuilder.getSubscriptionBuilder()
+                       .getSubscriptionBuilder()
+                       .setId(timedSubscription.id());
+        SubscriptionOrError response = responseBuilder.build();
+        return response;
     }
 
     /**
