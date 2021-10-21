@@ -37,9 +37,6 @@ import io.spine.web.subscription.SubscriptionBridge;
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
- *
- * @param <T>
- *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscriptionCancelServlet

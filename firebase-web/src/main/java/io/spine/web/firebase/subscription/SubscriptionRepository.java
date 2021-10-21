@@ -225,7 +225,7 @@ final class SubscriptionRepository {
 
         private void deleteOrActivate(TimedSubscription subscription) {
             HealthLog healthLog = repository.healthLog;
-            if (healthLog.isKnown(subscription.id()) && subscription.isExpired()) {
+            if (healthLog.isKnown(subscription) && subscription.isExpired()) {
                 repository.delete(subscription.id());
             } else {
                 repository.subscribe(subscription);

@@ -31,6 +31,7 @@ import io.spine.annotation.GeneratedMixin;
 import io.spine.base.Time;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
+import io.spine.client.TopicId;
 
 import static com.google.protobuf.util.Timestamps.compare;
 
@@ -39,6 +40,10 @@ interface TimedSubscriptionMixin extends TimedSubscriptionOrBuilder {
 
     default SubscriptionId id() {
         return getSubscription().getId();
+    }
+
+    default TopicId topicId() {
+        return getSubscription().getTopic().getId();
     }
 
     default Topic topic() {

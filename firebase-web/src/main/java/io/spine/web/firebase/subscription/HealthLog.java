@@ -28,7 +28,9 @@ package io.spine.web.firebase.subscription;
 
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
+import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
+import io.spine.client.TopicId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,34 +45,26 @@ import static java.util.Collections.synchronizedMap;
  */
 final class HealthLog {
 
-    private final Map<SubscriptionId, Timestamp> expirationTimes = synchronizedMap(new HashMap<>());
+    private final Map<TopicId, Timestamp> expirationTimes = synchronizedMap(new HashMap<>());
 
     /**
-     * Updates the health record for the given {@code Topic} by recording the timestamp of its
+     * Updates the health record for the given subscription by recording the timestamp of its
      * context as a time of update.
      *
      * @param subscription
-     *         the ID of the subscription
-     * @param validThru
-     *         the subscription expiration time
+     *         the subscription to log
      */
-    void put(SubscriptionId subscription, Timestamp validThru) {
+    void put(TimedSubscription subscription) {
         checkNotNull(subscription);
-        checkNotNull(validThru);
-        expirationTimes.put(subscription, validThru);
-    }
-
-    void put(TimedSubscription timed) {
-        checkNotNull(timed);
-        put(timed.getSubscription().getId(), timed.getValidThru());
+        expirationTimes.put(subscription.topicId(), subscription.getValidThru());
     }
 
     /**
      * Tells whether any activity has been recorded for the given {@code Topic}.
      */
-    boolean isKnown(SubscriptionId subscription) {
+    boolean isKnown(TimedSubscription subscription) {
         checkNotNull(subscription);
-        return expirationTimes.containsKey(subscription);
+        return expirationTimes.containsKey(subscription.topicId());
     }
 
     /**
@@ -81,12 +75,12 @@ final class HealthLog {
      * a {@linkplain NullPointerException} is thrown.
      *
      * @param subscription
-     *         the ID of the subscription to detect staleness
+     *         the subscription to detect staleness
      * @return {@code true} if the topic is stale, {@code false} otherwise
      */
-    boolean isStale(SubscriptionId subscription) {
+    boolean isStale(Subscription subscription) {
         checkNotNull(subscription);
-        Timestamp validThru = expirationTimes.get(subscription);
+        Timestamp validThru = expirationTimes.get(subscription.getTopic().getId());
         checkNotNull(validThru);
         Timestamp now = Time.currentTime();
         return compare(validThru, now) > 0;
