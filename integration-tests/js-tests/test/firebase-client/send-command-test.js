@@ -145,12 +145,15 @@ describe('FirebaseClient command sending', function () {
         assert.strictEqual(unpacked.getId().getValue(), taskId.getValue());
         done();
       } catch (e) {
-        fail(done, e.message)
+        fail(done)(e);
       }
     };
     client.command(command)
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
-        .onError(fail(done, 'An error occurred when a business rejection was expected.'))
+        .onError(e => fail(
+            done,
+            `An error occurred when a business rejection was expected. Error: ${e}`
+        )())
         .onImmediateRejection(checkRejection)
         .post();
   });

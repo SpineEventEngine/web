@@ -46,17 +46,6 @@ public interface SubscriptionBridge {
 
     Subscribing subscribe(Subscribe request);
 
-    /**
-     * Keep up the subscription, preventing its expiration.
-     *
-     * <p>This operation is performed because subscription can only live some finite amount of time.
-     * Server cancels the subscription at some point, because maintaining the subscription requires
-     * resources and the client cannot be trusted to cancel every subscription it creates.
-     *
-     * @param subscription
-     *         a subscription that should stay open
-     * @return the keep-up response.
-     */
     KeepingUp keepUp(KeepUp request);
 
     Cancelling cancel(Cancel request);

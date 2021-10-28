@@ -69,7 +69,7 @@ describe('FirebaseClient subscription', function () {
             }
           });
           itemRemoved.subscribe({
-            next: fail(done, 'Unexpected entity remove during entity create subscription test.')
+            next: fail(done, 'Unexpected entity removal during entity create subscription test.')
           });
           itemChanged.subscribe({
             next: fail(done, 'Unexpected entity change during entity create subscription test.')
@@ -263,7 +263,7 @@ describe('FirebaseClient subscription', function () {
               console.log('Task removed');
               assert.strictEqual(
                   taskIdValue, id,
-                  `A wrong Task item is removed, expected the task with ID "${taskIdValue}", 
+                  `A wrong Task item is removed, expected the task with ID "${taskIdValue}",
                   received the task with ID "${id}".`
               );
               unsubscribe();
@@ -417,11 +417,15 @@ describe('FirebaseClient subscription', function () {
 
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         await nextInterval();
-        assert.ok(keepUpEndpoint.calledOnce);
-        const subscriptionMessage = keepUpEndpoint.getCall(0).args[0];
-        checkAllTasks(subscriptionMessage);
-        unsubscribe();
-        done();
+        try {
+          assert.ok(keepUpEndpoint.calledOnce);
+          const subscriptionId = keepUpEndpoint.getCall(0).args[0][0].getId();
+          assert.ok(subscriptionId.getValue());
+          unsubscribe();
+          done();
+        } catch (e) {
+          fail(done)(e);
+        }
       });
     });
 
@@ -429,13 +433,17 @@ describe('FirebaseClient subscription', function () {
       const cancelEndpoint = cancelEndpointSpy();
 
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
-        assert.ok(cancelEndpoint.notCalled);
-        unsubscribe();
-        await nextInterval();
-        assert.ok(cancelEndpoint.calledOnce);
-        const subscriptionMessage = cancelEndpoint.getCall(0).args[0];
-        checkAllTasks(subscriptionMessage);
-        done();
+        try {
+          assert.ok(cancelEndpoint.notCalled);
+          unsubscribe();
+          await nextInterval();
+          assert.ok(cancelEndpoint.calledOnce);
+          const subscriptionId = cancelEndpoint.getCall(0).args[0][0].getId();
+          assert.ok(subscriptionId.getValue());
+          done();
+        } catch (e) {
+          fail(done)(e);
+        }
       });
     });
 
@@ -444,22 +452,25 @@ describe('FirebaseClient subscription', function () {
       const cancelEndpoint = cancelEndpointSpy();
 
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
-        assert.ok(keepUpEndpoint.notCalled);
-        assert.ok(cancelEndpoint.notCalled);
-        await nextInterval();
-        assert.ok(keepUpEndpoint.calledOnce);
-        assert.ok(cancelEndpoint.notCalled);
-        unsubscribe();
+        try {
+          assert.ok(keepUpEndpoint.notCalled, "Keep-up endpoint should not be called.");
+          assert.ok(cancelEndpoint.notCalled, "Cancel endpoint should not be called.");
+          await nextInterval();
+          assert.ok(keepUpEndpoint.calledOnce, "Keep-up endpoint should be called once.");
+          assert.ok(cancelEndpoint.notCalled, "Cancel endpoint should not yet be called.");
+          unsubscribe();
 
-        await nextInterval();
-        assert.ok(keepUpEndpoint.calledOnce);
-        assert.ok(cancelEndpoint.calledOnce);
+          await nextInterval();
+          assert.ok(keepUpEndpoint.calledOnce, "Keep-up endpoint should be called only once.");
+          assert.ok(cancelEndpoint.calledOnce, "Cancel endpoint should be called once.");
 
-        await nextInterval();
-        assert.ok(keepUpEndpoint.calledOnce);
-        assert.ok(cancelEndpoint.calledOnce);
-
-        done();
+          await nextInterval();
+          assert.ok(keepUpEndpoint.calledOnce, "Keep-up endpoint should still be called once.");
+          assert.ok(cancelEndpoint.calledOnce, "Cancel endpoint should be still called once.");
+          done();
+        } catch (e) {
+          fail(done)(e);
+        }
       });
     });
 
@@ -489,22 +500,14 @@ describe('FirebaseClient subscription', function () {
       return client.subscribeTo(Task).post();
     }
 
-    function checkAllTasks(subscriptionMessage) {
-      const id = subscriptionMessage.getId();
-      const topic = subscriptionMessage.getTopic();
-      assert.ok(id.getValue());
-      const targetType = topic.getTarget().getType();
-      assert.strictEqual(targetType, Task.typeUrl());
-    }
-
     function keepUpEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'keepUpSubscription');
+      return sandbox.spy(httpEndpoint, 'keepUpSubscriptions');
     }
 
     function cancelEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'cancelSubscription');
+      return sandbox.spy(httpEndpoint, 'cancelSubscriptions');
     }
 
     /**

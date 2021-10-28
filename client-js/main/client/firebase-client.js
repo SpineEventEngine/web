@@ -27,10 +27,10 @@
 "use strict";
 
 import {Observable, Subject, Subscription} from 'rxjs';
-import {
-  Subscription as SubscriptionObject,
-  SubscriptionId
-} from '../proto/spine/client/subscription_pb';
+import {Subscription as SubscriptionObject} from '../proto/spine/client/subscription_pb';
+import {NodePath} from '../proto/spine/web/firebase/client_pb';
+import {SubscriptionOrError} from "../proto/spine/web/subscriptions_pb"
+import {AnyPacker} from './any-packer';
 import {ActorRequestFactory} from './actor-request-factory';
 import {AbstractClientFactory} from './client-factory';
 import {CommandingClient} from "./commanding-client";
@@ -42,6 +42,7 @@ import {FirebaseSubscriptionService} from './firebase-subscription-service';
 import ObjectToProto from './object-to-proto';
 import {QueryingClient} from "./querying-client";
 import {SubscribingClient} from "./subscribing-client";
+import {Type} from "./typed-message"
 
 /**
  * An abstract base for subscription objects.
@@ -217,14 +218,30 @@ class FirebaseSubscribingClient extends SubscribingClient {
    */
   _doSubscribe(topic, createSubscriptionFn) {
     return new Promise((resolve, reject) => {
-      this._endpoint.subscribeTo(topic)
+      this._endpoint.subscribeTo([topic])
           .then(response => {
-            const path = response.nodePath.value;
+            const result = response.result[0];
+            const subscriptionOrError =
+                ObjectToProto.convert(result, SubscriptionOrError.typeUrl());
+            if (subscriptionOrError.getPayloadCase() === SubscriptionOrError.PayloadCase.ERROR) {
+              const error = subscriptionOrError.getError()
+              console.debug('Unable to create subscription. ' + error)
+              reject(error.getMessage());
+              return;
+            }
+            const webSubscription = subscriptionOrError.getSubscription();
+            const packedNodePath = webSubscription.getExtraList()
+                .find(x => x.getTypeUrl() === NodePath.typeUrl());
+            if (!packedNodePath) {
+              reject("Subscription did not include a Firebase node path.");
+              return;
+            }
+            const path = AnyPacker.unpack(packedNodePath)
+                .as(Type.forClass(NodePath))
+                .getValue();
             const internalSubscription =
-                FirebaseSubscribingClient.internalSubscription(path, topic);
-
+                FirebaseSubscribingClient.internalSubscription(path, webSubscription.getSubscription());
             const subscription = createSubscriptionFn.call(this, path, internalSubscription);
-
             resolve(subscription.toObject());
             this._subscriptionService.add(subscription);
           })
@@ -294,17 +311,15 @@ class FirebaseSubscribingClient extends SubscribingClient {
   /**
    * Creates a `SubscriptionObject` instance to communicate with Spine server.
    *
-   * @param {!String} path a path to object which gets updated in Firebase
-   * @param {!spine.client.Topic} topic a topic for which the Subscription gets updates
+   * @param {!String} path a Firebasse RDB path to the subscription updates
+   * @param {!spine.client.Subscription} subscription the subscription message
    * @return {SubscriptionObject} a `SubscriptionObject` instance to communicate with Spine server
    */
-  static internalSubscription(path, topic) {
-    const subscription = new SubscriptionObject();
-    const id = new SubscriptionId();
-    id.setValue(path);
-    subscription.setId(id);
-    subscription.setTopic(topic);
-    return subscription;
+  static internalSubscription(path, subscription) {
+    const result = new SubscriptionObject();
+    result.setId(subscription.getId());
+    result.setTopic(subscription.getTopic());
+    return result;
   }
 }
 

@@ -37,6 +37,7 @@ import io.spine.client.Topic;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Ack;
 import io.spine.core.Status;
+import io.spine.json.Json;
 import io.spine.web.Cancel;
 import io.spine.web.Cancelling;
 import io.spine.web.KeepUp;
@@ -181,10 +182,10 @@ public final class FirebaseSubscriptionBridge
     private Ack cancel(SubscriptionId id) {
         Ack.Builder ack = Ack.newBuilder()
                 .setMessageId(pack(id));
-        Optional<TimedSubscription> subscription = repository.find(id);
+        Optional<Subscription> subscription = repository.findLocal(id);
         if (subscription.isPresent()) {
-            TimedSubscription timed = subscription.get();
-            repository.cancel(timed.getSubscription());
+            Subscription localSubscription = subscription.get();
+            repository.cancel(localSubscription);
             ack.setStatus(statusOk());
         } else {
             ack.setStatus(missingStatus(id));

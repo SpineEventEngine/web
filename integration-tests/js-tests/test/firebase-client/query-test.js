@@ -177,10 +177,16 @@ describe('FirebaseClient executes query built', function () {
           .where(filters)
           .run()
           .then(userTasksList => {
-            assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
-            done();
-          })
-          .catch(() => fail(done));
+            try {
+              assert.ok(
+                  ensureUserTasks(userTasksList, test.expectedUsers()),
+                  "User tasks do not match expectations."
+              );
+              done();
+            } catch (e) {
+              fail(done)(e);
+            }
+          }, fail(done));
     });
   });
 

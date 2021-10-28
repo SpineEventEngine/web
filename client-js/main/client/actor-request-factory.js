@@ -802,9 +802,15 @@ class QueryFactory {
     const actorContext = this._requestFactory._actorContext();
 
     const format = new ResponseFormat();
-    format.setFieldMask(fieldMask);
-    format.setLimit(limit);
-    format.addOrderBy(orderBy);
+    if (fieldMask !== null) {
+      format.setFieldMask(fieldMask);
+    }
+    if (limit !== null) {
+      format.setLimit(limit);
+    }
+    if (orderBy !== null) {
+      format.addOrderBy(orderBy);
+    }
 
     const result = new Query();
     result.setId(id);

@@ -29,14 +29,12 @@ package io.spine.web.firebase.subscription;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.Subscription;
-import io.spine.client.SubscriptionId;
 import io.spine.client.TopicId;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.util.Timestamps.compare;
 import static java.util.Collections.synchronizedMap;
 
@@ -83,6 +81,6 @@ final class HealthLog {
         Timestamp validThru = expirationTimes.get(subscription.getTopic().getId());
         checkNotNull(validThru);
         Timestamp now = Time.currentTime();
-        return compare(validThru, now) > 0;
+        return compare(validThru, now) < 0;
     }
 }

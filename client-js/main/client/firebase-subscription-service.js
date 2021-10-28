@@ -28,7 +28,7 @@
 
 import {Duration} from './time-utils';
 import ObjectToProto from './object-to-proto';
-import {Status} from '../proto/spine/core/response_pb';
+import {KeepUpOutcome} from '../proto/spine/web/subscriptions_pb';
 
 /**
  * The default interval for sending subscription keep up requests.
@@ -125,21 +125,40 @@ export class FirebaseSubscriptionService {
    * @private
    */
   _keepUpSubscriptions() {
-    this._subscriptions.forEach(subscription => {
-      const spineSubscription = subscription.internal();
-      if (subscription.closed) {
-        this._endpoint.cancelSubscription(spineSubscription).then(() => {
-          this._removeSubscription(subscription);
-        });
-      } else {
-        this._endpoint.keepUpSubscription(spineSubscription).then(response => {
-          const responseStatus = response.status;
-          const responseStatusProto = ObjectToProto.convert(responseStatus, Status.typeUrl());
-          if (responseStatusProto.getStatusCase() !== Status.StatusCase.OK) {
-            this._removeSubscription(subscription)
-          }
-        });
-      }
+    this._cancelClosed()
+    this._keepUpOrGiveUp();
+  }
+
+  _cancelClosed() {
+    const closedSubscriptions = this._subscriptions
+        .filter(s => s.closed)
+        .map(s => s.internal());
+    if (closedSubscriptions.length === 0) {
+      return;
+    }
+    closedSubscriptions.forEach(s => this._removeSubscription(s));
+    this._endpoint.cancelSubscriptions(closedSubscriptions);
+  }
+
+  _keepUpOrGiveUp() {
+    const openSubscriptions = this._subscriptions
+        .map(s => s.internal());
+    if (openSubscriptions.length === 0) {
+      return;
+    }
+    this._endpoint.keepUpSubscriptions(openSubscriptions).then(response => {
+      const outcomes = response.outcome;
+      outcomes.forEach(outcome => {
+        const outcomeProto = ObjectToProto.convert(outcome, KeepUpOutcome.typeUrl());
+        if (outcomeProto.getKindCase() === KeepUpOutcome.KindCase.ERROR) {
+          const error = outcomeProto.getError();
+          const subscriptionId = outcomeProto.getId();
+          console.debug(
+              `Failed to keep up subscription '${subscriptionId.getValue()}': ${error.toObject()}`
+          );
+          this._removeSubscriptionById(subscriptionId);
+        }
+      });
     });
   }
 
@@ -155,6 +174,20 @@ export class FirebaseSubscriptionService {
 
     if (this._subscriptions.length === 0) {
       this._stop();
+    }
+  }
+
+  /**
+   * Removes the subscription by the given subscription ID.
+   *
+   * @see _removeSubscription
+   * @private
+   */
+  _removeSubscriptionById(subscriptionId) {
+    const stringId = subscriptionId.getValue();
+    const found = this._subscriptions.find(s => s.id() === stringId);
+    if (found) {
+      this._removeSubscription(found);
     }
   }
 

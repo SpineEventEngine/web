@@ -111,9 +111,13 @@ describe('FirebaseClient "fetch"', function () {
             .byId([])
             .run()
             .then(data => {
-                assert.ok(Array.isArray(data));
-                assert.ok(data.length >= taskIds.length);
-                done();
+                try {
+                    assert.ok(Array.isArray(data), `Expected an array, but was: ${data}`);
+                    assert.ok(data.length >= taskIds.length, `Received ${data.length} records, but expected ${taskIds.length} or more.`);
+                    done();
+                } catch (e) {
+                    fail(done)(e);
+                }
             })
             .catch((e) => {
                 console.error(e);

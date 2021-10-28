@@ -116,6 +116,11 @@ final class SubscriptionRepository {
                 .map(node -> node.as(TimedSubscription.class));
     }
 
+    Optional<Subscription> findLocal(SubscriptionId globalId) {
+        Optional<TimedSubscription> global = find(globalId);
+        return global.flatMap(s -> subscriptionRegistry.localSubscriptionFor(s.topic()));
+    }
+
     void update(TimedSubscription subscription) {
         NodePath path = pathForMeta(subscription.getSubscription());
         healthLog.put(subscription);

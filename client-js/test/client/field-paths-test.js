@@ -34,7 +34,7 @@ describe('FieldPaths', () => {
   it('throws an Error on construction', done => {
     try {
       new FieldPaths();
-      fail(done, "FieldPaths utility constructor didn't throw an error")
+      fail(done, "FieldPaths utility constructor didn't throw an error")();
     } catch (ignored) {
     }
     done();
@@ -56,12 +56,12 @@ describe('FieldPaths', () => {
   it('throws on parsing invalid string', done => {
     try {
       FieldPaths.parse("");
-      fail(done, "Parsing an empty string should cause an error");
+      fail(done, "Parsing an empty string should cause an error")();
     } catch (ignored) {
     }
     try {
       FieldPaths.parse(null);
-      fail(done, "Parsing a null string should cause an error");
+      fail(done, "Parsing a null string should cause an error")();
     } catch (ignored) {
     }
     done();
