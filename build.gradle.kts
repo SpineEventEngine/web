@@ -232,15 +232,6 @@ subprojects {
             includeEngines("junit-jupiter")
         }
     }
-
-//    idea {
-//        module {
-//            generatedSourceDirs.add(file(generatedJavaDir))
-//            testSourceDirs.add(file(generatedTestJavaDir))
-//            isDownloadJavadoc = true
-//            isDownloadSources = true
-//        }
-//    }
 }
 
 apply {
