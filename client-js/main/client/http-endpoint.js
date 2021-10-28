@@ -126,7 +126,6 @@ class Endpoint {
     return this._cancel(typed);
   }
 
-
   /**
    * @param {!TypedMessage<Command>} command a Command to send to the Spine server
    * @return {Promise<Object>} a promise of a successful server response, rejected if
