@@ -152,8 +152,8 @@ describe('FirebaseClient command sending', function () {
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
         .onError(e => fail(
             done,
-            `An error occurred when a business rejection was expected. Error: ${e}`
-        )())
+            `An error occurred when a business rejection was expected. Error: ${e}.`
+        )(e))
         .onImmediateRejection(checkRejection)
         .post();
   });

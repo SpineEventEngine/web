@@ -27,14 +27,13 @@
 package io.spine.web.test.given;
 
 import io.spine.base.CommandMessage;
-import io.spine.base.Errors;
 import io.spine.core.Ack;
-import io.spine.server.bus.BusFilter;
+import io.spine.server.commandbus.CommandFilter;
 import io.spine.server.type.CommandEnvelope;
 
 import java.util.Optional;
 
-final class CreateTaskCommandFilter implements BusFilter<CommandEnvelope> {
+final class CreateTaskCommandFilter implements CommandFilter {
 
     @Override
     public Optional<Ack> filter(CommandEnvelope envelope) {
@@ -50,6 +49,6 @@ final class CreateTaskCommandFilter implements BusFilter<CommandEnvelope> {
                 .setId(command.getId())
                 .setReason("Reject this command just for test.")
                 .build();
-        return reject(envelope, Errors.causeOf(rejection));
+        return reject(envelope, rejection);
     }
 }

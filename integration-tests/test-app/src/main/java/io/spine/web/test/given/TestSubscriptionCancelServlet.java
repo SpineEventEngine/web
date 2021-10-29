@@ -26,7 +26,6 @@
 
 package io.spine.web.test.given;
 
-import io.spine.core.Response;
 import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
 
 import javax.servlet.annotation.WebServlet;

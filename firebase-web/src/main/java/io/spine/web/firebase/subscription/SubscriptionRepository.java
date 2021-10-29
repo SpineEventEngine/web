@@ -140,17 +140,20 @@ final class SubscriptionRepository {
                     .build();
         }
         SubscriptionOrError response = newSubscription(timedSubscription, topic);
-        subscriptionRegistry.register(response.getSubscription().getSubscription());
         return response;
     }
 
     private SubscriptionOrError newSubscription(TimedSubscription timedSubscription, Topic topic) {
-        SubscriptionOrError newSubscription = subscriptionService.subscribe(topic, updateObserver);
-        SubscriptionOrError.Builder responseBuilder = newSubscription.toBuilder();
-        responseBuilder.getSubscriptionBuilder()
-                       .getSubscriptionBuilder()
-                       .setId(timedSubscription.id());
-        SubscriptionOrError response = responseBuilder.build();
+        SubscriptionOrError response = subscriptionService.subscribe(topic, updateObserver);
+        if (response.hasSubscription()) {
+            subscriptionRegistry.register(response.getSubscription().getSubscription());
+            SubscriptionOrError.Builder responseBuilder = response.toBuilder();
+            responseBuilder.getSubscriptionBuilder()
+                           .getSubscriptionBuilder()
+                           .setId(timedSubscription.id());
+            response = responseBuilder.build();
+        }
+
         return response;
     }
 

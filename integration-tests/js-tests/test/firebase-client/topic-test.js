@@ -192,18 +192,22 @@ describe('FirebaseClient subscribes to topic', function () {
         .byId([user1.id, user2.id])
         .post()
         .then(subscription => {
-          teardownSubscription = subscription.unsubscribe;
-          const userTasksList$ = toListObservable(subscription, compareUserTasks);
-          const userTasksFlow = UserTasksFlow.for(userTasksList$);
+          try {
+            teardownSubscription = subscription.unsubscribe;
+            const userTasksList$ = toListObservable(subscription, compareUserTasks);
+            const userTasksFlow = UserTasksFlow.for(userTasksList$);
 
-          userTasksFlow
+            userTasksFlow
               .waitFor([
                 {id: user1.id, tasksCount: 2},
                 {id: user2.id, tasksCount: 2}
               ])
               .start()
               .then(done)
-              .catch(e => fail(done, e)())
+              .catch(e => fail(done, e)());
+          } catch (e) {
+            fail(done)(e);
+          }
         })
   });
 
@@ -213,18 +217,22 @@ describe('FirebaseClient subscribes to topic', function () {
         .where(Filters.eq('task_count', 2))
         .post()
         .then(subscription => {
-          teardownSubscription = subscription.unsubscribe;
-          const userTasksList$ = toListObservable(subscription, compareUserTasks);
-          const userTasksFlow = UserTasksFlow.for(userTasksList$);
+          try {
+            teardownSubscription = subscription.unsubscribe;
+            const userTasksList$ = toListObservable(subscription, compareUserTasks);
+            const userTasksFlow = UserTasksFlow.for(userTasksList$);
 
-          userTasksFlow
+            userTasksFlow
               .waitFor([
                 {id: user1.id, tasksCount: 2},
                 {id: user2.id, tasksCount: 2}
               ])
               .start()
               .then(done)
-              .catch(e => fail(done, e)())
+              .catch(e => fail(done, e)());
+          } catch (e) {
+            fail(done)(e);
+          }
         })
   });
 
@@ -234,11 +242,12 @@ describe('FirebaseClient subscribes to topic', function () {
         .where(Filters.ge('task_count', 2))
         .post()
         .then(subscription => {
-          teardownSubscription = subscription.unsubscribe;
-          const userTasksList$ = toListObservable(subscription, compareUserTasks);
-          const userTasksFlow = UserTasksFlow.for(userTasksList$);
+          try {
+            teardownSubscription = subscription.unsubscribe;
+            const userTasksList$ = toListObservable(subscription, compareUserTasks);
+            const userTasksFlow = UserTasksFlow.for(userTasksList$);
 
-          userTasksFlow
+            userTasksFlow
               .waitFor([
                 {id: user1.id, tasksCount: 2},
                 {id: user2.id, tasksCount: 2}
@@ -259,7 +268,10 @@ describe('FirebaseClient subscribes to topic', function () {
               ])
               .start()
               .then(done)
-              .catch(e => fail(done, e)())
+              .catch(e => fail(done, e)());
+          } catch (e) {
+            fail(done)(e);
+          }
         });
   });
 });
