@@ -25,7 +25,7 @@
  */
 
 import assert from 'assert';
-import {ensureUserTasks, fail} from '../test-helpers';
+import {fail} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-tasks-test-environment';
 import {client} from './given/firebase-client';
 import {enumValueOf, Filters} from '@lib/client/actor-request-factory';
@@ -178,9 +178,10 @@ describe('FirebaseClient executes query built', function () {
           .run()
           .then(userTasksList => {
             try {
-              assert.ok(
-                  ensureUserTasks(userTasksList, test.expectedUsers()),
-                  "User tasks do not match expectations."
+              assert.deepEqual(
+                test.expectedUsers().map(u => u.id.getValue()),
+                userTasksList.map(t => t.getId().getValue()),
+                `Expected ${test.expectedUsers().length} entities but got ${userTasksList.length}.`
               );
               done();
             } catch (e) {
