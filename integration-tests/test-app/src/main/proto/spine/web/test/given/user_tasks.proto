@@ -58,5 +58,6 @@ message UserTasks {
         LOW = 0;
         HIGH = 1;
         VERY_HIGH = 2;
+        EXTREME = 3;
     }
 }

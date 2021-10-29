@@ -98,7 +98,7 @@ describe('FirebaseClient executes query built', function () {
       ids: () => [
         TestEnvironment.userId('user-without-tasks-assigned')
       ],
-      expectedUsers: () => users.slice(0, 2)
+      expectedUsers: () => []
     },
     {
       message: 'with `eq` filter',
@@ -112,7 +112,7 @@ describe('FirebaseClient executes query built', function () {
       filters: [
         Filters.eq('load', enumValueOf(UserTasks.Load.VERY_HIGH))
       ],
-      expectedUsers: () => users.filter(user => user.tasks.length > 1)
+      expectedUsers: () => users.filter(user => user.tasks.length === 2)
     },
     {
       message: 'with `lt` filter',
@@ -148,15 +148,15 @@ describe('FirebaseClient executes query built', function () {
         Filters.gt('task_count', 1),
         Filters.lt('task_count', 3)
       ],
-      expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
+      expectedUsers: () => users.filter(user => user.tasks.length === 2)
     },
     {
       message: 'with several filters applied to different column',
       filters: [
         Filters.gt('task_count', 1),
-        Filters.lt('is_overloaded', new BoolValue([true]))
+        Filters.eq('load', enumValueOf(UserTasks.Load.EXTREME))
       ],
-      expectedUsers: () => users.filter(user => user.tasks.length > 1)
+      expectedUsers: () => users.filter(user => user.tasks.length > 2)
     },
     {
       message: 'with inappropriate filter',
@@ -178,10 +178,13 @@ describe('FirebaseClient executes query built', function () {
           .run()
           .then(userTasksList => {
             try {
-              assert.deepEqual(
-                test.expectedUsers().map(u => u.id.getValue()),
-                userTasksList.map(t => t.getId().getValue()),
-                `Expected ${test.expectedUsers().length} entities but got ${userTasksList.length}.`
+              const expected = test.expectedUsers().map(u => u.id.getValue());
+              expected.sort();
+              const actual = userTasksList.map(t => t.getId().getValue());
+              actual.sort();
+              assert.deepEqual(expected, actual
+                  // ,
+                // `Expected ${test.expectedUsers().length} entities but got ${userTasksList.length}.`
               );
               done();
             } catch (e) {

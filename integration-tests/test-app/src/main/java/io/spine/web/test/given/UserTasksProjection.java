@@ -29,6 +29,7 @@ package io.spine.web.test.given;
 import io.spine.base.Time;
 import io.spine.core.Subscribe;
 import io.spine.core.UserId;
+import io.spine.json.Json;
 import io.spine.server.projection.Projection;
 
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.List;
 import static io.spine.web.test.given.UserTasks.Load.HIGH;
 import static io.spine.web.test.given.UserTasks.Load.LOW;
 import static io.spine.web.test.given.UserTasks.Load.VERY_HIGH;
+import static io.spine.web.test.given.UserTasks.Load.EXTREME;
 
 /**
  * A projection representing a user and a list of {@link TaskId tasks} assigned to him.
@@ -64,14 +66,16 @@ final class UserTasksProjection
             builder().setId(event.getTo())
                      .addTasks(event.getId());
         }
+        builder().setLastUpdated(event.getWhen());
+    }
 
+    @Override
+    protected void onBeforeCommit() {
         int taskTotal = countTasks();
-        builder().setLastUpdated(event.getWhen())
-                 .setTaskCount(taskTotal)
+        builder().setTaskCount(taskTotal)
                  .setLastUpdated(Time.currentTime())
                  .setIsOverloaded(taskTotal > 1)
                  .setLoad(loadWith(taskTotal));
-
     }
 
     private int countTasks() {
@@ -84,8 +88,10 @@ final class UserTasksProjection
             return LOW;
         } else if (taskTotal == 1) {
             return HIGH;
-        } else {
+        } else if (taskTotal == 2) {
             return VERY_HIGH;
+        } else {
+            return EXTREME;
         }
     }
 
