@@ -158,13 +158,16 @@ class FirebaseQueryingClient extends QueryingClient {
   read(query) {
     return new Promise((resolve, reject) => {
       this._endpoint.query(query)
-          .then(({path, count}) => {
-            console.error("Count: " + count);
-            this._firebase.getValues(path, values => {
-              const typeUrl = query.getTarget().getType();
-              const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
-              resolve(messages);
-            });
+          .then(response => {
+            if (!response.hasOwnProperty("count") || response.count === 0) {
+              resolve([]);
+            } else {
+              this._firebase.getValues(response.path, values => {
+                const typeUrl = query.getTarget().getType();
+                const messages = values.map(value => ObjectToProto.convert(value, typeUrl));
+                resolve(messages);
+              });
+            }
           })
           .catch(error => reject(error));
     });
