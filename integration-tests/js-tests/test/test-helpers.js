@@ -55,11 +55,10 @@ import {BehaviorSubject, Observable} from 'rxjs';
  */
 export function fail(done, message = '') {
   return cause => {
-    if (message) {
-      done(new Error(`Test failed. Cause: ${message}`));
-    } else {
-      done(new Error(`Test failed. Cause: ${cause ? cause : 'not identified'}`));
-    }
+    const causeMessage = cause ? cause : "not identified.";
+    const msg = message ? " " + message : "."
+
+    done(new Error(`Test failed${msg} Cause: ${causeMessage}`));
   };
 }
 
