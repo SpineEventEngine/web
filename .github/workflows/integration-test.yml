@@ -24,6 +24,9 @@ jobs:
       - name: Pull config
         run: git submodule update --init --recursive
 
+      - name: Ensure test resource directory exists
+        run: mkdir ./integration-tests/test-app/src/main/resources/
+
       - name: Decrypt Firebase service account key
         run: ./config/scripts/decrypt.sh "$FIREBASE_SA_KEY" ./.github/keys/firebase-sa.json.gpg ./integration-tests/test-app/src/main/resources/spine-dev.json
         env:
