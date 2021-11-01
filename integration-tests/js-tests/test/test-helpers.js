@@ -62,6 +62,16 @@ export function fail(done, message = '') {
   };
 }
 
+export function completeOrFail(done, func) {
+  try {
+    func();
+    done();
+  } catch (e) {
+    console.error(e);
+    fail(done)(e);
+  }
+}
+
 /**
  * Ensures given lists contain the same user IDs.
  *

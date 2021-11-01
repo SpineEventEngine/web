@@ -26,7 +26,7 @@
 
 import assert from 'assert';
 import sinon from 'sinon';
-import {fail} from '../test-helpers';
+import {completeOrFail, fail} from '../test-helpers';
 import TestEnvironment from '../given/test-environment';
 import {TaskRenamed} from '@testProto/spine/web/test/given/events_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
@@ -417,15 +417,12 @@ describe('FirebaseClient subscription', function () {
 
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         await nextInterval();
-        try {
+        completeOrFail(done, () => {
           assert.ok(keepUpEndpoint.calledOnce);
           const subscriptionId = keepUpEndpoint.getCall(0).args[0][0].getId();
           assert.ok(subscriptionId.getValue());
           unsubscribe();
-          done();
-        } catch (e) {
-          fail(done)(e);
-        }
+        });
       });
     });
 
@@ -433,17 +430,14 @@ describe('FirebaseClient subscription', function () {
       const cancelEndpoint = cancelEndpointSpy();
 
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
-        try {
+        completeOrFail(done, async () => {
           assert.ok(cancelEndpoint.notCalled);
           unsubscribe();
           await nextInterval();
           assert.ok(cancelEndpoint.calledOnce);
           const subscriptionId = cancelEndpoint.getCall(0).args[0][0].getId();
           assert.ok(subscriptionId.getValue());
-          done();
-        } catch (e) {
-          fail(done)(e);
-        }
+        });
       });
     });
 
@@ -452,7 +446,7 @@ describe('FirebaseClient subscription', function () {
       const cancelEndpoint = cancelEndpointSpy();
 
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
-        try {
+        completeOrFail(done, async () => {
           assert.ok(keepUpEndpoint.notCalled, "Keep-up endpoint should not be called.");
           assert.ok(cancelEndpoint.notCalled, "Cancel endpoint should not be called.");
           await nextInterval();
@@ -467,10 +461,7 @@ describe('FirebaseClient subscription', function () {
           await nextInterval();
           assert.ok(keepUpEndpoint.calledOnce, "Keep-up endpoint should still be called once.");
           assert.ok(cancelEndpoint.calledOnce, "Cancel endpoint should be still called once.");
-          done();
-        } catch (e) {
-          fail(done)(e);
-        }
+        });
       });
     });
 
