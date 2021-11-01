@@ -79,7 +79,7 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to subscribe to a provided topic to an endpoint.
+   * Sends a request to subscribe to given topics.
    *
    * @param {!Array<spine.client.Topic>} topics topics to which to subscribe
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -94,7 +94,7 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to keep subscriptions up, stopping them from being closed by the server.
+   * Sends a request to keep subscriptions up, stopping them from being closed by the server.
    *
    * @param {!Array<spine.client.Subscription>} subscriptions subscriptions that should be kept up
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -110,7 +110,7 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to cancel existing subscriptions.
+   * Sends a request to cancel existing subscriptions.
    *
    * Cancelling subscription stops the server updating subscription with new values.
    *

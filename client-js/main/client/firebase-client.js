@@ -230,29 +230,42 @@ class FirebaseSubscribingClient extends SubscribingClient {
             const subscriptionOrError =
                 ObjectToProto.convert(result, SubscriptionOrError.typeUrl());
             if (subscriptionOrError.getPayloadCase() === SubscriptionOrError.PayloadCase.ERROR) {
-              const error = subscriptionOrError.getError()
-              console.debug('Unable to create subscription. ' + error)
-              reject(error.getMessage());
+              this._failedToSubscribe(subscriptionOrError, reject);
               return;
             }
             const webSubscription = subscriptionOrError.getSubscription();
-            const packedNodePath = webSubscription.getExtraList()
-                .find(x => x.getTypeUrl() === NodePath.typeUrl());
-            if (!packedNodePath) {
+            const path = this._findPath(webSubscription);
+            if (!path) {
               reject("Subscription did not include a Firebase node path.");
               return;
             }
-            const path = AnyPacker.unpack(packedNodePath)
-                .as(Type.forClass(NodePath))
-                .getValue();
-            const internalSubscription =
-                FirebaseSubscribingClient.internalSubscription(path, webSubscription.getSubscription());
+            const internalSubscription = FirebaseSubscribingClient.internalSubscription(
+                path,
+                webSubscription.getSubscription()
+            );
             const subscription = createSubscriptionFn.call(this, path, internalSubscription);
-            resolve(subscription.toObject());
             this._subscriptionService.add(subscription);
+            resolve(subscription.toObject());
           })
           .catch(reject);
     });
+  }
+
+  _failedToSubscribe(subscriptionOrError, reject) {
+    const error = subscriptionOrError.getError()
+    console.debug('Unable to create subscription. ' + JSON.stringify(error.toObject()));
+    reject(error.getMessage());
+  }
+
+  _findPath(webSubscription) {
+    const packedNodePath = webSubscription.getExtraList()
+        .find(x => x.getTypeUrl() === NodePath.typeUrl());
+    if (!packedNodePath) {
+      return null;
+    }
+    return AnyPacker.unpack(packedNodePath)
+        .as(Type.forClass(NodePath))
+        .getValue();
   }
 
   /**
