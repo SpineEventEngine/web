@@ -62,6 +62,13 @@ export function fail(done, message = '') {
   };
 }
 
+/**
+ * Executes the given function and calls the `done` callback with no arguments if the function
+ * executed successfully and with one error argument if the function failed.
+ *
+ * @param done the mocha async test callback
+ * @param func the action to perform
+ */
 export function completeOrFail(done, func) {
   try {
     func();
