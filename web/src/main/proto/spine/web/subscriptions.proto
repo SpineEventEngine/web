@@ -137,6 +137,14 @@ message KeepingUp {
     google.protobuf.Timestamp valid_thru = 2;
 }
 
+// An outcome of a keep-up request for a single subscription.
+//
+// If the request was successful, the outcome will contain a new expiration time for
+// the subscription. The expiration time may be shorter or longer than requested. The server has
+// full control over subscription expiration.
+//
+// If the request was rejected, the `error` should explain the reason.
+//
 message KeepUpOutcome {
 
     client.SubscriptionId id = 1;
