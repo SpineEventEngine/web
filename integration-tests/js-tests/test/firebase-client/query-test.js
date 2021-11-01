@@ -25,12 +25,11 @@
  */
 
 import assert from 'assert';
-import {fail, runOrFail} from '../test-helpers';
+import {completeOrFail, fail} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-tasks-test-environment';
 import {client} from './given/firebase-client';
 import {enumValueOf, Filters} from '@lib/client/actor-request-factory';
 import {TypedMessage} from '@lib/client/typed-message';
-import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
 /**
@@ -177,13 +176,12 @@ describe('FirebaseClient executes query built', function () {
           .where(filters)
           .run()
           .then(userTasksList => {
-            runOrFail(done, () => {
+            completeOrFail(done, () => {
               const expected = test.expectedUsers().map(u => u.id.getValue());
               expected.sort();
               const actual = userTasksList.map(t => t.getId().getValue());
               actual.sort();
               assert.deepEqual(expected, actual);
-              done();
             });
           }, fail(done));
     });
