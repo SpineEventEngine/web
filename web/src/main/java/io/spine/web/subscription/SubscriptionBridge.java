@@ -44,9 +44,31 @@ import io.spine.web.Subscribing;
  */
 public interface SubscriptionBridge {
 
+    /**
+     * Creates subscriptions for given topics for the provided lifetime.
+     *
+     * @param request
+     *         the request to create subscriptions
+     * @return detailed response addressing the success of each individual subscription
+     */
     Subscribing subscribe(Subscribe request);
 
+    /**
+     * Prolongs the lifetime of subscriptions.
+     *
+     * @param request
+     *         the request to prolong the lifetime of certain subscriptions by
+     *         a certain duration
+     * @return detailed response addressing the success of each individual subscription keep-up
+     */
     KeepingUp keepUp(KeepUp request);
 
+    /**
+     * Cancels given subscriptions.
+     *
+     * @param request
+     *         the request to cancel subscriptions by their IDs
+     * @return detailed response addressing the success of each individual cancellation
+     */
     Cancelling cancel(Cancel request);
 }
