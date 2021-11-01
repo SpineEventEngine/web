@@ -52,6 +52,7 @@ import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
 import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -142,20 +143,17 @@ subprojects {
         plugin("maven-publish")
     }
 
-    // Apply custom Kotlin script plugins.
     apply {
+        // Apply custom Kotlin script plugins.
         plugin("pmd-settings")
-    }
-
-    // Apply Groovy-based script plugins.
-    apply {
+        // Apply Groovy-based script plugins.
         with(Scripts) {
-            from(projectLicenseReport(project))
-
             from(testOutput(project))
             from(javacArgs(project))
         }
     }
+
+    LicenseReporter.generateReportIn(project)
 
     with(repositories) {
         applyGitHubPackages("base", rootProject)
@@ -235,13 +233,11 @@ subprojects {
 }
 
 apply {
-    with(Scripts) {
-        from(jacoco(project))
-        from(repoLicenseReport(project))
-    }
+    from(Scripts.jacoco(project))
 }
 
 PomGenerator.applyTo(project)
+LicenseReporter.mergeAllReports(project)
 
 /**
  * Force transitive dependencies.
