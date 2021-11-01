@@ -101,6 +101,9 @@ public final class StoredJson extends StringTypeValue {
         return object.getAsJsonObject();
     }
 
+    /**
+     * Parses this JSON as a message of the given type.
+     */
     @Internal
     public <M extends Message> M as(Class<M> cls) {
         return Json.fromJson(value(), cls);

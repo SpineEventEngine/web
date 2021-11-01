@@ -35,21 +35,39 @@ import io.spine.client.TopicId;
 
 import static com.google.protobuf.util.Timestamps.compare;
 
+/**
+ * A generated mixin for the {@link TimedSubscription} type.
+ */
 @GeneratedMixin
 interface TimedSubscriptionMixin extends TimedSubscriptionOrBuilder {
 
+    /**
+     * Obtains the subscription ID.
+     */
     default SubscriptionId id() {
         return getSubscription().getId();
     }
 
+    /**
+     * Obtains the topic ID.
+     */
     default TopicId topicId() {
-        return getSubscription().getTopic().getId();
+        return topic().getId();
     }
 
+    /**
+     * Obtains the subscription topic.
+     */
     default Topic topic() {
         return getSubscription().getTopic();
     }
 
+    /**
+     * Checks if this subscription is expired.
+     *
+     * @return {@code true} if the subscription is expired and should be inactivated,
+     *         {@code false} if the subscription is still relevant
+     */
     default boolean isExpired() {
         Timestamp validThru = getValidThru();
         Timestamp now = Time.currentTime();

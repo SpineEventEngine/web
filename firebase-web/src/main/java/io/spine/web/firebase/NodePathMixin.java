@@ -71,6 +71,11 @@ interface NodePathMixin extends NodePathOrBuilder {
         return NodePaths.of(this.getValue(), rawPath);
     }
 
+    /**
+     * Obtains a {@link SubscriptionId} from this path.
+     *
+     * <p>The {@code value} of the ID reflects the value of this path.
+     */
     default SubscriptionId asSubscriptionId() {
         return SubscriptionId
                 .newBuilder()

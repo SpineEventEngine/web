@@ -33,8 +33,7 @@ import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
 import com.google.protobuf.Message;
-import io.spine.json.Json;
-import io.spine.protobuf.Messages;
+import io.spine.annotation.Internal;
 
 import javax.annotation.Nullable;
 
@@ -47,10 +46,12 @@ import static io.spine.json.Json.fromJson;
 /**
  * The Firebase database node value.
  */
+@Internal
 public final class NodeValue {
 
     private final JsonObject value;
-    private final @Nullable StoredJson originalJson;
+    @Nullable
+    private final StoredJson originalJson;
 
     private NodeValue(JsonObject value, @Nullable StoredJson originalJson) {
         this.value = value;
@@ -105,6 +106,9 @@ public final class NodeValue {
         return result;
     }
 
+    /**
+     * Parses this node value as a message of the given type.
+     */
     public <M extends Message> M as(Class<M> cls) {
         if (originalJson != null) {
             return originalJson.as(cls);

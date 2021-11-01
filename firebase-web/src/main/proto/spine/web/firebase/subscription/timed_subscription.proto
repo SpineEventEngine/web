@@ -12,11 +12,17 @@ option java_multiple_files = true;
 import "google/protobuf/timestamp.proto";
 import "spine/client/subscription.proto";
 
+// A subscription with an expiration time.
 message TimedSubscription {
     option (internal_type) = true;
     option (is).java_type = "TimedSubscriptionMixin";
 
+    // A client subscription.
     client.Subscription subscription = 1;
 
+    // The time after which the subscription is no longer considered active.
+    //
+    // The initial time may be prolonged by a client request.
+    //
     google.protobuf.Timestamp valid_thru = 2;
 }
