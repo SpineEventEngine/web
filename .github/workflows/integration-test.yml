@@ -27,7 +27,7 @@ jobs:
       - name: Decrypt Firebase service account key
         run: ./config/scripts/decrypt.sh "$FIREBASE_SA_KEY" ./.github/keys/firebase-sa.json.gpg ./integration-tests/test-app/src/main/resources/spine-dev.json
         env:
-          $FIREBASE_SA_KEY: ${{ secrets.$FIREBASE_SA_KEY }}
+          $FIREBASE_SA_KEY: ${{ secrets.FIREBASE_SA_KEY }}
 
       - name: Build project and run tests
         shell: bash
