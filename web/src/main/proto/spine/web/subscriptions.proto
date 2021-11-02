@@ -49,7 +49,10 @@ import "spine/core/ack.proto";
 
 // A subscription initiated by a web client.
 //
-// The subscription may have `extra` properties required by the web client.
+// The subscription may have `extra` properties required by the web client. Different
+// implementations of the Spine Web protocol may add different data to extra properties.
+// For example, a Firebase RDB path to the requested data may be passed to the client as
+// an extra property.
 //
 message WebSubscription {
 
@@ -75,6 +78,8 @@ message Subscribe {
     // This value is a requested value. The server may set another lifetime to the subscriptions.
     // The actual "valid through" time is returned by the server in response to this request.
     //
+    // A negative duration will result in an error.
+    //
     google.protobuf.Duration lifespan = 2;
 }
 
@@ -88,12 +93,17 @@ message Subscribing {
     //
     // The order of the results corresponds to the order of topics in the `Subscribe` request.
     //
+    // If all subscriptions cannot be created due to the same error, `result` will only contain one
+    // instance of the error no matter how many subscription topics was there in the request.
+    //
     repeated SubscriptionOrError result = 1;
 
     // For all the subscriptions in the response, this is the time after which the subscription
     // will expire.
     //
     // An expired subscription may be cancelled by the server.
+    //
+    // If no subscriptions where created, is field may be empty.
     //
     google.protobuf.Timestamp valid_thru = 2;
 }
@@ -119,8 +129,7 @@ message KeepUp {
     // The server may add this time or another duration. The updated subscription expiration date
     // is provided in the response.
     //
-    // If the client wishes to *reduce* the lifetime of the subscription, it can do so by providing
-    // a negative duration.
+    // A negative duration will result in an error.
     //
     google.protobuf.Duration prolong_by = 2;
 }
@@ -135,6 +144,9 @@ message KeepingUp {
     //
     // If an `KeepUpOutcome` contains an error and the subscription exists and is active,
     // the lifetime will remain the same.
+    //
+    // If an error occurs outside of a context of a single subscription, there will be only
+    // one `outcome` with an instance of that error without a subscription ID.
     //
     repeated KeepUpOutcome outcome = 1;
 }

@@ -37,7 +37,6 @@ import io.spine.client.Topic;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Ack;
 import io.spine.core.Status;
-import io.spine.json.Json;
 import io.spine.web.Cancel;
 import io.spine.web.Cancelling;
 import io.spine.web.KeepUp;
@@ -61,6 +60,7 @@ import static com.google.protobuf.util.Durations.fromMinutes;
 import static com.google.protobuf.util.Durations.isNegative;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Time.currentTime;
+import static io.spine.client.SubscriptionValidationError.INVALID_SUBSCRIPTION_VALUE;
 import static io.spine.client.SubscriptionValidationError.UNKNOWN_SUBSCRIPTION_VALUE;
 import static io.spine.core.Responses.statusOk;
 import static io.spine.protobuf.AnyPacker.pack;
@@ -90,13 +90,40 @@ public final class FirebaseSubscriptionBridge
     @Override
     public Subscribing subscribe(Subscribe request) {
         checkNotNull(request);
-        Timestamp validThru = calculateExpirationTime(request.getLifespan());
+        Optional<Timestamp> expirationTime = calculateExpirationTime(request.getLifespan());
+        if (!expirationTime.isPresent()) {
+            return invalidDuration(request);
+        }
+        Timestamp validThru = expirationTime.get();
         Subscribing.Builder result = Subscribing.newBuilder();
         for (Topic topic : request.getTopicList()) {
             result.addResult(subscribe(topic, validThru));
         }
         return result.setValidThru(validThru)
                      .build();
+    }
+
+    private static Subscribing invalidDuration(Subscribe request) {
+        Error error = invalidDurationError(request.getLifespan(), "create");
+        SubscriptionOrError subscriptionOrError = SubscriptionOrError.newBuilder()
+                .setError(error)
+                .build();
+        return Subscribing.newBuilder()
+                .addResult(subscriptionOrError)
+                .build();
+    }
+
+    private static Error invalidDurationError(Duration duration, String operationName) {
+        Error error = Error.newBuilder()
+                .setType(SubscriptionValidationError.class.getName())
+                .setCode(INVALID_SUBSCRIPTION_VALUE)
+                .setMessage(format(
+                        "Cannot %s a subscription. Invalid duration: %s.",
+                        operationName,
+                        Durations.toString(duration)
+                ))
+                .build();
+        return error;
     }
 
     private SubscriptionOrError subscribe(Topic topic, Timestamp validThru) {
@@ -123,19 +150,32 @@ public final class FirebaseSubscriptionBridge
         return builder.build();
     }
 
-    private Timestamp calculateExpirationTime(Duration suggestedLifespan) {
-        Duration lifespan = normalizedProlongation(suggestedLifespan);
-        return add(currentTime(), lifespan);
+    private Optional<Timestamp> calculateExpirationTime(Duration suggestedLifespan) {
+        Optional<Duration> lifespan = normalizedProlongation(suggestedLifespan);
+        return lifespan.map(l -> add(currentTime(), l));
     }
 
     @Override
     public KeepingUp keepUp(KeepUp request) {
-        Duration prolongation = normalizedProlongation(request.getProlongBy());
+        Optional<Duration> duration = normalizedProlongation(request.getProlongBy());
+        if (!duration.isPresent()) {
+            return invalidProlongation(request);
+        }
+        Duration prolongation = duration.get();
         KeepingUp.Builder response = KeepingUp.newBuilder();
         for (SubscriptionId id : request.getSubscriptionList()) {
             response.addOutcome(keepUp(prolongation, id));
         }
         return response.build();
+    }
+
+    private static KeepingUp invalidProlongation(KeepUp request) {
+        KeepUpOutcome outcome = KeepUpOutcome.newBuilder()
+                .setError(invalidDurationError(request.getProlongBy(), "keep up"))
+                .build();
+        return KeepingUp.newBuilder()
+                .addOutcome(outcome)
+                .build();
     }
 
     private KeepUpOutcome keepUp(Duration prolongation, SubscriptionId id) {
@@ -156,17 +196,17 @@ public final class FirebaseSubscriptionBridge
         return outcome.build();
     }
 
-    private Duration normalizedProlongation(Duration requested) {
+    private Optional<Duration> normalizedProlongation(Duration requested) {
         if (isNegative(requested)) {
-            return requested;
+            return Optional.empty();
         }
         if (compare(MIN_PROLONGATION, requested) > 0) {
-            return MIN_PROLONGATION;
+            return Optional.of(MIN_PROLONGATION);
         }
         if (compare(maxProlongation, requested) < 0) {
-            return maxProlongation;
+            return Optional.of(maxProlongation);
         }
-        return requested;
+        return Optional.of(requested);
     }
 
     @Override
@@ -200,7 +240,8 @@ public final class FirebaseSubscriptionBridge
         Error error = Error
                 .newBuilder()
                 .setMessage(errorMessage)
-                .setType(SubscriptionValidationError.getDescriptor().getFullName())
+                .setType(SubscriptionValidationError.getDescriptor()
+                                                    .getFullName())
                 .setCode(UNKNOWN_SUBSCRIPTION_VALUE)
                 .build();
         return error;
