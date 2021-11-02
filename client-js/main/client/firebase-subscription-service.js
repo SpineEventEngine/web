@@ -129,6 +129,18 @@ export class FirebaseSubscriptionService {
     this._keepUpOrGiveUp();
   }
 
+  /**
+   * Cancels all the subscriptions that are marked as closed.
+   *
+   * When an API user closes a subscription, it gets marked with a flag. Once in a while,
+   * the Spine client calls this method to find all the closed subscriptions and cancel them on
+   * the server.
+   *
+   * Immediately after calling this method, there should be no closed subscriptions in
+   * the `_subscriptions` list.
+   *
+   * @private
+   */
   _cancelClosed() {
     const closedSubscriptions = this._subscriptions
         .filter(s => s.closed)
@@ -140,6 +152,18 @@ export class FirebaseSubscriptionService {
     this._endpoint.cancelSubscriptions(closedSubscriptions);
   }
 
+  /**
+   * Sends a request to keep up the active subscriptions.
+   *
+   * Such a request prevents the server from cancelling the subscriptions automatically with time.
+   *
+   * The server responds with status for each subscription. If a subscription could not be found on
+   * the server (e.g. because it was already closed), the server responds with an error.
+   * In this case, the client removes the subscription. The callbacks will no longer receive
+   * updates.
+   *
+   * @private
+   */
   _keepUpOrGiveUp() {
     const openSubscriptions = this._subscriptions
         .map(s => s.internal());
