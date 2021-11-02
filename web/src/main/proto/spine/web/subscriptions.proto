@@ -137,9 +137,6 @@ message KeepingUp {
     // the lifetime will remain the same.
     //
     repeated KeepUpOutcome outcome = 1;
-
-    // The updated expiration time for all the associated subscriptions.
-    google.protobuf.Timestamp valid_thru = 2;
 }
 
 // An outcome of a keep-up request for a single subscription.
