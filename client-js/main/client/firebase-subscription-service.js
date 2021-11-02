@@ -159,8 +159,8 @@ export class FirebaseSubscriptionService {
    *
    * The server responds with status for each subscription. If a subscription could not be found on
    * the server (e.g. because it was already closed), the server responds with an error.
-   * In this case, the client removes the subscription. The callbacks will no longer receive
-   * updates.
+   * In this case, the client removes the subscription. The callbacks will no longer
+   * receive updates.
    *
    * @private
    */
