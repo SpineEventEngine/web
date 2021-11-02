@@ -84,7 +84,7 @@ message Subscribe {
 }
 
 // The response to the `Subscribe` request.
-message Subscribing {
+message SubscriptionsCreated {
 
     // The subscription results list.
     //
@@ -135,7 +135,7 @@ message KeepUp {
 }
 
 // The response to the `KeepUp` request.
-message KeepingUp {
+message SubscriptionsKeptUp {
 
     // Outcomes of the request, one per each subscription.
     //
@@ -185,7 +185,7 @@ message Cancel {
 }
 
 // The response to the `Cancel` request.
-message Cancelling {
+message SubscriptionsCancelled {
 
     // Acknowledgements of the request, one per each subscription.
     //

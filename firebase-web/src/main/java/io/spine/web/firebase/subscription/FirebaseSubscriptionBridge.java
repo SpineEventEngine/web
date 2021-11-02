@@ -38,13 +38,13 @@ import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.core.Ack;
 import io.spine.core.Status;
 import io.spine.web.Cancel;
-import io.spine.web.Cancelling;
 import io.spine.web.KeepUp;
 import io.spine.web.KeepUpOutcome;
-import io.spine.web.KeepingUp;
 import io.spine.web.Subscribe;
-import io.spine.web.Subscribing;
 import io.spine.web.SubscriptionOrError;
+import io.spine.web.SubscriptionsCancelled;
+import io.spine.web.SubscriptionsCreated;
+import io.spine.web.SubscriptionsKeptUp;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
@@ -88,14 +88,14 @@ public final class FirebaseSubscriptionBridge
     }
 
     @Override
-    public Subscribing subscribe(Subscribe request) {
+    public SubscriptionsCreated subscribe(Subscribe request) {
         checkNotNull(request);
         Optional<Timestamp> expirationTime = calculateExpirationTime(request.getLifespan());
         if (!expirationTime.isPresent()) {
             return invalidDuration(request);
         }
         Timestamp validThru = expirationTime.get();
-        Subscribing.Builder result = Subscribing.newBuilder();
+        SubscriptionsCreated.Builder result = SubscriptionsCreated.newBuilder();
         for (Topic topic : request.getTopicList()) {
             result.addResult(subscribe(topic, validThru));
         }
@@ -103,12 +103,12 @@ public final class FirebaseSubscriptionBridge
                      .build();
     }
 
-    private static Subscribing invalidDuration(Subscribe request) {
+    private static SubscriptionsCreated invalidDuration(Subscribe request) {
         Error error = invalidDurationError(request.getLifespan(), "create");
         SubscriptionOrError subscriptionOrError = SubscriptionOrError.newBuilder()
                 .setError(error)
                 .build();
-        return Subscribing.newBuilder()
+        return SubscriptionsCreated.newBuilder()
                 .addResult(subscriptionOrError)
                 .build();
     }
@@ -156,24 +156,24 @@ public final class FirebaseSubscriptionBridge
     }
 
     @Override
-    public KeepingUp keepUp(KeepUp request) {
+    public SubscriptionsKeptUp keepUp(KeepUp request) {
         Optional<Duration> duration = normalizedProlongation(request.getProlongBy());
         if (!duration.isPresent()) {
             return invalidProlongation(request);
         }
         Duration prolongation = duration.get();
-        KeepingUp.Builder response = KeepingUp.newBuilder();
+        SubscriptionsKeptUp.Builder response = SubscriptionsKeptUp.newBuilder();
         for (SubscriptionId id : request.getSubscriptionList()) {
             response.addOutcome(keepUp(prolongation, id));
         }
         return response.build();
     }
 
-    private static KeepingUp invalidProlongation(KeepUp request) {
+    private static SubscriptionsKeptUp invalidProlongation(KeepUp request) {
         KeepUpOutcome outcome = KeepUpOutcome.newBuilder()
                 .setError(invalidDurationError(request.getProlongBy(), "keep up"))
                 .build();
-        return KeepingUp.newBuilder()
+        return SubscriptionsKeptUp.newBuilder()
                 .addOutcome(outcome)
                 .build();
     }
@@ -210,9 +210,9 @@ public final class FirebaseSubscriptionBridge
     }
 
     @Override
-    public Cancelling cancel(Cancel request) {
+    public SubscriptionsCancelled cancel(Cancel request) {
         checkNotNull(request);
-        Cancelling.Builder result = Cancelling.newBuilder();
+        SubscriptionsCancelled.Builder result = SubscriptionsCancelled.newBuilder();
         for (SubscriptionId id : request.getSubscriptionList()) {
             result.addAck(cancel(id));
         }

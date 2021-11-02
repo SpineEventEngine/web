@@ -28,7 +28,7 @@ package io.spine.web.subscription.servlet;
 
 import io.spine.client.Subscription;
 import io.spine.web.Cancel;
-import io.spine.web.Cancelling;
+import io.spine.web.SubscriptionsCancelled;
 import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
 
@@ -40,7 +40,7 @@ import io.spine.web.subscription.SubscriptionBridge;
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscriptionCancelServlet
-        extends MessageServlet<Cancel, Cancelling> {
+        extends MessageServlet<Cancel, SubscriptionsCancelled> {
 
     private final SubscriptionBridge bridge;
 
@@ -56,7 +56,7 @@ public abstract class SubscriptionCancelServlet
     }
 
     @Override
-    protected Cancelling handle(Cancel request) {
+    protected SubscriptionsCancelled handle(Cancel request) {
         return bridge.cancel(request);
     }
 }

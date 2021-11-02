@@ -29,11 +29,11 @@ package io.spine.web.subscription;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
 import io.spine.web.Cancel;
-import io.spine.web.Cancelling;
 import io.spine.web.KeepUp;
-import io.spine.web.KeepingUp;
 import io.spine.web.Subscribe;
-import io.spine.web.Subscribing;
+import io.spine.web.SubscriptionsCancelled;
+import io.spine.web.SubscriptionsCreated;
+import io.spine.web.SubscriptionsKeptUp;
 
 /**
  * A bridge for requests to a subscription {@link io.spine.server.SubscriptionService}.
@@ -51,7 +51,7 @@ public interface SubscriptionBridge {
      *         the request to create subscriptions
      * @return detailed response addressing the success of each individual subscription
      */
-    Subscribing subscribe(Subscribe request);
+    SubscriptionsCreated subscribe(Subscribe request);
 
     /**
      * Prolongs the lifetime of subscriptions.
@@ -61,7 +61,7 @@ public interface SubscriptionBridge {
      *         a certain duration
      * @return detailed response addressing the success of each individual subscription keep-up
      */
-    KeepingUp keepUp(KeepUp request);
+    SubscriptionsKeptUp keepUp(KeepUp request);
 
     /**
      * Cancels given subscriptions.
@@ -70,5 +70,5 @@ public interface SubscriptionBridge {
      *         the request to cancel subscriptions by their IDs
      * @return detailed response addressing the success of each individual cancellation
      */
-    Cancelling cancel(Cancel request);
+    SubscriptionsCancelled cancel(Cancel request);
 }

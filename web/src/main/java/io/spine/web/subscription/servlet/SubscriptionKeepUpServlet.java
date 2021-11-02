@@ -28,7 +28,7 @@ package io.spine.web.subscription.servlet;
 
 import io.spine.client.Subscription;
 import io.spine.web.KeepUp;
-import io.spine.web.KeepingUp;
+import io.spine.web.SubscriptionsKeptUp;
 import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
 
@@ -40,7 +40,7 @@ import io.spine.web.subscription.SubscriptionBridge;
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscriptionKeepUpServlet
-        extends MessageServlet<KeepUp, KeepingUp> {
+        extends MessageServlet<KeepUp, SubscriptionsKeptUp> {
 
     private final SubscriptionBridge bridge;
 
@@ -57,7 +57,7 @@ public abstract class SubscriptionKeepUpServlet
     }
 
     @Override
-    protected KeepingUp handle(KeepUp request) {
+    protected SubscriptionsKeptUp handle(KeepUp request) {
         return bridge.keepUp(request);
     }
 }

@@ -26,11 +26,10 @@
 
 package io.spine.web.subscription.servlet;
 
-import com.google.protobuf.Message;
 import io.spine.client.Topic;
 import io.spine.web.MessageServlet;
 import io.spine.web.Subscribe;
-import io.spine.web.Subscribing;
+import io.spine.web.SubscriptionsCreated;
 import io.spine.web.subscription.SubscriptionBridge;
 
 /**
@@ -42,7 +41,7 @@ import io.spine.web.subscription.SubscriptionBridge;
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
 public abstract class SubscribeServlet
-        extends MessageServlet<Subscribe, Subscribing> {
+        extends MessageServlet<Subscribe, SubscriptionsCreated> {
 
     private final SubscriptionBridge bridge;
 
@@ -59,7 +58,7 @@ public abstract class SubscribeServlet
     }
 
     @Override
-    protected Subscribing handle(Subscribe request) {
+    protected SubscriptionsCreated handle(Subscribe request) {
         return bridge.subscribe(request);
     }
 }

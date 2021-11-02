@@ -37,12 +37,12 @@ import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
 import io.spine.type.TypeUrl;
 import io.spine.web.Cancel;
-import io.spine.web.Cancelling;
+import io.spine.web.SubscriptionsCancelled;
 import io.spine.web.KeepUp;
 import io.spine.web.KeepUpOutcome;
-import io.spine.web.KeepingUp;
+import io.spine.web.SubscriptionsKeptUp;
 import io.spine.web.Subscribe;
-import io.spine.web.Subscribing;
+import io.spine.web.SubscriptionsCreated;
 import io.spine.web.WebSubscription;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.given.MemoizingFirebase;
@@ -108,8 +108,8 @@ class FirebaseSubscriptionBridgeTest {
                 .addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
-        Subscribing subscribing = bridge.subscribe(subscribe);
-        SubscriptionId subscriptionId = subscribing
+        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(subscribe);
+        SubscriptionId subscriptionId = subscriptionsCreated
                 .getResultList()
                 .get(0)
                 .getSubscription()
@@ -119,8 +119,8 @@ class FirebaseSubscriptionBridgeTest {
                 .addSubscription(subscriptionId)
                 .setProlongBy(fromHours(1))
                 .build();
-        KeepingUp keepingUp = bridge.keepUp(keepUp);
-        assertThat(keepingUp.getOutcome(0).getKindCase())
+        SubscriptionsKeptUp subscriptionsKeptUp = bridge.keepUp(keepUp);
+        assertThat(subscriptionsKeptUp.getOutcome(0).getKindCase())
                 .isEqualTo(NEW_VALID_THRU);
     }
 
@@ -134,8 +134,8 @@ class FirebaseSubscriptionBridgeTest {
                 .addSubscription(subscription.getId())
                 .setProlongBy(prolongBy)
                 .build();
-        KeepingUp keepingUp = bridge.keepUp(keepUp);
-        assertThat(keepingUp.getOutcome(0).getKindCase())
+        SubscriptionsKeptUp subscriptionsKeptUp = bridge.keepUp(keepUp);
+        assertThat(subscriptionsKeptUp.getOutcome(0).getKindCase())
                 .isEqualTo(KeepUpOutcome.KindCase.ERROR);
     }
 
@@ -147,19 +147,19 @@ class FirebaseSubscriptionBridgeTest {
                 .addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
-        Subscribing subscribing = bridge.subscribe(subscribe);
-        assertThat(subscribing)
+        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(subscribe);
+        assertThat(subscriptionsCreated)
                 .isNotNull();
-        SubscriptionId id = subscribing.getResult(0)
-                                       .getSubscription()
-                                       .getSubscription()
-                                       .getId();
+        SubscriptionId id = subscriptionsCreated.getResult(0)
+                                                .getSubscription()
+                                                .getSubscription()
+                                                .getId();
         Cancel cancel = Cancel
                 .newBuilder()
                 .addSubscription(id)
                 .build();
-        Cancelling cancelling = bridge.cancel(cancel);
-        assertThat(cancelling.getAck(0).getStatus().getStatusCase())
+        SubscriptionsCancelled subscriptionsCancelled = bridge.cancel(cancel);
+        assertThat(subscriptionsCancelled.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(OK);
     }
 
@@ -171,7 +171,7 @@ class FirebaseSubscriptionBridgeTest {
         Cancel cancel = Cancel.newBuilder()
                 .addSubscription(subscription.getId())
                 .build();
-        Cancelling response = bridge.cancel(cancel);
+        SubscriptionsCancelled response = bridge.cancel(cancel);
         assertThat(response.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(ERROR);
     }
@@ -184,10 +184,10 @@ class FirebaseSubscriptionBridgeTest {
                 .addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
-        Subscribing subscribing = bridge.subscribe(subscribe);
-        assertThat(subscribing)
+        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(subscribe);
+        assertThat(subscriptionsCreated)
                 .isNotNull();
-        WebSubscription webSubscription = subscribing
+        WebSubscription webSubscription = subscriptionsCreated
                 .getResult(0)
                 .getSubscription();
         assertThat(webSubscription.getExtraList())
@@ -197,12 +197,12 @@ class FirebaseSubscriptionBridgeTest {
         Cancel cancel = Cancel.newBuilder()
                 .addSubscription(webSubscription.getSubscription().getId())
                 .build();
-        Cancelling cancelling = bridge.cancel(cancel);
-        assertThat(cancelling.getAck(0).getStatus().getStatusCase())
+        SubscriptionsCancelled cancelled = bridge.cancel(cancel);
+        assertThat(cancelled.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(OK);
 
-        Cancelling cancellingAgain = bridge.cancel(cancel);
-        assertThat(cancellingAgain.getAck(0).getStatus().getStatusCase())
+        SubscriptionsCancelled subscriptionsCancelledAgain = bridge.cancel(cancel);
+        assertThat(subscriptionsCancelledAgain.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(ERROR);
     }
 
@@ -213,9 +213,9 @@ class FirebaseSubscriptionBridgeTest {
         Subscribe request = Subscribe.newBuilder()
                 .addTopic(topic)
                 .build();
-        Subscribing subscribing = bridge.subscribe(request);
-        WebSubscription webSubscription = subscribing.getResult(0)
-                                                   .getSubscription();
+        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(request);
+        WebSubscription webSubscription = subscriptionsCreated.getResult(0)
+                                                              .getSubscription();
         Subscription subscription = webSubscription.getSubscription();
         assertThat(subscription.getTopic())
                 .isEqualTo(topic);
