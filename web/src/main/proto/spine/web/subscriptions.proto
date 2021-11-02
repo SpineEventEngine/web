@@ -42,6 +42,11 @@ import "spine/base/error.proto";
 import "spine/client/subscription.proto";
 import "spine/core/ack.proto";
 
+// This file describes the subscription model for the Spine web protocol.
+//
+// These types are based on the `spine.client` definitions for subscriptions with web-specific model
+// details and grouping.
+
 // A subscription initiated by a web client.
 //
 // The subscription may have `extra` properties required by the web client.
@@ -151,8 +156,14 @@ message KeepUpOutcome {
 
     oneof kind {
 
+        // The updated expiration time for the associated subscription.
+        //
+        // After this time passes, unless the client makes another keep-up request,
+        // the subscription will be automatically closed.
+        //
         google.protobuf.Timestamp new_valid_thru = 2;
 
+        // The error which occurred when trying to keep up the subscription.
         base.Error error = 3;
     }
 }
