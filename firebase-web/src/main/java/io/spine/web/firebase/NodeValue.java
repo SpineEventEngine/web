@@ -99,6 +99,8 @@ public final class NodeValue {
 
     /**
      * Parses this node value as a message of the given type.
+     *
+     * @see io.spine.json.Json#fromJson(String, Class)
      */
     public <M extends Message> M as(Class<M> cls) {
         String jsonMessage = value.toString();
