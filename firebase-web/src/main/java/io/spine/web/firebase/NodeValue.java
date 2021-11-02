@@ -35,8 +35,6 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
-import javax.annotation.Nullable;
-
 import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.net.MediaType.JSON_UTF_8;
@@ -50,16 +48,9 @@ import static io.spine.json.Json.fromJson;
 public final class NodeValue {
 
     private final JsonObject value;
-    @Nullable
-    private final StoredJson originalJson;
 
-    private NodeValue(JsonObject value, @Nullable StoredJson originalJson) {
+    private NodeValue(JsonObject value) {
         this.value = value;
-        this.originalJson = originalJson;
-    }
-
-    private NodeValue() {
-        this(new JsonObject(), null);
     }
 
     /**
@@ -69,7 +60,7 @@ public final class NodeValue {
      * filled with entries at some point after the creation.
      */
     public static NodeValue empty() {
-        return new NodeValue();
+        return new NodeValue(new JsonObject());
     }
 
     /**
@@ -78,7 +69,7 @@ public final class NodeValue {
      */
     static NodeValue from(StoredJson json) {
         JsonObject value = json.asJsonObject();
-        return new NodeValue(value, json);
+        return new NodeValue(value);
     }
 
     /**
@@ -90,7 +81,7 @@ public final class NodeValue {
      * @return new node value
      */
     public static NodeValue withChildren(Iterable<StoredJson> jsons) {
-        NodeValue nodeValue = new NodeValue();
+        NodeValue nodeValue = empty();
         for (StoredJson json : jsons) {
             nodeValue.addChild(json);
         }
@@ -110,12 +101,8 @@ public final class NodeValue {
      * Parses this node value as a message of the given type.
      */
     public <M extends Message> M as(Class<M> cls) {
-        if (originalJson != null) {
-            return originalJson.as(cls);
-        } else {
-            String jsonMessage = value.toString();
-            return fromJson(jsonMessage, cls);
-        }
+        String jsonMessage = value.toString();
+        return fromJson(jsonMessage, cls);
     }
 
     /**
