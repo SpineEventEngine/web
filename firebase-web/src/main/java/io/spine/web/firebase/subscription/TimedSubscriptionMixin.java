@@ -65,6 +65,10 @@ interface TimedSubscriptionMixin extends TimedSubscriptionOrBuilder {
     /**
      * Checks if this subscription is expired.
      *
+     * <p>A subscription is considered expired only if the {@code valid_thru} time has passed.
+     * More formally, a subscription is expired if the {@link Time#currentTime()} is strictly
+     * greater than the {@code valid_thru} time.
+     *
      * @return {@code true} if the subscription is expired and should be inactivated,
      *         {@code false} if the subscription is still relevant
      */

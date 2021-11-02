@@ -24,5 +24,8 @@ message TimedSubscription {
     //
     // The initial time may be prolonged by a client request.
     //
+    // As suggested by the name, the subscription is considered active unless this time is in
+    // the past, i.e. it is still active at the moment of `valid_thru`.
+    //
     google.protobuf.Timestamp valid_thru = 2;
 }
