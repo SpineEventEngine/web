@@ -27,6 +27,7 @@
 package io.spine.web.firebase;
 
 import io.spine.annotation.GeneratedMixin;
+import io.spine.client.SubscriptionId;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,5 +69,17 @@ interface NodePathMixin extends NodePathOrBuilder {
         checkNotNull(rawPath);
         checkArgument(!rawPath.isEmpty());
         return NodePaths.of(this.getValue(), rawPath);
+    }
+
+    /**
+     * Obtains a {@link SubscriptionId} from this path.
+     *
+     * <p>The {@code value} of the ID reflects the value of this path.
+     */
+    default SubscriptionId asSubscriptionId() {
+        return SubscriptionId
+                .newBuilder()
+                .setValue(getValue())
+                .build();
     }
 }

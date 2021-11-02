@@ -26,25 +26,23 @@
 
 package io.spine.web.subscription.servlet;
 
-import com.google.protobuf.Message;
 import io.spine.client.Subscription;
+import io.spine.web.KeepUp;
+import io.spine.web.SubscriptionsKeptUp;
 import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
 
 /**
  * An abstract servlet for a client request to keep up an existing {@link Subscription}.
  *
- * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
+ * <p>This servlet parses the client request and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
- *
- * @param <T>
- *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class SubscriptionKeepUpServlet<T extends Message>
-        extends MessageServlet<Subscription, T> {
+public abstract class SubscriptionKeepUpServlet
+        extends MessageServlet<KeepUp, SubscriptionsKeptUp> {
 
-    private final SubscriptionBridge<?, T, ?> bridge;
+    private final SubscriptionBridge bridge;
 
     /**
      * Creates a new instance of {@code SubscriptionKeepUpServlet} with the given 
@@ -53,13 +51,13 @@ public abstract class SubscriptionKeepUpServlet<T extends Message>
      * @param bridge
      *         the subscription bridge to be used to keep-up subscriptions
      */
-    protected SubscriptionKeepUpServlet(SubscriptionBridge<?, T, ?> bridge) {
+    protected SubscriptionKeepUpServlet(SubscriptionBridge bridge) {
         super();
         this.bridge = bridge;
     }
 
     @Override
-    protected T handle(Subscription request) {
+    protected SubscriptionsKeptUp handle(KeepUp request) {
         return bridge.keepUp(request);
     }
 }

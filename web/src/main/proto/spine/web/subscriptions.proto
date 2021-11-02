@@ -1,0 +1,201 @@
+/*
+ * Copyright 2021, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+syntax = "proto3";
+
+package spine.web;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web";
+option java_outer_classname = "SubscriptionsProto";
+option java_multiple_files = true;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "spine/base/error.proto";
+import "spine/client/subscription.proto";
+import "spine/core/ack.proto";
+
+// This file describes the subscription model for the Spine web protocol.
+//
+// These types are based on the `spine.client` definitions for subscriptions with web-specific model
+// details and grouping.
+
+// A subscription initiated by a web client.
+//
+// The subscription may have `extra` properties required by the web client. Different
+// implementations of the Spine Web protocol may add different data to extra properties.
+// For example, a Firebase RDB path to the requested data may be passed to the client as
+// an extra property.
+//
+message WebSubscription {
+
+    client.Subscription subscription = 1;
+
+    repeated google.protobuf.Any extra = 2;
+}
+
+// A request to subscribe to the given topics.
+message Subscribe {
+
+    // Topics to which to subscribe.
+    repeated client.Topic topic = 1;
+
+    // The requested minimum lifetime of the subscriptions.
+    //
+    // As the clients cannot be trusted to reliably cancel all the subscriptions, the server puts
+    // a limit on the subscription lifetime. When a subscription exceeds the expected lifetime,
+    // the server *may* cancel it.
+    //
+    // In order to prolong subscription lifetime, the client must send the `KeepUp` requests.
+    //
+    // This value is a requested value. The server may set another lifetime to the subscriptions.
+    // The actual "valid through" time is returned by the server in response to this request.
+    //
+    // A negative duration will result in an error.
+    //
+    google.protobuf.Duration lifespan = 2;
+}
+
+// The response to the `Subscribe` request.
+message SubscriptionsCreated {
+
+    // The subscription results list.
+    //
+    // For each subscription topic, this is either a `Subscription`, or an error which prohibits
+    // creating such a subscription.
+    //
+    // The order of the results corresponds to the order of topics in the `Subscribe` request.
+    //
+    // If all subscriptions cannot be created due to the same error, `result` will only contain one
+    // instance of the error no matter how many subscription topics was there in the request.
+    //
+    repeated SubscriptionOrError result = 1;
+
+    // For all the subscriptions in the response, this is the time after which the subscription
+    // will expire.
+    //
+    // An expired subscription may be cancelled by the server.
+    //
+    // If no subscriptions where created, is field may be empty.
+    //
+    google.protobuf.Timestamp valid_thru = 2;
+}
+
+// Either a `spine.client.Subscription` or an error that occurred when creating the subscription.
+message SubscriptionOrError {
+
+    oneof payload {
+        WebSubscription subscription = 1;
+        base.Error error = 2;
+    }
+}
+
+// A request to prolong the life of the given subscriptions.
+message KeepUp {
+
+    // IDs of the subscriptions to keep up.
+    repeated client.SubscriptionId subscription = 1;
+
+    // How much time does the client require.
+    //
+    // The client requests that the server add this amount of time to the subscription life.
+    // The server may add this time or another duration. The updated subscription expiration date
+    // is provided in the response.
+    //
+    // A negative duration will result in an error.
+    //
+    google.protobuf.Duration prolong_by = 2;
+}
+
+// The response to the `KeepUp` request.
+message SubscriptionsKeptUp {
+
+    // Outcomes of the request, one per each subscription.
+    //
+    // If an `KeepUpOutcome` contains a `new_valid_thru` time, the keep up was successful and
+    // the subscription expiration is postponed.
+    //
+    // If an `KeepUpOutcome` contains an error and the subscription exists and is active,
+    // the lifetime will remain the same.
+    //
+    // If an error occurs outside of a context of a single subscription, there will be only
+    // one `outcome` with an instance of that error without a subscription ID.
+    //
+    repeated KeepUpOutcome outcome = 1;
+}
+
+// An outcome of a keep-up request for a single subscription.
+//
+// If the request was successful, the outcome will contain a new expiration time for
+// the subscription. The expiration time may be shorter or longer than requested. The server has
+// full control over subscription expiration.
+//
+// If the request was rejected, the `error` should explain the reason.
+//
+message KeepUpOutcome {
+
+    client.SubscriptionId id = 1;
+
+    oneof kind {
+
+        // The updated expiration time for the associated subscription.
+        //
+        // After this time passes, unless the client makes another keep-up request,
+        // the subscription will be automatically closed.
+        //
+        google.protobuf.Timestamp new_valid_thru = 2;
+
+        // The error which occurred when trying to keep up the subscription.
+        base.Error error = 3;
+    }
+}
+
+// A request to cancel subscriptions.
+message Cancel {
+
+    // The IDs of the subscriptions to cancel.
+    repeated spine.client.SubscriptionId subscription = 1;
+}
+
+// The response to the `Cancel` request.
+message SubscriptionsCancelled {
+
+    // Acknowledgements of the request, one per each subscription.
+    //
+    // If an `Ack` contains an "OK", the subscription was successfully cancelled.
+    //
+    // If an `Ack` contains an error and the subscription could not be cancelled, e.g. it
+    // has already been cancelled. Generally, no action is required. However, sometimes, it is
+    // good to know that the client sends duplicate or malformed requests.
+    //
+    // These `Ack`s cannot contain rejections.
+    //
+    repeated core.Ack ack = 1;
+}

@@ -32,25 +32,25 @@ import com.google.firebase.database.utilities.Clock;
 import com.google.firebase.database.utilities.DefaultClock;
 import com.google.firebase.database.utilities.OffsetClock;
 import com.google.gson.JsonObject;
+import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 
 import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
+import static io.spine.json.Json.fromJson;
 
 /**
  * The Firebase database node value.
  */
+@Internal
 public final class NodeValue {
 
     private final JsonObject value;
 
     private NodeValue(JsonObject value) {
         this.value = value;
-    }
-
-    private NodeValue() {
-        this(new JsonObject());
     }
 
     /**
@@ -60,7 +60,7 @@ public final class NodeValue {
      * filled with entries at some point after the creation.
      */
     public static NodeValue empty() {
-        return new NodeValue();
+        return new NodeValue(new JsonObject());
     }
 
     /**
@@ -81,7 +81,7 @@ public final class NodeValue {
      * @return new node value
      */
     public static NodeValue withChildren(Iterable<StoredJson> jsons) {
-        NodeValue nodeValue = new NodeValue();
+        NodeValue nodeValue = empty();
         for (StoredJson json : jsons) {
             nodeValue.addChild(json);
         }
@@ -95,6 +95,16 @@ public final class NodeValue {
     public ByteArrayContent toByteArray() {
         ByteArrayContent result = fromString(JSON_UTF_8.toString(), value.toString());
         return result;
+    }
+
+    /**
+     * Parses this node value as a message of the given type.
+     *
+     * @see io.spine.json.Json#fromJson(String, Class)
+     */
+    public <M extends Message> M as(Class<M> cls) {
+        String jsonMessage = value.toString();
+        return fromJson(jsonMessage, cls);
     }
 
     /**

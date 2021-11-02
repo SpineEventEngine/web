@@ -26,7 +26,7 @@
 
 import assert from 'assert';
 import {ServerError} from '@lib/client/errors';
-import {fail} from '../test-helpers';
+import {completeOrFail, fail} from '../test-helpers';
 import TestEnvironment from '../given/test-environment';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
 import {Project} from '@testProto/spine/web/test/given/project_pb';
@@ -111,13 +111,13 @@ describe('FirebaseClient "fetch"', function () {
             .byId([])
             .run()
             .then(data => {
-                assert.ok(Array.isArray(data));
-                assert.ok(data.length >= taskIds.length);
-                done();
+                completeOrFail(done, () => {
+                  assert.ok(Array.isArray(data), `Expected an array, but was: ${data}`);
+                  assert.ok(data.length >= taskIds.length, `Received ${data.length} records, but expected ${taskIds.length} or more.`);
+                });
             })
             .catch((e) => {
-                console.error(e);
-                fail(done);
+                fail(done)(e);
             });
     });
 
@@ -126,9 +126,10 @@ describe('FirebaseClient "fetch"', function () {
             .byId(null)
             .run()
             .then(data => {
-                assert.ok(Array.isArray(data));
-                assert.ok(data.length >= taskIds.length);
-                done();
+                completeOrFail(done, () => {
+                  assert.ok(Array.isArray(data));
+                  assert.ok(data.length >= taskIds.length);
+                });
             })
             .catch((e) => {
                 console.error(e);

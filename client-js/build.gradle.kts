@@ -35,6 +35,7 @@ val spineCoreVersion: String by extra
 
 dependencies {
     protobuf(project(":web"))
+    protobuf(project(":firebase-web"))
     protobuf(
         group = "io.spine",
         name = "spine-client",

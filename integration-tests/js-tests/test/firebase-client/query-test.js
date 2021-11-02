@@ -25,12 +25,11 @@
  */
 
 import assert from 'assert';
-import {ensureUserTasks, fail} from '../test-helpers';
+import {completeOrFail, fail} from '../test-helpers';
 import {UserTasksTestEnvironment as TestEnvironment} from '../given/users-tasks-test-environment';
 import {client} from './given/firebase-client';
 import {enumValueOf, Filters} from '@lib/client/actor-request-factory';
 import {TypedMessage} from '@lib/client/typed-message';
-import {BoolValue} from '@testProto/google/protobuf/wrappers_pb';
 import {UserTasks} from '@testProto/spine/web/test/given/user_tasks_pb';
 
 /**
@@ -98,7 +97,7 @@ describe('FirebaseClient executes query built', function () {
       ids: () => [
         TestEnvironment.userId('user-without-tasks-assigned')
       ],
-      expectedUsers: () => users.slice(0, 2)
+      expectedUsers: () => []
     },
     {
       message: 'with `eq` filter',
@@ -112,7 +111,7 @@ describe('FirebaseClient executes query built', function () {
       filters: [
         Filters.eq('load', enumValueOf(UserTasks.Load.VERY_HIGH))
       ],
-      expectedUsers: () => users.filter(user => user.tasks.length > 1)
+      expectedUsers: () => users.filter(user => user.tasks.length === 2)
     },
     {
       message: 'with `lt` filter',
@@ -148,15 +147,15 @@ describe('FirebaseClient executes query built', function () {
         Filters.gt('task_count', 1),
         Filters.lt('task_count', 3)
       ],
-      expectedUsers: () => users.filter(user => user.tasks.length > 1 && user.tasks.length < 3)
+      expectedUsers: () => users.filter(user => user.tasks.length === 2)
     },
     {
       message: 'with several filters applied to different column',
       filters: [
         Filters.gt('task_count', 1),
-        Filters.lt('is_overloaded', new BoolValue([true]))
+        Filters.eq('load', enumValueOf(UserTasks.Load.EXTREME))
       ],
-      expectedUsers: () => users.filter(user => user.tasks.length > 1)
+      expectedUsers: () => users.filter(user => user.tasks.length > 2)
     },
     {
       message: 'with inappropriate filter',
@@ -177,10 +176,14 @@ describe('FirebaseClient executes query built', function () {
           .where(filters)
           .run()
           .then(userTasksList => {
-            assert.ok(ensureUserTasks(userTasksList, test.expectedUsers()));
-            done();
-          })
-          .catch(() => fail(done));
+            completeOrFail(done, () => {
+              const expected = test.expectedUsers().map(u => u.id.getValue());
+              expected.sort();
+              const actual = userTasksList.map(t => t.getId().getValue());
+              actual.sort();
+              assert.deepEqual(expected, actual);
+            });
+          }, fail(done));
     });
   });
 

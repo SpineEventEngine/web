@@ -26,7 +26,6 @@
 
 package io.spine.web.test.given;
 
-import io.spine.core.Response;
 import io.spine.web.subscription.servlet.SubscriptionCancelServlet;
 
 import javax.servlet.annotation.WebServlet;
@@ -38,7 +37,7 @@ import static io.spine.web.test.given.Server.application;
  */
 @WebServlet("/subscription/cancel")
 @SuppressWarnings("serial")
-public class TestSubscriptionCancelServlet extends SubscriptionCancelServlet<Response> {
+public class TestSubscriptionCancelServlet extends SubscriptionCancelServlet {
 
     public TestSubscriptionCancelServlet() {
         super(application().subscriptionBridge());

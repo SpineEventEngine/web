@@ -31,7 +31,7 @@ import {CreateTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskCreated} from '@testProto/spine/web/test/given/events_pb';
 import {TaskCannotBeCreated} from '@testProto/spine/web/test/given/rejections_pb';
 import {Task} from '@testProto/spine/web/test/given/task_pb';
-import {fail} from '../test-helpers';
+import {completeOrFail, fail} from '../test-helpers';
 import {client, initClient} from './given/firebase-client';
 import {AnyPacker} from '@lib/client/any-packer';
 import {TenantProvider} from '@lib/client/tenant';
@@ -86,15 +86,12 @@ describe('FirebaseClient command sending', function () {
     });
 
     const checkError = error => {
-      try {
+      completeOrFail(done, () => {
         assert.ok(error instanceof CommandHandlingError);
         assert.ok(error.message.startsWith(`request to ${fakeBaseUrl}/command failed`));
         const connectionError = error.getCause();
         assert.ok(connectionError instanceof ConnectionError);
-        done();
-      } catch (e) {
-        fail(done, e.message)
-      }
+      });
     };
     malformedBackendClient.command(command)
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
@@ -107,7 +104,7 @@ describe('FirebaseClient command sending', function () {
     const command = TestEnvironment.createTaskCommand({withId: null});
 
     const checkError = error => {
-      try {
+      completeOrFail(done, () => {
         assert.ok(error instanceof CommandValidationError);
         assert.ok(error.validationError());
         assert.ok(error.assuresCommandNeglected());
@@ -116,10 +113,7 @@ describe('FirebaseClient command sending', function () {
         assert.ok(cause);
         assert.strictEqual(cause.getCode(), 2);
         assert.strictEqual(cause.getType(), 'spine.core.CommandValidationError');
-        done();
-      } catch (e) {
-        fail(done, e.message)
-      }
+      });
     };
 
     client.command(command)
@@ -138,19 +132,19 @@ describe('FirebaseClient command sending', function () {
     });
     const taskId = command.getId();
     const checkRejection = rejection => {
-      try {
+      completeOrFail(done, () => {
         const rejectionType = Type.forClass(TaskCannotBeCreated);
         const unpacked = AnyPacker.unpack(rejection.getMessage()).as(rejectionType);
         assert.ok(unpacked);
         assert.strictEqual(unpacked.getId().getValue(), taskId.getValue());
-        done();
-      } catch (e) {
-        fail(done, e.message)
-      }
+      });
     };
     client.command(command)
         .onOk(fail(done, 'A command was acknowledged when it was expected to fail.'))
-        .onError(fail(done, 'An error occurred when a business rejection was expected.'))
+        .onError(e => fail(
+            done,
+            `An error occurred when a business rejection was expected. Error: ${e}.`
+        )(e))
         .onImmediateRejection(checkRejection)
         .post();
   });

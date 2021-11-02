@@ -26,8 +26,9 @@
 
 package io.spine.web.subscription.servlet;
 
-import com.google.protobuf.Message;
 import io.spine.client.Subscription;
+import io.spine.web.Cancel;
+import io.spine.web.SubscriptionsCancelled;
 import io.spine.web.MessageServlet;
 import io.spine.web.subscription.SubscriptionBridge;
 
@@ -36,15 +37,12 @@ import io.spine.web.subscription.SubscriptionBridge;
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
- *
- * @param <T>
- *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class SubscriptionCancelServlet<T extends Message>
-        extends MessageServlet<Subscription, T> {
+public abstract class SubscriptionCancelServlet
+        extends MessageServlet<Cancel, SubscriptionsCancelled> {
 
-    private final SubscriptionBridge<?, ?, T> bridge;
+    private final SubscriptionBridge bridge;
 
     /**
      * Creates a new instance of {@code SubscriptionCancelServlet} with the given 
@@ -52,13 +50,13 @@ public abstract class SubscriptionCancelServlet<T extends Message>
      *
      * @param bridge the subscription bridge to be used in to cancel the subscription
      */
-    protected SubscriptionCancelServlet(SubscriptionBridge<?, ?, T> bridge) {
+    protected SubscriptionCancelServlet(SubscriptionBridge bridge) {
         super();
         this.bridge = bridge;
     }
 
     @Override
-    protected T handle(Subscription request) {
+    protected SubscriptionsCancelled handle(Cancel request) {
         return bridge.cancel(request);
     }
 }

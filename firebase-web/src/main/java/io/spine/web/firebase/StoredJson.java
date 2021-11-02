@@ -33,6 +33,7 @@ import com.google.gson.JsonParser;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
 

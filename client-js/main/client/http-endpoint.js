@@ -28,6 +28,8 @@
 
 import {TypedMessage} from './typed-message';
 import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
+import {Subscribe, KeepUp, Cancel} from "../proto/spine/web/subscriptions_pb";
+import {Duration} from "../proto/google/protobuf/duration_pb";
 
 /**
  * @typedef {Object} SubscriptionRouting
@@ -77,43 +79,52 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to subscribe to a provided topic to an endpoint.
+   * Sends a request to subscribe to given topics.
    *
-   * @param {!spine.client.Topic} topic a topic for which a subscription is created
+   * @param {!Array<spine.client.Topic>} topics topics to which to subscribe
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
-  subscribeTo(topic) {
-    const typedTopic = TypedMessage.of(topic);
-    return this._subscribeTo(typedTopic);
+  subscribeTo(topics) {
+    const request = new Subscribe()
+        .setTopicList(topics)
+        .setLifespan(new Duration().setSeconds(120));
+    const typed = TypedMessage.of(request);
+    return this._subscribeTo(typed);
   }
 
   /**
-   * Sends off a request to keep a subscription, stopping it from being closed by server.
+   * Sends a request to keep subscriptions up, stopping them from being closed by the server.
    *
-   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions that should be kept up
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
-  keepUpSubscription(subscription) {
-    const typedSubscription = TypedMessage.of(subscription);
-    return this._keepUp(typedSubscription);
+  keepUpSubscriptions(subscriptions) {
+    const ids = subscriptions.map(s => s.getId());
+    const request = new KeepUp()
+        .setSubscriptionList(ids)
+        .setProlongBy(new Duration().setSeconds(120));
+    const typed = TypedMessage.of(request);
+    return this._keepUp(typed);
   }
 
   /**
-   * Sends off a request to cancel an existing subscription.
+   * Sends a request to cancel existing subscriptions.
    *
    * Cancelling subscription stops the server updating subscription with new values.
    *
-   * @param {!spine.client.Subscription} subscription a subscription that should be kept open
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions that should be cancelled
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
    */
-  cancelSubscription(subscription) {
-    const typedSubscription = TypedMessage.of(subscription);
-    return this._cancel(typedSubscription);
+  cancelSubscriptions(subscriptions) {
+    const ids = subscriptions.map(s => s.getId());
+    const request = new Cancel()
+        .setSubscriptionList(ids);
+    const typed = TypedMessage.of(request);
+    return this._cancel(typed);
   }
-
 
   /**
    * @param {!TypedMessage<Command>} command a Command to send to the Spine server

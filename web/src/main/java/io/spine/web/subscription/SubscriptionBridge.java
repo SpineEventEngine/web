@@ -26,55 +26,49 @@
 
 package io.spine.web.subscription;
 
-import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
+import io.spine.web.Cancel;
+import io.spine.web.KeepUp;
+import io.spine.web.Subscribe;
+import io.spine.web.SubscriptionsCancelled;
+import io.spine.web.SubscriptionsCreated;
+import io.spine.web.SubscriptionsKeptUp;
 
 /**
  * A bridge for requests to a subscription {@link io.spine.server.SubscriptionService}.
  *
- * <p>Defines an interface for {@link #subscribe(Topic) subscribing} to a {@link Topic},
- * {@link #keepUp(Subscription) keeping up} an existing {@link Subscription}
- * and {@link #cancel(Subscription) canceling} an existing {@code Subscription}.
- *
- * @param <S>
- *         response type for {@link #subscribe(Topic)} requests
- * @param <K>
- *         response type for {@link #keepUp(Subscription)} requests
- * @param <C>
- *         response type for {@link #cancel(Subscription)} requests
+ * <p>Defines an interface for {@link #subscribe subscribing} to a {@link Topic},
+ * {@link #keepUp keeping up} an existing {@link Subscription}
+ * and {@link #cancel canceling} an existing {@code Subscription}.
  */
-public interface SubscriptionBridge<S extends Message, K extends Message, C extends Message> {
+public interface SubscriptionBridge {
 
     /**
-     * Creates a new {@link Subscription} to a provided topic supplying this subscription to the
-     * client as a result.
+     * Creates subscriptions for given topics for the provided lifetime.
      *
-     * @param topic
-     *         a topic to subscribe the client to
-     * @return a message describing the created subscription
+     * @param request
+     *         the request to create subscriptions
+     * @return detailed response addressing the success of each individual subscription
      */
-    S subscribe(Topic topic);
+    SubscriptionsCreated subscribe(Subscribe request);
 
     /**
-     * Keep up the subscription, prohibiting it from closing from the server-side.
+     * Prolongs the lifetime of subscriptions.
      *
-     * <p>This operation is performed because subscription can only live some finite amount of time.
-     * Server cancels the subscription at some point, because maintaining the subscription requires
-     * resources and the client cannot be trusted to cancel every subscription it creates.
-     *
-     * @param subscription
-     *         a subscription that should stay open
-     * @return the keep-up response
+     * @param request
+     *         the request to prolong the lifetime of certain subscriptions by
+     *         a certain duration
+     * @return detailed response addressing the success of each individual subscription keep-up
      */
-    K keepUp(Subscription subscription);
+    SubscriptionsKeptUp keepUp(KeepUp request);
 
     /**
-     * Cancel the existing subscription, which stopping sending new data updates to the client.
+     * Cancels given subscriptions.
      *
-     * @param subscription
-     *         a subscription that should be stopped from receiving updates
-     * @return the cancellation response
+     * @param request
+     *         the request to cancel subscriptions by their IDs
+     * @return detailed response addressing the success of each individual cancellation
      */
-    C cancel(Subscription subscription);
+    SubscriptionsCancelled cancel(Cancel request);
 }

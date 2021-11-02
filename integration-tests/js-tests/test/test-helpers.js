@@ -55,12 +55,28 @@ import {BehaviorSubject, Observable} from 'rxjs';
  */
 export function fail(done, message = '') {
   return cause => {
-    if (message) {
-      done(new Error(`Test failed. Cause: ${message}`));
-    } else {
-      done(new Error(`Test failed. Cause: ${cause ? cause : 'not identified'}`));
-    }
+    const causeMessage = cause ? cause : "not identified.";
+    const msg = message ? " " + message : "."
+
+    done(new Error(`Test failed${msg} Cause: ${causeMessage}`));
   };
+}
+
+/**
+ * Executes the given function and calls the `done` callback with no arguments if the function
+ * executed successfully and with one error argument if the function failed.
+ *
+ * @param done the mocha async test callback
+ * @param func the action to perform
+ */
+export function completeOrFail(done, func) {
+  try {
+    func();
+    done();
+  } catch (e) {
+    console.error(e);
+    fail(done)(e);
+  }
 }
 
 /**
