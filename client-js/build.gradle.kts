@@ -27,9 +27,12 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.github.pages.updateGitHubPages
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
+
+plugins {
+    id("com.dorongold.task-tree") version "2.1.0"
+}
 
 val spineCoreVersion: String by extra
 
