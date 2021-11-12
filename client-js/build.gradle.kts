@@ -37,6 +37,8 @@ plugins {
 }
 
 js {
+    environment {
+    }
     tasks {
         register {
             installNodePackages()

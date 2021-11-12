@@ -42,9 +42,12 @@ interface JsEnvironment {
     val workingDir: File
 
     /**
-     * Command to run `NPM` package manager.
+     * Command to run `npm` package manager.
      *
-     * Default value is `nmp.cmd` for Windows, and `npm` for other OSs.
+     * Default value:
+     *
+     *  1. "nmp.cmd" for Windows;
+     *  2. "npm" for other OSs.
      */
     val nmpExecutable: String
         get() = if(isWindows()) "npm.cmd" else "npm"
@@ -63,15 +66,15 @@ interface JsEnvironment {
     /**
      * Path to `node_modules` directory.
      *
-     * Default value is `$workingDir/node_modules`.
+     * Default value: "workingDir/node_modules".
      */
     val nodeModulesDir: String
         get() = "$workingDir/node_modules"
 
     /**
-     * Path to`package.json` file.
+     * Path to `package.json` file.
      *
-     * Default value is `$workingDir/package.json`.
+     * Default value: "workingDir/package.json".
      */
     val packageJsonFile: String
         get() = "$workingDir/package.json"
@@ -85,8 +88,18 @@ class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment) : JsEnvironme
     override var workingDir = initialEnvironment.workingDir
     override var nmpExecutable = initialEnvironment.nmpExecutable
     override var npmAuthToken = initialEnvironment.npmAuthToken
-    override var nodeModulesDir = initialEnvironment.nodeModulesDir
-    override var packageJsonFile = initialEnvironment.packageJsonFile
+
+    // The rest properties are forbidden to override.
+    // It could lead to inconsistency with expectations.
+
+    // These values are not supposed to be used by `npm` itself,
+    // but by the tasks that clean up after `npm`.
+
+    // In case of overriding, `npm` would continue to use the directory and descriptor
+    // in its working (module) catalog. While cleaning tasks would start cleaning up `nothingness`.
+
+    override val nodeModulesDir = initialEnvironment.nodeModulesDir
+    override val packageJsonFile = initialEnvironment.packageJsonFile
 }
 
 private fun isWindows(): Boolean = Os.isFamily(Os.FAMILY_WINDOWS)
