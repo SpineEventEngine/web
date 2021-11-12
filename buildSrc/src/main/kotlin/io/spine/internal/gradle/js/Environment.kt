@@ -26,27 +26,65 @@
 
 package io.spine.internal.gradle.js
 
+import java.io.File
+import org.apache.tools.ant.taskdefs.condition.Os
+
 /**
  * Information about JavaScript environment.
  *
  * Describes used JavaScript-specific tools and their input and/or output files.
  */
-interface JavaScriptEnvironment {
+interface JsEnvironment {
 
     /**
-     * Path to a directory from which JavaScript tools are going to be run.
+     * A directory from which JavaScript tools are to be run.
      */
-    val workingDir: String
+    val workingDir: File
+
+    /**
+     * Command to run `NPM` package manager.
+     *
+     * Default value is `nmp.cmd` for Windows, and `npm` for other OSs.
+     */
+    val nmpExecutable: String
+        get() = if(isWindows()) "npm.cmd" else "npm"
+
+    /**
+     * An access token that allows installation and/or publishing modules.
+     *
+     * Default value is read from the environmental variable - `NPM_TOKEN` (PATH variable).
+     * "PUBLISHING_FORBIDDEN" stub value would be assigned in case `NPM_TOKEN` variable is not set.
+     */
+    val npmAuthToken: String
+        get() = System.getenv("NPM_TOKEN") ?: "PUBLISHING_FORBIDDEN"
 
     /**
      * Path to `npm`'s `node_modules` directory.
+     *
+     * Default value is `$workingDir/node_modules`.
      */
     val nodeModulesDir: String
         get() = "$workingDir/node_modules"
 
     /**
      * Path to `npm`'s `package.json` file.
+     *
+     * Default value is `$workingDir/package.json`.
      */
     val packageJsonFile: String
         get() = "$workingDir/package.json"
 }
+
+/**
+ * Configurable [JsEnvironment].
+ */
+class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment) : JsEnvironment {
+
+    override var workingDir = initialEnvironment.workingDir
+    override var nmpExecutable = initialEnvironment.nmpExecutable
+    override var npmAuthToken = initialEnvironment.npmAuthToken
+    override var nodeModulesDir = initialEnvironment.nodeModulesDir
+    override var packageJsonFile = initialEnvironment.packageJsonFile
+}
+
+private fun isWindows(): Boolean = Os.isFamily(Os.FAMILY_WINDOWS)

@@ -26,8 +26,45 @@
 
 package io.spine.internal.gradle.js
 
+import io.spine.internal.gradle.js.task.JsTasks
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.findByType
 
-open class JavaScript(project: Project) {
+/**
+ * Configures [JsExtension].
+ */
+fun Project.js(configuration: JsExtension.() -> Unit) {
+    extensions.run {
+        configuration.invoke(
+            findByType() ?: create("jsExtension", project)
+        )
+    }
+}
+
+/**
+ * ...
+ */
+open class JsExtension(project: Project) {
+
+    private val defaultEnvironment = object : JsEnvironment {
+        override val workingDir = project.projectDir
+    }
+
+    private val environment = ConfigurableJsEnvironment(defaultEnvironment)
+    private val tasks = JsTasks(environment, project)
+
+    /**
+     * Overrides default values of [JsEnvironment].
+     *
+     * Please note, environment should be set up firstly to have the effect on the parts
+     * of the extension that depend on it.
+     */
+    fun environment(overridings: ConfigurableJsEnvironment.() -> Unit) = environment.run(overridings)
+
+    /**
+     * Configures [JS-related tasks][JsTasks].
+     */
+    fun tasks(configurations: JsTasks.() -> Unit) = tasks.run(configurations)
 
 }

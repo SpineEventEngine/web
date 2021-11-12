@@ -26,12 +26,6 @@
 
 package io.spine.internal.gradle.js.task
 
-import org.gradle.api.tasks.TaskContainer
-
-val JS_TASK_GROUP = "JavaScript"
-//val nodeModulesDir = "$projectDir/node_modules"
-//val packageJsonFile = "$projectDir/package.json"
-
 /**
  * Installs the module dependencies using the `npm install` command.
  *
@@ -42,9 +36,16 @@ val JS_TASK_GROUP = "JavaScript"
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
  */
-fun TaskContainer.installNodePackages()  = register("installNodePackages") {
+fun JsTaskRegistering.installNodePackages() = register("installNodePackages1") {
 
     description = "Installs the module`s Node dependencies."
-    group = JS_TASK_GROUP
+    group = jsBuildTask
 
+    inputs.file(packageJsonFile)
+    outputs.dir(nodeModulesDir)
+
+    doLast {
+        npm("set", "audit", "false")
+        npm("install")
+    }
 }
