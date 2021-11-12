@@ -33,23 +33,39 @@ import org.gradle.api.tasks.TaskContainer
 /**
  * Context for setting up JavaScript-related Tasks.
  *
- * Exposes the current [JsEnvironment] and defines the default task groups.
+ * The context provides:
+ *
+ *  1. Access to the current [JsEnvironment];
+ *  2. Default task groups;
+ *  3. Shortcut for running `nmp` command.
  */
 open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
     : JsEnvironment by jsEnv, TaskContainer by project.tasks
 {
-    /**
-     * Default task groups.
-     */
+    // Default task groups.
     internal val jsBuildTask = "JavaScript/Build"
 
     /**
-     * Executes `npm` with the passed arguments.
+     * Launches a separate process which runs an `npm` command.
+     *
+     * Please note, this method is supposed to be run during tasks execution.
+     *
+     * Usage example:
+     *
+     * ```
+     * fun JsTasks.customTask = register("customTask") {
+     *     doLast {
+     *         npm("set", "audit", "false")
+     *         npp("install")
+     *     }
+     * }
+     * ```
      */
     internal fun npm(vararg args: String) = project.exec {
 
         workingDir(workingDir)
-        commandLine(nmpExecutable, *args)
+        commandLine(nmpExecutable)
+        args(args)
 
         // Using private packages in a CI/CD workflow | npm Docs
         // https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow

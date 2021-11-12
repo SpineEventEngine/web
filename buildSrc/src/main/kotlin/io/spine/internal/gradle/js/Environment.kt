@@ -54,12 +54,14 @@ interface JsEnvironment {
      *
      * Default value is read from the environmental variable - `NPM_TOKEN` (PATH variable).
      * "PUBLISHING_FORBIDDEN" stub value would be assigned in case `NPM_TOKEN` variable is not set.
+     *
+     * See [Creating and viewing access tokens | npm Docs](https://docs.npmjs.com/creating-and-viewing-access-tokens)
      */
     val npmAuthToken: String
         get() = System.getenv("NPM_TOKEN") ?: "PUBLISHING_FORBIDDEN"
 
     /**
-     * Path to `npm`'s `node_modules` directory.
+     * Path to `node_modules` directory.
      *
      * Default value is `$workingDir/node_modules`.
      */
@@ -67,7 +69,7 @@ interface JsEnvironment {
         get() = "$workingDir/node_modules"
 
     /**
-     * Path to `npm`'s `package.json` file.
+     * Path to`package.json` file.
      *
      * Default value is `$workingDir/package.json`.
      */
