@@ -28,8 +28,7 @@ import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.js.js
-import io.spine.internal.gradle.js.task.installNodePackages
-import io.spine.internal.gradle.js.task.updatePackageVersion
+import io.spine.internal.gradle.js.task.build
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
@@ -43,8 +42,7 @@ js {
     tasks {
         register {
             val versionToPublishJs: String by extra
-            updatePackageVersion(versionToPublishJs)
-            installNodePackages()
+            build(versionToPublishJs)
         }
     }
 }

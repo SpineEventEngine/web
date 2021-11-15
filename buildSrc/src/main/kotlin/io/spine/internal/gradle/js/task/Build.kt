@@ -31,6 +31,34 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import java.io.File
 
 /**
+ * Registers tasks for building JavaScript projects.
+ *
+ * ...
+ */
+fun JsTaskRegistering.build(packageVersion: String) {
+
+    compileProtoToJs()
+    updatePackageVersion(packageVersion)
+
+    installNodePackages().also {
+        auditNodePackages().dependsOn(it)
+    }
+}
+
+/**
+ * Compiles Protobuf sources into JavaScript.
+ *
+ * This is a lifecycle task. It performs no action itself but is used to trigger other tasks
+ * which perform the compilation.
+ */
+private fun JsTaskRegistering.compileProtoToJs() =
+    create("compilerProtoToJs1") {
+
+        description = "Compiles Protobuf sources to JavaScript."
+        group = jsBuildTask
+    }
+
+/**
  * Installs the module dependencies using the `npm install` command.
  *
  * The `npm install` command is executed with the vulnerability check disabled since
@@ -40,8 +68,8 @@ import java.io.File
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
  */
-fun JsTaskRegistering.installNodePackages() =
-    register("installNodePackages1") {
+private fun JsTaskRegistering.installNodePackages() =
+    create("installNodePackages1") {
 
         description = "Installs the module`s Node dependencies."
         group = jsBuildTask
@@ -56,10 +84,42 @@ fun JsTaskRegistering.installNodePackages() =
     }
 
 /**
+ * Audits the module dependencies using the `npm audit` command.
+ *
+ * The audit command submits a description of the dependencies configured in the module
+ * to the registry and asks for a report of known vulnerabilities. If any are found,
+ * then the impact and appropriate remediation will be calculated.
+ *
+ * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
+ */
+private fun JsTaskRegistering.auditNodePackages() =
+    create("auditNodePackages1") {
+
+        description = "Audits the module's Node dependencies."
+        group = jsBuildTask
+
+        inputs.dir(nodeModulesDir)
+
+        doLast {
+
+            // Sets `critical` as the minimum level of vulnerability for `npm audit` to exit
+            // with a non-zero exit code.
+
+            npm("set", "audit-level", "critical")
+
+            try {
+                npm("audit")
+            } catch (ignored: Exception) {
+                npm("audit", "--registry", "http://registry.npmjs.eu")
+            }
+        }
+    }
+
+/**
  * Sets the module's version in `package.json` to the specified one.
  */
-fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
-    register("updatePackageVersion1") {
+private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
+    create("updatePackageVersion1") {
 
         description = "Updates the version in `package.json`."
         group = jsBuildTask
