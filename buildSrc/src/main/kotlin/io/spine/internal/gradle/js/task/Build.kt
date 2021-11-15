@@ -34,34 +34,58 @@ import org.gradle.api.Task
 /**
  * Registers tasks for building JavaScript projects.
  *
- * ...
+ * List of tasks to be created:
+ *
+ *  1. `compileProtoToJs` - compiles Protobuf messages into JavaScript;
+ *  2. `installNodePackages` - installs the module`s Node dependencies;
+ *  3. `auditNodePackages` - audits the module's Node dependencies;
+ *  4. `updatePackageVersion` - sets the version in `package.json`;
+ *  5. `buildJs` - assembles the JavaScript sources.
+ *  6. `cleanJs` - cleans output of `buildJs` task and output of its dependants;
+ *  7. `testJs` - runs the JavaScript tests.
+ *
+ * Usage example:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.js
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             val versionToPublishJs: String by extra
+ *             build(versionToPublishJs)
+ *         }
+ *     }
+ * }
+ * ```
  */
 fun JsTaskRegistering.build(packageVersion: String) {
 
     val compileProtoToJs = compileProtoToJs()
+    val installNodePackages = installNodePackages()
     val updatePackageVersion = updatePackageVersion(packageVersion)
-
-    val installNodePackages = installNodePackages().also {
-        val auditNodePackages = auditNodePackages()
-        auditNodePackages.dependsOn(it)
-        check.dependsOn(auditNodePackages)
-    }
 
     val buildJs = buildJs(updatePackageVersion, installNodePackages, compileProtoToJs).also {
         assemble.dependsOn(it)
+    }
+
+    auditNodePackages(installNodePackages).also {
+        check.dependsOn(it)
     }
 
     cleanJs(buildJs, compileProtoToJs, installNodePackages).also {
         clean.dependsOn(it)
     }
 
-    testJs(installNodePackages, compileProtoToJs, getByName("test")).also {
+    testJs(installNodePackages, compileProtoToJs).also {
         check.dependsOn(it)
     }
 }
 
 /**
- * Compiles Protobuf sources into JavaScript.
+ * Compiles Protobuf messages into JavaScript.
  *
  * This is a lifecycle task. It performs no action itself but is used to trigger other tasks
  * which perform the compilation.
@@ -69,7 +93,7 @@ fun JsTaskRegistering.build(packageVersion: String) {
 private fun JsTaskRegistering.compileProtoToJs() =
     create("compilerProtoToJs1") {
 
-        description = "Compiles Protobuf sources to JavaScript."
+        description = "Compiles Protobuf messages into JavaScript."
         group = jsBuildTask
     }
 
@@ -101,13 +125,13 @@ private fun JsTaskRegistering.installNodePackages() =
 /**
  * Audits the module dependencies using the `npm audit` command.
  *
- * The audit command submits a description of the dependencies configured in the module
+ * The `audit` command submits a description of the dependencies configured in the module
  * to the registry and asks for a report of known vulnerabilities. If any are found,
  * then the impact and appropriate remediation will be calculated.
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
  */
-private fun JsTaskRegistering.auditNodePackages() =
+private fun JsTaskRegistering.auditNodePackages(installNodePackages: Task) =
     create("auditNodePackages1") {
 
         description = "Audits the module's Node dependencies."
@@ -128,6 +152,8 @@ private fun JsTaskRegistering.auditNodePackages() =
                 npm("audit", "--registry", "https://registry.npmjs.eu")
             }
         }
+
+        dependsOn(installNodePackages)
     }
 
 /**
@@ -136,7 +162,7 @@ private fun JsTaskRegistering.auditNodePackages() =
 private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
     create("updatePackageVersion1") {
 
-        description = "Updates the version in `package.json`."
+        description = "Sets the version in `package.json`."
         group = jsBuildTask
 
         doLast {
@@ -158,14 +184,6 @@ private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
         }
     }
 
-/**
- * Assembles the JS sources.
- *
- * This task in an analog of JavaPlugin's `build` for JS.
- *
- * This is a lifecycle task. It performs no action itself but is used to trigger other tasks
- * which perform the building.
- */
 private fun JsTaskRegistering.buildJs(
     updatePackageVersion: Task,
     installNodePackages: Task,
@@ -173,7 +191,7 @@ private fun JsTaskRegistering.buildJs(
 
 ) = create("buildJs1") {
 
-    description = "Assembles the JS sources."
+    description = "Assembles the JavaScript sources."
     group = jsBuildTask
 
     dependsOn(
@@ -183,9 +201,6 @@ private fun JsTaskRegistering.buildJs(
     )
 }
 
-/**
- * Cleans output of `buildJs` task and its dependants.
- */
 private fun JsTaskRegistering.cleanJs(
     buildJs: Task,
     compileProtoToJs: Task,
@@ -193,7 +208,7 @@ private fun JsTaskRegistering.cleanJs(
 
 ) = create("cleanJs1") {
 
-    description = "Cleans the output of JavaScript build."
+    description = "Cleans output of `buildJs` task and output of its dependants."
     group = jsBuildTask
 
     doLast {
@@ -205,13 +220,9 @@ private fun JsTaskRegistering.cleanJs(
     }
 }
 
-/**
- * Tests the JS sources.
- */
 private fun JsTaskRegistering.testJs(
     installNodePackages: Task,
     compileProtoToJs: Task,
-    test: Task
 
 ) = create("testJs1") {
 
