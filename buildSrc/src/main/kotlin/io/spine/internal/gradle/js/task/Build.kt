@@ -37,12 +37,38 @@ import java.io.File
  */
 fun JsTaskRegistering.build(packageVersion: String) {
 
-    compileProtoToJs()
-    updatePackageVersion(packageVersion)
+    val compileProtoToJs = compileProtoToJs()
+    val updatePackageVersion = updatePackageVersion(packageVersion)
 
-    installNodePackages().also {
-        auditNodePackages().dependsOn(it)
+    val installNodePackages = installNodePackages().also {
+        val auditNodePackages = auditNodePackages()
+        auditNodePackages.dependsOn(it)
+        getByName("check").dependsOn(auditNodePackages)
     }
+
+    val buildJs = buildJs().apply {
+        dependsOn(
+            updatePackageVersion,
+            installNodePackages,
+            compileProtoToJs
+        )
+    }
+
+    getByName("assemble").dependsOn(buildJs)
+
+
+    val cleanJs = cleanJs().apply {
+        doLast {
+            project.delete(
+                buildJs.outputs,
+                compileProtoToJs.outputs,
+                installNodePackages.outputs
+            )
+        }
+    }
+
+    getByName("clean").dependsOn(cleanJs)
+
 }
 
 /**
@@ -141,4 +167,29 @@ private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
                     .replace("\" : ", "\": ")
             )
         }
+    }
+
+/**
+ * Assembles the JS sources.
+ *
+ * This task in an analog of JavaPlugin's `build` for JS.
+ *
+ * This is a lifecycle task. It performs no action itself but is used to trigger other tasks
+ * which perform the building.
+ */
+private fun JsTaskRegistering.buildJs() =
+    create("buildJs") {
+
+        description = "Assembles the JS sources."
+        group = jsBuildTask
+    }
+
+/**
+ * Cleans output of `buildJs` task.
+ */
+private fun JsTaskRegistering.cleanJs() =
+    create("cleanJs") {
+
+        description = "Cleans the output of JavaScript build."
+        group = jsBuildTask
     }
