@@ -27,9 +27,12 @@
 package io.spine.internal.gradle.js
 
 import io.spine.internal.gradle.js.task.JsTasks
+import java.io.File
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
  * Configures [JsExtension].
@@ -50,9 +53,18 @@ open class JsExtension(project: Project) {
     private val defaultEnvironment = object : JsEnvironment {
         override val workingDir = project.projectDir
     }
-
     private val environment = ConfigurableJsEnvironment(defaultEnvironment)
     private val tasks = JsTasks(environment, project)
+
+    init {
+
+        // `node_modules` directory contains installed module's dependencies.
+        // it is not a part of the module.
+
+        project.extensions.getByType<IdeaModel>().module {
+            excludeDirs.add(File(defaultEnvironment.nodeModulesDir))
+        }
+    }
 
     /**
      * Overrides default values of [JsEnvironment].

@@ -32,6 +32,12 @@ import io.spine.internal.gradle.js.task.build
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
+plugins {
+    // print task's tree
+    // used for developing aims only
+    id("com.dorongold.task-tree") version "2.1.0"
+}
+
 js {
     environment {
     }
