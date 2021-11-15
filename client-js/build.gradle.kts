@@ -42,11 +42,13 @@ plugins {
 
 spine {
     useJava()
+    useDart()
     useJs()
 }
 
 spine {
     java()
+    dart()
     js()
 }
 
