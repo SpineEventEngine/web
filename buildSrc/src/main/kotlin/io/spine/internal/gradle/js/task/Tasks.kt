@@ -27,8 +27,8 @@
 package io.spine.internal.gradle.js.task
 
 import io.spine.internal.gradle.js.JsEnvironment
+import io.spine.internal.gradle.base.BaseTasks
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskContainer
 
 /**
  * Context for setting up JavaScript-related Tasks.
@@ -36,15 +36,18 @@ import org.gradle.api.tasks.TaskContainer
  * The context provides:
  *
  *  1. Access to the current [JsEnvironment];
- *  2. Default task groups;
- *  3. Shortcut for running `nmp` commands.
+ *  2. Default JavaScript tasks groups;
+ *  3. Shortcut for running `nmp` commands;
+ *  4. Shortcuts for base Gradle tasks.
  */
 open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
-    : JsEnvironment by jsEnv, TaskContainer by project.tasks
+    : BaseTasks(project.tasks), JsEnvironment by jsEnv
 {
-    // Default task groups
-
+    // Default task groups.
     internal val jsBuildTask = "JavaScript/Build"
+
+    // Shortcut for `Test` task from JavaPlugin.
+    internal val test = this.getByName("test")
 
     /**
      * Launches a separate process which runs an `npm` command.

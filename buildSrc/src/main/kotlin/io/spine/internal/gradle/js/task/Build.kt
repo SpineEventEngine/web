@@ -44,20 +44,19 @@ fun JsTaskRegistering.build(packageVersion: String) {
     val installNodePackages = installNodePackages().also {
         val auditNodePackages = auditNodePackages()
         auditNodePackages.dependsOn(it)
-        getByName("check").dependsOn(auditNodePackages)
+        check.dependsOn(auditNodePackages)
     }
 
     val buildJs = buildJs(updatePackageVersion, installNodePackages, compileProtoToJs).also {
-        getByName("assemble").dependsOn(it)
+        assemble.dependsOn(it)
     }
 
     cleanJs(buildJs, compileProtoToJs, installNodePackages).also {
-        getByName("clean").dependsOn(it)
+        clean.dependsOn(it)
     }
 
-    testJs(installNodePackages, compileProtoToJs).also {
-        getByName("check").dependsOn(it)
-        it.mustRunAfter(getByName("test"))
+    testJs(installNodePackages, compileProtoToJs, getByName("test")).also {
+        check.dependsOn(it)
     }
 }
 
@@ -126,7 +125,7 @@ private fun JsTaskRegistering.auditNodePackages() =
             try {
                 npm("audit")
             } catch (ignored: Exception) {
-                npm("audit", "--registry", "http://registry.npmjs.eu")
+                npm("audit", "--registry", "https://registry.npmjs.eu")
             }
         }
     }
@@ -172,7 +171,7 @@ private fun JsTaskRegistering.buildJs(
     installNodePackages: Task,
     compileProtoToJs: Task,
 
-) = create("buildJs") {
+) = create("buildJs1") {
 
     description = "Assembles the JS sources."
     group = jsBuildTask
@@ -192,7 +191,7 @@ private fun JsTaskRegistering.cleanJs(
     compileProtoToJs: Task,
     installNodePackages: Task
 
-) = create("cleanJs") {
+) = create("cleanJs1") {
 
     description = "Cleans the output of JavaScript build."
     group = jsBuildTask
@@ -211,15 +210,18 @@ private fun JsTaskRegistering.cleanJs(
  */
 private fun JsTaskRegistering.testJs(
     installNodePackages: Task,
-    compileProtoToJs: Task
+    compileProtoToJs: Task,
+    test: Task
 
-) = create("testJs") {
+) = create("testJs1") {
 
-        description = "Runs the JavaScript tests."
-        group = jsBuildTask
+    description = "Runs the JavaScript tests."
+    group = jsBuildTask
 
-        dependsOn(
-            installNodePackages,
-            compileProtoToJs
-        )
-    }
+    dependsOn(
+        installNodePackages,
+        compileProtoToJs
+    )
+
+    mustRunAfter(test)
+}
