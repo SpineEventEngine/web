@@ -55,7 +55,7 @@ interface JsEnvironment {
     /**
      * An access token that allows installation and/or publishing modules.
      *
-     * Default value is read from the environmental variable - `NPM_TOKEN` (PATH variable).
+     * Default value is read from the environmental variable - `NPM_TOKEN`.
      * "PUBLISHING_FORBIDDEN" stub value would be assigned in case `NPM_TOKEN` variable is not set.
      *
      * See [Creating and viewing access tokens | npm Docs](https://docs.npmjs.com/creating-and-viewing-access-tokens)

@@ -38,6 +38,20 @@ plugins {
     id("com.dorongold.task-tree") version "2.1.0"
 }
 
+/*
+
+spine {
+    useJava()
+    useJs()
+}
+
+spine {
+    java()
+    js()
+}
+
+ */
+
 js {
     environment {
     }
