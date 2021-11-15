@@ -66,7 +66,7 @@ open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
 
         workingDir(workingDir)
         commandLine(nmpExecutable)
-        args(args)
+        args(*args)
 
         // Using private packages in a CI/CD workflow | npm Docs
         // https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow
