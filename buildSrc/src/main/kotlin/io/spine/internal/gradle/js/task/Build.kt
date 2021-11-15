@@ -29,6 +29,7 @@ package io.spine.internal.gradle.js.task
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import java.io.File
+import org.gradle.api.Task
 
 /**
  * Registers tasks for building JavaScript projects.
@@ -46,29 +47,18 @@ fun JsTaskRegistering.build(packageVersion: String) {
         getByName("check").dependsOn(auditNodePackages)
     }
 
-    val buildJs = buildJs().apply {
-        dependsOn(
-            updatePackageVersion,
-            installNodePackages,
-            compileProtoToJs
-        )
+    val buildJs = buildJs(updatePackageVersion, installNodePackages, compileProtoToJs).also {
+        getByName("assemble").dependsOn(it)
     }
 
-    getByName("assemble").dependsOn(buildJs)
-
-
-    val cleanJs = cleanJs().apply {
-        doLast {
-            project.delete(
-                buildJs.outputs,
-                compileProtoToJs.outputs,
-                installNodePackages.outputs
-            )
-        }
+    cleanJs(buildJs, compileProtoToJs, installNodePackages).also {
+        getByName("clean").dependsOn(it)
     }
 
-    getByName("clean").dependsOn(cleanJs)
-
+    testJs(installNodePackages, compileProtoToJs).also {
+        getByName("check").dependsOn(it)
+        it.mustRunAfter(getByName("test"))
+    }
 }
 
 /**
@@ -177,19 +167,59 @@ private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
  * This is a lifecycle task. It performs no action itself but is used to trigger other tasks
  * which perform the building.
  */
-private fun JsTaskRegistering.buildJs() =
-    create("buildJs") {
+private fun JsTaskRegistering.buildJs(
+    updatePackageVersion: Task,
+    installNodePackages: Task,
+    compileProtoToJs: Task,
 
-        description = "Assembles the JS sources."
-        group = jsBuildTask
-    }
+) = create("buildJs") {
+
+    description = "Assembles the JS sources."
+    group = jsBuildTask
+
+    dependsOn(
+        updatePackageVersion,
+        installNodePackages,
+        compileProtoToJs
+    )
+}
 
 /**
- * Cleans output of `buildJs` task.
+ * Cleans output of `buildJs` task and its dependants.
  */
-private fun JsTaskRegistering.cleanJs() =
-    create("cleanJs") {
+private fun JsTaskRegistering.cleanJs(
+    buildJs: Task,
+    compileProtoToJs: Task,
+    installNodePackages: Task
 
-        description = "Cleans the output of JavaScript build."
+) = create("cleanJs") {
+
+    description = "Cleans the output of JavaScript build."
+    group = jsBuildTask
+
+    doLast {
+        project.delete(
+            buildJs.outputs,
+            compileProtoToJs.outputs,
+            installNodePackages.outputs
+        )
+    }
+}
+
+/**
+ * Tests the JS sources.
+ */
+private fun JsTaskRegistering.testJs(
+    installNodePackages: Task,
+    compileProtoToJs: Task
+
+) = create("testJs") {
+
+        description = "Runs the JavaScript tests."
         group = jsBuildTask
+
+        dependsOn(
+            installNodePackages,
+            compileProtoToJs
+        )
     }
