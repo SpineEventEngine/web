@@ -62,6 +62,7 @@ val grGitVersion = "3.1.1"
 val guavaVersion = "30.1.1-jre"
 
 dependencies {
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.google.cloud.artifactregistry:artifactregistry-auth-common:$googleAuthToolVersion") {
         exclude(group = "com.google.guava")

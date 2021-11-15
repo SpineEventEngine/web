@@ -26,6 +26,10 @@
 
 package io.spine.internal.gradle.js.task
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
+import java.io.File
+
 /**
  * Installs the module dependencies using the `npm install` command.
  *
@@ -36,16 +40,45 @@ package io.spine.internal.gradle.js.task
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
  */
-fun JsTaskRegistering.installNodePackages() = register("installNodePackages1") {
+fun JsTaskRegistering.installNodePackages() =
+    register("installNodePackages1") {
 
-    description = "Installs the module`s Node dependencies."
-    group = jsBuildTask
+        description = "Installs the module`s Node dependencies."
+        group = jsBuildTask
 
-    inputs.file(packageJsonFile)
-    outputs.dir(nodeModulesDir)
+        inputs.file(packageJsonFile)
+        outputs.dir(nodeModulesDir)
 
-    doLast {
-        npm("set", "audit", "false")
-        npm("install")
+        doLast {
+            npm("set", "audit", "false")
+            npm("install")
+        }
     }
-}
+
+/**
+ * Sets the module's version in `package.json` to the specified one.
+ */
+fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
+    register("updatePackageVersion1") {
+
+        description = "Updates the version in `package.json`."
+        group = jsBuildTask
+
+        doLast {
+            val packageJson = File(packageJsonFile)
+
+            val objectNode = ObjectMapper()
+                .readValue(packageJson, ObjectNode::class.java)
+                .put("version", newVersion)
+
+            packageJson.writeText(
+
+                // We are going to stick to JSON formatting used by `npm` itself.
+                // So that modifying the line with the version would ONLY affect a single line
+                // when comparing two files i.e. in Git.
+
+                (objectNode.toPrettyString() + '\n')
+                    .replace("\" : ", "\": ")
+            )
+        }
+    }

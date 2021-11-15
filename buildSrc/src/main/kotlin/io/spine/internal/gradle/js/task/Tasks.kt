@@ -37,12 +37,13 @@ import org.gradle.api.tasks.TaskContainer
  *
  *  1. Access to the current [JsEnvironment];
  *  2. Default task groups;
- *  3. Shortcut for running `nmp` command.
+ *  3. Shortcut for running `nmp` commands.
  */
 open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
     : JsEnvironment by jsEnv, TaskContainer by project.tasks
 {
-    // Default task groups.
+    // Default task groups
+
     internal val jsBuildTask = "JavaScript/Build"
 
     /**
@@ -53,7 +54,7 @@ open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
      * Usage example:
      *
      * ```
-     * fun JsTasks.customTask = register("customTask") {
+     * fun JsTaskContext.customTask = register("customTask") {
      *     doLast {
      *         npm("set", "audit", "false")
      *         npp("install")
