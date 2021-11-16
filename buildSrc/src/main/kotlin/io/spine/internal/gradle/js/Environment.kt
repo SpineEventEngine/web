@@ -38,8 +38,6 @@ interface JsEnvironment {
 
     /**
      * A directory from which JavaScript tools are to be run.
-     *
-     * Typically, it is a project's directory.
      */
     val projectDir: File
 

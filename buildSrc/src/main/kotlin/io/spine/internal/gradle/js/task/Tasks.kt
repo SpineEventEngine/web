@@ -26,78 +26,87 @@
 
 package io.spine.internal.gradle.js.task
 
-import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.base.BaseTasks
-import java.io.File
-import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskContainer
 
 /**
- * Context for setting up JavaScript-related Tasks.
- *
- * The context provides:
- *
- *  1. Access to the current [JsEnvironment];
- *  2. Default JavaScript tasks groups;
- *  3. Shortcut for running `nmp` commands;
- *  4. Shortcuts for base Gradle tasks.
+ * Shortcuts for accessing the tasks
+ * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  */
-open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
-    : BaseTasks(project.tasks), JsEnvironment by jsEnv
-{
-    // Default task groups.
-    internal val jsBuildTask = "JavaScript/Build"
-    internal val jsPublishTask = "JavaScript/Publish"
+interface JsTaskListing : JsBuildTaskListing, JsPublishTaskListing
 
-    // Shortcut for task from JavaPlugin.
-    internal val test = this.getByName("test")
-    internal val publish = this.getByName("publish")
+/**
+ * Shortcuts for accessing the tasks for building a JavaScript module.
+ *
+ * Tasks are to be provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ */
+interface JsBuildTaskListing : TaskContainer {
 
-    internal fun npm(vararg args: String) = projectDir.npm(*args)
+    /**
+     * Compiles Protobuf messages into JavaScript.
+     */
+    val compileProtoToJs: Task
+        get() = getByName("compileProtoToJs")
 
-    internal fun File.npm(vararg args: String) = project.exec {
+    /**
+     * Installs the module`s Node dependencies.
+     */
+    val installNodePackages: Task
+        get() = getByName("installNodePackages")
 
-        workingDir(this@npm)
-        commandLine(nmpExecutable)
-        args(*args)
+    /**
+     * Audits the module's Node dependencies.
+     */
+    val auditNodePackages: Task
+        get() = getByName("auditNodePackages")
 
-        // Using private packages in a CI/CD workflow | npm Docs
-        // https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow
+    /**
+     * Sets the module's version in `package.json` to the specified one.
+     */
+    val updatePackageVersion: Task
+        get() = getByName("updatePackageVersion")
 
-        environment["NPM_TOKEN"] = npmAuthToken
-    }
+    /**
+     * Assembles the JavaScript sources.
+     */
+    val buildJs: Task
+        get() = getByName("buildJs")
+
+    /**
+     * Cleans output of `buildJs` task and output of its dependants.
+     */
+    val cleanJs: Task
+        get() = getByName("cleanJs")
+
+    /**
+     * Runs the JavaScript tests.
+     */
+    val testJs: Task
+        get() = getByName("testJs")
 }
 
 /**
- * ...
+ * Shortcuts for accessing the tasks for publishing a JavaScript module.
+ *
+ * Tasks are to be provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  */
-open class JsTasks(jsEnv: JsEnvironment, project: Project)
-    : JsTaskContext(jsEnv, project)
-{
-    private val registering = JsTaskRegistering(jsEnv, project)
-    private val configuring = JsTaskConfiguring(jsEnv, project)
+interface JsPublishTaskListing : TaskContainer {
 
     /**
-     * Registers new tasks.
+     * Prepares the NPM package for publishing.
      */
-    fun register(registrations: JsTaskRegistering.() -> Unit) =
-        registering.run(registrations)
+    val prepareJsPublication: Task
+        get() = getByName("prepareJsPublication")
 
     /**
-     * Configures already registered tasks.
+     * Publishes the NPM package locally with `npm link`.
      */
-    fun configure(configurations: JsTaskConfiguring.() -> Unit) =
-        configuring.run(configurations)
+    val publishJsLocally: Task
+        get() = getByName("publishJsLocally")
 
+    /**
+     * Publishes the NPM package with `npm publish`.
+     */
+    val publishJs: Task
+        get() = getByName("publishJs")
 }
-
-/**
- * Scope for registering new tasks inside [JsTaskContext].
- */
-class JsTaskRegistering(jsEnv: JsEnvironment, project: Project)
-    : JsTaskContext(jsEnv, project)
-
-/**
- * Scope for configuring present tasks inside [JsTaskContext].
- */
-class JsTaskConfiguring(jsEnv: JsEnvironment, project: Project)
-    : JsTaskContext(jsEnv, project)

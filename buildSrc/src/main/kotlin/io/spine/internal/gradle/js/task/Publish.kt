@@ -26,51 +26,89 @@
 
 package io.spine.internal.gradle.js.task
 
+import io.spine.internal.gradle.js.JsEnvironment
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
 
 /**
- * ...
+ * Registers tasks for publishing JavaScript projects.
+ *
+ * In order to publish the NPM module, it is required that the `NPM_TOKEN` environment
+ * variable is set to a valid [JsEnvironment.npmAuthToken]. If the token is not set,
+ * a dummy value is quite enough for the local development.
+ *
+ * List of tasks to be created:
+ *
+ *  1. `prepareJsPublication` - prepares the NPM package for publishing;
+ *  2. `publishJsLocally` - publishes the NPM package locally with `npm link`;
+ *  3. `publishJs` - publishes the NPM package with `npm publish`.
+ *
+ * Usage example:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.javascript
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             publish()
+ *         }
+ *     }
+ * }
+ * ```
  */
 fun JsTaskRegistering.publish() {
 
     prepareJsPublication()
-    link()
+    publishJsLocally()
     publishJs().also {
         publish.dependsOn(it)
     }
 }
 
 /**
- * Prepares JS artifacts for publication.
+ * Prepares the NPM package for publishing.
  *
  * Does nothing by default, so a user should configure this task to copy all
  * required files to the `publicationDirectory`.
  */
 private fun JsTaskRegistering.prepareJsPublication() =
-    create<Copy>("prepareJsPublication1") {
+    create<Copy>("prepareJsPublication") {
 
         description = "Prepares the NPM package for publishing."
         group = jsPublishTask
 
-        dependsOn("buildJs1")
+        dependsOn("buildJs")
     }
 
-private fun JsTaskRegistering.link() =
-    create("link1") {
+/**
+ * Publishes the NPM package locally with `npm link`.
+ *
+ * Package linking is a two-step process:
+ *
+ *  1. Create a global symlink for a dependency with `npm link`. A symlink, short for symbolic link,
+ *     is a shortcut that points to another directory or file on your system.
+ *  2. Tell the application to use the global symlink with `npm link some-dep`.
+ *
+ *  @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-link">npm-link | npm Docs</a>
+ */
+private fun JsTaskRegistering.publishJsLocally() =
+    create("publishJsLocally") {
 
-        description = "Publishes the NPM package locally with `npm link`"
+        description = "Publishes the NPM package locally with `npm link`."
         group = jsPublishTask
 
         doLast {
             publicationDirectory.npm("link")
         }
 
-        dependsOn("prepareJsPublication1")
+        dependsOn("prepareJsPublication")
     }
 
 private fun JsTaskRegistering.publishJs() =
-    create("publishJs1") {
+    create("publishJs") {
 
         description = "Publishes the NPM package with `npm publish`."
         group = jsPublishTask
@@ -79,5 +117,5 @@ private fun JsTaskRegistering.publishJs() =
             publicationDirectory.npm("publish")
         }
 
-        dependsOn("prepareJsPublication1")
+        dependsOn("prepareJsPublication")
     }

@@ -47,7 +47,7 @@ import org.gradle.api.Task
  * Usage example:
  *
  * ```
- * import io.spine.internal.gradle.js.js
+ * import io.spine.internal.gradle.js.javascript
  *
  * // ...
  *
@@ -67,7 +67,7 @@ fun JsTaskRegistering.build(packageVersion: String) {
     val installNodePackages = installNodePackages()
     val updatePackageVersion = updatePackageVersion(packageVersion)
 
-    val buildJs = buildJs(updatePackageVersion, installNodePackages, compileProtoToJs).also {
+    buildJs(updatePackageVersion, installNodePackages, compileProtoToJs).also {
         assemble.dependsOn(it)
     }
 
@@ -75,11 +75,11 @@ fun JsTaskRegistering.build(packageVersion: String) {
         check.dependsOn(it)
     }
 
-    cleanJs(buildJs, compileProtoToJs, installNodePackages).also {
+    cleanJs().also {
         clean.dependsOn(it)
     }
 
-    testJs(installNodePackages, compileProtoToJs).also {
+    testJs().also {
         check.dependsOn(it)
     }
 }
@@ -201,37 +201,28 @@ private fun JsTaskRegistering.buildJs(
     )
 }
 
-private fun JsTaskRegistering.cleanJs(
-    buildJs: Task,
-    compileProtoToJs: Task,
-    installNodePackages: Task
-
-) = create("cleanJs1") {
+private fun JsTaskRegistering.cleanJs() = create("cleanJs") {
 
     description = "Cleans output of `buildJs` task and output of its dependants."
     group = jsBuildTask
 
     doLast {
         project.delete(
-            buildJs.outputs,
-            compileProtoToJs.outputs,
-            installNodePackages.outputs
+            getByName("buildJs").outputs,
+            getByName("compileProtoToJs").outputs,
+            getByName("installNodePackages").outputs
         )
     }
 }
 
-private fun JsTaskRegistering.testJs(
-    installNodePackages: Task,
-    compileProtoToJs: Task,
-
-) = create("testJs1") {
+private fun JsTaskRegistering.testJs() = create("testJs") {
 
     description = "Runs the JavaScript tests."
     group = jsBuildTask
 
     dependsOn(
-        installNodePackages,
-        compileProtoToJs
+        "installNodePackages",
+        "compileProtoToJs"
     )
 
     mustRunAfter(test)

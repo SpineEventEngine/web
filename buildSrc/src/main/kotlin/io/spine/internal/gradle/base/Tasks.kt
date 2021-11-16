@@ -26,17 +26,43 @@
 
 package io.spine.internal.gradle.base
 
+import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Shortcuts for Gradle base lifecycle tasks provided by `The Base Plugin`.
+ * Shortcuts for accessing the tasks provided by `The Base Plugin`.
  *
- * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">The Base Plugin</a>
+ * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">
+ *     Tasks | The Base Plugin</a>
  */
-open class BaseTasks(tasks: TaskContainer) : TaskContainer by tasks {
+interface BaseTaskListing : TaskContainer {
 
-    internal val clean = this.getByName("clean")
-    internal val check = this.getByName("check")
-    internal val assemble = this.getByName("assemble")
-    internal val build = this.getByName("build")
+    /**
+     * Deletes the build directory and everything in it,
+     * i.e. the path specified by the `Project.getBuildDir()` project property.
+     */
+    val clean: Task
+        get() = getByName("clean")
+
+    /**
+     * Plugins and build authors should attach their verification tasks,
+     * such as ones that run tests, to this lifecycle task using `check.dependsOn(task)`.
+     */
+    val check: Task
+        get() = getByName("check")
+
+    /**
+     * Plugins and build authors should attach tasks that produce distributions and
+     * other consumable artifacts to this lifecycle task.
+     */
+    val assemble: Task
+        get() = getByName("assemble")
+
+    /**
+     * Intended to build everything, including running all tests, producing the production artifacts
+     * and generating documentation. You will probably rarely attach concrete tasks directly
+     * to `build` as `assemble` and `check` are typically more appropriate.
+     */
+    val build: Task
+        get() = getByName("build")
 }

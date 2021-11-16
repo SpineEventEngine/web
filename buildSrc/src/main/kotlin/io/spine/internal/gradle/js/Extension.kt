@@ -37,7 +37,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 /**
  * Configures [JsExtension].
  */
-fun Project.js(configuration: JsExtension.() -> Unit) {
+fun Project.javascript(configuration: JsExtension.() -> Unit) {
     extensions.run {
         configuration.invoke(
             findByType() ?: create("jsExtension", project)

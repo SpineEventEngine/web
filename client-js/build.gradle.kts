@@ -27,7 +27,7 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.js.js
+import io.spine.internal.gradle.js.javascript
 import io.spine.internal.gradle.js.task.build
 import io.spine.internal.gradle.js.task.publish
 
@@ -55,15 +55,16 @@ spine {
 
  */
 
-idea {
-    module {
-        excludeDirs.add(projectDir.resolve("node_modules"))
+javascript {
+    idea {
+        module {
+            excludeDirs.add(projectDir.resolve("node_modules"))
+        }
     }
-}
 
-js {
     environment {
     }
+
     tasks {
         register {
             val versionToPublishJs: String by extra
