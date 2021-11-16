@@ -31,17 +31,11 @@ import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
 
 /**
- * Registers tasks for publishing JavaScript projects.
+ * Registers [tasks][JsPublishTaskListing] for publishing JavaScript projects.
  *
  * In order to publish the NPM module, it is required that the `NPM_TOKEN` environment
  * variable is set to a valid [JsEnvironment.npmAuthToken]. If the token is not set,
  * a dummy value is quite enough for the local development.
- *
- * List of tasks to be created:
- *
- *  1. `prepareJsPublication` - prepares the NPM package for publishing;
- *  2. `publishJsLocally` - publishes the NPM package locally with `npm link`;
- *  3. `publishJs` - publishes the NPM package with `npm publish`.
  *
  * Usage example:
  *
@@ -80,7 +74,7 @@ private fun JsTaskRegistering.prepareJsPublication() =
         description = "Prepares the NPM package for publishing."
         group = jsPublishTask
 
-        dependsOn("buildJs")
+        dependsOn(buildJs)
     }
 
 /**
@@ -104,18 +98,17 @@ private fun JsTaskRegistering.publishJsLocally() =
             publicationDirectory.npm("link")
         }
 
-        dependsOn("prepareJsPublication")
+        dependsOn(prepareJsPublication)
     }
 
-private fun JsTaskRegistering.publishJs() =
-    create("publishJs") {
+private fun JsTaskRegistering.publishJs() = create("publishJs") {
 
-        description = "Publishes the NPM package with `npm publish`."
-        group = jsPublishTask
+    description = "Publishes the NPM package with `npm publish`."
+    group = jsPublishTask
 
-        doLast {
-            publicationDirectory.npm("publish")
-        }
-
-        dependsOn("prepareJsPublication")
+    doLast {
+        publicationDirectory.npm("publish")
     }
+
+    dependsOn(prepareJsPublication)
+}

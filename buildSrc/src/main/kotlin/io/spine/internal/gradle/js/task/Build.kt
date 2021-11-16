@@ -221,8 +221,8 @@ private fun JsTaskRegistering.testJs() = create("testJs") {
     group = jsBuildTask
 
     dependsOn(
-        "installNodePackages",
-        "compileProtoToJs"
+        installNodePackages,
+        compileProtoToJs
     )
 
     mustRunAfter(test)

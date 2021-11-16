@@ -50,7 +50,7 @@ spine {
 spine {
     java()
     dart()
-    js()
+    javascript()
 }
 
  */

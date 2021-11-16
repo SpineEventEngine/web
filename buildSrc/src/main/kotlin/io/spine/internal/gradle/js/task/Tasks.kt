@@ -30,13 +30,30 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Shortcuts for accessing the tasks
+ * Enumerates and provides access to the tasks
  * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  */
 interface JsTaskListing : JsBuildTaskListing, JsPublishTaskListing
 
 /**
- * Shortcuts for accessing the tasks for building a JavaScript module.
+ * Task groups of [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ */
+interface JsTaskGroups {
+
+    /**
+     * Task is participating in building a JavaScript module.
+     */
+    val jsBuildTask: String
+        get() = "JavaScript/Build"
+
+    /**
+     * Task is participating in publishing a JavaScript module.
+     */
+    val jsPublishTask: String
+        get() = "JavaScript/Publish"
+}
+/**
+ * Enumerates and provides access to the tasks for building a JavaScript module.
  *
  * Tasks are to be provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  */
@@ -86,7 +103,7 @@ interface JsBuildTaskListing : TaskContainer {
 }
 
 /**
- * Shortcuts for accessing the tasks for publishing a JavaScript module.
+ * Enumerates and provides access to the tasks for publishing a JavaScript module.
  *
  * Tasks are to be provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  */

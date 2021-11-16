@@ -30,7 +30,7 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Shortcuts for accessing the tasks provided by `The Java Plugin`.
+ * Enumerates and provides access to the tasks provided by `The Java Plugin`.
  *
  * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">Tasks | The Java Plugin</a>
  */

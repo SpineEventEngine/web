@@ -30,7 +30,7 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Shortcuts for accessing the tasks provided by `Maven Publish Plugin`.
+ * Enumerates and provides access to the tasks provided by `Maven Publish Plugin`.
  *
  * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:tasks">
  *     Tasks | Maven Publish Plugin</a>
