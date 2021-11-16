@@ -51,7 +51,8 @@ fun Project.js(configuration: JsExtension.() -> Unit) {
 open class JsExtension(project: Project) {
 
     private val defaultEnvironment = object : JsEnvironment {
-        override val workingDir = project.projectDir
+        override val projectDir = project.projectDir
+        override val buildDir = project.buildDir
     }
     private val environment = ConfigurableJsEnvironment(defaultEnvironment)
     private val tasks = JsTasks(environment, project)

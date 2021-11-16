@@ -38,8 +38,25 @@ interface JsEnvironment {
 
     /**
      * A directory from which JavaScript tools are to be run.
+     *
+     * Typically, it is a project's directory.
      */
-    val workingDir: File
+    val projectDir: File
+
+    /**
+     * The build directory is the directory which all artifacts are generated into.
+     *
+     * Default value: "workingDir/build".
+     */
+    val buildDir: File
+
+    /**
+     * Path to a directory where artifacts for publishing would be prepared.
+     *
+     * Default value: "buildDir/npm-publication".
+     */
+    val publicationDirectory: File
+        get() = buildDir.resolve("npm-publication")
 
     /**
      * Command to run `npm` package manager.
@@ -50,7 +67,7 @@ interface JsEnvironment {
      *  2. "npm" for other OSs.
      */
     val nmpExecutable: String
-        get() = if(isWindows()) "npm.cmd" else "npm"
+        get() = if (isWindows()) "npm.cmd" else "npm"
 
     /**
      * An access token that allows installation and/or publishing modules.
@@ -69,7 +86,7 @@ interface JsEnvironment {
      * Default value: "workingDir/node_modules".
      */
     val nodeModulesDir: String
-        get() = "$workingDir/node_modules"
+        get() = "$projectDir/node_modules"
 
     /**
      * Path to `package.json` file.
@@ -77,7 +94,7 @@ interface JsEnvironment {
      * Default value: "workingDir/package.json".
      */
     val packageJsonFile: String
-        get() = "$workingDir/package.json"
+        get() = "$projectDir/package.json"
 }
 
 /**
@@ -85,7 +102,8 @@ interface JsEnvironment {
  */
 class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment) : JsEnvironment {
 
-    override var workingDir = initialEnvironment.workingDir
+    override var projectDir = initialEnvironment.projectDir
+    override var buildDir = initialEnvironment.buildDir
     override var nmpExecutable = initialEnvironment.nmpExecutable
     override var npmAuthToken = initialEnvironment.npmAuthToken
 

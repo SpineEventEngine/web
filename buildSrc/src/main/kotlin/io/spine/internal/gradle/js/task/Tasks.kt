@@ -28,6 +28,7 @@ package io.spine.internal.gradle.js.task
 
 import io.spine.internal.gradle.js.JsEnvironment
 import io.spine.internal.gradle.base.BaseTasks
+import java.io.File
 import org.gradle.api.Project
 
 /**
@@ -45,29 +46,17 @@ open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
 {
     // Default task groups.
     internal val jsBuildTask = "JavaScript/Build"
+    internal val jsPublishTask = "JavaScript/Publish"
 
-    // Shortcut for `Test` task from JavaPlugin.
+    // Shortcut for task from JavaPlugin.
     internal val test = this.getByName("test")
+    internal val publish = this.getByName("publish")
 
-    /**
-     * Launches a separate process which runs an `npm` command.
-     *
-     * Please note, this method is supposed to be run during tasks execution.
-     *
-     * Usage example:
-     *
-     * ```
-     * fun JsTaskContext.customTask = register("customTask") {
-     *     doLast {
-     *         npm("set", "audit", "false")
-     *         npp("install")
-     *     }
-     * }
-     * ```
-     */
-    internal fun npm(vararg args: String) = project.exec {
+    internal fun npm(vararg args: String) = projectDir.npm(*args)
 
-        workingDir(workingDir)
+    internal fun File.npm(vararg args: String) = project.exec {
+
+        workingDir(this@npm)
         commandLine(nmpExecutable)
         args(*args)
 
