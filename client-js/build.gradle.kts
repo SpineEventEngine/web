@@ -27,9 +27,12 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
+import io.spine.internal.gradle.js.forDevelopment
 import io.spine.internal.gradle.js.javascript
-import io.spine.internal.gradle.js.task.build
-import io.spine.internal.gradle.js.task.publish
+
+javascript {
+    forDevelopment()
+}
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
@@ -37,41 +40,6 @@ plugins {
     // print task's tree
     // used for developing aims only
     id("com.dorongold.task-tree") version "2.1.0"
-}
-
-/*
-
-spine {
-    useJava()
-    useDart()
-    useJs()
-}
-
-spine {
-    java()
-    dart()
-    javascript()
-}
-
- */
-
-javascript {
-    idea {
-        module {
-            excludeDirs.add(projectDir.resolve("node_modules"))
-        }
-    }
-
-    environment {
-    }
-
-    tasks {
-        register {
-            val versionToPublishJs: String by extra
-            build(versionToPublishJs)
-            publish()
-        }
-    }
 }
 
 val spineCoreVersion: String by extra

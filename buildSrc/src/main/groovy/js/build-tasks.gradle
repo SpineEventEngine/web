@@ -55,10 +55,10 @@ apply from: "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/updat
  * <p>This is a lifecycle task. It performs no action but triggers all the tasks which perform
  * the compilation.
  */
-task compileProtoToJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Compiles Protobuf sources to JavaScript."
-}
+//task compileProtoToJs {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = "Compiles Protobuf sources to JavaScript."
+//}
 
 /**
  * Installs the module dependencies using the `npm install` command.
@@ -68,20 +68,20 @@ task compileProtoToJs {
  *
  * To check installed Node packages for vulnerabilities execute `auditNodePackages` task.
  */
-task installNodePackages {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Installs the module`s Node dependencies.'
-
-    inputs.file packageJsonFile
-    outputs.dir nodeModulesDir
-
-    doLast {
-        // To turn off npm audit when installing all packages. Use `auditNodePackages` task
-        // to check installed Node packages for vulnerabilities.
-        npm 'set', 'audit', 'false'
-        npm 'install'
-    }
-}
+//task installNodePackages {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = 'Installs the module`s Node dependencies.'
+//
+//    inputs.file packageJsonFile
+//    outputs.dir nodeModulesDir
+//
+//    doLast {
+//        // To turn off npm audit when installing all packages. Use `auditNodePackages` task
+//        // to check installed Node packages for vulnerabilities.
+//        npm 'set', 'audit', 'false'
+//        npm 'install'
+//    }
+//}
 
 /**
  * Audits the module dependencies using the `npm audit` command.
@@ -89,40 +89,40 @@ task installNodePackages {
  * Sets the minimum level of vulnerability for `npm audit` to exit with a non-zero exit code
  * to "high".
  */
-task auditNodePackages {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Audits the module`s Node dependencies.'
-    dependsOn installNodePackages
+//task auditNodePackages {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = 'Audits the module`s Node dependencies.'
+//    dependsOn installNodePackages
+//
+//    inputs.dir nodeModulesDir
+//
+//    doLast {
+//        npm 'set', 'audit-level', 'critical'
+//        try {
+//            npm 'audit'
+//        } catch (final Exception ignored) {
+//            npm 'audit', '--registry' 'http://registry.npmjs.eu'
+//        }
+//    }
+//}
 
-    inputs.dir nodeModulesDir
-
-    doLast {
-        npm 'set', 'audit-level', 'critical'
-        try {
-            npm 'audit'
-        } catch (final Exception ignored) {
-            npm 'audit', '--registry' 'http://registry.npmjs.eu'
-        }
-    }
-}
-
-check.dependsOn auditNodePackages
+//check.dependsOn auditNodePackages
 
 /**
  * Cleans output of `buildJs` and dependant tasks.
  */
-task cleanJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Cleans the output of JavaScript build.'
-
-    clean.dependsOn cleanJs
-
-    doLast {
-        delete buildJs.outputs
-        delete compileProtoToJs.outputs
-        delete installNodePackages.outputs
-    }
-}
+//task cleanJs {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = 'Cleans the output of JavaScript build.'
+//
+//    clean.dependsOn cleanJs
+//
+//    doLast {
+//        delete buildJs.outputs
+//        delete compileProtoToJs.outputs
+//        delete installNodePackages.outputs
+//    }
+//}
 
 /**
  * Assembles the JS sources.
@@ -131,15 +131,15 @@ task cleanJs {
  *
  * To include a task into the JS build, depend `buildJs` onto that task.
  */
-task buildJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Assembles the JavaScript source files."
-
-    dependsOn updatePackageVersion
-    dependsOn installNodePackages
-    dependsOn compileProtoToJs
-    assemble.dependsOn buildJs
-}
+//task buildJs {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = "Assembles the JavaScript source files."
+//
+//    dependsOn updatePackageVersion
+//    dependsOn installNodePackages
+//    dependsOn compileProtoToJs
+//    assemble.dependsOn buildJs
+//}
 
 /**
  * Tests the JS sources.
@@ -147,17 +147,17 @@ task buildJs {
  * If `check` task is scheduled to run, this task is automatically added to
  * the task graph and will be executed after `test` task completion.
  */
-task testJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Tests the JavaScript source files."
-
-    dependsOn installNodePackages
-    dependsOn compileProtoToJs
-    check.dependsOn testJs
-
-    testJs.mustRunAfter test
-}
-
-idea.module {
-    excludeDirs += file(nodeModulesDir)
-}
+//task testJs {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = "Tests the JavaScript source files."
+//
+//    dependsOn installNodePackages
+//    dependsOn compileProtoToJs
+//    check.dependsOn testJs
+//
+//    testJs.mustRunAfter test
+//}
+//
+//idea.module {
+//    excludeDirs += file(nodeModulesDir)
+//}

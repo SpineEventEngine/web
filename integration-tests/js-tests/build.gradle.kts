@@ -26,12 +26,24 @@
 
 import com.google.protobuf.gradle.*
 import groovy.lang.Closure
+import io.spine.internal.gradle.js.javascript
+import io.spine.internal.gradle.js.task.build
+import io.spine.internal.gradle.js.task.publish
 
 plugins {
     id("io.spine.mc-js")
 }
 
-apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/build-tasks.gradle")
+//apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/build-tasks.gradle")
+
+javascript {
+    tasks {
+        register {
+            build()
+            publish()
+        }
+    }
+}
 
 val testSrcDir: String = "$projectDir/test"
 val genProtoBaseDir: String = projectDir.path

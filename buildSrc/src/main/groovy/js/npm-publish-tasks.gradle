@@ -49,38 +49,38 @@ ext {
  * <p>The task isn't a {@code copy} task since it causes side effects
  * like a removal of the publication directory. See https://github.com/gradle/gradle/issues/1012.
  */
-task prepareJsPublication {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Prepares the NPM package for publish.'
-
-    dependsOn buildJs
-}
+//task prepareJsPublication {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = 'Prepares the NPM package for publish.'
+//
+//    dependsOn buildJs
+//}
 
 /**
  * Publishes the NPM package locally with `npm link`.
  */
-task link {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = "Publishes the NPM package locally."
-
-    doLast {
-        executeNpm(publicationDirectory as File, 'link')
-    }
-
-    dependsOn prepareJsPublication
-}
+//task link {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = "Publishes the NPM package locally."
+//
+//    doLast {
+//        executeNpm(publicationDirectory as File, 'link')
+//    }
+//
+//    dependsOn prepareJsPublication
+//}
 
 /**
  * Publishes the NPM package with `npm publish`.
  */
-task publishJs {
-    group = JAVA_SCRIPT_TASK_GROUP
-    description = 'Publishes the NPM package.'
-
-    doLast {
-        executeNpm(publicationDirectory as File, 'publish')
-    }
-
-    dependsOn prepareJsPublication
-    publish.dependsOn publishJs
-}
+//task publishJs {
+//    group = JAVA_SCRIPT_TASK_GROUP
+//    description = 'Publishes the NPM package.'
+//
+//    doLast {
+//        executeNpm(publicationDirectory as File, 'publish')
+//    }
+//
+//    dependsOn prepareJsPublication
+//    publish.dependsOn publishJs
+//}
