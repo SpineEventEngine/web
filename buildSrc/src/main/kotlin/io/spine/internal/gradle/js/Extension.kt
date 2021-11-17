@@ -27,9 +27,12 @@
 package io.spine.internal.gradle.js
 
 import io.spine.internal.gradle.js.task.JsTasks
+import io.spine.internal.gradle.js.task.publish
+import io.spine.internal.gradle.js.task.build
 import java.io.File
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.plugins.ide.idea.model.IdeaModel
@@ -48,22 +51,27 @@ fun Project.javascript(configuration: JsExtension.() -> Unit) {
 /**
  * ...
  */
-open class JsExtension(project: Project) {
+open class JsExtension(internal val project: Project) {
 
     private val defaultEnvironment = object : JsEnvironment {
         override val projectDir = project.projectDir
-        override val buildDir = project.buildDir
+        override val moduleVersion = project.version.toString()
     }
+
     private val environment = ConfigurableJsEnvironment(defaultEnvironment)
     private val tasks = JsTasks(environment, project)
 
     init {
 
         // `node_modules` directory contains installed module's dependencies.
-        // it is not a part of the module.
+        // No one needs it as a part of the module.
 
         project.extensions.getByType<IdeaModel>().module {
-            excludeDirs.add(File(defaultEnvironment.nodeModulesDir))
+
+            // It is safe to use `environment.nodeModulesDir` as this can not be
+            // changed to the custom value.
+
+            excludeDirs.add(File(environment.nodeModulesDir))
         }
     }
 
@@ -79,5 +87,21 @@ open class JsExtension(project: Project) {
      * Configures [JS-related tasks][JsTasks].
      */
     fun tasks(configurations: JsTasks.() -> Unit) = tasks.run(configurations)
+}
 
+/**
+ * Configures this `JsExtension` for `Spine` development usage.
+ */
+fun JsExtension.forDevelopment() {
+
+    environment {
+        moduleVersion = project.extra["versionToPublishJs"].toString()
+    }
+
+    tasks {
+        register {
+            build()
+            publish()
+        }
+    }
 }
