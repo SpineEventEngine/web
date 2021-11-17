@@ -30,17 +30,15 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Enumerates and provides access to the tasks provided by `Maven Publish Plugin`.
+ * Locates `publish` task provided by the `Maven Publish Plugin`.
+ *
+ * This task publishes all defined publications to all defined repositories. To achieve that,
+ * the task depends on all `publish`*PubName*`PublicationTo`*RepoName*`Repository` tasks.
+ *
+ * Please note, task execution would not copy publications to the local Maven cache.
  *
  * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:tasks">
  *     Tasks | Maven Publish Plugin</a>
  */
-interface MavenPublishTaskListing : TaskContainer {
-
-    /**
-     * An aggregate task that publishes all defined publications to all defined repositories.
-     * It does not include copying publications to the local Maven cache.
-     */
-    val publish: Task
-        get() = getByName("publish")
-}
+internal val TaskContainer.publish: Task
+    get() = getByName("publish")

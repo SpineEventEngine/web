@@ -26,19 +26,19 @@
 
 package io.spine.internal.gradle.java
 
-import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.getByName
 
 /**
- * Enumerates and provides access to the tasks provided by `The Java Plugin`.
+ * Locates `test` task provided by the `The Java Plugin`.
  *
- * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">Tasks | The Java Plugin</a>
+ * Runs the unit tests using JUnit or TestNG.
+ *
+ * Depends on `testClasses`, and all tasks which produce the test runtime classpath.
+ *
+ * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">
+ *     Tasks | The Java Plugin</a>
  */
-interface JavaTaskListing : TaskContainer {
-
-    /**
-     * Runs the unit tests using JUnit or TestNG.
-     */
-    val test: Task
-        get() = getByName("test")
-}
+internal val TaskContainer.test: Test
+    get() = getByName<Test>("test")
