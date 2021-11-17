@@ -28,8 +28,15 @@ package io.spine.internal.gradle.js.task
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
+import io.spine.internal.gradle.base.assemble
+import io.spine.internal.gradle.base.check
+import io.spine.internal.gradle.base.clean
+import io.spine.internal.gradle.java.test
+import io.spine.internal.gradle.js.buildJs
+import io.spine.internal.gradle.js.compileProtoToJs
+import io.spine.internal.gradle.js.installNodePackages
+import io.spine.internal.gradle.js.updatePackageVersion
 import java.io.File
-import org.gradle.api.Task
 
 /**
  * Registers tasks for building JavaScript projects.
@@ -54,61 +61,41 @@ import org.gradle.api.Task
  * js {
  *     tasks {
  *         register {
- *             val versionToPublishJs: String by extra
- *             build(versionToPublishJs)
+ *             build()
  *         }
  *     }
  * }
  * ```
  */
-fun JsTaskRegistering.build(packageVersion: String) {
+fun JsTaskRegistering.build() {
 
-    val compileProtoToJs = compileProtoToJs()
-    val installNodePackages = installNodePackages()
-    val updatePackageVersion = updatePackageVersion(packageVersion)
+    // TODO("Re-consider visibility and kdoc.")
 
-    buildJs(updatePackageVersion, installNodePackages, compileProtoToJs).also {
-        assemble.dependsOn(it)
-    }
+    compileProtoToJs()
+    installNodePackages()
+    updatePackageVersion()
 
-    auditNodePackages(installNodePackages).also {
-        check.dependsOn(it)
-    }
-
-    cleanJs().also {
-        clean.dependsOn(it)
-    }
-
-    testJs().also {
-        check.dependsOn(it)
-    }
+    check.dependsOn(
+        auditNodePackages(),
+        testJs(),
+    )
+    assemble.dependsOn(
+        buildJs()
+    )
+    clean.dependsOn(
+        cleanJs()
+    )
 }
 
-/**
- * Compiles Protobuf messages into JavaScript.
- *
- * This is a lifecycle task. It performs no action itself but is used to trigger other tasks
- * which perform the compilation.
- */
 private fun JsTaskRegistering.compileProtoToJs() =
-    create("compilerProtoToJs1") {
+    create("compileProtoToJs") {
 
         description = "Compiles Protobuf messages into JavaScript."
         group = jsBuildTask
     }
 
-/**
- * Installs the module dependencies using the `npm install` command.
- *
- * The `npm install` command is executed with the vulnerability check disabled since
- * it cannot fail the task execution despite on vulnerabilities found.
- *
- * To check installed Node packages for vulnerabilities execute `auditNodePackages` task.
- *
- * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
- */
 private fun JsTaskRegistering.installNodePackages() =
-    create("installNodePackages1") {
+    create("installNodePackages") {
 
         description = "Installs the module`s Node dependencies."
         group = jsBuildTask
@@ -122,17 +109,8 @@ private fun JsTaskRegistering.installNodePackages() =
         }
     }
 
-/**
- * Audits the module dependencies using the `npm audit` command.
- *
- * The `audit` command submits a description of the dependencies configured in the module
- * to the registry and asks for a report of known vulnerabilities. If any are found,
- * then the impact and appropriate remediation will be calculated.
- *
- * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
- */
-private fun JsTaskRegistering.auditNodePackages(installNodePackages: Task) =
-    create("auditNodePackages1") {
+private fun JsTaskRegistering.auditNodePackages() =
+    create("auditNodePackages") {
 
         description = "Audits the module's Node dependencies."
         group = jsBuildTask
@@ -156,11 +134,8 @@ private fun JsTaskRegistering.auditNodePackages(installNodePackages: Task) =
         dependsOn(installNodePackages)
     }
 
-/**
- * Sets the module's version in `package.json` to the specified one.
- */
-private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
-    create("updatePackageVersion1") {
+private fun JsTaskRegistering.updatePackageVersion() =
+    create("updatePackageVersion") {
 
         description = "Sets the version in `package.json`."
         group = jsBuildTask
@@ -170,7 +145,7 @@ private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
 
             val objectNode = ObjectMapper()
                 .readValue(packageJson, ObjectNode::class.java)
-                .put("version", newVersion)
+                .put("version", moduleVersion)
 
             packageJson.writeText(
 
@@ -184,46 +159,44 @@ private fun JsTaskRegistering.updatePackageVersion(newVersion: String) =
         }
     }
 
-private fun JsTaskRegistering.buildJs(
-    updatePackageVersion: Task,
-    installNodePackages: Task,
-    compileProtoToJs: Task,
+private fun JsTaskRegistering.buildJs() =
+    create("buildJs") {
 
-) = create("buildJs1") {
+        description = "Assembles the JavaScript sources."
+        group = jsBuildTask
 
-    description = "Assembles the JavaScript sources."
-    group = jsBuildTask
-
-    dependsOn(
-        updatePackageVersion,
-        installNodePackages,
-        compileProtoToJs
-    )
-}
-
-private fun JsTaskRegistering.cleanJs() = create("cleanJs") {
-
-    description = "Cleans output of `buildJs` task and output of its dependants."
-    group = jsBuildTask
-
-    doLast {
-        project.delete(
-            getByName("buildJs").outputs,
-            getByName("compileProtoToJs").outputs,
-            getByName("installNodePackages").outputs
+        dependsOn(
+            updatePackageVersion,
+            installNodePackages,
+            compileProtoToJs
         )
     }
-}
 
-private fun JsTaskRegistering.testJs() = create("testJs") {
+private fun JsTaskRegistering.cleanJs() =
+    create("cleanJs") {
 
-    description = "Runs the JavaScript tests."
-    group = jsBuildTask
+        description = "Cleans output of `buildJs` task and output of its dependants."
+        group = jsBuildTask
 
-    dependsOn(
-        installNodePackages,
-        compileProtoToJs
-    )
+        doLast {
+            project.delete(
+                buildJs.outputs,
+                compileProtoToJs.outputs,
+                installNodePackages.outputs
+            )
+        }
+    }
 
-    mustRunAfter(test)
-}
+private fun JsTaskRegistering.testJs() =
+    create("testJs") {
+
+        description = "Runs the JavaScript tests."
+        group = jsBuildTask
+
+        dependsOn(
+            installNodePackages,
+            compileProtoToJs
+        )
+
+        mustRunAfter(test)
+    }

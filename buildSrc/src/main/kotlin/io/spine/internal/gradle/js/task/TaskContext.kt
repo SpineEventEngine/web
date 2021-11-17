@@ -26,9 +26,6 @@
 
 package io.spine.internal.gradle.js.task
 
-import io.spine.internal.gradle.base.BaseTaskListing
-import io.spine.internal.gradle.java.JavaTaskListing
-import io.spine.internal.gradle.java.publish.MavenPublishTaskListing
 import io.spine.internal.gradle.js.JsEnvironment
 import java.io.File
 import org.gradle.api.Project
@@ -44,12 +41,12 @@ import org.gradle.api.tasks.TaskContainer
  *  4. Shortcuts for tasks from different plugins;
  *  5. Default task groups for JavaScript.
  */
-open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project) :
-    BaseTaskListing, JsTaskListing, JavaTaskListing, MavenPublishTaskListing,
-    JsTaskGroups,
-    JsEnvironment by jsEnv,
-    TaskContainer by project.tasks
+open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
+    : JsEnvironment by jsEnv, TaskContainer by project.tasks
 {
+    internal val jsBuildTask = "JavaScript/Build"
+    internal val jsPublishTask = "JavaScript/Publish"
+
     /**
      * Runs an `npm` command in a separate process.
      *
@@ -60,7 +57,7 @@ open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project) :
      * Usage example:
      *
      * ```
-     * fun JsTaskRegistering.customTask = register("customTask") {
+     * fun JsTaskRegistering.customTask() = register("customTask") {
      *     doLast {
      *         npm("set", "audit", "false")
      *         npm("install")
@@ -78,7 +75,7 @@ open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project) :
      * Usage example:
      *
      * ```
-     * fun JsTaskRegistering.customTask = register("customTask") {
+     * fun JsTaskRegistering.customTask() = register("customTask") {
      *     doLast {
      *         val workingDir = File("path_to_specific_working_dir")
      *         workingDir.npm("set", "audit", "false")

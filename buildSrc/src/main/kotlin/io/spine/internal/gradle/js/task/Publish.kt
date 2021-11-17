@@ -26,13 +26,14 @@
 
 package io.spine.internal.gradle.js.task
 
+import io.spine.internal.gradle.java.publish.publish
 import io.spine.internal.gradle.js.JsEnvironment
+import io.spine.internal.gradle.js.buildJs
+import io.spine.internal.gradle.js.prepareJsPublication
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
 
 /**
- * Registers [tasks][JsPublishTaskListing] for publishing JavaScript projects.
- *
  * In order to publish the NPM module, it is required that the `NPM_TOKEN` environment
  * variable is set to a valid [JsEnvironment.npmAuthToken]. If the token is not set,
  * a dummy value is quite enough for the local development.
@@ -55,19 +56,16 @@ import org.gradle.kotlin.dsl.create
  */
 fun JsTaskRegistering.publish() {
 
+    // TODO("Re-consider visibility and kdoc.")
+
     prepareJsPublication()
     publishJsLocally()
-    publishJs().also {
-        publish.dependsOn(it)
-    }
+
+    publish.dependsOn(
+        publishJs()
+    )
 }
 
-/**
- * Prepares the NPM package for publishing.
- *
- * Does nothing by default, so a user should configure this task to copy all
- * required files to the `publicationDirectory`.
- */
 private fun JsTaskRegistering.prepareJsPublication() =
     create<Copy>("prepareJsPublication") {
 
@@ -77,17 +75,6 @@ private fun JsTaskRegistering.prepareJsPublication() =
         dependsOn(buildJs)
     }
 
-/**
- * Publishes the NPM package locally with `npm link`.
- *
- * Package linking is a two-step process:
- *
- *  1. Create a global symlink for a dependency with `npm link`. A symlink, short for symbolic link,
- *     is a shortcut that points to another directory or file on your system.
- *  2. Tell the application to use the global symlink with `npm link some-dep`.
- *
- *  @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-link">npm-link | npm Docs</a>
- */
 private fun JsTaskRegistering.publishJsLocally() =
     create("publishJsLocally") {
 
@@ -101,14 +88,15 @@ private fun JsTaskRegistering.publishJsLocally() =
         dependsOn(prepareJsPublication)
     }
 
-private fun JsTaskRegistering.publishJs() = create("publishJs") {
+private fun JsTaskRegistering.publishJs() =
+    create("publishJs") {
 
-    description = "Publishes the NPM package with `npm publish`."
-    group = jsPublishTask
+        description = "Publishes the NPM package with `npm publish`."
+        group = jsPublishTask
 
-    doLast {
-        publicationDirectory.npm("publish")
+        doLast {
+            publicationDirectory.npm("publish")
+        }
+
+        dependsOn(prepareJsPublication)
     }
-
-    dependsOn(prepareJsPublication)
-}

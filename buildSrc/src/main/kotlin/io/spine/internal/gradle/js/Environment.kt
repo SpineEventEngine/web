@@ -44,9 +44,15 @@ interface JsEnvironment {
     /**
      * The build directory is the directory which all artifacts are generated into.
      *
-     * Default value: "workingDir/build".
+     * Default value: "projectDir/build".
      */
     val buildDir: File
+        get() = projectDir.resolve("build")
+
+    /**
+     * Version to be specified in [packageJsonFile].
+     */
+    val moduleVersion: String
 
     /**
      * Path to a directory where artifacts for publishing would be prepared.
@@ -97,22 +103,29 @@ interface JsEnvironment {
 
 /**
  * Configurable [JsEnvironment].
+ *
+ * Allows overriding of default values for [JsEnvironment]'s properties.
+ *
+ * Please note, some properties could not be overridden:
+ *
+ *  1. [JsEnvironment.nodeModulesDir];
+ *  2. [JsEnvironment.packageJsonFile].
+ *
+ *  Overriding of those properties leads to inconsistency with expectations. They are not
+ *  to be utilized by `NPM` but rather by tasks that clean up after `nmp`. In case of overriding
+ *  `npm` would continue to use files described in the interface, while cleaning tasks
+ *  would start cleaning up `nothingness`.
+ *
  */
 class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment) : JsEnvironment {
 
     override var projectDir = initialEnvironment.projectDir
     override var buildDir = initialEnvironment.buildDir
+    override var moduleVersion = initialEnvironment.moduleVersion
     override var nmpExecutable = initialEnvironment.nmpExecutable
     override var npmAuthToken = initialEnvironment.npmAuthToken
 
-    // The rest properties are forbidden to override.
-    // It could lead to inconsistency with expectations.
-
-    // These values are not supposed to be used by `npm` itself,
-    // but by the tasks that clean up after `npm`.
-
-    // In case of overriding, `npm` would continue to use the directory and descriptor
-    // in its working (module) catalog. While cleaning tasks would start cleaning up `nothingness`.
+    // Forbidden to override
 
     override val nodeModulesDir = initialEnvironment.nodeModulesDir
     override val packageJsonFile = initialEnvironment.packageJsonFile
