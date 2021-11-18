@@ -28,8 +28,8 @@ package io.spine.internal.gradle.js.task.impl
 
 import io.spine.internal.gradle.java.publish.publish
 import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.js.buildJs
-import io.spine.internal.gradle.js.prepareJsPublication
+import io.spine.internal.gradle.js.task.buildJs
+import io.spine.internal.gradle.js.task.prepareJsPublication
 import io.spine.internal.gradle.js.task.JsTaskRegistering
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create

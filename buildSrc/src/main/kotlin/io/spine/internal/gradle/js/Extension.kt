@@ -29,10 +29,10 @@ package io.spine.internal.gradle.js
 import io.spine.internal.gradle.js.task.JsTasks
 import java.io.File
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
@@ -64,12 +64,15 @@ open class JsExtension(internal val project: Project) {
         // `node_modules` directory contains installed module's dependencies.
         // No one needs it as a part of the module.
 
-        project.extensions.getByType<IdeaModel>().module {
+        project.configure<IdeaModel> {
 
-            // It is safe to use `environment.nodeModulesDir` as this can not be
-            // changed to the custom value.
+            module {
 
-            excludeDirs.add(File(environment.nodeModulesDir))
+                // It is safe to use `environment.nodeModulesDir` as this can not be
+                // changed to the custom value.
+
+                excludeDirs.add(File(environment.nodeModulesDir))
+            }
         }
     }
 

@@ -29,24 +29,25 @@ import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.js.javascript
 import io.spine.internal.gradle.js.task.impl.build
+import io.spine.internal.gradle.js.task.impl.other
 import io.spine.internal.gradle.js.task.impl.publish
+import io.spine.internal.gradle.js.task.impl.webPack
 
 javascript {
     tasks {
         register {
             build()
             publish()
+            other()
+        }
+        configure {
+            webPack()
+            publish()
         }
     }
 }
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
-
-plugins {
-    // print task's tree
-    // used for developing aims only
-    id("com.dorongold.task-tree") version "2.1.0"
-}
 
 val spineCoreVersion: String by extra
 

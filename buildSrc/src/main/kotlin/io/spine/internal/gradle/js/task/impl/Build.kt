@@ -32,11 +32,11 @@ import io.spine.internal.gradle.base.assemble
 import io.spine.internal.gradle.base.check
 import io.spine.internal.gradle.base.clean
 import io.spine.internal.gradle.java.test
-import io.spine.internal.gradle.js.buildJs
-import io.spine.internal.gradle.js.compileProtoToJs
-import io.spine.internal.gradle.js.installNodePackages
+import io.spine.internal.gradle.js.task.buildJs
+import io.spine.internal.gradle.js.task.compileProtoToJs
+import io.spine.internal.gradle.js.task.installNodePackages
 import io.spine.internal.gradle.js.task.JsTaskRegistering
-import io.spine.internal.gradle.js.updatePackageVersion
+import io.spine.internal.gradle.js.task.updatePackageVersion
 import java.io.File
 
 /**

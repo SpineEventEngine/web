@@ -71,6 +71,9 @@ interface JsEnvironment {
     val nmpExecutable: String
         get() = if (isWindows()) "npm.cmd" else "npm"
 
+    val coverageScript: String
+        get() = if(isWindows()) "coverage:win" else "coverage:unix"
+
     /**
      * An access token that allows installation and/or publishing modules.
      *
@@ -98,6 +101,9 @@ interface JsEnvironment {
     val packageJsonFile: String
         get() = "$projectDir/package.json"
 
+    val npmrcFile: File
+        get() = projectDir.resolve(".npmrc")
+
     /**
      * Directory with production Protobuf messages compiled into JavaScript.
      */
@@ -113,6 +119,15 @@ interface JsEnvironment {
         get() = projectDir
             .resolve("test")
             .resolve("proto")
+
+    val nycOutputDir: File
+        get() = projectDir.resolve(".nyc_output")
+
+    val webPackOutput: File
+        get() = projectDir.resolve("dist")
+
+    val webPackPublicationDir: File
+        get() = publicationDirectory.resolve("dist")
 }
 
 /**

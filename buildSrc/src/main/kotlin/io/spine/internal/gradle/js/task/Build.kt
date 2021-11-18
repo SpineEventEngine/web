@@ -24,13 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js
+package io.spine.internal.gradle.js.task
 
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Locates `compileProtoToJs` task provided by [JsExtension].
+ * Locates `compileProtoToJs` task
+ * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task compiles Protobuf messages into JavaScript. This is a lifecycle task that performs
  * no action itself. It is used to aggregate other tasks which perform the compilation.
@@ -39,7 +40,8 @@ internal val TaskContainer.compileProtoToJs: Task
     get() = getByName("compileProtoToJs")
 
 /**
- * Locates `installNodePackages` task provided by [JsExtension].
+ * Locates `installNodePackages` task
+ * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task installs a package and any packages that it depends on using the `npm install` command.
  *
@@ -47,7 +49,7 @@ internal val TaskContainer.compileProtoToJs: Task
  * it cannot fail the task execution despite on vulnerabilities found.
  *
  * To check installed Node packages for vulnerabilities execute
- * [auditNodePackages][io.spine.internal.gradle.js.auditNodePackages] task.
+ * [auditNodePackages][io.spine.internal.gradle.js.task.auditNodePackages] task.
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
@@ -55,7 +57,8 @@ internal val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
 
 /**
- * Locates `auditNodePackages` task provided by [JsExtension].
+ * Locates `auditNodePackages` task
+ * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task audits the module dependencies using the `npm audit` command.
  *
@@ -69,30 +72,32 @@ internal val TaskContainer.auditNodePackages: Task
     get() = getByName("auditNodePackages")
 
 /**
- * Locates `updatePackageVersion` task provided by [JsExtension].
+ * Locates `updatePackageVersion` task
+ * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
- * The task sets the module's version in `package.json` to [JsEnvironment.moduleVersion]
+ * The task sets the module's version in `package.json` to the value of
+ * [moduleVersion][io.spine.internal.gradle.js.JsEnvironment.moduleVersion]
  * specified in the current `JsEnvironment`.
  */
 internal val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
 
 /**
- * Locates `buildJs` task provided by [JsExtension].
+ * Locates `buildJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * It is an aggregate task that assembles the JavaScript sources.
  *
  * The next tasks are to be executed:
  *
- *  1. [updatePackageVersion][io.spine.internal.gradle.js.updatePackageVersion];
- *  2. [installNodePackages][io.spine.internal.gradle.js.installNodePackages];
- *  3. [compileProtoToJs][io.spine.internal.gradle.js.compileProtoToJs].
+ *  1. [updatePackageVersion][io.spine.internal.gradle.js.task.updatePackageVersion];
+ *  2. [installNodePackages][io.spine.internal.gradle.js.task.installNodePackages];
+ *  3. [compileProtoToJs][io.spine.internal.gradle.js.task.compileProtoToJs].
  */
 internal val TaskContainer.buildJs: Task
     get() = getByName("buildJs")
 
 /**
- * Locates `buildJs` task provided by [JsExtension].
+ * Locates `buildJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task cleans up output of `buildJs` task and output of its dependants.
  */
@@ -100,7 +105,7 @@ internal val TaskContainer.cleanJs: Task
     get() = getByName("cleanJs")
 
 /**
- * Locates `testJs` task provided by [JsExtension].
+ * Locates `testJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task runs the JavaScript tests.
  */

@@ -45,6 +45,7 @@ open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
     : JsEnvironment by jsEnv, TaskContainer by project.tasks
 {
     internal val jsBuildTask = "JavaScript/Build"
+    internal val jsAnyTask = "JavaScript/Any"
     internal val jsPublishTask = "JavaScript/Publish"
 
     /**
