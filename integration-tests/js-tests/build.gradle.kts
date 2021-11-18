@@ -27,8 +27,7 @@
 import com.google.protobuf.gradle.*
 import groovy.lang.Closure
 import io.spine.internal.gradle.js.javascript
-import io.spine.internal.gradle.js.task.build
-import io.spine.internal.gradle.js.task.publish
+import io.spine.internal.gradle.js.task.impl.build
 
 plugins {
     id("io.spine.mc-js")
@@ -40,7 +39,6 @@ javascript {
     tasks {
         register {
             build()
-            publish()
         }
     }
 }

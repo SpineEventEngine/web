@@ -24,79 +24,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task
+package io.spine.internal.gradle.js
 
-import io.spine.internal.gradle.java.publish.publish
-import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.js.buildJs
-import io.spine.internal.gradle.js.prepareJsPublication
+import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.create
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.kotlin.dsl.getByName
 
 /**
- * In order to publish the NPM module, it is required that the `NPM_TOKEN` environment
- * variable is set to a valid [JsEnvironment.npmAuthToken]. If the token is not set,
- * a dummy value is quite enough for the local development.
+ * Locates `prepareJsPublication` task provided by [JsExtension].
  *
- * Usage example:
+ * This is a lifecycle task that prepares the NPM package for publishing in
+ * [JsEnvironment.publicationDirectory] of the current `JsEnvironment`.
  *
- * ```
- * import io.spine.internal.gradle.js.javascript
+ * Does nothing by default, so a user should configure this task to copy all
+ * required files to that directory.
  *
- * // ...
- *
- * js {
- *     tasks {
- *         register {
- *             publish()
- *         }
- *     }
- * }
- * ```
+ * Depends on [buildsJs][io.spine.internal.gradle.js.buildJs].
  */
-fun JsTaskRegistering.publish() {
+internal val TaskContainer.prepareJsPublication: Copy
+    get() = getByName<Copy>("prepareJsPublication")
 
-    // TODO("Re-consider visibility and kdoc.")
+/**
+ * Locates `publishJsLocally` task provided by [JsExtension].
+ *
+ * The task publishes locally the prepared NPM package from [JsEnvironment.publicationDirectory]
+ * with `npm link`.
+ *
+ * Depends on [prepareJsPublication][io.spine.internal.gradle.js.prepareJsPublication].
+ *
+ *  @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-link">npm-link | npm Docs</a>
+ */
+internal val TaskContainer.publishJsLocally: Task
+    get() = getByName("publishJsLocally")
 
-    prepareJsPublication()
-    publishJsLocally()
-
-    publish.dependsOn(
-        publishJs()
-    )
-}
-
-private fun JsTaskRegistering.prepareJsPublication() =
-    create<Copy>("prepareJsPublication") {
-
-        description = "Prepares the NPM package for publishing."
-        group = jsPublishTask
-
-        dependsOn(buildJs)
-    }
-
-private fun JsTaskRegistering.publishJsLocally() =
-    create("publishJsLocally") {
-
-        description = "Publishes the NPM package locally with `npm link`."
-        group = jsPublishTask
-
-        doLast {
-            publicationDirectory.npm("link")
-        }
-
-        dependsOn(prepareJsPublication)
-    }
-
-private fun JsTaskRegistering.publishJs() =
-    create("publishJs") {
-
-        description = "Publishes the NPM package with `npm publish`."
-        group = jsPublishTask
-
-        doLast {
-            publicationDirectory.npm("publish")
-        }
-
-        dependsOn(prepareJsPublication)
-    }
+/**
+ * Locates `publishJs` task provided by [JsExtension].
+ *
+ * The task publishes the prepared NPM package from [JsEnvironment.publicationDirectory]
+ * with `npm publish`.
+ *
+ * Please note, in order to publish the NMP module, a valid [JsEnvironment.npmAuthToken] should be
+ * set. If no token is set, a default dummy value is quite enough for the local development.
+ *
+ * Depends on [prepareJsPublication][io.spine.internal.gradle.js.prepareJsPublication].
+ *
+ * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-publish">npm-publish | npm Docs</a>
+ */
+internal val TaskContainer.publishJs: Task
+    get() = getByName("publishJs")

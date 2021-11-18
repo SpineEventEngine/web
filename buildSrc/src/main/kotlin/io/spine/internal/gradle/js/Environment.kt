@@ -30,9 +30,7 @@ import java.io.File
 import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
- * Information about JavaScript environment.
- *
- * Describes used JavaScript-specific tools and their input and/or output files.
+ * Information about JavaScript-specific tools and their input and/or output files.
  */
 interface JsEnvironment {
 
@@ -99,6 +97,22 @@ interface JsEnvironment {
      */
     val packageJsonFile: String
         get() = "$projectDir/package.json"
+
+    /**
+     * Directory with production Protobuf messages compiled into JavaScript.
+     */
+    val genProtoMain: File
+        get() = projectDir
+            .resolve("main")
+            .resolve("proto")
+
+    /**
+     * Directory with test Protobuf messages compiled into JavaScript.
+     */
+    val genProtoTest: File
+        get() = projectDir
+            .resolve("test")
+            .resolve("proto")
 }
 
 /**

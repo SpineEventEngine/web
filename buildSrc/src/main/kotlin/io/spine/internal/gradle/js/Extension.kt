@@ -27,8 +27,6 @@
 package io.spine.internal.gradle.js
 
 import io.spine.internal.gradle.js.task.JsTasks
-import io.spine.internal.gradle.js.task.publish
-import io.spine.internal.gradle.js.task.build
 import java.io.File
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
@@ -55,7 +53,7 @@ open class JsExtension(internal val project: Project) {
 
     private val defaultEnvironment = object : JsEnvironment {
         override val projectDir = project.projectDir
-        override val moduleVersion = project.version.toString()
+        override val moduleVersion = project.extra["versionToPublishJs"].toString()
     }
 
     private val environment = ConfigurableJsEnvironment(defaultEnvironment)
@@ -81,27 +79,12 @@ open class JsExtension(internal val project: Project) {
      * Please note, environment should be set up firstly to have the effect on the parts
      * of the extension that depend on it.
      */
-    fun environment(overridings: ConfigurableJsEnvironment.() -> Unit) = environment.run(overridings)
+    fun environment(overridings: ConfigurableJsEnvironment.() -> Unit) =
+        environment.run(overridings)
 
     /**
      * Configures [JS-related tasks][JsTasks].
      */
-    fun tasks(configurations: JsTasks.() -> Unit) = tasks.run(configurations)
-}
-
-/**
- * Configures this `JsExtension` for `Spine` development usage.
- */
-fun JsExtension.forDevelopment() {
-
-    environment {
-        moduleVersion = project.extra["versionToPublishJs"].toString()
-    }
-
-    tasks {
-        register {
-            build()
-            publish()
-        }
-    }
+    fun tasks(configurations: JsTasks.() -> Unit) =
+        tasks.run(configurations)
 }
