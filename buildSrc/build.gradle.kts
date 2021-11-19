@@ -43,6 +43,10 @@ plugins {
 }
 
 repositories {
+    maven {
+        url = uri("https://europe-maven.pkg.dev/spine-event-engine/snapshots")
+    }
+
     mavenLocal()
     gradlePluginPortal()
     mavenCentral()
@@ -52,6 +56,7 @@ val jacksonVersion = "2.11.0"
 val googleAuthToolVersion = "2.1.2"
 val licenseReportVersion = "2.0"
 val grGitVersion = "3.1.1"
+val spineBaseVersion = "2.0.0-SNAPSHOT.68"
 
 /**
  * The version of Guava used in `buildSrc`.

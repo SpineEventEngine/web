@@ -40,13 +40,12 @@ import org.gradle.kotlin.dsl.create
 
 fun JsTaskRegistering.other() {
 
-    deleteCompiled()
-
     // do we really need project.check as in original script ?
     check.dependsOn(
         coverageJs()
     )
 
+    deleteCompiled()
     copyBundledJs()
     transpileSources()
 
@@ -107,19 +106,6 @@ fun JsTaskConfiguring.publish() = prepareJsPublication.apply {
     )
 }
 
-private fun JsTaskRegistering.deleteCompiled() =
-    create<Delete>("deleteCompiled") {
-
-        description = "Cleans old module dependencies and build outputs."
-        group = jsAnyTask
-
-        delete(
-            genProtoMain,
-            genProtoTest,
-            coverageJs.outputs
-        )
-    }
-
 private fun JsTaskRegistering.coverageJs() =
     create("coverageJs") {
 
@@ -133,6 +119,19 @@ private fun JsTaskRegistering.coverageJs() =
         }
 
         dependsOn(buildJs)
+    }
+
+private fun JsTaskRegistering.deleteCompiled() =
+    create<Delete>("deleteCompiled") {
+
+        description = "Cleans old module dependencies and build outputs."
+        group = jsAnyTask
+
+        delete(
+            genProtoMain,
+            genProtoTest,
+            coverageJs.outputs
+        )
     }
 
 private fun JsTaskRegistering.copyBundledJs() =

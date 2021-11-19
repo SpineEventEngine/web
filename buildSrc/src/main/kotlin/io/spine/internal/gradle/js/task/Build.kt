@@ -36,7 +36,7 @@ import org.gradle.api.tasks.TaskContainer
  * The task compiles Protobuf messages into JavaScript. This is a lifecycle task that performs
  * no action itself. It is used to aggregate other tasks which perform the compilation.
  */
-internal val TaskContainer.compileProtoToJs: Task
+val TaskContainer.compileProtoToJs: Task
     get() = getByName("compileProtoToJs")
 
 /**
@@ -53,7 +53,7 @@ internal val TaskContainer.compileProtoToJs: Task
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
-internal val TaskContainer.installNodePackages: Task
+val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
 
 /**
@@ -68,7 +68,7 @@ internal val TaskContainer.installNodePackages: Task
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
  */
-internal val TaskContainer.auditNodePackages: Task
+val TaskContainer.auditNodePackages: Task
     get() = getByName("auditNodePackages")
 
 /**
@@ -79,7 +79,7 @@ internal val TaskContainer.auditNodePackages: Task
  * [moduleVersion][io.spine.internal.gradle.js.JsEnvironment.moduleVersion]
  * specified in the current `JsEnvironment`.
  */
-internal val TaskContainer.updatePackageVersion: Task
+val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
 
 /**
@@ -93,7 +93,7 @@ internal val TaskContainer.updatePackageVersion: Task
  *  2. [installNodePackages][io.spine.internal.gradle.js.task.installNodePackages];
  *  3. [compileProtoToJs][io.spine.internal.gradle.js.task.compileProtoToJs].
  */
-internal val TaskContainer.buildJs: Task
+val TaskContainer.buildJs: Task
     get() = getByName("buildJs")
 
 /**
@@ -101,7 +101,7 @@ internal val TaskContainer.buildJs: Task
  *
  * The task cleans up output of `buildJs` task and output of its dependants.
  */
-internal val TaskContainer.cleanJs: Task
+val TaskContainer.cleanJs: Task
     get() = getByName("cleanJs")
 
 /**
@@ -109,5 +109,5 @@ internal val TaskContainer.cleanJs: Task
  *
  * The task runs the JavaScript tests.
  */
-internal val TaskContainer.testJs: Task
+val TaskContainer.testJs: Task
     get() = getByName("testJs")

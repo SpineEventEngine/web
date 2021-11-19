@@ -27,12 +27,18 @@
 package io.spine.internal.gradle.js
 
 import io.spine.internal.gradle.js.task.JsTasks
+import io.spine.internal.gradle.js.task.buildJs
+import io.spine.internal.gradle.js.task.compileProtoToJs
+import io.spine.internal.gradle.js.task.testJs
 import java.io.File
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.withGroovyBuilder
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
@@ -56,8 +62,10 @@ open class JsExtension(internal val project: Project) {
         override val moduleVersion = project.extra["versionToPublishJs"].toString()
     }
 
-    private val environment = ConfigurableJsEnvironment(defaultEnvironment)
-    private val tasks = JsTasks(environment, project)
+    private val configurableEnvironment = ConfigurableJsEnvironment(defaultEnvironment)
+    private val tasks = JsTasks(configurableEnvironment, project)
+    val environment: JsEnvironment
+        get() = configurableEnvironment
 
     init {
 
@@ -71,7 +79,7 @@ open class JsExtension(internal val project: Project) {
                 // It is safe to use `environment.nodeModulesDir` as this can not be
                 // changed to the custom value.
 
-                excludeDirs.add(File(environment.nodeModulesDir))
+                excludeDirs.add(File(configurableEnvironment.nodeModulesDir))
             }
         }
     }
@@ -83,11 +91,43 @@ open class JsExtension(internal val project: Project) {
      * of the extension that depend on it.
      */
     fun environment(overridings: ConfigurableJsEnvironment.() -> Unit) =
-        environment.run(overridings)
+        configurableEnvironment.run(overridings)
 
     /**
      * Configures [JS-related tasks][JsTasks].
      */
     fun tasks(configurations: JsTasks.() -> Unit) =
         tasks.run(configurations)
+}
+
+fun JsExtension.configureProtobuf() {
+
+    project.plugins.apply("io.spine.mc-js")
+
+    // Configures `McJsExtension`
+
+    project.extensions["protoJs"].withGroovyBuilder {
+
+        setProperty("generatedMainDir", environment.genProtoMain)
+        setProperty("generatedTestDir", environment.genProtoTest)
+
+        val parsersTask = "generateParsersTask"() as Task
+
+        tasks {
+            parsersTask.dependsOn(compileProtoToJs)
+            buildJs.dependsOn(parsersTask)
+            testJs.dependsOn(buildJs)
+        }
+    }
+
+//
+//
+//    // Configures `ProtobufConfigurator`
+//
+//    withGroovyBuilder {
+//        "protobuf" {
+//
+//        }
+//    }
+
 }

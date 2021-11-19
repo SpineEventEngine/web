@@ -26,7 +26,10 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
+import io.spine.internal.gradle.js.task.buildJs
+import io.spine.internal.gradle.js.task.testJs
 import io.spine.internal.gradle.fs.LazyTempPath
+import io.spine.internal.gradle.js.configureProtobuf
 import io.spine.internal.gradle.js.javascript
 import io.spine.internal.gradle.js.task.impl.build
 import io.spine.internal.gradle.js.task.impl.other
@@ -45,9 +48,37 @@ javascript {
             publish()
         }
     }
+
+    configureProtobuf()
 }
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
+
+tasks {
+
+    // For migration aims.
+
+    register("listPlugins") {
+        doLast {
+            println("Applied plugins: ${project.plugins.size}")
+            project.plugins.forEach(::println)
+        }
+    }
+
+    register("checkProtoJs") {
+        doLast {
+            project.extensions.configure<io.spine.tools.mc.js.gradle.McJsExtension>("protoJs") {
+
+                println("generatedMainDir: $generatedMainDir")
+                println("generatedTestDir: $generatedTestDir")
+
+                println(generateParsersTask().taskDependencies.getDependencies(generateParsersTask()).sorted())
+                println(buildJs.taskDependencies.getDependencies(buildJs).sorted())
+                println(testJs.taskDependencies.getDependencies(testJs).sorted())
+            }
+        }
+    }
+}
 
 val spineCoreVersion: String by extra
 

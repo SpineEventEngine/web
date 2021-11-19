@@ -175,42 +175,42 @@ apply from: "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/npm-p
 //TODO:2021-09-22:alexander.yevsyukov: Resolve this dependency.
 //generateLicenseReport.finalizedBy npmLicenseReport
 
-apply plugin: 'io.spine.mc-js'
+//apply plugin: 'io.spine.mc-js'
+//
+//protoJs {
+//    generatedMainDir = genProtoMain
+//    generatedTestDir = genProtoTest
+//
+//    generateParsersTask().dependsOn compileProtoToJs
+//    buildJs.dependsOn generateParsersTask()
+//    testJs.dependsOn buildJs
+//}
 
-protoJs {
-    generatedMainDir = genProtoMain
-    generatedTestDir = genProtoTest
 
-    generateParsersTask().dependsOn compileProtoToJs
-    buildJs.dependsOn generateParsersTask()
-    testJs.dependsOn buildJs
-}
-
-
-protobuf {
-    generatedFilesBaseDir = genProtoBaseDir
-    protoc {
-        artifact = io.spine.internal.dependency.Protobuf.compiler
-    }
-    generateProtoTasks {
-        all().each { final task ->
-            task.builtins {
-                // Do not use java builtin output in this project.
-                remove java
-
-                // For information on JavaScript code generation please see
-                // https://github.com/google/protobuf/blob/master/js/README.md
-                js {
-                    option "import_style=commonjs"
-                    outputSubDir = genProtoSubDir
-                }
-
-                task.generateDescriptorSet = true
-                final def testClassifier = task.sourceSet.name == "test" ? "_test" : ""
-                final def descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
-                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}"
-            }
-            compileProtoToJs.dependsOn task
-        }
-    }
-}
+//protobuf {
+//    generatedFilesBaseDir = genProtoBaseDir
+//    protoc {
+//        artifact = io.spine.internal.dependency.Protobuf.compiler
+//    }
+//    generateProtoTasks {
+//        all().each { final task ->
+//            task.builtins {
+//                // Do not use java builtin output in this project.
+//                remove java
+//
+//                // For information on JavaScript code generation please see
+//                // https://github.com/google/protobuf/blob/master/js/README.md
+//                js {
+//                    option "import_style=commonjs"
+//                    outputSubDir = genProtoSubDir
+//                }
+//
+//                task.generateDescriptorSet = true
+//                final def testClassifier = task.sourceSet.name == "test" ? "_test" : ""
+//                final def descriptorName = "${project.group}_${project.name}_${project.version}${testClassifier}.desc"
+//                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/${descriptorName}"
+//            }
+//            compileProtoToJs.dependsOn task
+//        }
+//    }
+//}
