@@ -46,7 +46,9 @@ fun JsPlugins.mcJs() = project.withGroovyBuilder {
 
     project.plugins.apply("io.spine.mc-js")
 
-    // TODO - Create an issue to `config` repository describing why `GroovyBuilder` is used.
+    // Currently, it is done with the help of GroovyInterop.
+    // due to impossibility of putting this plugin on `buildSrc` classpath.
+    // See issue: https://github.com/SpineEventEngine/config/issues/298
 
     "protoJs" {
 
