@@ -43,10 +43,6 @@ plugins {
 }
 
 repositories {
-    maven {
-        url = uri("https://europe-maven.pkg.dev/spine-event-engine/snapshots")
-    }
-
     mavenLocal()
     gradlePluginPortal()
     mavenCentral()
@@ -56,7 +52,7 @@ val jacksonVersion = "2.11.0"
 val googleAuthToolVersion = "2.1.2"
 val licenseReportVersion = "2.0"
 val grGitVersion = "3.1.1"
-val spineBaseVersion = "2.0.0-SNAPSHOT.68"
+val protobufPluginVersion = "0.8.17"
 
 /**
  * The version of Guava used in `buildSrc`.
@@ -65,8 +61,6 @@ val spineBaseVersion = "2.0.0-SNAPSHOT.68"
  * Otherwise, when testing Gradle plugins, clashes may occur.
  */
 val guavaVersion = "30.1.1-jre"
-
-val protobufPluginVersion = "0.8.17"
 
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
