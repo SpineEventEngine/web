@@ -25,19 +25,16 @@
  */
 
 import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.js.javascript
 import io.spine.internal.gradle.js.plugins.idea
 import io.spine.internal.gradle.js.plugins.mcJs
 import io.spine.internal.gradle.js.plugins.protobuf
-import io.spine.internal.gradle.js.task.buildJs
 import io.spine.internal.gradle.js.task.impl.build
 import io.spine.internal.gradle.js.task.impl.other
 import io.spine.internal.gradle.js.task.impl.publish
 import io.spine.internal.gradle.js.task.impl.webPack
-import io.spine.internal.gradle.js.task.testJs
 
 javascript {
     tasks {
@@ -61,49 +58,6 @@ javascript {
 }
 
 //apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
-
-// The next three tasks are for development aims.
-
-tasks {
-
-    register("listPlugins") {
-        doLast {
-            println("Applied plugins: ${project.plugins.size}")
-            project.plugins.forEach(::println)
-        }
-    }
-
-    register("checkProtoJs") {
-        doLast {
-            project.extensions
-                .configure<io.spine.tools.mc.js.gradle.McJsExtension>("protoJs") {
-
-                    println("generatedMainDir: $generatedMainDir")
-                    println("generatedTestDir: $generatedTestDir")
-
-                    println(
-                        generateParsersTask().taskDependencies
-                            .getDependencies(generateParsersTask())
-                            .sorted()
-                    )
-                    println(buildJs.taskDependencies.getDependencies(buildJs).sorted())
-                    println(testJs.taskDependencies.getDependencies(testJs).sorted())
-                }
-        }
-    }
-
-    register("checkProtobuf") {
-        protobuf {
-            println(generatedFilesBaseDir)
-            protoc {
-                println(artifact)
-            }
-        }
-
-        // Unresolved.
-        // How to test lazy configuration of `GenerateProtoTask` tasks?
-    }
-}
 
 val spineCoreVersion: String by extra
 
