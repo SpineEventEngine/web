@@ -27,18 +27,13 @@
 package io.spine.internal.gradle.js
 
 import io.spine.internal.gradle.js.task.JsTasks
-import io.spine.internal.gradle.js.task.buildJs
-import io.spine.internal.gradle.js.task.compileProtoToJs
-import io.spine.internal.gradle.js.task.testJs
+import io.spine.internal.gradle.js.plugins.JsPlugins
 import java.io.File
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.withGroovyBuilder
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
@@ -63,7 +58,9 @@ open class JsExtension(internal val project: Project) {
     }
 
     private val configurableEnvironment = ConfigurableJsEnvironment(defaultEnvironment)
-    private val tasks = JsTasks(configurableEnvironment, project)
+    private val plugins = JsPlugins(configurableEnvironment, project)
+
+    val tasks = JsTasks(configurableEnvironment, project)
     val environment: JsEnvironment
         get() = configurableEnvironment
 
@@ -98,36 +95,8 @@ open class JsExtension(internal val project: Project) {
      */
     fun tasks(configurations: JsTasks.() -> Unit) =
         tasks.run(configurations)
-}
 
-fun JsExtension.configureProtobuf() {
-
-    project.plugins.apply("io.spine.mc-js")
-
-    // Configures `McJsExtension`
-
-    project.extensions["protoJs"].withGroovyBuilder {
-
-        setProperty("generatedMainDir", environment.genProtoMain)
-        setProperty("generatedTestDir", environment.genProtoTest)
-
-        val parsersTask = "generateParsersTask"() as Task
-
-        tasks {
-            parsersTask.dependsOn(compileProtoToJs)
-            buildJs.dependsOn(parsersTask)
-            testJs.dependsOn(buildJs)
-        }
-    }
-
-//
-//
-//    // Configures `ProtobufConfigurator`
-//
-//    withGroovyBuilder {
-//        "protobuf" {
-//
-//        }
-//    }
+    fun plugins(configurations: JsPlugins.() -> Unit) =
+        plugins.run(configurations)
 
 }

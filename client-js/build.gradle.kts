@@ -25,16 +25,18 @@
  */
 
 import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.testProtobuf
-import io.spine.internal.gradle.js.task.buildJs
-import io.spine.internal.gradle.js.task.testJs
 import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.js.configureProtobuf
 import io.spine.internal.gradle.js.javascript
+import io.spine.internal.gradle.js.mcJs
+import io.spine.internal.gradle.js.protobuf
+import io.spine.internal.gradle.js.task.buildJs
 import io.spine.internal.gradle.js.task.impl.build
 import io.spine.internal.gradle.js.task.impl.other
 import io.spine.internal.gradle.js.task.impl.publish
 import io.spine.internal.gradle.js.task.impl.webPack
+import io.spine.internal.gradle.js.task.testJs
 
 javascript {
     tasks {
@@ -48,8 +50,12 @@ javascript {
             publish()
         }
     }
-
-    configureProtobuf()
+    plugins {
+        configure {
+            mcJs()
+            protobuf()
+        }
+    }
 }
 
 apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
@@ -67,14 +73,28 @@ tasks {
 
     register("checkProtoJs") {
         doLast {
-            project.extensions.configure<io.spine.tools.mc.js.gradle.McJsExtension>("protoJs") {
+            project.extensions
+                .configure<io.spine.tools.mc.js.gradle.McJsExtension>("protoJs") {
 
-                println("generatedMainDir: $generatedMainDir")
-                println("generatedTestDir: $generatedTestDir")
+                    println("generatedMainDir: $generatedMainDir")
+                    println("generatedTestDir: $generatedTestDir")
 
-                println(generateParsersTask().taskDependencies.getDependencies(generateParsersTask()).sorted())
-                println(buildJs.taskDependencies.getDependencies(buildJs).sorted())
-                println(testJs.taskDependencies.getDependencies(testJs).sorted())
+                    println(
+                        generateParsersTask().taskDependencies
+                            .getDependencies(generateParsersTask())
+                            .sorted()
+                    )
+                    println(buildJs.taskDependencies.getDependencies(buildJs).sorted())
+                    println(testJs.taskDependencies.getDependencies(testJs).sorted())
+                }
+        }
+    }
+
+    register("checkProtobuf") {
+        protobuf {
+            println(generatedFilesBaseDir)
+            protoc {
+                println(artifact)
             }
         }
     }
