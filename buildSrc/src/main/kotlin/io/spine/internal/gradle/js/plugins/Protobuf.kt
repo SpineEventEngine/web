@@ -26,10 +26,13 @@
 
 package io.spine.internal.gradle.js.plugins
 
+import com.google.protobuf.gradle.builtins
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.id
 import io.spine.internal.gradle.js.task.compileProtoToJs
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.TaskCollection
-import org.gradle.kotlin.dsl.withGroovyBuilder
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
+import com.google.protobuf.gradle.remove
 
 /**
  * Configures `Protobuf` plugin.
@@ -40,54 +43,40 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
  *  2. Tunes `GenerateProtoTask` tasks for JavaScript code generation;
  *  3. Binds those tasks to [compileProtoToJs] task execution.
  */
-fun JsPlugins.protobuf() = project.withGroovyBuilder {
+fun JsPlugins.protobuf() = project.protobuf {
 
-    // TODO - Create an issue to `config` repository describing why `GroovyBuilder` is used.
+    generatedFilesBaseDir = projectDir.path
 
-    "protobuf" {
+    protoc {
+        artifact = io.spine.internal.dependency.Protobuf.compiler
+    }
 
-        setProperty("generatedFilesBaseDir", projectDir.path)
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
 
-        "protoc" {
-            setProperty("artifact", io.spine.internal.dependency.Protobuf.compiler)
-        }
+                // Java builtin output is not needed in this project.
 
-        "generateProtoTasks" {
+                remove("java")
 
-            ("all"() as TaskCollection<*>).forEach { task ->
+                // For information on JavaScript code generation please see
+                // https://github.com/google/protobuf/blob/master/js/README.md
 
-                task.withGroovyBuilder {
-                    "builtins" {
-
-                        // We don't need java builtin output in this project.
-
-                        "remove"("name" to "java")
-
-                        // For information on JavaScript code generation please see
-                        // https://github.com/google/protobuf/blob/master/js/README.md
-
-                        "create"("js") {
-                            invokeMethod("option", "import_style=commonjs")
-                            setProperty("outputSubDir", "proto")
-                        }
-                    }
-
-                    val sourceSetName = (getProperty("sourceSet") as SourceSet).name
-                    val testClassifier = if (sourceSetName == "test") "_test" else "test"
-                    val projectDesc = "${project.group}_${project.name}_${project.version}"
-                    val descriptorName = "$projectDesc$testClassifier.desc"
-
-                    setProperty("generateDescriptorSet", true)
-                    getProperty("descriptorSetOptions").withGroovyBuilder {
-                        setProperty(
-                            "path",
-                            "${projectDir}/build/descriptors/${sourceSetName}/${descriptorName}"
-                        )
-                    }
+                id("js") {
+                    option("import_style=commonjs")
+                    outputSubDir = genProtoSubDirName
                 }
 
-                compileProtoToJs.dependsOn(task)
+                val sourceSet = task.sourceSet.name
+                val testClassifier = if (sourceSet == "test") "_test" else ""
+                val artifact = "${project.group}_${project.name}_${project.version}"
+                val descriptor = "$artifact$testClassifier.desc"
+
+                task.generateDescriptorSet = true
+                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
             }
+
+            compileProtoToJs.dependsOn(task)
         }
     }
 }

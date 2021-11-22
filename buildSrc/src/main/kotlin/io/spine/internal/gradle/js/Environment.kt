@@ -116,7 +116,7 @@ interface JsEnvironment {
     val genProtoMain: File
         get() = projectDir
             .resolve("main")
-            .resolve("proto")
+            .resolve(genProtoSubDirName)
 
     /**
      * Directory with test Protobuf messages compiled into JavaScript.
@@ -124,7 +124,10 @@ interface JsEnvironment {
     val genProtoTest: File
         get() = projectDir
             .resolve("test")
-            .resolve("proto")
+            .resolve(genProtoSubDirName)
+
+    val genProtoSubDirName: String
+        get() = "proto"
 
     val nycOutputDir: File
         get() = projectDir.resolve(".nyc_output")
