@@ -26,15 +26,10 @@
 
 package io.spine.internal.gradle.js.plugins
 
-import io.spine.internal.gradle.js.JsEnvironment
 import io.spine.internal.gradle.js.JsContext
+import io.spine.internal.gradle.js.JsEnvironment
 import org.gradle.api.Project
 
-open class JsPluginContext(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project)
+open class JsPluginContext(jsEnv: JsEnvironment, project: Project) : JsContext(jsEnv, project)
 
-class JsPlugins(jsEnv: JsEnvironment, val project: Project)
-    : JsPluginContext(jsEnv, project)
-{
-    fun configure(configurations: JsPlugins.() -> Unit) = run(configurations)
-}
+class JsPlugins(jsEnv: JsEnvironment, project: Project) : JsPluginContext(jsEnv, project)

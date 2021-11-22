@@ -26,14 +26,12 @@
 
 package io.spine.internal.gradle.js.plugins
 
-import io.spine.internal.gradle.js.JsExtension
 import io.spine.internal.gradle.js.task.compileProtoToJs
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskCollection
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
-fun JsExtension.protobuf() = project.withGroovyBuilder {
-    val projectDir = environment.projectDir
+fun JsPlugins.protobuf() = project.withGroovyBuilder {
 
     "protobuf" {
 
@@ -70,7 +68,7 @@ fun JsExtension.protobuf() = project.withGroovyBuilder {
                     }
                 }
 
-                tasks.compileProtoToJs.dependsOn(task)
+                compileProtoToJs.dependsOn(task)
             }
         }
     }

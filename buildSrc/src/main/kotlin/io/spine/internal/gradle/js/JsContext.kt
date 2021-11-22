@@ -40,7 +40,7 @@ import org.gradle.api.tasks.TaskContainer
  *  4. Shortcuts for tasks from different plugins;
  *  5. Default task groups for JavaScript.
  */
-open class JsContext(jsEnv: JsEnvironment, private val project: Project)
+open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
     : JsEnvironment by jsEnv, TaskContainer by project.tasks
 {
 

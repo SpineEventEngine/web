@@ -26,19 +26,21 @@
 
 package io.spine.internal.gradle.js.plugins
 
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
-fun JsPlugins.idea() = project.extensions.getByType<IdeaModel>().module {
+fun JsPlugins.idea() = project.extensions.configure<IdeaModel> {
 
-    sourceDirs.add(srcDir)
-    testSourceDirs.add(testSrcDir)
+    module {
+        sourceDirs.add(srcDir)
+        testSourceDirs.add(testSrcDir)
 
-    excludeDirs.addAll(
-        listOf(
-            nycOutputDir,
-            genProtoMain,
-            genProtoTest
+        excludeDirs.addAll(
+            listOf(
+                nycOutputDir,
+                genProtoMain,
+                genProtoTest
+            )
         )
-    )
+    }
 }

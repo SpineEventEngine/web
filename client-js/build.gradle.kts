@@ -49,11 +49,9 @@ javascript {
         }
     }
     plugins {
-        configure {
-            mcJs()
-            protobuf()
-            idea()
-        }
+        mcJs()
+        protobuf()
+        idea()
     }
 }
 
