@@ -28,7 +28,7 @@ import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.js.javascript
-import io.spine.internal.gradle.js.plugins.idea
+import io.spine.internal.gradle.js.plugins.ideaModule
 import io.spine.internal.gradle.js.plugins.mcJs
 import io.spine.internal.gradle.js.plugins.protobuf
 import io.spine.internal.gradle.js.task.impl.build
@@ -51,7 +51,7 @@ javascript {
     plugins {
         mcJs()
         protobuf()
-        idea()
+        ideaModule()
     }
 }
 

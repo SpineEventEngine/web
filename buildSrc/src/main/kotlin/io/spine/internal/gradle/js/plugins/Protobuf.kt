@@ -31,11 +31,22 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskCollection
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
+/**
+ * Configures `Protobuf` plugin.
+ *
+ * In particular, this method:
+ *
+ *  1. Specifies `protoc` compiler;
+ *  2. Tunes `GenerateProtoTask` tasks for JavaScript code generation;
+ *  3. Binds those tasks to [compileProtoToJs] task execution.
+ */
 fun JsPlugins.protobuf() = project.withGroovyBuilder {
+
+    // TODO - Create an issue to `config` repository describing why `GroovyBuilder` is used.
 
     "protobuf" {
 
-        setProperty("generatedFilesBaseDir", projectDir)
+        setProperty("generatedFilesBaseDir", projectDir.path)
 
         "protoc" {
             setProperty("artifact", io.spine.internal.dependency.Protobuf.compiler)
@@ -47,7 +58,14 @@ fun JsPlugins.protobuf() = project.withGroovyBuilder {
 
                 task.withGroovyBuilder {
                     "builtins" {
+
+                        // We don't need java builtin output in this project.
+
                         "remove"("name" to "java")
+
+                        // For information on JavaScript code generation please see
+                        // https://github.com/google/protobuf/blob/master/js/README.md
+
                         "create"("js") {
                             invokeMethod("option", "import_style=commonjs")
                             setProperty("outputSubDir", "proto")

@@ -29,7 +29,16 @@ package io.spine.internal.gradle.js.plugins
 import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
-fun JsPlugins.idea() = project.extensions.configure<IdeaModel> {
+/**
+ * Configures this [IDEA module][org.gradle.plugins.ide.idea.model.IdeaModule] in accordance with
+ * the current [JsEnvironment][io.spine.internal.gradle.js.JsEnvironment].
+ *
+ * In particular, this method:
+ *
+ *  1. Specifies `sourceDirs` and `testSourceDirs`;
+ *  2. Excludes directories with generated code or cache.
+ */
+fun JsPlugins.ideaModule() = project.extensions.configure<IdeaModel> {
 
     module {
         sourceDirs.add(srcDir)

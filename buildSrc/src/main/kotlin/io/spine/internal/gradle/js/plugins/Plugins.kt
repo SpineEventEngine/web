@@ -30,6 +30,8 @@ import io.spine.internal.gradle.js.JsContext
 import io.spine.internal.gradle.js.JsEnvironment
 import org.gradle.api.Project
 
-open class JsPluginContext(jsEnv: JsEnvironment, project: Project) : JsContext(jsEnv, project)
-
-class JsPlugins(jsEnv: JsEnvironment, project: Project) : JsPluginContext(jsEnv, project)
+/**
+ * A logical scope for performing configuration of JavaScript-related plugins.
+ */
+class JsPlugins(jsEnv: JsEnvironment, project: Project)
+    : JsContext(jsEnv, project)

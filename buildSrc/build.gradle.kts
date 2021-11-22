@@ -66,6 +66,8 @@ val spineBaseVersion = "2.0.0-SNAPSHOT.68"
  */
 val guavaVersion = "30.1.1-jre"
 
+val protobufPluginVersion = "0.8.17"
+
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
@@ -75,4 +77,5 @@ dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
     api("com.github.jk1:gradle-license-report:$licenseReportVersion")
     implementation("org.ajoberstar.grgit:grgit-core:${grGitVersion}")
+    implementation("gradle.plugin.com.google.protobuf:protobuf-gradle-plugin:$protobufPluginVersion")
 }

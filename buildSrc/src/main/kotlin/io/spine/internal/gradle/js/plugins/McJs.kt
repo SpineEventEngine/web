@@ -32,9 +32,21 @@ import io.spine.internal.gradle.js.task.testJs
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
+/**
+ * Applies and configures `MsJsPlugin` in accordance with
+ * the current [JsEnvironment][io.spine.internal.gradle.js.JsEnvironment].
+ *
+ * In particular, this method:
+ *
+ *  1. Specifies directories for generated code;
+ *  2. Bins `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
+ *     code for the JavaScript messages compiled from Protobuf.
+ */
 fun JsPlugins.mcJs() = project.withGroovyBuilder {
 
     project.plugins.apply("io.spine.mc-js")
+
+    // TODO - Create an issue to `config` repository describing why `GroovyBuilder` is used.
 
     "protoJs" {
 
