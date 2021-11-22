@@ -52,17 +52,16 @@ fun Project.javascript(configuration: JsExtension.() -> Unit) {
  */
 open class JsExtension(internal val project: Project) {
 
-    private val defaultEnvironment = object : JsEnvironment {
-        override val projectDir = project.projectDir
-        override val moduleVersion = project.extra["versionToPublishJs"].toString()
-    }
+    private val configurableEnvironment = ConfigurableJsEnvironment(
+        object : JsEnvironment {
+            override val projectDir = project.projectDir
+            override val moduleVersion = project.extra["versionToPublishJs"].toString()
+        }
+    )
 
-    private val configurableEnvironment = ConfigurableJsEnvironment(defaultEnvironment)
-    private val plugins = JsPlugins(configurableEnvironment, project)
-
-    val tasks = JsTasks(configurableEnvironment, project)
-    val environment: JsEnvironment
-        get() = configurableEnvironment
+    val environment: JsEnvironment = configurableEnvironment
+    val tasks: JsTasks = JsTasks(environment, project)
+    val plugins: JsPlugins = JsPlugins(environment, project)
 
     init {
 

@@ -29,8 +29,9 @@ import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.js.javascript
-import io.spine.internal.gradle.js.mcJs
-import io.spine.internal.gradle.js.protobuf
+import io.spine.internal.gradle.js.plugins.idea
+import io.spine.internal.gradle.js.plugins.mcJs
+import io.spine.internal.gradle.js.plugins.protobuf
 import io.spine.internal.gradle.js.task.buildJs
 import io.spine.internal.gradle.js.task.impl.build
 import io.spine.internal.gradle.js.task.impl.other
@@ -54,15 +55,16 @@ javascript {
         configure {
             mcJs()
             protobuf()
+            idea()
         }
     }
 }
 
-apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
+//apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
+
+// The next three tasks are for development aims.
 
 tasks {
-
-    // For migration aims.
 
     register("listPlugins") {
         doLast {
@@ -97,6 +99,9 @@ tasks {
                 println(artifact)
             }
         }
+
+        // Unresolved.
+        // How to test lazy configuration of `GenerateProtoTask` tasks?
     }
 }
 
@@ -118,20 +123,6 @@ dependencies {
         classifier = "proto"
     )
 }
-
-idea.module {
-    sourceDirs.add(file(project.extra["srcDir"]!!))
-    testSourceDirs.add(file(project.extra["testSrcDir"]!!))
-
-    excludeDirs.addAll(
-        files(
-            project.extra["nycOutputDir"],
-            project.extra["genProtoMain"],
-            project.extra["genProtoTest"]
-        )
-    )
-}
-
 
 sourceSets {
     main {

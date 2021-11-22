@@ -24,37 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js
+package io.spine.internal.gradle.js.plugins
 
-import io.spine.internal.gradle.js.task.buildJs
+import io.spine.internal.gradle.js.JsExtension
 import io.spine.internal.gradle.js.task.compileProtoToJs
-import io.spine.internal.gradle.js.task.testJs
-import org.gradle.api.Task
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskCollection
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
-fun JsExtension.mcJs() = project.withGroovyBuilder {
-    project.plugins.apply("io.spine.mc-js")
-    "protoJs" {
-
-        setProperty("generatedMainDir", environment.genProtoMain)
-        setProperty("generatedTestDir", environment.genProtoTest)
-
-        val parsersTask = "generateParsersTask"() as Task
-
-        tasks {
-            parsersTask.dependsOn(compileProtoToJs)
-            buildJs.dependsOn(parsersTask)
-            testJs.dependsOn(buildJs)
-        }
-    }
-}
-
 fun JsExtension.protobuf() = project.withGroovyBuilder {
+    val projectDir = environment.projectDir
+
     "protobuf" {
 
-        setProperty("generatedFilesBaseDir", environment.projectDir)
+        setProperty("generatedFilesBaseDir", projectDir)
 
         "protoc" {
             setProperty("artifact", io.spine.internal.dependency.Protobuf.compiler)
@@ -82,12 +65,12 @@ fun JsExtension.protobuf() = project.withGroovyBuilder {
                     getProperty("descriptorSetOptions").withGroovyBuilder {
                         setProperty(
                             "path",
-                            "${project.projectDir}/build/descriptors/${sourceSetName}/${descriptorName}"
+                            "${projectDir}/build/descriptors/${sourceSetName}/${descriptorName}"
                         )
                     }
                 }
 
-                tasks.named("compileProtoToJs").map { it.dependsOn(task) }
+                tasks.compileProtoToJs.dependsOn(task)
             }
         }
     }

@@ -27,75 +27,15 @@
 package io.spine.internal.gradle.js.task
 
 import io.spine.internal.gradle.js.JsEnvironment
-import java.io.File
+import io.spine.internal.gradle.js.JsContext
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskContainer
 
-/**
- * Context for setting up JavaScript-related Tasks.
- *
- * The context provides:
- *
- *  1. Access to the current [JsEnvironment];
- *  3. API for running `nmp` command;
- *  4. Shortcuts for tasks from different plugins;
- *  5. Default task groups for JavaScript.
- */
-open class JsTaskContext(jsEnv: JsEnvironment, private val project: Project)
-    : JsEnvironment by jsEnv, TaskContainer by project.tasks
+open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
+    : JsContext(jsEnv, project)
 {
     internal val jsBuildTask = "JavaScript/Build"
     internal val jsAnyTask = "JavaScript/Any"
     internal val jsPublishTask = "JavaScript/Publish"
-
-    /**
-     * Runs an `npm` command in a separate process.
-     *
-     * The current [JsEnvironment.projectDir] is used as a working directory.
-     *
-     * Please note, this method is supposed to be called during tasks execution.
-     *
-     * Usage example:
-     *
-     * ```
-     * fun JsTaskRegistering.customTask() = register("customTask") {
-     *     doLast {
-     *         npm("set", "audit", "false")
-     *         npm("install")
-     *     }
-     * }
-     * ```
-     */
-    internal fun npm(vararg args: String) = projectDir.npm(*args)
-
-    /**
-     * Runs an `npm` command in a separate process using this [File] as a working directory.
-     *
-     * Please note, this method is supposed to be called during tasks execution.
-     *
-     * Usage example:
-     *
-     * ```
-     * fun JsTaskRegistering.customTask() = register("customTask") {
-     *     doLast {
-     *         val workingDir = File("path_to_specific_working_dir")
-     *         workingDir.npm("set", "audit", "false")
-     *         workingDir.npm("install")
-     *     }
-     * }
-     * ```
-     */
-    internal fun File.npm(vararg args: String) = project.exec {
-
-        workingDir(this@npm)
-        commandLine(nmpExecutable)
-        args(*args)
-
-        // Using private packages in a CI/CD workflow | npm Docs
-        // https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow
-
-        environment["NPM_TOKEN"] = npmAuthToken
-    }
 }
 
 /**

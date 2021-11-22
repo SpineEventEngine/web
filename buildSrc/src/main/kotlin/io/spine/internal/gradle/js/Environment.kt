@@ -39,6 +39,12 @@ interface JsEnvironment {
      */
     val projectDir: File
 
+    val srcDir: File
+        get() = projectDir.resolve("main")
+
+    val testSrcDir: File
+        get() = projectDir.resolve("test")
+
     /**
      * The build directory is the directory which all artifacts are generated into.
      *

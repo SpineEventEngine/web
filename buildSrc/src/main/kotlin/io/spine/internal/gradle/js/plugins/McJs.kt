@@ -26,15 +26,26 @@
 
 package io.spine.internal.gradle.js.plugins
 
-import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.js.JsContext
-import org.gradle.api.Project
+import io.spine.internal.gradle.js.task.buildJs
+import io.spine.internal.gradle.js.JsExtension
+import io.spine.internal.gradle.js.task.compileProtoToJs
+import io.spine.internal.gradle.js.task.testJs
+import org.gradle.api.Task
+import org.gradle.kotlin.dsl.withGroovyBuilder
 
-open class JsPluginContext(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project)
+fun JsExtension.mcJs() = project.withGroovyBuilder {
+    project.plugins.apply("io.spine.mc-js")
+    "protoJs" {
 
-class JsPlugins(jsEnv: JsEnvironment, val project: Project)
-    : JsPluginContext(jsEnv, project)
-{
-    fun configure(configurations: JsPlugins.() -> Unit) = run(configurations)
+        setProperty("generatedMainDir", environment.genProtoMain)
+        setProperty("generatedTestDir", environment.genProtoTest)
+
+        val parsersTask = "generateParsersTask"() as Task
+
+        tasks {
+            parsersTask.dependsOn(compileProtoToJs)
+            buildJs.dependsOn(parsersTask)
+            testJs.dependsOn(buildJs)
+        }
+    }
 }

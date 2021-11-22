@@ -26,15 +26,19 @@
 
 package io.spine.internal.gradle.js.plugins
 
-import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.js.JsContext
-import org.gradle.api.Project
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.plugins.ide.idea.model.IdeaModel
 
-open class JsPluginContext(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project)
+fun JsPlugins.idea() = project.extensions.getByType<IdeaModel>().module {
 
-class JsPlugins(jsEnv: JsEnvironment, val project: Project)
-    : JsPluginContext(jsEnv, project)
-{
-    fun configure(configurations: JsPlugins.() -> Unit) = run(configurations)
+    sourceDirs.add(srcDir)
+    testSourceDirs.add(testSrcDir)
+
+    excludeDirs.addAll(
+        listOf(
+            nycOutputDir,
+            genProtoMain,
+            genProtoTest
+        )
+    )
 }
