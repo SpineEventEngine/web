@@ -31,14 +31,13 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Context for setting up JavaScript-related Tasks.
+ * Context for facilitating setting up of JavaScript-related tasks and plugins.
  *
  * The context provides:
  *
  *  1. Access to the current [JsEnvironment];
- *  3. API for running `nmp` command;
- *  4. Shortcuts for tasks from different plugins;
- *  5. Default task groups for JavaScript.
+ *  2. API for running `nmp` command;
+ *  3. Project's [TaskContainer].
  */
 open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
     : JsEnvironment by jsEnv, TaskContainer by project.tasks

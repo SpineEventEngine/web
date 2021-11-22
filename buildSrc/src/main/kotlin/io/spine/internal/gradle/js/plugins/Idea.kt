@@ -36,7 +36,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
  * In particular, this method:
  *
  *  1. Specifies `sourceDirs` and `testSourceDirs`;
- *  2. Excludes directories with generated code or cache.
+ *  2. Excludes directories with generated code or build cache.
  */
 fun JsPlugins.ideaModule() = project.extensions.configure<IdeaModel> {
 
@@ -46,6 +46,7 @@ fun JsPlugins.ideaModule() = project.extensions.configure<IdeaModel> {
 
         excludeDirs.addAll(
             listOf(
+                nodeModulesDir,
                 nycOutputDir,
                 genProtoMain,
                 genProtoTest

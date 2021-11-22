@@ -28,13 +28,10 @@ package io.spine.internal.gradle.js
 
 import io.spine.internal.gradle.js.task.JsTasks
 import io.spine.internal.gradle.js.plugins.JsPlugins
-import java.io.File
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
  * Configures [JsExtension].
@@ -48,7 +45,9 @@ fun Project.javascript(configuration: JsExtension.() -> Unit) {
 }
 
 /**
- * ...
+ * Scope for performing JavaScript-related configuration.
+ *
+ * The scope is responsible for configuring of JavaScript environment, tasks and plugins.
  */
 open class JsExtension(internal val project: Project) {
 
@@ -63,23 +62,6 @@ open class JsExtension(internal val project: Project) {
     val tasks: JsTasks = JsTasks(environment, project)
     val plugins: JsPlugins = JsPlugins(environment, project)
 
-    init {
-
-        // `node_modules` directory contains installed module's dependencies.
-        // No one needs it as a part of the module.
-
-        project.configure<IdeaModel> {
-
-            module {
-
-                // It is safe to use `environment.nodeModulesDir` as this can not be
-                // changed to the custom value.
-
-                excludeDirs.add(File(configurableEnvironment.nodeModulesDir))
-            }
-        }
-    }
-
     /**
      * Overrides default values of [JsEnvironment].
      *
@@ -90,11 +72,14 @@ open class JsExtension(internal val project: Project) {
         configurableEnvironment.run(overridings)
 
     /**
-     * Configures [JS-related tasks][JsTasks].
+     * Configures [Js-related tasks][JsTasks].
      */
     fun tasks(configurations: JsTasks.() -> Unit) =
         tasks.run(configurations)
 
+    /**
+     * Configures [Js-related plugins][JsPlugins].
+     */
     fun plugins(configurations: JsPlugins.() -> Unit) =
         plugins.run(configurations)
 

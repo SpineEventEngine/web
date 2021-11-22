@@ -92,12 +92,12 @@ interface JsEnvironment {
         get() = System.getenv("NPM_TOKEN") ?: "PUBLISHING_FORBIDDEN"
 
     /**
-     * Path to `node_modules` directory.
+     * node_modules` directory.
      *
-     * Default value: "workingDir/node_modules".
+     * Default value: "projectDir/node_modules".
      */
-    val nodeModulesDir: String
-        get() = "$projectDir/node_modules"
+    val nodeModulesDir: File
+        get() = projectDir.resolve("node_modules")
 
     /**
      * Path to `package.json` file.
