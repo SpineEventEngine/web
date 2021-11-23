@@ -30,8 +30,7 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Locates `compileProtoToJs` task
- * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `compileProtoToJs` task in this [TaskContainer].
  *
  * The task compiles Protobuf messages into JavaScript. This is a lifecycle task that performs
  * no action itself. It is used to aggregate other tasks which perform the compilation.
@@ -40,8 +39,7 @@ val TaskContainer.compileProtoToJs: Task
     get() = getByName("compileProtoToJs")
 
 /**
- * Locates `installNodePackages` task
- * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `installNodePackages` task in this [TaskContainer].
  *
  * The task installs a package and any packages that it depends on using the `npm install` command.
  *
@@ -57,8 +55,7 @@ val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
 
 /**
- * Locates `auditNodePackages` task
- * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `auditNodePackages` task in this [TaskContainer].
  *
  * The task audits the module dependencies using the `npm audit` command.
  *
@@ -72,8 +69,7 @@ val TaskContainer.auditNodePackages: Task
     get() = getByName("auditNodePackages")
 
 /**
- * Locates `updatePackageVersion` task
- * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `updatePackageVersion` task in this [TaskContainer].
  *
  * The task sets the module's version in `package.json` to the value of
  * [moduleVersion][io.spine.internal.gradle.js.JsEnvironment.moduleVersion]
@@ -83,7 +79,7 @@ val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
 
 /**
- * Locates `buildJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `buildJs` task in this [TaskContainer].
  *
  * It is an aggregate task that assembles the JavaScript sources.
  *
@@ -97,7 +93,7 @@ val TaskContainer.buildJs: Task
     get() = getByName("buildJs")
 
 /**
- * Locates `buildJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `cleanJs` task in this [TaskContainer].
  *
  * The task cleans up output of `buildJs` task and output of its dependants.
  */
@@ -105,7 +101,7 @@ val TaskContainer.cleanJs: Task
     get() = getByName("cleanJs")
 
 /**
- * Locates `testJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `testJs` task in this [TaskContainer].
  *
  * The task runs the JavaScript tests.
  */

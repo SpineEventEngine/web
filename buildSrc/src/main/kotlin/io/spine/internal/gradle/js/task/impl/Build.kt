@@ -39,37 +39,36 @@ import io.spine.internal.gradle.js.task.JsTaskRegistering
 import io.spine.internal.gradle.js.task.updatePackageVersion
 
 /**
- * Registers tasks for building JavaScript projects.
+ * Registers group of tasks for building a JavaScript module.
  *
  * List of tasks to be created:
  *
- *  1. `compileProtoToJs` - compiles Protobuf messages into JavaScript;
- *  2. `installNodePackages` - installs the module`s Node dependencies;
- *  3. `auditNodePackages` - audits the module's Node dependencies;
- *  4. `updatePackageVersion` - sets the version in `package.json`;
- *  5. `buildJs` - assembles the JavaScript sources.
- *  6. `cleanJs` - cleans output of `buildJs` task and output of its dependants;
- *  7. `testJs` - runs the JavaScript tests.
+ *  1. [buildJs][io.spine.internal.gradle.js.task.buildJs];
+ *  1. [cleanJs][io.spine.internal.gradle.js.task.cleanJs];
+ *  1. [testJs][io.spine.internal.gradle.js.task.testJs];
+ *  1. [updatePackageVersion][io.spine.internal.gradle.js.task.updatePackageVersion];
+ *  1. [installNodePackages][io.spine.internal.gradle.js.task.installNodePackages];
+ *  1. [auditNodePackages][io.spine.internal.gradle.js.task.auditNodePackages];
+ *  1. [compileProtoToJs][io.spine.internal.gradle.js.task.compileProtoToJs];
  *
  * Usage example:
  *
  * ```
  * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.publish
  *
  * // ...
  *
  * js {
  *     tasks {
  *         register {
- *             build()
+ *             publish()
  *         }
  *     }
  * }
  * ```
  */
 fun JsTaskRegistering.build() {
-
-    // TODO("Re-consider visibility and kdoc.")
 
     compileProtoToJs()
     installNodePackages()

@@ -32,8 +32,7 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.kotlin.dsl.getByName
 
 /**
- * Locates `prepareJsPublication` task
- * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `prepareJsPublication` task in this [TaskContainer].
  *
  * This is a lifecycle task that prepares the NPM package for publishing in
  * [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDir]
@@ -48,8 +47,7 @@ internal val TaskContainer.prepareJsPublication: Copy
     get() = getByName<Copy>("prepareJsPublication")
 
 /**
- * Locates `publishJsLocally` task
- * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `publishJsLocally` task in this [TaskContainer].
  *
  * The task publishes locally the prepared NPM package
  * from [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDir]
@@ -63,7 +61,7 @@ internal val TaskContainer.publishJsLocally: Task
     get() = getByName("publishJsLocally")
 
 /**
- * Locates `publishJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
+ * Locates `publishJs` task in this [TaskContainer].
  *
  * The task publishes the prepared NPM package from
  * [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDir]

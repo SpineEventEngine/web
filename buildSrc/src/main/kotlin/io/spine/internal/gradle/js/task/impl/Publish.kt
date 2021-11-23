@@ -35,14 +35,22 @@ import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
 
 /**
- * In order to publish the NPM module, it is required that the `NPM_TOKEN` environment
- * variable is set to a valid [JsEnvironment.npmAuthToken]. If the token is not set,
- * a dummy value is quite enough for the local development.
+ * Registers group of tasks for publishing a JavaScript module with `npm`.
+ *
+ * In order to publish the NPM module, it is required that the [JsEnvironment.npmAuthToken] was
+ * pre-set.
+ *
+ * List of tasks to be created:
+ *
+ *  1. [publishJs][io.spine.internal.gradle.js.task.publishJs];
+ *  2. [publishJsLocally][io.spine.internal.gradle.js.task.publishJsLocally];
+ *  3. [prepareJsPublication][io.spine.internal.gradle.js.task.prepareJsPublication].
  *
  * Usage example:
  *
  * ```
  * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.publish
  *
  * // ...
  *
@@ -56,8 +64,6 @@ import org.gradle.kotlin.dsl.create
  * ```
  */
 fun JsTaskRegistering.publish() {
-
-    // TODO("Re-consider visibility and kdoc.")
 
     prepareJsPublication()
     publishJsLocally()

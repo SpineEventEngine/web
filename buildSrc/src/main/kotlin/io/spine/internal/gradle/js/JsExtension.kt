@@ -45,6 +45,8 @@ fun Project.javascript(configuration: JsExtension.() -> Unit) {
 
 /**
  * Scope for performing JavaScript-related configuration.
+ *
+ * @see [javascript]
  */
 open class JsExtension(internal val project: Project) {
 
