@@ -29,9 +29,14 @@ package io.spine.internal.gradle.js.plugins
 import io.spine.internal.gradle.js.JsContext
 import io.spine.internal.gradle.js.JsEnvironment
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskContainer
 
 /**
  * A logical scope for performing configuration of JavaScript-related plugins.
  */
-class JsPlugins(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project)
+class JsPlugins(jsEnv: JsEnvironment, internal val project: Project)
+    : JsContext(jsEnv, project), TaskContainer by project.tasks
+{
+    internal val plugins = project.plugins
+    internal val extensions = project.extensions
+}

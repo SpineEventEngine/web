@@ -40,17 +40,17 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
  */
 fun JsPlugins.ideaModule() {
 
-    project.plugins.apply("org.gradle.idea")
+    plugins.apply("org.gradle.idea")
 
-    project.extensions.configure<IdeaModel> {
+    extensions.configure<IdeaModel> {
         module {
             sourceDirs.add(srcDir)
             testSourceDirs.add(testSrcDir)
 
             excludeDirs.addAll(
                 listOf(
-                    nodeModulesDir,
-                    nycOutputDir,
+                    nodeModules,
+                    nycOutput,
                     genProtoMain,
                     genProtoTest
                 )

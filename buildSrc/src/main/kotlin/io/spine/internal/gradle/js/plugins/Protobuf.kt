@@ -46,7 +46,7 @@ import io.spine.internal.gradle.js.task.compileProtoToJs
  */
 fun JsPlugins.protobuf() {
 
-    project.plugins.apply(Protobuf.GradlePlugin.id)
+    plugins.apply(Protobuf.GradlePlugin.id)
 
     project.protobuf {
 
@@ -58,6 +58,7 @@ fun JsPlugins.protobuf() {
 
         generateProtoTasks {
             all().forEach { task ->
+
                 task.builtins {
 
                     // Java builtin output is not needed in this project.
@@ -69,18 +70,18 @@ fun JsPlugins.protobuf() {
 
                     id("js") {
                         option("import_style=commonjs")
-                        outputSubDir = genProtoSubDirName
+                        outputSubDir = genProtoDirName
                     }
-
-                    val sourceSet = task.sourceSet.name
-                    val testClassifier = if (sourceSet == "test") "_test" else ""
-                    val artifact = "${project.group}_${project.name}_${project.version}"
-                    val descriptor = "$artifact$testClassifier.desc"
-
-                    task.generateDescriptorSet = true
-                    task.descriptorSetOptions.path =
-                        "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
                 }
+
+                val sourceSet = task.sourceSet.name
+                val testClassifier = if (sourceSet == "test") "_test" else ""
+                val artifact = "${project.group}_${project.name}_${project.version}"
+                val descriptor = "$artifact$testClassifier.desc"
+
+                task.generateDescriptorSet = true
+                task.descriptorSetOptions.path =
+                    "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
 
                 compileProtoToJs.dependsOn(task)
             }

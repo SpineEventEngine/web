@@ -29,18 +29,16 @@ package io.spine.internal.gradle.js.task
 import io.spine.internal.gradle.js.JsEnvironment
 import io.spine.internal.gradle.js.JsContext
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskContainer
 
 open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project)
+    : JsContext(jsEnv, project), TaskContainer by project.tasks
 {
     internal val jsBuildTask = "JavaScript/Build"
     internal val jsAnyTask = "JavaScript/Any"
     internal val jsPublishTask = "JavaScript/Publish"
 }
 
-/**
- * ...
- */
 open class JsTasks(jsEnv: JsEnvironment, project: Project)
     : JsTaskContext(jsEnv, project)
 {

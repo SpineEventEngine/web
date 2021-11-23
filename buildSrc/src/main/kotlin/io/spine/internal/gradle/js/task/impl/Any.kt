@@ -27,6 +27,7 @@
 package io.spine.internal.gradle.js.task.impl
 
 import io.spine.internal.gradle.base.check
+import io.spine.internal.gradle.js.isWindows
 import io.spine.internal.gradle.js.task.JsTaskConfiguring
 import io.spine.internal.gradle.js.task.JsTaskRegistering
 import io.spine.internal.gradle.js.task.buildJs
@@ -89,11 +90,11 @@ fun JsTaskConfiguring.webPack() {
 fun JsTaskConfiguring.publish() = prepareJsPublication.apply {
 
     from(
-        packageJsonFile,
+        packageJson,
         npmrcFile
     )
 
-    into(publicationDirectory)
+    into(publicationDir)
 
     dependsOn(
 
@@ -112,10 +113,10 @@ private fun JsTaskRegistering.coverageJs() =
         description = "Runs the JavaScript tests and collects the code coverage info."
         group = jsAnyTask
 
-        outputs.dir(nycOutputDir)
+        outputs.dir(nycOutput)
 
         doLast {
-            npm("run", coverageScript)
+            npm("run", if(isWindows()) "coverage:win" else "coverage:unix")
         }
 
         dependsOn(buildJs)

@@ -28,7 +28,6 @@ package io.spine.internal.gradle.js
 
 import java.io.File
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskContainer
 
 /**
  * Context for facilitating setting up of JavaScript-related tasks and plugins.
@@ -36,17 +35,16 @@ import org.gradle.api.tasks.TaskContainer
  * The context provides:
  *
  *  1. Access to the current [JsEnvironment];
- *  2. API for running `nmp` command;
- *  3. Project's [TaskContainer].
+ *  2. API for running `nmp` command.
  */
-open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
-    : JsEnvironment by jsEnv, TaskContainer by project.tasks
+open class JsContext(jsEnv: JsEnvironment, private val project: Project)
+    : JsEnvironment by jsEnv
 {
 
     /**
      * Runs an `npm` command in a separate process.
      *
-     * The current [JsEnvironment.projectDir] is used as a working directory.
+     * The current [Project.getProjectDir] is used as a working directory.
      *
      * Please note, this method is supposed to be called during tasks execution.
      *
@@ -61,7 +59,7 @@ open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
      * }
      * ```
      */
-    internal fun npm(vararg args: String) = projectDir.npm(*args)
+    fun npm(vararg args: String) = projectDir.npm(*args)
 
     /**
      * Runs an `npm` command in a separate process using this [File] as a working directory.
@@ -80,10 +78,10 @@ open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
      * }
      * ```
      */
-    internal fun File.npm(vararg args: String) = project.exec {
+    fun File.npm(vararg args: String) = project.exec {
 
         workingDir(this@npm)
-        commandLine(nmpExecutable)
+        commandLine(npmExecutable)
         args(*args)
 
         // Using private packages in a CI/CD workflow | npm Docs

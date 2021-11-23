@@ -37,7 +37,6 @@ import io.spine.internal.gradle.js.task.compileProtoToJs
 import io.spine.internal.gradle.js.task.installNodePackages
 import io.spine.internal.gradle.js.task.JsTaskRegistering
 import io.spine.internal.gradle.js.task.updatePackageVersion
-import java.io.File
 
 /**
  * Registers tasks for building JavaScript projects.
@@ -101,8 +100,8 @@ private fun JsTaskRegistering.installNodePackages() =
         description = "Installs the module`s Node dependencies."
         group = jsBuildTask
 
-        inputs.file(packageJsonFile)
-        outputs.dir(nodeModulesDir)
+        inputs.file(packageJson)
+        outputs.dir(nodeModules)
 
         doLast {
             npm("set", "audit", "false")
@@ -116,7 +115,7 @@ private fun JsTaskRegistering.auditNodePackages() =
         description = "Audits the module's Node dependencies."
         group = jsBuildTask
 
-        inputs.dir(nodeModulesDir)
+        inputs.dir(nodeModules)
 
         doLast {
 
@@ -142,8 +141,6 @@ private fun JsTaskRegistering.updatePackageVersion() =
         group = jsBuildTask
 
         doLast {
-            val packageJson = File(packageJsonFile)
-
             val objectNode = ObjectMapper()
                 .readValue(packageJson, ObjectNode::class.java)
                 .put("version", moduleVersion)

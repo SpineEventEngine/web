@@ -42,23 +42,26 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
  *  2. Bins `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
  *     code for the JavaScript messages compiled from Protobuf.
  */
-fun JsPlugins.mcJs() = project.withGroovyBuilder {
+fun JsPlugins.mcJs() {
 
-    project.plugins.apply("io.spine.mc-js")
+    plugins.apply("io.spine.mc-js")
 
     // Currently, it is done with the help of GroovyInterop.
     // due to impossibility of putting this plugin on `buildSrc` classpath.
     // See issue: https://github.com/SpineEventEngine/config/issues/298
 
-    "protoJs" {
+    withGroovyBuilder {
 
-        setProperty("generatedMainDir", genProtoMain)
-        setProperty("generatedTestDir", genProtoTest)
+        "protoJs" {
 
-        val parsersTask = "generateParsersTask"() as Task
+            setProperty("generatedMainDir", genProtoMain)
+            setProperty("generatedTestDir", genProtoTest)
 
-        parsersTask.dependsOn(compileProtoToJs)
-        buildJs.dependsOn(parsersTask)
-        testJs.dependsOn(buildJs)
+            val parsersTask = "generateParsersTask"() as Task
+
+            parsersTask.dependsOn(compileProtoToJs)
+            buildJs.dependsOn(parsersTask)
+            testJs.dependsOn(buildJs)
+        }
     }
 }

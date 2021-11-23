@@ -83,7 +83,7 @@ private fun JsTaskRegistering.publishJsLocally() =
         group = jsPublishTask
 
         doLast {
-            publicationDirectory.npm("link")
+            publicationDir.npm("link")
         }
 
         dependsOn(prepareJsPublication)
@@ -96,7 +96,7 @@ private fun JsTaskRegistering.publishJs() =
         group = jsPublishTask
 
         doLast {
-            publicationDirectory.npm("publish")
+            publicationDir.npm("publish")
         }
 
         dependsOn(prepareJsPublication)

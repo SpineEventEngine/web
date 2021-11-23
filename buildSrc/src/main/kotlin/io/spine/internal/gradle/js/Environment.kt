@@ -30,23 +30,48 @@ import java.io.File
 import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
- * Information about JavaScript-specific tools and their input and/or output files.
+ * Information about JavaScript environment.
+ *
+ * Consists of three parts describing:
+ *
+ *  1. A module itself;
+ *  2. Tools and their input/output files;
+ *  3. Code generation.
  */
 interface JsEnvironment {
 
+
+    // A module itself.
+
+
     /**
-     * A directory from which JavaScript tools are to be run.
+     * Module's root catalog.
      */
     val projectDir: File
 
+    /**
+     * Module's version.
+     */
+    val moduleVersion: String
+
+    /**
+     * Module's production sources directory.
+     *
+     * Default value: "projectDir/main".
+     */
     val srcDir: File
         get() = projectDir.resolve("main")
 
+    /**
+     * Module's test sources directory.
+     *
+     * Default value: "projectDir/test".
+     */
     val testSrcDir: File
         get() = projectDir.resolve("test")
 
     /**
-     * The build directory is the directory which all artifacts are generated into.
+     * A directory which all artifacts are generated into.
      *
      * Default value: "projectDir/build".
      */
@@ -54,35 +79,27 @@ interface JsEnvironment {
         get() = projectDir.resolve("build")
 
     /**
-     * Version to be specified in [packageJsonFile].
-     */
-    val moduleVersion: String
-
-    /**
-     * Path to a directory where artifacts for publishing would be prepared.
+     * A directory where artifacts for further publishing would be prepared.
      *
      * Default value: "buildDir/npm-publication".
      */
-    val publicationDirectory: File
+    val publicationDir: File
         get() = buildDir.resolve("npm-publication")
 
 
-    // ******************************************************
+    // Tools and their input/output files.
 
 
     /**
-     * Command to run `npm` package manager.
+     * Executable's file name to run `npm` package manager.
      *
      * Default value:
      *
      *  1. "nmp.cmd" for Windows;
      *  2. "npm" for other OSs.
      */
-    val nmpExecutable: String
+    val npmExecutable: String
         get() = if (isWindows()) "npm.cmd" else "npm"
-
-    val coverageScript: String
-        get() = if(isWindows()) "coverage:win" else "coverage:unix"
 
     /**
      * An access token that allows installation and/or publishing modules.
@@ -96,85 +113,119 @@ interface JsEnvironment {
         get() = System.getenv("NPM_TOKEN") ?: "PUBLISHING_FORBIDDEN"
 
     /**
-     * node_modules` directory.
+     * A directory where `npm` puts downloaded module's dependencies.
      *
      * Default value: "projectDir/node_modules".
      */
-    val nodeModulesDir: File
+    val nodeModules: File
         get() = projectDir.resolve("node_modules")
 
     /**
-     * Path to `package.json` file.
+     * Module's descriptor used by `npm`.
      *
-     * Default value: "workingDir/package.json".
+     * Default value: "projectDir/package.json".
      */
-    val packageJsonFile: String
-        get() = "$projectDir/package.json"
+    val packageJson: File
+        get() = projectDir.resolve("package.json")
 
+    /**
+     * `npm` gets its configuration settings from the command line, environment variables,
+     * and `npmrc` files.
+     *
+     * Default value: "projectDir/.npmrc".
+     *
+     * See [npmrc | npm Docs](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc)
+     */
     val npmrcFile: File
         get() = projectDir.resolve(".npmrc")
 
+    /**
+     * A cache directory in which `nyc` tool outputs raw coverage report.
+     *
+     * See [istanbuljs/nyc](https://github.com/istanbuljs/nyc)
+     */
+    val nycOutput: File
+        get() = projectDir.resolve(".nyc_output")
 
-    // ******************************************************
+    /**
+     * A directory in which `webpack` would put a ready-to-use bundle.
+     *
+     * See [webpack - npm](https://www.npmjs.com/package/webpack)
+     */
+    val webPackOutput: File
+        get() = projectDir.resolve("dist")
 
+    /**
+     * A directory where bundled artifacts for further publishing would be prepared.
+     */
+    val webPackPublicationDir: File
+        get() = publicationDir.resolve("dist")
+
+
+    // Code generation.
+
+
+    /**
+     * Name of a directory that contains generated code.
+     */
+    val genProtoDirName: String
+        get() = "proto"
 
     /**
      * Directory with production Protobuf messages compiled into JavaScript.
      */
     val genProtoMain: File
-        get() = projectDir
-            .resolve("main")
-            .resolve(genProtoSubDirName)
+        get() = srcDir.resolve(genProtoDirName)
 
     /**
      * Directory with test Protobuf messages compiled into JavaScript.
      */
     val genProtoTest: File
-        get() = projectDir
-            .resolve("test")
-            .resolve(genProtoSubDirName)
-
-    val genProtoSubDirName: String
-        get() = "proto"
-
-    val nycOutputDir: File
-        get() = projectDir.resolve(".nyc_output")
-
-    val webPackOutput: File
-        get() = projectDir.resolve("dist")
-
-    val webPackPublicationDir: File
-        get() = publicationDirectory.resolve("dist")
+        get() = testSrcDir.resolve(genProtoDirName)
 }
 
 /**
- * Configurable [JsEnvironment].
+ * Allows overriding [JsEnvironment]'s defaults.
  *
- * Allows overriding of default values for [JsEnvironment]'s properties.
+ * All of defined properties can be split into two groups:
  *
- * Please note, some properties could not be overridden:
+ *  1. The ones that *define* something - can be overridden;
+ *  2. The ones that *describe* something - can not be overridden.
  *
- *  1. [JsEnvironment.nodeModulesDir];
- *  2. [JsEnvironment.packageJsonFile].
+ *  Overriding of "describing" properties leads to inconsistency with expectations. They are not
+ *  to be utilized by `NPM` or any other js tool. But rather by tasks that use that tool.
  *
- *  Overriding of those properties leads to inconsistency with expectations. They are not
- *  to be utilized by `NPM` but rather by tasks that clean up after `nmp`. In case of overriding
- *  `npm` would continue to use files described in the interface, while cleaning tasks
- *  would start cleaning up `nothingness`.
+ *  Therefore, the next properties could not be overridden:
  *
+ *  1. [JsEnvironment.nodeModules];
+ *  2. [JsEnvironment.packageJson];
+ *  3. [JsEnvironment.npmrcFile];
+ *  4. [JsEnvironment.nycOutput].
  */
-class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment) : JsEnvironment {
+class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment)
+    : JsEnvironment by initialEnvironment
+{
+    // A module itself.
 
     override var projectDir = initialEnvironment.projectDir
-    override var buildDir = initialEnvironment.buildDir
     override var moduleVersion = initialEnvironment.moduleVersion
-    override var nmpExecutable = initialEnvironment.nmpExecutable
+    override var srcDir = initialEnvironment.srcDir
+    override var testSrcDir = initialEnvironment.testSrcDir
+    override var buildDir = initialEnvironment.buildDir
+    override var publicationDir = initialEnvironment.publicationDir
+
+    // Tools and their input/output files.
+
+    override var npmExecutable = initialEnvironment.npmExecutable
     override var npmAuthToken = initialEnvironment.npmAuthToken
+    override var webPackOutput = initialEnvironment.webPackOutput
+    override var webPackPublicationDir = initialEnvironment.webPackPublicationDir
 
-    // Forbidden to override
+    // Code generation.
 
-    override val nodeModulesDir = initialEnvironment.nodeModulesDir
-    override val packageJsonFile = initialEnvironment.packageJsonFile
+    override var genProtoDirName = initialEnvironment.genProtoDirName
+    override var genProtoMain = initialEnvironment.genProtoMain
+    override var genProtoTest = initialEnvironment.genProtoTest
 }
 
-private fun isWindows(): Boolean = Os.isFamily(Os.FAMILY_WINDOWS)
+internal fun isWindows(): Boolean = Os.isFamily(Os.FAMILY_WINDOWS)

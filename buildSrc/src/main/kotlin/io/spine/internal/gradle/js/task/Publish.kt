@@ -36,7 +36,7 @@ import org.gradle.kotlin.dsl.getByName
  * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * This is a lifecycle task that prepares the NPM package for publishing in
- * [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDirectory]
+ * [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDir]
  * of the current `JsEnvironment`.
  *
  * Does nothing by default, so a user should configure this task to copy all
@@ -52,7 +52,7 @@ internal val TaskContainer.prepareJsPublication: Copy
  * provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task publishes locally the prepared NPM package
- * from [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDirectory]
+ * from [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDir]
  * with `npm link`.
  *
  * Depends on [prepareJsPublication][io.spine.internal.gradle.js.task.prepareJsPublication].
@@ -66,7 +66,7 @@ internal val TaskContainer.publishJsLocally: Task
  * Locates `publishJs` task provided by [JsExtension][io.spine.internal.gradle.js.JsExtension].
  *
  * The task publishes the prepared NPM package from
- * [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDirectory]
+ * [publicationDirectory][io.spine.internal.gradle.js.JsEnvironment.publicationDir]
  * with `npm publish`.
  *
  * Please note, in order to publish the NMP module, a valid
