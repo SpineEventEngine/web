@@ -66,6 +66,10 @@ interface JsEnvironment {
     val publicationDirectory: File
         get() = buildDir.resolve("npm-publication")
 
+
+    // ******************************************************
+
+
     /**
      * Command to run `npm` package manager.
      *
@@ -109,6 +113,10 @@ interface JsEnvironment {
 
     val npmrcFile: File
         get() = projectDir.resolve(".npmrc")
+
+
+    // ******************************************************
+
 
     /**
      * Directory with production Protobuf messages compiled into JavaScript.

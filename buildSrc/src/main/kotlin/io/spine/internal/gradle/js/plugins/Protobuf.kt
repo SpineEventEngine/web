@@ -29,13 +29,14 @@ package io.spine.internal.gradle.js.plugins
 import com.google.protobuf.gradle.builtins
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
-import io.spine.internal.gradle.js.task.compileProtoToJs
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.remove
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.js.task.compileProtoToJs
 
 /**
- * Configures `Protobuf` plugin.
+ * Applies and configures `Protobuf` plugin.
  *
  * In particular, this method:
  *
@@ -43,40 +44,46 @@ import com.google.protobuf.gradle.remove
  *  2. Tunes `GenerateProtoTask` tasks for JavaScript code generation;
  *  3. Binds those tasks to [compileProtoToJs] task execution.
  */
-fun JsPlugins.protobuf() = project.protobuf {
+fun JsPlugins.protobuf() {
 
-    generatedFilesBaseDir = projectDir.path
+    project.plugins.apply(Protobuf.GradlePlugin.id)
 
-    protoc {
-        artifact = io.spine.internal.dependency.Protobuf.compiler
-    }
+    project.protobuf {
 
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
+        generatedFilesBaseDir = projectDir.path
 
-                // Java builtin output is not needed in this project.
+        protoc {
+            artifact = Protobuf.compiler
+        }
 
-                remove("java")
+        generateProtoTasks {
+            all().forEach { task ->
+                task.builtins {
 
-                // For information on JavaScript code generation please see
-                // https://github.com/google/protobuf/blob/master/js/README.md
+                    // Java builtin output is not needed in this project.
 
-                id("js") {
-                    option("import_style=commonjs")
-                    outputSubDir = genProtoSubDirName
+                    remove("java")
+
+                    // For information on JavaScript code generation please see
+                    // https://github.com/google/protobuf/blob/master/js/README.md
+
+                    id("js") {
+                        option("import_style=commonjs")
+                        outputSubDir = genProtoSubDirName
+                    }
+
+                    val sourceSet = task.sourceSet.name
+                    val testClassifier = if (sourceSet == "test") "_test" else ""
+                    val artifact = "${project.group}_${project.name}_${project.version}"
+                    val descriptor = "$artifact$testClassifier.desc"
+
+                    task.generateDescriptorSet = true
+                    task.descriptorSetOptions.path =
+                        "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
                 }
 
-                val sourceSet = task.sourceSet.name
-                val testClassifier = if (sourceSet == "test") "_test" else ""
-                val artifact = "${project.group}_${project.name}_${project.version}"
-                val descriptor = "$artifact$testClassifier.desc"
-
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
+                compileProtoToJs.dependsOn(task)
             }
-
-            compileProtoToJs.dependsOn(task)
         }
     }
 }
