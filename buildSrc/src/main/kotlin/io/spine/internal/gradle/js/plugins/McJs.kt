@@ -39,8 +39,10 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
  * In particular, this method:
  *
  *  1. Specifies directories for generated code;
- *  2. Bins `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
+ *  2. Binds `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
  *     code for the JavaScript messages compiled from Protobuf.
+ *
+ * @see JsPlugins
  */
 fun JsPlugins.mcJs() {
 
@@ -50,7 +52,7 @@ fun JsPlugins.mcJs() {
     // due to impossibility of putting this plugin on `buildSrc` classpath.
     // See issue: https://github.com/SpineEventEngine/config/issues/298
 
-    withGroovyBuilder {
+    project.withGroovyBuilder {
 
         "protoJs" {
 

@@ -30,7 +30,6 @@ import io.spine.internal.gradle.js.task.JsTasks
 import io.spine.internal.gradle.js.plugins.JsPlugins
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
 
 /**
@@ -52,7 +51,7 @@ open class JsExtension(internal val project: Project) {
     private val configurableEnvironment = ConfigurableJsEnvironment(
         object : JsEnvironment {
             override val projectDir = project.projectDir
-            override val moduleVersion = project.extra["versionToPublishJs"].toString()
+            override val moduleVersion = project.version.toString()
         }
     )
 

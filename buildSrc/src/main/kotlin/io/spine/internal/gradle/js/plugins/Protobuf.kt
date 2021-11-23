@@ -43,6 +43,8 @@ import io.spine.internal.gradle.js.task.compileProtoToJs
  *  1. Specifies `protoc` compiler;
  *  2. Tunes `GenerateProtoTask` tasks for JavaScript code generation;
  *  3. Binds those tasks to [compileProtoToJs] task execution.
+ *
+ * @see JsPlugins
  */
 fun JsPlugins.protobuf() {
 
@@ -76,7 +78,7 @@ fun JsPlugins.protobuf() {
 
                 val sourceSet = task.sourceSet.name
                 val testClassifier = if (sourceSet == "test") "_test" else ""
-                val artifact = "${project.group}_${project.name}_${project.version}"
+                val artifact = "${project.group}_${project.name}_${moduleVersion}"
                 val descriptor = "$artifact$testClassifier.desc"
 
                 task.generateDescriptorSet = true

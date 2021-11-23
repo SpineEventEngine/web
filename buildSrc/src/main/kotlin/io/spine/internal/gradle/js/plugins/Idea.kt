@@ -30,15 +30,17 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
- * Applies and configures this [IDEA module][org.gradle.plugins.ide.idea.model.IdeaModule] in accordance with
- * the current [JsEnvironment][io.spine.internal.gradle.js.JsEnvironment].
+ * Applies and configures this [IDEA module][org.gradle.plugins.ide.idea.model.IdeaModule]
+ * in accordance with the current [JsEnvironment][io.spine.internal.gradle.js.JsEnvironment].
  *
  * In particular, this method:
  *
- *  1. Specifies `sourceDirs` and `testSourceDirs`;
+ *  1. Specifies directories of production and test sources;
  *  2. Excludes directories with generated code or build cache.
+ *
+ * @see JsPlugins
  */
-fun JsPlugins.ideaModule() {
+fun JsPlugins.idea() {
 
     plugins.apply("org.gradle.idea")
 
