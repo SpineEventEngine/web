@@ -30,53 +30,22 @@ import java.io.File
 import org.gradle.api.Project
 
 /**
- * Context for facilitating setting up of JavaScript-related tasks and plugins.
- *
- * The context provides:
- *
- *  1. Access to the current [JsEnvironment];
- *  2. API for running `nmp` command.
+ * Provides access to the current [JsEnvironment] and shortcuts for executing `npm` command.
  */
 open class JsContext(jsEnv: JsEnvironment, private val project: Project)
     : JsEnvironment by jsEnv
 {
-
     /**
-     * Runs an `npm` command in a separate process.
+     * Executes `npm` command in a separate process.
      *
-     * The current [Project.getProjectDir] is used as a working directory.
-     *
-     * Please note, this method is supposed to be called during tasks execution.
-     *
-     * Usage example:
-     *
-     * ```
-     * fun JsTaskRegistering.customTask() = register("customTask") {
-     *     doLast {
-     *         npm("set", "audit", "false")
-     *         npm("install")
-     *     }
-     * }
-     * ```
+     * [JsEnvironment.projectDir] is used as a working directory.
      */
     fun npm(vararg args: String) = projectDir.npm(*args)
 
     /**
-     * Runs an `npm` command in a separate process using this [File] as a working directory.
+     * Executes `npm` command in a separate process.
      *
-     * Please note, this method is supposed to be called during tasks execution.
-     *
-     * Usage example:
-     *
-     * ```
-     * fun JsTaskRegistering.customTask() = register("customTask") {
-     *     doLast {
-     *         val workingDir = File("path_to_specific_working_dir")
-     *         workingDir.npm("set", "audit", "false")
-     *         workingDir.npm("install")
-     *     }
-     * }
-     * ```
+     * This [File] is used as a working directory.
      */
     fun File.npm(vararg args: String) = project.exec {
 
