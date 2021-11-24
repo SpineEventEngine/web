@@ -24,52 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.javascript.task.impl
+package io.spine.internal.gradle.report.license
 
-import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
-import io.spine.internal.gradle.javascript.task.JsTaskRegistering
-import io.spine.internal.gradle.javascript.task.buildJs
-import io.spine.internal.gradle.javascript.task.testJs
-import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.create
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 
-fun JsTaskRegistering.webpack() {
-    copyBundledJs()
-}
-
-/**
- * Extends `buildJs` and `testJs` to run `webpack` builds.
- */
-fun JsTaskConfiguring.webPack() {
-
-    // Customizes `buildJs` task with running `webpack` bundler.
-
-    buildJs.apply {
-
-        outputs.dir(webPackOutput)
-
-        doLast {
-            npm("run", "build")
-            npm("run", "build-dev")
-        }
-    }
-
-    // Customizes `testJs` task with running JavaScript tests.
-
-    testJs.apply {
-
-        doLast {
-            npm("run", "test")
-        }
-    }
-}
-
-private fun JsTaskRegistering.copyBundledJs() =
-    create<Copy>("copyBundledJs") {
-
-        description = "Copies bundled JavaScript sources to the NPM publication directory."
-        group = jsAnyTask
-
-        from(buildJs.outputs)
-        into(webPackPublicationDir)
-    }
+internal val TaskContainer.generateLicenseReport: TaskProvider<Task>
+    get() = named("generateLicenseReport")

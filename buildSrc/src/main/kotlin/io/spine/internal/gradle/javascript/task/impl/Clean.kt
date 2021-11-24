@@ -26,50 +26,24 @@
 
 package io.spine.internal.gradle.javascript.task.impl
 
-import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
-import io.spine.internal.gradle.javascript.task.buildJs
-import io.spine.internal.gradle.javascript.task.testJs
-import org.gradle.api.tasks.Copy
+import io.spine.internal.gradle.javascript.task.coverageJs
+import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.create
 
-fun JsTaskRegistering.webpack() {
-    copyBundledJs()
+fun JsTaskRegistering.clean() {
+    deleteCompiled()
 }
 
-/**
- * Extends `buildJs` and `testJs` to run `webpack` builds.
- */
-fun JsTaskConfiguring.webPack() {
+private fun JsTaskRegistering.deleteCompiled() =
+    create<Delete>("deleteCompiled") {
 
-    // Customizes `buildJs` task with running `webpack` bundler.
-
-    buildJs.apply {
-
-        outputs.dir(webPackOutput)
-
-        doLast {
-            npm("run", "build")
-            npm("run", "build-dev")
-        }
-    }
-
-    // Customizes `testJs` task with running JavaScript tests.
-
-    testJs.apply {
-
-        doLast {
-            npm("run", "test")
-        }
-    }
-}
-
-private fun JsTaskRegistering.copyBundledJs() =
-    create<Copy>("copyBundledJs") {
-
-        description = "Copies bundled JavaScript sources to the NPM publication directory."
+        description = "Cleans old module dependencies and build outputs."
         group = jsAnyTask
 
-        from(buildJs.outputs)
-        into(webPackPublicationDir)
+        delete(
+            genProtoMain,
+            genProtoTest,
+            coverageJs.outputs
+        )
     }

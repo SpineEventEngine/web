@@ -29,12 +29,13 @@ package io.spine.internal.gradle.javascript.task.impl
 import io.spine.internal.gradle.java.publish.publish
 import io.spine.internal.gradle.javascript.task.buildJs
 import io.spine.internal.gradle.javascript.task.prepareJsPublication
+import io.spine.internal.gradle.javascript.task.transpileSources
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
 
 /**
- * Registers tasks for publishing a JavaScript module with `npm`.
+ * Registers tasks for publishing a JavaScript module as a package.
  *
  * List of tasks to be created:
  *
@@ -61,6 +62,7 @@ import org.gradle.kotlin.dsl.create
  */
 fun JsTaskRegistering.publish() {
 
+    transpileSources()
     prepareJsPublication()
     publishJsLocally()
 
@@ -69,13 +71,40 @@ fun JsTaskRegistering.publish() {
     )
 }
 
+private fun JsTaskRegistering.transpileSources() =
+    create("transpileSources") {
+
+        description = "Transpiles sources before publishing."
+        group = jsAnyTask
+
+        doLast {
+            npm("run", "transpile-before-publishing")
+        }
+    }
+
 private fun JsTaskRegistering.prepareJsPublication() =
     create<Copy>("prepareJsPublication") {
 
         description = "Prepares the NPM package for publishing."
         group = jsPublishTask
 
-        dependsOn(buildJs)
+        from(
+            packageJson,
+            npmrc
+        )
+
+        into(publicationDir)
+
+        dependsOn(
+
+            // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
+            // See: https://github.com/SpineEventEngine/web/issues/61
+
+            //copyBundledJs,
+
+            buildJs,
+            transpileSources
+        )
     }
 
 private fun JsTaskRegistering.publishJsLocally() =

@@ -136,7 +136,7 @@ interface JsEnvironment {
      *
      * See [npmrc | npm Docs](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc)
      */
-    val npmrcFile: File
+    val npmrc: File
         get() = projectDir.resolve(".npmrc")
 
     /**
@@ -199,7 +199,7 @@ interface JsEnvironment {
  *
  *  1. [JsEnvironment.nodeModules];
  *  2. [JsEnvironment.packageJson];
- *  3. [JsEnvironment.npmrcFile];
+ *  3. [JsEnvironment.npmrc];
  *  4. [JsEnvironment.nycOutput].
  */
 class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment)

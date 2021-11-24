@@ -26,50 +26,28 @@
 
 package io.spine.internal.gradle.javascript.task.impl
 
-import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
-import io.spine.internal.gradle.javascript.task.buildJs
-import io.spine.internal.gradle.javascript.task.testJs
-import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.create
+import io.spine.internal.gradle.report.license.generateLicenseReport
 
-fun JsTaskRegistering.webpack() {
-    copyBundledJs()
-}
+fun JsTaskRegistering.report() {
 
-/**
- * Extends `buildJs` and `testJs` to run `webpack` builds.
- */
-fun JsTaskConfiguring.webPack() {
+    // TODO:2021-09-22:alexander.yevsyukov: Resolve this dependency.
+    // generateLicenseReport.finalizedBy npmLicenseReport
 
-    // Customizes `buildJs` task with running `webpack` bundler.
-
-    buildJs.apply {
-
-        outputs.dir(webPackOutput)
-
-        doLast {
-            npm("run", "build")
-            npm("run", "build-dev")
-        }
-    }
-
-    // Customizes `testJs` task with running JavaScript tests.
-
-    testJs.apply {
-
-        doLast {
-            npm("run", "test")
-        }
+    generateLicenseReport.configure {
+        finalizedBy(
+            npmLicenseReport()
+        )
     }
 }
 
-private fun JsTaskRegistering.copyBundledJs() =
-    create<Copy>("copyBundledJs") {
+private fun JsTaskRegistering.npmLicenseReport() =
+    create("npmLicenseReport") {
 
-        description = "Copies bundled JavaScript sources to the NPM publication directory."
+        description = "Generates the report on NPM dependencies and their licenses."
         group = jsAnyTask
 
-        from(buildJs.outputs)
-        into(webPackPublicationDir)
+        doLast {
+            npm("run", "license-report")
+        }
     }

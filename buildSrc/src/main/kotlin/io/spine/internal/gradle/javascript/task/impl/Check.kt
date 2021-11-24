@@ -24,46 +24,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.javascript.plugins
+package io.spine.internal.gradle.javascript.task.impl
 
+import io.spine.internal.gradle.base.check
+import io.spine.internal.gradle.javascript.isWindows
+import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import io.spine.internal.gradle.javascript.task.buildJs
-import io.spine.internal.gradle.javascript.task.compileProtoToJs
-import io.spine.internal.gradle.javascript.task.testJs
-import org.gradle.api.Task
-import org.gradle.kotlin.dsl.withGroovyBuilder
 
 /**
- * Applies and configures `MsJsPlugin` in accordance with
- * the current [JsEnvironment][io.spine.internal.gradle.javascript.JsEnvironment].
+ * Registers tasks for verifying a JavaScript module.
  *
- * In particular, this method:
+ * List of tasks to be created:
  *
- *  1. Specifies directories for generated code;
- *  2. Binds `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
- *     code for the JavaScript messages compiled from Protobuf.
+ *  1. [publishJs][io.spine.internal.gradle.javascript.task.publishJs];
+ *  2. [publishJsLocally][io.spine.internal.gradle.javascript.task.publishJsLocally];
+ *  3. [prepareJsPublication][io.spine.internal.gradle.javascript.task.prepareJsPublication].
  *
- * @see JsPlugins
+ * Usage example:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.check
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             check()
+ *         }
+ *     }
+ * }
+ * ```
  */
-fun JsPlugins.mcJs() {
-
-    plugins.apply("io.spine.mc-js")
-
-    // TODO:2021-11-24:yevhenii.nadtochii: Temporarily use GroovyInterop.
-    // Currently, it is not possible to obtain `McJsPlugin` on classpath of `buildSrc`.
-    // See issue: https://github.com/SpineEventEngine/config/issues/298
-
-    project.withGroovyBuilder {
-
-        "protoJs" {
-
-            setProperty("generatedMainDir", genProtoMain)
-            setProperty("generatedTestDir", genProtoTest)
-
-            val parsersTask = "generateParsersTask"() as Task
-
-            parsersTask.dependsOn(compileProtoToJs)
-            buildJs.dependsOn(parsersTask)
-            testJs.dependsOn(buildJs)
-        }
-    }
+fun JsTaskRegistering.check() {
+    check.dependsOn(
+        coverageJs()
+    )
 }
+
+private fun JsTaskRegistering.coverageJs() =
+    create("coverageJs") {
+
+        description = "Runs the JavaScript tests and collects the code coverage info."
+        group = jsAnyTask
+
+        outputs.dir(nycOutput)
+
+        doLast {
+            npm("run", if(isWindows()) "coverage:win" else "coverage:unix")
+        }
+
+        dependsOn(buildJs)
+    }

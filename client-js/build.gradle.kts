@@ -32,8 +32,10 @@ import io.spine.internal.gradle.javascript.plugins.idea
 import io.spine.internal.gradle.javascript.plugins.mcJs
 import io.spine.internal.gradle.javascript.plugins.protobuf
 import io.spine.internal.gradle.javascript.task.impl.build
-import io.spine.internal.gradle.javascript.task.impl.other
+import io.spine.internal.gradle.javascript.task.impl.check
+import io.spine.internal.gradle.javascript.task.impl.clean
 import io.spine.internal.gradle.javascript.task.impl.publish
+import io.spine.internal.gradle.javascript.task.impl.report
 import io.spine.internal.gradle.javascript.task.impl.webPack
 
 javascript {
@@ -41,11 +43,12 @@ javascript {
         register {
             build()
             publish()
-            other()
+            check()
+            clean()
+            report()
         }
         configure {
             webPack()
-            publish()
         }
     }
     plugins {

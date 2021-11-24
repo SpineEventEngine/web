@@ -40,8 +40,6 @@ import org.gradle.kotlin.dsl.getByName
  *
  * Does nothing by default, so a user should configure this task to copy all
  * required files to that directory.
- *
- * Depends on [buildsJs][io.spine.internal.gradle.javascript.task.buildJs].
  */
 internal val TaskContainer.prepareJsPublication: Copy
     get() = getByName<Copy>("prepareJsPublication")
