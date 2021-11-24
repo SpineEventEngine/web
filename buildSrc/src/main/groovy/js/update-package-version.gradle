@@ -42,17 +42,17 @@ import groovy.json.JsonSlurper
  * updatePackageVersion.newVersion = npmPackageVersion
  * }</pre>
  */
-//task updatePackageVersion() {
-//    group = JAVA_SCRIPT_TASK_GROUP
-//    description = 'Updates the version in package.json.'
-//
-//    ext.packageJsonPath = packageJsonFile
-//    ext.newVersion = versionToPublishJs
-//
-//    doLast {
-//        updatePackageJsonVersion(packageJsonPath as String, newVersion as String)
-//    }
-//}
+task updatePackageVersion() {
+    group = JAVA_SCRIPT_TASK_GROUP
+    description = 'Updates the version in package.json.'
+
+    ext.packageJsonPath = packageJsonFile
+    ext.newVersion = versionToPublishJs
+
+    doLast {
+        updatePackageJsonVersion(packageJsonPath as String, newVersion as String)
+    }
+}
 
 void updatePackageJsonVersion(final String packageJsonPath, final String newVersion) {
     def final packageJsonObject = readJsonFile(packageJsonPath)

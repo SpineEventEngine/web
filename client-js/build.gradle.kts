@@ -36,12 +36,6 @@ import io.spine.internal.gradle.javascript.task.impl.other
 import io.spine.internal.gradle.javascript.task.impl.publish
 import io.spine.internal.gradle.javascript.task.impl.webPack
 
-// For development aims only.
-
-plugins {
-    id("com.dorongold.task-tree") version "2.1.0"
-}
-
 javascript {
     tasks {
         register {

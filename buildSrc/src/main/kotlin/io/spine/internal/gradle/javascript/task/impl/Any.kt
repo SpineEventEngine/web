@@ -54,35 +54,6 @@ fun JsTaskRegistering.other() {
     npmLicenseReport()
 }
 
-fun JsTaskConfiguring.webPack() {
-
-    // one should have created dedicated tasks for this
-
-    /**
-     * Customizes the task already defined in `config` module by running Webpack build.
-     */
-    buildJs.apply {
-
-        outputs.dir(webPackOutput)
-
-        doLast {
-            npm("run", "build")
-            npm("run", "build-dev")
-        }
-    }
-
-    /**
-     * Customizes the task already defined in `config` module by running
-     * the JavaScript tests.
-     */
-    testJs.apply {
-
-        doLast {
-            npm("run", "test")
-        }
-    }
-}
-
 /**
  * Defines files to copy by the task.
  */
