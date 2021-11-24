@@ -24,10 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task
+package io.spine.internal.gradle.javascript.task
 
-import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.js.JsContext
+import io.spine.internal.gradle.javascript.JsEnvironment
+import io.spine.internal.gradle.javascript.JsContext
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
 

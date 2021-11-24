@@ -24,39 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.plugins
+package io.spine.internal.gradle.javascript.plugins
 
-import org.gradle.kotlin.dsl.configure
-import org.gradle.plugins.ide.idea.model.IdeaModel
+import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.compileProtoToJs
+import io.spine.internal.gradle.javascript.task.testJs
+import org.gradle.api.Task
+import org.gradle.kotlin.dsl.withGroovyBuilder
 
 /**
- * Applies and configures this [IDEA module][org.gradle.plugins.ide.idea.model.IdeaModule]
- * in accordance with the current [JsEnvironment][io.spine.internal.gradle.js.JsEnvironment].
+ * Applies and configures `MsJsPlugin` in accordance with
+ * the current [JsEnvironment][io.spine.internal.gradle.javascript.JsEnvironment].
  *
  * In particular, this method:
  *
- *  1. Specifies directories of production and test sources;
- *  2. Excludes directories with generated code or build cache.
+ *  1. Specifies directories for generated code;
+ *  2. Binds `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
+ *     code for the JavaScript messages compiled from Protobuf.
  *
  * @see JsPlugins
  */
-fun JsPlugins.idea() {
+fun JsPlugins.mcJs() {
 
-    plugins.apply("org.gradle.idea")
+    plugins.apply("io.spine.mc-js")
 
-    extensions.configure<IdeaModel> {
-        module {
-            sourceDirs.add(srcDir)
-            testSourceDirs.add(testSrcDir)
+    // Currently, it is done with the help of GroovyInterop.
+    // due to impossibility of putting this plugin on `buildSrc` classpath.
+    // See issue: https://github.com/SpineEventEngine/config/issues/298
 
-            excludeDirs.addAll(
-                listOf(
-                    nodeModules,
-                    nycOutput,
-                    genProtoMain,
-                    genProtoTest
-                )
-            )
+    project.withGroovyBuilder {
+
+        "protoJs" {
+
+            setProperty("generatedMainDir", genProtoMain)
+            setProperty("generatedTestDir", genProtoTest)
+
+            val parsersTask = "generateParsersTask"() as Task
+
+            parsersTask.dependsOn(compileProtoToJs)
+            buildJs.dependsOn(parsersTask)
+            testJs.dependsOn(buildJs)
         }
     }
 }

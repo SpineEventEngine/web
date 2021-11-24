@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.plugins
+package io.spine.internal.gradle.javascript.plugins
 
 import com.google.protobuf.gradle.builtins
 import com.google.protobuf.gradle.generateProtoTasks
@@ -33,7 +33,7 @@ import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.remove
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.js.task.compileProtoToJs
+import io.spine.internal.gradle.javascript.task.compileProtoToJs
 
 /**
  * Applies and configures `Protobuf` plugin.

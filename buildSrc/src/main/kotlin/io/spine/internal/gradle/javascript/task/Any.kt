@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task
+package io.spine.internal.gradle.javascript.task
 
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy

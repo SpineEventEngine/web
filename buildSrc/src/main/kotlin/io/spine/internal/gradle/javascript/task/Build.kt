@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task
+package io.spine.internal.gradle.javascript.task
 
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
@@ -47,7 +47,7 @@ val TaskContainer.compileProtoToJs: Task
  * it cannot fail the task execution despite on vulnerabilities found.
  *
  * To check installed Node packages for vulnerabilities execute
- * [auditNodePackages][io.spine.internal.gradle.js.task.auditNodePackages] task.
+ * [auditNodePackages][io.spine.internal.gradle.javascript.task.auditNodePackages] task.
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
@@ -72,7 +72,7 @@ val TaskContainer.auditNodePackages: Task
  * Locates `updatePackageVersion` task in this [TaskContainer].
  *
  * The task sets the module's version in `package.json` to the value of
- * [moduleVersion][io.spine.internal.gradle.js.JsEnvironment.moduleVersion]
+ * [moduleVersion][io.spine.internal.gradle.javascript.JsEnvironment.moduleVersion]
  * specified in the current `JsEnvironment`.
  */
 val TaskContainer.updatePackageVersion: Task
@@ -85,9 +85,9 @@ val TaskContainer.updatePackageVersion: Task
  *
  * The next tasks are to be executed:
  *
- *  1. [updatePackageVersion][io.spine.internal.gradle.js.task.updatePackageVersion];
- *  2. [installNodePackages][io.spine.internal.gradle.js.task.installNodePackages];
- *  3. [compileProtoToJs][io.spine.internal.gradle.js.task.compileProtoToJs].
+ *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
+ *  2. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
+ *  3. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs].
  */
 val TaskContainer.buildJs: Task
     get() = getByName("buildJs")

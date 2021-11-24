@@ -27,14 +27,20 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.js.javascript
-import io.spine.internal.gradle.js.plugins.idea
-import io.spine.internal.gradle.js.plugins.mcJs
-import io.spine.internal.gradle.js.plugins.protobuf
-import io.spine.internal.gradle.js.task.impl.build
-import io.spine.internal.gradle.js.task.impl.other
-import io.spine.internal.gradle.js.task.impl.publish
-import io.spine.internal.gradle.js.task.impl.webPack
+import io.spine.internal.gradle.javascript.javascript
+import io.spine.internal.gradle.javascript.plugins.idea
+import io.spine.internal.gradle.javascript.plugins.mcJs
+import io.spine.internal.gradle.javascript.plugins.protobuf
+import io.spine.internal.gradle.javascript.task.impl.build
+import io.spine.internal.gradle.javascript.task.impl.other
+import io.spine.internal.gradle.javascript.task.impl.publish
+import io.spine.internal.gradle.javascript.task.impl.webPack
+
+// For development aims only.
+
+plugins {
+    id("com.dorongold.task-tree") version "2.1.0"
+}
 
 javascript {
     tasks {

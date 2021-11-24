@@ -24,24 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task.impl
+package io.spine.internal.gradle.javascript.task.impl
 
 import io.spine.internal.gradle.base.check
-import io.spine.internal.gradle.js.isWindows
-import io.spine.internal.gradle.js.task.JsTaskConfiguring
-import io.spine.internal.gradle.js.task.JsTaskRegistering
-import io.spine.internal.gradle.js.task.buildJs
-import io.spine.internal.gradle.js.task.coverageJs
-import io.spine.internal.gradle.js.task.prepareJsPublication
-import io.spine.internal.gradle.js.task.testJs
-import io.spine.internal.gradle.js.task.transpileSources
+import io.spine.internal.gradle.javascript.isWindows
+import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
+import io.spine.internal.gradle.javascript.task.JsTaskRegistering
+import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.coverageJs
+import io.spine.internal.gradle.javascript.task.prepareJsPublication
+import io.spine.internal.gradle.javascript.task.testJs
+import io.spine.internal.gradle.javascript.task.transpileSources
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.create
 
 fun JsTaskRegistering.other() {
 
-    // do we really need project.check as in original script ?
     check.dependsOn(
         coverageJs()
     )
@@ -143,8 +142,6 @@ private fun JsTaskRegistering.copyBundledJs() =
 
         from(buildJs.outputs)
         into(webPackPublicationDir)
-
-        dependsOn(buildJs)
     }
 
 private fun JsTaskRegistering.transpileSources() =

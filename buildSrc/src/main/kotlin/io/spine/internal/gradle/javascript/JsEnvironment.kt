@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js
+package io.spine.internal.gradle.javascript
 
 import java.io.File
 import org.apache.tools.ant.taskdefs.condition.Os

@@ -24,38 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js
+package io.spine.internal.gradle.javascript.plugins
 
-import java.io.File
-import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
- * Provides access to the current [JsEnvironment] and shortcuts for executing `npm` command.
+ * Applies and configures this [IDEA module][org.gradle.plugins.ide.idea.model.IdeaModule]
+ * in accordance with the current [JsEnvironment][io.spine.internal.gradle.javascript.JsEnvironment].
+ *
+ * In particular, this method:
+ *
+ *  1. Specifies directories of production and test sources;
+ *  2. Excludes directories with generated code or build cache.
+ *
+ * @see JsPlugins
  */
-open class JsContext(jsEnv: JsEnvironment, private val project: Project)
-    : JsEnvironment by jsEnv
-{
-    /**
-     * Executes `npm` command in a separate process.
-     *
-     * [JsEnvironment.projectDir] is used as a working directory.
-     */
-    fun npm(vararg args: String) = projectDir.npm(*args)
+fun JsPlugins.idea() {
 
-    /**
-     * Executes `npm` command in a separate process.
-     *
-     * This [File] is used as a working directory.
-     */
-    fun File.npm(vararg args: String) = project.exec {
+    plugins.apply("org.gradle.idea")
 
-        workingDir(this@npm)
-        commandLine(npmExecutable)
-        args(*args)
+    extensions.configure<IdeaModel> {
+        module {
+            sourceDirs.add(srcDir)
+            testSourceDirs.add(testSrcDir)
 
-        // Using private packages in a CI/CD workflow | npm Docs
-        // https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow
-
-        environment["NPM_TOKEN"] = npmAuthToken
+            excludeDirs.addAll(
+                listOf(
+                    nodeModules,
+                    nycOutput,
+                    genProtoMain,
+                    genProtoTest
+                )
+            )
+        }
     }
 }

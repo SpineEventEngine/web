@@ -24,10 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js
+package io.spine.internal.gradle.javascript
 
-import io.spine.internal.gradle.js.task.JsTasks
-import io.spine.internal.gradle.js.plugins.JsPlugins
+import io.spine.internal.gradle.javascript.task.JsTasks
+import io.spine.internal.gradle.javascript.plugins.JsPlugins
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType

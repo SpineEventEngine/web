@@ -24,27 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task.impl
+package io.spine.internal.gradle.javascript.task.impl
 
 import io.spine.internal.gradle.java.publish.publish
-import io.spine.internal.gradle.js.JsEnvironment
-import io.spine.internal.gradle.js.task.buildJs
-import io.spine.internal.gradle.js.task.prepareJsPublication
-import io.spine.internal.gradle.js.task.JsTaskRegistering
+import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.prepareJsPublication
+import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
 
 /**
- * Registers group of tasks for publishing a JavaScript module with `npm`.
- *
- * In order to publish the NPM module, it is required that the [JsEnvironment.npmAuthToken] was
- * pre-set.
+ * Registers tasks for publishing a JavaScript module with `npm`.
  *
  * List of tasks to be created:
  *
- *  1. [publishJs][io.spine.internal.gradle.js.task.publishJs];
- *  2. [publishJsLocally][io.spine.internal.gradle.js.task.publishJsLocally];
- *  3. [prepareJsPublication][io.spine.internal.gradle.js.task.prepareJsPublication].
+ *  1. [publishJs][io.spine.internal.gradle.javascript.task.publishJs];
+ *  2. [publishJsLocally][io.spine.internal.gradle.javascript.task.publishJsLocally];
+ *  3. [prepareJsPublication][io.spine.internal.gradle.javascript.task.prepareJsPublication].
  *
  * Usage example:
  *

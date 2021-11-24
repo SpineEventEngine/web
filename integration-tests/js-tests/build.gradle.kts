@@ -26,8 +26,8 @@
 
 import com.google.protobuf.gradle.*
 import groovy.lang.Closure
-import io.spine.internal.gradle.js.javascript
-import io.spine.internal.gradle.js.task.impl.build
+import io.spine.internal.gradle.javascript.javascript
+import io.spine.internal.gradle.javascript.task.impl.build
 
 plugins {
     id("io.spine.mc-js")

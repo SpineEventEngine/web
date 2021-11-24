@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.js.task.impl
+package io.spine.internal.gradle.javascript.task.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -32,24 +32,24 @@ import io.spine.internal.gradle.base.assemble
 import io.spine.internal.gradle.base.check
 import io.spine.internal.gradle.base.clean
 import io.spine.internal.gradle.java.test
-import io.spine.internal.gradle.js.task.buildJs
-import io.spine.internal.gradle.js.task.compileProtoToJs
-import io.spine.internal.gradle.js.task.installNodePackages
-import io.spine.internal.gradle.js.task.JsTaskRegistering
-import io.spine.internal.gradle.js.task.updatePackageVersion
+import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.compileProtoToJs
+import io.spine.internal.gradle.javascript.task.installNodePackages
+import io.spine.internal.gradle.javascript.task.JsTaskRegistering
+import io.spine.internal.gradle.javascript.task.updatePackageVersion
 
 /**
- * Registers group of tasks for building a JavaScript module.
+ * Registers tasks for building a JavaScript module.
  *
  * List of tasks to be created:
  *
- *  1. [buildJs][io.spine.internal.gradle.js.task.buildJs];
- *  1. [cleanJs][io.spine.internal.gradle.js.task.cleanJs];
- *  1. [testJs][io.spine.internal.gradle.js.task.testJs];
- *  1. [updatePackageVersion][io.spine.internal.gradle.js.task.updatePackageVersion];
- *  1. [installNodePackages][io.spine.internal.gradle.js.task.installNodePackages];
- *  1. [auditNodePackages][io.spine.internal.gradle.js.task.auditNodePackages];
- *  1. [compileProtoToJs][io.spine.internal.gradle.js.task.compileProtoToJs];
+ *  1. [buildJs][io.spine.internal.gradle.javascript.task.buildJs];
+ *  1. [cleanJs][io.spine.internal.gradle.javascript.task.cleanJs];
+ *  1. [testJs][io.spine.internal.gradle.javascript.task.testJs];
+ *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
+ *  1. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
+ *  1. [auditNodePackages][io.spine.internal.gradle.javascript.task.auditNodePackages];
+ *  1. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs];
  *
  * Usage example:
  *
