@@ -31,21 +31,19 @@ import io.spine.internal.gradle.javascript.javascript
 import io.spine.internal.gradle.javascript.plugins.idea
 import io.spine.internal.gradle.javascript.plugins.mcJs
 import io.spine.internal.gradle.javascript.plugins.protobuf
-import io.spine.internal.gradle.javascript.task.impl.build
+import io.spine.internal.gradle.javascript.task.impl.assemble
 import io.spine.internal.gradle.javascript.task.impl.check
 import io.spine.internal.gradle.javascript.task.impl.clean
 import io.spine.internal.gradle.javascript.task.impl.publish
-import io.spine.internal.gradle.javascript.task.impl.report
 import io.spine.internal.gradle.javascript.task.impl.webPack
 
 javascript {
     tasks {
         register {
-            build()
+            assemble()
             publish()
             check()
             clean()
-            report()
         }
         configure {
             webPack()

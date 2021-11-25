@@ -28,7 +28,6 @@ package io.spine.internal.gradle.report.license
 
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
-import org.gradle.api.tasks.TaskProvider
 
-internal val TaskContainer.generateLicenseReport: TaskProvider<Task>
-    get() = named("generateLicenseReport")
+internal val TaskContainer.generateLicenseReport: Task
+    get() = getByName("generateLicenseReport")

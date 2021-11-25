@@ -39,7 +39,7 @@ import org.gradle.api.tasks.TaskContainer
  * Supposing, one needs to apply and configure `FooBar` plugin. To achieve that,
  * several steps should be performed:
  *
- *  1. Define the corresponding extension function upon this scope;
+ *  1. Declare the corresponding extension function upon this scope;
  *  2. Apply and configure the plugin inside that function;
  *  3. Call that function in your `build.gradle.kts` file.
  *

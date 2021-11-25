@@ -26,9 +26,8 @@
 
 package io.spine.internal.gradle.javascript.plugins
 
-import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.assembleJs
 import io.spine.internal.gradle.javascript.task.compileProtoToJs
-import io.spine.internal.gradle.javascript.task.testJs
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
@@ -39,7 +38,7 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
  * In particular, this method:
  *
  *  1. Specifies directories for generated code;
- *  2. Binds `generateParsersTask` to [buildJs] execution. The task generates JSON-parsing
+ *  2. Binds `generateParsersTask` to [assembleJs] execution. The task generates JSON-parsing
  *     code for the JavaScript messages compiled from Protobuf.
  *
  * @see JsPlugins
@@ -62,8 +61,7 @@ fun JsPlugins.mcJs() {
             val parsersTask = "generateParsersTask"() as Task
 
             parsersTask.dependsOn(compileProtoToJs)
-            buildJs.dependsOn(parsersTask)
-            testJs.dependsOn(buildJs)
+            assembleJs.dependsOn(parsersTask)
         }
     }
 }

@@ -27,7 +27,7 @@
 import com.google.protobuf.gradle.*
 import groovy.lang.Closure
 import io.spine.internal.gradle.javascript.javascript
-import io.spine.internal.gradle.javascript.task.impl.build
+import io.spine.internal.gradle.javascript.task.impl.assemble
 
 plugins {
     id("io.spine.mc-js")
@@ -38,7 +38,7 @@ plugins {
 javascript {
     tasks {
         register {
-            build()
+            assemble()
         }
     }
 }

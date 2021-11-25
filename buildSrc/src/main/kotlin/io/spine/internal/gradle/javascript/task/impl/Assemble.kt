@@ -26,3 +26,106 @@
 
 package io.spine.internal.gradle.javascript.task.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
+import io.spine.internal.gradle.base.assemble
+import io.spine.internal.gradle.javascript.task.compileProtoToJs
+import io.spine.internal.gradle.javascript.task.installNodePackages
+import io.spine.internal.gradle.javascript.task.JsTaskRegistering
+import io.spine.internal.gradle.javascript.task.updatePackageVersion
+
+/**
+ * Registers tasks for assembling a JavaScript module.
+ *
+ * List of tasks to be created:
+ *
+ *  1. [buildJs][io.spine.internal.gradle.javascript.task.assembleJs];
+ *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
+ *  1. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
+ *  1. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs];
+ *
+ * An example of how to apply these tasks in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.publish
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             publish()
+ *         }
+ *     }
+ * }
+ * ```
+ */
+fun JsTaskRegistering.assemble() {
+
+    compileProtoToJs()
+    installNodePackages()
+    updatePackageVersion()
+
+    assemble.dependsOn(
+        assembleJs()
+    )
+}
+
+private fun JsTaskRegistering.assembleJs() =
+    create("buildJs") {
+
+        description = "Assembles the JavaScript sources."
+        group = jsBuildTask
+
+        dependsOn(
+            updatePackageVersion,
+            installNodePackages,
+            compileProtoToJs
+        )
+    }
+
+private fun JsTaskRegistering.compileProtoToJs() =
+    create("compileProtoToJs") {
+
+        description = "Compiles Protobuf messages into JavaScript."
+        group = jsBuildTask
+    }
+
+private fun JsTaskRegistering.installNodePackages() =
+    create("installNodePackages") {
+
+        description = "Installs the module`s Node dependencies."
+        group = jsBuildTask
+
+        inputs.file(packageJson)
+        outputs.dir(nodeModules)
+
+        doLast {
+            npm("set", "audit", "false")
+            npm("install")
+        }
+    }
+
+private fun JsTaskRegistering.updatePackageVersion() =
+    create("updatePackageVersion") {
+
+        description = "Sets the version in `package.json`."
+        group = jsBuildTask
+
+        doLast {
+            val objectNode = ObjectMapper()
+                .readValue(packageJson, ObjectNode::class.java)
+                .put("version", moduleVersion)
+
+            packageJson.writeText(
+
+                // We are going to stick to JSON formatting used by `npm` itself.
+                // So that modifying the line with the version would ONLY affect a single line
+                // when comparing two files i.e. in Git.
+
+                (objectNode.toPrettyString() + '\n')
+                    .replace("\" : ", "\": ")
+            )
+        }
+    }

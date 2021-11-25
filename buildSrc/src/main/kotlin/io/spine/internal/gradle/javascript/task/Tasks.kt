@@ -58,8 +58,8 @@ open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
  * `bundleJs`. To achieve objection, several steps are to be performed:
  *
  *  1. Define the task as an extension function upon `JsTaskRegistering` scope
- *     in `js/task/impl/Build.kt`;
- *  2. Create typed reference for the task upon [TaskContainer] in `js/task/Build.kt`. It would
+ *     in `js/task/impl/Assemble.kt`;
+ *  2. Create typed reference for the task upon [TaskContainer] in `js/task/Assemble.kt`. It would
  *     facilitate referencing to the new task. For example, to add external dependents;
  *  3. Call this extension from `build.gradle.kts`.
  *

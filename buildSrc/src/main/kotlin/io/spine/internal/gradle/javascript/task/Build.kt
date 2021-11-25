@@ -79,7 +79,7 @@ val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
 
 /**
- * Locates `buildJs` task in this [TaskContainer].
+ * Locates `assembleJs` task in this [TaskContainer].
  *
  * It is an aggregate task that assembles the JavaScript sources.
  *
@@ -89,8 +89,8 @@ val TaskContainer.updatePackageVersion: Task
  *  2. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
  *  3. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs].
  */
-val TaskContainer.buildJs: Task
-    get() = getByName("buildJs")
+val TaskContainer.assembleJs: Task
+    get() = getByName("assembleJs")
 
 /**
  * Locates `cleanJs` task in this [TaskContainer].

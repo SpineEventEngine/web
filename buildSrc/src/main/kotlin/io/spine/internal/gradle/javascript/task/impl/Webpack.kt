@@ -28,7 +28,7 @@ package io.spine.internal.gradle.javascript.task.impl
 
 import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
-import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.assembleJs
 import io.spine.internal.gradle.javascript.task.testJs
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
@@ -42,9 +42,9 @@ fun JsTaskRegistering.webpack() {
  */
 fun JsTaskConfiguring.webPack() {
 
-    // Customizes `buildJs` task with running `webpack` bundler.
+    // Customizes `assembleJs` task with running `webpack` bundler.
 
-    buildJs.apply {
+    assembleJs.apply {
 
         outputs.dir(webPackOutput)
 
@@ -70,6 +70,6 @@ private fun JsTaskRegistering.copyBundledJs() =
         description = "Copies bundled JavaScript sources to the NPM publication directory."
         group = jsAnyTask
 
-        from(buildJs.outputs)
+        from(assembleJs.outputs)
         into(webPackPublicationDir)
     }

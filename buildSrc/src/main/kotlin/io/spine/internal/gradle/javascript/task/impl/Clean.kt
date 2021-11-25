@@ -26,24 +26,42 @@
 
 package io.spine.internal.gradle.javascript.task.impl
 
+import io.spine.internal.gradle.base.clean
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
+import io.spine.internal.gradle.javascript.task.assembleJs
+import io.spine.internal.gradle.javascript.task.compileProtoToJs
 import io.spine.internal.gradle.javascript.task.coverageJs
+import io.spine.internal.gradle.javascript.task.installNodePackages
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.create
 
-fun JsTaskRegistering.clean() {
-    deleteCompiled()
-}
+fun JsTaskRegistering.clean() = clean.dependsOn(
+    cleanGenerated(),
+    cleanJs()
+)
 
-private fun JsTaskRegistering.deleteCompiled() =
-    create<Delete>("deleteCompiled") {
+private fun JsTaskRegistering.cleanGenerated() =
+    create<Delete>("cleanGenerated") {
 
-        description = "Cleans old module dependencies and build outputs."
+        description = "Cleans generated code and reports."
         group = jsAnyTask
 
         delete(
             genProtoMain,
             genProtoTest,
             coverageJs.outputs
+        )
+    }
+
+private fun JsTaskRegistering.cleanJs() =
+    create<Delete>("cleanJs") {
+
+        description = "Cleans output of `buildJs` task and output of its dependants."
+        group = jsBuildTask
+
+        delete(
+            assembleJs.outputs,
+            compileProtoToJs.outputs,
+            installNodePackages.outputs
         )
     }

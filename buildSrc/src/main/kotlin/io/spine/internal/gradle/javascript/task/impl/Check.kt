@@ -27,9 +27,11 @@
 package io.spine.internal.gradle.javascript.task.impl
 
 import io.spine.internal.gradle.base.check
+import io.spine.internal.gradle.java.test
 import io.spine.internal.gradle.javascript.isWindows
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
-import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.assembleJs
+import io.spine.internal.gradle.javascript.task.installNodePackages
 
 /**
  * Registers tasks for verifying a JavaScript module.
@@ -57,11 +59,47 @@ import io.spine.internal.gradle.javascript.task.buildJs
  * }
  * ```
  */
-fun JsTaskRegistering.check() {
-    check.dependsOn(
-        coverageJs()
-    )
-}
+fun JsTaskRegistering.check() = check.dependsOn(
+    auditNodePackages(),
+    testJs(),
+    coverageJs(),
+)
+
+private fun JsTaskRegistering.auditNodePackages() =
+    create("auditNodePackages") {
+
+        description = "Audits the module's Node dependencies."
+        group = jsBuildTask
+
+        inputs.dir(nodeModules)
+
+        doLast {
+
+            // Sets `critical` as the minimum level of vulnerability for `npm audit` to exit
+            // with a non-zero exit code.
+
+            npm("set", "audit-level", "critical")
+
+            try {
+                npm("audit")
+            } catch (ignored: Exception) {
+                npm("audit", "--registry", "https://registry.npmjs.eu")
+            }
+        }
+
+        dependsOn(installNodePackages)
+    }
+
+
+private fun JsTaskRegistering.testJs() =
+    create("testJs") {
+
+        description = "Runs the JavaScript tests."
+        group = jsBuildTask
+
+        dependsOn(assembleJs)
+        mustRunAfter(test)
+    }
 
 private fun JsTaskRegistering.coverageJs() =
     create("coverageJs") {
@@ -75,5 +113,5 @@ private fun JsTaskRegistering.coverageJs() =
             npm("run", if(isWindows()) "coverage:win" else "coverage:unix")
         }
 
-        dependsOn(buildJs)
+        dependsOn(assembleJs)
     }

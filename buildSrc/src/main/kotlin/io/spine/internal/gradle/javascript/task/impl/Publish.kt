@@ -27,7 +27,7 @@
 package io.spine.internal.gradle.javascript.task.impl
 
 import io.spine.internal.gradle.java.publish.publish
-import io.spine.internal.gradle.javascript.task.buildJs
+import io.spine.internal.gradle.javascript.task.assembleJs
 import io.spine.internal.gradle.javascript.task.prepareJsPublication
 import io.spine.internal.gradle.javascript.task.transpileSources
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
@@ -102,7 +102,7 @@ private fun JsTaskRegistering.prepareJsPublication() =
 
             //copyBundledJs,
 
-            buildJs,
+            assembleJs,
             transpileSources
         )
     }
