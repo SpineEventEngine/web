@@ -133,6 +133,10 @@ private fun JsTaskRegistering.testJs() =
         description = "Runs the JavaScript tests."
         group = jsBuildTask
 
+        doLast {
+            npm("run", "test")
+        }
+
         dependsOn(assembleJs)
         mustRunAfter(test)
     }

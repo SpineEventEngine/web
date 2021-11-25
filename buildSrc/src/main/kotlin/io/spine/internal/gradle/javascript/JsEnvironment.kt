@@ -158,7 +158,7 @@ interface JsEnvironment {
     /**
      * A directory where bundled artifacts for further publishing would be prepared.
      */
-    val webPackPublicationDir: File
+    val webpackPublicationDir: File
         get() = publicationDir.resolve("dist")
 
 
@@ -219,7 +219,7 @@ class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment)
     override var npmExecutable = initialEnvironment.npmExecutable
     override var npmAuthToken = initialEnvironment.npmAuthToken
     override var webPackOutput = initialEnvironment.webPackOutput
-    override var webPackPublicationDir = initialEnvironment.webPackPublicationDir
+    override var webpackPublicationDir = initialEnvironment.webpackPublicationDir
 
     // Code generation.
 

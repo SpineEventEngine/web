@@ -26,24 +26,15 @@
 
 package io.spine.internal.gradle.javascript.task.impl
 
-import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
-import io.spine.internal.gradle.javascript.task.JsTaskRegistering
+import io.spine.internal.gradle.javascript.task.JsTasks
 import io.spine.internal.gradle.javascript.task.assembleJs
-import io.spine.internal.gradle.javascript.task.prepareJsPublication
-import io.spine.internal.gradle.javascript.task.testJs
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
-
-fun JsTaskRegistering.webpack() {
-    copyBundledJs()
-}
 
 /**
  * Extends `buildJs` and `testJs` to run `webpack` builds.
  */
-fun JsTaskConfiguring.webPack() {
-
-    // Customizes `assembleJs` task with running `webpack` bundler.
+fun JsTasks.webpack() {
 
     assembleJs.apply {
 
@@ -55,32 +46,22 @@ fun JsTaskConfiguring.webPack() {
         }
     }
 
-    // Customizes `testJs` task with running JavaScript tests.
+    // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
+    // See: https://github.com/SpineEventEngine/web/issues/61
 
-    testJs.apply {
-
-        doLast {
-            npm("run", "test")
-        }
-    }
-
-    prepareJsPublication.apply {
-
-        // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
-        // See: https://github.com/SpineEventEngine/web/issues/61
-
+//    prepareJsPublication.apply {
 //        dependsOn(
 //            copyBundledJs()
 //        )
-    }
+//    }
 }
 
-private fun JsTaskRegistering.copyBundledJs() =
+private fun JsTasks.copyBundledJs() =
     create<Copy>("copyBundledJs") {
 
         description = "Copies bundled JavaScript sources to the NPM publication directory."
         group = jsAnyTask
 
         from(assembleJs.outputs)
-        into(webPackPublicationDir)
+        into(webpackPublicationDir)
     }

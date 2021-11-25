@@ -35,20 +35,20 @@ import io.spine.internal.gradle.javascript.task.impl.assemble
 import io.spine.internal.gradle.javascript.task.impl.check
 import io.spine.internal.gradle.javascript.task.impl.clean
 import io.spine.internal.gradle.javascript.task.impl.publish
-import io.spine.internal.gradle.javascript.task.impl.webPack
+import io.spine.internal.gradle.javascript.task.impl.webpack
 
 javascript {
     tasks {
         register {
             assemble()
-            publish()
             clean()
+            publish()
             check()
         }
-        configure {
-            webPack()
-        }
+
+        webpack()
     }
+
     plugins {
         mcJs()
         protobuf()
