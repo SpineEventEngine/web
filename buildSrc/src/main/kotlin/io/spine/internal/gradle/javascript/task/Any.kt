@@ -48,6 +48,9 @@ internal val TaskContainer.deleteCompiled: Delete
 internal val TaskContainer.coverageJs: Task
     get() = getByName("coverageJs")
 
+internal val TaskContainer.checkJs: Task
+    get() = getByName("checkJs")
+
 /**
  * Locates `copyBundledJs` task in this [TaskContainer].
  *

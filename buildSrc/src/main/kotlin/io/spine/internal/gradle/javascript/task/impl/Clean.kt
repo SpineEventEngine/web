@@ -35,10 +35,27 @@ import io.spine.internal.gradle.javascript.task.installNodePackages
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.create
 
-fun JsTaskRegistering.clean() = clean.dependsOn(
-    cleanGenerated(),
-    cleanJs()
-)
+fun JsTaskRegistering.clean() =
+    clean.dependsOn(
+        cleanJs()
+    )
+
+private fun JsTaskRegistering.cleanJs() =
+    create<Delete>("cleanJs") {
+
+        description = "Cleans output of `assembleJs` task and output of its dependants."
+        group = jsAnyTask
+
+        delete(
+            assembleJs.outputs,
+            compileProtoToJs.outputs,
+            installNodePackages.outputs,
+        )
+
+        dependsOn(
+            cleanGenerated()
+        )
+    }
 
 private fun JsTaskRegistering.cleanGenerated() =
     create<Delete>("cleanGenerated") {
@@ -49,19 +66,7 @@ private fun JsTaskRegistering.cleanGenerated() =
         delete(
             genProtoMain,
             genProtoTest,
-            coverageJs.outputs
-        )
-    }
-
-private fun JsTaskRegistering.cleanJs() =
-    create<Delete>("cleanJs") {
-
-        description = "Cleans output of `buildJs` task and output of its dependants."
-        group = jsBuildTask
-
-        delete(
-            assembleJs.outputs,
-            compileProtoToJs.outputs,
-            installNodePackages.outputs
+            coverageJs.outputs,
+            nycOutput,
         )
     }

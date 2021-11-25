@@ -62,7 +62,6 @@ import org.gradle.kotlin.dsl.create
  */
 fun JsTaskRegistering.publish() {
 
-    transpileSources()
     prepareJsPublication()
     publishJsLocally()
 
@@ -96,14 +95,8 @@ private fun JsTaskRegistering.prepareJsPublication() =
         into(publicationDir)
 
         dependsOn(
-
-            // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
-            // See: https://github.com/SpineEventEngine/web/issues/61
-
-            //copyBundledJs,
-
             assembleJs,
-            transpileSources
+            transpileSources(),
         )
     }
 

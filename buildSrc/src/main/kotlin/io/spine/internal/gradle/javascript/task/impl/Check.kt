@@ -38,11 +38,12 @@ import io.spine.internal.gradle.javascript.task.installNodePackages
  *
  * List of tasks to be created:
  *
- *  1. [publishJs][io.spine.internal.gradle.javascript.task.publishJs];
- *  2. [publishJsLocally][io.spine.internal.gradle.javascript.task.publishJsLocally];
- *  3. [prepareJsPublication][io.spine.internal.gradle.javascript.task.prepareJsPublication].
+ *  1. [checkJs][io.spine.internal.gradle.javascript.task.checkJs];
+ *  2. [auditNodePackages][io.spine.internal.gradle.javascript.task.auditNodePackages];
+ *  3. [testJs][io.spine.internal.gradle.javascript.task.testJs];
+ *  4. [coverageJs][io.spine.internal.gradle.javascript.task.coverageJs].
  *
- * Usage example:
+ * An example of how to apply those tasks in `build.gradle.kts`:
  *
  * ```
  * import io.spine.internal.gradle.js.javascript
@@ -59,11 +60,23 @@ import io.spine.internal.gradle.javascript.task.installNodePackages
  * }
  * ```
  */
-fun JsTaskRegistering.check() = check.dependsOn(
-    auditNodePackages(),
-    testJs(),
-    coverageJs(),
-)
+fun JsTaskRegistering.check() =
+    check.dependsOn(
+        checkJs()
+    )
+
+private fun JsTaskRegistering.checkJs() =
+    create("checkJs") {
+
+        description = "Runs tests, audits NPM modules and creates a test-coverage report."
+        group = jsBuildTask
+
+        dependsOn(
+            auditNodePackages(),
+            coverageJs(),
+            testJs(),
+        )
+    }
 
 private fun JsTaskRegistering.auditNodePackages() =
     create("auditNodePackages") {
@@ -90,17 +103,6 @@ private fun JsTaskRegistering.auditNodePackages() =
         dependsOn(installNodePackages)
     }
 
-
-private fun JsTaskRegistering.testJs() =
-    create("testJs") {
-
-        description = "Runs the JavaScript tests."
-        group = jsBuildTask
-
-        dependsOn(assembleJs)
-        mustRunAfter(test)
-    }
-
 private fun JsTaskRegistering.coverageJs() =
     create("coverageJs") {
 
@@ -110,8 +112,18 @@ private fun JsTaskRegistering.coverageJs() =
         outputs.dir(nycOutput)
 
         doLast {
-            npm("run", if(isWindows()) "coverage:win" else "coverage:unix")
+            npm("run", if (isWindows()) "coverage:win" else "coverage:unix")
         }
 
         dependsOn(assembleJs)
+    }
+
+private fun JsTaskRegistering.testJs() =
+    create("testJs") {
+
+        description = "Runs the JavaScript tests."
+        group = jsBuildTask
+
+        dependsOn(assembleJs)
+        mustRunAfter(test)
     }

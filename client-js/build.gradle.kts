@@ -56,11 +56,11 @@ javascript {
     }
 }
 
-//apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
-
-val spineCoreVersion: String by extra
-
 dependencies {
+
+    val spineCoreVersion: String by extra
+
+
     protobuf(project(":web"))
     protobuf(project(":firebase-web"))
     protobuf(
@@ -88,17 +88,19 @@ sourceSets {
     }
 }
 
-// Suppress building the JS project as a Java module.
-tasks.compileJava {
-    enabled = false
-}
+tasks {
 
-tasks.compileTestJava {
-    enabled = false
+    // Suppress building the JS project as a Java module.
+
+    compileJava.configure {
+        enabled = false
+    }
+    compileTestJava.configure {
+        enabled = false
+    }
 }
 
 val jsDocDir = LazyTempPath("jsDocs")
-
 val jsDoc by tasks.registering(type = Exec::class) {
     commandLine(
         "$projectDir/node_modules/.bin/jsdoc",

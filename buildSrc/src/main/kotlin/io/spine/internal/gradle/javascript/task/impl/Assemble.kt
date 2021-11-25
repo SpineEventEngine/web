@@ -29,48 +29,39 @@ package io.spine.internal.gradle.javascript.task.impl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import io.spine.internal.gradle.base.assemble
-import io.spine.internal.gradle.javascript.task.compileProtoToJs
-import io.spine.internal.gradle.javascript.task.installNodePackages
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
-import io.spine.internal.gradle.javascript.task.updatePackageVersion
 
 /**
  * Registers tasks for assembling a JavaScript module.
  *
- * List of tasks to be created:
+ * Full list of tasks to be created:
  *
- *  1. [buildJs][io.spine.internal.gradle.javascript.task.assembleJs];
- *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
- *  1. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
- *  1. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs];
+ *  1. [assembleJs][io.spine.internal.gradle.javascript.task.assembleJs];
+ *  2. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs];
+ *  3. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
+ *  4. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion].
  *
- * An example of how to apply these tasks in `build.gradle.kts`:
+ * An example of how to apply those tasks in `build.gradle.kts`:
  *
  * ```
  * import io.spine.internal.gradle.js.javascript
- * import io.spine.internal.gradle.js.task.impl.publish
+ * import io.spine.internal.gradle.js.task.impl.assemble
  *
  * // ...
  *
  * js {
  *     tasks {
  *         register {
- *             publish()
+ *             assemble()
  *         }
  *     }
  * }
  * ```
  */
-fun JsTaskRegistering.assemble() {
-
-    compileProtoToJs()
-    installNodePackages()
-    updatePackageVersion()
-
+fun JsTaskRegistering.assemble() =
     assemble.dependsOn(
         assembleJs()
     )
-}
 
 private fun JsTaskRegistering.assembleJs() =
     create("buildJs") {
@@ -79,9 +70,9 @@ private fun JsTaskRegistering.assembleJs() =
         group = jsBuildTask
 
         dependsOn(
-            updatePackageVersion,
-            installNodePackages,
-            compileProtoToJs
+            installNodePackages(),
+            compileProtoToJs(),
+            updatePackageVersion()
         )
     }
 

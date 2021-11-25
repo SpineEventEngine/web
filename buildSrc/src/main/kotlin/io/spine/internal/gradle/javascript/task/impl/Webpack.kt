@@ -29,6 +29,7 @@ package io.spine.internal.gradle.javascript.task.impl
 import io.spine.internal.gradle.javascript.task.JsTaskConfiguring
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import io.spine.internal.gradle.javascript.task.assembleJs
+import io.spine.internal.gradle.javascript.task.prepareJsPublication
 import io.spine.internal.gradle.javascript.task.testJs
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.create
@@ -61,6 +62,16 @@ fun JsTaskConfiguring.webPack() {
         doLast {
             npm("run", "test")
         }
+    }
+
+    prepareJsPublication.apply {
+
+        // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
+        // See: https://github.com/SpineEventEngine/web/issues/61
+
+//        dependsOn(
+//            copyBundledJs()
+//        )
     }
 }
 
