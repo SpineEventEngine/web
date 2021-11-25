@@ -31,11 +31,11 @@ import io.spine.internal.gradle.javascript.javascript
 import io.spine.internal.gradle.javascript.plugins.idea
 import io.spine.internal.gradle.javascript.plugins.mcJs
 import io.spine.internal.gradle.javascript.plugins.protobuf
-import io.spine.internal.gradle.javascript.task.impl.assemble
-import io.spine.internal.gradle.javascript.task.impl.check
-import io.spine.internal.gradle.javascript.task.impl.clean
-import io.spine.internal.gradle.javascript.task.impl.publish
-import io.spine.internal.gradle.javascript.task.impl.webpack
+import io.spine.internal.gradle.javascript.task.assemble
+import io.spine.internal.gradle.javascript.task.check
+import io.spine.internal.gradle.javascript.task.clean
+import io.spine.internal.gradle.javascript.task.publish
+import io.spine.internal.gradle.javascript.task.webpack
 
 javascript {
     tasks {

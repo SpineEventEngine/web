@@ -26,10 +26,69 @@
 
 package io.spine.internal.gradle.javascript.task
 
+import io.spine.internal.gradle.java.publish.publish
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+
+/**
+ * Registers tasks for publishing a JavaScript module as a package.
+ *
+ * List of tasks to be created:
+ *
+ *  1. [publishJs][publishJs];
+ *  2. [publishJsLocally][publishJsLocally];
+ *  3. [prepareJsPublication][prepareJsPublication].
+ *
+ * Usage example:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.publish
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             publish()
+ *         }
+ *     }
+ * }
+ * ```
+ */
+fun JsTaskRegistering.publish() {
+
+    prepareJsPublication()
+    publishJsLocally()
+
+    publish.dependsOn(
+        publishJs()
+    )
+}
+
+
+/**
+ * Locates `transpileSources` task in this [TaskContainer].
+ *
+ * The task transpiles JavaScript sources before publishing them to NPM.
+ */
+internal val TaskContainer.transpileSources: Task
+    get() = getByName("transpileSources")
+
+private fun JsTaskRegistering.transpileSources() =
+    create("transpileSources") {
+
+        description = "Transpiles sources before publishing."
+        group = jsAnyTask
+
+        doLast {
+            npm("run", "transpile-before-publishing")
+        }
+    }
+
 
 /**
  * Locates `prepareJsPublication` task in this [TaskContainer].
@@ -44,13 +103,25 @@ import org.gradle.kotlin.dsl.getByName
 internal val TaskContainer.prepareJsPublication: Copy
     get() = getByName<Copy>("prepareJsPublication")
 
-/**
- * Locates `transpileSources` task in this [TaskContainer].
- *
- * The task transpiles JavaScript sources before publishing them to NPM.
- */
-internal val TaskContainer.transpileSources: Task
-    get() = getByName("transpileSources")
+private fun JsTaskRegistering.prepareJsPublication() =
+    create<Copy>("prepareJsPublication") {
+
+        description = "Prepares the NPM package for publishing."
+        group = jsPublishTask
+
+        from(
+            packageJson,
+            npmrc
+        )
+
+        into(publicationDir)
+
+        dependsOn(
+            assembleJs,
+            transpileSources(),
+        )
+    }
+
 
 /**
  * Locates `publishJsLocally` task in this [TaskContainer].
@@ -59,12 +130,26 @@ internal val TaskContainer.transpileSources: Task
  * from [publicationDirectory][io.spine.internal.gradle.javascript.JsEnvironment.publicationDir]
  * with `npm link`.
  *
- * Depends on [prepareJsPublication][io.spine.internal.gradle.javascript.task.prepareJsPublication].
+ * Depends on [prepareJsPublication][prepareJsPublication].
  *
  *  @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-link">npm-link | npm Docs</a>
  */
 internal val TaskContainer.publishJsLocally: Task
     get() = getByName("publishJsLocally")
+
+private fun JsTaskRegistering.publishJsLocally() =
+    create("publishJsLocally") {
+
+        description = "Publishes the NPM package locally with `npm link`."
+        group = jsPublishTask
+
+        doLast {
+            publicationDir.npm("link")
+        }
+
+        dependsOn(prepareJsPublication)
+    }
+
 
 /**
  * Locates `publishJs` task in this [TaskContainer].
@@ -77,9 +162,22 @@ internal val TaskContainer.publishJsLocally: Task
  * [npmAuthToken][io.spine.internal.gradle.javascript.JsEnvironment.npmAuthToken] should be
  * set. If no token is set, a default dummy value is quite enough for the local development.
  *
- * Depends on [prepareJsPublication][io.spine.internal.gradle.javascript.task.prepareJsPublication].
+ * Depends on [prepareJsPublication][prepareJsPublication].
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-publish">npm-publish | npm Docs</a>
  */
 internal val TaskContainer.publishJs: Task
     get() = getByName("publishJs")
+
+private fun JsTaskRegistering.publishJs() =
+    create("publishJs") {
+
+        description = "Publishes the NPM package with `npm publish`."
+        group = jsPublishTask
+
+        doLast {
+            publicationDir.npm("publish")
+        }
+
+        dependsOn(prepareJsPublication)
+    }

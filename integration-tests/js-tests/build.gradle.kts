@@ -30,8 +30,8 @@ import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import io.spine.internal.gradle.javascript.plugins.idea
 import io.spine.internal.gradle.javascript.plugins.mcJs
 import io.spine.internal.gradle.javascript.plugins.protobuf
-import io.spine.internal.gradle.javascript.task.impl.assemble
-import io.spine.internal.gradle.javascript.task.impl.clean
+import io.spine.internal.gradle.javascript.task.assemble
+import io.spine.internal.gradle.javascript.task.clean
 
 javascript {
     tasks {

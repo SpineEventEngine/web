@@ -26,8 +26,44 @@
 
 package io.spine.internal.gradle.javascript.task
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
+import io.spine.internal.gradle.base.assemble
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
+
+/**
+ * Registers tasks for assembling a JavaScript module.
+ *
+ * Full list of tasks to be created:
+ *
+ *  1. [assembleJs][assembleJs];
+ *  2. [compileProtoToJs][compileProtoToJs];
+ *  3. [installNodePackages][installNodePackages];
+ *  4. [updatePackageVersion][updatePackageVersion].
+ *
+ * An example of how to apply those tasks in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.assemble
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             assemble()
+ *         }
+ *     }
+ * }
+ * ```
+ */
+fun JsTaskRegistering.assemble() =
+    assemble.dependsOn(
+        assembleJs()
+    )
+
 
 /**
  * Locates `assembleJs` task in this [TaskContainer].
@@ -36,12 +72,26 @@ import org.gradle.api.tasks.TaskContainer
  *
  * The next tasks are to be executed:
  *
- *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
- *  2. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
- *  3. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs].
+ *  1. [updatePackageVersion][updatePackageVersion];
+ *  2. [installNodePackages][installNodePackages];
+ *  3. [compileProtoToJs][compileProtoToJs].
  */
-val TaskContainer.assembleJs: Task
+internal val TaskContainer.assembleJs: Task
     get() = getByName("assembleJs")
+
+private fun JsTaskRegistering.assembleJs() =
+    create("assembleJs") {
+
+        description = "Assembles the JavaScript sources."
+        group = jsBuildTask
+
+        dependsOn(
+            installNodePackages(),
+            compileProtoToJs(),
+            updatePackageVersion()
+        )
+    }
+
 
 /**
  * Locates `compileProtoToJs` task in this [TaskContainer].
@@ -49,8 +99,16 @@ val TaskContainer.assembleJs: Task
  * The task compiles Protobuf messages into JavaScript. This is a lifecycle task that performs
  * no action itself. It is used to aggregate other tasks which perform the compilation.
  */
-val TaskContainer.compileProtoToJs: Task
+internal val TaskContainer.compileProtoToJs: Task
     get() = getByName("compileProtoToJs")
+
+private fun JsTaskRegistering.compileProtoToJs() =
+    create("compileProtoToJs") {
+
+        description = "Compiles Protobuf messages into JavaScript."
+        group = jsBuildTask
+    }
+
 
 /**
  * Locates `installNodePackages` task in this [TaskContainer].
@@ -61,12 +119,28 @@ val TaskContainer.compileProtoToJs: Task
  * it cannot fail the task execution despite on vulnerabilities found.
  *
  * To check installed Node packages for vulnerabilities execute
- * [auditNodePackages][io.spine.internal.gradle.javascript.task.auditNodePackages] task.
+ * [auditNodePackages][auditNodePackages] task.
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
-val TaskContainer.installNodePackages: Task
+internal val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
+
+private fun JsTaskRegistering.installNodePackages() =
+    create("installNodePackages") {
+
+        description = "Installs the module`s Node dependencies."
+        group = jsBuildTask
+
+        inputs.file(packageJson)
+        outputs.dir(nodeModules)
+
+        doLast {
+            npm("set", "audit", "false")
+            npm("install")
+        }
+    }
+
 
 /**
  * Locates `updatePackageVersion` task in this [TaskContainer].
@@ -75,5 +149,28 @@ val TaskContainer.installNodePackages: Task
  * [moduleVersion][io.spine.internal.gradle.javascript.JsEnvironment.moduleVersion]
  * specified in the current `JsEnvironment`.
  */
-val TaskContainer.updatePackageVersion: Task
+internal val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
+
+private fun JsTaskRegistering.updatePackageVersion() =
+    create("updatePackageVersion") {
+
+        description = "Sets the version in `package.json`."
+        group = jsBuildTask
+
+        doLast {
+            val objectNode = ObjectMapper()
+                .readValue(packageJson, ObjectNode::class.java)
+                .put("version", moduleVersion)
+
+            packageJson.writeText(
+
+                // We are going to stick to JSON formatting used by `npm` itself.
+                // So that modifying the line with the version would ONLY affect a single line
+                // when comparing two files i.e. in Git.
+
+                (objectNode.toPrettyString() + '\n')
+                    .replace("\" : ", "\": ")
+            )
+        }
+    }

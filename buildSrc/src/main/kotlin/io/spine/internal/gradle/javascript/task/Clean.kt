@@ -26,10 +26,18 @@
 
 package io.spine.internal.gradle.javascript.task
 
+import io.spine.internal.gradle.base.clean
 import org.gradle.api.Task
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+
+fun JsTaskRegistering.clean() =
+    clean.dependsOn(
+        cleanJs()
+    )
+
 
 /**
  * Locates `cleanJs` task in this [TaskContainer].
@@ -39,6 +47,24 @@ import org.gradle.kotlin.dsl.getByName
 val TaskContainer.cleanJs: Task
     get() = getByName("cleanJs")
 
+private fun JsTaskRegistering.cleanJs() =
+    create<Delete>("cleanJs") {
+
+        description = "Cleans output of `assembleJs` task and output of its dependants."
+        group = jsAnyTask
+
+        delete(
+            assembleJs.outputs,
+            compileProtoToJs.outputs,
+            installNodePackages.outputs,
+        )
+
+        dependsOn(
+            cleanGenerated()
+        )
+    }
+
+
 /**
  * Locates `deleteCompiled` task in this [TaskContainer].
  *
@@ -46,3 +72,16 @@ val TaskContainer.cleanJs: Task
  */
 internal val TaskContainer.cleanGenerated: Delete
     get() = getByName<Delete>("cleanGenerated")
+
+private fun JsTaskRegistering.cleanGenerated() =
+    create<Delete>("cleanGenerated") {
+
+        description = "Cleans generated code and reports."
+        group = jsAnyTask
+
+        delete(
+            genProtoMain,
+            genProtoTest,
+            nycOutput,
+        )
+    }

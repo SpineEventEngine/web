@@ -28,7 +28,34 @@ package io.spine.internal.gradle.javascript.task
 
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+
+/**
+ * Extends `buildJs` and `testJs` to run `webpack` builds.
+ */
+fun JsTasks.webpack() {
+
+    assembleJs.apply {
+
+        outputs.dir(webPackOutput)
+
+        doLast {
+            npm("run", "build")
+            npm("run", "build-dev")
+        }
+    }
+
+    // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
+    // See: https://github.com/SpineEventEngine/web/issues/61
+
+//    prepareJsPublication.apply {
+//        dependsOn(
+//            copyBundledJs()
+//        )
+//    }
+}
+
 
 /**
  * Locates `copyBundledJs` task in this [TaskContainer].
@@ -37,3 +64,13 @@ import org.gradle.kotlin.dsl.getByName
  */
 internal val TaskContainer.copyBundledJs: Copy
     get() = getByName<Copy>("copyBundledJs")
+
+private fun JsTasks.copyBundledJs() =
+    create<Copy>("copyBundledJs") {
+
+        description = "Copies bundled JavaScript sources to the NPM publication directory."
+        group = jsAnyTask
+
+        from(assembleJs.outputs)
+        into(webpackPublicationDir)
+    }

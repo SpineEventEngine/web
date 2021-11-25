@@ -26,11 +26,61 @@
 
 package io.spine.internal.gradle.javascript.task
 
+import io.spine.internal.gradle.base.check
+import io.spine.internal.gradle.java.test
+import io.spine.internal.gradle.javascript.isWindows
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
+/**
+ * Registers tasks for verifying a JavaScript module.
+ *
+ * List of tasks to be created:
+ *
+ *  1. [checkJs][checkJs];
+ *  2. [auditNodePackages][auditNodePackages];
+ *  3. [testJs][testJs];
+ *  4. [coverageJs][coverageJs].
+ *
+ * An example of how to apply those tasks in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.js.javascript
+ * import io.spine.internal.gradle.js.task.impl.check
+ *
+ * // ...
+ *
+ * js {
+ *     tasks {
+ *         register {
+ *             check()
+ *         }
+ *     }
+ * }
+ * ```
+ */
+fun JsTaskRegistering.check() =
+    check.dependsOn(
+        checkJs()
+    )
+
+
 internal val TaskContainer.checkJs: Task
     get() = getByName("checkJs")
+
+private fun JsTaskRegistering.checkJs() =
+    create("checkJs") {
+
+        description = "Runs tests, audits NPM modules and creates a test-coverage report."
+        group = jsBuildTask
+
+        dependsOn(
+            auditNodePackages(),
+            coverageJs(),
+            testJs(),
+        )
+    }
+
 
 /**
  * Locates `auditNodePackages` task in this [TaskContainer].
@@ -46,6 +96,32 @@ internal val TaskContainer.checkJs: Task
 val TaskContainer.auditNodePackages: Task
     get() = getByName("auditNodePackages")
 
+private fun JsTaskRegistering.auditNodePackages() =
+    create("auditNodePackages") {
+
+        description = "Audits the module's Node dependencies."
+        group = jsBuildTask
+
+        inputs.dir(nodeModules)
+
+        doLast {
+
+            // Sets `critical` as the minimum level of vulnerability for `npm audit` to exit
+            // with a non-zero exit code.
+
+            npm("set", "audit-level", "critical")
+
+            try {
+                npm("audit")
+            } catch (ignored: Exception) {
+                npm("audit", "--registry", "https://registry.npmjs.eu")
+            }
+        }
+
+        dependsOn(installNodePackages)
+    }
+
+
 /**
  * Locates `coverageJs` task in this [TaskContainer].
  *
@@ -54,6 +130,30 @@ val TaskContainer.auditNodePackages: Task
 internal val TaskContainer.coverageJs: Task
     get() = getByName("coverageJs")
 
+private fun JsTaskRegistering.coverageJs() =
+    create("coverageJs") {
+
+        description = "Runs the JavaScript tests and collects the code coverage info."
+        group = jsAnyTask
+
+        outputs.dir(nycOutput)
+
+        // The statement below is not the best practice.
+        // But creating a dedicated task is not much better.
+        // This task is the only one in this group producing cleanable output.
+
+        cleanGenerated.doLast {
+            project.delete(outputs)
+        }
+
+        doLast {
+            npm("run", if (isWindows()) "coverage:win" else "coverage:unix")
+        }
+
+        dependsOn(assembleJs)
+    }
+
+
 /**
  * Locates `testJs` task in this [TaskContainer].
  *
@@ -61,3 +161,17 @@ internal val TaskContainer.coverageJs: Task
  */
 val TaskContainer.testJs: Task
     get() = getByName("testJs")
+
+private fun JsTaskRegistering.testJs() =
+    create("testJs") {
+
+        description = "Runs the JavaScript tests."
+        group = jsBuildTask
+
+        doLast {
+            npm("run", "test")
+        }
+
+        dependsOn(assembleJs)
+        mustRunAfter(test)
+    }
