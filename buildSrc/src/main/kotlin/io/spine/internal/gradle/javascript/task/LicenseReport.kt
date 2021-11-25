@@ -27,45 +27,7 @@
 package io.spine.internal.gradle.javascript.task
 
 import org.gradle.api.Task
-import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskContainer
-import org.gradle.kotlin.dsl.getByName
-
-/**
- * Locates `deleteCompiled` task in this [TaskContainer].
- *
- * The task cleans old module dependencies and build outputs.
- */
-internal val TaskContainer.cleanGenerated: Delete
-    get() = getByName<Delete>("cleanGenerated")
-
-/**
- * Locates `coverageJs` task in this [TaskContainer].
- *
- * The task runs the JavaScript tests and collects the code coverage.
- */
-internal val TaskContainer.coverageJs: Task
-    get() = getByName("coverageJs")
-
-internal val TaskContainer.checkJs: Task
-    get() = getByName("checkJs")
-
-/**
- * Locates `copyBundledJs` task in this [TaskContainer].
- *
- * The task copies JavaScript sources to the temporary NPM publication directory.
- */
-internal val TaskContainer.copyBundledJs: Copy
-    get() = getByName<Copy>("copyBundledJs")
-
-/**
- * Locates `transpileSources` task in this [TaskContainer].
- *
- * The task transpiles JavaScript sources before publishing them to NPM.
- */
-internal val TaskContainer.transpileSources: Task
-    get() = getByName("transpileSources")
 
 /**
  * Locates `npmLicenseReport` task in this [TaskContainer].

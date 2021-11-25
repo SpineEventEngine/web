@@ -45,6 +45,14 @@ internal val TaskContainer.prepareJsPublication: Copy
     get() = getByName<Copy>("prepareJsPublication")
 
 /**
+ * Locates `transpileSources` task in this [TaskContainer].
+ *
+ * The task transpiles JavaScript sources before publishing them to NPM.
+ */
+internal val TaskContainer.transpileSources: Task
+    get() = getByName("transpileSources")
+
+/**
  * Locates `publishJsLocally` task in this [TaskContainer].
  *
  * The task publishes locally the prepared NPM package

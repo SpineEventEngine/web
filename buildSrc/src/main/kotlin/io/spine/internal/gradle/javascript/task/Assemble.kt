@@ -30,6 +30,20 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
+ * Locates `assembleJs` task in this [TaskContainer].
+ *
+ * It is an aggregate task that assembles the JavaScript sources.
+ *
+ * The next tasks are to be executed:
+ *
+ *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
+ *  2. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
+ *  3. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs].
+ */
+val TaskContainer.assembleJs: Task
+    get() = getByName("assembleJs")
+
+/**
  * Locates `compileProtoToJs` task in this [TaskContainer].
  *
  * The task compiles Protobuf messages into JavaScript. This is a lifecycle task that performs
@@ -55,20 +69,6 @@ val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
 
 /**
- * Locates `auditNodePackages` task in this [TaskContainer].
- *
- * The task audits the module dependencies using the `npm audit` command.
- *
- * The `audit` command submits a description of the dependencies configured in the module
- * to the registry and asks for a report of known vulnerabilities. If any are found,
- * then the impact and appropriate remediation will be calculated.
- *
- * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
- */
-val TaskContainer.auditNodePackages: Task
-    get() = getByName("auditNodePackages")
-
-/**
  * Locates `updatePackageVersion` task in this [TaskContainer].
  *
  * The task sets the module's version in `package.json` to the value of
@@ -77,33 +77,3 @@ val TaskContainer.auditNodePackages: Task
  */
 val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
-
-/**
- * Locates `assembleJs` task in this [TaskContainer].
- *
- * It is an aggregate task that assembles the JavaScript sources.
- *
- * The next tasks are to be executed:
- *
- *  1. [updatePackageVersion][io.spine.internal.gradle.javascript.task.updatePackageVersion];
- *  2. [installNodePackages][io.spine.internal.gradle.javascript.task.installNodePackages];
- *  3. [compileProtoToJs][io.spine.internal.gradle.javascript.task.compileProtoToJs].
- */
-val TaskContainer.assembleJs: Task
-    get() = getByName("assembleJs")
-
-/**
- * Locates `cleanJs` task in this [TaskContainer].
- *
- * The task cleans up output of `buildJs` task and output of its dependants.
- */
-val TaskContainer.cleanJs: Task
-    get() = getByName("cleanJs")
-
-/**
- * Locates `testJs` task in this [TaskContainer].
- *
- * The task runs the JavaScript tests.
- */
-val TaskContainer.testJs: Task
-    get() = getByName("testJs")
