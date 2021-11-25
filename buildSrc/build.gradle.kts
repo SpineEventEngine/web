@@ -62,7 +62,6 @@ val protobufPluginVersion = "0.8.17"
  */
 val guavaVersion = "30.1.1-jre"
 
-
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")

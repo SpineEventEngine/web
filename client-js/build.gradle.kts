@@ -60,7 +60,6 @@ dependencies {
 
     val spineCoreVersion: String by project.extra
 
-
     protobuf(project(":web"))
     protobuf(project(":firebase-web"))
     protobuf(

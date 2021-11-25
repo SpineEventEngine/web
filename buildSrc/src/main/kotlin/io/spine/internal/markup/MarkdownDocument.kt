@@ -113,9 +113,9 @@ class MarkdownDocument {
     fun ol(): MarkdownDocument = nl().text("1. ")
 
     /**
-     * Write the contents of this document to the passed file.
+     * Writes the content of this document to the passed file.
      *
-     * The previous contents of this file are overwritten.
+     * The previous content of this file is overwritten.
      */
     fun writeToFile(file: File) {
         file.writeText(builder.toString())
