@@ -27,39 +27,13 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.javascript.javascript
-import io.spine.internal.gradle.javascript.plugins.idea
-import io.spine.internal.gradle.javascript.plugins.mcJs
-import io.spine.internal.gradle.javascript.plugins.protobuf
-import io.spine.internal.gradle.javascript.task.assemble
-import io.spine.internal.gradle.javascript.task.check
-import io.spine.internal.gradle.javascript.task.clean
-import io.spine.internal.gradle.javascript.task.publish
-import io.spine.internal.gradle.javascript.task.webpack
+import io.spine.internal.gradle.github.pages.updateGitHubPages
 
-javascript {
-    tasks {
-        register {
-            assemble()
-            clean()
-            publish()
-            check()
-        }
+apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
 
-        webpack()
-    }
-
-    plugins {
-        mcJs()
-        protobuf()
-        idea()
-    }
-}
+val spineCoreVersion: String by extra
 
 dependencies {
-
-    val spineCoreVersion: String by project.extra
-
     protobuf(project(":web"))
     protobuf(project(":firebase-web"))
     protobuf(
@@ -76,6 +50,20 @@ dependencies {
     )
 }
 
+idea.module {
+    sourceDirs.add(file(project.extra["srcDir"]!!))
+    testSourceDirs.add(file(project.extra["testSrcDir"]!!))
+
+    excludeDirs.addAll(
+        files(
+            project.extra["nycOutputDir"],
+            project.extra["genProtoMain"],
+            project.extra["genProtoTest"]
+        )
+    )
+}
+
+
 sourceSets {
     main {
         java.exclude("**/*.*")
@@ -87,19 +75,17 @@ sourceSets {
     }
 }
 
-tasks {
+// Suppress building the JS project as a Java module.
+tasks.compileJava {
+    enabled = false
+}
 
-    // Suppress building the JS project as a Java module.
-
-    compileJava.configure {
-        enabled = false
-    }
-    compileTestJava.configure {
-        enabled = false
-    }
+tasks.compileTestJava {
+    enabled = false
 }
 
 val jsDocDir = LazyTempPath("jsDocs")
+
 val jsDoc by tasks.registering(type = Exec::class) {
     commandLine(
         "$projectDir/node_modules/.bin/jsdoc",
