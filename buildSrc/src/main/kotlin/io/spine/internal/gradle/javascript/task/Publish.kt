@@ -85,7 +85,7 @@ private fun JsTaskRegistering.transpileSources() =
         group = jsAnyTask
 
         doLast {
-            npm("run", "transpile-before-publishing")
+            npm("run", "transpile-before-publish")
         }
     }
 
