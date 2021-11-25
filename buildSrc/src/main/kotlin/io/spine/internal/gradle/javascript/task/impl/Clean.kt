@@ -30,7 +30,6 @@ import io.spine.internal.gradle.base.clean
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import io.spine.internal.gradle.javascript.task.assembleJs
 import io.spine.internal.gradle.javascript.task.compileProtoToJs
-import io.spine.internal.gradle.javascript.task.coverageJs
 import io.spine.internal.gradle.javascript.task.installNodePackages
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.create
@@ -66,7 +65,6 @@ private fun JsTaskRegistering.cleanGenerated() =
         delete(
             genProtoMain,
             genProtoTest,
-            coverageJs.outputs,
             nycOutput,
         )
     }

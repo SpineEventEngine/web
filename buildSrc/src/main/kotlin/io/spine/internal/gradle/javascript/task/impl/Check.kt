@@ -31,6 +31,7 @@ import io.spine.internal.gradle.java.test
 import io.spine.internal.gradle.javascript.isWindows
 import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import io.spine.internal.gradle.javascript.task.assembleJs
+import io.spine.internal.gradle.javascript.task.cleanGenerated
 import io.spine.internal.gradle.javascript.task.installNodePackages
 
 /**
@@ -110,6 +111,14 @@ private fun JsTaskRegistering.coverageJs() =
         group = jsAnyTask
 
         outputs.dir(nycOutput)
+
+        // The statement below is not the best practice.
+        // But creating a dedicated task is not much better.
+        // This task is the only one in this group producing cleanable output.
+
+        cleanGenerated.doLast {
+            project.delete(outputs)
+        }
 
         doLast {
             npm("run", if (isWindows()) "coverage:win" else "coverage:unix")

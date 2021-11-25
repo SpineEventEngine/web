@@ -64,7 +64,7 @@ fun JsTaskRegistering.assemble() =
     )
 
 private fun JsTaskRegistering.assembleJs() =
-    create("buildJs") {
+    create("assembleJs") {
 
         description = "Assembles the JavaScript sources."
         group = jsBuildTask

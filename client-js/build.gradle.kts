@@ -42,8 +42,8 @@ javascript {
         register {
             assemble()
             publish()
-            check()
             clean()
+            check()
         }
         configure {
             webPack()
@@ -58,7 +58,7 @@ javascript {
 
 dependencies {
 
-    val spineCoreVersion: String by extra
+    val spineCoreVersion: String by project.extra
 
 
     protobuf(project(":web"))

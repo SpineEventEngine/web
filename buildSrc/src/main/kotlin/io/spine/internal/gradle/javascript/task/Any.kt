@@ -37,8 +37,8 @@ import org.gradle.kotlin.dsl.getByName
  *
  * The task cleans old module dependencies and build outputs.
  */
-internal val TaskContainer.deleteCompiled: Delete
-    get() = getByName<Delete>("deleteCompiled")
+internal val TaskContainer.cleanGenerated: Delete
+    get() = getByName<Delete>("cleanGenerated")
 
 /**
  * Locates `coverageJs` task in this [TaskContainer].
