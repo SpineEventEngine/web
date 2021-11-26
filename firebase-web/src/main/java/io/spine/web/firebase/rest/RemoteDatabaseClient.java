@@ -26,7 +26,6 @@
 
 package io.spine.web.firebase.rest;
 
-import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.util.BackOff;
@@ -77,12 +76,12 @@ public final class RemoteDatabaseClient implements FirebaseClient {
     public Optional<NodeValue> fetchNode(NodePath nodePath) {
         checkNotNull(nodePath);
 
-        GenericUrl nodeUrl = url(nodePath);
-        String data = httpClient.get(nodeUrl);
-        StoredJson json = StoredJson.from(data);
-        Optional<NodeValue> nodeValue = Optional.of(json)
-                                                .filter(value -> !value.isNull())
-                                                .map(StoredJson::asNodeValue);
+        var nodeUrl = url(nodePath);
+        var data = httpClient.get(nodeUrl);
+        var json = StoredJson.from(data);
+        var nodeValue = Optional.of(json)
+                                .filter(value -> !value.isNull())
+                                .map(StoredJson::asNodeValue);
         return nodeValue;
     }
 
@@ -99,8 +98,8 @@ public final class RemoteDatabaseClient implements FirebaseClient {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = url(nodePath);
-        ByteArrayContent byteArrayContent = value.toByteArray();
+        var nodeUrl = url(nodePath);
+        var byteArrayContent = value.toByteArray();
         httpClient.put(nodeUrl, byteArrayContent);
     }
 
@@ -109,8 +108,8 @@ public final class RemoteDatabaseClient implements FirebaseClient {
         checkNotNull(nodePath);
         checkNotNull(value);
 
-        GenericUrl nodeUrl = url(nodePath);
-        ByteArrayContent byteArrayContent = value.toByteArray();
+        var nodeUrl = url(nodePath);
+        var byteArrayContent = value.toByteArray();
         httpClient.patch(nodeUrl, byteArrayContent);
     }
 
@@ -118,7 +117,7 @@ public final class RemoteDatabaseClient implements FirebaseClient {
     public void delete(NodePath nodePath) {
         checkNotNull(nodePath);
 
-        GenericUrl nodeUrl = url(nodePath);
+        var nodeUrl = url(nodePath);
         httpClient.delete(nodeUrl);
     }
 
@@ -177,11 +176,10 @@ public final class RemoteDatabaseClient implements FirebaseClient {
         }
 
         private RestNodeUrls buildNodeUrls() {
-            String databaseUrl = database
-                    .getApp()
+            var databaseUrl = database.getApp()
                     .getOptions()
                     .getDatabaseUrl();
-            RestNodeUrls urls = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
+            var urls = new RestNodeUrls(DatabaseUrls.from(databaseUrl));
             return urls;
         }
 
