@@ -54,7 +54,7 @@ internal val TaskContainer.clean: Delete
  * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">
  *     Tasks | The Base Plugin</a>
  */
-internal val TaskContainer.check: Task
+val TaskContainer.check: Task
     get() = getByName("check")
 
 /**

@@ -132,7 +132,7 @@ private fun JsTaskRegistering.auditNodePackages() =
  *
  * The task runs the JavaScript tests and collects the code coverage.
  */
-internal val TaskContainer.coverageJs: Task
+val TaskContainer.coverageJs: Task
     get() = getByName("coverageJs")
 
 private fun JsTaskRegistering.coverageJs() =

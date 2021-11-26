@@ -26,6 +26,7 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
+import io.spine.internal.gradle.base.check
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.javascript.javascript
 import io.spine.internal.gradle.javascript.plugins.idea
@@ -34,6 +35,7 @@ import io.spine.internal.gradle.javascript.plugins.protobuf
 import io.spine.internal.gradle.javascript.task.assemble
 import io.spine.internal.gradle.javascript.task.check
 import io.spine.internal.gradle.javascript.task.clean
+import io.spine.internal.gradle.javascript.task.coverageJs
 import io.spine.internal.gradle.javascript.task.publish
 import io.spine.internal.gradle.javascript.task.webpack
 
@@ -43,7 +45,10 @@ javascript {
             assemble()
             clean()
             publish()
-            check()
+
+            check {
+                rootProject.tasks.check.dependsOn(coverageJs)
+            }
         }
 
         webpack()
