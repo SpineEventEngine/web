@@ -24,17 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.web;
-
-import com.google.protobuf.Message;
-
-import javax.servlet.ServletResponse;
-
 /**
- * A result of a request to Spine Web that can be written to a 
- * {@linkplain ServletResponse servlet response}.
+ * This package declares the routines designed to simplify testing of the web API exposed by Spine.
  */
-public interface RequestResult<T extends Message> {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.web.given;
 
-    T response();
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -33,6 +33,6 @@ package io.spine.internal.dependency
  */
 object CommonsCollections {
     // https://commons.apache.org/proper/commons-collections/
-    private const val version = "3.2.2."
+    private const val version = "3.2.2"
     const val lib = "commons-collections:commons-collections:${version}"
 }

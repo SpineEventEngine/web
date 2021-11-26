@@ -126,7 +126,7 @@ public final class MemoizingFirebase implements FirebaseClient {
      *         if no value is present for the {@code path}
      */
     public NodeValue valueFor(NodePath path) {
-        NodeValue result = writes.get(path);
+        var result = writes.get(path);
         if (result == null) {
             throw newIllegalStateException(
                     "A value is expected to be present at path `%s`.", path.getValue()

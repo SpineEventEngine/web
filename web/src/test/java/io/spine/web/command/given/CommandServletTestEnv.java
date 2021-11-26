@@ -37,9 +37,7 @@ final class CommandServletTestEnv {
     }
 
     static CommandService emptyCommandService() {
-        CommandService commandService = CommandService
-                .newBuilder()
-                .build();
+        var commandService = CommandService.newBuilder().build();
         return commandService;
     }
 }

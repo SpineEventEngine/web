@@ -40,6 +40,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>This implementation works only with the unary gRPC calls, i.e. {@link #onNext(Object)} cannot
  * be called more then once.
+ *
+ * @param <T>
+ *         the type of observed values
  */
 public final class FutureObserver<T> implements StreamObserver<T> {
 

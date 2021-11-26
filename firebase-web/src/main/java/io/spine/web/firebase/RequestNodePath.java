@@ -28,9 +28,7 @@ package io.spine.web.firebase;
 
 import io.spine.annotation.Internal;
 import io.spine.client.Query;
-import io.spine.client.QueryId;
 import io.spine.client.Topic;
-import io.spine.core.ActorContext;
 import io.spine.core.TenantId;
 
 /**
@@ -55,11 +53,10 @@ public final class RequestNodePath {
      * @return new {@code NodePath}
      */
     public static NodePath of(Query query) {
-        ActorContext context = query.getContext();
-        NodePath tenantId = tenantIdAsPath(context.getTenantId());
-        String actor = context.getActor()
-                              .getValue();
-        String queryId = queryIdAsString(query);
+        var context = query.getContext();
+        var tenantId = tenantIdAsPath(context.getTenantId());
+        var actor = context.getActor().getValue();
+        var queryId = queryIdAsString(query);
         return NodePaths.of(tenantId.getValue(), actor, queryId);
     }
 
@@ -72,10 +69,10 @@ public final class RequestNodePath {
      * @return new {@code NodePath}
      */
     public static NodePath of(Topic topic) {
-        ActorContext context = topic.getContext();
-        NodePath tenantId = tenantIdAsPath(context.getTenantId());
-        String actor = context.getActor().getValue();
-        String topicId = topic.getId().getValue();
+        var context = topic.getContext();
+        var tenantId = tenantIdAsPath(context.getTenantId());
+        var actor = context.getActor().getValue();
+        var topicId = topic.getId().getValue();
         return NodePaths.of(tenantId.getValue(), actor, topicId);
     }
 
@@ -94,7 +91,7 @@ public final class RequestNodePath {
      * @return new {@code NodePath}
      */
     public static NodePath tenantIdAsPath(TenantId tenantId) {
-        TenantId.KindCase kind = tenantId.getKindCase();
+        var kind = tenantId.getKindCase();
         switch (kind) {
             case EMAIL:
                 return NodePaths.of(tenantId.getEmail().getValue());
@@ -109,8 +106,8 @@ public final class RequestNodePath {
     }
 
     private static String queryIdAsString(Query query) {
-        QueryId queryId = query.getId();
-        String result = queryId.getValue();
+        var queryId = query.getId();
+        var result = queryId.getValue();
         return result;
     }
 }

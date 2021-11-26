@@ -73,6 +73,7 @@ import static java.lang.String.format;
  * {@linkplain #keepUp keep up} the created {@linkplain Subscription subscription},
  * and {@linkplain #cancel cancel} the created subscription.
  */
+@SuppressWarnings("OverlyCoupledClass") /* This is fine for this integration node. */
 public final class FirebaseSubscriptionBridge
         implements SubscriptionBridge {
 
@@ -90,13 +91,13 @@ public final class FirebaseSubscriptionBridge
     @Override
     public SubscriptionsCreated subscribe(Subscribe request) {
         checkNotNull(request);
-        Optional<Timestamp> expirationTime = calculateExpirationTime(request.getLifespan());
-        if (!expirationTime.isPresent()) {
+        var expirationTime = calculateExpirationTime(request.getLifespan());
+        if (expirationTime.isEmpty()) {
             return invalidDuration(request);
         }
-        Timestamp validThru = expirationTime.get();
-        SubscriptionsCreated.Builder result = SubscriptionsCreated.newBuilder();
-        for (Topic topic : request.getTopicList()) {
+        var validThru = expirationTime.get();
+        var result = SubscriptionsCreated.newBuilder();
+        for (var topic : request.getTopicList()) {
             result.addResult(subscribe(topic, validThru));
         }
         return result.setValidThru(validThru)
@@ -104,8 +105,8 @@ public final class FirebaseSubscriptionBridge
     }
 
     private static SubscriptionsCreated invalidDuration(Subscribe request) {
-        Error error = invalidDurationError(request.getLifespan(), "create");
-        SubscriptionOrError subscriptionOrError = SubscriptionOrError.newBuilder()
+        var error = invalidDurationError(request.getLifespan(), "create");
+        var subscriptionOrError = SubscriptionOrError.newBuilder()
                 .setError(error)
                 .build();
         return SubscriptionsCreated.newBuilder()
@@ -114,7 +115,7 @@ public final class FirebaseSubscriptionBridge
     }
 
     private static Error invalidDurationError(Duration duration, String operationName) {
-        Error error = Error.newBuilder()
+        var error = Error.newBuilder()
                 .setType(SubscriptionValidationError.class.getName())
                 .setCode(INVALID_SUBSCRIPTION_VALUE)
                 .setMessage(format(
@@ -127,50 +128,49 @@ public final class FirebaseSubscriptionBridge
     }
 
     private SubscriptionOrError subscribe(Topic topic, Timestamp validThru) {
-        NodePath path = RequestNodePath.of(topic);
-        Subscription subscription = Subscription
-                .newBuilder()
+        var path = RequestNodePath.of(topic);
+        var subscription = Subscription.newBuilder()
                 .setId(path.asSubscriptionId())
                 .setTopic(topic)
                 .buildPartial();
-        TimedSubscription timed = TimedSubscription.newBuilder()
+        var timed = TimedSubscription.newBuilder()
                 .setSubscription(subscription)
                 .setValidThru(validThru)
                 .build();
-        SubscriptionOrError response = repository.create(timed);
+        var response = repository.create(timed);
         response = enrichSubscription(response, path);
         return response;
     }
 
     private static SubscriptionOrError enrichSubscription(SubscriptionOrError subscription,
                                                           NodePath firebasePath) {
-        SubscriptionOrError.Builder builder = subscription.toBuilder();
+        var builder = subscription.toBuilder();
         builder.getSubscriptionBuilder()
                .addExtra(pack(firebasePath));
         return builder.build();
     }
 
     private Optional<Timestamp> calculateExpirationTime(Duration suggestedLifespan) {
-        Optional<Duration> lifespan = normalizedProlongation(suggestedLifespan);
+        var lifespan = normalizedProlongation(suggestedLifespan);
         return lifespan.map(l -> add(currentTime(), l));
     }
 
     @Override
     public SubscriptionsKeptUp keepUp(KeepUp request) {
-        Optional<Duration> duration = normalizedProlongation(request.getProlongBy());
-        if (!duration.isPresent()) {
+        var duration = normalizedProlongation(request.getProlongBy());
+        if (duration.isEmpty()) {
             return invalidProlongation(request);
         }
-        Duration prolongation = duration.get();
-        SubscriptionsKeptUp.Builder response = SubscriptionsKeptUp.newBuilder();
-        for (SubscriptionId id : request.getSubscriptionList()) {
+        var prolongation = duration.get();
+        var response = SubscriptionsKeptUp.newBuilder();
+        for (var id : request.getSubscriptionList()) {
             response.addOutcome(keepUp(prolongation, id));
         }
         return response.build();
     }
 
     private static SubscriptionsKeptUp invalidProlongation(KeepUp request) {
-        KeepUpOutcome outcome = KeepUpOutcome.newBuilder()
+        var outcome = KeepUpOutcome.newBuilder()
                 .setError(invalidDurationError(request.getProlongBy(), "keep up"))
                 .build();
         return SubscriptionsKeptUp.newBuilder()
@@ -179,13 +179,13 @@ public final class FirebaseSubscriptionBridge
     }
 
     private KeepUpOutcome keepUp(Duration prolongation, SubscriptionId id) {
-        KeepUpOutcome.Builder outcome = KeepUpOutcome.newBuilder()
+        var outcome = KeepUpOutcome.newBuilder()
                 .setId(id);
-        Optional<TimedSubscription> subscription = repository.find(id);
+        var subscription = repository.find(id);
         if (subscription.isPresent()) {
-            TimedSubscription oldValue = subscription.get();
-            Timestamp newTime = add(oldValue.getValidThru(), prolongation);
-            TimedSubscription newValue = oldValue.toBuilder()
+            var oldValue = subscription.get();
+            var newTime = add(oldValue.getValidThru(), prolongation);
+            var newValue = oldValue.toBuilder()
                     .setValidThru(newTime)
                     .build();
             repository.update(newValue);
@@ -212,19 +212,19 @@ public final class FirebaseSubscriptionBridge
     @Override
     public SubscriptionsCancelled cancel(Cancel request) {
         checkNotNull(request);
-        SubscriptionsCancelled.Builder result = SubscriptionsCancelled.newBuilder();
-        for (SubscriptionId id : request.getSubscriptionList()) {
+        var result = SubscriptionsCancelled.newBuilder();
+        for (var id : request.getSubscriptionList()) {
             result.addAck(cancel(id));
         }
         return result.build();
     }
 
     private Ack cancel(SubscriptionId id) {
-        Ack.Builder ack = Ack.newBuilder()
+        var ack = Ack.newBuilder()
                 .setMessageId(pack(id));
-        Optional<Subscription> subscription = repository.findLocal(id);
+        var subscription = repository.findLocal(id);
         if (subscription.isPresent()) {
-            Subscription localSubscription = subscription.get();
+            var localSubscription = subscription.get();
             repository.cancel(localSubscription);
             ack.setStatus(statusOk());
         } else {
@@ -234,11 +234,9 @@ public final class FirebaseSubscriptionBridge
     }
 
     private static Error missingError(SubscriptionId subscription) {
-        String errorMessage =
-                format("Subscription `%s` is unknown or already canceled.",
-                       subscription.getValue());
-        Error error = Error
-                .newBuilder()
+        var errorMessage = format("Subscription `%s` is unknown or already canceled.",
+                                  subscription.getValue());
+        var error = Error.newBuilder()
                 .setMessage(errorMessage)
                 .setType(SubscriptionValidationError.getDescriptor()
                                                     .getFullName())
@@ -248,9 +246,8 @@ public final class FirebaseSubscriptionBridge
     }
 
     private static Status missingStatus(SubscriptionId subscription) {
-        Error error = missingError(subscription);
-        return Status
-                .newBuilder()
+        var error = missingError(subscription);
+        return Status.newBuilder()
                 .setError(error)
                 .buildPartial();
     }

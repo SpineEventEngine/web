@@ -56,12 +56,12 @@ public final class BlockingQueryService {
     public QueryResponse execute(Query query) {
         MemoizingObserver<QueryResponse> observer = memoizingObserver();
         queryService.read(query, observer);
-        Throwable error = observer.getError();
+        var error = observer.getError();
         if (error != null) {
             throw illegalStateWithCauseOf(error);
         }
         checkState(observer.isCompleted());
-        QueryResponse response = observer.firstResponse();
+        var response = observer.firstResponse();
         return response;
     }
 }

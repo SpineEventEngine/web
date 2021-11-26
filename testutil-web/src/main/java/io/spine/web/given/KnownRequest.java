@@ -27,7 +27,6 @@
 package io.spine.web.given;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -125,7 +124,7 @@ public final class KnownRequest implements MockedRequest {
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        ImmutableSet<String> names = headers.keySet();
+        var names = headers.keySet();
         return asEnumeration(names.iterator());
     }
 

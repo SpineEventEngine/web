@@ -43,7 +43,7 @@ final class KnownRequestTest {
     @Test
     @DisplayName("not tolerate `null`s")
     void notTolerateNull() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicStaticMethods(KnownRequest.class);
         tester.testAllPublicInstanceMethods(KnownRequest.newBuilder());
     }
@@ -53,13 +53,13 @@ final class KnownRequestTest {
     @SuppressWarnings("JdkObsolete")
         // we're force to follow the contract
     void returnSetValues() throws IOException {
-        String text = "some text";
-        String uri = "/perform/action";
-        MediaType type = MediaType.PLAIN_TEXT_UTF_8;
-        String headerName = "custom";
-        String headerValue = "header";
-        ImmutableMap<String, String> headers = ImmutableMap.of(headerName, headerValue);
-        KnownRequest request = KnownRequest
+        var text = "some text";
+        var uri = "/perform/action";
+        var type = MediaType.PLAIN_TEXT_UTF_8;
+        var headerName = "custom";
+        var headerValue = "header";
+        var headers = ImmutableMap.of(headerName, headerValue);
+        var request = KnownRequest
                 .newBuilder()
                 .withContent(text)
                 .withType(type)
@@ -90,7 +90,7 @@ final class KnownRequestTest {
     @Test
     @DisplayName("create empty request")
     void empty() throws IOException {
-        KnownRequest request = KnownRequest.empty();
+        var request = KnownRequest.empty();
         assertThat(request.getContentLength())
                 .isEqualTo(0);
         assertThat(request.getContentLengthLong())

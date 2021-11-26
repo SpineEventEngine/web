@@ -27,13 +27,8 @@
 package io.spine.web.firebase;
 
 import com.google.common.collect.Iterators;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-import java.util.Set;
 
 import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static com.google.common.truth.Truth.assertThat;
@@ -49,22 +44,22 @@ class NodeValueTest {
     @Test
     @DisplayName("be empty when created via the default constructor")
     void beCreatedEmpty() {
-        NodeValue value = NodeValue.empty();
-        JsonObject underlyingJson = value.underlyingJson();
+        var value = NodeValue.empty();
+        var underlyingJson = value.underlyingJson();
         assertEmpty(underlyingJson.entrySet());
     }
 
     @Test
     @DisplayName("allow creation from the existing JSON string")
     void beCreatedFromString() {
-        NodeValue value = NodeValue.from(DATA);
+        var value = NodeValue.from(DATA);
         assertSingleChild(value, KEY, VALUE);
     }
 
     @Test
     @DisplayName("add a new child under the generated key")
     void pushChild() {
-        NodeValue value = NodeValue.empty();
+        var value = NodeValue.empty();
         value.addChild(VALUE);
         assertSingleChild(value, VALUE);
     }
@@ -72,19 +67,18 @@ class NodeValueTest {
     @Test
     @DisplayName("add a new child with a predefined key")
     void addChildWithKey() {
-        NodeValue value = NodeValue.empty();
+        var value = NodeValue.empty();
         value.addChild(KEY, VALUE);
         assertSingleChild(value, KEY, VALUE);
     }
 
     private static void assertSingleChild(NodeValue value, StoredJson childValue) {
-        JsonObject underlyingJson = value.underlyingJson();
-        Set<Map.Entry<String, JsonElement>> entries = underlyingJson.entrySet();
+        var underlyingJson = value.underlyingJson();
+        var entries = underlyingJson.entrySet();
         assertThat(entries)
                 .hasSize(1);
 
-        String valueString = Iterators
-                .getOnlyElement(entries.iterator())
+        String valueString = Iterators.getOnlyElement(entries.iterator())
                 .getValue()
                 .getAsString();
         assertThat(valueString)
@@ -93,10 +87,10 @@ class NodeValueTest {
 
     private static void
     assertSingleChild(NodeValue value, String childKey, StoredJson childValue) {
-        JsonObject underlyingJson = value.underlyingJson();
+        var underlyingJson = value.underlyingJson();
         assertTrue(underlyingJson.has(childKey));
-        String actual = underlyingJson.get(childKey)
-                                      .getAsString();
+        var actual = underlyingJson.get(childKey)
+                                   .getAsString();
         assertThat(actual)
                 .isEqualTo(childValue.value());
     }

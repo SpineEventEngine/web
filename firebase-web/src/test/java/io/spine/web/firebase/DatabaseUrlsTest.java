@@ -44,8 +44,8 @@ class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
     @Test
     @DisplayName("be created from a remote RDB URL")
     void acceptRemoteRdb() {
-        String dbUrl = "https://spine-dev.firebaseio.com";
-        DatabaseUrl url = DatabaseUrls.from(dbUrl);
+        var dbUrl = "https://spine-dev.firebaseio.com";
+        var url = DatabaseUrls.from(dbUrl);
         assertThat(url.getUrl())
                 .isEqualTo(Urls.create(dbUrl));
         assertThat(url.getNamespace())
@@ -55,8 +55,8 @@ class DatabaseUrlsTest extends UtilityClassTest<DatabaseUrls> {
     @Test
     @DisplayName("be created from a local emulator URL")
     void acceptLocalEmulator() {
-        String dbUrl = "http://localhost:5000?ns=spine-dev";
-        DatabaseUrl url = DatabaseUrls.from(dbUrl);
+        var dbUrl = "http://localhost:5000?ns=spine-dev";
+        var url = DatabaseUrls.from(dbUrl);
         assertThat(url.getUrl())
                 .isEqualTo(Urls.create("http://localhost:5000"));
         assertThat(url.getNamespace())

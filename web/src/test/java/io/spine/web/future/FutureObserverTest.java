@@ -35,7 +35,6 @@ import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`FutureObserver` should")
@@ -45,7 +44,7 @@ class FutureObserverTest {
     @DisplayName("instantiate self")
     void testCreateDefault() {
         FutureObserver<String> observer = FutureObserver.create();
-        String value = "hello";
+        var value = "hello";
         observer.onNext(value);
         assertResult(observer)
                 .isEqualTo(value);
@@ -66,8 +65,8 @@ class FutureObserverTest {
     @Test
     @DisplayName("complete with given default value")
     void testDefaultValue() {
-        String defaultValue = "Aquaman";
-        FutureObserver<String> observer = FutureObserver.withDefault(defaultValue);
+        var defaultValue = "Aquaman";
+        var observer = FutureObserver.withDefault(defaultValue);
         observer.onCompleted();
         assertResult(observer)
                 .isEqualTo(defaultValue);
@@ -85,7 +84,7 @@ class FutureObserverTest {
     @DisplayName("override value with error if onError() called")
     void testOverrideWithError() {
         FutureObserver<String> observer = FutureObserver.create();
-        String value = "Titanic";
+        var value = "Titanic";
         observer.onNext(value);
         assertResult(observer)
                 .isEqualTo(value);

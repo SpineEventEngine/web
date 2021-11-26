@@ -28,12 +28,11 @@ package io.spine.web.firebase;
 
 import com.google.common.base.Joiner;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * A static factory for {@link NodePath}.
@@ -62,7 +61,7 @@ public final class NodePaths {
     public static NodePath of(String... pathElements) {
         checkNotNull(pathElements);
         checkArgument(pathElements.length > 0);
-        String path = concatPath(pathElements);
+        var path = concatPath(pathElements);
         return of(path);
     }
 
@@ -85,8 +84,8 @@ public final class NodePaths {
     }
 
     private static String concatPath(String... elements) {
-        Collection<String> pathElements = newArrayList();
-        for (String element : elements) {
+        var pathElements = new ArrayList<String>(elements.length);
+        for (var element : elements) {
             if (!element.isEmpty()) {
                 pathElements.add(element);
             }

@@ -40,11 +40,11 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     @Assign
     TaskCreated handle(CreateTask command) {
-        TaskCreated.Builder taskCreated = TaskCreated.newBuilder()
-                                                     .setId(command.getId())
-                                                     .setName(command.getName())
-                                                     .setDescription(command.getDescription())
-                                                     .setWhen(currentTime());
+        var taskCreated = TaskCreated.newBuilder()
+                .setId(command.getId())
+                .setName(command.getName())
+                .setDescription(command.getDescription())
+                .setWhen(currentTime());
         if (command.hasAssignee()) {
             taskCreated.setAssignee(command.getAssignee());
         }
@@ -54,8 +54,7 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     @Assign
     TaskRenamed handle(RenameTask command) {
-        return TaskRenamed
-                .newBuilder()
+        return TaskRenamed.newBuilder()
                 .setId(command.getId())
                 .setName(command.getName())
                 .setWhen(currentTime())
@@ -64,10 +63,10 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
 
     @Assign
     TaskReassigned handle(ReassignTask command) {
-        TaskReassigned.Builder taskReassigned = TaskReassigned.newBuilder()
-                                                              .setId(command.getId())
-                                                              .setTo(command.getNewAssignee())
-                                                              .setWhen(currentTime());
+        var taskReassigned = TaskReassigned.newBuilder()
+                .setId(command.getId())
+                .setTo(command.getNewAssignee())
+                .setWhen(currentTime());
         if (state().hasAssignee()) {
             taskReassigned.setFrom(state().getAssignee());
         }

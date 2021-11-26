@@ -35,7 +35,6 @@ import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.core.Version;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static io.spine.core.Responses.ok;
@@ -57,19 +56,16 @@ public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBas
 
     @Override
     public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
-        QueryResponse queryResponse =
-                QueryResponse
-                        .newBuilder()
-                        .setResponse(ok())
-                        .addAllMessage(new ArrayList<>(response))
-                        .vBuild();
+        var queryResponse = QueryResponse.newBuilder()
+                .setResponse(ok())
+                .addAllMessage(response)
+                .vBuild();
         responseObserver.onNext(queryResponse);
         responseObserver.onCompleted();
     }
 
     private static EntityStateWithVersion toEntityState(Message message) {
-        EntityStateWithVersion result = EntityStateWithVersion
-                .newBuilder()
+        var result = EntityStateWithVersion.newBuilder()
                 .setState(pack(message))
                 .setVersion(Version.getDefaultInstance())
                 .build();
