@@ -65,7 +65,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static void assertSubscriptionPointsToFirebase(NodePath path, Topic topic) {
-        String actor = actorAsString(topic);
+        var actor = actorAsString(topic);
         Collection<String> pathElements = newArrayList(
                 DEFAULT_TENANT, escaped(actor), topic.getId().getValue()
         );
@@ -75,8 +75,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     private static String actorAsString(Topic topic) {
-        UserId actor = topic.getContext()
-                            .getActor();
+        var actor = topic.getContext().getActor();
         return actor.getValue();
     }
 
@@ -119,8 +118,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static TopicFactory topicFactory() {
-        UserId userId = UserId
-                .newBuilder()
+        var userId = UserId.newBuilder()
                 .setValue("test-user")
                 .vBuild();
         return new TestActorRequestFactory(userId).topic();
