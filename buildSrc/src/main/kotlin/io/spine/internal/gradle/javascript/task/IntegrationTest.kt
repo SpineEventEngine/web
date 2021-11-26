@@ -38,11 +38,11 @@ import org.gradle.api.tasks.TaskContainer
  *
  * See https://docs.npmjs.com/cli/link for details.
  */
-val TaskContainer.installLocalPackage: Task
-    get() = getByName("installLocalPackage")
+val TaskContainer.linkClientJsModule: Task
+    get() = getByName("linkClientJsModule")
 
-fun JsTaskRegistering.installLocalPackage() =
-    register("installLocalPackage") {
+fun JsTaskRegistering.linkClientJsModule() =
+    register("linkClientJsModule") {
         description = "Install unpublished artifact of `spine-web` library as a module dependency."
 
         dependsOn(":client-js:publishJsLocally")
@@ -72,10 +72,6 @@ fun JsTaskRegistering.integrationTest() =
 
         description = "Runs integration tests of the `spine-web` library against the sample application."
 
-        dependsOn(build, installLocalPackage, ":test-app:appBeforeIntegrationTest")
+        dependsOn(build, linkClientJsModule, ":test-app:appBeforeIntegrationTest")
         finalizedBy(":test-app:appAfterIntegrationTest")
-
-        doLast {
-            npm("run", "test")
-        }
     }
