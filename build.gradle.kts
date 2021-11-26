@@ -100,6 +100,10 @@ plugins {
     io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
         id(id) version version
     }
+
+    // temporary.
+    // helpful during migration.
+    id("com.dorongold.task-tree") version "2.1.0"
 }
 
 apply(from = "$rootDir/version.gradle.kts")

@@ -59,10 +59,15 @@ import org.gradle.api.tasks.TaskContainer
  * }
  * ```
  */
-fun JsTaskRegistering.check() =
+fun JsTaskRegistering.check(configuration: JsTaskRegistering.() -> Unit = {}) {
+
     check.dependsOn(
         checkJs()
     )
+
+    configuration()
+}
+
 
 
 internal val TaskContainer.checkJs: Task
