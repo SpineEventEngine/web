@@ -100,54 +100,53 @@ final class SubscriptionRepository {
      *         the subscription to store
      */
     SubscriptionOrError create(TimedSubscription subscription) {
-        SubscriptionOrError response = subscribe(subscription);
+        var response = subscribe(subscription);
         if (response.hasSubscription()) {
             healthLog.put(subscription);
-            StoredJson jsonSubscription = StoredJson.encode(subscription);
-            NodePath path = pathForMeta(subscription.id());
+            var jsonSubscription = StoredJson.encode(subscription);
+            var path = pathForMeta(subscription.id());
             firebase.update(path, jsonSubscription.asNodeValue());
         }
         return response;
     }
 
     Optional<TimedSubscription> find(SubscriptionId id) {
-        NodePath path = pathForMeta(id);
+        var path = pathForMeta(id);
         return firebase.fetchNode(path)
                 .map(node -> node.as(TimedSubscription.class));
     }
 
     Optional<Subscription> findLocal(SubscriptionId globalId) {
-        Optional<TimedSubscription> global = find(globalId);
+        var global = find(globalId);
         return global.flatMap(s -> subscriptionRegistry.localSubscriptionFor(s.topic()));
     }
 
     void update(TimedSubscription subscription) {
-        NodePath path = pathForMeta(subscription.getSubscription());
+        var path = pathForMeta(subscription.getSubscription());
         healthLog.put(subscription);
-        StoredJson jsonSubscription = StoredJson.encode(subscription);
+        var jsonSubscription = StoredJson.encode(subscription);
         firebase.update(path, jsonSubscription.asNodeValue());
     }
 
     @CanIgnoreReturnValue
     private SubscriptionOrError subscribe(TimedSubscription timedSubscription) {
-        Topic topic = timedSubscription.topic();
-        Optional<Subscription> localSubscription =
-                subscriptionRegistry.localSubscriptionFor(topic);
+        var topic = timedSubscription.topic();
+        var localSubscription = subscriptionRegistry.localSubscriptionFor(topic);
         if (localSubscription.isPresent()) {
-            Subscription existing = localSubscription.get();
+            var existing = localSubscription.get();
             return SubscriptionOrError.newBuilder()
                     .setSubscription(WebSubscription.newBuilder().setSubscription(existing))
                     .build();
         }
-        SubscriptionOrError response = newSubscription(timedSubscription, topic);
+        var response = newSubscription(timedSubscription, topic);
         return response;
     }
 
     private SubscriptionOrError newSubscription(TimedSubscription timedSubscription, Topic topic) {
-        SubscriptionOrError response = subscriptionService.subscribe(topic, updateObserver);
+        var response = subscriptionService.subscribe(topic, updateObserver);
         if (response.hasSubscription()) {
             subscriptionRegistry.register(response.getSubscription().getSubscription());
-            SubscriptionOrError.Builder responseBuilder = response.toBuilder();
+            var responseBuilder = response.toBuilder();
             responseBuilder.getSubscriptionBuilder()
                            .getSubscriptionBuilder()
                            .setId(timedSubscription.id());
@@ -170,7 +169,7 @@ final class SubscriptionRepository {
     }
 
     private void delete(SubscriptionId subscription) {
-        NodePath path = pathForMeta(subscription);
+        var path = pathForMeta(subscription);
         firebase.delete(path);
     }
 
@@ -210,14 +209,14 @@ final class SubscriptionRepository {
         }
 
         private void updateSubscription(DataSnapshot snapshot) {
-            String json = asJson(snapshot);
-            TimedSubscription subscription = loadSubscription(json);
+            var json = asJson(snapshot);
+            var subscription = loadSubscription(json);
             deleteOrActivate(subscription);
         }
 
         private static String asJson(DataSnapshot snapshot) {
-            Object value = snapshot.getValue();
-            ObjectMapper mapper = new ObjectMapper();
+            var value = snapshot.getValue();
+            var mapper = new ObjectMapper();
             try {
                 return mapper.writeValueAsString(value);
             } catch (JsonProcessingException e) {
@@ -226,13 +225,13 @@ final class SubscriptionRepository {
         }
 
         private TimedSubscription loadSubscription(String json) {
-            TimedSubscription subscription = Json.fromJson(json, TimedSubscription.class);
+            var subscription = Json.fromJson(json, TimedSubscription.class);
             repository.healthLog.put(subscription);
             return subscription;
         }
 
         private void deleteOrActivate(TimedSubscription subscription) {
-            HealthLog healthLog = repository.healthLog;
+            var healthLog = repository.healthLog;
             if (healthLog.isKnown(subscription) && subscription.isExpired()) {
                 repository.delete(subscription.id());
             } else {

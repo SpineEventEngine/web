@@ -54,8 +54,8 @@ final class LocalSubscriptionRegistry {
      * Registers the passed {@code Subscription} and remembers its {@code Topic}.
      */
     void register(Subscription subscription) {
-        SubscriptionId subscriptionId = subscription.getId();
-        TopicId topicId = subscription.getTopic().getId();
+        var subscriptionId = subscription.getId();
+        var topicId = subscription.getTopic().getId();
         ids.put(topicId, subscriptionId);
     }
 
@@ -63,8 +63,8 @@ final class LocalSubscriptionRegistry {
      * Removes the given subscription from the registry.
      */
     void unregister(Subscription subscription) {
-        TopicId topicId = subscription.getTopic()
-                                      .getId();
+        var topicId = subscription.getTopic()
+                                  .getId();
         ids.remove(topicId);
     }
 
@@ -73,11 +73,10 @@ final class LocalSubscriptionRegistry {
      * this registry.
      */
     Optional<Subscription> localSubscriptionFor(Topic topic) {
-        TopicId topicId = topic.getId();
-        SubscriptionId subscriptionId = ids.get(topicId);
+        var topicId = topic.getId();
+        var subscriptionId = ids.get(topicId);
         return Optional.ofNullable(subscriptionId)
-                       .map(id -> Subscription
-                               .newBuilder()
+                       .map(id -> Subscription.newBuilder()
                                .setId(id)
                                .setTopic(topic)
                                .buildPartial());

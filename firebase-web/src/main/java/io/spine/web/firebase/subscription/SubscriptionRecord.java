@@ -28,7 +28,6 @@ package io.spine.web.firebase.subscription;
 
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
-import io.spine.web.firebase.NodeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -51,7 +50,7 @@ final class SubscriptionRecord {
      * Stores the data to the Firebase updating only the data that has changed.
      */
     void store(FirebaseClient firebaseClient) {
-        NodeValue nodeValue = updatePayload.asNodeValue();
+        var nodeValue = updatePayload.asNodeValue();
         firebaseClient.update(path, nodeValue);
     }
 }

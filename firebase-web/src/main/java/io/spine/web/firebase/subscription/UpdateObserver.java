@@ -27,10 +27,8 @@
 package io.spine.web.firebase.subscription;
 
 import io.grpc.stub.StreamObserver;
-import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.RequestNodePath;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -56,11 +54,11 @@ final class UpdateObserver implements StreamObserver<SubscriptionUpdate> {
 
     @Override
     public void onNext(SubscriptionUpdate update) {
-        Subscription subscription = update.getSubscription();
+        var subscription = update.getSubscription();
         if (!healthLog.isStale(subscription)) {
-            UpdatePayload payload = UpdatePayload.from(update);
-            NodePath path = RequestNodePath.of(subscription.getTopic());
-            SubscriptionRecord record = new SubscriptionRecord(path, payload);
+            var payload = UpdatePayload.from(update);
+            var path = RequestNodePath.of(subscription.getTopic());
+            var record = new SubscriptionRecord(path, payload);
             record.store(firebase);
         } else {
             repository.get().cancel(subscription);

@@ -27,9 +27,7 @@
 package io.spine.web.firebase.subscription;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
-import com.google.protobuf.Any;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.client.EntityStateUpdate;
@@ -38,7 +36,6 @@ import io.spine.core.Event;
 import io.spine.protobuf.AnyPacker;
 import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.StoredJson;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -89,10 +86,8 @@ final class UpdatePayload {
     }
 
     private static UpdatePayload entityUpdates(SubscriptionUpdate update) {
-        ImmutableMap<String, @Nullable Message> messages = update
-                .getEntityUpdates()
-                .getUpdateList()
-                .stream()
+        var stateUpdates = update.getEntityUpdates().getUpdateList();
+        var messages = stateUpdates.stream()
                 .collect(toHashTable(EntityStateUpdate::getId, UpdatePayload::messageOrEmpty));
         checkArgument(!messages.isEmpty(), "Empty subscription update: %s", update);
         return new UpdatePayload(messages);
@@ -105,10 +100,8 @@ final class UpdatePayload {
     }
 
     private static UpdatePayload eventUpdates(SubscriptionUpdate update) {
-        ImmutableMap<String, Message> messages = update
-                .getEventUpdates()
-                .getEventList()
-                .stream()
+        var eventUpdates = update.getEventUpdates().getEventList();
+        var messages = eventUpdates.stream()
                 .collect(toHashTable(Event::id, e -> e));
         return new UpdatePayload(messages);
     }
@@ -133,11 +126,11 @@ final class UpdatePayload {
      *           for the same input message.
      */
     private static String key(Message id) {
-        Any packedId = AnyPacker.pack(id);
-        HashCode code = keyHashFunction.newHasher()
-                                       .putString(packedId.getTypeUrl(), UTF_8)
-                                       .putBytes(packedId.getValue().toByteArray())
-                                       .hash();
+        var packedId = AnyPacker.pack(id);
+        var code = keyHashFunction.newHasher()
+                                  .putString(packedId.getTypeUrl(), UTF_8)
+                                  .putBytes(packedId.getValue().toByteArray())
+                                  .hash();
         return code.toString();
     }
 
@@ -145,7 +138,7 @@ final class UpdatePayload {
      * Obtains this update as a database node value.
      */
     NodeValue asNodeValue() {
-        NodeValue node = NodeValue.empty();
+        var node = NodeValue.empty();
         messages.forEach((id, message) -> addChildOrNull(node, id, message));
         return node;
     }
@@ -157,8 +150,8 @@ final class UpdatePayload {
      * effectively deleting it from the database.
      */
     private static void addChildOrNull(NodeValue node, String id, Message message) {
-        boolean isEmpty = Empty.getDefaultInstance()
-                               .equals(message);
+        var isEmpty = Empty.getDefaultInstance()
+                           .equals(message);
         if (isEmpty) {
             node.addNullChild(id);
         } else {
