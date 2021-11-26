@@ -39,24 +39,22 @@ import static io.spine.base.Identifier.newUuid;
 public class TestSubscriptionService extends SubscriptionServiceGrpc.SubscriptionServiceImplBase {
 
     @Override
-    public void subscribe(Topic request, StreamObserver<Subscription> responseObserver) {
-        var subscription = Subscription
-                .newBuilder()
+    public void subscribe(Topic request, StreamObserver<Subscription> observer) {
+        var subscription = Subscription.newBuilder()
                 .setId(SubscriptionId.newBuilder().setValue(newUuid()))
                 .setTopic(request)
                 .vBuild();
-        responseObserver.onNext(subscription);
-        responseObserver.onCompleted();
+        observer.onNext(subscription);
+        observer.onCompleted();
     }
 
     @Override
-    public void activate(Subscription request,
-                         StreamObserver<SubscriptionUpdate> responseObserver) {
+    public void activate(Subscription request, StreamObserver<SubscriptionUpdate> observer) {
         // Do nothing.
     }
 
     @Override
-    public void cancel(Subscription request, StreamObserver<Response> responseObserver) {
-        responseObserver.onCompleted();
+    public void cancel(Subscription request, StreamObserver<Response> observer) {
+        observer.onCompleted();
     }
 }
