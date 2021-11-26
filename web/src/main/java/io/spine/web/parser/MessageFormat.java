@@ -87,14 +87,14 @@ public enum MessageFormat {
      *         the request does not justify the described format
      */
     public static Optional<MessageFormat> formatOf(HttpServletRequest request) {
-        String contentTypeHeader = request.getHeader(CONTENT_TYPE);
+        var contentTypeHeader = request.getHeader(CONTENT_TYPE);
         if (isNullOrEmpty(contentTypeHeader)) {
             return Optional.of(JSON);
         }
         try {
-            MediaType type = MediaType.parse(contentTypeHeader);
-            Optional<MessageFormat> format = formatOf(type);
-            if (!format.isPresent()) {
+            var type = MediaType.parse(contentTypeHeader);
+            var format = formatOf(type);
+            if (format.isEmpty()) {
                 logger.atWarning()
                       .log("Cannot determine message format for request `%s %s`.%n" +
                                    "Content-Type: `%s`.",

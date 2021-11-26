@@ -29,7 +29,6 @@ package io.spine.web.subscription;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.grpc.stub.StreamObserver;
 import io.spine.annotation.Internal;
-import io.spine.base.Errors;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionUpdate;
 import io.spine.client.Topic;
@@ -86,14 +85,14 @@ public final class BlockingSubscriptionService {
 
         MemoizingObserver<Subscription> subscriptionObserver = memoizingObserver();
         subscriptionService.subscribe(topic, subscriptionObserver);
-        Throwable error = subscriptionObserver.getError();
+        var error = subscriptionObserver.getError();
         if (error != null) {
             return SubscriptionOrError.newBuilder()
                     .setError(causeOf(error))
                     .build();
         }
         checkObserver(subscriptionObserver);
-        Subscription subscription = subscriptionObserver.firstResponse();
+        var subscription = subscriptionObserver.firstResponse();
         subscriptionService.activate(subscription, updateObserver);
         activeTopics.add(topic.getId());
         return SubscriptionOrError.newBuilder()
@@ -102,7 +101,7 @@ public final class BlockingSubscriptionService {
     }
 
     private void checkObserver(MemoizingObserver<Subscription> observer) {
-        Throwable error = observer.getError();
+        var error = observer.getError();
         if (error != null) {
             throw illegalStateWithCauseOf(error);
         } else {

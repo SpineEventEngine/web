@@ -27,7 +27,6 @@
 package io.spine.web.query;
 
 import com.google.protobuf.Message;
-import io.spine.client.Query;
 import io.spine.client.QueryFactory;
 import io.spine.json.Json;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -63,7 +62,7 @@ class QueryServletTest {
     @DisplayName("throw UnsupportedOperationException when trying to serialize")
     void testFailToSerialize() throws IOException {
         QueryServlet<Message> servlet = new TestQueryServlet();
-        ObjectOutputStream stream = new ObjectOutputStream(new ByteArrayOutputStream());
+        var stream = new ObjectOutputStream(new ByteArrayOutputStream());
         assertThrows(UnsupportedOperationException.class, () -> stream.writeObject(servlet));
         stream.close();
     }
@@ -71,17 +70,16 @@ class QueryServletTest {
     @Test
     @DisplayName("handle query POST requests")
     void testHandle() throws IOException {
-        Task task = Task
-                .newBuilder()
+        var task = Task.newBuilder()
                 .setId(TaskId.generate())
                 .setDescription("some-task-description")
                 .build();
         QueryServlet<Message> servlet = new TestQueryServlet(task);
-        StringWriter response = new StringWriter();
-        Query query = queryFactory.all(Task.class);
+        var response = new StringWriter();
+        var query = queryFactory.all(Task.class);
         HttpServletRequest request = request(query);
         servlet.doPost(request, response(response));
-        Task actualData = Json.fromJson(response.toString(), Task.class);
+        var actualData = Json.fromJson(response.toString(), Task.class);
         assertThat(actualData).isEqualTo(task);
     }
 
@@ -90,7 +88,7 @@ class QueryServletTest {
     @DisplayName("respond 400 to an invalid query")
     void testInvalidQuery() throws IOException {
         QueryServlet<Message> servlet = new TestQueryServlet();
-        MemoizingResponse response = new MemoizingResponse();
+        var response = new MemoizingResponse();
         servlet.doPost(request(currentTime()), response);
         assertThat(response.getStatus())
                 .isEqualTo(SC_BAD_REQUEST);

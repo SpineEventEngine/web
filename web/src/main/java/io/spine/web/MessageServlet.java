@@ -59,7 +59,7 @@ public abstract class MessageServlet<I extends Message, O extends Message>
     protected MessageServlet() {
         super();
         @SuppressWarnings("unchecked")
-        Class<I> type = (Class<I>) GenericParam.REQUEST.argumentIn(this.getClass());
+        var type = (Class<I>) GenericParam.REQUEST.argumentIn(this.getClass());
         requestType = type;
     }
 
@@ -76,34 +76,34 @@ public abstract class MessageServlet<I extends Message, O extends Message>
     @VisibleForTesting
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        Optional<I> optionalMessage = parseRequest(req);
-        if (!optionalMessage.isPresent()) {
+        var optionalMessage = parseRequest(req);
+        if (optionalMessage.isEmpty()) {
             resp.sendError(SC_BAD_REQUEST);
         } else {
-            I message = optionalMessage.get();
-            O response = handle(message);
+            var message = optionalMessage.get();
+            var response = handle(message);
             writeResponse(resp, response);
         }
     }
 
     private Optional<I> parseRequest(HttpServletRequest req) throws IOException {
-        Optional<MessageFormat> optionalFormat = MessageFormat.formatOf(req);
-        String body = body(req);
+        var optionalFormat = MessageFormat.formatOf(req);
+        var body = body(req);
         return optionalFormat.flatMap(
                 fmt -> fmt.parse(body, requestType)
         );
     }
 
     private static String body(ServletRequest request) throws IOException {
-        String result = request.getReader()
-                               .lines()
-                               .collect(joining(" "));
+        var result = request.getReader()
+                            .lines()
+                            .collect(joining(" "));
         return result;
     }
 
     private void writeResponse(HttpServletResponse servletResponse, O response)
             throws IOException {
-        String json = Json.toCompactJson(response);
+        var json = Json.toCompactJson(response);
         servletResponse.getWriter()
                        .append(json);
         servletResponse.setContentType(JSON_UTF_8.toString());
@@ -112,6 +112,7 @@ public abstract class MessageServlet<I extends Message, O extends Message>
     /**
      * Index of type parameters of a {@link MessageServlet}.
      */
+    @SuppressWarnings("rawtypes")   /* OK for the enumeration of generic parameters. */
     private enum GenericParam implements GenericTypeIndex<MessageServlet> {
 
         /**

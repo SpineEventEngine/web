@@ -48,7 +48,7 @@ public final class Servlets {
      * Creates a new request with the supplied {@code content}.
      */
     public static KnownRequest request(Message content) {
-        String json = Json.toJson(content);
+        var json = Json.toJson(content);
         return KnownRequest.create(json, MediaType.JSON_UTF_8);
     }
 

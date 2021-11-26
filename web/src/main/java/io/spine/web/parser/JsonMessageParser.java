@@ -31,7 +31,6 @@ import io.spine.json.Json;
 import io.spine.logging.Logging;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.spine.json.Json.fromJson;
@@ -58,9 +57,9 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
 
     @Override
     public Optional<M> parse(String raw) {
-        String json = cleanUp(raw);
+        var json = cleanUp(raw);
         try {
-            M message = fromJson(json, type);
+            var message = fromJson(json, type);
             return Optional.of(message);
         } catch (IllegalArgumentException e) {
             _error().withCause(e)
@@ -71,21 +70,21 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
     }
 
     private static String cleanUp(String jsonFromRequest) {
-        String json = EscapeSymbol.unEscapeAll(jsonFromRequest);
-        String unQuoted = unQuote(json);
+        var json = EscapeSymbol.unEscapeAll(jsonFromRequest);
+        var unQuoted = unQuote(json);
         return unQuoted;
     }
 
     private static String unQuote(String json) {
-        int beginIndex = 0;
-        int endIndex = json.length();
+        var beginIndex = 0;
+        var endIndex = json.length();
         if (json.startsWith("\"")) {
             beginIndex = 1;
         }
         if (json.endsWith("\"")) {
             endIndex = json.length() - 1;
         }
-        String result = json.substring(beginIndex, endIndex);
+        var result = json.substring(beginIndex, endIndex);
         return result;
     }
 
@@ -111,14 +110,14 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
         }
 
         private String unEscape(String escaped) {
-            Matcher matcher = escapedPattern.matcher(escaped);
-            String unescaped = matcher.replaceAll(raw);
+            var matcher = escapedPattern.matcher(escaped);
+            var unescaped = matcher.replaceAll(raw);
             return unescaped;
         }
 
         private static String unEscapeAll(String escaped) {
-            String json = escaped;
-            for (EscapeSymbol symbol : EscapeSymbol.values()) {
+            var json = escaped;
+            for (var symbol : EscapeSymbol.values()) {
                 json = symbol.unEscape(json);
             }
             return json;

@@ -72,7 +72,7 @@ public class AllowAnyOriginFilter implements Filter {
     }
 
     private static void appendHeaders(HttpServletResponse response) {
-        for (ResponseHeader header : ResponseHeader.values()) {
+        for (var header : ResponseHeader.values()) {
             header.appendTo(response);
         }
     }

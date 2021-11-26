@@ -27,9 +27,6 @@
 package io.spine.web.query;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Any;
-import io.spine.client.Query;
-import io.spine.client.QueryResponse;
 import io.spine.protobuf.AnyPacker;
 import io.spine.test.web.Task;
 import io.spine.test.web.TaskId;
@@ -49,18 +46,18 @@ class BlockingQueryBridgeTest {
     @Test
     @DisplayName("obtain a `QueryResponse`")
     void obtainQueryResponse() {
-        TaskId id = TaskId.generate();
-        Task task = Task.newBuilder()
+        var id = TaskId.generate();
+        var task = Task.newBuilder()
                         .setId(id)
                         .setTitle(BlockingQueryBridgeTest.class.getSimpleName())
                         .build();
-        TestQueryService service = new TestQueryService(task);
-        Query query = requests.query()
-                              .byIds(Task.class, ImmutableSet.of(id));
-        BlockingQueryBridge bridge = new BlockingQueryBridge(service);
-        QueryResponse response = bridge.send(query);
+        var service = new TestQueryService(task);
+        var query = requests.query()
+                            .byIds(Task.class, ImmutableSet.of(id));
+        var bridge = new BlockingQueryBridge(service);
+        var response = bridge.send(query);
         assertThat(response.getMessageCount()).isEqualTo(1);
-        Any message = response.getMessage(0)
+        var message = response.getMessage(0)
                               .getState();
         assertThat(AnyPacker.unpack(message))
                 .isEqualTo(task);

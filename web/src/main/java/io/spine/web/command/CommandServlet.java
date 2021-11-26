@@ -58,7 +58,7 @@ public abstract class CommandServlet extends MessageServlet<Command, Ack> {
         MemoizingObserver<Ack> ack = memoizingObserver();
         commandService.post(request, ack);
         checkState(ack.isCompleted());
-        Ack result = ack.firstResponse();
+        var result = ack.firstResponse();
         return result;
     }
 }
