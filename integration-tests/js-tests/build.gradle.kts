@@ -65,7 +65,7 @@ val npm: Closure<*> by extra
 tasks.register("installLinkedLib") {
     description = "Install unpublished artifact of `spine-web` library as a module dependency."
 
-    dependsOn(":client-js:link")
+    dependsOn(":client-js:publishJsLocally")
 
     doLast {
         npm.call("run", "installLinkedLib")
