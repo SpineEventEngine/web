@@ -33,7 +33,6 @@ import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
-import io.spine.core.Response;
 import io.spine.core.UserId;
 import io.spine.server.model.Nothing;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -47,7 +46,6 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.core.Responses.statusOk;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
 public final class FirebaseSubscriptionBridgeTestEnv {
@@ -69,7 +67,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
         Collection<String> pathElements = newArrayList(
                 DEFAULT_TENANT, escaped(actor), topic.getId().getValue()
         );
-        String expectedPath = PATH_JOINER.join(pathElements);
+        var expectedPath = PATH_JOINER.join(pathElements);
         assertThat(path.getValue())
                 .isEqualTo(expectedPath);
     }
@@ -84,24 +82,15 @@ public final class FirebaseSubscriptionBridgeTestEnv {
                                            .replaceAll(SUBSTITUTION_SYMBOL);
     }
 
-    public static Response newResponse() {
-        return Response
-                .newBuilder()
-                .setStatus(statusOk())
-                .vBuild();
-    }
-
     public static Subscription newSubscription(Topic topic) {
-        return Subscription
-                .newBuilder()
+        return Subscription.newBuilder()
                 .setId(subscriptionId())
                 .setTopic(topic)
                 .vBuild();
     }
 
     public static Target newTarget() {
-        return Target
-                .newBuilder()
+        return Target.newBuilder()
                 .setType(TypeUrl.of(Nothing.getDefaultInstance()).value())
                 .setIncludeAll(true)
                 .vBuild();
@@ -110,8 +99,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     public static FirebaseSubscriptionBridge
     newBridge(FirebaseClient firebaseClient,
               SubscriptionServiceImplBase subscriptionService) {
-        return FirebaseSubscriptionBridge
-                .newBuilder()
+        return FirebaseSubscriptionBridge.newBuilder()
                 .setFirebaseClient(firebaseClient)
                 .setSubscriptionService(subscriptionService)
                 .build();
@@ -125,8 +113,7 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     private static SubscriptionId subscriptionId() {
-        return SubscriptionId
-                .newBuilder()
+        return SubscriptionId.newBuilder()
                 .setValue("test-subscription")
                 .vBuild();
     }
