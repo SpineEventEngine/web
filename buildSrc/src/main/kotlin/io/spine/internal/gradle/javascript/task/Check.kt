@@ -69,7 +69,6 @@ fun JsTaskRegistering.check(configuration: JsTaskRegistering.() -> Unit = {}) {
 }
 
 
-
 internal val TaskContainer.checkJs: Task
     get() = getByName("checkJs")
 

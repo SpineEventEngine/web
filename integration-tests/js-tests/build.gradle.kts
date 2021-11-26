@@ -26,15 +26,19 @@
 
 import com.google.protobuf.gradle.*
 import io.spine.internal.gradle.javascript.javascript
-import io.spine.internal.gradle.javascript.task.JsTaskRegistering
 import io.spine.internal.gradle.javascript.plugins.idea
 import io.spine.internal.gradle.javascript.plugins.mcJs
 import io.spine.internal.gradle.javascript.plugins.protobuf
 import io.spine.internal.gradle.javascript.task.assemble
-import io.spine.internal.gradle.javascript.task.auditNodePackages
 import io.spine.internal.gradle.javascript.task.clean
-import io.spine.internal.gradle.javascript.task.check
-import io.spine.internal.gradle.javascript.task.coverageJs
+import io.spine.internal.gradle.javascript.task.integrationTest
+import io.spine.internal.gradle.javascript.task.installLocalPackage
+
+dependencies {
+    testProtobuf(project(":test-app")) {
+        exclude(group = "com.google.firebase")
+    }
+}
 
 javascript {
     tasks {
@@ -42,11 +46,6 @@ javascript {
 
             assemble()
             clean()
-
-            check {
-                auditNodePackages.enabled = false
-                coverageJs.enabled = false
-            }
 
             installLocalPackage()
             integrationTest()
@@ -57,12 +56,6 @@ javascript {
         mcJs()
         protobuf()
         idea()
-    }
-}
-
-dependencies {
-    testProtobuf(project(":test-app")) {
-        exclude(group = "com.google.firebase")
     }
 }
 
@@ -77,44 +70,3 @@ tasks {
         enabled = false
     }
 }
-
-/**
- * Installs unpublished artifact of `spine-web` library as a module dependency.
- *
- * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
- * the current project.
- *
- * See https://docs.npmjs.com/cli/link for details.
- */
-fun JsTaskRegistering.installLocalPackage() =
-    register("installLocalPackage") {
-        description = "Install unpublished artifact of `spine-web` library as a module dependency."
-
-        dependsOn(":client-js:publishJsLocally")
-
-        doLast {
-            npm("run", "installLinkedLib")
-        }
-    }
-
-// Find a way to run the same tests against `spine-web` source code
-// in `client-js` module to recover coverage.
-// See issue: https://github.com/SpineEventEngine/web/issues/96
-
-/**
- * Runs integration tests of the `spine-web` library against the sample Spine-based application.
- *
- * Runs the sample Spine-based application from the `test-app` module before integration
- * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
- */
-fun JsTaskRegistering.integrationTest() =
-    register("integrationTest") {
-        description = "Runs integration tests of the `spine-web` library against the sample application."
-
-        dependsOn("build", "installLocalPackage", ":test-app:appBeforeIntegrationTest")
-        finalizedBy(":test-app:appAfterIntegrationTest")
-
-        doLast {
-            npm("run", "test")
-        }
-    }

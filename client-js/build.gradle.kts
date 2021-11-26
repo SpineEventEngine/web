@@ -39,28 +39,6 @@ import io.spine.internal.gradle.javascript.task.coverageJs
 import io.spine.internal.gradle.javascript.task.publish
 import io.spine.internal.gradle.javascript.task.webpack
 
-javascript {
-    tasks {
-        register {
-            assemble()
-            clean()
-            publish()
-
-            check {
-                rootProject.tasks.check.dependsOn(coverageJs)
-            }
-        }
-
-        webpack()
-    }
-
-    plugins {
-        mcJs()
-        protobuf()
-        idea()
-    }
-}
-
 dependencies {
 
     val spineCoreVersion: String by project.extra
@@ -89,6 +67,28 @@ sourceSets {
     test {
         java.exclude("**/*.*")
         resources.exclude("**/*.*")
+    }
+}
+
+javascript {
+    tasks {
+        register {
+            assemble()
+            clean()
+            publish()
+
+            check {
+                rootProject.tasks.check.dependsOn(coverageJs)
+            }
+        }
+
+        webpack()
+    }
+
+    plugins {
+        mcJs()
+        protobuf()
+        idea()
     }
 }
 
