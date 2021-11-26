@@ -71,8 +71,8 @@ public final class FirebaseQueryBridge implements QueryBridge<FirebaseQueryRespo
      */
     @Override
     public FirebaseQueryResponse send(Query query) {
-        QueryResponse queryResponse = queryService.execute(query);
-        QueryRecord record = new QueryRecord(query, queryResponse);
+        var queryResponse = queryService.execute(query);
+        var record = new QueryRecord(query, queryResponse);
         record.storeVia(firebaseClient);
         return FirebaseQueryResponse
                 .newBuilder()
