@@ -35,7 +35,6 @@ import io.spine.client.QueryResponse;
 import io.spine.client.grpc.QueryServiceGrpc;
 import io.spine.core.Version;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static io.spine.core.Responses.ok;
@@ -59,7 +58,7 @@ public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBas
     public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
         var queryResponse = QueryResponse.newBuilder()
                 .setResponse(ok())
-                .addAllMessage(new ArrayList<>(response))
+                .addAllMessage(response)
                 .vBuild();
         responseObserver.onNext(queryResponse);
         responseObserver.onCompleted();
