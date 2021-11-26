@@ -48,17 +48,16 @@ class BlockingQueryBridgeTest {
     void obtainQueryResponse() {
         var id = TaskId.generate();
         var task = Task.newBuilder()
-                        .setId(id)
-                        .setTitle(BlockingQueryBridgeTest.class.getSimpleName())
-                        .build();
+                .setId(id)
+                .setTitle(BlockingQueryBridgeTest.class.getSimpleName())
+                .build();
         var service = new TestQueryService(task);
         var query = requests.query()
                             .byIds(Task.class, ImmutableSet.of(id));
         var bridge = new BlockingQueryBridge(service);
         var response = bridge.send(query);
         assertThat(response.getMessageCount()).isEqualTo(1);
-        var message = response.getMessage(0)
-                              .getState();
+        var message = response.getMessage(0).getState();
         assertThat(AnyPacker.unpack(message))
                 .isEqualTo(task);
     }
