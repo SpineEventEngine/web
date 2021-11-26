@@ -37,7 +37,6 @@ import io.spine.server.CommandService;
 import io.spine.server.QueryService;
 import io.spine.server.SubscriptionService;
 import io.spine.web.firebase.FirebaseClient;
-import io.spine.web.firebase.FirebaseCredentials;
 import io.spine.web.firebase.query.FirebaseQueryBridge;
 import io.spine.web.firebase.subscription.FirebaseSubscriptionBridge;
 import io.spine.web.query.BlockingQueryBridge;
@@ -82,27 +81,24 @@ final class Application {
     static Application create(BoundedContext tasksContext, BoundedContext usersContext) {
         checkNotNull(tasksContext);
         checkNotNull(usersContext);
-        CommandService commandService = CommandService
-                .newBuilder()
+        var commandService = CommandService.newBuilder()
                 .add(tasksContext)
                 .add(usersContext)
                 .build();
-        QueryService queryService = QueryService
-                .newBuilder()
+        var queryService = QueryService.newBuilder()
                 .add(tasksContext)
                 .add(usersContext)
                 .build();
-        SubscriptionService subscriptionService = SubscriptionService
-                .newBuilder()
+        var subscriptionService = SubscriptionService.newBuilder()
                 .add(tasksContext)
                 .add(usersContext)
                 .build();
-        FirebaseClient retryingClient = buildClient();
+        var retryingClient = buildClient();
         return new Application(commandService, queryService, subscriptionService, retryingClient);
     }
 
     private static FirebaseClient buildClient() {
-        Resource googleCredentialsFile = Resource.file(
+        var googleCredentialsFile = Resource.file(
                 "spine-dev.json", Application.class.getClassLoader()
         );
 
@@ -112,16 +108,15 @@ final class Application {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        FirebaseOptions options = FirebaseOptions
-                .builder()
+        var options = FirebaseOptions.builder()
                 .setDatabaseUrl(DATABASE_URL)
                 .setCredentials(credentials)
                 .build();
         FirebaseApp.initializeApp(options);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseCredentials firebaseCredentials = fromGoogleCredentials(credentials);
-        FirebaseClient firebaseClient = remoteClient(database, firebaseCredentials);
+        var database = FirebaseDatabase.getInstance();
+        var firebaseCredentials = fromGoogleCredentials(credentials);
+        var firebaseClient = remoteClient(database, firebaseCredentials);
         return new TidyClient(firebaseClient);
     }
 

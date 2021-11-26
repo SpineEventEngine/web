@@ -29,15 +29,12 @@ package io.spine.web.test.given;
 import io.spine.base.Time;
 import io.spine.core.Subscribe;
 import io.spine.core.UserId;
-import io.spine.json.Json;
 import io.spine.server.projection.Projection;
 
-import java.util.List;
-
+import static io.spine.web.test.given.UserTasks.Load.EXTREME;
 import static io.spine.web.test.given.UserTasks.Load.HIGH;
 import static io.spine.web.test.given.UserTasks.Load.LOW;
 import static io.spine.web.test.given.UserTasks.Load.VERY_HIGH;
-import static io.spine.web.test.given.UserTasks.Load.EXTREME;
 
 /**
  * A projection representing a user and a list of {@link TaskId tasks} assigned to him.
@@ -59,8 +56,8 @@ final class UserTasksProjection
     @Subscribe
     void on(TaskReassigned event) {
         if (reassignedFromThisUser(event)) {
-            List<TaskId> tasks = state().getTasksList();
-            final int reassigned = tasks.indexOf(event.getId());
+            var tasks = state().getTasksList();
+            final var reassigned = tasks.indexOf(event.getId());
             builder().removeTasks(reassigned);
         } else if (reassignedToThisUser(event)) {
             builder().setId(event.getTo())
@@ -71,7 +68,7 @@ final class UserTasksProjection
 
     @Override
     protected void onBeforeCommit() {
-        int taskTotal = countTasks();
+        var taskTotal = countTasks();
         builder().setTaskCount(taskTotal)
                  .setLastUpdated(Time.currentTime())
                  .setIsOverloaded(taskTotal > 1)
@@ -79,7 +76,7 @@ final class UserTasksProjection
     }
 
     private int countTasks() {
-        List<TaskId> tasks = builder().getTasksList();
+        var tasks = builder().getTasksList();
         return tasks.size();
     }
 

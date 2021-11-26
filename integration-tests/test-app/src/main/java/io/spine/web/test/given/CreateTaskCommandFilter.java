@@ -26,7 +26,6 @@
 
 package io.spine.web.test.given;
 
-import io.spine.base.CommandMessage;
 import io.spine.core.Ack;
 import io.spine.server.commandbus.CommandFilter;
 import io.spine.server.type.CommandEnvelope;
@@ -37,15 +36,15 @@ final class CreateTaskCommandFilter implements CommandFilter {
 
     @Override
     public Optional<Ack> filter(CommandEnvelope envelope) {
-        CommandMessage message = envelope.message();
+        var message = envelope.message();
         if (!(message instanceof CreateTask)) {
             return letPass();
         }
-        CreateTask command = (CreateTask) message;
+        var command = (CreateTask) message;
         if (!command.getReject()) {
             return letPass();
         }
-        TaskCannotBeCreated rejection = TaskCannotBeCreated.newBuilder()
+        var rejection = TaskCannotBeCreated.newBuilder()
                 .setId(command.getId())
                 .setReason("Reject this command just for test.")
                 .build();
