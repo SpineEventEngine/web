@@ -127,8 +127,7 @@ class RequestNodePathTest {
     private static Query tenantAwareQuery(TenantId tenantId) {
         var requestFactory =
                 new TestActorRequestFactory(RequestNodePathTest.class, tenantId);
-        var query = requestFactory.query()
-                                  .all(Book.class);
+        var query = requestFactory.query().all(Book.class);
         return query;
     }
 }
