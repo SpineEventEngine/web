@@ -53,13 +53,11 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M>, 
 
     @Override
     public Optional<M> parse(String raw) {
-        var bytes = Base64.getDecoder()
-                          .decode(raw);
+        var bytes = Base64.getDecoder().decode(raw);
         var builder = Messages.builderFor(type);
         try {
             @SuppressWarnings("unchecked") // Logically checked.
-            var message = (M) builder.mergeFrom(bytes)
-                                     .build();
+            var message = (M) builder.mergeFrom(bytes).build();
             return Optional.of(message);
         } catch (InvalidProtocolBufferException | ClassCastException e) {
             _error().withCause(e)
