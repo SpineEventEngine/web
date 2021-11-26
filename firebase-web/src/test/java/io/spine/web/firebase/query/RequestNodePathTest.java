@@ -40,7 +40,6 @@ import io.spine.web.firebase.given.Book;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import static io.spine.time.ZoneIds.systemDefault;
@@ -59,11 +58,11 @@ class RequestNodePathTest {
     @Test
     @DisplayName("construct self for a Query")
     void testConstruct() {
-        Query firstQuery = queryFactory.all(Book.class);
-        Query secondQuery = queryFactory.all(Author.class);
+        var firstQuery = queryFactory.all(Book.class);
+        var secondQuery = queryFactory.all(Author.class);
 
-        NodePath firstPath = RequestNodePath.of(firstQuery);
-        NodePath secondPath = RequestNodePath.of(secondQuery);
+        var firstPath = RequestNodePath.of(firstQuery);
+        var secondPath = RequestNodePath.of(secondQuery);
 
         assertNotNull(firstPath);
         assertNotNull(secondPath);
@@ -73,38 +72,31 @@ class RequestNodePathTest {
     @Test
     @DisplayName("be tenant-aware")
     void testTenantAware() {
-        InternetDomain domain = InternetDomain
-                .newBuilder()
+        var domain = InternetDomain.newBuilder()
                 .setValue("spine.io")
                 .vBuild();
-        TenantId domainTenant = TenantId
-                .newBuilder()
+        var domainTenant = TenantId.newBuilder()
                 .setDomain(domain)
                 .vBuild();
-        EmailAddress email = EmailAddress
-                .newBuilder()
+        var email = EmailAddress.newBuilder()
                 .setValue("john@doe.org")
                 .vBuild();
-        TenantId emailTenant = TenantId
-                .newBuilder()
-                .setEmail(email)
+        var emailTenant = TenantId.newBuilder().setEmail(email)
                 .vBuild();
-        TenantId firstValueTenant = TenantId
-                .newBuilder()
+        var firstValueTenant = TenantId.newBuilder()
                 .setValue("first tenant")
                 .vBuild();
-        TenantId secondValueTenant = TenantId
-                .newBuilder()
+        var secondValueTenant = TenantId.newBuilder()
                 .setValue("second tenant")
                 .vBuild();
-        List<String> paths = Stream.of(domainTenant,
-                                       emailTenant,
-                                       firstValueTenant,
-                                       secondValueTenant)
-                                   .map(RequestNodePathTest::tenantAwareQuery)
-                                   .map(RequestNodePath::of)
-                                   .map(NodePath::getValue)
-                                   .collect(toList());
+        var paths = Stream.of(domainTenant,
+                              emailTenant,
+                              firstValueTenant,
+                              secondValueTenant)
+                          .map(RequestNodePathTest::tenantAwareQuery)
+                          .map(RequestNodePath::of)
+                          .map(NodePath::getValue)
+                          .collect(toList());
         new EqualsTester()
                 .addEqualityGroup(paths.get(0))
                 .addEqualityGroup(paths.get(1))
@@ -116,13 +108,13 @@ class RequestNodePathTest {
     @Test
     @DisplayName("construct into a valid path")
     void testEscaped() {
-        TestActorRequestFactory requestFactory = new TestActorRequestFactory(
+        var requestFactory = new TestActorRequestFactory(
                 "a.aa#@)?$0[abb-ab",
                 systemDefault()
         );
-        Query query = requestFactory.query()
-                                    .all(Book.class);
-        String path = RequestNodePath.of(query).getValue();
+        var query = requestFactory.query()
+                                  .all(Book.class);
+        var path = RequestNodePath.of(query).getValue();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
         assertFalse(path.contains("["));
@@ -134,10 +126,10 @@ class RequestNodePathTest {
     }
 
     private static Query tenantAwareQuery(TenantId tenantId) {
-        TestActorRequestFactory requestFactory =
+        var requestFactory =
                 new TestActorRequestFactory(RequestNodePathTest.class, tenantId);
-        Query query = requestFactory.query()
-                                    .all(Book.class);
+        var query = requestFactory.query()
+                                  .all(Book.class);
         return query;
     }
 }

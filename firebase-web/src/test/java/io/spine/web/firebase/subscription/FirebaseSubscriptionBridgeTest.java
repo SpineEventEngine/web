@@ -26,24 +26,16 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
-import io.spine.client.Subscription;
-import io.spine.client.SubscriptionId;
-import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.SubscriptionService;
 import io.spine.type.TypeUrl;
 import io.spine.web.Cancel;
-import io.spine.web.SubscriptionsCancelled;
 import io.spine.web.KeepUp;
 import io.spine.web.KeepUpOutcome;
-import io.spine.web.SubscriptionsKeptUp;
 import io.spine.web.Subscribe;
-import io.spine.web.SubscriptionsCreated;
-import io.spine.web.WebSubscription;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.given.MemoizingFirebase;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,7 +72,7 @@ class FirebaseSubscriptionBridgeTest {
     @DisplayName("require Query Service set in Builder")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireQueryService() {
-        FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
+        var builder = FirebaseSubscriptionBridge
                 .newBuilder()
                 .setFirebaseClient(MemoizingFirebase.withNoLatency());
         assertThrows(IllegalStateException.class, builder::build);
@@ -90,11 +82,11 @@ class FirebaseSubscriptionBridgeTest {
     @DisplayName("require Firebase Client set in Builder")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
-        SubscriptionService subscriptionService = SubscriptionService
+        var subscriptionService = SubscriptionService
                 .newBuilder()
                 .add(BoundedContextBuilder.assumingTests().build())
                 .build();
-        FirebaseSubscriptionBridge.Builder builder = FirebaseSubscriptionBridge
+        var builder = FirebaseSubscriptionBridge
                 .newBuilder()
                 .setSubscriptionService(subscriptionService);
         assertThrows(IllegalStateException.class, builder::build);
@@ -103,23 +95,22 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("write OK response upon subscription keep up")
     void keepUpSubscription() {
-        Topic topic = topicFactory.forTarget(newTarget());
-        Subscribe subscribe = Subscribe.newBuilder()
+        var topic = topicFactory.forTarget(newTarget());
+        var subscribe = Subscribe.newBuilder()
                 .addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
-        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(subscribe);
-        SubscriptionId subscriptionId = subscriptionsCreated
-                .getResultList()
+        var subscriptionsCreated = bridge.subscribe(subscribe);
+        var subscriptionId = subscriptionsCreated.getResultList()
                 .get(0)
                 .getSubscription()
                 .getSubscription()
                 .getId();
-        KeepUp keepUp = KeepUp.newBuilder()
+        var keepUp = KeepUp.newBuilder()
                 .addSubscription(subscriptionId)
                 .setProlongBy(fromHours(1))
                 .build();
-        SubscriptionsKeptUp subscriptionsKeptUp = bridge.keepUp(keepUp);
+        var subscriptionsKeptUp = bridge.keepUp(keepUp);
         assertThat(subscriptionsKeptUp.getOutcome(0).getKindCase())
                 .isEqualTo(NEW_VALID_THRU);
     }
@@ -127,14 +118,14 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("write an error response upon unknown subscription keep up")
     void failKeepUp() {
-        Topic topic = topicFactory.forTarget(newTarget());
-        Subscription subscription = newSubscription(topic);
-        Duration prolongBy = Durations.fromDays(2);
-        KeepUp keepUp = KeepUp.newBuilder()
+        var topic = topicFactory.forTarget(newTarget());
+        var subscription = newSubscription(topic);
+        var prolongBy = Durations.fromDays(2);
+        var keepUp = KeepUp.newBuilder()
                 .addSubscription(subscription.getId())
                 .setProlongBy(prolongBy)
                 .build();
-        SubscriptionsKeptUp subscriptionsKeptUp = bridge.keepUp(keepUp);
+        var subscriptionsKeptUp = bridge.keepUp(keepUp);
         assertThat(subscriptionsKeptUp.getOutcome(0).getKindCase())
                 .isEqualTo(KeepUpOutcome.KindCase.ERROR);
     }
@@ -142,23 +133,22 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("write OK response upon cancelling subscription")
     void cancelSubscription() {
-        Topic topic = topicFactory.forTarget(newTarget());
-        Subscribe subscribe = Subscribe.newBuilder()
+        var topic = topicFactory.forTarget(newTarget());
+        var subscribe = Subscribe.newBuilder()
                 .addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
-        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(subscribe);
+        var subscriptionsCreated = bridge.subscribe(subscribe);
         assertThat(subscriptionsCreated)
                 .isNotNull();
-        SubscriptionId id = subscriptionsCreated.getResult(0)
-                                                .getSubscription()
-                                                .getSubscription()
-                                                .getId();
-        Cancel cancel = Cancel
-                .newBuilder()
+        var id = subscriptionsCreated.getResult(0)
+                                     .getSubscription()
+                                     .getSubscription()
+                                     .getId();
+        var cancel = Cancel.newBuilder()
                 .addSubscription(id)
                 .build();
-        SubscriptionsCancelled subscriptionsCancelled = bridge.cancel(cancel);
+        var subscriptionsCancelled = bridge.cancel(cancel);
         assertThat(subscriptionsCancelled.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(OK);
     }
@@ -166,12 +156,12 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("write an error response upon cancelling an unknown subscription")
     void failCancellation() {
-        Topic topic = topicFactory.forTarget(newTarget());
-        Subscription subscription = newSubscription(topic);
-        Cancel cancel = Cancel.newBuilder()
+        var topic = topicFactory.forTarget(newTarget());
+        var subscription = newSubscription(topic);
+        var cancel = Cancel.newBuilder()
                 .addSubscription(subscription.getId())
                 .build();
-        SubscriptionsCancelled response = bridge.cancel(cancel);
+        var response = bridge.cancel(cancel);
         assertThat(response.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(ERROR);
     }
@@ -179,29 +169,28 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("write an error response upon cancelling a subscription twice")
     void failDoubleCancellation() {
-        Topic topic = topicFactory.forTarget(newTarget());
-        Subscribe subscribe = Subscribe.newBuilder()
+        var topic = topicFactory.forTarget(newTarget());
+        var subscribe = Subscribe.newBuilder()
                 .addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
-        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(subscribe);
+        var subscriptionsCreated = bridge.subscribe(subscribe);
         assertThat(subscriptionsCreated)
                 .isNotNull();
-        WebSubscription webSubscription = subscriptionsCreated
-                .getResult(0)
+        var webSubscription = subscriptionsCreated.getResult(0)
                 .getSubscription();
         assertThat(webSubscription.getExtraList())
                 .hasSize(1);
         assertThat(webSubscription.getExtra(0).getTypeUrl())
                 .isEqualTo(TypeUrl.of(NodePath.class).value());
-        Cancel cancel = Cancel.newBuilder()
+        var cancel = Cancel.newBuilder()
                 .addSubscription(webSubscription.getSubscription().getId())
                 .build();
-        SubscriptionsCancelled cancelled = bridge.cancel(cancel);
+        var cancelled = bridge.cancel(cancel);
         assertThat(cancelled.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(OK);
 
-        SubscriptionsCancelled subscriptionsCancelledAgain = bridge.cancel(cancel);
+        var subscriptionsCancelledAgain = bridge.cancel(cancel);
         assertThat(subscriptionsCancelledAgain.getAck(0).getStatus().getStatusCase())
                 .isEqualTo(ERROR);
     }
@@ -209,18 +198,18 @@ class FirebaseSubscriptionBridgeTest {
     @Test
     @DisplayName("set firebase path to Subscription ID upon subscribe")
     void subscribe() {
-        Topic topic = topicFactory.forTarget(newTarget());
-        Subscribe request = Subscribe.newBuilder()
+        var topic = topicFactory.forTarget(newTarget());
+        var request = Subscribe.newBuilder()
                 .addTopic(topic)
                 .build();
-        SubscriptionsCreated subscriptionsCreated = bridge.subscribe(request);
-        WebSubscription webSubscription = subscriptionsCreated.getResult(0)
-                                                              .getSubscription();
-        Subscription subscription = webSubscription.getSubscription();
+        var subscriptionsCreated = bridge.subscribe(request);
+        var webSubscription = subscriptionsCreated.getResult(0)
+                                                  .getSubscription();
+        var subscription = webSubscription.getSubscription();
         assertThat(subscription.getTopic())
                 .isEqualTo(topic);
 
-        NodePath nodePath = unpack(webSubscription.getExtra(0), NodePath.class);
+        var nodePath = unpack(webSubscription.getExtra(0), NodePath.class);
         assertSubscriptionPointsToFirebase(nodePath, topic);
     }
 }

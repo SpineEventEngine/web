@@ -57,16 +57,16 @@ class FirebaseCredentialsTest {
         @Test
         @DisplayName("without credentials")
         void empty() {
-            FirebaseCredentials credentials = FirebaseCredentials.empty();
+            var credentials = FirebaseCredentials.empty();
             assertThat(credentials.isEmpty()).isTrue();
         }
 
         @Test
         @DisplayName("from `GoogleCredentials` instance")
         void fromGoogleCredentials() {
-            GoogleCredentials googleCredentials = GoogleCredentials.newBuilder()
+            var googleCredentials = GoogleCredentials.newBuilder()
                                                                    .build();
-            FirebaseCredentials credentials =
+            var credentials =
                     FirebaseCredentials.fromGoogleCredentials(googleCredentials);
             assertThat(credentials.isEmpty()).isFalse();
             assertThat(credentials.isOldStyle()).isFalse();
@@ -76,8 +76,8 @@ class FirebaseCredentialsTest {
         @Test
         @DisplayName("from `GoogleCredential` instance")
         void fromOldStyleCredentials() {
-            MockGoogleCredential googleCredential = new MockGoogleCredential.Builder().build();
-            FirebaseCredentials credentials =
+            var googleCredential = new MockGoogleCredential.Builder().build();
+            var credentials =
                     FirebaseCredentials.fromGoogleCredentials(googleCredential);
             assertThat(credentials.isEmpty()).isFalse();
             assertThat(credentials.isOldStyle()).isTrue();
@@ -88,13 +88,13 @@ class FirebaseCredentialsTest {
     @Test
     @DisplayName("throw `IAE` when created from invalid data")
     void throwOnInvalidData() {
-        String invalidCredentials = "invalid_credentials";
-        InputStream stream = toInputStream(invalidCredentials);
+        var invalidCredentials = "invalid_credentials";
+        var stream = toInputStream(invalidCredentials);
         assertThrows(IllegalArgumentException.class, () -> FirebaseCredentials.fromStream(stream));
     }
 
     private static InputStream toInputStream(String theString) {
-        byte[] bytes = theString.getBytes(UTF_8);
+        var bytes = theString.getBytes(UTF_8);
         InputStream result = new ByteArrayInputStream(bytes);
         return result;
     }

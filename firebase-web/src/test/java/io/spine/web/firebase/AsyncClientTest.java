@@ -60,7 +60,7 @@ class AsyncClientTest {
     @Test
     @DisplayName("perform read operations directly")
     void readDirectly() {
-        AsyncClient asyncClient = new AsyncClient(delegate);
+        var asyncClient = new AsyncClient(delegate);
         asyncClient.fetchNode(path);
         assertThat(delegate.reads())
                 .contains(path);
@@ -69,21 +69,21 @@ class AsyncClientTest {
     @Test
     @DisplayName("perform write operations with the given executor")
     void executeWrites() {
-        AsyncClient asyncClient = new AsyncClient(delegate, executor);
+        var asyncClient = new AsyncClient(delegate, executor);
         checkAsync(asyncClient);
     }
 
     @Test
     @DisplayName("perform write operations with asynchronously by default")
     void executeWritesWithForkJoinPool() {
-        AsyncClient asyncClient = new AsyncClient(delegate);
+        var asyncClient = new AsyncClient(delegate);
         checkAsync(asyncClient);
     }
 
     @Test
     @DisplayName("allow to use the direct executor")
     void allowDirectExecutor() {
-        AsyncClient asyncClient = new AsyncClient(delegate, directExecutor());
+        var asyncClient = new AsyncClient(delegate, directExecutor());
         asyncClient.create(path, NodeValue.empty());
         assertThat(delegate.writes())
                 .containsKey(path);
@@ -93,7 +93,7 @@ class AsyncClientTest {
         asyncClient.update(path, NodeValue.empty());
         assertThat(delegate.writes())
                 .doesNotContainKey(path);
-        Duration surefireTime = latency.plusSeconds(1);
+        var surefireTime = latency.plusSeconds(1);
         Uninterruptibles.sleepUninterruptibly(surefireTime);
         assertThat(delegate.writes())
                 .containsKey(path);

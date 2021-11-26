@@ -42,9 +42,8 @@ class NodePathsTest extends UtilityClassTest<NodePaths> {
     @Test
     @DisplayName("create a valid `NodePath` message")
     void createsNodePath() {
-        String testPath = "test-path";
-        NodePath expected = NodePath
-                .newBuilder()
+        var testPath = "test-path";
+        var expected = NodePath.newBuilder()
                 .setValue(testPath)
                 .vBuild();
         assertEquals(expected, NodePaths.of(testPath));

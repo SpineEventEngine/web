@@ -28,11 +28,8 @@ package io.spine.web.firebase.query;
 
 import com.google.common.collect.Iterators;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.protobuf.Message;
-import io.spine.client.Query;
 import io.spine.client.QueryFactory;
-import io.spine.core.Event;
 import io.spine.json.Json;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
@@ -47,9 +44,6 @@ import io.spine.web.given.TestQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-import java.util.Set;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
@@ -72,8 +66,7 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("require Query Service set in class Builder")
     void requireQueryService() {
-        FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
-                .newBuilder()
+        var builder = FirebaseQueryBridge.newBuilder()
                 .setFirebaseClient(firebaseClient);
         assertThrows(IllegalStateException.class, builder::build);
     }
@@ -82,12 +75,10 @@ class FirebaseQueryBridgeTest {
     @DisplayName("require Firebase Client set in class Builder")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
-        QueryService queryService = QueryService
-                .newBuilder()
+        var queryService = QueryService.newBuilder()
                 .add(BoundedContextBuilder.assumingTests().build())
                 .build();
-        FirebaseQueryBridge.Builder builder = FirebaseQueryBridge
-                .newBuilder()
+        var builder = FirebaseQueryBridge.newBuilder()
                 .setQueryService(queryService);
         assertThrows(IllegalStateException.class, builder::build);
     }
@@ -95,14 +86,13 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("produce a database path for the given query results")
     void testMediate() {
-        TestQueryService queryService = new TestQueryService();
-        FirebaseQueryBridge bridge = FirebaseQueryBridge
-                .newBuilder()
+        var queryService = new TestQueryService();
+        var bridge = FirebaseQueryBridge.newBuilder()
                 .setQueryService(queryService)
                 .setFirebaseClient(firebaseClient)
                 .build();
-        Query query = queryFactory.all(Book.class);
-        FirebaseQueryResponse response = bridge.send(query);
+        var query = queryFactory.all(Book.class);
+        var response = bridge.send(query);
         assertThat(response)
              .isNotNull();
     }
@@ -110,25 +100,22 @@ class FirebaseQueryBridgeTest {
     @Test
     @DisplayName("write query results to the database")
     void testWriteData() {
-        BookId id = BookId
-                .newBuilder()
+        var id = BookId.newBuilder()
                 .setValue(newUuid())
                 .build();
-        Book book = Book
-                .newBuilder()
+        var book = Book.newBuilder()
                 .setId(id)
                 .setName(newUuid())
                 .build();
-        TestQueryService queryService = new TestQueryService(book);
-        FirebaseQueryBridge bridge = FirebaseQueryBridge
-                .newBuilder()
+        var queryService = new TestQueryService(book);
+        var bridge = FirebaseQueryBridge.newBuilder()
                 .setQueryService(queryService)
                 .setFirebaseClient(firebaseClient)
                 .build();
-        Query query = queryFactory.all(Book.class);
-        FirebaseQueryResponse response = bridge.send(query);
-        NodeValue nodeValue = firebaseClient.valueFor(NodePaths.of(response.getPath()));
-        Book actual = firstFieldOf(nodeValue, Book.class);
+        var query = queryFactory.all(Book.class);
+        var response = bridge.send(query);
+        var nodeValue = firebaseClient.valueFor(NodePaths.of(response.getPath()));
+        var actual = firstFieldOf(nodeValue, Book.class);
         assertThat(actual)
                 .isEqualTo(book);
     }
@@ -144,12 +131,12 @@ class FirebaseQueryBridgeTest {
      *         the string into a JSON object first and then convert it back to a string.
      */
     private static <T extends Message> T firstFieldOf(NodeValue nodeValue, Class<T> message) {
-        JsonObject json = nodeValue.underlyingJson();
-        Set<Map.Entry<String, JsonElement>> entries = json.entrySet();
+        var json = nodeValue.underlyingJson();
+        var entries = json.entrySet();
         JsonElement value = Iterators
                 .getOnlyElement(entries.iterator())
                 .getValue();
-        String messageJson = StoredJson
+        var messageJson = StoredJson
                 .from(value.getAsString())
                 .asJsonObject()
                 .toString();

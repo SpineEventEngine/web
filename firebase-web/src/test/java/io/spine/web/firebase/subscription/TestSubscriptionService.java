@@ -40,7 +40,7 @@ public class TestSubscriptionService extends SubscriptionServiceGrpc.Subscriptio
 
     @Override
     public void subscribe(Topic request, StreamObserver<Subscription> responseObserver) {
-        Subscription subscription = Subscription
+        var subscription = Subscription
                 .newBuilder()
                 .setId(SubscriptionId.newBuilder().setValue(newUuid()))
                 .setTopic(request)

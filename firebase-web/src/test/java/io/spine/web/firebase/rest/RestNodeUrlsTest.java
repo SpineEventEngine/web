@@ -43,7 +43,7 @@ final class RestNodeUrlsTest {
     @Test
     @DisplayName("not accept `null`s")
     void notAcceptNulls() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testConstructors(RestNodeUrls.class, Visibility.PACKAGE);
         tester.testAllPublicInstanceMethods(new RestNodeUrls(DatabaseUrl.getDefaultInstance()));
     }
@@ -51,10 +51,10 @@ final class RestNodeUrlsTest {
     @Test
     @DisplayName("create a `RestNodeUrl` for the specified `NodePath` and remote RDB")
     void createRemoteDbUrl() {
-        String dbUrl = "https://spine-dev.firebaseio.com";
-        RestNodeUrls factory = new RestNodeUrls(DatabaseUrls.from(dbUrl));
-        String node = "subscriptions/111";
-        RestNodeUrl result = factory.with(NodePaths.of(node));
+        var dbUrl = "https://spine-dev.firebaseio.com";
+        var factory = new RestNodeUrls(DatabaseUrls.from(dbUrl));
+        var node = "subscriptions/111";
+        var result = factory.with(NodePaths.of(node));
         assertThat(result.getUrl())
                 .isEqualTo(Urls.create(dbUrl + '/' + node + ".json"));
     }
@@ -62,10 +62,10 @@ final class RestNodeUrlsTest {
     @Test
     @DisplayName("create a `RestNodeUrl` for the specified `NodePath` and local emulator")
     void createEmulatorUrl() {
-        String dbUrl = "http://localhost:5000?ns=spine-dev";
-        RestNodeUrls factory = new RestNodeUrls(DatabaseUrls.from(dbUrl));
-        String node = "query/currentYear";
-        RestNodeUrl result = factory.with(NodePaths.of(node));
+        var dbUrl = "http://localhost:5000?ns=spine-dev";
+        var factory = new RestNodeUrls(DatabaseUrls.from(dbUrl));
+        var node = "query/currentYear";
+        var result = factory.with(NodePaths.of(node));
         assertThat(result.getUrl())
                 .isEqualTo(Urls.create("http://localhost:5000/" + node + ".json?ns=spine-dev"));
     }
