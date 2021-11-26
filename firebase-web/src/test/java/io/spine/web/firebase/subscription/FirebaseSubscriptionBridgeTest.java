@@ -72,8 +72,7 @@ class FirebaseSubscriptionBridgeTest {
     @DisplayName("require Query Service set in Builder")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireQueryService() {
-        var builder = FirebaseSubscriptionBridge
-                .newBuilder()
+        var builder = FirebaseSubscriptionBridge.newBuilder()
                 .setFirebaseClient(MemoizingFirebase.withNoLatency());
         assertThrows(IllegalStateException.class, builder::build);
     }
@@ -82,12 +81,10 @@ class FirebaseSubscriptionBridgeTest {
     @DisplayName("require Firebase Client set in Builder")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "CheckReturnValue"}) // Method called to throw.
     void requireFirebaseClient() {
-        var subscriptionService = SubscriptionService
-                .newBuilder()
+        var subscriptionService = SubscriptionService.newBuilder()
                 .add(BoundedContextBuilder.assumingTests().build())
                 .build();
-        var builder = FirebaseSubscriptionBridge
-                .newBuilder()
+        var builder = FirebaseSubscriptionBridge.newBuilder()
                 .setSubscriptionService(subscriptionService);
         assertThrows(IllegalStateException.class, builder::build);
     }
@@ -96,8 +93,7 @@ class FirebaseSubscriptionBridgeTest {
     @DisplayName("write OK response upon subscription keep up")
     void keepUpSubscription() {
         var topic = topicFactory.forTarget(newTarget());
-        var subscribe = Subscribe.newBuilder()
-                .addTopic(topic)
+        var subscribe = Subscribe.newBuilder().addTopic(topic)
                 .setLifespan(fromHours(1))
                 .build();
         var subscriptionsCreated = bridge.subscribe(subscribe);
