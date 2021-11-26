@@ -64,10 +64,8 @@ class FirebaseCredentialsTest {
         @Test
         @DisplayName("from `GoogleCredentials` instance")
         void fromGoogleCredentials() {
-            var googleCredentials = GoogleCredentials.newBuilder()
-                                                                   .build();
-            var credentials =
-                    FirebaseCredentials.fromGoogleCredentials(googleCredentials);
+            var googleCredentials = GoogleCredentials.newBuilder().build();
+            var credentials = FirebaseCredentials.fromGoogleCredentials(googleCredentials);
             assertThat(credentials.isEmpty()).isFalse();
             assertThat(credentials.isOldStyle()).isFalse();
         }
@@ -77,8 +75,7 @@ class FirebaseCredentialsTest {
         @DisplayName("from `GoogleCredential` instance")
         void fromOldStyleCredentials() {
             var googleCredential = new MockGoogleCredential.Builder().build();
-            var credentials =
-                    FirebaseCredentials.fromGoogleCredentials(googleCredential);
+            var credentials = FirebaseCredentials.fromGoogleCredentials(googleCredential);
             assertThat(credentials.isEmpty()).isFalse();
             assertThat(credentials.isOldStyle()).isTrue();
         }
