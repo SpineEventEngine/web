@@ -63,8 +63,7 @@ final class LocalSubscriptionRegistry {
      * Removes the given subscription from the registry.
      */
     void unregister(Subscription subscription) {
-        var topicId = subscription.getTopic()
-                                  .getId();
+        var topicId = subscription.getTopic().getId();
         ids.remove(topicId);
     }
 
