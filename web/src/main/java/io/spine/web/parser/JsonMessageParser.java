@@ -78,10 +78,11 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
     private static String unQuote(String json) {
         var beginIndex = 0;
         var endIndex = json.length();
-        if (json.startsWith("\"")) {
+        var quotation = EscapeSymbol.QUOTATION_MARK.raw;
+        if (json.startsWith(quotation)) {
             beginIndex = 1;
         }
-        if (json.endsWith("\"")) {
+        if (json.endsWith(quotation)) {
             endIndex = json.length() - 1;
         }
         var result = json.substring(beginIndex, endIndex);
@@ -117,7 +118,7 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
 
         private static String unEscapeAll(String escaped) {
             var json = escaped;
-            for (var symbol : EscapeSymbol.values()) {
+            for (var symbol : values()) {
                 json = symbol.unEscape(json);
             }
             return json;
