@@ -74,4 +74,8 @@ fun JsTaskRegistering.integrationTest() =
 
         dependsOn(build, linkSpineWebModule, ":test-app:appBeforeIntegrationTest")
         finalizedBy(":test-app:appAfterIntegrationTest")
+
+        doLast {
+            npm("run", "test")
+        }
     }
