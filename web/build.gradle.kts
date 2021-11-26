@@ -29,12 +29,12 @@ import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
-
-import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.dependency.HttpClient
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+import io.spine.internal.gradle.excludeProtobufLite
 
 plugins {
     id("io.spine.mc-java")
@@ -60,6 +60,8 @@ dependencies {
 val compileProtoToJs by tasks.registering {
     description = "Compiles Protobuf sources into JavaScript."
 }
+
+CheckStyleConfig.applyTo(project)
 
 protobuf {
     protoc {
