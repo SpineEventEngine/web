@@ -112,8 +112,7 @@ class RequestNodePathTest {
                 "a.aa#@)?$0[abb-ab",
                 systemDefault()
         );
-        var query = requestFactory.query()
-                                  .all(Book.class);
+        var query = requestFactory.query().all(Book.class);
         var path = RequestNodePath.of(query).getValue();
         assertFalse(path.contains("#"));
         assertFalse(path.contains("."));
