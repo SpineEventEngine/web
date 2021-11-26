@@ -27,13 +27,11 @@
 package io.spine.web.firebase;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
 
@@ -77,11 +75,11 @@ public final class StoredJson extends StringTypeValue {
      */
     public static StoredJson encode(Message value) {
         checkNotNull(value);
-        Message message = value;
+        var message = value;
         if (message instanceof Any) {
             message = AnyPacker.unpack((Any) message);
         }
-        String json = toCompactJson(message);
+        var json = toCompactJson(message);
         return from(json);
     }
 
@@ -97,7 +95,7 @@ public final class StoredJson extends StringTypeValue {
      */
     @Internal
     public JsonObject asJsonObject() {
-        JsonElement object = JsonParser.parseString(value());
+        var object = JsonParser.parseString(value());
         return object.getAsJsonObject();
     }
 
