@@ -46,10 +46,6 @@ fun JsTasks.webpack() {
         }
     }
 
-    testJs.doLast {
-        npm("run", "test")
-    }
-
     // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
     // See: https://github.com/SpineEventEngine/web/issues/61
 

@@ -32,7 +32,7 @@ import io.spine.internal.gradle.javascript.plugins.protobuf
 import io.spine.internal.gradle.javascript.task.assemble
 import io.spine.internal.gradle.javascript.task.clean
 import io.spine.internal.gradle.javascript.task.integrationTest
-import io.spine.internal.gradle.javascript.task.linkClientJsModule
+import io.spine.internal.gradle.javascript.task.linkSpineWebModule
 
 dependencies {
     testProtobuf(project(":test-app")) {
@@ -47,7 +47,7 @@ javascript {
             assemble()
             clean()
 
-            linkClientJsModule()
+            linkSpineWebModule()
             integrationTest()
         }
     }
