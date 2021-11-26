@@ -24,50 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.checkstyle
+package io.spine.internal.gradle.testing
 
-import io.spine.internal.dependency.CheckStyle
 import org.gradle.api.Project
-import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.api.plugins.quality.CheckstyleExtension
-import org.gradle.api.plugins.quality.CheckstylePlugin
-import org.gradle.kotlin.dsl.the
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.register
 
 /**
- * Configures the Checkstyle plugin.
+ * Exposes the test classes of this project as a new `testArtifacts` configuration.
  *
- * Usage:
+ * This allows other Gradle projects to depend on the test classes of some project. It is helpful
+ * in case the dependant projects re-use abstract test suites of some "parent" project.
+ *
+ * Please note that this utility requires Gradle `java` plugin to be applied.
+ * Hence, it is recommended to call this extension method from `java` scope:
+ *
  * ```
- *      CheckStyleConfig.applyTo(project)
+ * java {
+ *     exposeTestArtifacts()
+ * }
  * ```
  *
- * Please note, the checks of the `test` sources are disabled.
+ * Here is a snippet which consumes the exposed test classes:
  *
- * Also, this type is named in double-camel-case to avoid re-declaration due to a clash
- * with some Gradle-provided types.
+ * ```
+ * dependencies {
+ *     testImplementation(project(path = ":projectName", configuration = "testArtifacts"))
+ * }
+ * ```
  */
-@Suppress("unused")
-object CheckStyleConfig {
+fun Project.exposeTestArtifacts() {
 
-    /**
-     * Applies the configuration to the passed [project].
-     */
-    fun applyTo(project: Project) {
-        project.apply {
-            plugin(CheckstylePlugin::class.java)
-        }
-
-        val configDir = project.rootDir.resolve("config/quality/")
-
-        with(project.the<CheckstyleExtension>()) {
-            toolVersion = CheckStyle.version
-            configDirectory.set(configDir)
-        }
-
-        project.afterEvaluate {
-            // Disables checking the test sources.
-            val checkstyleTest = project.tasks.findByName("checkstyleTest") as Checkstyle
-            checkstyleTest.enabled = false
-        }
+    val testArtifacts = configurations.create("testArtifacts") {
+        extendsFrom(configurations.getAt("testRuntimeClasspath"))
     }
+
+    val sourceSets = extensions.getByType<JavaPluginExtension>().sourceSets
+    val testJar = tasks.register<Jar>("testJar") {
+        archiveClassifier.set("test")
+        from(sourceSets.getAt("test").output)
+    }
+
+    artifacts.add(testArtifacts.name, testJar)
 }

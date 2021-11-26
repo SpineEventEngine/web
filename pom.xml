@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>spine-web</artifactId>
-<version>2.0.0-SNAPSHOT.68</version>
+<version>2.0.0-SNAPSHOT.69</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -26,7 +26,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.12.4</version>
+    <version>2.13.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -110,7 +110,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-stdlib-jdk8</artifactId>
-    <version>1.5.30</version>
+    <version>1.5.31</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -141,11 +141,6 @@ all modules and does not describe the project structure per-subproject.
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_core</artifactId>
     <version>2.8.0</version>
-  </dependency>
-  <dependency>
-    <groupId>com.google.errorprone</groupId>
-    <artifactId>javac</artifactId>
-    <version>9+181-r4173-1</version>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
@@ -241,17 +236,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-compiler-embeddable</artifactId>
-    <version>1.5.30</version>
+    <version>1.5.31</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-klib-commonizer-embeddable</artifactId>
-    <version>1.5.30</version>
+    <version>1.5.31</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-scripting-compiler-embeddable</artifactId>
-    <version>1.5.30</version>
+    <version>1.5.31</version>
   </dependency>
   <dependency>
     <groupId>org.springframework</groupId>
