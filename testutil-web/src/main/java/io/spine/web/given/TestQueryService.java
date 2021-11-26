@@ -57,19 +57,16 @@ public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBas
 
     @Override
     public void read(Query request, StreamObserver<QueryResponse> responseObserver) {
-        QueryResponse queryResponse =
-                QueryResponse
-                        .newBuilder()
-                        .setResponse(ok())
-                        .addAllMessage(new ArrayList<>(response))
-                        .vBuild();
+        var queryResponse = QueryResponse.newBuilder()
+                .setResponse(ok())
+                .addAllMessage(new ArrayList<>(response))
+                .vBuild();
         responseObserver.onNext(queryResponse);
         responseObserver.onCompleted();
     }
 
     private static EntityStateWithVersion toEntityState(Message message) {
-        EntityStateWithVersion result = EntityStateWithVersion
-                .newBuilder()
+        var result = EntityStateWithVersion.newBuilder()
                 .setState(pack(message))
                 .setVersion(Version.getDefaultInstance())
                 .build();

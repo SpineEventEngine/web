@@ -29,8 +29,6 @@ package io.spine.web.given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.PrintWriter;
-
 import static com.google.common.truth.Truth.assertThat;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_GATEWAY;
 
@@ -41,16 +39,16 @@ class MemoizingResponseTest {
     @DisplayName("return set values")
     @SuppressWarnings("JdkObsolete") // we're force to follow the contract
     void returnSetValues() {
-        String headerName = "custom";
-        String headerValue = "header";
-        MemoizingResponse response = new MemoizingResponse();
+        var headerName = "custom";
+        var headerValue = "header";
+        var response = new MemoizingResponse();
         response.sendError(SC_BAD_GATEWAY);
         assertThat(response.getStatus())
                 .isEqualTo(SC_BAD_GATEWAY);
         response.addHeader(headerName, headerValue);
         assertThat(response.getHeader(headerName))
                 .isEqualTo(headerValue);
-        PrintWriter printWriter = response.getWriter();
+        var printWriter = response.getWriter();
         printWriter.print("I'm writing you!");
         assertThat(response.writerContent())
                 .isEqualTo("I'm writing you!");
