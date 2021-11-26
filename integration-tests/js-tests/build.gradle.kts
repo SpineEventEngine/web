@@ -34,6 +34,7 @@ import io.spine.internal.gradle.javascript.task.assemble
 import io.spine.internal.gradle.javascript.task.auditNodePackages
 import io.spine.internal.gradle.javascript.task.clean
 import io.spine.internal.gradle.javascript.task.check
+import io.spine.internal.gradle.javascript.task.coverageJs
 
 javascript {
     tasks {
@@ -44,6 +45,7 @@ javascript {
 
             check {
                 auditNodePackages.enabled = false
+                coverageJs.enabled = false
             }
 
             installLocalPackage()
