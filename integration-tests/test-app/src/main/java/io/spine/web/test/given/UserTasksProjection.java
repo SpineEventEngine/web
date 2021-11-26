@@ -57,7 +57,7 @@ final class UserTasksProjection
     void on(TaskReassigned event) {
         if (reassignedFromThisUser(event)) {
             var tasks = state().getTasksList();
-            final var reassigned = tasks.indexOf(event.getId());
+            var reassigned = tasks.indexOf(event.getId());
             builder().removeTasks(reassigned);
         } else if (reassignedToThisUser(event)) {
             builder().setId(event.getTo())
