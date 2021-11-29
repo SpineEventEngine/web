@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.javascript.plugins
+package io.spine.internal.gradle.javascript.plugin
 
 import io.spine.internal.gradle.javascript.task.assembleJs
 import io.spine.internal.gradle.javascript.task.compileProtoToJs

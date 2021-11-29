@@ -26,9 +26,9 @@
 
 import com.google.protobuf.gradle.*
 import io.spine.internal.gradle.javascript.javascript
-import io.spine.internal.gradle.javascript.plugins.idea
-import io.spine.internal.gradle.javascript.plugins.mcJs
-import io.spine.internal.gradle.javascript.plugins.protobuf
+import io.spine.internal.gradle.javascript.plugin.idea
+import io.spine.internal.gradle.javascript.plugin.mcJs
+import io.spine.internal.gradle.javascript.plugin.protobuf
 import io.spine.internal.gradle.javascript.task.assemble
 import io.spine.internal.gradle.javascript.task.clean
 import io.spine.internal.gradle.javascript.task.integrationTest

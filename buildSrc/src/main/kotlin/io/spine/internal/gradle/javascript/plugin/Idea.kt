@@ -24,13 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.javascript.plugins
+package io.spine.internal.gradle.javascript.plugin
 
 import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
- * Applies and configures this [IDEA module][org.gradle.plugins.ide.idea.model.IdeaModule]
+ * Applies and configures an [IDEA Module][org.gradle.plugins.ide.idea.model.IdeaModule]
  * in accordance with the current [JsEnvironment][io.spine.internal.gradle.javascript.JsEnvironment].
  *
  * In particular, this method:

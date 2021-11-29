@@ -27,7 +27,7 @@
 package io.spine.internal.gradle.javascript
 
 import io.spine.internal.gradle.javascript.task.JsTasks
-import io.spine.internal.gradle.javascript.plugins.JsPlugins
+import io.spine.internal.gradle.javascript.plugin.JsPlugins
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.extra
