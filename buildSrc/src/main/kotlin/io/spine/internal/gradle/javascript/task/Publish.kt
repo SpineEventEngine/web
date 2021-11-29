@@ -108,8 +108,8 @@ private fun JsTaskRegistering.transpileSources() =
  * Does nothing by default, so a user should configure this task to copy all
  * required files to that directory.
  */
-internal val TaskContainer.prepareJsPublication: Copy
-    get() = getByName<Copy>("prepareJsPublication")
+internal val TaskContainer.prepareJsPublication: Task
+    get() = getByName("prepareJsPublication")
 
 private fun JsTaskRegistering.prepareJsPublication() =
     create("prepareJsPublication") {
