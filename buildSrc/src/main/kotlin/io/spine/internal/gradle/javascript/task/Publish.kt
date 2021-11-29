@@ -85,7 +85,16 @@ private fun JsTaskRegistering.transpileSources() =
         group = jsAnyTask
 
         doLast {
+            val parserJsPresent = publicationDir
+                .resolve("client")
+                .resolve("parser")
+                .resolve("object-parser.js")
+
+            println("HELL_HELL_HELL | before transpile in pubDir object-parser.js: ${parserJsPresent.exists()}")
+
             npm("run", "transpile-before-publish")
+
+            println("HELL_HELL_HELL | after transpile in pubDir object-parser.js: ${parserJsPresent.exists()}")
         }
     }
 
@@ -144,7 +153,17 @@ private fun JsTaskRegistering.publishJsLocally() =
         group = jsPublishTask
 
         doLast {
+            val parserJsPresent = publicationDir
+                .resolve("client")
+                .resolve("parser")
+                .resolve("object-parser.js")
+
+            println("HELL_HELL_HELL | before link in pubDir object-parser.js: ${parserJsPresent.exists()}")
+
             publicationDir.npm("link")
+
+            println("HELL_HELL_HELL | after link in pubDir object-parser.js: ${parserJsPresent.exists()}")
+
         }
 
         dependsOn(prepareJsPublication)

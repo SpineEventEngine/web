@@ -48,7 +48,18 @@ fun JsTaskRegistering.linkSpineWebModule() =
         dependsOn(":client-js:publishJsLocally")
 
         doLast {
+            val parserJsPresent = nodeModules
+                .resolve("spine-web")
+                .resolve("client")
+                .resolve("parser")
+                .resolve("object-parser.js")
+
+            println("HELL_HELL_HELL | before install in nodeModules object-parser.js: ${parserJsPresent.exists()}")
+
             npm("run", "installLinkedLib")
+
+            println("HELL_HELL_HELL | after install in nodeModules object-parser.js: ${parserJsPresent.exists()}")
+
         }
     }
 
@@ -73,9 +84,10 @@ fun JsTaskRegistering.integrationTest() =
         description = "Runs integration tests of the `spine-web` library against the sample application."
 
         dependsOn(build, linkSpineWebModule, ":test-app:appBeforeIntegrationTest")
-        finalizedBy(":test-app:appAfterIntegrationTest")
 
         doLast {
             npm("run", "test")
         }
+
+        finalizedBy(":test-app:appAfterIntegrationTest")
     }

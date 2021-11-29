@@ -49,8 +49,6 @@ open class JsContext(jsEnv: JsEnvironment, private val project: Project)
      */
     fun File.npm(vararg args: String) = project.exec {
 
-        println("HELL_HELL_HELL | npm(${args.contentToString()}) from: ${this@npm}")
-
         workingDir(this@npm)
         commandLine(npmExecutable)
         args(*args)
