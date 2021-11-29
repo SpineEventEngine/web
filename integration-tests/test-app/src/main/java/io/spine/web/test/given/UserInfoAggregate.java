@@ -36,8 +36,7 @@ final class UserInfoAggregate extends Aggregate<UserId, UserInfo, UserInfo.Build
 
     @Assign
     UserInfoAdded handle(AddUserInfo command) {
-        UserInfoAdded event = UserInfoAdded
-                .newBuilder()
+        var event = UserInfoAdded.newBuilder()
                 .setId(command.getId())
                 .setFullName(command.getFullName())
                 .vBuild();

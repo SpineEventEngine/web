@@ -46,15 +46,19 @@ import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.ThreeTen
 import io.spine.internal.gradle.JavadocConfig
-import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyGitHubPackages
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
+import io.spine.internal.gradle.javac.configureErrorProne
+import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
 import io.spine.internal.gradle.spinePublishing
+import io.spine.internal.gradle.testing.configureLogging
+import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
@@ -98,7 +102,7 @@ plugins {
     }
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
-        id(id) version version
+        id(id)
     }
 
     // temporary.
@@ -138,6 +142,10 @@ allprojects {
 }
 
 subprojects {
+
+    val spineBaseVersion: String by extra
+    val spineCoreVersion: String by extra
+
     apply {
         plugin("java-library")
         plugin("kotlin")
@@ -145,19 +153,21 @@ subprojects {
         plugin("net.ltgt.errorprone")
         plugin("pmd")
         plugin("maven-publish")
-    }
 
-    apply {
         // Apply custom Kotlin script plugins.
         plugin("pmd-settings")
-        // Apply Groovy-based script plugins.
-        with(Scripts) {
-            from(testOutput(project))
-            from(javacArgs(project))
-        }
     }
 
-    LicenseReporter.generateReportIn(project)
+    tasks {
+        withType<JavaCompile> {
+            configureJavac()
+            configureErrorProne()
+        }
+        withType<Test> {
+            configureLogging()
+        }
+        registerTestTasks()
+    }
 
     with(repositories) {
         applyGitHubPackages("base", rootProject)
@@ -167,19 +177,18 @@ subprojects {
         applyStandard()
     }
 
+    LicenseReporter.generateReportIn(project)
     JavadocConfig.applyTo(project)
-
-    val spineBaseVersion: String by extra
-    val spineCoreVersion: String by extra
-
     updateGitHubPages(spineBaseVersion) {
         allowInternalJavadoc.set(true)
         rootFolder.set(rootDir)
     }
 
+    val javaVersion = JavaVersion.VERSION_11
+
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
 
     kotlin {
@@ -188,7 +197,7 @@ subprojects {
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = javaVersion.toString()
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
         }
     }
@@ -196,7 +205,6 @@ subprojects {
     dependencies {
         ErrorProne.apply {
             errorprone(core)
-            errorproneJavac(javacPlugin)
         }
 
         Protobuf.libs.forEach { api(it) }
@@ -236,10 +244,7 @@ subprojects {
     }
 }
 
-apply {
-    from(Scripts.jacoco(project))
-}
-
+JacocoConfig.applyTo(project)
 PomGenerator.applyTo(project)
 LicenseReporter.mergeAllReports(project)
 

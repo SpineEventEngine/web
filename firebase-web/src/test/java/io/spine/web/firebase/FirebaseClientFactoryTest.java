@@ -60,7 +60,7 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
     @BeforeAll
     @SuppressWarnings({"JdkObsolete", "JavaUtilDate" })  /* Comply with Google API. */
     static void initApp() {
-        GoogleCredentials fakeCredentials =
+        var fakeCredentials =
                 GoogleCredentials.create(new AccessToken("apparently fake", new Date()));
         FirebaseApp.initializeApp(FirebaseOptions
                                           .builder()
@@ -94,7 +94,7 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
         ServerEnvironment
                 .instance()
                 .configureDeployment(() -> DeploymentType.APPENGINE_CLOUD);
-        FirebaseClient client = FirebaseClientFactory.remoteClient(database);
+        var client = FirebaseClientFactory.remoteClient(database);
         assertThat(client)
                 .isNotNull();
     }
@@ -105,7 +105,7 @@ class FirebaseClientFactoryTest extends UtilityClassTest<FirebaseClientFactory> 
         ServerEnvironment
                 .instance()
                 .configureDeployment(() -> DeploymentType.STANDALONE);
-        FirebaseClient client = FirebaseClientFactory.remoteClient(database);
+        var client = FirebaseClientFactory.remoteClient(database);
         assertThat(client)
                 .isNotNull();
     }

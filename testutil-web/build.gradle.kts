@@ -1,3 +1,5 @@
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -30,3 +32,5 @@ dependencies {
     api(project(":web"))
     api("io.spine.tools:spine-testlib:$spineBaseVersion")
 }
+
+CheckStyleConfig.applyTo(project)

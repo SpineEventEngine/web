@@ -32,7 +32,6 @@ import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -44,7 +43,7 @@ class KnownResponseTest {
     @Test
     @DisplayName("not tolerate `null`s")
     void notTolerateNull() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicStaticMethods(KnownResponse.class);
     }
 
@@ -52,11 +51,11 @@ class KnownResponseTest {
     @DisplayName("return set values")
     @SuppressWarnings("JdkObsolete") // we're force to follow the contract
     void returnSetValues() {
-        String headerName = "custom";
-        String headerValue = "header";
-        ImmutableMap<String, String> headers = ImmutableMap.of(headerName, headerValue);
-        StringWriter writer = new StringWriter();
-        KnownResponse response = KnownResponse.create(writer, SC_ACCEPTED, headers);
+        var headerName = "custom";
+        var headerValue = "header";
+        var headers = ImmutableMap.of(headerName, headerValue);
+        var writer = new StringWriter();
+        var response = KnownResponse.create(writer, SC_ACCEPTED, headers);
         assertThat(response.getStatus())
                 .isEqualTo(SC_ACCEPTED);
         assertThat(response.getHeader(headerName))
@@ -65,7 +64,7 @@ class KnownResponseTest {
                 .isEqualTo(ImmutableSet.of(headerValue));
         assertThat(response.getHeaderNames())
                 .isEqualTo(ImmutableSet.of(headerName));
-        PrintWriter printWriter = response.getWriter();
+        var printWriter = response.getWriter();
         printWriter.print("Unbelievable string!");
         assertThat(writer.toString())
                 .isEqualTo("Unbelievable string!");

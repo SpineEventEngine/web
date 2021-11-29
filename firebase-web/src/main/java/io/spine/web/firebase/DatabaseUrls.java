@@ -51,10 +51,10 @@ public final class DatabaseUrls {
      */
     public static DatabaseUrl from(String dbUrl) {
         checkNotEmptyOrBlank(dbUrl);
-        String namespace = "";
-        String url = dbUrl;
-        String namespaceQuery = "?ns=";
-        int queryIndex = dbUrl.indexOf(namespaceQuery);
+        var namespace = "";
+        var url = dbUrl;
+        var namespaceQuery = "?ns=";
+        var queryIndex = dbUrl.indexOf(namespaceQuery);
         if (queryIndex > 0) {
             namespace = dbUrl.substring(queryIndex + namespaceQuery.length());
             url = dbUrl.substring(0, queryIndex);

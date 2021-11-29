@@ -72,7 +72,7 @@ public class AllowAnyOriginFilter implements Filter {
     }
 
     private static void appendHeaders(HttpServletResponse response) {
-        for (ResponseHeader header : ResponseHeader.values()) {
+        for (var header : ResponseHeader.values()) {
             header.appendTo(response);
         }
     }
@@ -92,7 +92,7 @@ public class AllowAnyOriginFilter implements Filter {
      */
     private enum ResponseHeader {
 
-        ACCESS_CONTROL_ALLOW_ORIGIN(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*"),
+        ACCESS_CONTROL_ALLOW_ORIGIN(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, ANY_URL),
         ACCESS_CONTROL_ALLOW_CREDENTIALS(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"),
         ACCESS_CONTROL_ALLOW_HEADERS(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, CONTENT_TYPE);
 

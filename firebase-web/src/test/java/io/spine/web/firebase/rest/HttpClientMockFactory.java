@@ -50,7 +50,7 @@ final class HttpClientMockFactory {
      * Creates a new no-operation {@code HttpClient}.
      */
     static HttpClient noOpClient() {
-        MockHttpTransport transport = new MockHttpTransport.Builder().build();
+        var transport = new MockHttpTransport.Builder().build();
         return HttpClient.using(transport.createRequestFactory());
     }
 
@@ -75,20 +75,20 @@ final class HttpClientMockFactory {
 
     private static HttpRequestFactory
     mockRequestFactory(String content, HttpRequestObserver observer) {
-        HttpTransport transportMock = mockHttpTransport(content, observer);
-        HttpRequestFactory requestFactoryMock = transportMock.createRequestFactory();
+        var transportMock = mockHttpTransport(content, observer);
+        var requestFactoryMock = transportMock.createRequestFactory();
         return requestFactoryMock;
     }
 
     private static HttpTransport
     mockHttpTransport(String content, HttpRequestObserver observer) {
-        final MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+        final var response = new MockLowLevelHttpResponse();
         response.setContent(content);
         return new MockHttpTransport() {
             @Override
             public LowLevelHttpRequest
             buildRequest(String method, String url) {
-                MockLowLevelHttpRequest request = new MockLowLevelHttpRequest(url);
+                var request = new MockLowLevelHttpRequest(url);
                 request.setResponse(response);
                 observer.onRequest(method, url);
                 return request;
@@ -105,7 +105,7 @@ final class HttpClientMockFactory {
     }
 
     private static HttpRequestFactory throwingRequestFactory() {
-        HttpRequestFactory result = throwingHttpTransport().createRequestFactory();
+        var result = throwingHttpTransport().createRequestFactory();
         return result;
     }
 

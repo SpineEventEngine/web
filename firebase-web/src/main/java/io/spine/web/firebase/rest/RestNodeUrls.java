@@ -56,16 +56,15 @@ final class RestNodeUrls {
      */
     RestNodeUrl with(NodePath path) {
         checkNotNull(path);
-        Url url = withinDatabase(path);
-        RestNodeUrl node = RestNodeUrl
-                .newBuilder()
+        var url = withinDatabase(path);
+        var node = RestNodeUrl.newBuilder()
                 .setUrl(url)
                 .vBuild();
         return node;
     }
 
     private Url withinDatabase(NodePath path) {
-        Url dbUrl = database.getUrl();
+        var dbUrl = database.getUrl();
         String result;
         if (isNullOrEmpty(database.getNamespace())) {
             result = format("%s/%s.json", dbUrl.getSpec(), path.getValue());
@@ -82,7 +81,7 @@ final class RestNodeUrls {
      */
     static GenericUrl asGenericUrl(RestNodeUrl node) {
         checkNotNull(node);
-        GenericUrl url = new GenericUrl(Urls.toString(node.getUrl()));
+        var url = new GenericUrl(Urls.toString(node.getUrl()));
         return url;
     }
 }

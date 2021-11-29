@@ -1,3 +1,5 @@
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -36,6 +38,8 @@ dependencies {
     implementation(project(":firebase-web"))
     implementation("io.spine:spine-server:$spineCoreVersion")
 }
+
+CheckStyleConfig.applyTo(project)
 
 gretty {
     contextPath = "/"

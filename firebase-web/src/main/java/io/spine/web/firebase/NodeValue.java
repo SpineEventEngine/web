@@ -68,7 +68,7 @@ public final class NodeValue {
      * parsed from the given {@code String}.
      */
     static NodeValue from(StoredJson json) {
-        JsonObject value = json.asJsonObject();
+        var value = json.asJsonObject();
         return new NodeValue(value);
     }
 
@@ -81,8 +81,8 @@ public final class NodeValue {
      * @return new node value
      */
     public static NodeValue withChildren(Iterable<StoredJson> jsons) {
-        NodeValue nodeValue = empty();
-        for (StoredJson json : jsons) {
+        var nodeValue = empty();
+        for (var json : jsons) {
             nodeValue.addChild(json);
         }
         return nodeValue;
@@ -93,7 +93,7 @@ public final class NodeValue {
      * suitable for usage in the HTTP request.
      */
     public ByteArrayContent toByteArray() {
-        ByteArrayContent result = fromString(JSON_UTF_8.toString(), value.toString());
+        var result = fromString(JSON_UTF_8.toString(), value.toString());
         return result;
     }
 
@@ -103,7 +103,7 @@ public final class NodeValue {
      * @see io.spine.json.Json#fromJson(String, Class)
      */
     public <M extends Message> M as(Class<M> cls) {
-        String jsonMessage = value.toString();
+        var jsonMessage = value.toString();
         return fromJson(jsonMessage, cls);
     }
 
@@ -118,7 +118,7 @@ public final class NodeValue {
      */
     @CanIgnoreReturnValue
     public String addChild(StoredJson data) {
-        String key = ChildKeyGenerator.newKey();
+        var key = ChildKeyGenerator.newKey();
         addChild(key, data);
         return key;
     }

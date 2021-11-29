@@ -29,7 +29,6 @@ package io.spine.web.command;
 import io.spine.base.Time;
 import io.spine.client.CommandFactory;
 import io.spine.core.Ack;
-import io.spine.core.Command;
 import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -73,14 +72,13 @@ class CommandServletTest {
     @DisplayName("handle command POST requests")
     void testHandle() throws IOException {
         CommandServlet servlet = new DetachedCommandServlet();
-        StringWriter response = new StringWriter();
-        TestCommandMessage createTask = TestCommandMessage
-                .newBuilder()
+        var response = new StringWriter();
+        var createTask = TestCommandMessage.newBuilder()
                 .setId(newUuid())
                 .vBuild();
-        Command command = commandFactory.create(createTask);
+        var command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
-        Ack ack = Json.fromJson(response.toString(), Ack.class);
+        var ack = Json.fromJson(response.toString(), Ack.class);
         assertThat(command.getId())
                 .isEqualTo(AnyPacker.unpack(ack.getMessageId()));
     }
@@ -90,7 +88,7 @@ class CommandServletTest {
     @DisplayName("respond 400 to an invalid command")
     void testInvalidCommand() throws IOException {
         CommandServlet servlet = new DetachedCommandServlet();
-        MemoizingResponse response = new MemoizingResponse();
+        var response = new MemoizingResponse();
         servlet.doPost(request(Time.currentTime()), response);
         assertThat(response.getStatus())
                 .isEqualTo(SC_BAD_REQUEST);

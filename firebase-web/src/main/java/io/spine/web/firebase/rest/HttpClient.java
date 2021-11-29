@@ -29,10 +29,8 @@ package io.spine.web.firebase.rest;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.util.BackOff;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
@@ -179,31 +177,31 @@ class HttpClient {
     }
 
     private String doGet(GenericUrl url) throws IOException {
-        HttpRequest request = requestFactory.buildGetRequest(url);
+        var request = requestFactory.buildGetRequest(url);
         return executeAndGetResponse(request);
     }
 
     private String doPut(GenericUrl url, HttpContent content) throws IOException {
-        HttpRequest request = requestFactory.buildPutRequest(url, content);
+        var request = requestFactory.buildPutRequest(url, content);
         return executeAndGetResponse(request);
     }
 
     private String doPatch(GenericUrl url, HttpContent content) throws IOException {
-        HttpRequest request = requestFactory.buildPatchRequest(url, content);
+        var request = requestFactory.buildPatchRequest(url, content);
         return executeAndGetResponse(request);
     }
 
     private String doDelete(GenericUrl url) throws IOException {
-        HttpRequest request = requestFactory.buildDeleteRequest(url);
+        var request = requestFactory.buildDeleteRequest(url);
         return executeAndGetResponse(request);
     }
 
     private String executeAndGetResponse(HttpRequest request) throws IOException {
         setFirebaseDecodingHeader(request);
-        BackOff strategy = backOff.get();
+        var strategy = backOff.get();
         request.setIOExceptionHandler(new HttpBackOffIOExceptionHandler(strategy));
-        HttpResponse httpResponse = request.execute();
-        String response = httpResponse.parseAsString();
+        var httpResponse = request.execute();
+        var response = httpResponse.parseAsString();
         httpResponse.disconnect();
         return response;
     }
@@ -217,7 +215,7 @@ class HttpClient {
      * reference.</a>
      */
     private static void setFirebaseDecodingHeader(HttpRequest request) {
-        HttpHeaders headers = request.getHeaders();
+        var headers = request.getHeaders();
         headers.put(FIREBASE_DECODING_HEADER, 1);
     }
 }

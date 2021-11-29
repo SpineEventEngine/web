@@ -26,7 +26,6 @@
 
 package io.spine.web.firebase.subscription;
 
-import com.google.protobuf.Timestamp;
 import io.spine.annotation.GeneratedMixin;
 import io.spine.base.Time;
 import io.spine.client.SubscriptionId;
@@ -73,8 +72,8 @@ interface TimedSubscriptionMixin extends TimedSubscriptionOrBuilder {
      *         {@code false} if the subscription is still relevant
      */
     default boolean isExpired() {
-        Timestamp validThru = getValidThru();
-        Timestamp now = Time.currentTime();
+        var validThru = getValidThru();
+        var now = Time.currentTime();
         return compare(now, validThru) > 0;
     }
 }

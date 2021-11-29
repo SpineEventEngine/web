@@ -33,7 +33,6 @@ import io.spine.client.Target;
 import io.spine.client.Topic;
 import io.spine.client.TopicFactory;
 import io.spine.client.grpc.SubscriptionServiceGrpc.SubscriptionServiceImplBase;
-import io.spine.core.Response;
 import io.spine.core.UserId;
 import io.spine.server.model.Nothing;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -47,7 +46,6 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.core.Responses.statusOk;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicate strings for testing.
 public final class FirebaseSubscriptionBridgeTestEnv {
@@ -65,18 +63,17 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     }
 
     public static void assertSubscriptionPointsToFirebase(NodePath path, Topic topic) {
-        String actor = actorAsString(topic);
+        var actor = actorAsString(topic);
         Collection<String> pathElements = newArrayList(
                 DEFAULT_TENANT, escaped(actor), topic.getId().getValue()
         );
-        String expectedPath = PATH_JOINER.join(pathElements);
+        var expectedPath = PATH_JOINER.join(pathElements);
         assertThat(path.getValue())
                 .isEqualTo(expectedPath);
     }
 
     private static String actorAsString(Topic topic) {
-        UserId actor = topic.getContext()
-                            .getActor();
+        var actor = topic.getContext().getActor();
         return actor.getValue();
     }
 
@@ -85,24 +82,15 @@ public final class FirebaseSubscriptionBridgeTestEnv {
                                            .replaceAll(SUBSTITUTION_SYMBOL);
     }
 
-    public static Response newResponse() {
-        return Response
-                .newBuilder()
-                .setStatus(statusOk())
-                .vBuild();
-    }
-
     public static Subscription newSubscription(Topic topic) {
-        return Subscription
-                .newBuilder()
+        return Subscription.newBuilder()
                 .setId(subscriptionId())
                 .setTopic(topic)
                 .vBuild();
     }
 
     public static Target newTarget() {
-        return Target
-                .newBuilder()
+        return Target.newBuilder()
                 .setType(TypeUrl.of(Nothing.getDefaultInstance()).value())
                 .setIncludeAll(true)
                 .vBuild();
@@ -111,24 +99,21 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     public static FirebaseSubscriptionBridge
     newBridge(FirebaseClient firebaseClient,
               SubscriptionServiceImplBase subscriptionService) {
-        return FirebaseSubscriptionBridge
-                .newBuilder()
+        return FirebaseSubscriptionBridge.newBuilder()
                 .setFirebaseClient(firebaseClient)
                 .setSubscriptionService(subscriptionService)
                 .build();
     }
 
     public static TopicFactory topicFactory() {
-        UserId userId = UserId
-                .newBuilder()
+        var userId = UserId.newBuilder()
                 .setValue("test-user")
                 .vBuild();
         return new TestActorRequestFactory(userId).topic();
     }
 
     private static SubscriptionId subscriptionId() {
-        return SubscriptionId
-                .newBuilder()
+        return SubscriptionId.newBuilder()
                 .setValue("test-subscription")
                 .vBuild();
     }

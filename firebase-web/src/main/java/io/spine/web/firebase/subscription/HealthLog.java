@@ -78,9 +78,9 @@ final class HealthLog {
      */
     boolean isStale(Subscription subscription) {
         checkNotNull(subscription);
-        Timestamp validThru = expirationTimes.get(subscription.getTopic().getId());
+        var validThru = expirationTimes.get(subscription.getTopic().getId());
         checkNotNull(validThru);
-        Timestamp now = Time.currentTime();
+        var now = Time.currentTime();
         return compare(validThru, now) < 0;
     }
 }

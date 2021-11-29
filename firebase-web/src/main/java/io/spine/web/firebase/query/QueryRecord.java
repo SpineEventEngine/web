@@ -35,8 +35,6 @@ import io.spine.web.firebase.NodeValue;
 import io.spine.web.firebase.RequestNodePath;
 import io.spine.web.firebase.StoredJson;
 
-import java.util.List;
-
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -75,8 +73,7 @@ final class QueryRecord {
      * bulk.
      */
     private void flushTo(FirebaseClient firebaseClient) {
-        List<StoredJson> jsons = queryResponse
-                .getMessageList()
+        var jsons = queryResponse.getMessageList()
                 .stream()
                 .unordered()
                 .map(EntityStateWithVersion::getState)

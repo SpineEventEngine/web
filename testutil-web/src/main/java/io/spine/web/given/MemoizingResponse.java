@@ -87,7 +87,7 @@ public final class MemoizingResponse implements MockedResponse {
 
     @Override
     public ImmutableSet<String> getHeaders(String name) {
-        String result = headers.get(name);
+        var result = headers.get(name);
         if (result == null) {
             return ImmutableSet.of();
         }

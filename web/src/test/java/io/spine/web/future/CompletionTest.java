@@ -28,7 +28,6 @@ package io.spine.web.future;
 
 import io.spine.logging.Logging;
 import io.spine.testing.UtilityClassTest;
-import io.spine.testing.logging.LogRecordSubject;
 import io.spine.testing.logging.SimpleLoggingTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -53,7 +52,7 @@ class CompletionTest extends UtilityClassTest<Completion> {
         @Test
         @DisplayName("ignore stages which complete successfully")
         void ignoreSuccessfulStages() {
-            CompletableFuture<Number> successfulStage = new CompletableFuture<>();
+            var successfulStage = new CompletableFuture<Number>();
             successfulStage.complete(42);
             Completion.dispose(successfulStage);
 
@@ -63,11 +62,11 @@ class CompletionTest extends UtilityClassTest<Completion> {
         @Test
         @DisplayName("log stage exceptions")
         void logExceptions() {
-            CompletableFuture<Number> failedStage = new CompletableFuture<>();
+            var failedStage = new CompletableFuture<Number>();
             failedStage.completeExceptionally(new UnicornException());
             Completion.dispose(failedStage);
 
-            LogRecordSubject assertLogRecord = assertLog().record();
+            var assertLogRecord = assertLog().record();
 
             assertLogRecord.hasLevelThat()
                            .isEqualTo(Logging.errorLevel());

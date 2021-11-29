@@ -50,19 +50,17 @@ final class Server {
     }
 
     private static Application createApplication() {
-        BoundedContext users = BoundedContext
-                .singleTenant("Users Context")
+        var users = BoundedContext.singleTenant("Users Context")
                 .add(DefaultRepository.of(UserInfoAggregate.class))
                 .add(DefaultRepository.of(UserInfoProjection.class))
                 .build();
-        BoundedContext tasks = BoundedContext
-                .multitenant("Tasks Context")
+        var tasks = BoundedContext.multitenant("Tasks Context")
                 .add(DefaultRepository.of(TaskAggregate.class))
                 .add(DefaultRepository.of(ProjectAggregate.class))
                 .add(new UserTasksProjectionRepository())
                 .addCommandFilter(new CreateTaskCommandFilter())
                 .build();
-        Application app = Application.create(tasks, users);
+        var app = Application.create(tasks, users);
         return app;
     }
 }

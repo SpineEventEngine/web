@@ -49,30 +49,30 @@ class HttpClientTest {
     @Test
     @DisplayName("execute GET request")
     void executeGetRequest() {
-        HttpClient requestExecutor = mockHttpClient(RESPONSE);
-        String content = requestExecutor.get(URL);
+        var requestExecutor = mockHttpClient(RESPONSE);
+        var content = requestExecutor.get(URL);
         assertEquals(RESPONSE, content);
     }
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on GET request")
     void throwIfErrorOnGet() {
-        HttpClient requestExecutor = throwingClient();
+        var requestExecutor = throwingClient();
         assertThrows(RequestToFirebaseFailedException.class, () -> requestExecutor.get(URL));
     }
 
     @Test
     @DisplayName("execute PUT request")
     void executePutRequest() {
-        HttpClient requestExecutor = mockHttpClient(RESPONSE);
-        String content = requestExecutor.put(URL, CONTENT);
+        var requestExecutor = mockHttpClient(RESPONSE);
+        var content = requestExecutor.put(URL, CONTENT);
         assertEquals(RESPONSE, content);
     }
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PUT request")
     void throwIfErrorOnPut() {
-        HttpClient requestExecutor = throwingClient();
+        var requestExecutor = throwingClient();
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.put(URL, CONTENT));
     }
@@ -80,15 +80,15 @@ class HttpClientTest {
     @Test
     @DisplayName("execute PATCH request")
     void executePatchRequest() {
-        HttpClient requestExecutor = mockHttpClient(RESPONSE);
-        String content = requestExecutor.patch(URL, CONTENT);
+        var requestExecutor = mockHttpClient(RESPONSE);
+        var content = requestExecutor.patch(URL, CONTENT);
         assertEquals(RESPONSE, content);
     }
 
     @Test
     @DisplayName("throw RequestToFirebaseFailedException if an error occurs on PATCH request")
     void throwIfErrorOnPatch() {
-        HttpClient requestExecutor = throwingClient();
+        var requestExecutor = throwingClient();
         assertThrows(RequestToFirebaseFailedException.class,
                      () -> requestExecutor.patch(URL, CONTENT));
     }

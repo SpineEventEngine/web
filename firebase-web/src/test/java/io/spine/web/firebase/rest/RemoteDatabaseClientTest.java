@@ -50,7 +50,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
-import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
@@ -80,16 +79,16 @@ class RemoteDatabaseClientTest {
     private NodeValue value;
 
     @BeforeAll
-    @SuppressWarnings({"JdkObsolete", "JavaUtilDate" })  /* Comply with Google API. */
+    @SuppressWarnings({"JdkObsolete", "JavaUtilDate"})  /* Comply with Google API. */
     static void initFirebase() {
-        GoogleCredentials fakeCredentials =
+        var fakeCredentials =
                 GoogleCredentials.create(new AccessToken("obviously fake", new Date()));
-        FirebaseApp.initializeApp(FirebaseOptions
-                                          .builder()
-                                          .setDatabaseUrl(DATABASE_URL_STRING)
-                                          .setCredentials(fakeCredentials)
-                                          .build(),
-                                  FIREBASE_APP_NAME);
+        FirebaseApp.initializeApp(
+                FirebaseOptions.builder()
+                        .setDatabaseUrl(DATABASE_URL_STRING)
+                        .setCredentials(fakeCredentials)
+                        .build(),
+                FIREBASE_APP_NAME);
     }
 
     @BeforeEach
@@ -114,25 +113,25 @@ class RemoteDatabaseClientTest {
     @Test
     @DisplayName("retrieve data from given database path")
     void getData() {
-        HttpClient httpClient = mockHttpClient(DATA.value());
+        var httpClient = mockHttpClient(DATA.value());
         FirebaseClient client = new RemoteDatabaseClient(database, NODE_FACTORY, httpClient);
 
-        Optional<NodeValue> result = client.fetchNode(path);
+        var result = client.fetchNode(path);
         assertThat(result)
                 .isPresent();
-        NodeValue value = result.get();
-        String contentString = value.underlyingJson()
-                                    .toString();
+        var value = result.get();
+        var contentString = value.underlyingJson()
+                                 .toString();
         assertEquals(DATA.value(), contentString);
     }
 
     @Test
     @DisplayName("return empty Optional in case of null data")
     void getNullData() {
-        HttpClient httpClient = mockHttpClient(NULL_ENTRY);
+        var httpClient = mockHttpClient(NULL_ENTRY);
         FirebaseClient client = new RemoteDatabaseClient(database, NODE_FACTORY, httpClient);
 
-        Optional<NodeValue> result = client.fetchNode(path);
+        var result = client.fetchNode(path);
         assertThat(result)
                 .isEmpty();
     }
@@ -140,7 +139,7 @@ class RemoteDatabaseClientTest {
     @Test
     @DisplayName("store data via PUT method when node is not present")
     void storeNewViaPut() {
-        HttpClient httpClient = mockHttpClient(NULL_ENTRY, (method, url) -> {
+        var httpClient = mockHttpClient(NULL_ENTRY, (method, url) -> {
             assertThat(method)
                     .isEqualTo(HttpMethods.PUT);
             assertThat(url)
@@ -154,7 +153,7 @@ class RemoteDatabaseClientTest {
     @Test
     @DisplayName("store data via PATCH method when node already exists")
     void updateExistingViaPatch() {
-        HttpClient httpClient = mockHttpClient(NULL_ENTRY, (method, url) -> {
+        var httpClient = mockHttpClient(NULL_ENTRY, (method, url) -> {
             assertThat(method)
                     .isEqualTo(HttpMethods.PATCH);
             assertThat(url)
@@ -175,7 +174,7 @@ class RemoteDatabaseClientTest {
 
         @BeforeEach
         void configureFirebase() {
-            FirebaseApp app = FirebaseApp.getInstance(FIREBASE_APP_NAME);
+            var app = FirebaseApp.getInstance(FIREBASE_APP_NAME);
             database = FirebaseDatabase.getInstance(app);
         }
 
@@ -189,7 +188,7 @@ class RemoteDatabaseClientTest {
         @Test
         @DisplayName("require a request factory to build")
         void requireFactory() {
-            RemoteDatabaseClient.Builder builder = RemoteDatabaseClient
+            var builder = RemoteDatabaseClient
                     .newBuilder()
                     .setDatabase(database);
             assertThrows(IllegalStateException.class, builder::build);
@@ -198,7 +197,7 @@ class RemoteDatabaseClientTest {
         @Test
         @DisplayName("require a Firebase database to build")
         void requireDatabase() {
-            RemoteDatabaseClient.Builder builder = RemoteDatabaseClient
+            var builder = RemoteDatabaseClient
                     .newBuilder()
                     .setRequestFactory(requestFactory);
             assertThrows(IllegalStateException.class, builder::build);
@@ -207,7 +206,7 @@ class RemoteDatabaseClientTest {
         @Test
         @DisplayName("build with all required parameters")
         void build() {
-            RemoteDatabaseClient client = RemoteDatabaseClient
+            var client = RemoteDatabaseClient
                     .newBuilder()
                     .setDatabase(database)
                     .setRequestFactory(requestFactory)

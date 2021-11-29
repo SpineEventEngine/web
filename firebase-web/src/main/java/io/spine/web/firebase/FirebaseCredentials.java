@@ -115,7 +115,7 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
      */
     public static FirebaseCredentials fromGoogleCredentials(GoogleCredentials credentials) {
         checkNotNull(credentials);
-        GoogleCredentials scopedCredential = credentials.createScoped(AUTH_SCOPES);
+        var scopedCredential = credentials.createScoped(AUTH_SCOPES);
         return new FirebaseCredentials(scopedCredential);
     }
 
@@ -130,8 +130,7 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
     @Deprecated
     public static FirebaseCredentials fromGoogleCredentials(com.google.api.client.googleapis.auth.oauth2.GoogleCredential credentials) {
         checkNotNull(credentials);
-        com.google.api.client.googleapis.auth.oauth2.GoogleCredential scopedCredential
-                = credentials.createScoped(AUTH_SCOPES);
+        var scopedCredential= credentials.createScoped(AUTH_SCOPES);
         return new FirebaseCredentials(scopedCredential);
     }
 
@@ -152,7 +151,7 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
      */
     public static FirebaseCredentials fromStream(InputStream credentialStream) {
         checkNotNull(credentialStream);
-        GoogleCredentials credentials = parseCredentials(credentialStream);
+        var credentials = parseCredentials(credentialStream);
         return fromGoogleCredentials(credentials);
     }
 
@@ -191,7 +190,7 @@ public final class FirebaseCredentials implements HttpRequestInitializer {
 
     private static GoogleCredentials parseCredentials(InputStream credentialStream) {
         try {
-            GoogleCredentials credentials = GoogleCredentials.fromStream(credentialStream);
+            var credentials = GoogleCredentials.fromStream(credentialStream);
             return credentials;
         } catch (IOException e) {
             throw newIllegalArgumentException(
