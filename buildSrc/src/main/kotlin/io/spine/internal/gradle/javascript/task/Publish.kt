@@ -30,7 +30,6 @@ import io.spine.internal.gradle.java.publish.publish
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskContainer
-import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
 /**
@@ -104,17 +103,19 @@ internal val TaskContainer.prepareJsPublication: Copy
     get() = getByName<Copy>("prepareJsPublication")
 
 private fun JsTaskRegistering.prepareJsPublication() =
-    create<Copy>("prepareJsPublication") {
+    create("prepareJsPublication") {
 
         description = "Prepares the NPM package for publishing."
         group = jsPublishTask
 
-        from(
-            packageJson,
-            npmrc
-        )
+        project.copy {
+            from(
+                packageJson,
+                npmrc
+            )
 
-        into(publicationDir)
+            into(publicationDir)
+        }
 
         dependsOn(
             assembleJs,
