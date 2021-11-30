@@ -77,7 +77,9 @@ javascript {
         publish()
 
         check {
-            rootProject.tasks.check.dependsOn(coverageJs)
+            rootProject.tasks.check.configure {
+                dependsOn(coverageJs)
+            }
         }
 
         // TODO:2021-11-30:yevhenii.nadtochii

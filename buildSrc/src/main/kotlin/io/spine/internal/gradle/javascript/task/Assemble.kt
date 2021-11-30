@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import io.spine.internal.gradle.base.assemble
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 
 /**
  * Registers tasks for assembling a JavaScript sources.
@@ -44,10 +45,19 @@ import org.gradle.api.tasks.TaskContainer
  *
  * @see JsTasks
  */
-fun JsTasks.assemble() =
-    assemble.dependsOn(
-        assembleJs()
-    )
+fun JsTasks.assemble() {
+
+    installNodePackages()
+    compileProtoToJs()
+    updatePackageVersion()
+
+    assembleJs().also {
+        assemble.configure {
+            dependsOn(it)
+        }
+    }
+
+}
 
 
 /**
@@ -55,19 +65,19 @@ fun JsTasks.assemble() =
  *
  * It is a lifecycle task that assembles JavaScript sources.
  */
-val TaskContainer.assembleJs: Task
-    get() = getByName("assembleJs")
+val TaskContainer.assembleJs: TaskProvider<Task>
+    get() = named("assembleJs")
 
 private fun JsTasks.assembleJs() =
-    create("assembleJs") {
+    register("assembleJs") {
 
         description = "Assembles JavaScript sources."
         group = jsAssembleTask
 
         dependsOn(
-            installNodePackages(),
-            compileProtoToJs(),
-            updatePackageVersion()
+            installNodePackages,
+            compileProtoToJs,
+            updatePackageVersion
         )
     }
 
@@ -80,11 +90,11 @@ private fun JsTasks.assembleJs() =
  * This is a lifecycle task that performs no action itself. It is used to aggregate other tasks
  * which perform the compilation. Those tasks are provided by `Protobuf` and `McJsPlugin` plugins.
  */
-val TaskContainer.compileProtoToJs: Task
-    get() = getByName("compileProtoToJs")
+val TaskContainer.compileProtoToJs: TaskProvider<Task>
+    get() = named("compileProtoToJs")
 
 private fun JsTasks.compileProtoToJs() =
-    create("compileProtoToJs") {
+    register("compileProtoToJs") {
 
         description = "Compiles Protobuf messages into JavaScript."
         group = jsAssembleTask
@@ -104,11 +114,11 @@ private fun JsTasks.compileProtoToJs() =
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
-val TaskContainer.installNodePackages: Task
-    get() = getByName("installNodePackages")
+val TaskContainer.installNodePackages: TaskProvider<Task>
+    get() = named("installNodePackages")
 
 private fun JsTasks.installNodePackages() =
-    create("installNodePackages") {
+    register("installNodePackages") {
 
         description = "Installs the module`s Node dependencies."
         group = jsAssembleTask
@@ -130,11 +140,11 @@ private fun JsTasks.installNodePackages() =
  * [moduleVersion][io.spine.internal.gradle.javascript.JsEnvironment.moduleVersion]
  * specified in the current `JsEnvironment`.
  */
-val TaskContainer.updatePackageVersion: Task
-    get() = getByName("updatePackageVersion")
+val TaskContainer.updatePackageVersion: TaskProvider<Task>
+    get() = named("updatePackageVersion")
 
 private fun JsTasks.updatePackageVersion() =
-    create("updatePackageVersion") {
+    register("updatePackageVersion") {
 
         description = "Sets the version in `package.json`."
         group = jsAssembleTask

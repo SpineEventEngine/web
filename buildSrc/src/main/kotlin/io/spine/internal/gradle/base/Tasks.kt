@@ -29,10 +29,11 @@ package io.spine.internal.gradle.base
 import org.gradle.api.Task
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskContainer
-import org.gradle.kotlin.dsl.getByName
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.named
 
 /**
- * Locates `clean` task provided by `The Base Plugin`.
+ * Locates `clean` task in this [TaskContainer].
  *
  * The task deletes the build directory and everything in it,
  * i.e. the path specified by the `Project.getBuildDir()` project property.
@@ -40,11 +41,11 @@ import org.gradle.kotlin.dsl.getByName
  * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">
  *     Tasks | The Base Plugin</a>
  */
-internal val TaskContainer.clean: Delete
-    get() = getByName<Delete>("clean")
+val TaskContainer.clean: TaskProvider<Delete>
+    get() = named<Delete>("clean")
 
 /**
- * Locates `check` task provided by `The Base Plugin`.
+ * Locates `check` task in this [TaskContainer].
  *
  * This is a lifecycle task that performs no action itself.
  *
@@ -54,11 +55,11 @@ internal val TaskContainer.clean: Delete
  * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">
  *     Tasks | The Base Plugin</a>
  */
-val TaskContainer.check: Task
-    get() = getByName("check")
+val TaskContainer.check: TaskProvider<Task>
+    get() = named("check")
 
 /**
- * Locates `assemble` task provided by `The Base Plugin`.
+ * Locates `assemble` task in this [TaskContainer].
  *
  * This is a lifecycle task that performs no action itself.
  *
@@ -68,11 +69,11 @@ val TaskContainer.check: Task
  * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">
  *     Tasks | The Base Plugin</a>
  */
-internal val TaskContainer.assemble: Task
-    get() = getByName("assemble")
+val TaskContainer.assemble: TaskProvider<Task>
+    get() = named("assemble")
 
 /**
- * Locates `build` task provided by `The Base Plugin`.
+ * Locates `build` task in this [TaskContainer].
  *
  * Intended to build everything, including running all tests, producing the production artifacts
  * and generating documentation. One will probably rarely attach concrete tasks directly
@@ -82,5 +83,5 @@ internal val TaskContainer.assemble: Task
  * @see <a href="https://docs.gradle.org/current/userguide/base_plugin.html#sec:base_tasks">
  *     Tasks | The Base Plugin</a>
  */
-internal val TaskContainer.build: Task
-    get() = getByName("build")
+val TaskContainer.build: TaskProvider<Task>
+    get() = named("build")

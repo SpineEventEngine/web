@@ -27,11 +27,12 @@
 package io.spine.internal.gradle.java
 
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.named
 
 /**
- * Locates `test` task provided by the `The Java Plugin`.
+ * Locates `test` task in this [TaskContainer].
  *
  * Runs the unit tests using JUnit or TestNG.
  *
@@ -40,5 +41,5 @@ import org.gradle.kotlin.dsl.getByName
  * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">
  *     Tasks | The Java Plugin</a>
  */
-internal val TaskContainer.test: Test
-    get() = getByName<Test>("test")
+val TaskContainer.test: TaskProvider<Test>
+    get() = named<Test>("test")

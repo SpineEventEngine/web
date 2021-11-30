@@ -85,7 +85,9 @@ fun JsPlugins.protobuf() {
                 task.descriptorSetOptions.path =
                     "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
 
-                compileProtoToJs.dependsOn(task)
+                compileProtoToJs.configure {
+                    dependsOn(task)
+                }
             }
         }
     }

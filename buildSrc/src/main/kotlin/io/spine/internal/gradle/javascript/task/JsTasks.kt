@@ -56,8 +56,8 @@ import org.gradle.api.tasks.TaskContainer
  *
  * // ...
  *
- * val TaskContainer.bundleJs: Task
- *     get() = getByName("bundleJs")
+ * val TaskContainer.bundleJs: TaskProvider<Task>
+ *     get() = named("bundleJs")
  *
  * fun JsTasks.bundleJs() =
  *     register("bundleJs) {

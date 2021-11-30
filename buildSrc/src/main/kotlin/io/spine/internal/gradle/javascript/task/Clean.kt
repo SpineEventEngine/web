@@ -30,8 +30,9 @@ import io.spine.internal.gradle.base.clean
 import org.gradle.api.Task
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskContainer
-import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByName
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.register
 
 /**
  * Registers tasks for deleting output of JavaScript build tasks.
@@ -43,10 +44,17 @@ import org.gradle.kotlin.dsl.getByName
  *
  *  @see JsTasks
  */
-fun JsTasks.clean() =
-    clean.dependsOn(
-        cleanJs()
-    )
+fun JsTasks.clean() {
+
+    cleanGenerated()
+
+    cleanJs().also {
+        clean.configure {
+            dependsOn(it)
+        }
+    }
+}
+
 
 
 /**
@@ -54,23 +62,23 @@ fun JsTasks.clean() =
  *
  * The task deletes output of `assembleJs` task and output of its dependants.
  */
-val TaskContainer.cleanJs: Task
-    get() = getByName("cleanJs")
+val TaskContainer.cleanJs: TaskProvider<Task>
+    get() = named("cleanJs")
 
 private fun JsTasks.cleanJs() =
-    create<Delete>("cleanJs") {
+    register<Delete>("cleanJs") {
 
         description = "Cleans output of `assembleJs` task and output of its dependants."
         group = jsCleanTask
 
         delete(
-            assembleJs.outputs,
-            compileProtoToJs.outputs,
-            installNodePackages.outputs,
+            assembleJs.map { it.outputs },
+            compileProtoToJs.map { it.outputs },
+            installNodePackages.map { it.outputs },
         )
 
         dependsOn(
-            cleanGenerated()
+            cleanGenerated
         )
     }
 
@@ -80,11 +88,11 @@ private fun JsTasks.cleanJs() =
  *
  * The task deletes directories with generated code and reports.
  */
-internal val TaskContainer.cleanGenerated: Delete
-    get() = getByName<Delete>("cleanGenerated")
+internal val TaskContainer.cleanGenerated: TaskProvider<Delete>
+    get() = named<Delete>("cleanGenerated")
 
 private fun JsTasks.cleanGenerated() =
-    create<Delete>("cleanGenerated") {
+    register<Delete>("cleanGenerated") {
 
         description = "Cleans generated code and reports."
         group = jsCleanTask

@@ -29,16 +29,22 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.report.license.generateLicenseReport
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 
 /**
  * Registers a single [task][npmLicenseReport] for including NPM dependencies into license reports.
  *
  * @see [JsTasks]
  */
-fun JsTasks.licenseReport() =
-    generateLicenseReport.finalizedBy(
-        npmLicenseReport()
-    )
+fun JsTasks.licenseReport()  {
+
+    npmLicenseReport()/*.also {
+        generateLicenseReport.configure {
+            finalizedBy(it)
+        }
+    }*/
+}
+
 
 
 /**
@@ -46,11 +52,11 @@ fun JsTasks.licenseReport() =
  *
  * The task generates the report on NPM dependencies and their licenses.
  */
-internal val TaskContainer.npmLicenseReport: Task
-    get() = getByName("npmLicenseReport")
+internal val TaskContainer.npmLicenseReport: TaskProvider<Task>
+    get() = named("npmLicenseReport")
 
 private fun JsTasks.npmLicenseReport() =
-    create("npmLicenseReport") {
+    register("npmLicenseReport") {
 
         description = "Generates the report on NPM dependencies and their licenses."
         group = jsBuildTask

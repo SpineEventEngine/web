@@ -28,9 +28,10 @@ package io.spine.internal.gradle.java.publish
 
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 
 /**
- * Locates `publish` task provided by the `Maven Publish Plugin`.
+ * Locates `publish` task in this [TaskContainer].
  *
  * This task publishes all defined publications to all defined repositories. To achieve that,
  * the task depends on all `publish`*PubName*`PublicationTo`*RepoName*`Repository` tasks.
@@ -40,5 +41,5 @@ import org.gradle.api.tasks.TaskContainer
  * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:tasks">
  *     Tasks | Maven Publish Plugin</a>
  */
-internal val TaskContainer.publish: Task
-    get() = getByName("publish")
+internal val TaskContainer.publish: TaskProvider<Task>
+    get() = named("publish")

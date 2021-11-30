@@ -29,6 +29,7 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.base.build
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 
 /**
  * Locates `linkSpineWebModule` task in this [TaskContainer].
@@ -40,8 +41,8 @@ import org.gradle.api.tasks.TaskContainer
  *
  * See also: [npm-link | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-link)
  */
-val TaskContainer.linkSpineWebModule: Task
-    get() = getByName("linkSpineWebModule")
+val TaskContainer.linkSpineWebModule: TaskProvider<Task>
+    get() = named("linkSpineWebModule")
 
 fun JsTasks.linkSpineWebModule() =
     register("linkSpineWebModule") {
@@ -68,8 +69,8 @@ fun JsTasks.linkSpineWebModule() =
  *
  * See also: `./integration-tests/README.MD`
  */
-val TaskContainer.integrationTest: Task
-    get() = getByName("integrationTest")
+val TaskContainer.integrationTest: TaskProvider<Task>
+    get() = named("integrationTest")
 
 fun JsTasks.integrationTest() =
     register("integrationTest") {

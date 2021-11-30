@@ -60,7 +60,9 @@ fun JsPlugins.mcJs() {
             val parsersTask = "generateParsersTask"() as Task
 
             parsersTask.dependsOn(compileProtoToJs)
-            assembleJs.dependsOn(parsersTask)
+            assembleJs.configure {
+                dependsOn(parsersTask)
+            }
         }
     }
 }

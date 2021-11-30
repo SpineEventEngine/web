@@ -28,8 +28,9 @@ package io.spine.internal.gradle.javascript.task
 
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskContainer
-import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByName
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.register
 
 /**
  * Configures `assembleJs` task and creates `copyBundledJs` task to work with `webpack` bundler.
@@ -43,7 +44,7 @@ import org.gradle.kotlin.dsl.getByName
  */
 fun JsTasks.webpack() {
 
-    assembleJs.apply {
+    assembleJs.configure {
 
         outputs.dir(webPackOutput)
 
@@ -56,11 +57,11 @@ fun JsTasks.webpack() {
     // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
     // See: https://github.com/SpineEventEngine/web/issues/61
 
-//    prepareJsPublication.apply {
-//        dependsOn(
-//            copyBundledJs()
-//        )
-//    }
+    copyBundledJs()/*.also {
+        prepareJsPublication.configure {
+            dependsOn(it)
+        }
+    }*/
 }
 
 
@@ -69,15 +70,15 @@ fun JsTasks.webpack() {
  *
  * The task copies bundled JavaScript sources to the publication directory.
  */
-internal val TaskContainer.copyBundledJs: Copy
-    get() = getByName<Copy>("copyBundledJs")
+internal val TaskContainer.copyBundledJs: TaskProvider<Copy>
+    get() = named<Copy>("copyBundledJs")
 
 private fun JsTasks.copyBundledJs() =
-    create<Copy>("copyBundledJs") {
+    register<Copy>("copyBundledJs") {
 
         description = "Copies bundled JavaScript sources to the NPM publication directory."
         group = jsPublishTask
 
-        from(assembleJs.outputs)
+        from(assembleJs.map { it.outputs })
         into(webpackPublicationDir)
     }
