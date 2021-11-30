@@ -32,26 +32,13 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * A context for working with JavaScript-related tasks.
+ * A scope for working with JavaScript-related tasks.
  *
  * The context provides:
  *
  *  1. Access to the current [JsContext];
  *  2. Project's [TaskContainer];
  *  3. Default task groups.
- */
-open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project), TaskContainer by project.tasks
-{
-    internal val jsAssembleTask = "JavaScript/Build"
-    internal val jsCheckTask = "JavaScript/Check"
-    internal val jsCleanTask = "JavaScript/Clean"
-    internal val jsBuildTask = "JavaScript/Build"
-    internal val jsPublishTask = "JavaScript/Publish"
-}
-
-/**
- * A scope for working with JavaScript-related tasks.
  *
  * From this scope one can [register][JsTasks.register] new tasks and
  * [configure][JsTasks.configure] already present tasks.
@@ -114,37 +101,11 @@ open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
  * to reference to other tasks by such extensions instead of hard-typed string values.
  */
 open class JsTasks(jsEnv: JsEnvironment, project: Project)
-    : JsTaskContext(jsEnv, project)
+    : JsContext(jsEnv, project), TaskContainer by project.tasks
 {
-    private val registering = JsTaskRegistering(jsEnv, project)
-    private val configuring = JsTaskConfiguring(jsEnv, project)
-
-    /**
-     * Registers new tasks.
-     */
-    fun register(registrations: JsTaskRegistering.() -> Unit) =
-        registering.run(registrations)
-
-    /**
-     * Configures already registered tasks.
-     */
-    fun configure(configurations: JsTaskConfiguring.() -> Unit) =
-        configuring.run(configurations)
-
+    internal val jsAssembleTask = "JavaScript/Build"
+    internal val jsCheckTask = "JavaScript/Check"
+    internal val jsCleanTask = "JavaScript/Clean"
+    internal val jsBuildTask = "JavaScript/Build"
+    internal val jsPublishTask = "JavaScript/Publish"
 }
-
-/**
- * A logical scope for registering new tasks inside [JsTaskContext].
- *
- * @see JsTasks
- */
-class JsTaskRegistering(jsEnv: JsEnvironment, project: Project)
-    : JsTaskContext(jsEnv, project)
-
-/**
- * A logical scope for configuring present tasks inside [JsTaskContext].
- *
- * @see JsTasks
- */
-class JsTaskConfiguring(jsEnv: JsEnvironment, project: Project)
-    : JsTaskContext(jsEnv, project)

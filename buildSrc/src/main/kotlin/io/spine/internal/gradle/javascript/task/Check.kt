@@ -44,7 +44,7 @@ import org.gradle.api.tasks.TaskContainer
  *
  * @see JsTasks
  */
-fun JsTaskRegistering.check(configuration: JsTaskRegistering.() -> Unit = {}) {
+fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
 
     check.dependsOn(
         checkJs()
@@ -62,7 +62,7 @@ fun JsTaskRegistering.check(configuration: JsTaskRegistering.() -> Unit = {}) {
 val TaskContainer.checkJs: Task
     get() = getByName("checkJs")
 
-private fun JsTaskRegistering.checkJs() =
+private fun JsTasks.checkJs() =
     create("checkJs") {
 
         description = "Runs tests, audits NPM modules and creates a test-coverage report."
@@ -90,7 +90,7 @@ private fun JsTaskRegistering.checkJs() =
 val TaskContainer.auditNodePackages: Task
     get() = getByName("auditNodePackages")
 
-private fun JsTaskRegistering.auditNodePackages() =
+private fun JsTasks.auditNodePackages() =
     create("auditNodePackages") {
 
         description = "Audits the module's Node dependencies."
@@ -124,7 +124,7 @@ private fun JsTaskRegistering.auditNodePackages() =
 val TaskContainer.coverageJs: Task
     get() = getByName("coverageJs")
 
-private fun JsTaskRegistering.coverageJs() =
+private fun JsTasks.coverageJs() =
     create("coverageJs") {
 
         description = "Runs the JavaScript tests and collects the code coverage info."
@@ -148,7 +148,7 @@ private fun JsTaskRegistering.coverageJs() =
 val TaskContainer.testJs: Task
     get() = getByName("testJs")
 
-private fun JsTaskRegistering.testJs() =
+private fun JsTasks.testJs() =
     create("testJs") {
 
         description = "Runs the JavaScript tests."

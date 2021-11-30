@@ -44,7 +44,7 @@ import org.gradle.api.tasks.TaskContainer
  *
  * @see JsTasks
  */
-fun JsTaskRegistering.assemble() =
+fun JsTasks.assemble() =
     assemble.dependsOn(
         assembleJs()
     )
@@ -58,7 +58,7 @@ fun JsTaskRegistering.assemble() =
 val TaskContainer.assembleJs: Task
     get() = getByName("assembleJs")
 
-private fun JsTaskRegistering.assembleJs() =
+private fun JsTasks.assembleJs() =
     create("assembleJs") {
 
         description = "Assembles JavaScript sources."
@@ -83,7 +83,7 @@ private fun JsTaskRegistering.assembleJs() =
 val TaskContainer.compileProtoToJs: Task
     get() = getByName("compileProtoToJs")
 
-private fun JsTaskRegistering.compileProtoToJs() =
+private fun JsTasks.compileProtoToJs() =
     create("compileProtoToJs") {
 
         description = "Compiles Protobuf messages into JavaScript."
@@ -107,7 +107,7 @@ private fun JsTaskRegistering.compileProtoToJs() =
 val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
 
-private fun JsTaskRegistering.installNodePackages() =
+private fun JsTasks.installNodePackages() =
     create("installNodePackages") {
 
         description = "Installs the module`s Node dependencies."
@@ -133,7 +133,7 @@ private fun JsTaskRegistering.installNodePackages() =
 val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
 
-private fun JsTaskRegistering.updatePackageVersion() =
+private fun JsTasks.updatePackageVersion() =
     create("updatePackageVersion") {
 
         description = "Sets the version in `package.json`."

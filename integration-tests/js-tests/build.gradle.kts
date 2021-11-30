@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.testProtobuf
 import io.spine.internal.gradle.javascript.javascript
 import io.spine.internal.gradle.javascript.plugin.idea
 import io.spine.internal.gradle.javascript.plugin.mcJs
@@ -42,14 +42,11 @@ dependencies {
 
 javascript {
     tasks {
-        register {
+        assemble()
+        clean()
 
-            assemble()
-            clean()
-
-            linkSpineWebModule()
-            integrationTest()
-        }
+        linkSpineWebModule()
+        integrationTest()
     }
 
     plugins {

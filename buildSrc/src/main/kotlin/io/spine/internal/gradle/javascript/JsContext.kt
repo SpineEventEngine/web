@@ -49,15 +49,6 @@ open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
      */
     fun File.npm(vararg args: String) = project.exec {
 
-        val parserJsPresent = nodeModules
-            .resolve("spine-web")
-            .resolve("client")
-            .resolve("parser")
-            .resolve("object-parser.js")
-
-        println("HELL_HELL_HELL | npm(${args.contentToString()}) from: ${this@npm}")
-        println("HELL_HELL_HELL | node_modules contains spine-web/.../parser.js: ${parserJsPresent.exists()}")
-
         workingDir(this@npm)
         commandLine(npmExecutable)
         args(*args)

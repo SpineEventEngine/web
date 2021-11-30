@@ -43,7 +43,7 @@ import org.gradle.api.tasks.TaskContainer
 val TaskContainer.linkSpineWebModule: Task
     get() = getByName("linkSpineWebModule")
 
-fun JsTaskRegistering.linkSpineWebModule() =
+fun JsTasks.linkSpineWebModule() =
     register("linkSpineWebModule") {
 
         description = "Install unpublished artifact of `spine-web` library as a module dependency."
@@ -71,7 +71,7 @@ fun JsTaskRegistering.linkSpineWebModule() =
 val TaskContainer.integrationTest: Task
     get() = getByName("integrationTest")
 
-fun JsTaskRegistering.integrationTest() =
+fun JsTasks.integrationTest() =
     register("integrationTest") {
 
         // TODO:2019-05-29:yegor.udovchenko

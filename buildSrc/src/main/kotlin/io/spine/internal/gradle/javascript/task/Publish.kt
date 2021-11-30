@@ -41,7 +41,7 @@ import org.gradle.api.tasks.TaskContainer
  *
  * @see JsTasks
  */
-fun JsTaskRegistering.publish() {
+fun JsTasks.publish() {
 
     prepareJsPublication()
     publishJsLocally()
@@ -60,7 +60,7 @@ fun JsTaskRegistering.publish() {
 internal val TaskContainer.transpileSources: Task
     get() = getByName("transpileSources")
 
-private fun JsTaskRegistering.transpileSources() =
+private fun JsTasks.transpileSources() =
     create("transpileSources") {
 
         description = "Transpiles JavaScript sources before publishing using Babel."
@@ -82,7 +82,7 @@ private fun JsTaskRegistering.transpileSources() =
 internal val TaskContainer.prepareJsPublication: Task
     get() = getByName("prepareJsPublication")
 
-private fun JsTaskRegistering.prepareJsPublication() =
+private fun JsTasks.prepareJsPublication() =
     create("prepareJsPublication") {
 
         description = "Prepares the NPM package for publishing."
@@ -121,7 +121,7 @@ private fun JsTaskRegistering.prepareJsPublication() =
 internal val TaskContainer.publishJsLocally: Task
     get() = getByName("publishJsLocally")
 
-private fun JsTaskRegistering.publishJsLocally() =
+private fun JsTasks.publishJsLocally() =
     create("publishJsLocally") {
 
         description = "Publishes the NPM package locally with `npm link`."
@@ -151,7 +151,7 @@ private fun JsTaskRegistering.publishJsLocally() =
 internal val TaskContainer.publishJs: Task
     get() = getByName("publishJs")
 
-private fun JsTaskRegistering.publishJs() =
+private fun JsTasks.publishJs() =
     create("publishJs") {
 
         description = "Publishes the NPM package with `npm publish`."

@@ -43,7 +43,7 @@ import org.gradle.kotlin.dsl.getByName
  *
  *  @see JsTasks
  */
-fun JsTaskRegistering.clean() =
+fun JsTasks.clean() =
     clean.dependsOn(
         cleanJs()
     )
@@ -57,7 +57,7 @@ fun JsTaskRegistering.clean() =
 val TaskContainer.cleanJs: Task
     get() = getByName("cleanJs")
 
-private fun JsTaskRegistering.cleanJs() =
+private fun JsTasks.cleanJs() =
     create<Delete>("cleanJs") {
 
         description = "Cleans output of `assembleJs` task and output of its dependants."
@@ -83,7 +83,7 @@ private fun JsTaskRegistering.cleanJs() =
 internal val TaskContainer.cleanGenerated: Delete
     get() = getByName<Delete>("cleanGenerated")
 
-private fun JsTaskRegistering.cleanGenerated() =
+private fun JsTasks.cleanGenerated() =
     create<Delete>("cleanGenerated") {
 
         description = "Cleans generated code and reports."

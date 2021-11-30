@@ -34,7 +34,28 @@ import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
 
 /**
- * Configures [JsExtension].
+ * This scope facilitates configuration of Gradle tasks and plugins to work with
+ * JavaScripts projects.
+ *
+ * The general structure of this scope looks as follows:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ *
+ * // ...
+ *
+ * javascript {
+ *     environment {
+ *         // ...
+ *     }
+ *     tasks {
+ *         // ...
+ *     }
+ *     plugins {
+ *         // ...
+ *     }
+ * }
+ * ```
  */
 fun Project.javascript(configuration: JsExtension.() -> Unit) {
     extensions.run {

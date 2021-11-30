@@ -72,21 +72,19 @@ sourceSets {
 
 javascript {
     tasks {
-        register {
-            assemble()
-            clean()
-            publish()
+        assemble()
+        clean()
+        publish()
 
-            check {
-                rootProject.tasks.check.dependsOn(coverageJs)
-            }
-
-            // TODO:2021-11-30:yevhenii.nadtochii
-            // NPM dependencies are not included into license reports.
-            // See issue: https://github.com/SpineEventEngine/config/issues/301
-
-            // licenseReport()
+        check {
+            rootProject.tasks.check.dependsOn(coverageJs)
         }
+
+        // TODO:2021-11-30:yevhenii.nadtochii
+        // NPM dependencies are not included into license reports.
+        // See issue: https://github.com/SpineEventEngine/config/issues/301
+
+        // licenseReport()
 
         webpack()
     }

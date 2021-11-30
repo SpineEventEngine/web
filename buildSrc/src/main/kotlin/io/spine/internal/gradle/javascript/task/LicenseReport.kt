@@ -35,7 +35,7 @@ import org.gradle.api.tasks.TaskContainer
  *
  * @see [JsTasks]
  */
-fun JsTaskRegistering.licenseReport() =
+fun JsTasks.licenseReport() =
     generateLicenseReport.finalizedBy(
         npmLicenseReport()
     )
@@ -49,7 +49,7 @@ fun JsTaskRegistering.licenseReport() =
 internal val TaskContainer.npmLicenseReport: Task
     get() = getByName("npmLicenseReport")
 
-private fun JsTaskRegistering.npmLicenseReport() =
+private fun JsTasks.npmLicenseReport() =
     create("npmLicenseReport") {
 
         description = "Generates the report on NPM dependencies and their licenses."
