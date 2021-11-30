@@ -30,8 +30,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
- * Applies and configures an [IDEA Module][org.gradle.plugins.ide.idea.model.IdeaModule]
- * in accordance with the current [JsEnvironment][io.spine.internal.gradle.javascript.JsEnvironment].
+ * Applies and configures an `IDEA` plugin.
  *
  * In particular, this method:
  *

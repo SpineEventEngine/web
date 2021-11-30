@@ -41,7 +41,7 @@ import io.spine.internal.gradle.javascript.task.compileProtoToJs
  * In particular, this method:
  *
  *  1. Specifies `protoc` compiler;
- *  2. Tunes `GenerateProtoTask` tasks for JavaScript code generation;
+ *  2. Tunes `GenerateProtoTask` tasks to work with JavaScript code generation;
  *  3. Binds those tasks to [compileProtoToJs] task execution.
  *
  * @see JsPlugins
@@ -63,7 +63,7 @@ fun JsPlugins.protobuf() {
 
                 task.builtins {
 
-                    // Java builtin output is not needed in this project.
+                    // Java is not needed in this project.
 
                     remove("java")
 

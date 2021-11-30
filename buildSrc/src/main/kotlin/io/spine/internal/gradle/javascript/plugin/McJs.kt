@@ -32,8 +32,7 @@ import org.gradle.api.Task
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
 /**
- * Applies and configures `MsJsPlugin` in accordance with
- * the current [JsEnvironment][io.spine.internal.gradle.javascript.JsEnvironment].
+ * Applies and configures `MsJsPlugin`.
  *
  * In particular, this method:
  *

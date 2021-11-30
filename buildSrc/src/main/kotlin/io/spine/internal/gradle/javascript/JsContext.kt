@@ -32,7 +32,7 @@ import org.gradle.api.Project
 /**
  * Provides access to the current [JsEnvironment] and shortcuts for executing `npm` command.
  */
-open class JsContext(jsEnv: JsEnvironment, private val project: Project)
+open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
     : JsEnvironment by jsEnv
 {
     /**
