@@ -32,43 +32,49 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * The context for assembling JavaScript-related tasks.
+ * A context for working with JavaScript-related tasks.
  *
  * The context provides:
  *
  *  1. Access to the current [JsContext];
  *  2. Project's [TaskContainer];
- *  3. Standard task groups.
+ *  3. Default task groups.
  */
 open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
     : JsContext(jsEnv, project), TaskContainer by project.tasks
 {
+    internal val jsAssembleTask = "JavaScript/Build"
+    internal val jsCheckTask = "JavaScript/Check"
+    internal val jsCleanTask = "JavaScript/Clean"
     internal val jsBuildTask = "JavaScript/Build"
-    internal val jsAnyTask = "JavaScript/Any"
     internal val jsPublishTask = "JavaScript/Publish"
 }
 
 /**
- * The scope for assembling JavaScript-related tasks.
+ * A scope for working with JavaScript-related tasks.
  *
  * From this scope one can [register][JsTasks.register] new tasks and
  * [configure][JsTasks.configure] already present tasks.
  *
  * Supposing, one needs to create a new task that would participate in building. Let task name be
- * `bundleJs`. To achieve objection, several steps are to be performed:
+ * `bundleJs`. To achieve the objection, several steps are to be performed:
  *
- *  1. Define the task as an extension function upon `JsTaskRegistering` scope
- *     in `js/task/impl/Assemble.kt`;
- *  2. Create typed reference for the task upon [TaskContainer] in `js/task/Assemble.kt`. It would
- *     facilitate referencing to the new task. For example, to add external dependents;
- *  3. Call this extension from `build.gradle.kts`.
+ *  1. Define the task as an extension function upon `JsTaskRegistering` scope;
+ *  2. Create typed reference for the task upon [TaskContainer]. It would facilitate referencing
+ *     to the new task. For example, to add external dependents;
+ *  3. Call the resulted extension from `build.gradle.kts`.
  *
- * Here's an example of `buildJs()` extension:
+ * Here's an example of `bundleJs()` extension:
  *
  * ```
  * import io.spine.internal.gradle.js.task.JsTaskRegistering
+ * import org.gradle.api.Task
+ * import org.gradle.api.tasks.TaskContainer
  *
  * // ...
+ *
+ * val TaskContainer.bundleJs: Task
+ *     get() = getByName("bundleJs")
  *
  * fun JsTaskRegistering.bundleJs() =
  *     register("bundleJs) {
@@ -85,24 +91,11 @@ open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
  *     }
  * ```
  *
- * How to create a typed reference:
- *
- * ```
- * import org.gradle.api.Task
- * import org.gradle.api.tasks.TaskContainer
- * import org.gradle.kotlin.dsl.getByName
- *
- * // ...
- *
- * internal val TaskContainer.bundleJs: Task
- *     get() = getByName<Task>("bundleJs")
- * ```
- *
  * And how to apply it in `build.gradle.kts`:
  *
  * ```
  * import io.spine.internal.gradle.js.javascript
- * import io.spine.internal.gradle.js.task.impl.buildJs
+ * import io.spine.internal.gradle.js.task.buildJs
  *
  * // ...
  *
@@ -115,9 +108,10 @@ open class JsTaskContext(jsEnv: JsEnvironment, project: Project)
  * }
  * ```
  *
- * The configuration process looks very similar to registration. But [JsTaskConfiguring]
- * is used instead. And define a typed reference upon [TaskContainer] only if needed
- * in a corresponding package.
+ * The configuration process looks very similar to registration.
+ *
+ * Declaring typed references upon [TaskContainer] is optional. But it is highly encouraged
+ * to reference to other tasks by such extensions instead of hard-typed string values.
  */
 open class JsTasks(jsEnv: JsEnvironment, project: Project)
     : JsTaskContext(jsEnv, project)

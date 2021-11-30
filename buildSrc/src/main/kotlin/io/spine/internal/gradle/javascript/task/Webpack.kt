@@ -32,7 +32,14 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
 /**
- * Extends `buildJs` and `testJs` to run `webpack` builds.
+ * Configures `assembleJs` task and creates `copyBundledJs` task to work with `webpack` bundler.
+ *
+ * In particular, this method:
+ *
+ *  1. Extends `assembleJs` task to bundle sources during assembling;
+ *  2. Creates `copyBundledJs` task and binds it to `prepareJsPublication` task execution.
+ *
+ * @see JsTasks
  */
 fun JsTasks.webpack() {
 
@@ -44,10 +51,6 @@ fun JsTasks.webpack() {
             npm("run", "build")
             npm("run", "build-dev")
         }
-    }
-
-    testJs.doLast {
-        npm("run", "test")
     }
 
     // TODO:2019-02-05:dmytro.grankin: Temporarily don't publish a bundle.
@@ -64,7 +67,7 @@ fun JsTasks.webpack() {
 /**
  * Locates `copyBundledJs` task in this [TaskContainer].
  *
- * The task copies JavaScript sources to the temporary NPM publication directory.
+ * The task copies bundled JavaScript sources to the publication directory.
  */
 internal val TaskContainer.copyBundledJs: Copy
     get() = getByName<Copy>("copyBundledJs")
@@ -73,7 +76,7 @@ private fun JsTasks.copyBundledJs() =
     create<Copy>("copyBundledJs") {
 
         description = "Copies bundled JavaScript sources to the NPM publication directory."
-        group = jsAnyTask
+        group = jsPublishTask
 
         from(assembleJs.outputs)
         into(webpackPublicationDir)

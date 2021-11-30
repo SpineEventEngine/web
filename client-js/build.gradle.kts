@@ -80,6 +80,12 @@ javascript {
             check {
                 rootProject.tasks.check.dependsOn(coverageJs)
             }
+
+            // TODO:2021-11-30:yevhenii.nadtochii
+            // NPM dependencies are not included into license reports.
+            // See issue: https://github.com/SpineEventEngine/config/issues/301
+
+            // licenseReport()
         }
 
         webpack()

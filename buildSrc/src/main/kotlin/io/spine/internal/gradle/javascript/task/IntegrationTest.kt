@@ -31,44 +31,42 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Installs unpublished artifact of `spine-web` library as a module dependency.
+ * Locates `linkSpineWebModule` task in this [TaskContainer].
+ *
+ * The task installs unpublished artifact of `spine-web` library as a module dependency.
  *
  * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
  * the current project.
  *
- * See https://docs.npmjs.com/cli/link for details.
+ * See also: [npm-link | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-link)
  */
 val TaskContainer.linkSpineWebModule: Task
     get() = getByName("linkSpineWebModule")
 
 fun JsTaskRegistering.linkSpineWebModule() =
     register("linkSpineWebModule") {
+
         description = "Install unpublished artifact of `spine-web` library as a module dependency."
+        group = jsAssembleTask
 
         dependsOn(":client-js:publishJsLocally")
 
         doLast {
-            val parserJsPresent = nodeModules
-                .resolve("spine-web")
-                .resolve("client")
-                .resolve("parser")
-                .resolve("object-parser.js")
-
-            println("HELL_HELL_HELL | before install in nodeModules object-parser.js: ${parserJsPresent.exists()}")
-
             npm("run", "installLinkedLib")
-
-            println("HELL_HELL_HELL | after install in nodeModules object-parser.js: ${parserJsPresent.exists()}")
-
         }
     }
 
 
 /**
- * Runs integration tests of the `spine-web` library against the sample Spine-based application.
+ * Locates `integrationTest` task in this [TaskContainer].
  *
- * Runs the sample Spine-based application from the `test-app` module before integration
- * tests and stops it when tests complete. See `./integration-tests/README.MD` for details.
+ * The task runs integration tests of the `spine-web` library
+ * against a sample Spine-based application.
+ *
+ * A sample Spine-based application is run from the `test-app` module before integration
+ * tests and is stopped as the tests complete.
+ *
+ * See also: `./integration-tests/README.MD`
  */
 val TaskContainer.integrationTest: Task
     get() = getByName("integrationTest")
@@ -81,7 +79,9 @@ fun JsTaskRegistering.integrationTest() =
         // in `client-js` module to recover coverage.
         // See issue: https://github.com/SpineEventEngine/web/issues/96
 
-        description = "Runs integration tests of the `spine-web` library against the sample application."
+        description = "Runs integration tests of the `spine-web` library " +
+                "against the sample application."
+        group = jsCheckTask
 
         dependsOn(build, linkSpineWebModule, ":test-app:appBeforeIntegrationTest")
 

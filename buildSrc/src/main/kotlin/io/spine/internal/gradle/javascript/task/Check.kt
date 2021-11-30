@@ -37,27 +37,12 @@ import org.gradle.api.tasks.TaskContainer
  *
  * List of tasks to be created:
  *
- *  1. [checkJs][checkJs];
- *  2. [auditNodePackages][auditNodePackages];
- *  3. [testJs][testJs];
- *  4. [coverageJs][coverageJs].
+ *  1. [TaskContainer.checkJs];
+ *  2. [TaskContainer.auditNodePackages];
+ *  3. [TaskContainer.testJs];
+ *  4. [TaskContainer.coverageJs].
  *
- * An example of how to apply those tasks in `build.gradle.kts`:
- *
- * ```
- * import io.spine.internal.gradle.js.javascript
- * import io.spine.internal.gradle.js.task.impl.check
- *
- * // ...
- *
- * js {
- *     tasks {
- *         register {
- *             check()
- *         }
- *     }
- * }
- * ```
+ * @see JsTasks
  */
 fun JsTaskRegistering.check(configuration: JsTaskRegistering.() -> Unit = {}) {
 
@@ -69,14 +54,19 @@ fun JsTaskRegistering.check(configuration: JsTaskRegistering.() -> Unit = {}) {
 }
 
 
-internal val TaskContainer.checkJs: Task
+/**
+ * Locates `checkJs` task in this [TaskContainer].
+ *
+ * It is a lifecycle task that verifies a JavaScript module.
+ */
+val TaskContainer.checkJs: Task
     get() = getByName("checkJs")
 
 private fun JsTaskRegistering.checkJs() =
     create("checkJs") {
 
         description = "Runs tests, audits NPM modules and creates a test-coverage report."
-        group = jsBuildTask
+        group = jsCheckTask
 
         dependsOn(
             auditNodePackages(),
@@ -104,14 +94,14 @@ private fun JsTaskRegistering.auditNodePackages() =
     create("auditNodePackages") {
 
         description = "Audits the module's Node dependencies."
-        group = jsBuildTask
+        group = jsCheckTask
 
         inputs.dir(nodeModules)
 
         doLast {
 
-            // Sets `critical` as the minimum level of vulnerability for `npm audit` to exit
-            // with a non-zero exit code.
+            // `critical` level is set as the minimum level of vulnerability for `npm audit`
+            // to exit with a non-zero code.
 
             npm("set", "audit-level", "critical")
 
@@ -138,17 +128,9 @@ private fun JsTaskRegistering.coverageJs() =
     create("coverageJs") {
 
         description = "Runs the JavaScript tests and collects the code coverage info."
-        group = jsAnyTask
+        group = jsCheckTask
 
         outputs.dir(nycOutput)
-
-        // The statement below is not the best practice.
-        // But creating a dedicated task is not much better.
-        // This task is the only one in this group producing cleanable output.
-
-        cleanGenerated.doLast {
-            project.delete(outputs)
-        }
 
         doLast {
             npm("run", if (isWindows()) "coverage:win" else "coverage:unix")
@@ -170,7 +152,11 @@ private fun JsTaskRegistering.testJs() =
     create("testJs") {
 
         description = "Runs the JavaScript tests."
-        group = jsBuildTask
+        group = jsCheckTask
+
+        doLast {
+            npm("run", "test")
+        }
 
         dependsOn(assembleJs)
         mustRunAfter(test)

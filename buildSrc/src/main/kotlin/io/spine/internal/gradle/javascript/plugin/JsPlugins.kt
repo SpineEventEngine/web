@@ -41,7 +41,7 @@ import org.gradle.api.tasks.TaskContainer
  *
  *  1. Declare the corresponding extension function upon this scope;
  *  2. Apply and configure the plugin inside that function;
- *  3. Call that function in your `build.gradle.kts` file.
+ *  3. Call the resulted extension from your `build.gradle.kts` file.
  *
  * Here's an example of `js/plugin/FooBar.kt`:
  *

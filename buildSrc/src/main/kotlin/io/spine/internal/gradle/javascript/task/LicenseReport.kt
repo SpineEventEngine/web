@@ -26,22 +26,19 @@
 
 package io.spine.internal.gradle.javascript.task
 
+import io.spine.internal.gradle.report.license.generateLicenseReport
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Registers a [task][npmLicenseReport] for including
- * NPM dependencies into a license report.
+ * Registers a single [task][npmLicenseReport] for including NPM dependencies into license reports.
+ *
+ * @see [JsTasks]
  */
-fun JsTaskRegistering.licenseReport() {
-
-    // Temporarily, NPM dependencies are not included into license reports.
-    // See issue: https://github.com/SpineEventEngine/config/issues/301
-
-//    generateLicenseReport.finalizedBy(
-//        npmLicenseReport()
-//    )
-}
+fun JsTaskRegistering.licenseReport() =
+    generateLicenseReport.finalizedBy(
+        npmLicenseReport()
+    )
 
 
 /**
@@ -56,7 +53,7 @@ private fun JsTaskRegistering.npmLicenseReport() =
     create("npmLicenseReport") {
 
         description = "Generates the report on NPM dependencies and their licenses."
-        group = jsAnyTask
+        group = jsBuildTask
 
         doLast {
 

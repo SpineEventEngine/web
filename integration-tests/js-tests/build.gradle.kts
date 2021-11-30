@@ -44,8 +44,6 @@ javascript {
     tasks {
         register {
 
-            npm("--version")
-
             assemble()
             clean()
 

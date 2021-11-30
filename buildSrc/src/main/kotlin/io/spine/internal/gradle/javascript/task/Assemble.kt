@@ -33,31 +33,16 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * Registers tasks for assembling a JavaScript module.
+ * Registers tasks for assembling a JavaScript sources.
  *
- * Full list of tasks to be created:
+ * List of tasks to be created:
  *
- *  1. [assembleJs][assembleJs];
- *  2. [compileProtoToJs][compileProtoToJs];
- *  3. [installNodePackages][installNodePackages];
- *  4. [updatePackageVersion][updatePackageVersion].
+ *  1. [TaskContainer.assembleJs];
+ *  2. [TaskContainer.compileProtoToJs];
+ *  3. [TaskContainer.installNodePackages];
+ *  4. [TaskContainer.updatePackageVersion].
  *
- * An example of how to apply those tasks in `build.gradle.kts`:
- *
- * ```
- * import io.spine.internal.gradle.js.javascript
- * import io.spine.internal.gradle.js.task.impl.assemble
- *
- * // ...
- *
- * js {
- *     tasks {
- *         register {
- *             assemble()
- *         }
- *     }
- * }
- * ```
+ * @see JsTasks
  */
 fun JsTaskRegistering.assemble() =
     assemble.dependsOn(
@@ -68,22 +53,16 @@ fun JsTaskRegistering.assemble() =
 /**
  * Locates `assembleJs` task in this [TaskContainer].
  *
- * It is an aggregate task that assembles the JavaScript sources.
- *
- * The next tasks are to be executed:
- *
- *  1. [updatePackageVersion][updatePackageVersion];
- *  2. [installNodePackages][installNodePackages];
- *  3. [compileProtoToJs][compileProtoToJs].
+ * It is a lifecycle task that assembles JavaScript sources.
  */
-internal val TaskContainer.assembleJs: Task
+val TaskContainer.assembleJs: Task
     get() = getByName("assembleJs")
 
 private fun JsTaskRegistering.assembleJs() =
     create("assembleJs") {
 
-        description = "Assembles the JavaScript sources."
-        group = jsBuildTask
+        description = "Assembles JavaScript sources."
+        group = jsAssembleTask
 
         dependsOn(
             installNodePackages(),
@@ -96,17 +75,19 @@ private fun JsTaskRegistering.assembleJs() =
 /**
  * Locates `compileProtoToJs` task in this [TaskContainer].
  *
- * The task compiles Protobuf messages into JavaScript. This is a lifecycle task that performs
- * no action itself. It is used to aggregate other tasks which perform the compilation.
+ * The task compiles Protobuf messages into JavaScript.
+ *
+ * This is a lifecycle task that performs no action itself. It is used to aggregate other tasks
+ * which perform the compilation. Those tasks are provided by `Protobuf` and `McJsPlugin` plugins.
  */
-internal val TaskContainer.compileProtoToJs: Task
+val TaskContainer.compileProtoToJs: Task
     get() = getByName("compileProtoToJs")
 
 private fun JsTaskRegistering.compileProtoToJs() =
     create("compileProtoToJs") {
 
         description = "Compiles Protobuf messages into JavaScript."
-        group = jsBuildTask
+        group = jsAssembleTask
     }
 
 
@@ -123,14 +104,14 @@ private fun JsTaskRegistering.compileProtoToJs() =
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
-internal val TaskContainer.installNodePackages: Task
+val TaskContainer.installNodePackages: Task
     get() = getByName("installNodePackages")
 
 private fun JsTaskRegistering.installNodePackages() =
     create("installNodePackages") {
 
         description = "Installs the module`s Node dependencies."
-        group = jsBuildTask
+        group = jsAssembleTask
 
         inputs.file(packageJson)
         outputs.dir(nodeModules)
@@ -149,14 +130,14 @@ private fun JsTaskRegistering.installNodePackages() =
  * [moduleVersion][io.spine.internal.gradle.javascript.JsEnvironment.moduleVersion]
  * specified in the current `JsEnvironment`.
  */
-internal val TaskContainer.updatePackageVersion: Task
+val TaskContainer.updatePackageVersion: Task
     get() = getByName("updatePackageVersion")
 
 private fun JsTaskRegistering.updatePackageVersion() =
     create("updatePackageVersion") {
 
         description = "Sets the version in `package.json`."
-        group = jsBuildTask
+        group = jsAssembleTask
 
         doLast {
             val objectNode = ObjectMapper()

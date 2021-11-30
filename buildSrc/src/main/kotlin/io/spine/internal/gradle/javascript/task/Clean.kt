@@ -33,6 +33,16 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
+/**
+ * Registers tasks for deleting output of JavaScript build tasks.
+ *
+ * List of tasks to be created:
+ *
+ *  1. [TaskContainer.cleanJs];
+ *  2. [TaskContainer.cleanGenerated].
+ *
+ *  @see JsTasks
+ */
 fun JsTaskRegistering.clean() =
     clean.dependsOn(
         cleanJs()
@@ -42,7 +52,7 @@ fun JsTaskRegistering.clean() =
 /**
  * Locates `cleanJs` task in this [TaskContainer].
  *
- * The task cleans up output of `buildJs` task and output of its dependants.
+ * The task deletes output of `assembleJs` task and output of its dependants.
  */
 val TaskContainer.cleanJs: Task
     get() = getByName("cleanJs")
@@ -51,7 +61,7 @@ private fun JsTaskRegistering.cleanJs() =
     create<Delete>("cleanJs") {
 
         description = "Cleans output of `assembleJs` task and output of its dependants."
-        group = jsAnyTask
+        group = jsCleanTask
 
         delete(
             assembleJs.outputs,
@@ -66,9 +76,9 @@ private fun JsTaskRegistering.cleanJs() =
 
 
 /**
- * Locates `deleteCompiled` task in this [TaskContainer].
+ * Locates `cleanGenerated` task in this [TaskContainer].
  *
- * The task cleans old module dependencies and build outputs.
+ * The task deletes directories with generated code and reports.
  */
 internal val TaskContainer.cleanGenerated: Delete
     get() = getByName<Delete>("cleanGenerated")
@@ -77,7 +87,7 @@ private fun JsTaskRegistering.cleanGenerated() =
     create<Delete>("cleanGenerated") {
 
         description = "Cleans generated code and reports."
-        group = jsAnyTask
+        group = jsCleanTask
 
         delete(
             genProtoMain,
