@@ -34,16 +34,11 @@ import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.findByType
 
 /**
- * This scope facilitates configuration of Gradle tasks and plugins to work with
- * JavaScripts projects.
+ * This scope facilitates configuration of Gradle tasks and plugins to build JavaScripts projects.
  *
- * The general structure of this scope looks as follows:
+ * The structure of the scope looks as follows:
  *
  * ```
- * import io.spine.internal.gradle.javascript.javascript
- *
- * // ...
- *
  * javascript {
  *     environment {
  *         // ...
@@ -56,6 +51,73 @@ import org.gradle.kotlin.dsl.findByType
  *     }
  * }
  * ```
+ *
+ * ### Environment
+ *
+ * One of the main features of this scope is [JsEnvironment]. Environment describes a module itself,
+ * used tools with their input/output files, code generation.
+ *
+ * The scope is shipped with a pre-configured environment. So, no pre-configuration is required.
+ * Most values in [JsEnvironment] have calculated defaults. Only two of them need explicit override.
+ *
+ * The scope defines them as follows:
+ *
+ *  1. [JsEnvironment.projectDir] –> `project.projectDir`;
+ *  2. [JsEnvironment.moduleVersion] —> `project.extra["versionToPublishJs"]`.
+ *
+ * There two ways to modify the environment:
+ *
+ *  1. Update [JsEnvironment] directly. Go with this option when it is a global change
+ *     that should affect all projects which use this extension;
+ *  2. Use [JsExtension.environment] scope — for temporary and custom overriding.
+ *
+ * An example of a property overriding:
+ *
+ * ```
+ * javascript {
+ *     environment {
+ *         moduleVersion = "$moduleVersion-SPECIAL_EDITION"
+ *     }
+ * }
+ * ```
+ *
+ * ### Tasks and Plugins
+ *
+ * The main spirit of tasks configuration in this scope is extracting procedural code into
+ * extension functions upon `JsTasks`. Then calling those functions in concrete `build.gradle.kts`.
+ *
+ * `JsTasks` and `JsPlugins` scopes extend [JsContext] which provide access
+ * to the current [JsEnvironment] and shortcuts for running `npm` command.
+ *
+ * Below is the simplest example of how to crate `printNpmVersion` task.
+ *
+ * Firstly, a corresponding extension should be defined in `buildSrc`:
+ *
+ * ```
+ * fun JsTasks.printNpmVersion() =
+ *     register("printNpmVersion") {
+ *         doLast {
+ *             npm("--version")
+ *         }
+ *     }
+ * ```
+ *
+ * Secondly, in a project's `build.gradle.kts` this extension is called:
+ *
+ * ```
+ * javascript {
+ *     tasks {
+ *         printNpmVersion()
+ *     }
+ * }
+ * ```
+ *
+ * This section is mostly dedicated to Tasks. But Tasks and Plugins are configured
+ * in a very similar way. So, everything above is also applicable to plugins.
+ *
+ * @see [ConfigurableJsEnvironment]
+ * @see [JsTasks]
+ * @see [JsPlugins]
  */
 fun Project.javascript(configuration: JsExtension.() -> Unit) {
     extensions.run {

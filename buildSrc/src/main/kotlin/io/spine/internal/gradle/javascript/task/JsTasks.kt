@@ -32,16 +32,13 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
 
 /**
- * A scope for working with JavaScript-related tasks.
+ * A scope for setting up JavaScript-related tasks.
  *
- * The context provides:
+ * The scope provides:
  *
  *  1. Access to the current [JsContext];
  *  2. Project's [TaskContainer];
  *  3. Default task groups.
- *
- * From this scope one can [register][JsTasks.register] new tasks and
- * [configure][JsTasks.configure] already present tasks.
  *
  * Supposing, one needs to create a new task that would participate in building. Let task name be
  * `bundleJs`. To achieve the objection, several steps are to be performed:
@@ -54,7 +51,6 @@ import org.gradle.api.tasks.TaskContainer
  * Here's an example of `bundleJs()` extension:
  *
  * ```
- * import io.spine.internal.gradle.js.task.JsTaskRegistering
  * import org.gradle.api.Task
  * import org.gradle.api.tasks.TaskContainer
  *
@@ -63,7 +59,7 @@ import org.gradle.api.tasks.TaskContainer
  * val TaskContainer.bundleJs: Task
  *     get() = getByName("bundleJs")
  *
- * fun JsTaskRegistering.bundleJs() =
+ * fun JsTasks.bundleJs() =
  *     register("bundleJs) {
  *
  *         description = "Bundles js sources using `webpack` tool.`
@@ -88,17 +84,13 @@ import org.gradle.api.tasks.TaskContainer
  *
  * javascript {
  *     tasks {
- *         register {
- *             bundleJs()
- *         }
+ *         bundleJs()
  *     }
  * }
  * ```
  *
- * The configuration process looks very similar to registration.
- *
  * Declaring typed references upon [TaskContainer] is optional. But it is highly encouraged
- * to reference to other tasks by such extensions instead of hard-typed string values.
+ * to reference other tasks by such extensions instead of hard-typed string values.
  */
 open class JsTasks(jsEnv: JsEnvironment, project: Project)
     : JsContext(jsEnv, project), TaskContainer by project.tasks
