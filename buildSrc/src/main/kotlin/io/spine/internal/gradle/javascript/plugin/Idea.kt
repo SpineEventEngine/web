@@ -41,9 +41,12 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
  */
 fun JsPlugins.idea() {
 
-    plugins.apply("org.gradle.idea")
+    plugins {
+        apply("org.gradle.idea")
+    }
 
     extensions.configure<IdeaModel> {
+
         module {
             sourceDirs.add(srcDir)
             testSourceDirs.add(testSrcDir)

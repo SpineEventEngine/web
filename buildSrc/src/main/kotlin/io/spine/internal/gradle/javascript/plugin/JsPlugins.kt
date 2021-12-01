@@ -29,12 +29,18 @@ package io.spine.internal.gradle.javascript.plugin
 import io.spine.internal.gradle.javascript.JsContext
 import io.spine.internal.gradle.javascript.JsEnvironment
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.tasks.TaskContainer
 
 /**
  * A scope for applying and configuring JavaScript-related plugins.
  *
- * The scope extends [JsContext] and provides access to the project's [TaskContainer].
+ * The scope extends [JsContext] and provides shortcuts for key project's components:
+ *
+ *  1. [plugins];
+ *  2. [extensions];
+ *  3. [tasks].
  *
  * Supposing, one needs to apply and configure `FooBar` plugin. To achieve that,
  * several steps are to be performed:
@@ -70,8 +76,18 @@ import org.gradle.api.tasks.TaskContainer
  *  ```
  */
 class JsPlugins(jsEnv: JsEnvironment, project: Project)
-    : JsContext(jsEnv, project), TaskContainer by project.tasks
+    : JsContext(jsEnv, project)
 {
     internal val plugins = project.plugins
     internal val extensions = project.extensions
+    internal val tasks = project.tasks
+
+    internal fun plugins(configurations: PluginContainer.() -> Unit) =
+        project.plugins.run(configurations)
+
+    internal fun extensions(configurations: ExtensionContainer.() -> Unit) =
+        project.extensions.run(configurations)
+
+    internal fun tasks(configurations: TaskContainer.() -> Unit) =
+        project.tasks.run(configurations)
 }

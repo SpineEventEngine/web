@@ -44,7 +44,9 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
  */
 fun JsPlugins.mcJs() {
 
-    plugins.apply("io.spine.mc-js")
+    plugins {
+        apply("io.spine.mc-js")
+    }
 
     // TODO:2021-11-24:yevhenii.nadtochii: Temporarily use GroovyInterop.
     // Currently, it is not possible to obtain `McJsPlugin` on the classpath of `buildSrc`.
@@ -59,9 +61,11 @@ fun JsPlugins.mcJs() {
 
             val parsersTask = "generateParsersTask"() as Task
 
-            parsersTask.dependsOn(compileProtoToJs)
-            assembleJs.configure {
-                dependsOn(parsersTask)
+            tasks {
+                parsersTask.dependsOn(compileProtoToJs)
+                assembleJs.configure {
+                    dependsOn(parsersTask)
+                }
             }
         }
     }

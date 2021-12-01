@@ -48,7 +48,9 @@ import io.spine.internal.gradle.javascript.task.compileProtoToJs
  */
 fun JsPlugins.protobuf() {
 
-    plugins.apply(Protobuf.GradlePlugin.id)
+    plugins {
+        apply(Protobuf.GradlePlugin.id)
+    }
 
     project.protobuf {
 
@@ -85,7 +87,7 @@ fun JsPlugins.protobuf() {
                 task.descriptorSetOptions.path =
                     "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
 
-                compileProtoToJs.configure {
+                tasks.compileProtoToJs.configure {
                     dependsOn(task)
                 }
             }
