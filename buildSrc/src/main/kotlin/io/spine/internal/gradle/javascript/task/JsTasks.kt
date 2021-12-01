@@ -92,7 +92,7 @@ import org.gradle.api.tasks.TaskContainer
  * Declaring typed references upon [TaskContainer] is optional. But it is highly encouraged
  * to reference other tasks by such extensions instead of hard-typed string values.
  */
-open class JsTasks(jsEnv: JsEnvironment, project: Project)
+class JsTasks(jsEnv: JsEnvironment, project: Project)
     : JsContext(jsEnv, project), TaskContainer by project.tasks
 {
     internal val jsAssembleTask = "JavaScript/Build"
