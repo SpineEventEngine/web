@@ -92,20 +92,20 @@ private fun JsTasks.prepareJsPublication() =
         description = "Prepares the NPM package for publishing."
         group = jsPublishTask
 
-        // We need just to copy two files into the destination directory without
-        // overwriting its content.
-
-        // Default task `Copy` is not used since it erases the content of destination
-        // before copying there.
+        // We need to copy two files into a destination directory without overwriting its content.
+        // Default `Copy` task is not used since it overwrites the content of a destination
+        // when copying there.
         // See issue: https://github.com/gradle/gradle/issues/1012
 
-        project.copy {
-            from(
-                packageJson,
-                npmrc
-            )
+        doLast {
+            project.copy {
+                from(
+                    packageJson,
+                    npmrc
+                )
 
-            into(publicationDir)
+                into(publicationDir)
+            }
         }
 
         dependsOn(
