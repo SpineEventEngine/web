@@ -32,37 +32,10 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 
 /**
- * Locates `linkSpineWebModule` task in this [TaskContainer].
- *
- * The task installs unpublished artifact of `spine-web` library as a module dependency.
- *
- * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
- * the current project.
- *
- * See also: [npm-link | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-link)
- */
-val TaskContainer.linkSpineWebModule: TaskProvider<Task>
-    get() = named("linkSpineWebModule")
-
-fun JsTasks.linkSpineWebModule() =
-    register("linkSpineWebModule") {
-
-        description = "Install unpublished artifact of `spine-web` library as a module dependency."
-        group = jsAssembleTask
-
-        dependsOn(":client-js:publishJsLocally")
-
-        doLast {
-            npm("run", "installLinkedLib")
-        }
-    }
-
-
-/**
  * Locates `integrationTest` task in this [TaskContainer].
  *
- * The task runs integration tests of the `spine-web` library
- * against a sample Spine-based application.
+ * The task runs integration tests of the `spine-web` library against
+ * a sample Spine-based application.
  *
  * A sample Spine-based application is run from the `test-app` module before integration
  * tests and is stopped as the tests complete.
@@ -72,11 +45,37 @@ fun JsTasks.linkSpineWebModule() =
 val TaskContainer.integrationTest: TaskProvider<Task>
     get() = named("integrationTest")
 
-fun JsTasks.integrationTest() =
+/**
+ * Registers [TaskContainer.integrationTest] task.
+ *
+ * The task runs integration tests of the `spine-web` library against
+ * a sample Spine-based application.
+ *
+ * Please note, this task depends on [assemble] and `client-js:publishJsLocally` tasks.
+ *
+ * An example of how to apply it in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.integrationTest
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         assemble()
+ *         integrationTest()
+ *     }
+ * }
+ * ```
+ */
+fun JsTasks.integrationTest() {
+
+    linkSpineWebModule()
+
     register("integrationTest") {
 
-        // TODO:2019-05-29:yegor.udovchenko
-        // Find a way to run the same tests against `spine-web` source code
+        // TODO:2019-05-29:yegor.udovchenko: Find a way to run the same tests against `spine-web`.
         // in `client-js` module to recover coverage.
         // See issue: https://github.com/SpineEventEngine/web/issues/96
 
@@ -91,4 +90,31 @@ fun JsTasks.integrationTest() =
         }
 
         finalizedBy(":test-app:appAfterIntegrationTest")
+    }
+}
+
+/**
+ * Locates `linkSpineWebModule` task in this [TaskContainer].
+ *
+ * The task installs unpublished artifact of `spine-web` library as a module dependency.
+ *
+ * Creates a symbolic link from globally-installed `spine-web` library to `node_modules` of
+ * the current project.
+ *
+ * See also: [npm-link | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-link)
+ */
+val TaskContainer.linkSpineWebModule: TaskProvider<Task>
+    get() = named("linkSpineWebModule")
+
+private fun JsTasks.linkSpineWebModule() =
+    register("linkSpineWebModule") {
+
+        description = "Install unpublished artifact of `spine-web` library as a module dependency."
+        group = jsAssembleTask
+
+        dependsOn(":client-js:publishJsLocally")
+
+        doLast {
+            npm("run", "installLinkedLib")
+        }
     }

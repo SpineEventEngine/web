@@ -91,7 +91,7 @@ interface JsEnvironment {
 
 
     /**
-     * Executable's file name to run `npm` package manager.
+     * Name of an executable for running `npm`.
      *
      * Default value:
      *
@@ -106,6 +106,9 @@ interface JsEnvironment {
      *
      * Default value is read from the environmental variable - `NPM_TOKEN`.
      * "PUBLISHING_FORBIDDEN" stub value would be assigned in case `NPM_TOKEN` variable is not set.
+     *
+     * During installation a token is required only if dependencies
+     * from private repositories are used.
      *
      * See [Creating and viewing access tokens | npm Docs](https://docs.npmjs.com/creating-and-viewing-access-tokens)
      */
@@ -187,7 +190,7 @@ interface JsEnvironment {
 /**
  * Allows overriding [JsEnvironment]'s defaults.
  *
- * All of defined properties can be split into two groups:
+ * All of declared properties can be split into two groups:
  *
  *  1. The ones that *define* something - can be overridden;
  *  2. The ones that *describe* something - can not be overridden.

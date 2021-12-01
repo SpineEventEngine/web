@@ -35,12 +35,32 @@ import org.gradle.kotlin.dsl.register
 /**
  * Configures `assembleJs` task and creates `copyBundledJs` task to work with `webpack` bundler.
  *
+ * Please note, this task group depends on [assemble] and [publish] tasks. Therefore, those tasks
+ * should be applied in the first place.
+ *
  * In particular, this method:
  *
  *  1. Extends `assembleJs` task to bundle sources during assembling;
  *  2. Creates `copyBundledJs` task and binds it to `prepareJsPublication` task execution.
  *
- * @see JsTasks
+ * An example of how to apply it in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.assemble
+ * import io.spine.internal.gradle.javascript.task.publish
+ * import io.spine.internal.gradle.javascript.task.webpack
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         assemble()
+ *         publish()
+ *         webpack()
+ *     }
+ * }
+ * ```
  */
 fun JsTasks.webpack() {
 

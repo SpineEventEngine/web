@@ -47,7 +47,7 @@ println("`update-package-version.gradle` script is deprecated. Please use `javas
 task updatePackageVersion() {
     group = JAVA_SCRIPT_TASK_GROUP
     description = 'Updates the version in package.json.'
-
+    
     ext.packageJsonPath = packageJsonFile
     ext.newVersion = versionToPublishJs
 

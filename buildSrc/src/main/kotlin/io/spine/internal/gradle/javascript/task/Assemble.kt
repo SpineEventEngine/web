@@ -34,7 +34,7 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 
 /**
- * Registers tasks for assembling a JavaScript sources.
+ * Registers tasks for assembling JavaScript artifacts.
  *
  * List of tasks to be created:
  *
@@ -43,7 +43,20 @@ import org.gradle.api.tasks.TaskProvider
  *  3. [TaskContainer.installNodePackages];
  *  4. [TaskContainer.updatePackageVersion].
  *
- * @see JsTasks
+ * An example of how to apply it in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.assemble
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         assemble()
+ *     }
+ * }
+ * ```
  */
 fun JsTasks.assemble() {
 
@@ -63,7 +76,7 @@ fun JsTasks.assemble() {
 /**
  * Locates `assembleJs` task in this [TaskContainer].
  *
- * It is a lifecycle task that assembles JavaScript sources.
+ * It is a lifecycle task that produces consumable JavaScript artifacts.
  */
 val TaskContainer.assembleJs: TaskProvider<Task>
     get() = named("assembleJs")
@@ -71,7 +84,7 @@ val TaskContainer.assembleJs: TaskProvider<Task>
 private fun JsTasks.assembleJs() =
     register("assembleJs") {
 
-        description = "Assembles JavaScript sources."
+        description = "Assembles JavaScript sources into consumable artifacts."
         group = jsAssembleTask
 
         dependsOn(
@@ -88,7 +101,8 @@ private fun JsTasks.assembleJs() =
  * The task compiles Protobuf messages into JavaScript.
  *
  * This is a lifecycle task that performs no action itself. It is used to aggregate other tasks
- * which perform the compilation. Those tasks are provided by `Protobuf` and `McJsPlugin` plugins.
+ * which perform the compilation. Those tasks are to be provided by `Protobuf`
+ * and `McJsPlugin` plugins.
  */
 val TaskContainer.compileProtoToJs: TaskProvider<Task>
     get() = named("compileProtoToJs")
@@ -110,7 +124,7 @@ private fun JsTasks.compileProtoToJs() =
  * it cannot fail the task execution despite on vulnerabilities found.
  *
  * To check installed Node packages for vulnerabilities execute
- * [auditNodePackages][auditNodePackages] task.
+ * [TaskContainer.auditNodePackages] task.
  *
  * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
  */
@@ -120,7 +134,7 @@ val TaskContainer.installNodePackages: TaskProvider<Task>
 private fun JsTasks.installNodePackages() =
     register("installNodePackages") {
 
-        description = "Installs the module`s Node dependencies."
+        description = "Installs module`s Node dependencies."
         group = jsAssembleTask
 
         inputs.file(packageJson)
@@ -146,7 +160,7 @@ val TaskContainer.updatePackageVersion: TaskProvider<Task>
 private fun JsTasks.updatePackageVersion() =
     register("updatePackageVersion") {
 
-        description = "Sets the version in `package.json`."
+        description = "Sets a module's version in `package.json`."
         group = jsAssembleTask
 
         doLast {

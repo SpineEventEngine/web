@@ -30,12 +30,12 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 /**
- * Applies and configures an `IDEA` plugin.
+ * Applies and configures an `IDEA` plugin to work with a JavaScript module.
  *
  * In particular, this method:
  *
  *  1. Specifies directories of production and test sources;
- *  2. Excludes directories with generated code or build cache.
+ *  2. Excludes directories with generated code or build artifacts.
  *
  * @see JsPlugins
  */

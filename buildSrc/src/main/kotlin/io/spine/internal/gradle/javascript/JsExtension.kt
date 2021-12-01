@@ -36,7 +36,7 @@ import org.gradle.kotlin.dsl.findByType
 /**
  * This scope facilitates configuration of Gradle tasks and plugins to build JavaScripts projects.
  *
- * The structure of the scope looks as follows:
+ * The whole structure of the scope looks as follows:
  *
  * ```
  * javascript {
@@ -91,7 +91,7 @@ import org.gradle.kotlin.dsl.findByType
  *
  * Below is the simplest example of how to crate `printNpmVersion` task.
  *
- * Firstly, a corresponding extension should be defined in `buildSrc`:
+ * Firstly, a corresponding extension function should be defined in `buildSrc`:
  *
  * ```
  * fun JsTasks.printNpmVersion() =
@@ -149,7 +149,7 @@ open class JsExtension(internal val project: Project) {
      * Overrides default values of [JsEnvironment].
      *
      * Please note, environment should be set up firstly to have the effect on the parts
-     * of the extension that depend on it.
+     * of the extension that use it.
      */
     fun environment(overridings: ConfigurableJsEnvironment.() -> Unit) =
         configurableEnvironment.run(overridings)

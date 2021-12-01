@@ -35,14 +35,32 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
 /**
- * Registers tasks for deleting output of JavaScript build tasks.
+ * Registers tasks for deleting output of JavaScript builds.
+ *
+ * Please note, this task group depends on [assemble] tasks. Therefore, assembling tasks should
+ * be applied in the first place.
  *
  * List of tasks to be created:
  *
  *  1. [TaskContainer.cleanJs];
  *  2. [TaskContainer.cleanGenerated].
  *
- *  @see JsTasks
+ * An example of how to apply it in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.assemble
+ * import io.spine.internal.gradle.javascript.task.clean
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         assemble()
+ *         clean()
+ *     }
+ * }
+ * ```
  */
 fun JsTasks.clean() {
 

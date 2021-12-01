@@ -38,7 +38,7 @@ import org.gradle.kotlin.dsl.withGroovyBuilder
  *
  *  1. Specifies directories for generated code;
  *  2. Binds `generateParsersTask` to [assembleJs] execution. The task generates JSON-parsing
- *     code for the JavaScript messages compiled from Protobuf.
+ *     code for JavaScript messages compiled from Protobuf.
  *
  * @see JsPlugins
  */
@@ -47,7 +47,7 @@ fun JsPlugins.mcJs() {
     plugins.apply("io.spine.mc-js")
 
     // TODO:2021-11-24:yevhenii.nadtochii: Temporarily use GroovyInterop.
-    // Currently, it is not possible to obtain `McJsPlugin` on classpath of `buildSrc`.
+    // Currently, it is not possible to obtain `McJsPlugin` on the classpath of `buildSrc`.
     // See issue: https://github.com/SpineEventEngine/config/issues/298
 
     project.withGroovyBuilder {

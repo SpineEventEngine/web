@@ -32,17 +32,31 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 
 /**
- * Registers a single [task][npmLicenseReport] for including NPM dependencies into license reports.
+ * Registers [npmLicenseReport] task for including NPM dependencies into license reports.
  *
- * @see [JsTasks]
+ * The task depends on [generateLicenseReport].
+ *
+ * An example of how to apply it in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.clean
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         licenseReport()
+ *     }
+ * }
+ * ```
  */
 fun JsTasks.licenseReport()  {
-
-    npmLicenseReport()/*.also {
+    npmLicenseReport().also {
         generateLicenseReport.configure {
             finalizedBy(it)
         }
-    }*/
+    }
 }
 
 

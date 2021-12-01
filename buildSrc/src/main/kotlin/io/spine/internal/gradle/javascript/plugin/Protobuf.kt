@@ -36,12 +36,12 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.javascript.task.compileProtoToJs
 
 /**
- * Applies and configures `Protobuf` plugin.
+ * Applies and configures `Protobuf` plugin to work with a JavaScript module.
  *
  * In particular, this method:
  *
  *  1. Specifies `protoc` compiler;
- *  2. Tunes `GenerateProtoTask` tasks to work with JavaScript code generation;
+ *  2. Configures `GenerateProtoTask` tasks;
  *  3. Binds those tasks to [compileProtoToJs] task execution.
  *
  * @see JsPlugins

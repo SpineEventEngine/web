@@ -34,13 +34,31 @@ import org.gradle.api.tasks.TaskProvider
 /**
  * Registers tasks for publishing a JavaScript module.
  *
+ * Please note, this task group depends on [assemble] tasks. Therefore, assembling tasks should
+ * be applied in the first place.
+ *
  * List of tasks to be created:
  *
  *  1. [TaskContainer.publishJs];
  *  2. [TaskContainer.publishJsLocally];
  *  3. [TaskContainer.prepareJsPublication].
  *
- * @see JsTasks
+ * An example of how to apply it in `build.gradle.kts`:
+ *
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.assemble
+ * import io.spine.internal.gradle.javascript.task.publish
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         assemble()
+ *         publish()
+ *     }
+ * }
+ * ```
  */
 fun JsTasks.publish() {
 

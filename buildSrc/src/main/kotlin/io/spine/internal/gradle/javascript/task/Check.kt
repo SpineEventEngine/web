@@ -36,6 +36,9 @@ import org.gradle.api.tasks.TaskProvider
 /**
  * Registers tasks for verifying a JavaScript module.
  *
+ * Please note, this task group depends on [assemble] tasks. Therefore, assembling tasks should
+ * be applied in the first place.
+ *
  * List of tasks to be created:
  *
  *  1. [TaskContainer.checkJs];
@@ -43,9 +46,24 @@ import org.gradle.api.tasks.TaskProvider
  *  3. [TaskContainer.testJs];
  *  4. [TaskContainer.coverageJs].
  *
- *  @param configuration any additional configuration related to the module's verifying.
+ * An example of how to apply it in `build.gradle.kts`:
  *
- * @see JsTasks
+ * ```
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.assemble
+ * import io.spine.internal.gradle.javascript.task.check
+ *
+ * // ...
+ *
+ * javascript {
+ *     tasks {
+ *         assemble()
+ *         check()
+ *     }
+ * }
+ * ```
+ *
+ *  @param configuration any additional configuration related to the module's verifying.
  */
 fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
 
@@ -67,7 +85,7 @@ fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
 /**
  * Locates `checkJs` task in this [TaskContainer].
  *
- * It is a lifecycle task that verifies a JavaScript module.
+ * The task runs tests, audits NPM modules and creates a test-coverage report.
  */
 val TaskContainer.checkJs: TaskProvider<Task>
     get() = named("checkJs")
@@ -92,7 +110,7 @@ private fun JsTasks.checkJs() =
  * The task audits the module dependencies using the `npm audit` command.
  *
  * The `audit` command submits a description of the dependencies configured in the module
- * to the registry and asks for a report of known vulnerabilities. If any are found,
+ * to a public registry and asks for a report of known vulnerabilities. If any are found,
  * then the impact and appropriate remediation will be calculated.
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
@@ -137,7 +155,7 @@ val TaskContainer.coverageJs: TaskProvider<Task>
 private fun JsTasks.coverageJs() =
     register("coverageJs") {
 
-        description = "Runs the JavaScript tests and collects the code coverage info."
+        description = "Runs the JavaScript tests and collects the code coverage."
         group = jsCheckTask
 
         outputs.dir(nycOutput)
@@ -153,7 +171,7 @@ private fun JsTasks.coverageJs() =
 /**
  * Locates `testJs` task in this [TaskContainer].
  *
- * The task runs the JavaScript tests.
+ * The task runs JavaScript tests.
  */
 val TaskContainer.testJs: TaskProvider<Task>
     get() = named("testJs")
@@ -161,7 +179,7 @@ val TaskContainer.testJs: TaskProvider<Task>
 private fun JsTasks.testJs() =
     register("testJs") {
 
-        description = "Runs the JavaScript tests."
+        description = "Runs JavaScript tests."
         group = jsCheckTask
 
         doLast {
