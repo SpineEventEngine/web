@@ -26,19 +26,13 @@
 
 package io.spine.internal.gradle.javascript.plugin
 
-import io.spine.internal.gradle.javascript.task.assembleJs
-import io.spine.internal.gradle.javascript.task.compileProtoToJs
 import org.gradle.api.Task
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.withGroovyBuilder
 
 /**
- * Applies and configures `MsJsPlugin`.
- *
- * In particular, this method:
- *
- *  1. Specifies directories for generated code;
- *  2. Binds `generateParsersTask` to [assembleJs] execution. The task generates JSON-parsing
- *     code for JavaScript messages compiled from Protobuf.
+ * Applies `mc-js` plugin and specifies directories for generated code.
  *
  * @see JsPlugins
  */
@@ -53,20 +47,17 @@ fun JsPlugins.mcJs() {
     // See issue: https://github.com/SpineEventEngine/config/issues/298
 
     project.withGroovyBuilder {
-
         "protoJs" {
-
             setProperty("generatedMainDir", genProtoMain)
             setProperty("generatedTestDir", genProtoTest)
-
-            val parsersTask = "generateParsersTask"() as Task
-
-            tasks {
-                parsersTask.dependsOn(compileProtoToJs)
-                assembleJs.configure {
-                    dependsOn(parsersTask)
-                }
-            }
         }
     }
 }
+
+/**
+ * Locates `generateJsonParsers` in this [TaskContainer].
+ *
+ * The task generates JSON-parsing code for JavaScript messages compiled from Protobuf.
+ */
+val TaskContainer.generateJsonParsers: TaskProvider<Task>
+    get() = named("generateJsonParsers")

@@ -40,7 +40,7 @@ import org.gradle.kotlin.dsl.register
  *
  * In particular, this method:
  *
- *  1. Extends `assembleJs` task to bundle sources during assembling;
+ *  1. Extends `assembleJs` task to bundle sources during assembling.
  *  2. Creates `copyBundledJs` task and binds it to `prepareJsPublication` task execution.
  *
  * An example of how to apply it in `build.gradle.kts`:
@@ -66,7 +66,7 @@ fun JsTasks.webpack() {
 
     assembleJs.configure {
 
-        outputs.dir(webPackOutput)
+        outputs.dir(webpackOutput)
 
         doLast {
             npm("run", "build")
@@ -83,7 +83,6 @@ fun JsTasks.webpack() {
         }
     }*/
 }
-
 
 /**
  * Locates `copyBundledJs` task in this [TaskContainer].

@@ -38,18 +38,18 @@ import org.gradle.api.tasks.TaskContainer
  *
  * The scope extends [JsContext] and provides shortcuts for key project's components:
  *
- *  1. [plugins];
- *  2. [extensions];
+ *  1. [plugins].
+ *  2. [extensions].
  *  3. [tasks].
  *
- * Supposing, one needs to apply and configure `FooBar` plugin. To achieve that,
- * several steps are to be performed:
+ * Let's imagine one wants to apply and configure `FooBar` plugin. To do that, several steps
+ * should be completed:
  *
- *  1. Declare the corresponding extension function upon this scope;
- *  2. Apply and configure the plugin inside that function;
+ *  1. Declare the corresponding extension function upon this scope.
+ *  2. Apply and configure the plugin inside that function.
  *  3. Call the resulted extension from your `build.gradle.kts` file.
  *
- * Here's an example of `js/plugin/FooBar.kt`:
+ * Here's an example of `javascript/plugin/FooBar.kt`:
  *
  * ```
  * fun JsPlugins.fooBar() {
@@ -60,11 +60,11 @@ import org.gradle.api.tasks.TaskContainer
  * }
  * ```
  *
- * And how to apply it in `build.gradle.kts`:
+ * And here's how to apply it in `build.gradle.kts`:
  *
  *  ```
- * import io.spine.internal.gradle.js.javascript
- * import io.spine.internal.gradle.js.plugins.fooBar
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.plugins.fooBar
  *
  * // ...
  *

@@ -59,8 +59,6 @@ fun JsTasks.licenseReport()  {
     }
 }
 
-
-
 /**
  * Locates `npmLicenseReport` task in this [TaskContainer].
  *

@@ -33,16 +33,14 @@ import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.remove
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.javascript.task.compileProtoToJs
 
 /**
- * Applies and configures `Protobuf` plugin to work with a JavaScript module.
+ * Applies and configures `protobuf` plugin to work with a JavaScript module.
  *
  * In particular, this method:
  *
- *  1. Specifies `protoc` compiler;
- *  2. Configures `GenerateProtoTask` tasks;
- *  3. Binds those tasks to [compileProtoToJs] task execution.
+ *  1. Specifies `protoc` compiler.
+ *  2. Configures `GenerateProtoTask`.
  *
  * @see JsPlugins
  */
@@ -65,7 +63,7 @@ fun JsPlugins.protobuf() {
 
                 task.builtins {
 
-                    // Java is not needed in this project.
+                    // Do not use java builtin output in this project.
 
                     remove("java")
 
@@ -86,10 +84,6 @@ fun JsPlugins.protobuf() {
                 task.generateDescriptorSet = true
                 task.descriptorSetOptions.path =
                     "${projectDir}/build/descriptors/${sourceSet}/${descriptor}"
-
-                tasks.compileProtoToJs.configure {
-                    dependsOn(task)
-                }
             }
         }
     }

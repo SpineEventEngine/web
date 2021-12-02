@@ -71,6 +71,11 @@ sourceSets {
 }
 
 javascript {
+    plugins {
+        protobuf()
+        mcJs()
+        idea()
+    }
     tasks {
         assemble()
         clean()
@@ -88,12 +93,6 @@ javascript {
         // licenseReport()
 
         webpack()
-    }
-
-    plugins {
-        mcJs()
-        protobuf()
-        idea()
     }
 }
 

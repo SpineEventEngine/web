@@ -41,9 +41,9 @@ import org.gradle.api.tasks.TaskProvider
  *
  * List of tasks to be created:
  *
- *  1. [TaskContainer.checkJs];
- *  2. [TaskContainer.auditNodePackages];
- *  3. [TaskContainer.testJs];
+ *  1. [TaskContainer.checkJs].
+ *  2. [TaskContainer.auditNodePackages].
+ *  3. [TaskContainer.testJs].
  *  4. [TaskContainer.coverageJs].
  *
  * An example of how to apply it in `build.gradle.kts`:
@@ -63,7 +63,7 @@ import org.gradle.api.tasks.TaskProvider
  * }
  * ```
  *
- *  @param configuration any additional configuration related to the module's verifying.
+ * @param configuration any additional configuration related to the module's verification.
  */
 fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
 
@@ -79,8 +79,6 @@ fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
 
     configuration()
 }
-
-
 
 /**
  * Locates `checkJs` task in this [TaskContainer].
@@ -102,7 +100,6 @@ private fun JsTasks.checkJs() =
             testJs,
         )
     }
-
 
 /**
  * Locates `auditNodePackages` task in this [TaskContainer].
@@ -143,7 +140,6 @@ private fun JsTasks.auditNodePackages() =
         dependsOn(installNodePackages)
     }
 
-
 /**
  * Locates `coverageJs` task in this [TaskContainer].
  *
@@ -166,7 +162,6 @@ private fun JsTasks.coverageJs() =
 
         dependsOn(assembleJs)
     }
-
 
 /**
  * Locates `testJs` task in this [TaskContainer].

@@ -42,7 +42,7 @@ import org.gradle.kotlin.dsl.register
  *
  * List of tasks to be created:
  *
- *  1. [TaskContainer.cleanJs];
+ *  1. [TaskContainer.cleanJs].
  *  2. [TaskContainer.cleanGenerated].
  *
  * An example of how to apply it in `build.gradle.kts`:
@@ -73,8 +73,6 @@ fun JsTasks.clean() {
     }
 }
 
-
-
 /**
  * Locates `cleanJs` task in this [TaskContainer].
  *
@@ -99,7 +97,6 @@ private fun JsTasks.cleanJs() =
             cleanGenerated
         )
     }
-
 
 /**
  * Locates `cleanGenerated` task in this [TaskContainer].

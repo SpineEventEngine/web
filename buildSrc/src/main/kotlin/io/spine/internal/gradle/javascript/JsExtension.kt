@@ -62,13 +62,13 @@ import org.gradle.kotlin.dsl.findByType
  *
  * The scope defines them as follows:
  *
- *  1. [JsEnvironment.projectDir] –> `project.projectDir`;
+ *  1. [JsEnvironment.projectDir] –> `project.projectDir`.
  *  2. [JsEnvironment.moduleVersion] —> `project.extra["versionToPublishJs"]`.
  *
  * There two ways to modify the environment:
  *
  *  1. Update [JsEnvironment] directly. Go with this option when it is a global change
- *     that should affect all projects which use this extension;
+ *     that should affect all projects which use this extension.
  *  2. Use [JsExtension.environment] scope — for temporary and custom overriding.
  *
  * An example of a property overriding:
@@ -83,8 +83,9 @@ import org.gradle.kotlin.dsl.findByType
  *
  * ### Tasks and Plugins
  *
- * The main spirit of tasks configuration in this scope is extracting procedural code into
- * extension functions upon `JsTasks`. Then calling those functions in concrete `build.gradle.kts`.
+ * The main spirit of tasks configuration in this scope is extracting the code that defines and
+ * registers a task into an extension function upon `JsTasks`. This extension is named after
+ * the task it registers. Then this extension should be called in a project's `build.gradle.kts`.
  *
  * `JsTasks` and `JsPlugins` scopes extend [JsContext] which provide access
  * to the current [JsEnvironment] and shortcuts for running `npm` command.
@@ -112,7 +113,24 @@ import org.gradle.kotlin.dsl.findByType
  * }
  * ```
  *
- * This section is mostly dedicated to Tasks. But Tasks and Plugins are configured
+ * An extension function is not restricted to register exactly one task. When several tasks can
+ * be grouped into a logical bunch, they should be registered together:
+ *
+ * ```
+ * fun JsTasks.build() {
+ *     assembleJs()
+ *     testJs()
+ *     generateCoverageReport()
+ * }
+ *
+ * private fun JsTasks.assembleJs() = ...
+ *
+ * private fun JsTasks.testJs() = ...
+ *
+ * private fun JsTasks.generateCoverageReport() = ...
+ * ```
+ *
+ * This section is mostly dedicated to tasks. But tasks and plugins are configured
  * in a very similar way. So, everything above is also applicable to plugins.
  *
  * @see [ConfigurableJsEnvironment]
@@ -155,13 +173,13 @@ open class JsExtension(internal val project: Project) {
         configurableEnvironment.run(overridings)
 
     /**
-     * Configures [Js-related tasks][JsTasks].
+     * Configures [JavaScript-related tasks][JsTasks].
      */
     fun tasks(configurations: JsTasks.() -> Unit) =
         tasks.run(configurations)
 
     /**
-     * Configures [Js-related plugins][JsPlugins].
+     * Configures [JavaScript-related plugins][JsPlugins].
      */
     fun plugins(configurations: JsPlugins.() -> Unit) =
         plugins.run(configurations)

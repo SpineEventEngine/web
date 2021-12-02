@@ -40,16 +40,15 @@ dependencies {
 }
 
 javascript {
+    plugins {
+        protobuf()
+        mcJs()
+        idea()
+    }
     tasks {
         assemble()
         clean()
         integrationTest()
-    }
-
-    plugins {
-        mcJs()
-        protobuf()
-        idea()
     }
 }
 

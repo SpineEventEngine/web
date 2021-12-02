@@ -36,16 +36,16 @@ import org.gradle.api.tasks.TaskContainer
  *
  * The scope provides:
  *
- *  1. Access to the current [JsContext];
- *  2. Project's [TaskContainer];
+ *  1. Access to the current [JsContext].
+ *  2. Project's [TaskContainer].
  *  3. Default task groups.
  *
- * Supposing, one needs to create a new task that would participate in building. Let task name be
- * `bundleJs`. To achieve the objection, several steps are to be performed:
+ * Supposing, one needs to create a new task that would participate in building. Let the task name
+ * be `bundleJs`. To do that, several steps should be completed:
  *
- *  1. Define the task as an extension function upon `JsTaskRegistering` scope;
- *  2. Create typed reference for the task upon [TaskContainer]. It would facilitate referencing
- *     to the new task. For example, to add external dependents;
+ *  1. Define the task as an extension function upon `JsTaskRegistering` scope.
+ *  2. Create a typed reference for the task upon [TaskContainer]. It would facilitate referencing
+ *     to the new task, so that external tasks could depend on it.
  *  3. Call the resulted extension from `build.gradle.kts`.
  *
  * Here's an example of `bundleJs()` extension:
@@ -62,7 +62,7 @@ import org.gradle.api.tasks.TaskContainer
  * fun JsTasks.bundleJs() =
  *     register("bundleJs) {
  *
- *         description = "Bundles js sources using `webpack` tool.`
+ *         description = "Bundles JS sources using `webpack` tool."
  *         group = jsBuildTask
  *
  *         doLast {
@@ -74,11 +74,11 @@ import org.gradle.api.tasks.TaskContainer
  *     }
  * ```
  *
- * And how to apply it in `build.gradle.kts`:
+ * And here's how to apply it in `build.gradle.kts`:
  *
  * ```
- * import io.spine.internal.gradle.js.javascript
- * import io.spine.internal.gradle.js.task.buildJs
+ * import io.spine.internal.gradle.javascript.javascript
+ * import io.spine.internal.gradle.javascript.task.buildJs
  *
  * // ...
  *

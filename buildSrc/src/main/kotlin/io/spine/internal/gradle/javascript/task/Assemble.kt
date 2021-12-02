@@ -28,19 +28,22 @@ package io.spine.internal.gradle.javascript.task
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.google.protobuf.gradle.GenerateProtoTask
 import io.spine.internal.gradle.base.assemble
+import io.spine.internal.gradle.javascript.plugin.generateJsonParsers
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.withType
 
 /**
  * Registers tasks for assembling JavaScript artifacts.
  *
  * List of tasks to be created:
  *
- *  1. [TaskContainer.assembleJs];
- *  2. [TaskContainer.compileProtoToJs];
- *  3. [TaskContainer.installNodePackages];
+ *  1. [TaskContainer.assembleJs].
+ *  2. [TaskContainer.compileProtoToJs].
+ *  3. [TaskContainer.installNodePackages].
  *  4. [TaskContainer.updatePackageVersion].
  *
  * An example of how to apply it in `build.gradle.kts`:
@@ -69,9 +72,7 @@ fun JsTasks.assemble() {
             dependsOn(it)
         }
     }
-
 }
-
 
 /**
  * Locates `assembleJs` task in this [TaskContainer].
@@ -94,15 +95,14 @@ private fun JsTasks.assembleJs() =
         )
     }
 
-
 /**
  * Locates `compileProtoToJs` task in this [TaskContainer].
  *
- * The task compiles Protobuf messages into JavaScript.
+ * The task compiles Protobuf messages into JavaScript using tasks provided by
+ * `protobuf` and `mc-js` plugins.
  *
- * This is a lifecycle task that performs no action itself. It is used to aggregate other tasks
- * which perform the compilation. Those tasks are to be provided by `Protobuf`
- * and `McJsPlugin` plugins.
+ * See: [protobuf][io.spine.internal.gradle.javascript.plugin.protobuf],
+ *      [mcJs][io.spine.internal.gradle.javascript.plugin.mcJs].
  */
 val TaskContainer.compileProtoToJs: TaskProvider<Task>
     get() = named("compileProtoToJs")
@@ -112,13 +112,17 @@ private fun JsTasks.compileProtoToJs() =
 
         description = "Compiles Protobuf messages into JavaScript."
         group = jsAssembleTask
-    }
 
+        withType<GenerateProtoTask>()
+            .forEach { dependsOn(it) }
+
+        dependsOn(generateJsonParsers)
+    }
 
 /**
  * Locates `installNodePackages` task in this [TaskContainer].
  *
- * The task installs a package and any packages that it depends on using the `npm install` command.
+ * The task installs Node packages which this module depends on using `npm install` command.
  *
  * The `npm install` command is executed with the vulnerability check disabled since
  * it cannot fail the task execution despite on vulnerabilities found.
@@ -126,7 +130,7 @@ private fun JsTasks.compileProtoToJs() =
  * To check installed Node packages for vulnerabilities execute
  * [TaskContainer.auditNodePackages] task.
  *
- * @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-install">npm-install | npm Docs</a>
+ * See [npm-install | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-install).
  */
 val TaskContainer.installNodePackages: TaskProvider<Task>
     get() = named("installNodePackages")
@@ -145,7 +149,6 @@ private fun JsTasks.installNodePackages() =
             npm("install")
         }
     }
-
 
 /**
  * Locates `updatePackageVersion` task in this [TaskContainer].

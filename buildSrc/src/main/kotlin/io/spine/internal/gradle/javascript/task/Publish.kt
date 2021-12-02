@@ -39,8 +39,8 @@ import org.gradle.api.tasks.TaskProvider
  *
  * List of tasks to be created:
  *
- *  1. [TaskContainer.publishJs];
- *  2. [TaskContainer.publishJsLocally];
+ *  1. [TaskContainer.publishJs].
+ *  2. [TaskContainer.publishJsLocally].
  *  3. [TaskContainer.prepareJsPublication].
  *
  * An example of how to apply it in `build.gradle.kts`:
@@ -73,11 +73,10 @@ fun JsTasks.publish() {
     }
 }
 
-
 /**
  * Locates `transpileSources` task in this [TaskContainer].
  *
- * The task transpiles JavaScript sources before publishing using Babel.
+ * The task transpiles JavaScript sources using Babel before their publishing.
  */
 internal val TaskContainer.transpileSources: TaskProvider<Task>
     get() = named("transpileSources")
@@ -85,14 +84,13 @@ internal val TaskContainer.transpileSources: TaskProvider<Task>
 private fun JsTasks.transpileSources() =
     register("transpileSources") {
 
-        description = "Transpiles JavaScript sources before publishing using Babel."
+        description = "Transpiles JavaScript sources using Babel before their publishing."
         group = jsPublishTask
 
         doLast {
             npm("run", "transpile-before-publish")
         }
     }
-
 
 /**
  * Locates `prepareJsPublication` task in this [TaskContainer].
@@ -132,7 +130,6 @@ private fun JsTasks.prepareJsPublication() =
         )
     }
 
-
 /**
  * Locates `publishJsLocally` task in this [TaskContainer].
  *
@@ -155,7 +152,6 @@ private fun JsTasks.publishJsLocally() =
 
         dependsOn(prepareJsPublication)
     }
-
 
 /**
  * Locates `publishJs` task in this [TaskContainer].

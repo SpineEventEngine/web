@@ -30,19 +30,19 @@ import java.io.File
 import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
- * Information about JavaScript environment.
+ * Describes the environment in which JavaScript code is assembled and processed during the build.
  *
  * Consists of three parts describing:
  *
- *  1. A module itself;
- *  2. Tools and their input/output files;
+ *  1. A module itself.
+ *  2. Tools and their input/output files.
  *  3. Code generation.
  */
 interface JsEnvironment {
 
-
-    // A module itself.
-
+     /*
+      * A module itself
+      ******************/
 
     /**
      * Module's root catalog.
@@ -86,16 +86,16 @@ interface JsEnvironment {
     val publicationDir: File
         get() = buildDir.resolve("npm-publication")
 
-
-    // Tools and their input/output files.
-
+    /*
+     * Tools and their input/output files
+     *************************************/
 
     /**
      * Name of an executable for running `npm`.
      *
      * Default value:
      *
-     *  1. "nmp.cmd" for Windows;
+     *  1. "nmp.cmd" for Windows.
      *  2. "npm" for other OSs.
      */
     val npmExecutable: String
@@ -110,7 +110,7 @@ interface JsEnvironment {
      * During installation a token is required only if dependencies
      * from private repositories are used.
      *
-     * See [Creating and viewing access tokens | npm Docs](https://docs.npmjs.com/creating-and-viewing-access-tokens)
+     * See [Creating and viewing access tokens | npm Docs](https://docs.npmjs.com/creating-and-viewing-access-tokens).
      */
     val npmAuthToken: String
         get() = System.getenv("NPM_TOKEN") ?: "PUBLISHING_FORBIDDEN"
@@ -137,7 +137,7 @@ interface JsEnvironment {
      *
      * Default value: "projectDir/.npmrc".
      *
-     * See [npmrc | npm Docs](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc)
+     * See [npmrc | npm Docs](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc).
      */
     val npmrc: File
         get() = projectDir.resolve(".npmrc")
@@ -145,7 +145,7 @@ interface JsEnvironment {
     /**
      * A cache directory in which `nyc` tool outputs raw coverage report.
      *
-     * See [istanbuljs/nyc](https://github.com/istanbuljs/nyc)
+     * See [istanbuljs/nyc](https://github.com/istanbuljs/nyc).
      */
     val nycOutput: File
         get() = projectDir.resolve(".nyc_output")
@@ -153,9 +153,9 @@ interface JsEnvironment {
     /**
      * A directory in which `webpack` would put a ready-to-use bundle.
      *
-     * See [webpack - npm](https://www.npmjs.com/package/webpack)
+     * See [webpack - npm](https://www.npmjs.com/package/webpack).
      */
-    val webPackOutput: File
+    val webpackOutput: File
         get() = projectDir.resolve("dist")
 
     /**
@@ -164,9 +164,9 @@ interface JsEnvironment {
     val webpackPublicationDir: File
         get() = publicationDir.resolve("dist")
 
-
-    // Code generation.
-
+    /*
+     * Code generation
+     ******************/
 
     /**
      * Name of a directory that contains generated code.
@@ -192,23 +192,28 @@ interface JsEnvironment {
  *
  * All of declared properties can be split into two groups:
  *
- *  1. The ones that *define* something - can be overridden;
- *  2. The ones that *describe* something - can not be overridden.
+ *  1. The ones that *define* something - can be overridden.
+ *  2. The ones that *describe* something - can NOT be overridden.
  *
- *  Overriding of "describing" properties leads to inconsistency with expectations. They are not
- *  to be utilized by `NPM` or any other js tool. But rather by tasks that use that tool.
+ * Overriding a property that defines something, affects the way `npm` tool works.
+ * In contrary, overriding a property that describes something does not affect the tool.
+ * Such properties just describe how the used tool works.
  *
- *  Therefore, the next properties could not be overridden:
+ * Therefore, overriding of "describing" properties leads to inconsistency with expectations.
  *
- *  1. [JsEnvironment.nodeModules];
- *  2. [JsEnvironment.packageJson];
- *  3. [JsEnvironment.npmrc];
+ * The next properties could not be overridden:
+ *
+ *  1. [JsEnvironment.nodeModules].
+ *  2. [JsEnvironment.packageJson].
+ *  3. [JsEnvironment.npmrc].
  *  4. [JsEnvironment.nycOutput].
  */
 class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment)
     : JsEnvironment by initialEnvironment
 {
-    // A module itself.
+    /*
+     * A module itself
+     ******************/
 
     override var projectDir = initialEnvironment.projectDir
     override var moduleVersion = initialEnvironment.moduleVersion
@@ -217,14 +222,18 @@ class ConfigurableJsEnvironment(initialEnvironment: JsEnvironment)
     override var buildDir = initialEnvironment.buildDir
     override var publicationDir = initialEnvironment.publicationDir
 
-    // Tools and their input/output files.
+    /*
+     * Tools and their input/output files
+     *************************************/
 
     override var npmExecutable = initialEnvironment.npmExecutable
     override var npmAuthToken = initialEnvironment.npmAuthToken
-    override var webPackOutput = initialEnvironment.webPackOutput
+    override var webpackOutput = initialEnvironment.webpackOutput
     override var webpackPublicationDir = initialEnvironment.webpackPublicationDir
 
-    // Code generation.
+    /*
+     * Code generation
+     ******************/
 
     override var genProtoDirName = initialEnvironment.genProtoDirName
     override var genProtoMain = initialEnvironment.genProtoMain
