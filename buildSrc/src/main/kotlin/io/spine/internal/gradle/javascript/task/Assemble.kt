@@ -39,6 +39,10 @@ import org.gradle.kotlin.dsl.withType
 /**
  * Registers tasks for assembling JavaScript artifacts.
  *
+ * Please note, this task group depends on [mc-js][io.spine.internal.gradle.javascript.plugin.mcJs]
+ * and [protobuf][io.spine.internal.gradle.javascript.plugin.protobuf]` plugins. Therefore,
+ * these plugins should be applied in the first place.
+ *
  * List of tasks to be created:
  *
  *  1. [TaskContainer.assembleJs].
@@ -64,7 +68,13 @@ import org.gradle.kotlin.dsl.withType
 fun JsTasks.assemble() {
 
     installNodePackages()
-    compileProtoToJs()
+
+    compileProtoToJs().also {
+        generateJsonParsers.configure {
+            dependsOn(it)
+        }
+    }
+
     updatePackageVersion()
 
     assembleJs().also {
@@ -91,18 +101,16 @@ private fun JsTasks.assembleJs() =
         dependsOn(
             installNodePackages,
             compileProtoToJs,
-            updatePackageVersion
+            updatePackageVersion,
+            generateJsonParsers
         )
     }
 
 /**
  * Locates `compileProtoToJs` task in this [TaskContainer].
  *
- * The task compiles Protobuf messages into JavaScript using tasks provided by
- * `protobuf` and `mc-js` plugins.
- *
- * See: [protobuf][io.spine.internal.gradle.javascript.plugin.protobuf],
- *      [mcJs][io.spine.internal.gradle.javascript.plugin.mcJs].
+ * The task is responsible for compiling Protobuf messages into JavaScript. It aggregates the tasks
+ * provided by `protobuf` plugin that perform actual compilation.*
  */
 val TaskContainer.compileProtoToJs: TaskProvider<Task>
     get() = named("compileProtoToJs")
@@ -115,8 +123,6 @@ private fun JsTasks.compileProtoToJs() =
 
         withType<GenerateProtoTask>()
             .forEach { dependsOn(it) }
-
-        dependsOn(generateJsonParsers)
     }
 
 /**
