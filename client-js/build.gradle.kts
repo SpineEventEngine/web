@@ -72,8 +72,8 @@ sourceSets {
 
 javascript {
     plugins {
-        protobuf()
         mcJs()
+        protobuf()
         idea()
     }
     tasks {
