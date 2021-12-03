@@ -64,7 +64,7 @@ fun JsTasks.licenseReport()  {
  *
  * The task generates the report on NPM dependencies and their licenses.
  */
-internal val TaskContainer.npmLicenseReport: TaskProvider<Task>
+val TaskContainer.npmLicenseReport: TaskProvider<Task>
     get() = named("npmLicenseReport")
 
 private fun JsTasks.npmLicenseReport() =

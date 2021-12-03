@@ -103,7 +103,7 @@ private fun JsTasks.cleanJs() =
  *
  * The task deletes directories with generated code and reports.
  */
-internal val TaskContainer.cleanGenerated: TaskProvider<Delete>
+val TaskContainer.cleanGenerated: TaskProvider<Delete>
     get() = named<Delete>("cleanGenerated")
 
 private fun JsTasks.cleanGenerated() =

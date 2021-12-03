@@ -78,7 +78,7 @@ fun JsTasks.publish() {
  *
  * The task transpiles JavaScript sources using Babel before their publishing.
  */
-internal val TaskContainer.transpileSources: TaskProvider<Task>
+val TaskContainer.transpileSources: TaskProvider<Task>
     get() = named("transpileSources")
 
 private fun JsTasks.transpileSources() =
@@ -99,7 +99,7 @@ private fun JsTasks.transpileSources() =
  * [publicationDirectory][io.spine.internal.gradle.javascript.JsEnvironment.publicationDir]
  * of the current `JsEnvironment`.
  */
-internal val TaskContainer.prepareJsPublication: TaskProvider<Task>
+val TaskContainer.prepareJsPublication: TaskProvider<Task>
     get() = named("prepareJsPublication")
 
 private fun JsTasks.prepareJsPublication() =
@@ -137,7 +137,7 @@ private fun JsTasks.prepareJsPublication() =
  *
  *  @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-link">npm-link | npm Docs</a>
  */
-internal val TaskContainer.publishJsLocally: TaskProvider<Task>
+val TaskContainer.publishJsLocally: TaskProvider<Task>
     get() = named("publishJsLocally")
 
 private fun JsTasks.publishJsLocally() =
@@ -166,7 +166,7 @@ private fun JsTasks.publishJsLocally() =
  *
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-publish">npm-publish | npm Docs</a>
  */
-internal val TaskContainer.publishJs: TaskProvider<Task>
+val TaskContainer.publishJs: TaskProvider<Task>
     get() = named("publishJs")
 
 private fun JsTasks.publishJs() =

@@ -89,7 +89,7 @@ fun JsTasks.webpack() {
  *
  * The task copies bundled JavaScript sources to the publication directory.
  */
-internal val TaskContainer.copyBundledJs: TaskProvider<Copy>
+val TaskContainer.copyBundledJs: TaskProvider<Copy>
     get() = named<Copy>("copyBundledJs")
 
 private fun JsTasks.copyBundledJs() =
