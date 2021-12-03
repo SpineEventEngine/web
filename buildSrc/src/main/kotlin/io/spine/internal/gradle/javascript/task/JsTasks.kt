@@ -63,7 +63,7 @@ import org.gradle.api.tasks.TaskContainer
  *     register("bundleJs) {
  *
  *         description = "Bundles JS sources using `webpack` tool."
- *         group = jsBuildTask
+ *         group = JsTasks.Group.build
  *
  *         doLast {
  *             npm("run", "build")
@@ -95,9 +95,11 @@ import org.gradle.api.tasks.TaskContainer
 class JsTasks(jsEnv: JsEnvironment, project: Project)
     : JsContext(jsEnv, project), TaskContainer by project.tasks
 {
-    internal val jsAssembleTask = "JavaScript/Build"
-    internal val jsCheckTask = "JavaScript/Check"
-    internal val jsCleanTask = "JavaScript/Clean"
-    internal val jsBuildTask = "JavaScript/Build"
-    internal val jsPublishTask = "JavaScript/Publish"
+    internal object Group {
+        const val assemble = "JavaScript/Assemble"
+        const val check = "JavaScript/Check"
+        const val clean = "JavaScript/Clean"
+        const val build = "JavaScript/Build"
+        const val publish = "JavaScript/Publish"
+    }
 }

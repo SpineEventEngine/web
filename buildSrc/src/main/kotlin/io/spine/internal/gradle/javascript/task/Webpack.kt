@@ -96,7 +96,7 @@ private fun JsTasks.copyBundledJs() =
     register<Copy>("copyBundledJs") {
 
         description = "Copies bundled JavaScript sources to the NPM publication directory."
-        group = jsPublishTask
+        group = JsTasks.Group.publish
 
         from(assembleJs.map { it.outputs })
         into(webpackPublicationDir)

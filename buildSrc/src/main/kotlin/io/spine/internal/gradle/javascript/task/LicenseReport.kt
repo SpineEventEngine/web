@@ -71,7 +71,7 @@ private fun JsTasks.npmLicenseReport() =
     register("npmLicenseReport") {
 
         description = "Generates the report on NPM dependencies and their licenses."
-        group = jsBuildTask
+        group = JsTasks.Group.build
 
         doLast {
 

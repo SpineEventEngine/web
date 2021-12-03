@@ -85,7 +85,7 @@ private fun JsTasks.cleanJs() =
     register<Delete>("cleanJs") {
 
         description = "Cleans output of `assembleJs` task and output of its dependants."
-        group = jsCleanTask
+        group = JsTasks.Group.clean
 
         delete(
             assembleJs.map { it.outputs },
@@ -110,7 +110,7 @@ private fun JsTasks.cleanGenerated() =
     register<Delete>("cleanGenerated") {
 
         description = "Cleans generated code and reports."
-        group = jsCleanTask
+        group = JsTasks.Group.clean
 
         delete(
             genProtoMain,

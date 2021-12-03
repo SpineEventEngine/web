@@ -96,7 +96,7 @@ private fun JsTasks.assembleJs() =
     register("assembleJs") {
 
         description = "Assembles JavaScript sources into consumable artifacts."
-        group = jsAssembleTask
+        group = JsTasks.Group.assemble
 
         dependsOn(
             installNodePackages,
@@ -119,7 +119,7 @@ private fun JsTasks.compileProtoToJs() =
     register("compileProtoToJs") {
 
         description = "Compiles Protobuf messages into JavaScript."
-        group = jsAssembleTask
+        group = JsTasks.Group.assemble
 
         withType<GenerateProtoTask>()
             .forEach { dependsOn(it) }
@@ -145,7 +145,7 @@ private fun JsTasks.installNodePackages() =
     register("installNodePackages") {
 
         description = "Installs module`s Node dependencies."
-        group = jsAssembleTask
+        group = JsTasks.Group.assemble
 
         inputs.file(packageJson)
         outputs.dir(nodeModules)
@@ -170,7 +170,7 @@ private fun JsTasks.updatePackageVersion() =
     register("updatePackageVersion") {
 
         description = "Sets a module's version in `package.json`."
-        group = jsAssembleTask
+        group = JsTasks.Group.assemble
 
         doLast {
             val objectNode = ObjectMapper()

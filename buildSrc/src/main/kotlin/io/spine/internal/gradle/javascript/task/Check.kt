@@ -92,7 +92,7 @@ private fun JsTasks.checkJs() =
     register("checkJs") {
 
         description = "Runs tests, audits NPM modules and creates a test-coverage report."
-        group = jsCheckTask
+        group = JsTasks.Group.check
 
         dependsOn(
             auditNodePackages,
@@ -119,7 +119,7 @@ private fun JsTasks.auditNodePackages() =
     register("auditNodePackages") {
 
         description = "Audits the module's Node dependencies."
-        group = jsCheckTask
+        group = JsTasks.Group.check
 
         inputs.dir(nodeModules)
 
@@ -152,7 +152,7 @@ private fun JsTasks.coverageJs() =
     register("coverageJs") {
 
         description = "Runs the JavaScript tests and collects the code coverage."
-        group = jsCheckTask
+        group = JsTasks.Group.check
 
         outputs.dir(nycOutput)
 
@@ -175,7 +175,7 @@ private fun JsTasks.testJs() =
     register("testJs") {
 
         description = "Runs JavaScript tests."
-        group = jsCheckTask
+        group = JsTasks.Group.check
 
         doLast {
             npm("run", "test")

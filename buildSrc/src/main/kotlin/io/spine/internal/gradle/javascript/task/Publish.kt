@@ -85,7 +85,7 @@ private fun JsTasks.transpileSources() =
     register("transpileSources") {
 
         description = "Transpiles JavaScript sources using Babel before their publishing."
-        group = jsPublishTask
+        group = JsTasks.Group.publish
 
         doLast {
             npm("run", "transpile-before-publish")
@@ -106,7 +106,7 @@ private fun JsTasks.prepareJsPublication() =
     register("prepareJsPublication") {
 
         description = "Prepares the NPM package for publishing."
-        group = jsPublishTask
+        group = JsTasks.Group.publish
 
         // We need to copy two files into a destination directory without overwriting its content.
         // Default `Copy` task is not used since it overwrites the content of a destination
@@ -144,7 +144,7 @@ private fun JsTasks.publishJsLocally() =
     register("publishJsLocally") {
 
         description = "Publishes the NPM package locally with `npm link`."
-        group = jsPublishTask
+        group = JsTasks.Group.publish
 
         doLast {
             publicationDir.npm("link")
@@ -173,7 +173,7 @@ private fun JsTasks.publishJs() =
     register("publishJs") {
 
         description = "Publishes the NPM package with `npm publish`."
-        group = jsPublishTask
+        group = JsTasks.Group.publish
 
         doLast {
             publicationDir.npm("publish")

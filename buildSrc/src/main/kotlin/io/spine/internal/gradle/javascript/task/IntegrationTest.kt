@@ -81,7 +81,7 @@ fun JsTasks.integrationTest() {
 
         description = "Runs integration tests of the `spine-web` library " +
                 "against the sample application."
-        group = jsCheckTask
+        group = JsTasks.Group.check
 
         dependsOn(build, linkSpineWebModule, ":test-app:appBeforeIntegrationTest")
 
@@ -110,7 +110,7 @@ private fun JsTasks.linkSpineWebModule() =
     register("linkSpineWebModule") {
 
         description = "Install unpublished artifact of `spine-web` library as a module dependency."
-        group = jsAssembleTask
+        group = JsTasks.Group.assemble
 
         dependsOn(":client-js:publishJsLocally")
 
