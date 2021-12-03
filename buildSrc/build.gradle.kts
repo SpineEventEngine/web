@@ -59,6 +59,15 @@ val jacksonVersion = "2.13.0"
 val googleAuthToolVersion = "2.1.2"
 val licenseReportVersion = "2.0"
 val grGitVersion = "3.1.1"
+
+/**
+ * The version of Protobuf Gradle Plugin.
+ *
+ * Please keep in sync. with `io.spine.internal.dependency.Protobuf.GradlePlugin.version`.
+ *
+ * @see <a href="https://github.com/google/protobuf-gradle-plugin/releases">
+ *     Protobuf Gradle Plugins Releases</a>
+ */
 val protobufPluginVersion = "0.8.17"
 
 /**

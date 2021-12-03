@@ -39,7 +39,7 @@ import io.spine.internal.dependency.Protobuf
  *
  * In particular, this method:
  *
- *  1. Specifies `protoc` compiler.
+ *  1. Specifies an executable for `protoc` compiler.
  *  2. Configures `GenerateProtoTask`.
  *
  * @see JsPlugins

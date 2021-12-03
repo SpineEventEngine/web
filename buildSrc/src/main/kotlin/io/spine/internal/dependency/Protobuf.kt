@@ -26,6 +26,8 @@
 
 package io.spine.internal.dependency
 
+import io.spine.internal.dependency.ErrorProne.GradlePlugin.id
+
 // https://github.com/protocolbuffers/protobuf
 @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
 object Protobuf {
@@ -38,6 +40,12 @@ object Protobuf {
 
     // https://github.com/google/protobuf-gradle-plugin/releases
     object GradlePlugin {
+        /**
+         * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
+         * Thus, when applying the plugin in projects build files, only the [id] should be used.
+         *
+         * When changing the version, also change the version used in the `build.gradle.kts`.
+         */
         const val version = "0.8.17"
         const val id = "com.google.protobuf"
         const val lib = "com.google.protobuf:protobuf-gradle-plugin:${version}"
