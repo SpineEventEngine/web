@@ -77,7 +77,10 @@ javascript {
         idea()
     }
     tasks {
-        assemble()
+        assemble {
+            webpack()
+        }
+
         clean()
         publish()
 
@@ -91,8 +94,6 @@ javascript {
         // See issue: https://github.com/SpineEventEngine/config/issues/301
 
         // licenseReport()
-
-        webpack()
     }
 }
 

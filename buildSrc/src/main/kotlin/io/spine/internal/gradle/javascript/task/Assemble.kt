@@ -64,8 +64,10 @@ import org.gradle.kotlin.dsl.withType
  *     }
  * }
  * ```
+ *
+ * @param configuration any additional configuration related to the module's assembling.
  */
-fun JsTasks.assemble() {
+fun JsTasks.assemble(configuration: JsTasks.() -> Unit = {}) {
 
     installNodePackages()
 
@@ -82,6 +84,8 @@ fun JsTasks.assemble() {
             dependsOn(it)
         }
     }
+
+    configuration()
 }
 
 /**
