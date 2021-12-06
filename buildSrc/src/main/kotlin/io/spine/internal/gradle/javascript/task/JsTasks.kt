@@ -95,6 +95,11 @@ import org.gradle.api.tasks.TaskContainer
 class JsTasks(jsEnv: JsEnvironment, project: Project)
     : JsContext(jsEnv, project), TaskContainer by project.tasks
 {
+    /**
+     * Default task groups for building a JavaScript module.
+     *
+     * @see [org.gradle.api.Task.getGroup]
+     */
     internal object Group {
         const val assemble = "JavaScript/Assemble"
         const val check = "JavaScript/Check"
