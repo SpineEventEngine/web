@@ -31,6 +31,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.protobuf.gradle.GenerateProtoTask
 import io.spine.internal.gradle.base.assemble
 import io.spine.internal.gradle.javascript.plugin.generateJsonParsers
+import io.spine.internal.gradle.named
+import io.spine.internal.gradle.register
+import io.spine.internal.gradle.taskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -88,16 +91,18 @@ fun JsTasks.assemble(configuration: JsTasks.() -> Unit = {}) {
     configuration()
 }
 
+private val assembleJsName = taskName("assembleJs")
+
 /**
  * Locates `assembleJs` task in this [TaskContainer].
  *
  * It is a lifecycle task that produces consumable JavaScript artifacts.
  */
 val TaskContainer.assembleJs: TaskProvider<Task>
-    get() = named("assembleJs")
+    get() = named(assembleJsName)
 
 private fun JsTasks.assembleJs() =
-    register("assembleJs") {
+    register(assembleJsName) {
 
         description = "Assembles JavaScript sources into consumable artifacts."
         group = JsTasks.Group.assemble
@@ -110,6 +115,8 @@ private fun JsTasks.assembleJs() =
         )
     }
 
+private val compileProtoToJsName = taskName("compileProtoToJs")
+
 /**
  * Locates `compileProtoToJs` task in this [TaskContainer].
  *
@@ -117,10 +124,10 @@ private fun JsTasks.assembleJs() =
  * provided by `protobuf` plugin that perform actual compilation.*
  */
 val TaskContainer.compileProtoToJs: TaskProvider<Task>
-    get() = named("compileProtoToJs")
+    get() = named(compileProtoToJsName)
 
 private fun JsTasks.compileProtoToJs() =
-    register("compileProtoToJs") {
+    register(compileProtoToJsName) {
 
         description = "Compiles Protobuf messages into JavaScript."
         group = JsTasks.Group.assemble
@@ -128,6 +135,8 @@ private fun JsTasks.compileProtoToJs() =
         withType<GenerateProtoTask>()
             .forEach { dependsOn(it) }
     }
+
+private val installNodePackagesName = taskName("installNodePackages")
 
 /**
  * Locates `installNodePackages` task in this [TaskContainer].
@@ -143,10 +152,10 @@ private fun JsTasks.compileProtoToJs() =
  * See [npm-install | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-install).
  */
 val TaskContainer.installNodePackages: TaskProvider<Task>
-    get() = named("installNodePackages")
+    get() = named(installNodePackagesName)
 
 private fun JsTasks.installNodePackages() =
-    register("installNodePackages") {
+    register(installNodePackagesName) {
 
         description = "Installs module`s Node dependencies."
         group = JsTasks.Group.assemble
@@ -160,6 +169,8 @@ private fun JsTasks.installNodePackages() =
         }
     }
 
+private val updatePackageVersionName = taskName("updatePackageVersion")
+
 /**
  * Locates `updatePackageVersion` task in this [TaskContainer].
  *
@@ -168,10 +179,10 @@ private fun JsTasks.installNodePackages() =
  * specified in the current `JsEnvironment`.
  */
 val TaskContainer.updatePackageVersion: TaskProvider<Task>
-    get() = named("updatePackageVersion")
+    get() = named(updatePackageVersionName)
 
 private fun JsTasks.updatePackageVersion() =
-    register("updatePackageVersion") {
+    register(updatePackageVersionName) {
 
         description = "Sets a module's version in `package.json`."
         group = JsTasks.Group.assemble

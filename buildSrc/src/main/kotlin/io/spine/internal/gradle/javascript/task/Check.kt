@@ -29,6 +29,9 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.base.check
 import io.spine.internal.gradle.java.test
 import io.spine.internal.gradle.javascript.isWindows
+import io.spine.internal.gradle.named
+import io.spine.internal.gradle.register
+import io.spine.internal.gradle.taskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -80,16 +83,18 @@ fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
     configuration()
 }
 
+private val checkJsName = taskName("checkJs")
+
 /**
  * Locates `checkJs` task in this [TaskContainer].
  *
  * The task runs tests, audits NPM modules and creates a test-coverage report.
  */
 val TaskContainer.checkJs: TaskProvider<Task>
-    get() = named("checkJs")
+    get() = named(checkJsName)
 
 private fun JsTasks.checkJs() =
-    register("checkJs") {
+    register(checkJsName) {
 
         description = "Runs tests, audits NPM modules and creates a test-coverage report."
         group = JsTasks.Group.check
@@ -100,6 +105,8 @@ private fun JsTasks.checkJs() =
             testJs,
         )
     }
+
+private val auditNodePackagesName = taskName("auditNodePackages")
 
 /**
  * Locates `auditNodePackages` task in this [TaskContainer].
@@ -113,10 +120,10 @@ private fun JsTasks.checkJs() =
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-audit">npm-audit | npm Docs</a>
  */
 val TaskContainer.auditNodePackages: TaskProvider<Task>
-    get() = named("auditNodePackages")
+    get() = named(auditNodePackagesName)
 
 private fun JsTasks.auditNodePackages() =
-    register("auditNodePackages") {
+    register(auditNodePackagesName) {
 
         description = "Audits the module's Node dependencies."
         group = JsTasks.Group.check
@@ -140,16 +147,18 @@ private fun JsTasks.auditNodePackages() =
         dependsOn(installNodePackages)
     }
 
+private val coverageJsName = taskName("coverageJs")
+
 /**
  * Locates `coverageJs` task in this [TaskContainer].
  *
  * The task runs the JavaScript tests and collects the code coverage.
  */
 val TaskContainer.coverageJs: TaskProvider<Task>
-    get() = named("coverageJs")
+    get() = named(coverageJsName)
 
 private fun JsTasks.coverageJs() =
-    register("coverageJs") {
+    register(coverageJsName) {
 
         description = "Runs the JavaScript tests and collects the code coverage."
         group = JsTasks.Group.check
@@ -163,16 +172,18 @@ private fun JsTasks.coverageJs() =
         dependsOn(assembleJs)
     }
 
+private val testJsName = taskName("testJs")
+
 /**
  * Locates `testJs` task in this [TaskContainer].
  *
  * The task runs JavaScript tests.
  */
 val TaskContainer.testJs: TaskProvider<Task>
-    get() = named("testJs")
+    get() = named(testJsName)
 
 private fun JsTasks.testJs() =
-    register("testJs") {
+    register(testJsName) {
 
         description = "Runs JavaScript tests."
         group = JsTasks.Group.check

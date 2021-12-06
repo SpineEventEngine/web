@@ -26,11 +26,12 @@
 
 package io.spine.internal.gradle.javascript.task
 
+import io.spine.internal.gradle.named
+import io.spine.internal.gradle.register
+import io.spine.internal.gradle.taskName
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.named
-import org.gradle.kotlin.dsl.register
 
 /**
  * Configures `assembleJs` task and creates `copyBundledJs` task to work with `webpack` bundler.
@@ -84,16 +85,18 @@ fun JsTasks.webpack() {
     }*/
 }
 
+private val copyBundledJsName = taskName("copyBundledJs", Copy::class)
+
 /**
  * Locates `copyBundledJs` task in this [TaskContainer].
  *
  * The task copies bundled JavaScript sources to the publication directory.
  */
 val TaskContainer.copyBundledJs: TaskProvider<Copy>
-    get() = named<Copy>("copyBundledJs")
+    get() = named(copyBundledJsName)
 
 private fun JsTasks.copyBundledJs() =
-    register<Copy>("copyBundledJs") {
+    register(copyBundledJsName) {
 
         description = "Copies bundled JavaScript sources to the NPM publication directory."
         group = JsTasks.Group.publish

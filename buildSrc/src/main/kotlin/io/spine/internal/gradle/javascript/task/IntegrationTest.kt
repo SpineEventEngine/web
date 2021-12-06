@@ -27,9 +27,14 @@
 package io.spine.internal.gradle.javascript.task
 
 import io.spine.internal.gradle.base.build
+import io.spine.internal.gradle.named
+import io.spine.internal.gradle.register
+import io.spine.internal.gradle.taskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
+
+private val integrationTestName = taskName("integrationTest")
 
 /**
  * Locates `integrationTest` task in this [TaskContainer].
@@ -43,7 +48,7 @@ import org.gradle.api.tasks.TaskProvider
  * See also: `./integration-tests/README.MD`
  */
 val TaskContainer.integrationTest: TaskProvider<Task>
-    get() = named("integrationTest")
+    get() = named(integrationTestName)
 
 /**
  * Registers [TaskContainer.integrationTest] task.
@@ -73,7 +78,7 @@ fun JsTasks.integrationTest() {
 
     linkSpineWebModule()
 
-    register("integrationTest") {
+    register(integrationTestName) {
 
         // TODO:2019-05-29:yegor.udovchenko: Find a way to run the same tests against `spine-web`.
         // in `client-js` module to recover coverage.
@@ -93,6 +98,8 @@ fun JsTasks.integrationTest() {
     }
 }
 
+private val linkSpineWebModuleName = taskName("linkSpineWebModule")
+
 /**
  * Locates `linkSpineWebModule` task in this [TaskContainer].
  *
@@ -104,10 +111,10 @@ fun JsTasks.integrationTest() {
  * See also: [npm-link | npm Docs](https://docs.npmjs.com/cli/v8/commands/npm-link)
  */
 val TaskContainer.linkSpineWebModule: TaskProvider<Task>
-    get() = named("linkSpineWebModule")
+    get() = named(linkSpineWebModuleName)
 
 private fun JsTasks.linkSpineWebModule() =
-    register("linkSpineWebModule") {
+    register(linkSpineWebModuleName) {
 
         description = "Install unpublished artifact of `spine-web` library as a module dependency."
         group = JsTasks.Group.assemble

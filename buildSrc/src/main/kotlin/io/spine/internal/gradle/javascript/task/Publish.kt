@@ -27,6 +27,9 @@
 package io.spine.internal.gradle.javascript.task
 
 import io.spine.internal.gradle.java.publish.publish
+import io.spine.internal.gradle.named
+import io.spine.internal.gradle.register
+import io.spine.internal.gradle.taskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -73,16 +76,18 @@ fun JsTasks.publish() {
     }
 }
 
+private val transpileSourcesName = taskName("transpileSources")
+
 /**
  * Locates `transpileSources` task in this [TaskContainer].
  *
  * The task transpiles JavaScript sources using Babel before their publishing.
  */
 val TaskContainer.transpileSources: TaskProvider<Task>
-    get() = named("transpileSources")
+    get() = named(transpileSourcesName)
 
 private fun JsTasks.transpileSources() =
-    register("transpileSources") {
+    register(transpileSourcesName) {
 
         description = "Transpiles JavaScript sources using Babel before their publishing."
         group = JsTasks.Group.publish
@@ -92,6 +97,8 @@ private fun JsTasks.transpileSources() =
         }
     }
 
+private val prepareJsPublicationName = taskName("prepareJsPublication")
+
 /**
  * Locates `prepareJsPublication` task in this [TaskContainer].
  *
@@ -100,10 +107,10 @@ private fun JsTasks.transpileSources() =
  * of the current `JsEnvironment`.
  */
 val TaskContainer.prepareJsPublication: TaskProvider<Task>
-    get() = named("prepareJsPublication")
+    get() = named(prepareJsPublicationName)
 
 private fun JsTasks.prepareJsPublication() =
-    register("prepareJsPublication") {
+    register(prepareJsPublicationName) {
 
         description = "Prepares the NPM package for publishing."
         group = JsTasks.Group.publish
@@ -130,6 +137,8 @@ private fun JsTasks.prepareJsPublication() =
         )
     }
 
+private val publishJsLocallyName = taskName("publishJsLocally")
+
 /**
  * Locates `publishJsLocally` task in this [TaskContainer].
  *
@@ -138,10 +147,10 @@ private fun JsTasks.prepareJsPublication() =
  *  @see <a href="https://docs.npmjs.com/cli/v8/commands/npm-link">npm-link | npm Docs</a>
  */
 val TaskContainer.publishJsLocally: TaskProvider<Task>
-    get() = named("publishJsLocally")
+    get() = named(publishJsLocallyName)
 
 private fun JsTasks.publishJsLocally() =
-    register("publishJsLocally") {
+    register(publishJsLocallyName) {
 
         description = "Publishes the NPM package locally with `npm link`."
         group = JsTasks.Group.publish
@@ -152,6 +161,8 @@ private fun JsTasks.publishJsLocally() =
 
         dependsOn(prepareJsPublication)
     }
+
+private val publishJsName = taskName("publishJs")
 
 /**
  * Locates `publishJs` task in this [TaskContainer].
@@ -167,10 +178,10 @@ private fun JsTasks.publishJsLocally() =
  * @see <a href="https://docs.npmjs.com/cli/v7/commands/npm-publish">npm-publish | npm Docs</a>
  */
 val TaskContainer.publishJs: TaskProvider<Task>
-    get() = named("publishJs")
+    get() = named(publishJsName)
 
 private fun JsTasks.publishJs() =
-    register("publishJs") {
+    register(publishJsName) {
 
         description = "Publishes the NPM package with `npm publish`."
         group = JsTasks.Group.publish

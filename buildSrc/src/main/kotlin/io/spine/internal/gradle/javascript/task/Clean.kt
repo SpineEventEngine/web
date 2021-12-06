@@ -27,12 +27,12 @@
 package io.spine.internal.gradle.javascript.task
 
 import io.spine.internal.gradle.base.clean
-import org.gradle.api.Task
+import io.spine.internal.gradle.named
+import io.spine.internal.gradle.register
+import io.spine.internal.gradle.taskName
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.named
-import org.gradle.kotlin.dsl.register
 
 /**
  * Registers tasks for deleting output of JavaScript builds.
@@ -73,16 +73,18 @@ fun JsTasks.clean() {
     }
 }
 
+private val cleanJsName = taskName("cleanJs", Delete::class)
+
 /**
  * Locates `cleanJs` task in this [TaskContainer].
  *
  * The task deletes output of `assembleJs` task and output of its dependants.
  */
-val TaskContainer.cleanJs: TaskProvider<Task>
-    get() = named("cleanJs")
+val TaskContainer.cleanJs: TaskProvider<Delete>
+    get() = named(cleanJsName)
 
 private fun JsTasks.cleanJs() =
-    register<Delete>("cleanJs") {
+    register(cleanJsName) {
 
         description = "Cleans output of `assembleJs` task and output of its dependants."
         group = JsTasks.Group.clean
@@ -98,16 +100,18 @@ private fun JsTasks.cleanJs() =
         )
     }
 
+private val cleanGeneratedName = taskName("cleanGenerated", Delete::class)
+
 /**
  * Locates `cleanGenerated` task in this [TaskContainer].
  *
  * The task deletes directories with generated code and reports.
  */
 val TaskContainer.cleanGenerated: TaskProvider<Delete>
-    get() = named<Delete>("cleanGenerated")
+    get() = named(cleanGeneratedName)
 
 private fun JsTasks.cleanGenerated() =
-    register<Delete>("cleanGenerated") {
+    register(cleanGeneratedName) {
 
         description = "Cleans generated code and reports."
         group = JsTasks.Group.clean
