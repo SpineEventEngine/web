@@ -43,24 +43,37 @@ import org.gradle.api.tasks.TaskContainer
  * Supposing, one needs to create a new task that would participate in building. Let the task name
  * be `bundleJs`. To do that, several steps should be completed:
  *
- *  1. Define the task as an extension function upon `JsTaskRegistering` scope.
- *  2. Create a typed reference for the task upon [TaskContainer]. It would facilitate referencing
- *     to the new task, so that external tasks could depend on it.
- *  3. Call the resulted extension from `build.gradle.kts`.
+ *  1. Define a variable for the task name and type
+ *     using [taskName][io.spine.internal.gradle.taskName] function.
+ *  2. Create a public typed reference for the task upon [TaskContainer]. It would facilitate
+ *      referencing to the new task, so that external tasks could depend on it. This reference
+ *      can be documented.
+ *  3. Implement an extension upon [JsTasks] to register the task.
+ *  4. Call the resulted extension from `build.gradle.kts`.
  *
  * Here's an example of `bundleJs()` extension:
  *
  * ```
+ * import io.spine.internal.gradle.named
+ * import io.spine.internal.gradle.register
+ * import io.spine.internal.gradle.taskName
  * import org.gradle.api.Task
  * import org.gradle.api.tasks.TaskContainer
  *
  * // ...
  *
+ * private val bundleJsName = taskName("bundleJs")
+ *
+ * /**
+ *  * Locates `bundleJs` task in this [TaskContainer].
+ *  *
+ *  * The task bundles JS sources using `webpack` tool.
+ *  */
  * val TaskContainer.bundleJs: TaskProvider<Task>
- *     get() = named("bundleJs")
+ *     get() = named(bundleJsName)
  *
  * fun JsTasks.bundleJs() =
- *     register("bundleJs) {
+ *     register(bundleJsName) {
  *
  *         description = "Bundles JS sources using `webpack` tool."
  *         group = JsTasks.Group.build

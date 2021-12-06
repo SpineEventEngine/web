@@ -83,14 +83,14 @@ import org.gradle.kotlin.dsl.findByType
  *
  * ### Tasks and Plugins
  *
- * The main spirit of tasks configuration in this scope is extracting the code that defines and
- * registers a task into an extension function upon `JsTasks`. This extension is named after
- * the task it registers. Then this extension should be called in a project's `build.gradle.kts`.
+ * The spirit of tasks configuration in this scope is extracting the code that defines and
+ * registers a task into an extension function upon `JsTasks` in `buildSrc`. This extension is named
+ * after the task it registers. Then this extension is called in a project's `build.gradle.kts`.
  *
  * `JsTasks` and `JsPlugins` scopes extend [JsContext] which provide access
  * to the current [JsEnvironment] and shortcuts for running `npm` command.
  *
- * Below is the simplest example of how to crate `printNpmVersion` task.
+ * Below is the simplest example of how to create a primitive `printNpmVersion` task.
  *
  * Firstly, a corresponding extension function should be defined in `buildSrc`:
  *
@@ -113,7 +113,7 @@ import org.gradle.kotlin.dsl.findByType
  * }
  * ```
  *
- * An extension function is not restricted to register exactly one task. When several tasks can
+ * An extension function is not restricted to register exactly one task. If several tasks can
  * be grouped into a logical bunch, they should be registered together:
  *
  * ```
