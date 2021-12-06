@@ -29,7 +29,7 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.base.clean
 import io.spine.internal.gradle.named
 import io.spine.internal.gradle.register
-import io.spine.internal.gradle.taskName
+import io.spine.internal.gradle.TaskName
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -73,7 +73,7 @@ fun JsTasks.clean() {
     }
 }
 
-private val cleanJsName = taskName("cleanJs", Delete::class)
+private val cleanJsName = TaskName.of("cleanJs", Delete::class)
 
 /**
  * Locates `cleanJs` task in this [TaskContainer].
@@ -100,7 +100,7 @@ private fun JsTasks.cleanJs() =
         )
     }
 
-private val cleanGeneratedName = taskName("cleanGenerated", Delete::class)
+private val cleanGeneratedName = TaskName.of("cleanGenerated", Delete::class)
 
 /**
  * Locates `cleanGenerated` task in this [TaskContainer].

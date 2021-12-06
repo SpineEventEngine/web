@@ -29,7 +29,7 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.named
 import io.spine.internal.gradle.register
 import io.spine.internal.gradle.report.license.generateLicenseReport
-import io.spine.internal.gradle.taskName
+import io.spine.internal.gradle.TaskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -62,7 +62,7 @@ fun JsTasks.licenseReport()  {
     }
 }
 
-private val npmLicenseReportName = taskName("npmLicenseReport")
+private val npmLicenseReportName = TaskName.of("npmLicenseReport")
 
 /**
  * Locates `npmLicenseReport` task in this [TaskContainer].

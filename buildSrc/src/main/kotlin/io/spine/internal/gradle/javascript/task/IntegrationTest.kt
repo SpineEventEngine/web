@@ -29,12 +29,12 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.base.build
 import io.spine.internal.gradle.named
 import io.spine.internal.gradle.register
-import io.spine.internal.gradle.taskName
+import io.spine.internal.gradle.TaskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 
-private val integrationTestName = taskName("integrationTest")
+private val integrationTestName = TaskName.of("integrationTest")
 
 /**
  * Locates `integrationTest` task in this [TaskContainer].
@@ -98,7 +98,7 @@ fun JsTasks.integrationTest() {
     }
 }
 
-private val linkSpineWebModuleName = taskName("linkSpineWebModule")
+private val linkSpineWebModuleName = TaskName.of("linkSpineWebModule")
 
 /**
  * Locates `linkSpineWebModule` task in this [TaskContainer].

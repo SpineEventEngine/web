@@ -31,7 +31,7 @@ import io.spine.internal.gradle.java.test
 import io.spine.internal.gradle.javascript.isWindows
 import io.spine.internal.gradle.named
 import io.spine.internal.gradle.register
-import io.spine.internal.gradle.taskName
+import io.spine.internal.gradle.TaskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -83,7 +83,7 @@ fun JsTasks.check(configuration: JsTasks.() -> Unit = {}) {
     configuration()
 }
 
-private val checkJsName = taskName("checkJs")
+private val checkJsName = TaskName.of("checkJs")
 
 /**
  * Locates `checkJs` task in this [TaskContainer].
@@ -106,7 +106,7 @@ private fun JsTasks.checkJs() =
         )
     }
 
-private val auditNodePackagesName = taskName("auditNodePackages")
+private val auditNodePackagesName = TaskName.of("auditNodePackages")
 
 /**
  * Locates `auditNodePackages` task in this [TaskContainer].
@@ -147,7 +147,7 @@ private fun JsTasks.auditNodePackages() =
         dependsOn(installNodePackages)
     }
 
-private val coverageJsName = taskName("coverageJs")
+private val coverageJsName = TaskName.of("coverageJs")
 
 /**
  * Locates `coverageJs` task in this [TaskContainer].
@@ -172,7 +172,7 @@ private fun JsTasks.coverageJs() =
         dependsOn(assembleJs)
     }
 
-private val testJsName = taskName("testJs")
+private val testJsName = TaskName.of("testJs")
 
 /**
  * Locates `testJs` task in this [TaskContainer].

@@ -32,16 +32,28 @@ import org.gradle.api.tasks.TaskContainer
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
+/**
+ * A name and a type of a Gradle task.
+ */
 internal class TaskName<T : Task>(
     val value: String,
     val clazz: KClass<T>,
-)
+) {
+    companion object {
 
-internal fun taskName(name: String) = TaskName(name, Task::class)
+        fun of(name: String) = TaskName(name, Task::class)
 
-internal fun <T : Task> taskName(name: String, clazz: KClass<T>) = TaskName(name, clazz)
+        fun <T : Task> of(name: String, clazz: KClass<T>) = TaskName(name, clazz)
+    }
+}
 
+/**
+ * Locates [the task][TaskName] in this [TaskContainer].
+ */
 internal fun <T : Task> TaskContainer.named(name: TaskName<T>) = named(name.value, name.clazz)
 
+/**
+ * Registers [the task][TaskName] in this [TaskContainer].
+ */
 internal fun <T : Task> TaskContainer.register(name: TaskName<T>, init: T.() -> Unit) =
     register(name.value, name.clazz, init)

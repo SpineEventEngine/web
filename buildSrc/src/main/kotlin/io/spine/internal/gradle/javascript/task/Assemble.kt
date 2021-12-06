@@ -33,7 +33,7 @@ import io.spine.internal.gradle.base.assemble
 import io.spine.internal.gradle.javascript.plugin.generateJsonParsers
 import io.spine.internal.gradle.named
 import io.spine.internal.gradle.register
-import io.spine.internal.gradle.taskName
+import io.spine.internal.gradle.TaskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -91,7 +91,7 @@ fun JsTasks.assemble(configuration: JsTasks.() -> Unit = {}) {
     configuration()
 }
 
-private val assembleJsName = taskName("assembleJs")
+private val assembleJsName = TaskName.of("assembleJs")
 
 /**
  * Locates `assembleJs` task in this [TaskContainer].
@@ -115,7 +115,7 @@ private fun JsTasks.assembleJs() =
         )
     }
 
-private val compileProtoToJsName = taskName("compileProtoToJs")
+private val compileProtoToJsName = TaskName.of("compileProtoToJs")
 
 /**
  * Locates `compileProtoToJs` task in this [TaskContainer].
@@ -136,7 +136,7 @@ private fun JsTasks.compileProtoToJs() =
             .forEach { dependsOn(it) }
     }
 
-private val installNodePackagesName = taskName("installNodePackages")
+private val installNodePackagesName = TaskName.of("installNodePackages")
 
 /**
  * Locates `installNodePackages` task in this [TaskContainer].
@@ -169,7 +169,7 @@ private fun JsTasks.installNodePackages() =
         }
     }
 
-private val updatePackageVersionName = taskName("updatePackageVersion")
+private val updatePackageVersionName = TaskName.of("updatePackageVersion")
 
 /**
  * Locates `updatePackageVersion` task in this [TaskContainer].

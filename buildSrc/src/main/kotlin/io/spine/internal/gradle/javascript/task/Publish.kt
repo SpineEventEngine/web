@@ -29,7 +29,7 @@ package io.spine.internal.gradle.javascript.task
 import io.spine.internal.gradle.java.publish.publish
 import io.spine.internal.gradle.named
 import io.spine.internal.gradle.register
-import io.spine.internal.gradle.taskName
+import io.spine.internal.gradle.TaskName
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
@@ -76,7 +76,7 @@ fun JsTasks.publish() {
     }
 }
 
-private val transpileSourcesName = taskName("transpileSources")
+private val transpileSourcesName = TaskName.of("transpileSources")
 
 /**
  * Locates `transpileSources` task in this [TaskContainer].
@@ -97,7 +97,7 @@ private fun JsTasks.transpileSources() =
         }
     }
 
-private val prepareJsPublicationName = taskName("prepareJsPublication")
+private val prepareJsPublicationName = TaskName.of("prepareJsPublication")
 
 /**
  * Locates `prepareJsPublication` task in this [TaskContainer].
@@ -137,7 +137,7 @@ private fun JsTasks.prepareJsPublication() =
         )
     }
 
-private val publishJsLocallyName = taskName("publishJsLocally")
+private val publishJsLocallyName = TaskName.of("publishJsLocally")
 
 /**
  * Locates `publishJsLocally` task in this [TaskContainer].
@@ -162,7 +162,7 @@ private fun JsTasks.publishJsLocally() =
         dependsOn(prepareJsPublication)
     }
 
-private val publishJsName = taskName("publishJs")
+private val publishJsName = TaskName.of("publishJs")
 
 /**
  * Locates `publishJs` task in this [TaskContainer].
