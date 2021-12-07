@@ -26,14 +26,23 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
+import io.spine.internal.gradle.base.check
 import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.github.pages.updateGitHubPages
-
-apply(from = "$rootDir" + io.spine.internal.gradle.Scripts.commonPath + "js/js.gradle")
-
-val spineCoreVersion: String by extra
+import io.spine.internal.gradle.javascript.javascript
+import io.spine.internal.gradle.javascript.plugin.idea
+import io.spine.internal.gradle.javascript.plugin.mcJs
+import io.spine.internal.gradle.javascript.plugin.protobuf
+import io.spine.internal.gradle.javascript.task.assemble
+import io.spine.internal.gradle.javascript.task.check
+import io.spine.internal.gradle.javascript.task.clean
+import io.spine.internal.gradle.javascript.task.coverageJs
+import io.spine.internal.gradle.javascript.task.publish
+import io.spine.internal.gradle.javascript.task.webpack
 
 dependencies {
+
+    val spineCoreVersion: String by project.extra
+
     protobuf(project(":web"))
     protobuf(project(":firebase-web"))
     protobuf(
@@ -50,20 +59,6 @@ dependencies {
     )
 }
 
-idea.module {
-    sourceDirs.add(file(project.extra["srcDir"]!!))
-    testSourceDirs.add(file(project.extra["testSrcDir"]!!))
-
-    excludeDirs.addAll(
-        files(
-            project.extra["nycOutputDir"],
-            project.extra["genProtoMain"],
-            project.extra["genProtoTest"]
-        )
-    )
-}
-
-
 sourceSets {
     main {
         java.exclude("**/*.*")
@@ -75,17 +70,46 @@ sourceSets {
     }
 }
 
-// Suppress building the JS project as a Java module.
-tasks.compileJava {
-    enabled = false
+javascript {
+    plugins {
+        mcJs()
+        protobuf()
+        idea()
+    }
+    tasks {
+        assemble {
+            webpack()
+        }
+
+        clean()
+        publish()
+
+        check {
+            rootProject.tasks.check.configure {
+                dependsOn(coverageJs)
+            }
+        }
+
+        // NPM dependencies are not included into license reports.
+        // See issue: https://github.com/SpineEventEngine/config/issues/301
+
+        // licenseReport()
+    }
 }
 
-tasks.compileTestJava {
-    enabled = false
+tasks {
+
+    // Suppress building the JS project as a Java module.
+
+    compileJava.configure {
+        enabled = false
+    }
+    compileTestJava.configure {
+        enabled = false
+    }
 }
 
 val jsDocDir = LazyTempPath("jsDocs")
-
 val jsDoc by tasks.registering(type = Exec::class) {
     commandLine(
         "$projectDir/node_modules/.bin/jsdoc",
