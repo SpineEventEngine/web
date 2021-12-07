@@ -26,8 +26,6 @@
 
 package io.spine.internal.dependency
 
-import io.spine.internal.dependency.ErrorProne.GradlePlugin.id
-
 // https://github.com/protocolbuffers/protobuf
 @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
 object Protobuf {
