@@ -26,7 +26,6 @@
 
 package io.spine.internal.gradle.javac
 
-import org.gradle.api.JavaVersion
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.process.CommandLineArgumentProvider
 
@@ -52,11 +51,11 @@ import org.gradle.process.CommandLineArgumentProvider
  * }
  *```
  */
+@Suppress("unused")
 fun JavaCompile.configureJavac() {
-
     with(options) {
         encoding = JavacConfig.SOURCE_FILES_ENCODING
-        compilerArgumentProviders.add(JavacConfig.ARGUMENTS)
+        compilerArgumentProviders.add(JavacConfig.COMMAND_LINE)
     }
 }
 
@@ -65,8 +64,7 @@ fun JavaCompile.configureJavac() {
  */
 private object JavacConfig {
     const val SOURCE_FILES_ENCODING = "UTF-8"
-    val EXPECTED_JAVA_VERSION = JavaVersion.VERSION_1_8
-    val ARGUMENTS = CommandLineArgumentProvider {
+    val COMMAND_LINE = CommandLineArgumentProvider {
         listOf(
 
             // Protobuf Compiler generates the code, which uses the deprecated `PARSER` field.

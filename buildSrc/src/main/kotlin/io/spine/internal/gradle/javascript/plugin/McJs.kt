@@ -24,11 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle.javascript.plugin
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.withGroovyBuilder
+
+/**
+ * Applies `mc-js` plugin and specifies directories for generated code.
+ *
+ * @see JsPlugins
+ */
+fun JsPlugins.mcJs() {
+
+    plugins {
+        apply("io.spine.mc-js")
+    }
+
+    // Temporarily use GroovyInterop.
+    // Currently, it is not possible to obtain `McJsPlugin` on the classpath of `buildSrc`.
+    // See issue: https://github.com/SpineEventEngine/config/issues/298
+
+    project.withGroovyBuilder {
+        "protoJs" {
+            setProperty("generatedMainDir", genProtoMain)
+            setProperty("generatedTestDir", genProtoTest)
+        }
+    }
+}
+
+/**
+ * Locates `generateJsonParsers` in this [TaskContainer].
+ *
+ * The task generates JSON-parsing code for JavaScript messages compiled from Protobuf.
+ */
+val TaskContainer.generateJsonParsers: TaskProvider<Task>
+    get() = named("generateJsonParsers")

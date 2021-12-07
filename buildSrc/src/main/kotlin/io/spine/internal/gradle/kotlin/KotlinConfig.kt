@@ -24,11 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle.kotlin
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainSpec
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+/**
+ * Sets [Java toolchain](https://kotlinlang.org/docs/gradle.html#gradle-java-toolchains-support)
+ * to the specified version (e.g. "11" or "8").
+ */
+fun KotlinJvmProjectExtension.applyJvmToolchain(version: Int) {
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(version))
+    }
+}
+
+/**
+ * Opts-in to experimental features that we use in our codebase.
+ */
+fun KotlinCompile.setFreeCompilerArgs() {
+    kotlinOptions {
+        freeCompilerArgs = listOf(
+            "-Xskip-prerelease-check",
+            "-Xjvm-default=all",
+            "-Xopt-in=kotlin.contracts.ExperimentalContracts",
+            "-Xopt-in=kotlin.ExperimentalStdlibApi"
+        )
+    }
+}

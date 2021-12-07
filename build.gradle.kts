@@ -92,13 +92,13 @@ repositories.applyStandard()
 plugins {
     `java-library`
     jacoco
-    kotlin("jvm") version io.spine.internal.dependency.Kotlin.version
+    kotlin("jvm")
     idea
     pmd
     `project-report`
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
-        id(id) version version
+        id(id)
     }
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {

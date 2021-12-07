@@ -1,6 +1,6 @@
 {
   "name": "spine-web",
-  "version": "2.0.0-SNAPSHOT.69",
+  "version": "2.0.0-SNAPSHOT.70",
   "license": "Apache-2.0",
   "description": "A JS client for interacting with Spine applications.",
   "homepage": "https://spine.io",

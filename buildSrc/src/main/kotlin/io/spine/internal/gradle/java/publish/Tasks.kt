@@ -24,11 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle.java.publish
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
+
+/**
+ * Locates `publish` task in this [TaskContainer].
+ *
+ * This task publishes all defined publications to all defined repositories. To achieve that,
+ * the task depends on all `publish`*PubName*`PublicationTo`*RepoName*`Repository` tasks.
+ *
+ * Please note, task execution would not copy publications to the local Maven cache.
+ *
+ * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:tasks">
+ *     Tasks | Maven Publish Plugin</a>
+ */
+internal val TaskContainer.publish: TaskProvider<Task>
+    get() = named("publish")
