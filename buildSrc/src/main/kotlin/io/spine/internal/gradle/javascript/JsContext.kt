@@ -24,11 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle.javascript
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import java.io.File
+import org.gradle.api.Project
+
+/**
+ * Provides access to the current [JsEnvironment] and shortcuts for running `npm` tool.
+ */
+open class JsContext(jsEnv: JsEnvironment, internal val project: Project)
+    : JsEnvironment by jsEnv
+{
+    /**
+     * Executes `npm` command in a separate process.
+     *
+     * [JsEnvironment.projectDir] is used as a working directory.
+     */
+    fun npm(vararg args: String) = projectDir.npm(*args)
+
+    /**
+     * Executes `npm` command in a separate process.
+     *
+     * This [File] is used as a working directory.
+     */
+    fun File.npm(vararg args: String) = project.exec {
+
+        workingDir(this@npm)
+        commandLine(npmExecutable)
+        args(*args)
+
+        // Using private packages in a CI/CD workflow | npm Docs
+        // https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow
+
+        environment["NPM_TOKEN"] = npmAuthToken
+    }
+}

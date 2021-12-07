@@ -24,11 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle.javascript.plugin
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import org.gradle.kotlin.dsl.configure
+import org.gradle.plugins.ide.idea.model.IdeaModel
+
+/**
+ * Applies and configures `idea` plugin to work with a JavaScript module.
+ *
+ * In particular, this method:
+ *
+ *  1. Specifies directories for production and test sources.
+ *  2. Excludes directories with generated code and build artifacts.
+ *
+ * @see JsPlugins
+ */
+fun JsPlugins.idea() {
+
+    plugins {
+        apply("org.gradle.idea")
+    }
+
+    extensions.configure<IdeaModel> {
+
+        module {
+            sourceDirs.add(srcDir)
+            testSourceDirs.add(testSrcDir)
+
+            excludeDirs.addAll(
+                listOf(
+                    nodeModules,
+                    nycOutput,
+                    genProtoMain,
+                    genProtoTest
+                )
+            )
+        }
+    }
+}

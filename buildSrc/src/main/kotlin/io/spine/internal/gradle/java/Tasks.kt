@@ -24,11 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle.java
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.named
+
+/**
+ * Locates `test` task in this [TaskContainer].
+ *
+ * Runs the unit tests using JUnit or TestNG.
+ *
+ * Depends on `testClasses`, and all tasks which produce the test runtime classpath.
+ *
+ * @see <a href="https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_tasks">
+ *     Tasks | The Java Plugin</a>
+ */
+val TaskContainer.test: TaskProvider<Test>
+    get() = named<Test>("test")

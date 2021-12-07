@@ -24,11 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.67")
-val spineBaseTypesVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
-val spineVersion: String by extra(spineCoreVersion)
+package io.spine.internal.gradle
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.70")
-val versionToPublishJs: String by extra(versionToPublish)
+import kotlin.reflect.KClass
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.register
+
+/**
+ * A name and a type of a Gradle task.
+ */
+internal class TaskName<T : Task>(
+    val value: String,
+    val clazz: KClass<T>,
+) {
+    companion object {
+
+        fun of(name: String) = TaskName(name, Task::class)
+
+        fun <T : Task> of(name: String, clazz: KClass<T>) = TaskName(name, clazz)
+    }
+}
+
+/**
+ * Locates [the task][TaskName] in this [TaskContainer].
+ */
+internal fun <T : Task> TaskContainer.named(name: TaskName<T>) = named(name.value, name.clazz)
+
+/**
+ * Registers [the task][TaskName] in this [TaskContainer].
+ */
+internal fun <T : Task> TaskContainer.register(name: TaskName<T>, init: T.() -> Unit) =
+    register(name.value, name.clazz, init)
