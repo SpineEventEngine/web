@@ -25,6 +25,7 @@
  */
 
 import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.CommonsCodec
 import io.spine.internal.dependency.CommonsCollections
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Flogger
@@ -296,6 +297,7 @@ fun ResolutionStrategy.forceTransitiveDependencies() {
 
         Jackson.core,
 
+        CommonsCodec.lib
         CommonsCollections.lib,
 
         Netty.common,
