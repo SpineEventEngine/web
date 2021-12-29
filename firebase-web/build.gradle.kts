@@ -30,9 +30,11 @@ import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.Firebase
+import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.HttpClient
 import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Slf4J
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 
@@ -59,8 +61,8 @@ dependencies {
 
     // Required by the Firebase Admin SDK.
     @Suppress("DEPRECATION", "RemoveRedundantQualifierName")
-    runtimeOnly(io.spine.internal.dependency.Slf4J.lib)
-
+    runtimeOnly(Slf4J.lib)
+    testRuntimeOnly(Flogger.Runtime.systemBackend)
     testImplementation(project(":testutil-web"))
 }
 

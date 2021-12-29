@@ -287,6 +287,7 @@ fun ResolutionStrategy.forceTransitiveDependencies() {
         HttpClient.google,
         HttpClient.jackson2,
         HttpClient.gson,
+        HttpClient.apache2,
 
         GoogleApis.client,
 
@@ -297,7 +298,7 @@ fun ResolutionStrategy.forceTransitiveDependencies() {
 
         Jackson.core,
 
-        CommonsCodec.lib
+        CommonsCodec.lib,
         CommonsCollections.lib,
 
         Netty.common,
@@ -311,6 +312,8 @@ fun ResolutionStrategy.forceTransitiveDependencies() {
         Jetty.orbitServletJsp,
         Jetty.toolchainSchemas,
 
+        Flogger.lib,
+        Flogger.Runtime.systemBackend,
         OsDetector.lib,
 
         Grpc.context,
