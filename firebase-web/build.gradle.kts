@@ -62,7 +62,6 @@ dependencies {
     // Required by the Firebase Admin SDK.
     @Suppress("DEPRECATION", "RemoveRedundantQualifierName")
     runtimeOnly(Slf4J.lib)
-    testRuntimeOnly(Flogger.Runtime.systemBackend)
     testImplementation(project(":testutil-web"))
 }
 
