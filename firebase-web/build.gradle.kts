@@ -33,6 +33,7 @@ import io.spine.internal.dependency.Firebase
 import io.spine.internal.dependency.HttpClient
 import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Slf4J
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 
@@ -59,7 +60,7 @@ dependencies {
 
     // Required by the Firebase Admin SDK.
     @Suppress("DEPRECATION", "RemoveRedundantQualifierName")
-    runtimeOnly(io.spine.internal.dependency.Slf4J.lib)
+    runtimeOnly(Slf4J.lib)
 
     testImplementation(project(":testutil-web"))
 }
