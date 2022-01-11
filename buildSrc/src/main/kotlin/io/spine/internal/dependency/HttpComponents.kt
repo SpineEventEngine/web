@@ -32,7 +32,7 @@ package io.spine.internal.dependency
 object HttpComponents {
 
     // https://hc.apache.org/httpcomponents-client-4.5.x/index.html
-    const val client = "org.apache.httpcomponents:httpclient:4.5.5"
+    const val client = "org.apache.httpcomponents:httpclient:4.5.13"
 
     // https://hc.apache.org/httpcomponents-core-4.4.x/index.html
     const val core = "org.apache.httpcomponents:httpcore:4.4.14"
