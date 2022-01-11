@@ -423,7 +423,7 @@
      * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -599,7 +599,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Jan 11 16:06:39 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jan 11 16:50:04 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -861,7 +861,7 @@ This report was generated on **Tue Jan 11 16:06:39 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
      * **License:** [CDDL + GPLv2 with classpath exception](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1309,7 +1309,7 @@ This report was generated on **Tue Jan 11 16:06:39 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1496,7 +1496,7 @@ This report was generated on **Tue Jan 11 16:06:39 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jan 11 16:50:05 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1811,7 +1811,7 @@ This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1979,7 +1979,7 @@ This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jan 11 16:50:06 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2247,7 +2247,7 @@ This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-Lice
                 Dual license consisting of the CDDL v1.1 and GPL v2
             ](https://glassfish.java.net/public/CDDL+GPL_1_1.html)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2754,7 +2754,7 @@ This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3632,7 +3632,7 @@ This report was generated on **Tue Jan 11 16:06:41 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Jan 11 16:06:43 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jan 11 16:50:08 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3779,7 +3779,7 @@ This report was generated on **Tue Jan 11 16:06:43 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://junit.org](http://junit.org)
      * **License:** [Eclipse Public License 1.0](http://www.eclipse.org/legal/epl-v10.html)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4081,7 +4081,7 @@ This report was generated on **Tue Jan 11 16:06:43 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4256,7 +4256,7 @@ This report was generated on **Tue Jan 11 16:06:43 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Jan 11 16:06:44 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jan 11 16:50:08 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4380,7 +4380,7 @@ This report was generated on **Tue Jan 11 16:06:44 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://servlet-spec.java.net](http://servlet-spec.java.net)
      * **License:** [CDDL + GPLv2 with classpath exception](https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4682,7 +4682,7 @@ This report was generated on **Tue Jan 11 16:06:44 EET 2022** using [Gradle-Lice
      * **Project URL:** [http://commons.apache.org/proper/commons-lang/](http://commons.apache.org/proper/commons-lang/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.5.
+1.  **Group** : org.apache.httpcomponents. **Name** : httpclient. **Version** : 4.5.13.
      * **Project URL:** [http://hc.apache.org/httpcomponents-client](http://hc.apache.org/httpcomponents-client)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4857,4 +4857,4 @@ This report was generated on **Tue Jan 11 16:06:44 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Jan 11 16:06:45 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Jan 11 16:50:09 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
