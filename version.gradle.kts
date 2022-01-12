@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,5 +30,5 @@ val spineTimeVersion: String by extra("2.0.0-SNAPSHOT.64")
 val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.68")
 val spineVersion: String by extra(spineCoreVersion)
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.71")
+val versionToPublish: String by extra("2.0.0-SNAPSHOT.72")
 val versionToPublishJs: String by extra(versionToPublish)

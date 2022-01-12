@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ package io.spine.internal.dependency
 object HttpComponents {
 
     // https://hc.apache.org/httpcomponents-client-4.5.x/index.html
-    const val client = "org.apache.httpcomponents:httpclient:4.5.5"
+    const val client = "org.apache.httpcomponents:httpclient:4.5.13"
 
     // https://hc.apache.org/httpcomponents-core-4.4.x/index.html
     const val core = "org.apache.httpcomponents:httpcore:4.4.14"
