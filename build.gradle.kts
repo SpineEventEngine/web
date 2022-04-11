@@ -296,6 +296,7 @@ fun ResolutionStrategy.forceTransitiveDependencies() {
         HttpComponents.core,
 
         Jackson.core,
+        Jackson.databind,
 
         CommonsCodec.lib,
         CommonsCollections.lib,

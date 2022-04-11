@@ -32,7 +32,7 @@ import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.HttpClient
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.IncrementGuard
+import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 
