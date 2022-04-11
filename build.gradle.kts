@@ -46,7 +46,7 @@ import io.spine.internal.dependency.OpenCensus
 import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.ThreeTen
-import io.spine.internal.gradle.JavadocConfig
+import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.applyGitHubPackages
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.forceVersions
@@ -57,7 +57,7 @@ import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.spinePublishing
+import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.testing.configureLogging
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -110,19 +110,18 @@ plugins {
 apply(from = "$rootDir/version.gradle.kts")
 
 spinePublishing {
-    with(PublishingRepos) {
-        targetRepositories.addAll(
+    modules = setOf(
+        "web",
+        "firebase-web",
+        "testutil-web"
+    )
+    destinations = with(PublishingRepos) {
+        setOf(
             cloudRepo,
             gitHub("web"),
             cloudArtifactRegistry
         )
     }
-
-    projectsToPublish.addAll(
-        "web",
-        "firebase-web",
-        "testutil-web"
-    )
 }
 
 allprojects {
