@@ -28,12 +28,14 @@ import java.io.File
 
 rootProject.name = "spine-web"
 
-include("web")
-include("firebase-web")
-include("testutil-web")
-include("client-js")
-include("js-tests")
-include("test-app")
+include(
+    "web",
+    "firebase-web",
+    "testutil-web",
+    "client-js",
+    "js-tests",
+    "test-app",
+)
 
 project(":js-tests").projectDir = File("integration-tests/js-tests")
 project(":test-app").projectDir = File("integration-tests/test-app")
