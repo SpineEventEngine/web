@@ -56,10 +56,10 @@ tasks {
 
     // Suppress building the JS project as a Java module.
 
-    compileJava.configure {
+    compileJava {
         enabled = false
     }
-    compileTestJava.configure {
+    compileTestJava {
         enabled = false
     }
 }

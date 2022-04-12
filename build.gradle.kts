@@ -46,7 +46,7 @@ import io.spine.internal.dependency.OpenCensus
 import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.ThreeTen
-import io.spine.internal.gradle.JavadocConfig
+import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.applyGitHubPackages
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.forceVersions
@@ -57,7 +57,7 @@ import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.spinePublishing
+import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.testing.configureLogging
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -107,22 +107,19 @@ plugins {
     }
 }
 
-apply(from = "$rootDir/version.gradle.kts")
-
 spinePublishing {
-    with(PublishingRepos) {
-        targetRepositories.addAll(
+    modules = setOf(
+        "web",
+        "firebase-web",
+        "testutil-web"
+    )
+    destinations = with(PublishingRepos) {
+        setOf(
             cloudRepo,
             gitHub("web"),
             cloudArtifactRegistry
         )
     }
-
-    projectsToPublish.addAll(
-        "web",
-        "firebase-web",
-        "testutil-web"
-    )
 }
 
 allprojects {
@@ -155,48 +152,12 @@ subprojects {
         plugin("pmd-settings")
     }
 
-    tasks {
-        withType<JavaCompile> {
-            configureJavac()
-            configureErrorProne()
-        }
-        withType<Test> {
-            configureLogging()
-        }
-        registerTestTasks()
-    }
-
-    with(repositories) {
+    repositories {
         applyGitHubPackages("base", rootProject)
         applyGitHubPackages("base-types", rootProject)
         applyGitHubPackages("time", rootProject)
         applyGitHubPackages("core-java", rootProject)
         applyStandard()
-    }
-
-    LicenseReporter.generateReportIn(project)
-    JavadocConfig.applyTo(project)
-    updateGitHubPages(spineBaseVersion) {
-        allowInternalJavadoc.set(true)
-        rootFolder.set(rootDir)
-    }
-
-    val javaVersion = JavaVersion.VERSION_11
-
-    java {
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-    }
-
-    kotlin {
-        explicitApi()
-    }
-
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = javaVersion.toString()
-            freeCompilerArgs = listOf("-Xskip-prerelease-check")
-        }
     }
 
     dependencies {
@@ -217,26 +178,72 @@ subprojects {
         testImplementation("io.spine.tools:spine-testutil-client:$spineCoreVersion")
     }
 
-    configurations.forceVersions()
-    configurations.all {
-        resolutionStrategy {
-            forceTransitiveDependencies()
+    configurations {
+        forceVersions()
+        forceTransitiveDependencies()
+    }
+
+    val javaVersion = JavaVersion.VERSION_11
+
+    java {
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+
+        tasks.withType<JavaCompile>().configureEach {
+            configureJavac()
+            configureErrorProne()
         }
+    }
+
+    kotlin {
+        explicitApi()
+
+        tasks.withType<KotlinCompile>().configureEach {
+            kotlinOptions {
+                jvmTarget = javaVersion.toString()
+                freeCompilerArgs = listOf("-Xskip-prerelease-check")
+            }
+        }
+    }
+
+    tasks {
+        test {
+            useJUnitPlatform {
+                includeEngines("junit-jupiter")
+            }
+        }
+
+        registerTestTasks()
+
+        withType<Test>().configureEach {
+            configureLogging()
+        }
+    }
+
+    LicenseReporter.generateReportIn(project)
+    JavadocConfig.applyTo(project)
+
+    updateGitHubPages(spineBaseVersion) {
+        allowInternalJavadoc.set(true)
+        rootFolder.set(rootDir)
     }
 
     sourceSets {
         val generatedRootDir = "$projectDir/generated"
+        val generatedMainDir = "$generatedRootDir/main"
+        val generatedTestDir = "$generatedRootDir/test"
+
         main {
-            java.srcDirs("$generatedRootDir/main/spine")
+            java.srcDirs(
+                "$generatedMainDir/spine",
+                "$generatedMainDir/java"
+            )
         }
         test {
-            java.srcDirs("$generatedRootDir/test/spine")
-        }
-    }
-
-    tasks.test {
-        useJUnitPlatform {
-            includeEngines("junit-jupiter")
+            java.srcDirs(
+                "$generatedTestDir/spine",
+                "$generatedTestDir/java"
+            )
         }
     }
 }
@@ -260,68 +267,71 @@ LicenseReporter.mergeAllReports(project)
  * This breaks the Spine compiler which searches for all Protobuf definitions
  * in classpath, and assumes they implement the Type URLs.
  */
-fun ResolutionStrategy.forceTransitiveDependencies() {
-    val spineBaseVersion: String by extra
-    val spineBaseTypesVersion: String by extra
-    val spineTimeVersion: String by extra
+fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = all {
+    resolutionStrategy {
+        val spineBaseVersion: String by extra
+        val spineBaseTypesVersion: String by extra
+        val spineTimeVersion: String by extra
 
-    force(
-        OpenCensus.api,
-        OpenCensus.contribHttpUtil,
+        force(
+            OpenCensus.api,
+            OpenCensus.contribHttpUtil,
 
-        Gson.lib,
-        GoogleApis.common,
-        GoogleApis.commonProtos,
-        GoogleApis.protoAim,
+            Gson.lib,
+            GoogleApis.common,
+            GoogleApis.commonProtos,
+            GoogleApis.protoAim,
 
-        GoogleCloud.core,
-        GoogleApis.gax,
+            GoogleCloud.core,
+            GoogleApis.gax,
 
-        GoogleApis.oAuthClient,
+            GoogleApis.oAuthClient,
 
-        GoogleApis.AuthLibrary.credentials,
-        GoogleApis.AuthLibrary.oAuth2Http,
+            GoogleApis.AuthLibrary.credentials,
+            GoogleApis.AuthLibrary.oAuth2Http,
 
-        J2ObjC.lib,
+            J2ObjC.lib,
 
-        HttpClient.google,
-        HttpClient.jackson2,
-        HttpClient.gson,
-        HttpClient.apache2,
+            HttpClient.google,
+            HttpClient.jackson2,
+            HttpClient.gson,
+            HttpClient.apache2,
 
-        GoogleApis.client,
+            GoogleApis.client,
 
-        ThreeTen.lib,
+            ThreeTen.lib,
 
-        HttpComponents.client,
-        HttpComponents.core,
+            HttpComponents.client,
+            HttpComponents.core,
 
-        Jackson.core,
+            Jackson.core,
+            Jackson.databind,
 
-        CommonsCodec.lib,
-        CommonsCollections.lib,
+            CommonsCodec.lib,
+            CommonsCollections.lib,
 
-        Netty.common,
-        Netty.buffer,
-        Netty.transport,
-        Netty.handler,
-        Netty.codecHttp,
+            Netty.common,
+            Netty.buffer,
+            Netty.transport,
+            Netty.handler,
+            Netty.codecHttp,
 
-        JavaX.servletApi,
+            JavaX.servletApi,
 
-        Jetty.orbitServletJsp,
-        Jetty.toolchainSchemas,
+            Jetty.orbitServletJsp,
+            Jetty.toolchainSchemas,
 
-        Flogger.lib,
-        Flogger.Runtime.systemBackend,
-        OsDetector.lib,
+            Flogger.lib,
+            Flogger.Runtime.systemBackend,
+            OsDetector.lib,
 
-        Grpc.context,
+            Grpc.context,
 
-        // Transitive dependencies from `core-java` may have different (older) versions.
-        "io.spine:spine-base:$spineBaseVersion",
-        "io.spine:spine-base-types:$spineBaseTypesVersion",
-        "io.spine:spine-time:$spineTimeVersion",
-        "io.spine.tools:spine-testlib:$spineBaseVersion"
-    )
+            // Transitive dependencies from `core-java` may have different (older) versions.
+            "io.spine:spine-base:$spineBaseVersion",
+            "io.spine:spine-base-types:$spineBaseTypesVersion",
+            "io.spine:spine-time:$spineTimeVersion",
+            "io.spine.tools:spine-testlib:$spineBaseVersion"
+        )
+    }
 }
