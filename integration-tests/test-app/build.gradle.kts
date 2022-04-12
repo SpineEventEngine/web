@@ -27,7 +27,7 @@
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 
 plugins {
-    id("org.gretty").version("3.0.7")
+    id("org.gretty").version("3.0.6")
     id("com.github.psxpaul.execfork").version("0.1.13")
     id("io.spine.mc-java")
 }
