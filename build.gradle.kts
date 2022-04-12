@@ -230,11 +230,20 @@ subprojects {
 
     sourceSets {
         val generatedRootDir = "$projectDir/generated"
+        val generatedMainDir = "$generatedRootDir/main"
+        val generatedTestDir = "$generatedRootDir/test"
+
         main {
-            java.srcDirs("$generatedRootDir/main/spine")
+            java.srcDirs(
+                "$generatedMainDir/spine",
+                "$generatedMainDir/java"
+            )
         }
         test {
-            java.srcDirs("$generatedRootDir/test/spine")
+            java.srcDirs(
+                "$generatedTestDir/spine",
+                "$generatedTestDir/java"
+            )
         }
     }
 }
