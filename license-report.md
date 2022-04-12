@@ -599,7 +599,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 12 14:14:05 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 12 15:10:36 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1496,7 +1496,7 @@ This report was generated on **Tue Apr 12 14:14:05 EEST 2022** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 12 14:14:06 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 12 15:10:38 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1979,7 +1979,7 @@ This report was generated on **Tue Apr 12 14:14:06 EEST 2022** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 12 14:14:07 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 12 15:10:38 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2762,43 +2762,43 @@ This report was generated on **Tue Apr 12 14:14:07 EEST 2022** using [Gradle-Lic
      * **Project URL:** [http://hc.apache.org/httpcomponents-core-ga](http://hc.apache.org/httpcomponents-core-ga)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat. **Name** : tomcat-annotations-api. **Version** : 8.5.70.
+1.  **Group** : org.apache.tomcat. **Name** : tomcat-annotations-api. **Version** : 8.5.69.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat. **Name** : tomcat-annotations-api. **Version** : 9.0.52.
+1.  **Group** : org.apache.tomcat. **Name** : tomcat-annotations-api. **Version** : 9.0.50.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-core. **Version** : 8.5.70.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-core. **Version** : 8.5.69.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-core. **Version** : 9.0.52.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-core. **Version** : 9.0.50.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-el. **Version** : 8.5.70.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-el. **Version** : 8.5.69.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-el. **Version** : 9.0.52.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-el. **Version** : 9.0.50.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-jasper. **Version** : 8.5.70.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-jasper. **Version** : 8.5.69.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-jasper. **Version** : 9.0.52.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-jasper. **Version** : 9.0.50.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-websocket. **Version** : 8.5.70.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-websocket. **Version** : 8.5.69.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-websocket. **Version** : 9.0.52.
+1.  **Group** : org.apache.tomcat.embed. **Name** : tomcat-embed-websocket. **Version** : 9.0.50.
      * **Project URL:** [https://tomcat.apache.org/](https://tomcat.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2822,18 +2822,6 @@ This report was generated on **Tue Apr 12 14:14:07 EEST 2022** using [Gradle-Lic
 1.  **Group** : org.checkerframework. **Name** : dataflow-errorprone. **Version** : 3.15.0.
      * **Project URL:** [https://checkerframework.org](https://checkerframework.org)
      * **License:** [GNU General Public License, version 2 (GPL2), with the classpath exception](http://www.gnu.org/software/classpath/license.html)
-
-1.  **Group** : org.codehaus.groovy. **Name** : groovy. **Version** : 3.0.9.
-     * **Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : org.codehaus.groovy. **Name** : groovy-cli-commons. **Version** : 3.0.9.
-     * **Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : org.codehaus.groovy. **Name** : groovy-json. **Version** : 3.0.9.
-     * **Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.codehaus.mojo. **Name** : animal-sniffer-annotations. **Version** : 1.21.
      * **License:** [MIT license](http://www.opensource.org/licenses/mit-license.php)
@@ -3359,59 +3347,59 @@ This report was generated on **Tue Apr 12 14:14:07 EEST 2022** using [Gradle-Lic
      * **Project URL:** [http://jstl.java.net](http://jstl.java.net)
      * **License:** [CDDL + GPLv2 with classpath exception](http://glassfish.dev.java.net/nonav/public/CDDL+GPL.html)
 
-1.  **Group** : org.gretty. **Name** : gretty-common. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-common. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-core. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-core. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-jetty. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-jetty. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-jetty7. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-jetty7. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-jetty8. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-jetty8. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-jetty9. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-jetty9. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-jetty93. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-jetty93. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-jetty94. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-jetty94. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat85. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat85. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat8plus. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat8plus. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat9. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-runner-tomcat9. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
-1.  **Group** : org.gretty. **Name** : gretty-starter. **Version** : 3.0.7.
+1.  **Group** : org.gretty. **Name** : gretty-starter. **Version** : 3.0.6.
      * **Project URL:** [https://github.com/gretty-gradle-plugin/gretty](https://github.com/gretty-gradle-plugin/gretty)
      * **License:** [MIT](https://raw.github.com/gretty-gradle-plugin/gretty/master/LICENSE)
 
@@ -3644,7 +3632,7 @@ This report was generated on **Tue Apr 12 14:14:07 EEST 2022** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 12 14:14:09 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 12 15:10:41 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4268,7 +4256,7 @@ This report was generated on **Tue Apr 12 14:14:09 EEST 2022** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 12 14:14:10 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 12 15:10:42 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4869,4 +4857,4 @@ This report was generated on **Tue Apr 12 14:14:10 EEST 2022** using [Gradle-Lic
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Apr 12 14:14:10 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Tue Apr 12 15:10:43 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
