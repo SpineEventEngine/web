@@ -1,5 +1,3 @@
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-
 /*
  * Copyright 2022, TeamDev. All rights reserved.
  *
@@ -26,8 +24,10 @@ import io.spine.internal.gradle.checkstyle.CheckStyleConfig
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+
 plugins {
-    id("org.gretty").version("3.0.6")
+    id("org.gretty").version("3.0.7")
     id("com.github.psxpaul.execfork").version("0.1.13")
     id("io.spine.mc-java")
 }
