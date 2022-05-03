@@ -24,15 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+:root,
+:root.theme-dark {
+    --color-dark: #007bff;
+}
 
-/**
- * Commons CLI is a transitive dependency which we don't use directly.
- * We `force` it in [DependencyResolution.forceConfiguration].
- *
- * [Commons CLI](https://commons.apache.org/proper/commons-cli/)
- */
-object CommonsCli {
-    private const val version = "1.5.0"
-    const val lib = "commons-cli:commons-cli:${version}"
+:root.theme-dark dt {
+    color: #fff;
+}
+
+.library-name a::before {
+    background-image: url('https://spine.io/img/spine-sign-white.svg')
+}
+
+.cover a,
+.keyValue > div:first-child > .inline-flex > div:first-child > a {
+    font-family: var(--default-monospace-font-family);
+}
+
+.keyValue > div:first-child > .inline-flex > div:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

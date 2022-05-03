@@ -24,15 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.publish
 
 /**
- * Commons CLI is a transitive dependency which we don't use directly.
- * We `force` it in [DependencyResolution.forceConfiguration].
+ * A DSL element of [SpinePublishing] extension which configures publishing of [dokkaJar] artifact.
  *
- * [Commons CLI](https://commons.apache.org/proper/commons-cli/)
+ * This artifact contains Dokka-generated documentation. By default, it is not published.
+ *
+ * Take a look at the [SpinePublishing.dokkaJar] for a usage example.
+ *
+ * @see [registerArtifacts]
  */
-object CommonsCli {
-    private const val version = "1.5.0"
-    const val lib = "commons-cli:commons-cli:${version}"
+class DokkaJar {
+    /**
+     * Enables publishing `JAR`s with Dokka-generated documentation for all published modules.
+     */
+    var enabled = false
 }
