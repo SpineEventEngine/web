@@ -95,7 +95,6 @@ plugins {
     jacoco
     kotlin("jvm")
     idea
-    pmd
     `project-report`
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
@@ -145,7 +144,6 @@ subprojects {
         plugin("kotlin")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
-        plugin("pmd")
         plugin("maven-publish")
 
         // Apply custom Kotlin script plugins.
@@ -290,7 +288,7 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
             GoogleApis.AuthLibrary.credentials,
             GoogleApis.AuthLibrary.oAuth2Http,
 
-            J2ObjC.lib,
+            J2ObjC.annotations,
 
             HttpClient.google,
             HttpClient.jackson2,
