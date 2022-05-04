@@ -95,7 +95,6 @@ plugins {
     jacoco
     kotlin("jvm")
     idea
-    pmd
     `project-report`
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
@@ -119,6 +118,9 @@ spinePublishing {
             gitHub("web"),
             cloudArtifactRegistry
         )
+    }
+    dokkaJar {
+        enabled = true
     }
 }
 
@@ -145,11 +147,11 @@ subprojects {
         plugin("kotlin")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
-        plugin("pmd")
         plugin("maven-publish")
 
         // Apply custom Kotlin script plugins.
         plugin("pmd-settings")
+        plugin("dokka-for-java")
     }
 
     repositories {
@@ -290,7 +292,7 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
             GoogleApis.AuthLibrary.credentials,
             GoogleApis.AuthLibrary.oAuth2Http,
 
-            J2ObjC.lib,
+            J2ObjC.annotations,
 
             HttpClient.google,
             HttpClient.jackson2,
@@ -306,6 +308,10 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
 
             Jackson.core,
             Jackson.databind,
+            Jackson.bom,
+            Jackson.annotations,
+            Jackson.moduleKotlin,
+            Jackson.dataformatXml,
 
             CommonsCodec.lib,
             CommonsCollections.lib,

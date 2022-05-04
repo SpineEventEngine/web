@@ -1,6 +1,6 @@
 {
   "name": "client-js-tests",
-  "version": "2.0.0-SNAPSHOT.73",
+  "version": "2.0.0-SNAPSHOT.74",
   "license": "Apache-2.0",
   "description": "Tests of a `spine-web` JS library against the Spine-based application.",
   "scripts": {
