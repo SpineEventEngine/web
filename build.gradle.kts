@@ -119,6 +119,9 @@ spinePublishing {
             cloudArtifactRegistry
         )
     }
+    dokkaJar {
+        enabled = true
+    }
 }
 
 allprojects {
@@ -148,6 +151,7 @@ subprojects {
 
         // Apply custom Kotlin script plugins.
         plugin("pmd-settings")
+        plugin("dokka-for-java")
     }
 
     repositories {
@@ -304,6 +308,8 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
 
             Jackson.core,
             Jackson.databind,
+            Jackson.bom,
+            Jackson.annotations,
 
             CommonsCodec.lib,
             CommonsCollections.lib,
