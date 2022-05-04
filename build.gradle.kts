@@ -310,6 +310,8 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
             Jackson.databind,
             Jackson.bom,
             Jackson.annotations,
+            Jackson.moduleKotlin,
+            Jackson.dataformatXml,
 
             CommonsCodec.lib,
             CommonsCollections.lib,
