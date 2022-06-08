@@ -1,0 +1,75 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.web.command////PointingToDeclaration/web/io.spine.web.command/index.html
+$dokka.location:io.spine.web.command/CommandServlet///PointingToDeclaration/web/io.spine.web.command/-command-servlet/index.html
+$dokka.location:io.spine.web.command/CommandServlet/CommandServlet/#CommandService/PointingToDeclaration/web/io.spine.web.command/-command-servlet/-command-servlet.html
+$dokka.location:io.spine.web.command/CommandServlet/handle/#Command/PointingToDeclaration/web/io.spine.web.command/-command-servlet/handle.html
+$dokka.location:io.spine.web.future////PointingToDeclaration/web/io.spine.web.future/index.html
+$dokka.location:io.spine.web.future/Completion///PointingToDeclaration/web/io.spine.web.future/-completion/index.html
+$dokka.location:io.spine.web.future/Completion/dispose/#java.util.concurrent.CompletionStage<?>/PointingToDeclaration/web/io.spine.web.future/-completion/dispose.html
+$dokka.location:io.spine.web.future/FutureObserver///PointingToDeclaration/web/io.spine.web.future/-future-observer/index.html
+$dokka.location:io.spine.web.future/FutureObserver/create/#/PointingToDeclaration/web/io.spine.web.future/-future-observer/create.html
+$dokka.location:io.spine.web.future/FutureObserver/onCompleted/#/PointingToDeclaration/web/io.spine.web.future/-future-observer/on-completed.html
+$dokka.location:io.spine.web.future/FutureObserver/onError/#java.lang.Throwable/PointingToDeclaration/web/io.spine.web.future/-future-observer/on-error.html
+$dokka.location:io.spine.web.future/FutureObserver/onNext/#T/PointingToDeclaration/web/io.spine.web.future/-future-observer/on-next.html
+$dokka.location:io.spine.web.future/FutureObserver/toFuture/#/PointingToDeclaration/web/io.spine.web.future/-future-observer/to-future.html
+$dokka.location:io.spine.web.future/FutureObserver/withDefault/#T/PointingToDeclaration/web/io.spine.web.future/-future-observer/with-default.html
+$dokka.location:io.spine.web.parser////PointingToDeclaration/web/io.spine.web.parser/index.html
+$dokka.location:io.spine.web.parser/MessageFormat.BASE64///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}web/io.spine.web.parser/-message-format/-b-a-s-e64/index.html
+$dokka.location:io.spine.web.parser/MessageFormat.JSON///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}web/io.spine.web.parser/-message-format/-j-s-o-n/index.html
+$dokka.location:io.spine.web.parser/MessageFormat///PointingToDeclaration/web/io.spine.web.parser/-message-format/index.html
+$dokka.location:io.spine.web.parser/MessageFormat/formatOf/#HttpServletRequest/PointingToDeclaration/web/io.spine.web.parser/-message-format/format-of.html
+$dokka.location:io.spine.web.parser/MessageFormat/parse/#java.lang.String#java.lang.Class<T>/PointingToDeclaration/web/io.spine.web.parser/-message-format/parse.html
+$dokka.location:io.spine.web.parser/MessageFormat/valueOf/#java.lang.String/PointingToDeclaration/web/io.spine.web.parser/-message-format/value-of.html
+$dokka.location:io.spine.web.parser/MessageFormat/values/#/PointingToDeclaration/web/io.spine.web.parser/-message-format/values.html
+$dokka.location:io.spine.web.query////PointingToDeclaration/web/io.spine.web.query/index.html
+$dokka.location:io.spine.web.query/BlockingQueryBridge///PointingToDeclaration/web/io.spine.web.query/-blocking-query-bridge/index.html
+$dokka.location:io.spine.web.query/BlockingQueryBridge/BlockingQueryBridge/#QueryServiceImplBase/PointingToDeclaration/web/io.spine.web.query/-blocking-query-bridge/-blocking-query-bridge.html
+$dokka.location:io.spine.web.query/BlockingQueryBridge/send/#Query/PointingToDeclaration/web/io.spine.web.query/-blocking-query-bridge/send.html
+$dokka.location:io.spine.web.query/BlockingQueryService///PointingToDeclaration/web/io.spine.web.query/-blocking-query-service/index.html
+$dokka.location:io.spine.web.query/BlockingQueryService/BlockingQueryService/#QueryServiceImplBase/PointingToDeclaration/web/io.spine.web.query/-blocking-query-service/-blocking-query-service.html
+$dokka.location:io.spine.web.query/BlockingQueryService/execute/#Query/PointingToDeclaration/web/io.spine.web.query/-blocking-query-service/execute.html
+$dokka.location:io.spine.web.query/QueryBridge///PointingToDeclaration/web/io.spine.web.query/-query-bridge/index.html
+$dokka.location:io.spine.web.query/QueryBridge/send/#Query/PointingToDeclaration/web/io.spine.web.query/-query-bridge/send.html
+$dokka.location:io.spine.web.query/QueryServlet///PointingToDeclaration/web/io.spine.web.query/-query-servlet/index.html
+$dokka.location:io.spine.web.query/QueryServlet/QueryServlet/#io.spine.web.query.QueryBridge<T>/PointingToDeclaration/web/io.spine.web.query/-query-servlet/-query-servlet.html
+$dokka.location:io.spine.web.query/QueryServlet/handle/#Query/PointingToDeclaration/web/io.spine.web.query/-query-servlet/handle.html
+$dokka.location:io.spine.web.subscription.servlet////PointingToDeclaration/web/io.spine.web.subscription.servlet/index.html
+$dokka.location:io.spine.web.subscription.servlet/SubscribeServlet///PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscribe-servlet/index.html
+$dokka.location:io.spine.web.subscription.servlet/SubscribeServlet/SubscribeServlet/#io.spine.web.subscription.SubscriptionBridge<T,?,?>/PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscribe-servlet/-subscribe-servlet.html
+$dokka.location:io.spine.web.subscription.servlet/SubscribeServlet/handle/#Topic/PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscribe-servlet/handle.html
+$dokka.location:io.spine.web.subscription.servlet/SubscriptionCancelServlet///PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscription-cancel-servlet/index.html
+$dokka.location:io.spine.web.subscription.servlet/SubscriptionCancelServlet/SubscriptionCancelServlet/#io.spine.web.subscription.SubscriptionBridge<?,?,T>/PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscription-cancel-servlet/-subscription-cancel-servlet.html
+$dokka.location:io.spine.web.subscription.servlet/SubscriptionCancelServlet/handle/#Subscription/PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscription-cancel-servlet/handle.html
+$dokka.location:io.spine.web.subscription.servlet/SubscriptionKeepUpServlet///PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscription-keep-up-servlet/index.html
+$dokka.location:io.spine.web.subscription.servlet/SubscriptionKeepUpServlet/SubscriptionKeepUpServlet/#io.spine.web.subscription.SubscriptionBridge<?,T,?>/PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscription-keep-up-servlet/-subscription-keep-up-servlet.html
+$dokka.location:io.spine.web.subscription.servlet/SubscriptionKeepUpServlet/handle/#Subscription/PointingToDeclaration/web/io.spine.web.subscription.servlet/-subscription-keep-up-servlet/handle.html
+$dokka.location:io.spine.web.subscription////PointingToDeclaration/web/io.spine.web.subscription/index.html
+$dokka.location:io.spine.web.subscription/BlockingSubscriptionService///PointingToDeclaration/web/io.spine.web.subscription/-blocking-subscription-service/index.html
+$dokka.location:io.spine.web.subscription/BlockingSubscriptionService/BlockingSubscriptionService/#SubscriptionServiceImplBase/PointingToDeclaration/web/io.spine.web.subscription/-blocking-subscription-service/-blocking-subscription-service.html
+$dokka.location:io.spine.web.subscription/BlockingSubscriptionService/cancel/#Subscription/PointingToDeclaration/web/io.spine.web.subscription/-blocking-subscription-service/cancel.html
+$dokka.location:io.spine.web.subscription/BlockingSubscriptionService/subscribe/#Topic#StreamObserver<SubscriptionUpdate>/PointingToDeclaration/web/io.spine.web.subscription/-blocking-subscription-service/subscribe.html
+$dokka.location:io.spine.web.subscription/SubscriptionBridge///PointingToDeclaration/web/io.spine.web.subscription/-subscription-bridge/index.html
+$dokka.location:io.spine.web.subscription/SubscriptionBridge/cancel/#Subscription/PointingToDeclaration/web/io.spine.web.subscription/-subscription-bridge/cancel.html
+$dokka.location:io.spine.web.subscription/SubscriptionBridge/keepUp/#Subscription/PointingToDeclaration/web/io.spine.web.subscription/-subscription-bridge/keep-up.html
+$dokka.location:io.spine.web.subscription/SubscriptionBridge/subscribe/#Topic/PointingToDeclaration/web/io.spine.web.subscription/-subscription-bridge/subscribe.html
+$dokka.location:io.spine.web////PointingToDeclaration/web/io.spine.web/index.html
+$dokka.location:io.spine.web/AllowAnyOriginFilter///PointingToDeclaration/web/io.spine.web/-allow-any-origin-filter/index.html
+$dokka.location:io.spine.web/AllowAnyOriginFilter/destroy/#/PointingToDeclaration/web/io.spine.web/-allow-any-origin-filter/destroy.html
+$dokka.location:io.spine.web/AllowAnyOriginFilter/doFilter/#ServletRequest#ServletResponse#FilterChain/PointingToDeclaration/web/io.spine.web/-allow-any-origin-filter/do-filter.html
+$dokka.location:io.spine.web/AllowAnyOriginFilter/init/#FilterConfig/PointingToDeclaration/web/io.spine.web/-allow-any-origin-filter/init.html
+$dokka.location:io.spine.web/MessageServlet///PointingToDeclaration/web/io.spine.web/-message-servlet/index.html
+$dokka.location:io.spine.web/MessageServlet/MessageServlet/#/PointingToDeclaration/web/io.spine.web/-message-servlet/-message-servlet.html
+$dokka.location:io.spine.web/MessageServlet/doPost/#HttpServletRequest#HttpServletResponse/PointingToDeclaration/web/io.spine.web/-message-servlet/do-post.html
+$dokka.location:io.spine.web/MessageServlet/handle/#I/PointingToDeclaration/web/io.spine.web/-message-servlet/handle.html
+$dokka.location:io.spine.web/NonSerializableServlet///PointingToDeclaration/web/io.spine.web/-non-serializable-servlet/index.html
+$dokka.location:io.spine.web/RequestResult///PointingToDeclaration/web/io.spine.web/-request-result/index.html
+$dokka.location:io.spine.web/RequestResult/response/#/PointingToDeclaration/web/io.spine.web/-request-result/response.html
+io.spine.web
+io.spine.web.command
+io.spine.web.future
+io.spine.web.parser
+io.spine.web.query
+io.spine.web.subscription
+io.spine.web.subscription.servlet
+
