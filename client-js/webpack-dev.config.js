@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const merge = require('webpack-merge');
+const merge = require('webpack-merge').merge;
 const common = require('./webpack-common.config');
 
 module.exports = merge(common, {
