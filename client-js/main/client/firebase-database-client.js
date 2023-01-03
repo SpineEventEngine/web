@@ -27,7 +27,8 @@
 "use strict";
 
 import {Subscription, Subject} from 'rxjs';
-import { ref, onValue } from "firebase/database";
+import { ref, onValue,
+  onChildAdded, onChildRemoved, onChildChanged, onChildMoved } from "firebase/database";
 
 /**
  * The client of a Firebase Realtime database.
@@ -87,13 +88,30 @@ export class FirebaseDatabaseClient {
 
   _subscribeToChildEvent(childEvent, path, dataSubject) {
     const dbRef = ref(this._database, path);
-    const callback = dbRef.on(childEvent, response => {
+    let valueCallback = response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
       dataSubject.next(message);
-    });
+    };
+    let offCallback = null;
+    switch (childEvent) {
+      case 'child_added':
+        offCallback = onChildAdded(dbRef, valueCallback);
+        break;
+      case 'child_removed':
+        offCallback = onChildRemoved(dbRef, valueCallback);
+        break;
+      case 'child_changed':
+        offCallback = onChildChanged(dbRef, valueCallback);
+        break;
+      case 'child_moved':
+        offCallback = onChildMoved(dbRef, valueCallback);
+        break;
+      default:
+        throw new Error('Invalid child event: ' + childEvent);
+    }
     return new Subscription(() => {
-      dbRef.off(childEvent, callback);
+      offCallback?.();
       dataSubject.complete();
     });
   }
