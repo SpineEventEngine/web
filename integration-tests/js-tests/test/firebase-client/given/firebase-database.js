@@ -24,7 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import firebase from 'firebase';
+import { initializeApp } from 'firebase/app';
+import { getDatabase } from 'firebase/database';
 
 /**
  * The configuration of the emulated Firebase application. For details
@@ -35,7 +36,8 @@ const config = {
   authDomain: 'https://spine-dev.firebaseio.com/'
 };
 
+const app = initializeApp(config);
 /**
  * A Firebase Database used for tests.
  */
-export const firebaseDatabase = firebase.initializeApp(config).database();
+export const firebaseDatabase = getDatabase(app);

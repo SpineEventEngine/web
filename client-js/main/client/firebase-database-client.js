@@ -27,6 +27,7 @@
 "use strict";
 
 import {Subscription, Subject} from 'rxjs';
+import { ref, onValue } from "firebase/database";
 
 /**
  * The client of a Firebase Realtime database.
@@ -85,7 +86,7 @@ export class FirebaseDatabaseClient {
   }
 
   _subscribeToChildEvent(childEvent, path, dataSubject) {
-    const dbRef = this._database.ref(path);
+    const dbRef = ref(this._database, path);
     const callback = dbRef.on(childEvent, response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
@@ -105,8 +106,8 @@ export class FirebaseDatabaseClient {
    *                                                   entities at path
    */
   getValues(path, dataCallback) {
-    const dbRef = this._database.ref(path);
-    dbRef.once('value', response => {
+    const dbRef = ref(this._database, path);
+    onValue(dbRef, response => {
       const data = response.val(); // an Object mapping Firebase ids to objects is returned
       if (data == null) {
         return dataCallback([]);
@@ -114,6 +115,8 @@ export class FirebaseDatabaseClient {
       const objectStrings = Object.values(data);
       const items = objectStrings.map(item => JSON.parse(item));
       dataCallback(items);
-    });
+    }, {
+      onlyOnce: true
+    })
   }
 }
