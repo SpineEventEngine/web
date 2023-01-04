@@ -27,6 +27,8 @@
 "use strict";
 
 import {Subscription, Subject} from 'rxjs';
+import { ref, onValue,
+  onChildAdded, onChildRemoved, onChildChanged, onChildMoved } from "firebase/database";
 
 /**
  * The client of a Firebase Realtime database.
@@ -85,14 +87,31 @@ export class FirebaseDatabaseClient {
   }
 
   _subscribeToChildEvent(childEvent, path, dataSubject) {
-    const dbRef = this._database.ref(path);
-    const callback = dbRef.on(childEvent, response => {
+    const dbRef = ref(this._database, path);
+    let valueCallback = response => {
       const msgJson = response.val();
       const message = JSON.parse(msgJson);
       dataSubject.next(message);
-    });
+    };
+    let offCallback = null;
+    switch (childEvent) {
+      case 'child_added':
+        offCallback = onChildAdded(dbRef, valueCallback);
+        break;
+      case 'child_removed':
+        offCallback = onChildRemoved(dbRef, valueCallback);
+        break;
+      case 'child_changed':
+        offCallback = onChildChanged(dbRef, valueCallback);
+        break;
+      case 'child_moved':
+        offCallback = onChildMoved(dbRef, valueCallback);
+        break;
+      default:
+        throw new Error('Invalid child event: ' + childEvent);
+    }
     return new Subscription(() => {
-      dbRef.off(childEvent, callback);
+      offCallback?.();
       dataSubject.complete();
     });
   }
@@ -105,8 +124,8 @@ export class FirebaseDatabaseClient {
    *                                                   entities at path
    */
   getValues(path, dataCallback) {
-    const dbRef = this._database.ref(path);
-    dbRef.once('value', response => {
+    const dbRef = ref(this._database, path);
+    onValue(dbRef, response => {
       const data = response.val(); // an Object mapping Firebase ids to objects is returned
       if (data == null) {
         return dataCallback([]);
@@ -114,6 +133,8 @@ export class FirebaseDatabaseClient {
       const objectStrings = Object.values(data);
       const items = objectStrings.map(item => JSON.parse(item));
       dataCallback(items);
-    });
+    }, {
+      onlyOnce: true
+    })
   }
 }
