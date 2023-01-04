@@ -190,6 +190,17 @@ class Endpoint {
   }
 
   /**
+   * @param {!Array<TypedMessage<spine.client.Subscription>>} subscriptions subscriptions to keep up
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _keepUpAll(subscriptions) {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
    * @return {Promise<Object>} a promise of a successful server response, rejected if
    *                           an error occurs
@@ -199,10 +210,22 @@ class Endpoint {
   _cancel(subscription) {
     throw new Error('Not implemented in abstract base.');
   }
+
+
+  /**
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions to be canceled
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   * @protected
+   * @abstract
+   */
+  _cancelAll(subscriptions) {
+    throw new Error('Not implemented in abstract base.');
+  }
 }
 
 /**
- * Spine HTTP endpoint which is used to send off Commands and Queries using
+ * Spine HTTP endpoint which is used to send Commands and Queries using
  * the provided HTTP client.
  */
 export class HttpEndpoint extends Endpoint {
@@ -218,12 +241,12 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Sends off a command to the endpoint.
+   * Sends a command to the endpoint.
    *
    * @param {!TypedMessage<Command>} command a Command to send to the Spine server
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or a
-   *                                      connection error occurs
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
    * @protected
    */
   _executeCommand(command) {
@@ -232,12 +255,12 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Sends off a query to the endpoint.
+   * Sends a query to the endpoint.
    *
    * @param {!TypedMessage<Query>} query a Query to Spine server to retrieve some domain entities
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or a
-   *                                      connection error occurs
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
    * @protected
    */
   _performQuery(query) {
@@ -246,12 +269,12 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Sends off a request to create a subscription for a topic.
+   * Sends a request to create a subscription for a topic.
    *
    * @param {!TypedMessage<spine.client.Topic>} topic a topic to subscribe to
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or a
-   *                                      connection error occurs
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
    * @protected
    */
   _subscribeTo(topic) {
@@ -261,13 +284,13 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Sends off a request to keep alive a subscription.
+   * Sends a request to keep alive the given subscription.
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription that is prevented
    *                                                                  from being closed by server
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or a
-   *                                      connection error occurs
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
    * @protected
    */
   _keepUp(subscription) {
@@ -277,12 +300,31 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
-   * Sends off a request to cancel a subscription.
+   * Sends a request to keep alive the given subscriptions.
+   *
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions that are prevented
+   *                                                          from being closed by the server
+   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
+   * @protected
+   */
+  _keepUpAll(subscriptions) {
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.keepUpAll)
+        || '/subscription/keep-up-all';
+    const request = new Subscriptions()
+    request.setSubscriptionList(subscriptions);
+    const typed = TypedMessage.of(request);
+    return this._sendMessage(path, typed);
+  }
+
+  /**
+   * Sends a request to cancel the given subscription.
    *
    * @param {!TypedMessage<spine.client.Subscription>} subscription a subscription to be canceled
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or a
-   *                                      connection error occurs
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
    * @protected
    */
   _cancel(subscription) {
@@ -292,13 +334,31 @@ export class HttpEndpoint extends Endpoint {
   }
 
   /**
+   * Sends a request to cancel the given subscriptions.
+   *
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions to be canceled
+   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
+   * @protected
+   */
+  _cancelAll(subscriptions) {
+    const path = (this._routing && this._routing.subscription && this._routing.subscription.cancelAll)
+        || '/subscription/cancel-all';
+    const request = new Subscriptions();
+    request.setSubscriptionList(subscriptions);
+    const typed = TypedMessage.of(request);
+    return this._sendMessage(path, typed);
+  }
+
+  /**
    * Sends the given message to the given endpoint.
    *
    * @param {!string} endpoint an endpoint to send the message to
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or a
-   *                                      connection error occurs
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or a connection error occurs
    * @private
    */
   _sendMessage(endpoint, message) {
@@ -316,8 +376,8 @@ export class HttpEndpoint extends Endpoint {
    *
    * @param {!Response} response an HTTP request response
    * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not 2xx or if JSON
-   *                                      parsing fails
+   *                                      rejected if the client response is not `2xx`,
+   *                                      or if JSON parsing fails
    * @private
    */
   static _jsonOrError(response) {
