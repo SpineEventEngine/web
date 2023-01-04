@@ -28,6 +28,7 @@
 
 import {TypedMessage} from './typed-message';
 import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
+import {Subscriptions} from '../proto/spine/web/keeping_up_pb';
 
 /**
  * @typedef {Object} SubscriptionRouting
@@ -36,8 +37,12 @@ import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
  *  the name of the subscription creation endpoint; defaults to "/subscription/create"
  * @property {string} keepUp
  *  the name of the subscription keep up endpoint; defaults to "/subscription/keep-up"
+ * @property {string} keepUpAll
+ *  the name of the subscription bulk keep up endpoint; defaults to "/subscription/keep-up-all"
  * @property {string} cancel
  *  the name of the subscription cancellation endpoint; defaults to "/subscription/cancel"
+ * @property {string} cancelAll
+ *  the name of the subscription bulk cancellation endpoint; defaults to "/subscription/cancel-all"
  */
 
 /**
@@ -54,7 +59,7 @@ import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
 class Endpoint {
 
   /**
-   * Sends off a command to the endpoint.
+   * Sends a command to the endpoint.
    *
    * @param {!TypedMessage<Command>} command a Command  to send to the Spine server
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -65,7 +70,7 @@ class Endpoint {
   }
 
   /**
-   * Sends off a query to the endpoint.
+   * Sends a query to the endpoint.
    *
    * @param {!spine.client.Query} query a Query to Spine server to retrieve some domain entities
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -77,7 +82,7 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to subscribe to a provided topic to an endpoint.
+   * Sends a request to subscribe to a provided topic to an endpoint.
    *
    * @param {!spine.client.Topic} topic a topic for which a subscription is created
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -89,21 +94,33 @@ class Endpoint {
   }
 
   /**
-   * Sends off a request to keep a subscription, stopping it from being closed by server.
+   * Sends a request to keep a subscription, stopping it from being closed by server.
    *
    * @param {!spine.client.Subscription} subscription a subscription that should be kept open
-   * @return {Promise<Object>} a promise of a successful server response, rejected if
-   *                           an error occurs
+   * @returns {Promise<Object>} a promise of a successful server response, rejected if
+   *                            an error occurs
    */
-  keepUpSubscription(subscription) {
+  keepUpSingleSubscription(subscription) {
     const typedSubscription = TypedMessage.of(subscription);
     return this._keepUp(typedSubscription);
   }
 
   /**
-   * Sends off a request to cancel an existing subscription.
+   * Sends a request to keep up several subscriptions, preventing them
+   * from being closed by the server.
    *
-   * Cancelling subscription stops the server updating subscription with new values.
+   * @param {!Array<spine.client.Subscription>} subscriptions subscriptions that should be kept open
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  keepUpSubscriptions(subscriptions) {
+    return this._keepUpAll(subscriptions);
+  }
+
+  /**
+   * Sends a request to cancel an existing subscription.
+   *
+   * Cancelling subscription stops the server from updating subscription with new values.
    *
    * @param {!spine.client.Subscription} subscription a subscription that should be kept open
    * @return {Promise<Object>} a promise of a successful server response, rejected if
@@ -114,6 +131,19 @@ class Endpoint {
     return this._cancel(typedSubscription);
   }
 
+  /**
+   * Sends a request to cancel all the given subscriptions.
+   *
+   * Cancelling subscriptions stops the server from updating subscription with new values.
+   *
+   * @param {!Array<spine.client.Subscription>>} subscriptions subscriptions that should
+   *                                                           be cancelled
+   * @return {Promise<Object>} a promise of a successful server response, rejected if
+   *                           an error occurs
+   */
+  cancelAll(subscriptions) {
+    return this._cancelAll(subscriptions);
+  }
 
   /**
    * @param {!TypedMessage<Command>} command a Command to send to the Spine server

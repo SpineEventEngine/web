@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,40 +26,39 @@
 
 package io.spine.web.subscription.servlet;
 
-import com.google.protobuf.Message;
-import io.spine.client.Subscription;
 import io.spine.web.MessageServlet;
+import io.spine.web.Responses;
+import io.spine.web.Subscriptions;
 import io.spine.web.subscription.SubscriptionBridge;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * An abstract servlet for a client request to keep up an existing {@link Subscription}.
+ * An abstract servlet handling the bulk {@link io.spine.client.Subscription Subscription}s
+ * keep-up requests.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
- *
- * @param <T>
- *         type of the response message
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public abstract class SubscriptionKeepUpServlet<T extends Message>
-        extends MessageServlet<Subscription, T> {
+public class SubscriptionBulkKeepUpServlet extends MessageServlet<Subscriptions, Responses> {
 
-    private final SubscriptionBridge<?, T, ?> bridge;
+    private final SubscriptionBridge<?, ?, ?> bridge;
 
     /**
-     * Creates a new instance of {@code SubscriptionKeepUpServlet} with the given 
-     * {@link SubscriptionBridge}.
+     * Creates a new instance of {@code SubscriptionBulkKeepUpServlet} with
+     * the given {@link SubscriptionBridge}.
      *
      * @param bridge
      *         the subscription bridge to be used to keep up subscriptions
      */
-    protected SubscriptionKeepUpServlet(SubscriptionBridge<?, T, ?> bridge) {
+    protected SubscriptionBulkKeepUpServlet(SubscriptionBridge<?, ?, ?> bridge) {
         super();
-        this.bridge = bridge;
+        this.bridge = checkNotNull(bridge);
     }
 
     @Override
-    protected T handle(Subscription request) {
-        return bridge.keepUp(request);
+    protected Responses handle(Subscriptions request) {
+        return bridge.keepUpAll(request);
     }
 }

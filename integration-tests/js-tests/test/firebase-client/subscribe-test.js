@@ -499,12 +499,12 @@ describe('FirebaseClient subscription', function () {
 
     function keepUpEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'keepUpSubscription');
+      return sandbox.spy(httpEndpoint, 'keepUpSubscriptions');
     }
 
     function cancelEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'cancelSubscription');
+      return sandbox.spy(httpEndpoint, 'cancelAll');
     }
 
     /**
