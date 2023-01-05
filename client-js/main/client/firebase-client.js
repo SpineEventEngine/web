@@ -138,15 +138,11 @@ class EventSubscription extends SpineSubscription {
 class FirebaseQueryingClient extends QueryingClient {
 
   /**
-   * A protected constructor for customization.
-   *
-   * Use `FirebaseClient#usingFirebase()` for instantiation
+   * Creates an instance of the client.
    *
    * @param {!HttpEndpoint} endpoint the server endpoint to execute queries and commands
    * @param {!FirebaseDatabaseClient} firebaseDatabase the client to read the query results from
    * @param {!ActorRequestFactory} actorRequestFactory a factory to instantiate the actor requests with
-   *
-   * @protected
    */
   constructor(endpoint, firebaseDatabase, actorRequestFactory) {
     super(actorRequestFactory);
@@ -176,9 +172,7 @@ const EVENT_TYPE_URL = 'type.spine.io/spine.core.Event';
 class FirebaseSubscribingClient extends SubscribingClient {
 
   /**
-   * A protected constructor for customization.
-   *
-   * Use `FirebaseClient#usingFirebase()` for instantiation.
+   * Creates an instance of the client.
    *
    * @param {!HttpEndpoint} endpoint
    *  the server endpoint to execute queries and commands
@@ -188,8 +182,6 @@ class FirebaseSubscribingClient extends SubscribingClient {
    *  a factory to instantiate the actor requests with
    * @param {!FirebaseSubscriptionService} subscriptionService
    *  a service handling the subscriptions
-   *
-   * @protected
    */
   constructor(endpoint, firebaseDatabase, actorRequestFactory, subscriptionService) {
     super(actorRequestFactory);
