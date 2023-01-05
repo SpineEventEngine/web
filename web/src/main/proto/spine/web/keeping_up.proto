@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,23 +23,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.web.test.given;
+package spine.web;
 
-import io.spine.web.subscription.servlet.SubscriptionBulkKeepUpServlet;
+import "spine/options.proto";
 
-import javax.servlet.annotation.WebServlet;
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.web";
+option java_outer_classname = "KeepingUpProto";
+option java_multiple_files = true;
 
-import static io.spine.web.test.given.Server.application;
+import "spine/client/subscription.proto";
+import "spine/core/response.proto";
 
-/**
- * An endpoint for client requests to keep subscription running.
- */
-@WebServlet("/subscription/keep-up-all")
-@SuppressWarnings("serial")
-public class TestSubscriptionKeepUpServlet extends SubscriptionBulkKeepUpServlet {
+// A list of subscriptions to keep up.
+message Subscriptions {
+    repeated client.Subscription subscription = 1 [(required) = true, (validate) = true];
+}
 
-    public TestSubscriptionKeepUpServlet() {
-        super(application().subscriptionBridge());
-    }
+// A list of keep up responses.
+//
+// The order of responses corresponds to the order of subscriptions in the `Subscriptions` request.
+//
+message Responses {
+    repeated core.Response response = 1 [(required) = true, (validate) = true];
 }

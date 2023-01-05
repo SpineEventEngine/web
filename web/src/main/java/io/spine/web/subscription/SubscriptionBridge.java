@@ -29,6 +29,8 @@ package io.spine.web.subscription;
 import com.google.protobuf.Message;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
+import io.spine.web.Responses;
+import io.spine.web.Subscriptions;
 
 /**
  * A bridge for requests to a subscription {@link io.spine.server.SubscriptionService}.
@@ -57,24 +59,61 @@ public interface SubscriptionBridge<S extends Message, K extends Message, C exte
     S subscribe(Topic topic);
 
     /**
-     * Keep up the subscription, prohibiting it from closing from the server-side.
+     * Keeps up the subscription, preventing it from closing from the server.
      *
-     * <p>This operation is performed because subscription can only live some finite amount of time.
-     * Server cancels the subscription at some point, because maintaining the subscription requires
-     * resources and the client cannot be trusted to cancel every subscription it creates.
+     * <p>This operation is performed because a subscription lifetime is finite. Server cancels
+     * all subscriptions at some point, because maintaining them requires resources and the client
+     * cannot be trusted to cancel every subscription it creates.
+     *
+     * <p>Also, in some environments, HTTP requests to the server are required in order for a server
+     * instance to stay alive. If the environment kills off all server instances,
+     * there would be no one to propagate subscription updates to the clients.
      *
      * @param subscription
      *         a subscription that should stay open
      * @return the keep-up response
+     * @see #keepUpAll(Subscriptions) for the preferable way
+     *         of keeping up the batch of subscriptions
      */
     K keepUp(Subscription subscription);
 
     /**
-     * Cancel the existing subscription, which stopping sending new data updates to the client.
+     * Keeps up given subscriptions, preventing them from closing from the server.
+     *
+     * <p>This operation is performed because a subscription lifetime is finite. Server cancels
+     * all subscriptions at some point, because maintaining them requires resources and the client
+     * cannot be trusted to cancel every subscription it creates.
+     *
+     * <p>Also, in some environments, HTTP requests to the server are required in order for a server
+     * instance to stay alive. If the environment kills off all server instances,
+     * there would be no one to propagate subscription updates to the clients.
+     *
+     * @param subscriptions
+     *         subscriptions that should stay open
+     * @return the keep-up response
+     * @see #keepUp(Subscription)
+     */
+    Responses keepUpAll(Subscriptions subscriptions);
+
+    /**
+     * Cancels the existing subscription.
+     *
+     * <p>After this call, the server will stop sending subscription updates to the client.
      *
      * @param subscription
-     *         a subscription that should be stopped from receiving updates
+     *         a subscription that should be cancelled
      * @return the cancellation response
      */
     C cancel(Subscription subscription);
+
+    /**
+     * Cancels existing subscriptions.
+     *
+     * <p>After this call, the server will stop sending subscription updates to the clients.
+     *
+     * @param request
+     *         subscriptions that should be cancelled
+     * @return the cancellation response
+     */
+    Responses cancelAll(Subscriptions request);
 }
