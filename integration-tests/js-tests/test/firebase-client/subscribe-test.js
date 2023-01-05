@@ -418,7 +418,7 @@ describe('FirebaseClient subscription', function () {
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         await nextInterval();
         assert.ok(keepUpEndpoint.calledOnce);
-        const subscriptionMessage = keepUpEndpoint.getCall(0).args[0];
+        const subscriptionMessage = keepUpEndpoint.getCall(0).args[0][0];
         checkAllTasks(subscriptionMessage);
         unsubscribe();
         done();
@@ -433,7 +433,7 @@ describe('FirebaseClient subscription', function () {
         unsubscribe();
         await nextInterval();
         assert.ok(cancelEndpoint.calledOnce);
-        const subscriptionMessage = cancelEndpoint.getCall(0).args[0];
+        const subscriptionMessage = cancelEndpoint.getCall(0).args[0][0];
         checkAllTasks(subscriptionMessage);
         done();
       });
