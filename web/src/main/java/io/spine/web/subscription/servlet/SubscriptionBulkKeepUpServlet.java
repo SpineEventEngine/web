@@ -34,7 +34,7 @@ import io.spine.web.subscription.SubscriptionBridge;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An abstract servlet handling the bulk {@link io.spine.client.Subscription Subscription}s
+ * A servlet handling the bulk {@link io.spine.client.Subscription Subscription}s
  * keep-up requests.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
