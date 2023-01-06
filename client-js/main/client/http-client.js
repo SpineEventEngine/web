@@ -49,27 +49,55 @@ export class HttpClient {
   }
 
   /**
-   * Sends the given message to the given endpoint.
+   * Sends the given message to the given endpoint via `POST` request.
    *
    * The message is sent as in form of a Base64-encoded byte string.
    *
    * @param {!string} endpoint a endpoint to send the message to
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
-   * @return {Promise<Response|Error>} a message sending promise to be fulfilled with a response, or rejected if
-   *                                   an error occurs
+   * @return {Promise<Response|Error>} a message sending promise to be fulfilled with a response,
+   *                                   or rejected if an error occurs
+   * @see toBody
+   * @see headers
    */
   postMessage(endpoint, message) {
-    const messageString = message.toBase64();
+    const messageString = this.toBody(message);
     const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
     const url = this._appBaseUrl + path;
     const request = {
       method: 'POST',
       body: messageString,
-      headers: {
-        'Content-Type': 'application/x-protobuf'
-      },
+      headers: this.headers(message),
       mode: 'cors'
     };
     return fetch(url, request);
+  }
+
+  /**
+   * Returns the string-typed map of HTTP header names to header values,
+   * which to use in order to send the passed message.
+   *
+   * In this implementation, returns {'Content-Type': 'application/x-protobuf'}.
+   *
+   * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
+   * @returns {{"Content-Type": string}}
+   */
+  // noinspection JSUnusedLocalSymbols
+  headers(message) {
+    return {
+      'Content-Type': 'application/x-protobuf'
+    };
+  }
+
+  /**
+   * Transforms the given message to a string, which would become a POST request body.
+   *
+   * Uses {@link TypedMessage#toBase64 Base64 encoding} to transform the message.
+   *
+   * @param {!TypedMessage} message a message to transform into a POST body
+   * @returns {!string} transformed message
+   */
+  toBody(message) {
+    return message.toBase64();
   }
 }
