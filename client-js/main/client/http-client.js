@@ -68,9 +68,21 @@ export class HttpClient {
       method: 'POST',
       body: messageString,
       headers: this.headers(message),
-      mode: 'cors'
+      mode: this.requestMode(message)
     };
     return fetch(url, request);
+  }
+
+  /**
+   * Returns the mode in which the HTTP request transferring the given message is sent.
+   *
+   * This implementation returns `cors`.
+   *
+   * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
+   * @return {string} the mode of HTTP requests to use
+   */
+  requestMode(message) {
+    return 'cors';
   }
 
   /**
