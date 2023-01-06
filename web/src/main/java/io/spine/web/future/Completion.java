@@ -45,7 +45,7 @@ public final class Completion {
     }
 
     /**
-     * Logs the exception of the given stage if any.
+     * Logs the exception raised at the given stage, if any.
      *
      * <p>Does nothing if the stage completes successfully.
      *
@@ -53,7 +53,7 @@ public final class Completion {
      * is complete.
      *
      * @param completionStage
-     *         stage which may complete exceptionally
+     *         stage which may complete with an exception
      */
     public static void dispose(CompletionStage<?> completionStage) {
         completionStage.whenComplete((result, exception) -> logException(exception));
