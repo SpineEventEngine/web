@@ -34,14 +34,15 @@ import io.spine.web.subscription.SubscriptionBridge;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A servlet handling the bulk {@link io.spine.client.Subscription Subscription}s
+ * An abstract servlet handling the bulk {@link io.spine.client.Subscription Subscription}s
  * keep-up requests.
  *
  * <p>This servlet parses the client requests and passes it to the {@link SubscriptionBridge}
  * to process. After, a processing result is written to the servlet response.
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public class SubscriptionBulkKeepUpServlet extends MessageServlet<Subscriptions, Responses> {
+public abstract class SubscriptionBulkKeepUpServlet
+        extends MessageServlet<Subscriptions, Responses> {
 
     private final SubscriptionBridge<?, ?, ?> bridge;
 
