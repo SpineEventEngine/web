@@ -320,8 +320,9 @@ export class FirebaseClientFactory extends AbstractClientFactory {
    * @override
    */
   static _clientFor(options) {
-    const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const httpClient = this._createHttpClient(options);
+    const httpResponseHandler = this._createHttpResponseHandler(options);
+    const endpoint = new HttpEndpoint(httpClient, httpResponseHandler, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
     const subscriptionService =
@@ -337,8 +338,9 @@ export class FirebaseClientFactory extends AbstractClientFactory {
   }
 
   static createQuerying(options) {
-    const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const httpClient = this._createHttpClient(options);
+    const httpResponseHandler = this._createHttpResponseHandler(options);
+    const endpoint = new HttpEndpoint(httpClient, httpResponseHandler, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
 
@@ -346,8 +348,9 @@ export class FirebaseClientFactory extends AbstractClientFactory {
   }
 
   static createSubscribing(options) {
-    const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const httpClient = this._createHttpClient(options);
+    const httpResponseHandler = this._createHttpResponseHandler(options);
+    const endpoint = new HttpEndpoint(httpClient, httpResponseHandler, options.routing);
     const firebaseDatabaseClient = new FirebaseDatabaseClient(options.firebaseDatabase);
     const requestFactory = ActorRequestFactory.create(options);
     const subscriptionService =

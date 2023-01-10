@@ -34,6 +34,7 @@ import {CreateTask} from '@testProto/spine/test/js/commands_pb';
 import {ClientError, ConnectionError, ServerError, SpineError} from '@lib/client/errors';
 import {Duration} from '@lib/client/time-utils';
 import {fail} from './test-helpers';
+import {HttpResponseHandler} from "../../main/client/http-response-handler";
 
 const MOCK_RESPONSE_STATUS_TEXT = 'Status text';
 
@@ -108,7 +109,7 @@ Given.HTTP_RESPONSE = {
 };
 
 const httpClient = Given.httpClient();
-const httpEndpoint = new HttpEndpoint(httpClient);
+const httpEndpoint = new HttpEndpoint(httpClient, new HttpResponseHandler());
 
 describe('HttpEndpoint.command', function () {
   const timeoutDuration = new Duration({seconds: 5});

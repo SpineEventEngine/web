@@ -31,6 +31,7 @@ import {Client} from './client';
 import {CommandingClient} from "./commanding-client";
 import {HttpClient} from "./http-client";
 import {HttpEndpoint} from "./http-endpoint";
+import {HttpResponseHandler} from "./http-response-handler";
 
 /**
  * @typedef {Object} ClientOptions a type of object for initialization of Spine client
@@ -40,7 +41,9 @@ import {HttpEndpoint} from "./http-endpoint";
  * @property {?string} endpointUrl
  *  the URL of the Spine-based backend endpoint
  * @property {?HttpClient} httpClient
- *  the custom implementation of HTTP client to use; defaults to {@link HttpClient}.
+ *  custom implementation of HTTP client to use; defaults to {@link HttpClient}.
+ * @property {?HttpResponseHandler} httpResponseHandler
+ *  custom implementation of HTTP response handler; defaults to {@link HttpResponseHandler}
  * @property {?firebase.database.Database} firebaseDatabase
  *  the Firebase Database that will be used to retrieve data from
  * @property {?ActorProvider} actorProvider
@@ -117,7 +120,8 @@ export class AbstractClientFactory {
    */
   static createCommanding(options) {
     const httpClient = this._createHttpClient(options);
-    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const httpResponseHandler = this._createHttpResponseHandler(options)
+    const endpoint = new HttpEndpoint(httpClient, httpResponseHandler, options.routing);
     const requestFactory = ActorRequestFactory.create(options);
 
     return new CommandingClient(endpoint, requestFactory);
@@ -143,6 +147,29 @@ export class AbstractClientFactory {
       return customClient;
     } else {
       return new HttpClient(options.endpointUrl);
+    }
+  }
+
+  /**
+   * Creates an HTTP response handler judging on the passed {@link ClientOptions}.
+   *
+   * In case a custom HTTP response handler is specified via the `options`,
+   * this instance is returned. Otherwise, a new instance of `HttpResponseHandler` is returned.
+   *
+   * @param {!ClientOptions} options client initialization options
+   * @return {HttpResponseHandler} an instance of HTTP response handler
+   * @protected
+   */
+  static _createHttpResponseHandler(options) {
+    const customHandler = options.httpResponseHandler;
+    if (!!customHandler) {
+      if (!customHandler instanceof HttpResponseHandler) {
+        throw new Error('The custom HTTP response handler implementation' +
+            ' passed via `options.httpResponseHandler` must extend `HttpResponseHandler`.');
+      }
+      return customHandler;
+    } else {
+      return new HttpResponseHandler();
     }
   }
 

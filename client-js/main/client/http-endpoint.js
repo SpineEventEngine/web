@@ -232,13 +232,14 @@ export class HttpEndpoint extends Endpoint {
 
   /**
    * @param {!HttpClient} httpClient a client sending requests to server
+   * @param {!HttpResponseHandler} responseHandler a handle for the HTTP responses from server
    * @param {Routing} routing endpoint routing parameters
    */
-  constructor(httpClient, routing) {
+  constructor(httpClient, responseHandler, routing) {
     super();
     this._httpClient = httpClient;
     this._routing = routing;
-    this._responseHandler = new HttpResponseHandler();
+    this._responseHandler = responseHandler;
   }
 
   /**
