@@ -41,8 +41,8 @@ export class HttpClient {
   /**
    * Creates a new instance of HttpClient.
    *
-   * @param {!string} appBaseUrl an application base URL (the protocol and the domain name) represented as
-   *                            a string
+   * @param {!string} appBaseUrl an application base URL (the protocol and the domain name)
+   *                             represented as a string
    */
   constructor(appBaseUrl) {
     this._appBaseUrl = appBaseUrl;
