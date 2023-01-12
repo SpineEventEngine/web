@@ -52,12 +52,12 @@ export class HttpResponseHandler {
      *                                      rejected if the client response is not `2xx`,
      *                                      or if the transformation-to-object fails
      *                                      for the response contents.
-     * @see _parse
+     * @see parse
      */
     handle(response) {
         const statusCode = response.status;
         if (HttpResponseHandler._isSuccessfulResponse(statusCode)) {
-            return this._parse(response);
+            return this.parse(response);
         } else if (HttpResponseHandler._isClientErrorResponse(statusCode)) {
             return Promise.reject(new ClientError(response.statusText, response));
         } else if (HttpResponseHandler._isServerErrorResponse(statusCode)) {
@@ -75,7 +75,7 @@ export class HttpResponseHandler {
      *                                      or a rejection with the corresponding `SpineError`
      * @protected
      */
-    _parse(response) {
+    parse(response) {
         return response.json()
             .then(json => Promise.resolve(json))
             .catch(error =>
