@@ -94,7 +94,6 @@ export class HttpClient {
    * @param {!TypedMessage} message a message to send, as a {@link TypedMessage}
    * @returns {{"Content-Type": string}}
    */
-  // noinspection JSUnusedLocalSymbols
   headers(message) {
     return {
       'Content-Type': 'application/x-protobuf'
