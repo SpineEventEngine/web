@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.9.0-SNAPSHOT.8`
+# Dependencies of `io.spine:spine-client-js:1.9.0-SNAPSHOT.9`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -368,10 +368,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 04 15:35:39 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jan 12 13:42:53 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.9.0-SNAPSHOT.8`
+#NPM dependencies of `spine-web@1.9.0-SNAPSHOT.9`
 
 ## `Production` dependencies:
 
@@ -405,7 +405,7 @@ This report was generated on **Wed Jan 04 15:35:39 WET 2023** using [Gradle-Lice
 1. **rxjs@6.5.5**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/reactivex/rxjs](https://github.com/reactivex/rxjs)
-1. **spine-web@1.9.0-SNAPSHOT.8**
+1. **spine-web@1.9.0-SNAPSHOT.9**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tr46@0.0.3**
@@ -1958,7 +1958,7 @@ This report was generated on **Wed Jan 04 15:35:39 WET 2023** using [Gradle-Lice
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.9.0-SNAPSHOT.8**
+1. **spine-web@1.9.0-SNAPSHOT.9**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **sprintf-js@1.0.3**
@@ -2140,12 +2140,12 @@ This report was generated on **Wed Jan 04 15:35:39 WET 2023** using [Gradle-Lice
      * Repository: [https://github.com/sindresorhus/yocto-queue](https://github.com/sindresorhus/yocto-queue)
 
 
-This report was generated on **Wed Jan 04 2023 15:35:40 GMT+0000 (Western European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Thu Jan 12 2023 13:42:54 GMT+0000 (Western European Standard Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.9.0-SNAPSHOT.8`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.9.0-SNAPSHOT.9`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -2932,12 +2932,12 @@ This report was generated on **Wed Jan 04 2023 15:35:40 GMT+0000 (Western Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 04 15:35:45 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jan 12 13:42:59 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.9.0-SNAPSHOT.8`
+# Dependencies of `io.spine:spine-js-tests:1.9.0-SNAPSHOT.9`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3327,12 +3327,12 @@ This report was generated on **Wed Jan 04 15:35:45 WET 2023** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 04 15:35:50 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jan 12 13:43:04 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.9.0-SNAPSHOT.8`
+# Dependencies of `io.spine:spine-test-app:1.9.0-SNAPSHOT.9`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson.core **Name:** jackson-annotations **Version:** 2.9.10
@@ -4906,12 +4906,12 @@ This report was generated on **Wed Jan 04 15:35:50 WET 2023** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 04 15:35:51 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jan 12 13:43:06 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.9.0-SNAPSHOT.8`
+# Dependencies of `io.spine:spine-testutil-web:1.9.0-SNAPSHOT.9`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5370,12 +5370,12 @@ This report was generated on **Wed Jan 04 15:35:51 WET 2023** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 04 15:35:53 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jan 12 13:43:08 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.9.0-SNAPSHOT.8`
+# Dependencies of `io.spine:spine-web:1.9.0-SNAPSHOT.9`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5873,4 +5873,4 @@ This report was generated on **Wed Jan 04 15:35:53 WET 2023** using [Gradle-Lice
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jan 04 15:35:57 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jan 12 13:43:11 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

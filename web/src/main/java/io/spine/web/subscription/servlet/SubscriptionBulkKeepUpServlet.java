@@ -41,7 +41,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * to process. After, a processing result is written to the servlet response.
  */
 @SuppressWarnings("serial") // Java serialization is not supported.
-public class SubscriptionBulkKeepUpServlet extends MessageServlet<Subscriptions, Responses> {
+public abstract class SubscriptionBulkKeepUpServlet
+        extends MessageServlet<Subscriptions, Responses> {
 
     private final SubscriptionBridge<?, ?, ?> bridge;
 

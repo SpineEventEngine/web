@@ -27,8 +27,8 @@
 "use strict";
 
 import {TypedMessage} from './typed-message';
-import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
 import {Subscriptions} from '../proto/spine/web/keeping_up_pb';
+import {HttpResponseHandler} from "./http-response-handler";
 
 /**
  * @typedef {Object} SubscriptionRouting
@@ -232,12 +232,14 @@ export class HttpEndpoint extends Endpoint {
 
   /**
    * @param {!HttpClient} httpClient a client sending requests to server
+   * @param {!HttpResponseHandler} responseHandler a handle for the HTTP responses from server
    * @param {Routing} routing endpoint routing parameters
    */
-  constructor(httpClient, routing) {
+  constructor(httpClient, responseHandler, routing) {
     super();
     this._httpClient = httpClient;
     this._routing = routing;
+    this._responseHandler = responseHandler;
   }
 
   /**
@@ -365,85 +367,11 @@ export class HttpEndpoint extends Endpoint {
     return new Promise((resolve, reject) => {
       this._httpClient
         .postMessage(endpoint, message)
-        .then(HttpEndpoint._jsonOrError, HttpEndpoint._connectionError)
+        .then(this._responseHandler.handle
+                .bind(this._responseHandler),
+            this._responseHandler.onConnectionError
+                .bind(this._responseHandler))
         .then(resolve, reject);
     });
-  }
-
-  /**
-   * Retrieves the JSON data from the given response if it was successful, rejects
-   * with a respective error otherwise.
-   *
-   * @param {!Response} response an HTTP request response
-   * @return {Promise<Object|SpineError>} a promise of a successful server response JSON data,
-   *                                      rejected if the client response is not `2xx`,
-   *                                      or if JSON parsing fails
-   * @private
-   */
-  static _jsonOrError(response) {
-    const statusCode = response.status;
-    if (HttpEndpoint._isSuccessfulResponse(statusCode)) {
-      return HttpEndpoint._parseJson(response);
-    }
-    else if (HttpEndpoint._isClientErrorResponse(statusCode)) {
-      return Promise.reject(new ClientError(response.statusText, response));
-    }
-    else if(HttpEndpoint._isServerErrorResponse(statusCode)) {
-      return Promise.reject(new ServerError(response));
-    }
-  }
-
-  /**
-   * Parses the given response JSON data, rejects if parsing fails.
-   *
-   * @param {!Response} response an HTTP request response
-   * @return {Promise<Object|SpineError>} a promise of a server response parsing to be fulfilled
-   *                                      with a JSON data or rejected with {@link SpineError} if
-   *                                      JSON parsing fails.
-   * @private
-   */
-  static _parseJson(response) {
-   return response.json()
-            .then(json => Promise.resolve(json))
-            .catch(error => Promise.reject(new SpineError('Failed to parse response JSON', error)));
-  }
-
-  /**
-   * Gets the error caught from the {@link HttpClient#postMessage} and returns
-   * a rejected promise with a given error wrapped into {@link ConnectionError}.
-   *
-   * @param {!Error} error              an error which occurred upon message sending
-   * @return {Promise<ConnectionError>} a rejected promise with a `ConnectionError`
-   * @private
-   */
-  static _connectionError(error) {
-    return Promise.reject(new ConnectionError(error));
-  }
-
-  /**
-   * @param {!number} statusCode an HTTP request response status code
-   * @return {boolean} `true` if the response status code is from 200 to 299, `false` otherwise
-   * @private
-   */
-  static _isSuccessfulResponse(statusCode) {
-    return 200 <= statusCode && statusCode < 300;
-  }
-
-  /**
-   * @param {!number} statusCode an HTTP request response status code
-   * @return {boolean} `true` if the response status code is from 400 to 499, `false` otherwise
-   * @private
-   */
-  static _isClientErrorResponse(statusCode) {
-    return 400 <= statusCode && statusCode < 500;
-  }
-
-  /**
-   * @param {!number} statusCode an HTTP request response status code
-   * @return {boolean} `true` if the response status code is from 500, `false` otherwise
-   * @private
-   */
-  static _isServerErrorResponse(statusCode) {
-    return 500 <= statusCode;
   }
 }

@@ -51,8 +51,9 @@ import TypeParsers from "./parser/type-parsers";
 export class DirectClientFactory extends AbstractClientFactory {
 
   static _clientFor(options) {
-    const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const httpClient = this._createHttpClient(options);
+    const httpResponseHandler = this._createHttpResponseHandler(options);
+    const endpoint = new HttpEndpoint(httpClient, httpResponseHandler, options.routing);
     const requestFactory = ActorRequestFactory.create(options);
 
     const querying = new DirectQueryingClient(endpoint, requestFactory);
@@ -62,10 +63,10 @@ export class DirectClientFactory extends AbstractClientFactory {
   }
 
   static createQuerying(options) {
-    const httpClient = new HttpClient(options.endpointUrl);
-    const endpoint = new HttpEndpoint(httpClient, options.routing);
+    const httpClient = this._createHttpClient(options);
+    const httpResponseHandler = this._createHttpResponseHandler(options);
+    const endpoint = new HttpEndpoint(httpClient, httpResponseHandler, options.routing);
     const requestFactory = ActorRequestFactory.create(options);
-
     return new DirectQueryingClient(endpoint, requestFactory);
   }
 
