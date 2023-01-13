@@ -35,7 +35,6 @@ import {ActorRequestFactory} from './actor-request-factory';
 import {AbstractClientFactory} from './client-factory';
 import {CommandingClient} from "./commanding-client";
 import {CompositeClient} from "./composite-client";
-import {HttpClient} from './http-client';
 import {HttpEndpoint} from './http-endpoint';
 import {FirebaseDatabaseClient} from './firebase-database-client';
 import {FirebaseSubscriptionService} from './firebase-subscription-service';
