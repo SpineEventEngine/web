@@ -86,6 +86,13 @@ export class SubscribingClient {
   }
 
   /**
+   * Cancels all subscriptions, which were created through this instance of subscribing client.
+   */
+  cancelAllSubscriptions() {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * Returns a new topic factory instance which can be further used for the `Topic` creation.
    *
    * @return {TopicFactory}
@@ -121,6 +128,15 @@ export class NoOpSubscribingClient extends SubscribingClient {
    * @override
    */
   subscribeToEvents(topic) {
+    throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
+  }
+
+  /**
+   * Always throws an error.
+   *
+   * @override
+   */
+  cancelAllSubscriptions() {
     throw new Error(SUBSCRIPTIONS_NOT_SUPPORTED);
   }
 }

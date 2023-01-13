@@ -269,6 +269,13 @@ class FirebaseSubscribingClient extends SubscribingClient {
   }
 
   /**
+   * @override
+   */
+  cancelAllSubscriptions() {
+    this._subscriptionService.cancelAllSubscriptions();
+  }
+
+  /**
    * Unsubscribes the provided Firebase subscriptions.
    *
    * @param {Array<Subscription>} subscriptions

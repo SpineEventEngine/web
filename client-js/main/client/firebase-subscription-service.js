@@ -85,6 +85,21 @@ export class FirebaseSubscriptionService {
   }
 
   /**
+   * Immediately cancels all active subscriptions previously created through this service.
+   */
+  cancelAllSubscriptions() {
+    const activeSubscriptions = this._subscriptions.filter(s => !s.closed);
+    if (activeSubscriptions.length > 0) {
+      const subscriptionMessages = activeSubscriptions.map(s => s.internal())
+      this._endpoint.cancelAll(subscriptionMessages);
+      activeSubscriptions.forEach(s => {
+        s.unsubscribe() /* Calling RxJS's `unsubscribe` to stop propagating the updates. */
+        this._removeSubscription(s)
+      })
+    }
+  }
+
+  /**
    * Indicates whether this service is running keeping up subscriptions.
    *
    * @returns {boolean}

@@ -93,6 +93,13 @@ export class CompositeClient extends Client {
   /**
    * @override
    */
+  cancelAllSubscriptions() {
+    this._subscribing.cancelAllSubscriptions();
+  }
+
+  /**
+   * @override
+   */
   subscribeToEvent(eventType) {
     return this._subscribing.subscribeToEvent(eventType, this);
   }
