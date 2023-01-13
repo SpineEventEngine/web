@@ -83,9 +83,9 @@ class SpineSubscription extends Subscription {
 class EntitySubscription extends SpineSubscription {
 
   /**
-   * @param {Function} unsubscribe the callbacks that allows to cancel the subscription
+   * @param {Function} unsubscribe the callback that allows to cancel the subscription
    * @param {{itemAdded: Observable, itemChanged: Observable, itemRemoved: Observable}} observables
-   *        the observables for entity changes
+   *        the observables for entity change
    * @param {SubscriptionObject} subscription the wrapped subscription object
    */
   constructor({
