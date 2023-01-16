@@ -139,7 +139,7 @@ function arraysEqualDeep(arr1, arr2, compare) {
  * @param {EntitySubscriptionObject<T>} subscription a subscription to retrieve values
  * @param {(o1: T, o2: T) => boolean} compare a function that compares objects of `T` type;
  *      returns `true` if objects are considered equal, `false` otherwise
- * @return {Observable<T[]>} an observable that emits a list of values, composed from the given
+ * @return {Observable<T[]>} an observable that emits a list of values, composed of the given
  *      subscription object
  *
  * @template <T> a class of a subscription target entities
