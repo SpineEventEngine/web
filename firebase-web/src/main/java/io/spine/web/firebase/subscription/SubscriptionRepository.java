@@ -81,7 +81,7 @@ final class SubscriptionRepository {
     /**
      * Fetches all the existing subscriptions from the Firebase and activates them.
      *
-     * <p>After calling this method, all the new subscriptions are automatically activates on this
+     * <p>After calling this method, all the new subscriptions are automatically activated on this
      * server instance.
      */
     void subscribeToAll() {
