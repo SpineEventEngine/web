@@ -221,6 +221,120 @@ describe('FirebaseClient subscription', function () {
         .catch(fail(done));
   });
 
+  /**
+   * This test creates two tasks, one after another, and then creates two subscriptions
+   * to changes of the created tasks. Prior to sending the renaming commands,
+   * the test code cancels all known subscriptions, and verifies that no `itemChanged`
+   * promises are resolved when the renaming commands are sent.
+   */
+  it('may be cancelled along with all other subscriptions in a bulk', done => {
+    const prefix = 'spine-web-test-bulk-cancellation';
+    const createFirst = TestEnvironment.createTaskCommand({
+      withPrefix: prefix,
+      named: "first task"
+    });
+    const createSecond = TestEnvironment.createTaskCommand({
+      withPrefix: prefix,
+      named: "second task"
+    });
+
+    const firstId = createFirst.getId();
+    const secondId = createSecond.getId();
+
+    function createFirstTask() {
+      client.command(createFirst)
+          .onOk(() => console.log(`1st task '${firstId.getValue()}' created.`))
+          .onError(fail(done, 'Unexpected error while creating the 1st task.'))
+          .onImmediateRejection(fail(done,
+              'Unexpected rejection while creating the 1st task.'))
+          .post();
+    }
+
+    function createSecondTask() {
+      client.command(createSecond)
+          .onOk(() => console.log(`2nd task '${secondId.getValue()}' created.`))
+          .onError(fail(done, 'Unexpected error while creating the 2nd task.'))
+          .onImmediateRejection(fail(done,
+              'Unexpected rejection while creating the 2nd task.'))
+          .post();
+    }
+
+    function renameFirstTask() {
+      const renameFirst = TestEnvironment.renameTaskCommand({
+        withId: firstId.getValue(),
+        to: "first updated"
+      });
+
+      client.command(renameFirst)
+          .onOk(() => console.log(`1st task '${firstId.getValue()}' was renamed.`))
+          .onError(fail(done, 'Unexpected error while renaming the 1st task.'))
+          .onImmediateRejection(fail(done,
+              'Unexpected rejection while renaming the 1st task.'))
+          .post();
+    }
+
+    function renameSecondTask() {
+      const renameSecond = TestEnvironment.renameTaskCommand({
+        withId: secondId.getValue(),
+        to: "second updated"
+      });
+      client.command(renameSecond)
+          .onOk(() => console.log(`2nd task '${secondId.getValue()}' was renamed.`))
+          .onError(fail(done, 'Unexpected error while renaming the 2nd task.'))
+          .onImmediateRejection(fail(done,
+              'Unexpected rejection while renaming the 2nd task.'))
+          .post();
+    }
+
+    client.subscribeTo(Task)
+        .byId(firstId)
+        .post()
+        .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+          itemAdded.subscribe({
+            next: () => {
+              createSecondTask();
+            }
+          });
+          itemChanged.subscribe({
+            next: () => { fail(done, 'Unexpected 1st task change received, ' +
+                'while the corresponding subscription had to be cancelled by now.'); }
+          });
+
+          client.subscribeTo(Task)
+              .byId(secondId)
+              .post()
+              .then(({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
+                itemChanged.subscribe({
+                  next: () => { fail(done, 'Unexpected 2nd task change received, ' +
+                      'while the corresponding subscription had to be cancelled by now.'); }
+                });
+                itemAdded.subscribe({
+                  next: async () => {
+                    client.cancelAllSubscriptions();
+                    renameFirstTask();
+                    renameSecondTask();
+
+                    await oneHundredMs();
+
+                    done();
+                  }
+                });
+              })
+        })
+        .catch(fail(done));
+    createFirstTask();
+  });
+
+  /**
+   * Returns a promise to be resolved after 100 ms.
+   *
+   * @returns {Promise<void>}
+   */
+  function oneHundredMs() {
+    return new Promise(resolve =>
+        setTimeout(() => resolve(), 100))
+  }
+
   it('is notified when the entity no longer matches the subscription criteria', done => {
     const initialTaskName = 'Initial task name';
     const nameAfterRenamed = 'Renamed task';
