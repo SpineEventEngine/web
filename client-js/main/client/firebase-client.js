@@ -242,6 +242,15 @@ class FirebaseSubscribingClient extends SubscribingClient {
     return new EntitySubscription({
       unsubscribedBy: () => {
         FirebaseSubscribingClient._unsubscribe(pathSubscriptions);
+        // TODO:alex.tymchenko:2023-01-17: find out how to report `Promise` errors, and where.
+        this._subscriptionService.cancelSubscription(subscription)
+            .then(
+                (result) => {
+                  console.log("Subscription successfully cancelled: " + JSON.stringify(result))
+                },
+                () => console.warn("Error sending the subscription" +
+                    " cancellation request to the server-side.")
+            );
       },
       withObservables: {
         itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
