@@ -47,7 +47,7 @@ import static java.util.Collections.synchronizedMap;
  * <p>To understand whether a client is still listening to the {@code Topic} updates, she
  * periodically sends a {@link FirebaseSubscriptionBridge#keepUp(Subscription) keepUp(Subscription)}
  * request. The server records the timestamps of these requests in this log and counts the client
- * alive, as long as the {@linkplain #withTimeout(Duration)} configured} timeout does not pass
+ * alive, as long as the {@linkplain #withTimeout(Duration) configured} timeout does not pass
  * since the last request.
  */
 final class HealthLog {
