@@ -113,4 +113,15 @@ final class HealthLog {
         Duration elapsed = between(lastUpdate, now);
         return compare(elapsed, expirationTimeout) > 0;
     }
+
+    /**
+     * Removes the given {@code Topic} from this health log.
+     *
+     * <p>In case this topic is not known to this registry, does nothing, allowing
+     * to safely clear the health log from stale topics potentially residing in storage
+     * on either client- or server-sides.
+     */
+    void remove(Topic topic) {
+        updateTimes.remove(topic.getId());
+    }
 }

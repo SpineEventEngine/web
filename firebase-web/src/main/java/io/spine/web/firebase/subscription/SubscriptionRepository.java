@@ -152,6 +152,7 @@ final class SubscriptionRepository {
         checkNotNull(topic);
         NodePath path = pathForSubscription(topic);
         firebase.delete(path);
+        healthLog.remove(topic);
     }
 
     private static NodePath pathForSubscription(Topic topic) {
