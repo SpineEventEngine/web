@@ -50,8 +50,7 @@ import static java.util.Arrays.asList;
  *
  * <p>See <a href="https://firebase.google.com/docs/database/rest/auth">Firebase REST docs</a>.
  */
-@SuppressWarnings("deprecation")
-// Use deprecated `GoogleCredential` to retain backward compatibility.
+@SuppressWarnings("deprecation" /*`GoogleCredential` is used to retain backward compatibility.*/)
 public final class FirebaseCredentials implements HttpRequestInitializer {
 
     private static final String AUTH_DATABASE = "https://www.googleapis.com/auth/firebase.database";
