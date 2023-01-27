@@ -217,7 +217,12 @@ final class SubscriptionRepository {
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
-            // NOP.
+            String json = asJson(snapshot);
+            Topic topic = loadTopic(json);
+            HealthLog healthLog = repository.healthLog;
+            if (healthLog.isKnown(topic)) {
+                repository.delete(topic);
+            }
         }
 
         @Override
