@@ -539,15 +539,13 @@ describe('FirebaseClient subscription', function () {
       });
     });
 
-    it('and canceled on the next keep up interval if unsubscribed', done => {
+    it('and cancel subscription immediately if unsubscribed', done => {
       const cancelEndpoint = cancelEndpointSpy();
-
       subscribeToAllTasks().then(async ({itemAdded, itemChanged, itemRemoved, unsubscribe}) => {
         assert.ok(cancelEndpoint.notCalled);
         unsubscribe();
-        await nextInterval();
         assert.ok(cancelEndpoint.calledOnce);
-        const subscriptionMessage = cancelEndpoint.getCall(0).args[0][0];
+        const subscriptionMessage = cancelEndpoint.getCall(0).args[0];
         checkAllTasks(subscriptionMessage);
         done();
       });
@@ -564,10 +562,10 @@ describe('FirebaseClient subscription', function () {
         assert.ok(keepUpEndpoint.calledOnce);
         assert.ok(cancelEndpoint.notCalled);
         unsubscribe();
+        assert.ok(cancelEndpoint.calledOnce);
 
         await nextInterval();
         assert.ok(keepUpEndpoint.calledOnce);
-        assert.ok(cancelEndpoint.calledOnce);
 
         await nextInterval();
         assert.ok(keepUpEndpoint.calledOnce);
@@ -618,7 +616,7 @@ describe('FirebaseClient subscription', function () {
 
     function cancelEndpointSpy() {
       const httpEndpoint = client._subscribing._endpoint;
-      return sandbox.spy(httpEndpoint, 'cancelAll');
+      return sandbox.spy(httpEndpoint, 'cancelSubscription');
     }
 
     /**

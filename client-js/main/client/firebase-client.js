@@ -101,7 +101,13 @@ class EntitySubscription extends SpineSubscription {
    * @return {EntitySubscriptionObject} a plain object with observables and unsubscribe method
    */
   toObject() {
-    return Object.assign({}, this._observables, {unsubscribe: () => this.unsubscribe()});
+    return Object.assign({},
+        this._observables,
+        {
+          unsubscribe: () => {
+            return this.unsubscribe();
+          }
+        });
   }
 }
 
@@ -129,7 +135,13 @@ class EventSubscription extends SpineSubscription {
    */
   toObject() {
     return Object.assign(
-        {}, {eventEmitted: this._observable}, {unsubscribe: () => this.unsubscribe()}
+        {},
+        {eventEmitted: this._observable},
+        {
+          unsubscribe: () => {
+            return this.unsubscribe();
+          }
+        }
     );
   }
 }
@@ -242,15 +254,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
     return new EntitySubscription({
       unsubscribedBy: () => {
         FirebaseSubscribingClient._unsubscribe(pathSubscriptions);
-        // TODO:alex.tymchenko:2023-01-17: find out how to report `Promise` errors, and where.
-        this._subscriptionService.cancelSubscription(subscription)
-            .then(
-                (result) => {
-                  console.log("Subscription successfully cancelled: " + JSON.stringify(result))
-                },
-                () => console.warn("Error sending the subscription" +
-                    " cancellation request to the server-side.")
-            );
+        this._subscriptionService.cancelSubscription(subscription);
       },
       withObservables: {
         itemAdded: ObjectToProto.map(itemAdded.asObservable(), typeUrl),
@@ -271,6 +275,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
     return new EventSubscription({
       unsubscribedBy: () => {
         FirebaseSubscribingClient._unsubscribe([pathSubscription]);
+        return this._subscriptionService.cancelSubscription(subscription);
       },
       withObservable: ObjectToProto.map(itemAdded.asObservable(), EVENT_TYPE_URL),
       forInternal: subscription

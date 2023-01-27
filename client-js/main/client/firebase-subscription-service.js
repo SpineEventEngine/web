@@ -103,11 +103,12 @@ export class FirebaseSubscriptionService {
    * Immediately cancels the given subscription, including cancelling it on the server-side.
    *
    * @param {SubscriptionObject} subscription the subscription to cancel
-   * @return {Promise<Object>} a promise of a successful server response, rejected if
-   *                           an error occurs
    */
   cancelSubscription(subscription) {
-    return this._endpoint.cancelSubscription(subscription);
+    this._endpoint.cancelSubscription(subscription)
+        .then(() => {
+          this._removeSubscription(subscription)
+        });
   }
 
   /**
