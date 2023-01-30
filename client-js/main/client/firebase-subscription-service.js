@@ -38,8 +38,8 @@ import {Status} from '../proto/spine/core/response_pb';
 const DEFAULT_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
 /**
- * A service that manages the active subscriptions periodically sending requests to keep them
- * running.
+ * A service that manages the active subscriptions periodically sending requests
+ * to keep them running.
  */
 export class FirebaseSubscriptionService {
 
@@ -177,10 +177,22 @@ export class FirebaseSubscriptionService {
    * Removes the provided subscription from subscriptions list, which stops any attempts
    * to update it. In case no more subscriptions are left, stops this service.
    *
+   * In case the passed subscription is not known to this service, does nothing.
+   *
+   * @param subscription a subscription to cancel;
+   *                     this method accepts values of both `SpineSubscription`
+   *                     and Proto `Subscription` types,
+   *                     and operates based on the subscription ID
    * @private
    */
   _removeSubscription(subscription) {
-    const index = this._subscriptions.indexOf(subscription);
+    let id;
+    if (typeof subscription.id === 'function') {
+      id = subscription.id();
+    } else {
+      id = subscription.getId().getValue();
+    }
+    const index = this._subscriptions.findIndex(item => item.id() === id);
     this._subscriptions.splice(index, 1);
 
     if (this._subscriptions.length === 0) {
