@@ -94,8 +94,8 @@ public final class BlockingSubscriptionService {
             throw illegalStateWithCauseOf(error);
         } else {
             checkState(observer.isCompleted(),
-                       "Provided SubscriptionService implementation (`%s`) must complete `%s`" +
-                               " procedure at once.",
+                       "Provided `SubscriptionService` implementation (`%s`)" +
+                               " must complete `%s` procedure at once.",
                        subscriptionService,
                        SUBSCRIBE_METHOD_NAME);
         }

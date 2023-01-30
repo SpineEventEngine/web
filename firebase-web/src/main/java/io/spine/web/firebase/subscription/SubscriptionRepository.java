@@ -34,7 +34,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.protobuf.Duration;
 import io.spine.client.Subscription;
 import io.spine.client.Topic;
-import io.spine.json.Json;
 import io.spine.web.firebase.FirebaseClient;
 import io.spine.web.firebase.NodePath;
 import io.spine.web.firebase.NodePaths;
@@ -44,6 +43,7 @@ import io.spine.web.subscription.BlockingSubscriptionService;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.json.Json.fromJson;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.web.firebase.subscription.LazyRepository.lazy;
 
@@ -81,7 +81,7 @@ final class SubscriptionRepository {
     /**
      * Fetches all the existing subscriptions from the Firebase and activates them.
      *
-     * <p>After calling this method, all the new subscriptions are automatically activates on this
+     * <p>After calling this method, all the new subscriptions are automatically activated on this
      * server instance.
      */
     void subscribeToAll() {
@@ -152,6 +152,7 @@ final class SubscriptionRepository {
         checkNotNull(topic);
         NodePath path = pathForSubscription(topic);
         firebase.delete(path);
+        healthLog.remove(topic);
     }
 
     private static NodePath pathForSubscription(Topic topic) {
@@ -200,7 +201,7 @@ final class SubscriptionRepository {
         }
 
         private Topic loadTopic(String json) {
-            Topic topic = Json.fromJson(json, Topic.class);
+            Topic topic = fromJson(json, Topic.class);
             repository.healthLog.put(topic);
             return topic;
         }
@@ -216,7 +217,31 @@ final class SubscriptionRepository {
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
-            // NOP.
+            String json = asJson(snapshot);
+            Optional<Topic> topic = parseTopic(json);
+            topic.ifPresent(t -> {
+                HealthLog healthLog = repository.healthLog;
+                if (healthLog.isKnown(t)) {
+                    repository.delete(t);
+                }
+            });
+        }
+
+        /**
+         * Safely parses the {@code Topic} from the passed JSON.
+         *
+         * @param json
+         *         JSON to parse
+         * @return parsed {@code Topic} wrapped as {@code Optional},
+         *         or {@code Optional.empty()} if there was a parsing error
+         */
+        private static Optional<Topic> parseTopic(String json) {
+            try {
+                Topic topic = fromJson(json, Topic.class);
+                return Optional.of(topic);
+            } catch (RuntimeException e) {
+                return Optional.empty();
+            }
         }
 
         @Override

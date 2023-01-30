@@ -38,8 +38,8 @@ import {Status} from '../proto/spine/core/response_pb';
 const DEFAULT_KEEP_UP_INTERVAL = new Duration({minutes: 2});
 
 /**
- * A service that manages the active subscriptions periodically sending requests to keep them
- * running.
+ * A service that manages the active subscriptions periodically sending requests
+ * to keep them running.
  */
 export class FirebaseSubscriptionService {
 
@@ -82,6 +82,33 @@ export class FirebaseSubscriptionService {
     if (!this._isRunning()) {
       this._run();
     }
+  }
+
+  /**
+   * Immediately cancels all active subscriptions previously created through this service.
+   */
+  cancelAllSubscriptions() {
+    const activeSubscriptions = this._subscriptions.filter(s => !s.closed);
+    if (activeSubscriptions.length > 0) {
+      const subscriptionMessages = activeSubscriptions.map(s => s.internal())
+      this._endpoint.cancelAll(subscriptionMessages);
+      activeSubscriptions.forEach(s => {
+        s.unsubscribe() /* Calling RxJS's `unsubscribe` to stop propagating the updates. */
+        this._removeSubscription(s)
+      })
+    }
+  }
+
+  /**
+   * Immediately cancels the given subscription, including cancelling it on the server-side.
+   *
+   * @param {SubscriptionObject} subscription the subscription to cancel
+   */
+  cancelSubscription(subscription) {
+    this._endpoint.cancelSubscription(subscription)
+        .then(() => {
+          this._removeSubscription(subscription)
+        });
   }
 
   /**
@@ -150,10 +177,22 @@ export class FirebaseSubscriptionService {
    * Removes the provided subscription from subscriptions list, which stops any attempts
    * to update it. In case no more subscriptions are left, stops this service.
    *
+   * In case the passed subscription is not known to this service, does nothing.
+   *
+   * @param subscription a subscription to cancel;
+   *                     this method accepts values of both `SpineSubscription`
+   *                     and Proto `Subscription` types,
+   *                     and operates based on the subscription ID
    * @private
    */
   _removeSubscription(subscription) {
-    const index = this._subscriptions.indexOf(subscription);
+    let id;
+    if (typeof subscription.id === 'function') {
+      id = subscription.id();
+    } else {
+      id = subscription.getId().getValue();
+    }
+    const index = this._subscriptions.findIndex(item => item.id() === id);
     this._subscriptions.splice(index, 1);
 
     if (this._subscriptions.length === 0) {

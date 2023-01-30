@@ -209,13 +209,18 @@ public final class FirebaseSubscriptionBridge
         /**
          * Creates a new instance of {@code FirebaseQueryBridge}.
          *
+         * <p>Mandatory fields are {@link #setFirebaseClient(FirebaseClient) firebaseClient}
+         * and {@link #setSubscriptionService(SubscriptionServiceImplBase) subscriptionService}.
+         *
          * @return new instance of {@code FirebaseQueryBridge}
          */
         public FirebaseSubscriptionBridge build() {
             checkState(firebaseClient != null,
-                       "Firebase database client is not set to FirebaseSubscriptionBridge.");
+                       "Mandatory Firebase database client" +
+                               " is not specified for `FirebaseSubscriptionBridge`.");
             checkState(subscriptionService != null,
-                       "Subscription Service is not set to FirebaseSubscriptionBridge.");
+                       "Mandatory Subscription Service is not specified" +
+                               " for `FirebaseSubscriptionBridge`.");
             return new FirebaseSubscriptionBridge(this);
         }
     }

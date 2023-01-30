@@ -47,7 +47,7 @@ import static java.util.Collections.synchronizedMap;
  * <p>To understand whether a client is still listening to the {@code Topic} updates, she
  * periodically sends a {@link FirebaseSubscriptionBridge#keepUp(Subscription) keepUp(Subscription)}
  * request. The server records the timestamps of these requests in this log and counts the client
- * alive, as long as the {@linkplain #withTimeout(Duration)} configured} timeout does not pass
+ * alive, as long as the {@linkplain #withTimeout(Duration) configured} timeout does not pass
  * since the last request.
  */
 final class HealthLog {
@@ -112,5 +112,16 @@ final class HealthLog {
         Timestamp now = Time.currentTime();
         Duration elapsed = between(lastUpdate, now);
         return compare(elapsed, expirationTimeout) > 0;
+    }
+
+    /**
+     * Removes the given {@code Topic} from this health log.
+     *
+     * <p>In case this topic is not known to this registry, does nothing, allowing
+     * to safely clear the health log from stale topics potentially residing in storage
+     * on either client- or server-sides.
+     */
+    void remove(Topic topic) {
+        updateTimes.remove(topic.getId());
     }
 }

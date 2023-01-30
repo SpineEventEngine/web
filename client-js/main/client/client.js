@@ -184,6 +184,16 @@ export class Client {
   }
 
   /**
+   * Immediately cancels all active subscriptions.
+   *
+   * This endpoint is handy to use when an end-user chooses to end her session
+   * with the web app. E.g. all subscriptions should be cancelled upon user sign-out.
+   */
+  cancelAllSubscriptions() {
+    throw new Error('Not implemented in abstract base.');
+  }
+
+  /**
    * Subscribes to the given `Topic` instance.
    *
    * The topic should have an entity type as target. Use {@link #subscribeToEvents} to subscribe to
