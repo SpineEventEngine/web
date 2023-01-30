@@ -275,7 +275,7 @@ class FirebaseSubscribingClient extends SubscribingClient {
     return new EventSubscription({
       unsubscribedBy: () => {
         FirebaseSubscribingClient._unsubscribe([pathSubscription]);
-        return this._subscriptionService.cancelSubscription(subscription);
+        this._subscriptionService.cancelSubscription(subscription);
       },
       withObservable: ObjectToProto.map(itemAdded.asObservable(), EVENT_TYPE_URL),
       forInternal: subscription
