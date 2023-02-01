@@ -182,15 +182,19 @@ subprojects {
 
                 "com.google.j2objc:j2objc-annotations:1.3",
 
-                "com.google.http-client:google-http-client:1.29.0",
-                "com.google.http-client:google-http-client-jackson2:1.29.0",
+                "com.google.http-client:google-http-client:${Deps.versions.googleHttpClient}",
+                "com.google.http-client:google-http-client-jackson2:${Deps.versions.googleHttpClient}",
+                "com.google.http-client:google-http-client-gson:${Deps.versions.googleHttpClient}",
 
                 "com.google.api-client:google-api-client:1.30.9",
 
-                "org.apache.httpcomponents:httpclient:4.5.5",
+                "org.apache.httpcomponents:httpclient:${Deps.versions.apacheHttpClient}",
+                "org.apache.httpcomponents:httpcore:${Deps.versions.apacheHttpCore}",
 
-                "com.fasterxml.jackson.core:jackson-core:2.9.9",
+                "com.fasterxml.jackson.core:jackson-core:${Deps.versions.jackson}",
                 "commons-collections:commons-collections:3.2.2",
+                "commons-codec:commons-codec:1.15",
+                "io.perfmark:perfmark-api:0.25.0",
 
                 "io.netty:netty-common:4.1.34.Final",
                 "io.netty:netty-buffer:4.1.34.Final",
