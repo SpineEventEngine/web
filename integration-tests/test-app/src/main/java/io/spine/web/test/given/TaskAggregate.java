@@ -75,6 +75,18 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
         return taskReassigned.vBuild();
     }
 
+    @Assign
+    TaskDeleted handle(DeleteTask command) {
+        TaskDeleted.Builder taskDeleted = TaskDeleted.newBuilder()
+                                                     .setId(command.getId())
+                                                     .setWhen(currentTime());
+        if (state().hasAssignee()) {
+            taskDeleted.setAssignee(state().getAssignee());
+        }
+
+        return taskDeleted.vBuild();
+    }
+
     @Apply
     private void on(TaskCreated event) {
         builder().setId(event.getId())
@@ -95,5 +107,10 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
     @Apply
     private void on(TaskReassigned event) {
         builder().setAssignee(event.getTo());
+    }
+
+    @Apply
+    private void on(TaskDeleted event) {
+        setDeleted(true);
     }
 }

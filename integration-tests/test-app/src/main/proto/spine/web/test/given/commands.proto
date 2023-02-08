@@ -71,6 +71,11 @@ message ReassignTask {
     spine.core.UserId new_assignee = 2 [(required) = true];
 }
 
+message DeleteTask {
+
+    TaskId id = 1;
+}
+
 message CreateProject {
 
     ProjectId id = 1;

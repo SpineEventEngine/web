@@ -26,7 +26,7 @@
 
 import {v4 as newUuid} from 'uuid';
 import {TenantIds} from '@lib/client/tenant';
-import {CreateTask, RenameTask} from '@testProto/spine/web/test/given/commands_pb';
+import {CreateTask, RenameTask, DeleteTask} from '@testProto/spine/web/test/given/commands_pb';
 import {TaskId} from '@testProto/spine/web/test/given/task_pb';
 import {AddUserInfo} from '@testProto/spine/web/test/given/user_commands_pb';
 import {UserId} from '@testProto/spine/core/user_id_pb';
@@ -106,7 +106,16 @@ export default class TestEnvironment {
     command.setName(newName);
 
     return command;
+  }
 
+  /**
+   * @param {TaskId} taskId
+   * @returns {DeleteTask}
+   */
+  static deleteTaskCommand(taskId) {
+    const command = new DeleteTask();
+    command.setId(taskId);
+    return command;
   }
 
   /**
