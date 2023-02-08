@@ -78,9 +78,6 @@ describe('Subscription made with FirebaseClient should', function () {
                 itemAdded.subscribe(nextItem => {
                     const actualIdValue = nextItem.getId().getValue();
                     const actualTaskName = nextItem.getName();
-
-                    console.log(" ---- `ItemAdded` for task received: " + actualTaskName);
-
                     assert.strictEqual(actualIdValue, taskIdValue,
                         `New task has ID "${actualIdValue}", expected "${taskIdValue}".`
                     );
@@ -94,9 +91,6 @@ describe('Subscription made with FirebaseClient should', function () {
                 itemChanged.subscribe(nextItem => {
                     const actualIdValue = nextItem.getId().getValue();
                     const actualTaskName = nextItem.getName();
-
-                    console.log(" ---- `ItemChanged` for task received: " + actualTaskName);
-
                     assert.strictEqual(actualIdValue, taskIdValue,
                         `Updated task has ID "${actualIdValue}", expected "${taskIdValue}".`
                     );
@@ -109,12 +103,11 @@ describe('Subscription made with FirebaseClient should', function () {
 
                 itemRemoved.subscribe(nextItem => {
                     const actualIdValue = nextItem.getId().getValue();
-
-                    console.log(" ---- `ItemRemoved` for task received: " + actualIdValue);
-
                     assert.strictEqual(actualIdValue, taskIdValue,
                         `Deleted task has ID "${actualIdValue}", expected "${taskIdValue}".`
                     );
+
+                    reportTaskDeleted();
                 });
 
                 sendCreateTask();
