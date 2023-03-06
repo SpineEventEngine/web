@@ -73,6 +73,14 @@ message TaskReassigned {
     google.protobuf.Timestamp when = 4 [(required) = true];
 }
 
+message TaskDeleted {
+
+    TaskId id = 1;
+
+    spine.core.UserId assignee = 2;
+
+    google.protobuf.Timestamp when = 3 [(required) = true];
+}
 
 message ProjectCreated {
     

@@ -123,7 +123,7 @@ public final class NodeValue {
     }
 
     /**
-     * Adds a `null` child to the value under a specified key.
+     * Adds a {@code null} child to the value under a specified key.
      */
     public void addNullChild(String key) {
         value.add(key, null);
