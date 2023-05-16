@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("1.9.0-SNAPSHOT.5")
+val spineBaseVersion: String by extra("1.9.0-SNAPSHOT.6")
 val spineTimeVersion: String by extra("1.9.0-SNAPSHOT.5")
 val spineCoreVersion: String by extra("1.9.0-SNAPSHOT.10")
 val spineVersion: String by extra(spineCoreVersion)
