@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra("1.9.0-SNAPSHOT.5")
-val spineTimeVersion: String by extra("1.9.0-SNAPSHOT.5")
-val spineCoreVersion: String by extra("1.9.0-SNAPSHOT.10")
+val spineBaseVersion: String by extra("1.9.0-SNAPSHOT.6")
+val spineTimeVersion: String by extra("1.9.0-SNAPSHOT.6")
+val spineCoreVersion: String by extra("1.9.0-SNAPSHOT.13")
 val spineVersion: String by extra(spineCoreVersion)
 
-val versionToPublish: String by extra("1.9.0-SNAPSHOT.12")
+val versionToPublish: String by extra("1.9.0-SNAPSHOT.13")
 val versionToPublishJs: String by extra(versionToPublish)
