@@ -148,6 +148,26 @@ final class SubscriptionRepository {
         delete(subscription.getTopic());
     }
 
+    /**
+     * Cancels the subscription by its topic, if it is known to the local subscription registry.
+     *
+     * <p>In case there is no known subscription in the local registry, does nothing.
+     *
+     * <p>After cancellation all the other server instances will <i>eventually</i> stop publishing
+     * updates for the subscription.
+     */
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass" /* To keep API consistent. */)
+    private void cancel(Topic topic) {
+        checkNotNull(topic);
+        Optional<Subscription> maybeSubscription =
+                subscriptionRegistry.localSubscriptionFor(topic);
+        if(!maybeSubscription.isPresent()) {
+            return;
+        }
+        Subscription subscription = maybeSubscription.get();
+        cancel(subscription);
+    }
+
     private void delete(Topic topic) {
         checkNotNull(topic);
         NodePath path = pathForSubscription(topic);
@@ -186,7 +206,7 @@ final class SubscriptionRepository {
 
         private void updateSubscription(DataSnapshot snapshot) {
             String json = asJson(snapshot);
-            Topic topic = loadTopic(json);
+            Topic topic = loadAndRememberTopic(json);
             deleteOrActivate(topic);
         }
 
@@ -200,7 +220,7 @@ final class SubscriptionRepository {
             }
         }
 
-        private Topic loadTopic(String json) {
+        private Topic loadAndRememberTopic(String json) {
             Topic topic = fromJson(json, Topic.class);
             repository.healthLog.put(topic);
             return topic;
@@ -209,7 +229,7 @@ final class SubscriptionRepository {
         private void deleteOrActivate(Topic topic) {
             HealthLog healthLog = repository.healthLog;
             if (healthLog.isKnown(topic) && healthLog.isStale(topic)) {
-                repository.delete(topic);
+                repository.cancel(topic);
             } else {
                 repository.subscribe(topic);
             }
@@ -219,12 +239,7 @@ final class SubscriptionRepository {
         public void onChildRemoved(DataSnapshot snapshot) {
             String json = asJson(snapshot);
             Optional<Topic> topic = parseTopic(json);
-            topic.ifPresent(t -> {
-                HealthLog healthLog = repository.healthLog;
-                if (healthLog.isKnown(t)) {
-                    repository.delete(t);
-                }
-            });
+            topic.ifPresent(t -> repository.cancel(topic.get()));
         }
 
         /**
