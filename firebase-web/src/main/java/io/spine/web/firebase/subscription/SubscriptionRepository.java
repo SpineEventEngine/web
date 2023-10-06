@@ -161,11 +161,12 @@ final class SubscriptionRepository {
         checkNotNull(topic);
         Optional<Subscription> maybeSubscription =
                 subscriptionRegistry.localSubscriptionFor(topic);
-        if(!maybeSubscription.isPresent()) {
-            return;
+        if(maybeSubscription.isPresent()) {
+            Subscription subscription = maybeSubscription.get();
+            cancel(subscription);
+        } else {
+            delete(topic);
         }
-        Subscription subscription = maybeSubscription.get();
-        cancel(subscription);
     }
 
     private void delete(Topic topic) {

@@ -1,6 +1,6 @@
 {
   "name": "spine-web",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "license": "Apache-2.0",
   "description": "A JS client for interacting with Spine applications.",
   "homepage": "https://spine.io",
@@ -47,7 +47,7 @@
     "babel-loader": "^9.1.2",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
-    "firebase": "^9.16.0",
+    "firebase": "^9.23.0",
     "jsdoc": "^4.0.0",
     "license-checker": "^25.0.1",
     "minimist": "^1.2.7",
