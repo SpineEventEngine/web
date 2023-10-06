@@ -1,6 +1,6 @@
 
     
-# Dependencies of `io.spine:spine-client-js:1.9.0`
+# Dependencies of `io.spine:spine-client-js:1.9.1`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -370,10 +370,10 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Oct 06 13:20:35 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
-#NPM dependencies of `spine-web@1.9.0`
+#NPM dependencies of `spine-web@1.9.1`
 
 ## `Production` dependencies:
 
@@ -407,7 +407,7 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **rxjs@7.8.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/reactivex/rxjs](https://github.com/reactivex/rxjs)
-1. **spine-web@1.9.0**
+1. **spine-web@1.9.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **tr46@0.0.3**
@@ -751,37 +751,37 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **@discoveryjs/json-ext@0.5.7**
      * Licenses: MIT
      * Repository: [https://github.com/discoveryjs/json-ext](https://github.com/discoveryjs/json-ext)
-1. **@firebase/analytics-compat@0.2.1**
+1. **@firebase/analytics-compat@0.2.6**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/analytics-types@0.8.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/analytics@0.9.1**
+1. **@firebase/analytics@0.10.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app-check-compat@0.3.1**
+1. **@firebase/app-check-compat@0.3.7**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app-check-interop-types@0.2.0**
+1. **@firebase/app-check-interop-types@0.3.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/app-check-types@0.5.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app-check@0.6.1**
+1. **@firebase/app-check@0.8.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app-compat@0.2.1**
+1. **@firebase/app-compat@0.2.13**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/app-types@0.9.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/app@0.9.1**
+1. **@firebase/app@0.9.13**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/auth-compat@0.3.1**
+1. **@firebase/auth-compat@0.4.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/auth-interop-types@0.2.1**
@@ -790,91 +790,91 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **@firebase/auth-types@0.12.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/auth@0.21.1**
+1. **@firebase/auth@0.23.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/component@0.6.1**
+1. **@firebase/component@0.6.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/database-compat@0.3.1**
+1. **@firebase/database-compat@0.3.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/database-types@0.10.1**
+1. **@firebase/database-types@0.10.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/database@0.14.1**
+1. **@firebase/database@0.14.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore-compat@0.3.1**
+1. **@firebase/firestore-compat@0.3.12**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/firestore-types@2.5.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/firestore@3.8.1**
+1. **@firebase/firestore@3.13.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/functions-compat@0.3.1**
+1. **@firebase/functions-compat@0.3.5**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/functions-types@0.6.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/functions@0.9.1**
+1. **@firebase/functions@0.10.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/installations-compat@0.2.1**
+1. **@firebase/installations-compat@0.2.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/installations-types@0.5.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/installations@0.6.1**
+1. **@firebase/installations@0.6.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/logger@0.4.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/messaging-compat@0.2.1**
+1. **@firebase/messaging-compat@0.2.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/messaging-interop-types@0.2.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/messaging@0.12.1**
+1. **@firebase/messaging@0.12.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/performance-compat@0.2.1**
+1. **@firebase/performance-compat@0.2.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/performance-types@0.2.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/performance@0.6.1**
+1. **@firebase/performance@0.6.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/remote-config-compat@0.2.1**
+1. **@firebase/remote-config-compat@0.2.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@firebase/remote-config-types@0.3.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/remote-config@0.4.1**
+1. **@firebase/remote-config@0.4.4**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/storage-compat@0.2.1**
+1. **@firebase/storage-compat@0.3.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/storage-types@0.7.0**
+1. **@firebase/storage-types@0.8.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/storage@0.10.1**
+1. **@firebase/storage@0.11.2**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/util@1.9.0**
+1. **@firebase/util@1.9.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
-1. **@firebase/webchannel-wrapper@0.9.0**
+1. **@firebase/webchannel-wrapper@0.10.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **@grpc/grpc-js@1.7.3**
@@ -883,7 +883,7 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **@grpc/proto-loader@0.6.13**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/grpc/grpc-node](https://github.com/grpc/grpc-node)
-1. **@grpc/proto-loader@0.7.4**
+1. **@grpc/proto-loader@0.7.10**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/grpc/grpc-node](https://github.com/grpc/grpc-node)
 1. **@istanbuljs/load-nyc-config@1.1.0**
@@ -1219,6 +1219,9 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **cliui@7.0.4**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
+1. **cliui@8.0.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/cliui](https://github.com/yargs/cliui)
 1. **clone-deep@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/jonschlinkert/clone-deep](https://github.com/jonschlinkert/clone-deep)
@@ -1378,7 +1381,7 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **find-up@5.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/find-up](https://github.com/sindresorhus/find-up)
-1. **firebase@9.16.0**
+1. **firebase@9.23.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/firebase/firebase-js-sdk](https://github.com/firebase/firebase-js-sdk)
 1. **flat@5.0.2**
@@ -1463,6 +1466,9 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
      * Licenses: MIT
      * Repository: [https://github.com/creationix/http-parser-js](https://github.com/creationix/http-parser-js)
 1. **idb@7.0.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/jakearchibald/idb](https://github.com/jakearchibald/idb)
+1. **idb@7.1.1**
      * Licenses: ISC
      * Repository: [https://github.com/jakearchibald/idb](https://github.com/jakearchibald/idb)
 1. **import-local@3.1.0**
@@ -1639,7 +1645,7 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **long@4.0.0**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/dcodeIO/long.js](https://github.com/dcodeIO/long.js)
-1. **long@5.2.1**
+1. **long@5.2.3**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/dcodeIO/long.js](https://github.com/dcodeIO/long.js)
 1. **loose-envify@1.4.0**
@@ -1816,10 +1822,10 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **process-on-spawn@1.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/cfware/process-on-spawn](https://github.com/cfware/process-on-spawn)
-1. **protobufjs@6.11.3**
+1. **protobufjs@6.11.4**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/protobufjs/protobuf.js](https://github.com/protobufjs/protobuf.js)
-1. **protobufjs@7.2.0**
+1. **protobufjs@7.2.5**
      * Licenses: BSD-3-Clause
      * Repository: [https://github.com/protobufjs/protobuf.js](https://github.com/protobufjs/protobuf.js)
 1. **punycode@2.3.0**
@@ -1969,7 +1975,7 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **spdx-satisfies@4.0.1**
      * Licenses: MIT
      * Repository: [https://github.com/kemitchell/spdx-satisfies.js](https://github.com/kemitchell/spdx-satisfies.js)
-1. **spine-web@1.9.0**
+1. **spine-web@1.9.1**
      * Licenses: Apache-2.0
      * Repository: [https://github.com/SpineEventEngine/web](https://github.com/SpineEventEngine/web)
 1. **sprintf-js@1.0.3**
@@ -2134,6 +2140,9 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **yargs-parser@20.2.4**
      * Licenses: ISC
      * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
+1. **yargs-parser@21.1.1**
+     * Licenses: ISC
+     * Repository: [https://github.com/yargs/yargs-parser](https://github.com/yargs/yargs-parser)
 1. **yargs-unparser@2.0.0**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs-unparser](https://github.com/yargs/yargs-unparser)
@@ -2143,17 +2152,20 @@ This report was generated on **Fri May 19 11:54:40 WEST 2023** using [Gradle-Lic
 1. **yargs@16.2.0**
      * Licenses: MIT
      * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
+1. **yargs@17.7.2**
+     * Licenses: MIT
+     * Repository: [https://github.com/yargs/yargs](https://github.com/yargs/yargs)
 1. **yocto-queue@0.1.0**
      * Licenses: MIT
      * Repository: [https://github.com/sindresorhus/yocto-queue](https://github.com/sindresorhus/yocto-queue)
 
 
-This report was generated on **Fri May 19 2023 11:54:41 GMT+0100 (Western European Summer Time)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
+This report was generated on **Fri Oct 06 2023 13:20:36 GMT+0100 (GMT+01:00)** using [NPM License Checker](https://github.com/davglass/license-checker) library.
 
 
 
     
-# Dependencies of `io.spine.gcloud:spine-firebase-web:1.9.0`
+# Dependencies of `io.spine.gcloud:spine-firebase-web:1.9.1`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson **Name:** jackson-bom **Version:** 2.14.2 **No license information found**
@@ -2996,12 +3008,12 @@ This report was generated on **Fri May 19 2023 11:54:41 GMT+0100 (Western Europe
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri May 19 11:54:51 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Oct 06 13:20:41 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-js-tests:1.9.0`
+# Dependencies of `io.spine:spine-js-tests:1.9.1`
 
 ## Runtime
 1. **Group:** com.google.code.findbugs **Name:** jsr305 **Version:** 3.0.2
@@ -3396,12 +3408,12 @@ This report was generated on **Fri May 19 11:54:51 WEST 2023** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri May 19 11:54:58 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Oct 06 13:20:46 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-test-app:1.9.0`
+# Dependencies of `io.spine:spine-test-app:1.9.1`
 
 ## Runtime
 1. **Group:** com.fasterxml.jackson **Name:** jackson-bom **Version:** 2.14.2 **No license information found**
@@ -5031,12 +5043,12 @@ This report was generated on **Fri May 19 11:54:58 WEST 2023** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri May 19 11:55:45 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Oct 06 13:20:48 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-testutil-web:1.9.0`
+# Dependencies of `io.spine:spine-testutil-web:1.9.1`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -5497,12 +5509,12 @@ This report was generated on **Fri May 19 11:55:45 WEST 2023** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri May 19 11:55:48 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Oct 06 13:20:50 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
     
-# Dependencies of `io.spine:spine-web:1.9.0`
+# Dependencies of `io.spine:spine-web:1.9.1`
 
 ## Runtime
 1. **Group:** com.google.android **Name:** annotations **Version:** 4.1.1.4
@@ -6002,4 +6014,4 @@ This report was generated on **Fri May 19 11:55:48 WEST 2023** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Fri May 19 11:55:52 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Oct 06 13:20:54 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
