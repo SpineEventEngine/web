@@ -25,39 +25,23 @@
  */
 
 import io.spine.internal.dependency.CheckerFramework
-import io.spine.internal.dependency.CommonsCodec
-import io.spine.internal.dependency.CommonsCollections
 import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.GoogleApis
-import io.spine.internal.dependency.GoogleCloud
-import io.spine.internal.dependency.Grpc
-import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.HttpClient
-import io.spine.internal.dependency.HttpComponents
-import io.spine.internal.dependency.J2ObjC
 import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.JavaX
-import io.spine.internal.dependency.Jetty
-import io.spine.internal.dependency.Netty
-import io.spine.internal.dependency.OpenCensus
-import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.ThreeTen
-import io.spine.internal.gradle.javadoc.JavadocConfig
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.applyGitHubPackages
-import io.spine.internal.gradle.applyStandard
-import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
+import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.publish.spinePublishing
+import io.spine.internal.gradle.standardToSpineSdk
 import io.spine.internal.gradle.testing.configureLogging
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -66,29 +50,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
 
-    io.spine.internal.gradle.doApplyStandard(repositories)
-    io.spine.internal.gradle.doApplyGitHubPackages(repositories, "base", rootProject)
-    io.spine.internal.gradle.doForceVersions(configurations)
-
-    val spineBaseVersion: String by extra
+    standardSpineSdkRepositories()
+    doForceVersions(configurations)
+    doForceTransitiveDependencies(configurations)
 
     dependencies {
         classpath(io.spine.internal.dependency.Guava.lib)
         classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib)
-        classpath("io.spine.tools:spine-mc-java:$spineBaseVersion")
-        classpath("io.spine.tools:spine-mc-js:$spineBaseVersion")
-    }
-
-    configurations.all {
-        resolutionStrategy {
-            force(
-                io.spine.internal.dependency.OsDetector.lib
-            )
-        }
+        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+        classpath(io.spine.internal.dependency.Spine.McJs.lib)
     }
 }
 
-repositories.applyStandard()
+repositories.standardToSpineSdk()
 
 plugins {
     `java-library`
@@ -96,14 +70,8 @@ plugins {
     kotlin("jvm")
     idea
     `project-report`
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
-        id(id)
-    }
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
-        id(id)
-    }
+    protobuf
+    errorprone
 }
 
 spinePublishing {
@@ -120,7 +88,7 @@ spinePublishing {
         )
     }
     dokkaJar {
-        enabled = true
+        java = true
     }
 }
 
@@ -135,12 +103,14 @@ allprojects {
 
     group = "io.spine"
     version = extra["versionToPublish"]!!
+
+    configurations {
+        forceVersions()
+        forceTransitiveDependencies()
+    }
 }
 
 subprojects {
-
-    val spineBaseVersion: String by extra
-    val spineCoreVersion: String by extra
 
     apply {
         plugin("java-library")
@@ -155,11 +125,12 @@ subprojects {
     }
 
     repositories {
+        standardToSpineSdk()
+
         applyGitHubPackages("base", rootProject)
         applyGitHubPackages("base-types", rootProject)
         applyGitHubPackages("time", rootProject)
         applyGitHubPackages("core-java", rootProject)
-        applyStandard()
     }
 
     dependencies {
@@ -168,7 +139,7 @@ subprojects {
         }
 
         Protobuf.libs.forEach { api(it) }
-        api(Flogger.lib)
+        api(Spine.Logging.lib)
         api(Guava.lib)
         api(CheckerFramework.annotations)
         api(JavaX.annotations)
@@ -176,13 +147,8 @@ subprojects {
         api(kotlin("stdlib-jdk8"))
 
         testImplementation(JUnit.runner)
-        testImplementation("io.spine.tools:spine-testlib:$spineBaseVersion")
-        testImplementation("io.spine.tools:spine-testutil-client:$spineCoreVersion")
-    }
-
-    configurations {
-        forceVersions()
-        forceTransitiveDependencies()
+        testImplementation(Spine.testlib)
+        testImplementation(Spine.CoreJava.testUtilClient)
     }
 
     val javaVersion = JavaVersion.VERSION_11
@@ -225,7 +191,7 @@ subprojects {
     LicenseReporter.generateReportIn(project)
     JavadocConfig.applyTo(project)
 
-    updateGitHubPages(spineBaseVersion) {
+    updateGitHubPages(project.version.toString()) {
         allowInternalJavadoc.set(true)
         rootFolder.set(rootDir)
     }
@@ -253,91 +219,3 @@ subprojects {
 JacocoConfig.applyTo(project)
 PomGenerator.applyTo(project)
 LicenseReporter.mergeAllReports(project)
-
-/**
- * Force transitive dependencies.
- *
- * Common 3rd party dependencies are forced by [forceVersions].
- *
- * The forced versions are selected as the highest among detected in the version
- * conflict. Developers <em>may</em> select a higher version as the dependency in
- * this project <em>IFF</em> this dependency is used directly or a newer version
- * fixes a security issue.
- *
- * `proto-google-common-protos` starting with version `1.1.0` and `proto-google-iam-v1`
- * starting with version `0.1.29` include Protobuf message definitions alongside with compiled Java.
- * This breaks the Spine compiler which searches for all Protobuf definitions
- * in classpath, and assumes they implement the Type URLs.
- */
-fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = all {
-    resolutionStrategy {
-        val spineBaseVersion: String by extra
-        val spineBaseTypesVersion: String by extra
-        val spineTimeVersion: String by extra
-
-        force(
-            OpenCensus.api,
-            OpenCensus.contribHttpUtil,
-
-            Gson.lib,
-            GoogleApis.common,
-            GoogleApis.commonProtos,
-            GoogleApis.protoAim,
-
-            GoogleCloud.core,
-            GoogleApis.gax,
-
-            GoogleApis.oAuthClient,
-
-            GoogleApis.AuthLibrary.credentials,
-            GoogleApis.AuthLibrary.oAuth2Http,
-
-            J2ObjC.annotations,
-
-            HttpClient.google,
-            HttpClient.jackson2,
-            HttpClient.gson,
-            HttpClient.apache2,
-
-            GoogleApis.client,
-
-            ThreeTen.lib,
-
-            HttpComponents.client,
-            HttpComponents.core,
-
-            Jackson.core,
-            Jackson.databind,
-            Jackson.bom,
-            Jackson.annotations,
-            Jackson.moduleKotlin,
-            Jackson.dataformatXml,
-
-            CommonsCodec.lib,
-            CommonsCollections.lib,
-
-            Netty.common,
-            Netty.buffer,
-            Netty.transport,
-            Netty.handler,
-            Netty.codecHttp,
-
-            JavaX.servletApi,
-
-            Jetty.orbitServletJsp,
-            Jetty.toolchainSchemas,
-
-            Flogger.lib,
-            Flogger.Runtime.systemBackend,
-            OsDetector.lib,
-
-            Grpc.context,
-
-            // Transitive dependencies from `core-java` may have different (older) versions.
-            "io.spine:spine-base:$spineBaseVersion",
-            "io.spine:spine-base-types:$spineBaseTypesVersion",
-            "io.spine:spine-time:$spineTimeVersion",
-            "io.spine.tools:spine-testlib:$spineBaseVersion"
-        )
-    }
-}

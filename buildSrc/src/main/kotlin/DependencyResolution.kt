@@ -32,25 +32,39 @@ import io.spine.internal.dependency.AutoValue
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.CommonsCli
 import io.spine.internal.dependency.CommonsCodec
+import io.spine.internal.dependency.CommonsCollections
 import io.spine.internal.dependency.CommonsLogging
 import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.FindBugs
+import io.spine.internal.dependency.GoogleApis
+import io.spine.internal.dependency.GoogleCloud
+import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.Hamcrest
+import io.spine.internal.dependency.HttpClient
+import io.spine.internal.dependency.HttpComponents
 import io.spine.internal.dependency.J2ObjC
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.JavaDiffUtils
+import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Jetty
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Kotlin
+import io.spine.internal.dependency.Netty
 import io.spine.internal.dependency.Okio
+import io.spine.internal.dependency.OpenCensus
 import io.spine.internal.dependency.OpenTest4J
+import io.spine.internal.dependency.OsDetector
 import io.spine.internal.dependency.Plexus
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Slf4J
+import io.spine.internal.dependency.Spine
+import io.spine.internal.dependency.ThreeTen
 import io.spine.internal.dependency.Truth
+import io.spine.internal.dependency.Validation
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
@@ -80,7 +94,7 @@ fun NamedDomainObjectContainer<Configuration>.forceVersions() {
 }
 
 private fun ResolutionStrategy.forceProductionDependencies() {
-    @Suppress("DEPRECATION") // Force versions of SLF4J and Kotlin libs.
+    @Suppress("DEPRECATION") // Force SLF4J version.
     force(
         AnimalSniffer.lib,
         AutoCommon.lib,
@@ -90,12 +104,10 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         ErrorProne.annotations,
         ErrorProne.core,
         FindBugs.annotations,
-        Gson.lib,
         Guava.lib,
         Kotlin.reflect,
         Kotlin.stdLib,
         Kotlin.stdLibCommon,
-        Kotlin.stdLibJdk7,
         Kotlin.stdLibJdk8,
         Protobuf.GradlePlugin.lib,
         Protobuf.libs,
@@ -124,7 +136,6 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Asm.lib,
         AutoValue.annotations,
         CommonsCli.lib,
-        CommonsCodec.lib,
         CommonsLogging.lib,
         Gson.lib,
         Hamcrest.core,
@@ -162,3 +173,105 @@ fun NamedDomainObjectContainer<Configuration>.excludeProtobufLite() {
     excludeProtoLite("runtimeOnly")
     excludeProtoLite("testRuntimeOnly")
 }
+
+/**
+ * The following section is specific to modules in repository `web`.
+ */
+
+/**
+ * Force transitive dependencies.
+ *
+ * Common third-party dependencies are forced by [forceVersions].
+ *
+ * The forced versions are selected as the highest among detected in the version
+ * conflict. Developers <em>may</em> select a higher version as the dependency in
+ * this project <em>IFF</em> this dependency is used directly or a newer version
+ * fixes a security issue.
+ *
+ * `proto-google-common-protos` starting with version `1.1.0` and `proto-google-iam-v1`
+ * starting with version `0.1.29` include Protobuf message definitions alongside with compiled Java.
+ * This breaks the Spine compiler which searches for all Protobuf definitions
+ * in classpath, and assumes they implement the Type URLs.
+ */
+fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = all {
+    resolutionStrategy {
+
+        force(
+            OsDetector.lib,
+
+            OpenCensus.api,
+            OpenCensus.contribHttpUtil,
+
+            Gson.lib,
+            GoogleApis.common,
+            GoogleApis.commonProtos,
+            GoogleApis.protoAim,
+
+            GoogleCloud.core,
+            GoogleApis.gax,
+
+            GoogleApis.oAuthClient,
+
+            GoogleApis.AuthLibrary.credentials,
+            GoogleApis.AuthLibrary.oAuth2Http,
+
+            J2ObjC.annotations,
+
+            HttpClient.google,
+            HttpClient.jackson2,
+            HttpClient.gson,
+            HttpClient.apache2,
+
+            GoogleApis.client,
+
+            ThreeTen.lib,
+
+            HttpComponents.client,
+            HttpComponents.core,
+
+            Jackson.core,
+            Jackson.databind,
+            Jackson.bom,
+            Jackson.annotations,
+            Jackson.moduleKotlin,
+            Jackson.dataformatXml,
+
+            CommonsCodec.lib,
+            CommonsCollections.lib,
+
+            Netty.common,
+            Netty.buffer,
+            Netty.transport,
+            Netty.handler,
+            Netty.codecHttp,
+
+            JavaX.servletApi,
+
+            Jetty.orbitServletJsp,
+            Jetty.toolchainSchemas,
+
+            OsDetector.lib,
+
+            Grpc.context,
+            Grpc.api,
+
+            // Transitive dependencies from `core-java` may have different (older) versions.
+            Spine.base,
+            Spine.baseTypes,
+            Spine.toolBase,
+            Validation.runtime,
+            Spine.Logging.lib,
+            Spine.loggingBackend,
+            Spine.Logging.floggerApi,
+            Spine.time,
+
+            Spine.testlib
+        )
+    }
+}
+
+@Suppress("unused")
+fun doForceTransitiveDependencies(configurations: ConfigurationContainer) {
+    configurations.forceTransitiveDependencies()
+}
+

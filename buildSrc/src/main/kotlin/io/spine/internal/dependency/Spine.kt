@@ -59,7 +59,17 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/logging">spine-logging</a>
          */
-        const val logging = "2.0.0-SNAPSHOT.233"
+        const val logging = "2.0.0-SNAPSHOT.227"
+
+        /**
+         * The version of `backend` library for [Spine.logging].
+         *
+         * This library has been merged into `spine-logging` artifact,
+         * but we still need its version to address conflicts.
+         *
+         * @see <a href="https://github.com/SpineEventEngine/logging">spine-logging</a>
+         */
+        const val loggingBackend = "2.0.0-SNAPSHOT.227"
 
         /**
          * The version of [Spine.testlib].
@@ -90,6 +100,13 @@ object Spine {
          * @see <a href="https://github.com/SpineEventEngine/mc-java">spine-mc-java</a>
          */
         const val mcJava = "2.0.0-SNAPSHOT.172"
+
+        /**
+         * The version of [McJs].
+         *
+         * @see <a href="https://github.com/SpineEventEngine/mc-js">spine-mc-js</a>
+         */
+        const val mcJs = "2.0.0-SNAPSHOT.130"
 
         /**
          * The version of [Spine.baseTypes].
@@ -140,8 +157,9 @@ object Spine {
     const val logging = "$group:spine-logging:${ArtifactVersion.logging}"
     @Deprecated("Use `Logging.context` instead.", ReplaceWith("Logging.context"))
     const val loggingContext = "$group:spine-logging-context:${ArtifactVersion.logging}"
-    @Deprecated("Use `Logging.backend` instead.", ReplaceWith("Logging.backend"))
-    const val loggingBackend = "$group:spine-logging-backend:${ArtifactVersion.logging}"
+
+    @Deprecated("This artifact no longer maintained")
+    const val loggingBackend = "$group:spine-logging-backend:${ArtifactVersion.loggingBackend}"
 
     const val reflect = "$group:spine-reflect:${ArtifactVersion.reflect}"
     const val baseTypes = "$group:spine-base-types:${ArtifactVersion.baseTypes}"
@@ -203,6 +221,17 @@ object Spine {
         fun pluginLib(version: String): String = "$toolsGroup:spine-mc-java-plugins:$version:all"
     }
 
+    /**
+     * Dependencies on JavaScript side of Spine Model Compiler for Java.
+     *
+     * See [mc-js](https://github.com/SpineEventEngine/mc-js).
+     */
+    @Suppress("MemberVisibilityCanBePrivate") // `pluginLib()` is used by subprojects.
+    object McJs {
+        const val version = ArtifactVersion.mcJs
+        const val lib = "$toolsGroup:spine-mc-js:$version"
+    }
+
     @Deprecated("Please use `javadocFilter` instead.", ReplaceWith("javadocFilter"))
     const val javadocTools = "$toolsGroup::${ArtifactVersion.javadocTools}"
     const val javadocFilter = "$toolsGroup:spine-javadoc-filter:${ArtifactVersion.javadocTools}"
@@ -221,5 +250,6 @@ object Spine {
         const val client = "$group:spine-client:$version"
         const val server = "$group:spine-server:$version"
         const val testUtilServer = "$toolsGroup:spine-testutil-server:$version"
+        const val testUtilClient = "$toolsGroup:spine-testutil-client:$version"
     }
 }

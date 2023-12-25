@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 
 plugins {
@@ -32,11 +33,9 @@ plugins {
     id("io.spine.mc-java")
 }
 
-val spineCoreVersion: String by extra
-
 dependencies {
     implementation(project(":firebase-web"))
-    implementation("io.spine:spine-server:$spineCoreVersion")
+    implementation(Spine.server)
 }
 
 CheckStyleConfig.applyTo(project)
