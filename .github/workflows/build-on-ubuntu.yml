@@ -4,18 +4,21 @@ on: push
 
 jobs:
   build:
+    name: Build under Ubuntu
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
 
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: zulu
           cache: gradle
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
 
@@ -28,13 +31,14 @@ jobs:
 
       # See: https://github.com/marketplace/actions/junit-report-action
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v2.8.4
+        uses: mikepenz/action-junit-report@v3.7.6
         if: always() # always run even if the previous step fails
         with:
-          report_paths: '**/build/test-results/test/TEST-*.xml'
+          report_paths: '**/build/test-results/**/TEST-*.xml'
+          require_tests: true # will fail workflow if test reports not found
 
       - name: Upload code coverage report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: false
           verbose: true

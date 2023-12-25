@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@
 package io.spine.internal.dependency
 
 // https://errorprone.info/
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object ErrorProne {
     // https://github.com/google/error-prone
-    private const val version = "2.10.0"
+    private const val version = "2.23.0"
     // https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
     private const val javacPluginVersion = "9+181-r4173-1"
 
@@ -48,12 +48,12 @@ object ErrorProne {
         const val id = "net.ltgt.errorprone"
         /**
          * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
-         * Thus, when applying the plugin in projects build files, only the [id] should be used.
+         * Thus, when applying the plugin to projects build files, only the [id] should be used.
          *
-         * When the plugin is used as a library (e.g. in tools), its version and the library
+         * When the plugin is used as a library (e.g., in tools), its version and the library
          * artifacts are of importance.
          */
-        const val version = "2.0.2"
+        const val version = "3.1.0"
         const val lib = "net.ltgt.gradle:gradle-errorprone-plugin:${version}"
     }
 }

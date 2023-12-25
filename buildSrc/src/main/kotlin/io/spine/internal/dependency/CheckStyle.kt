@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,21 @@
 
 package io.spine.internal.dependency
 
-// https://checkstyle.sourceforge.io/
-// See `io.spine.internal.gradle.checkstyle.CheckStyleConfig`.
-@Suppress("unused")
+/**
+ * Dependencies on Checkstyle Java linter.
+ *
+ * @see <a href="https://checkstyle.sourceforge.io/">Checkstyle</a>
+ * @see [io.spine.internal.gradle.checkstyle.CheckStyleConfig]
+ */
+@Suppress("unused", "ConstPropertyName")
 object CheckStyle {
-    const val version = "10.1"
+    /**
+     * The version to be used in the project.
+     *
+     * `10.12.1` is the last version in `10.12.0`, which does not introduce
+     * capability conflict over `google-collections` with Guava.
+     *
+     * @see <a href="https://checkstyle.sourceforge.io/releasenotes.html">Checkstyle</a>
+     */
+    const val version = "10.12.1"
 }
