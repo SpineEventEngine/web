@@ -1,5 +1,3 @@
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-
 /*
  * Copyright 2022, TeamDev. All rights reserved.
  *
@@ -26,11 +24,12 @@ import io.spine.internal.gradle.checkstyle.CheckStyleConfig
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra
+import io.spine.internal.dependency.Spine
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 
 dependencies {
     api(project(":web"))
-    api("io.spine.tools:spine-testlib:$spineBaseVersion")
+    api(Spine.testlib)
 }
 
 CheckStyleConfig.applyTo(project)
