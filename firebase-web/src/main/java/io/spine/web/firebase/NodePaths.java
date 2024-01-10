@@ -80,7 +80,7 @@ public final class NodePaths {
         return NodePath
                 .newBuilder()
                 .setValue(escaped(path))
-                .vBuild();
+                .build();
     }
 
     private static String concatPath(String... elements) {
@@ -90,7 +90,7 @@ public final class NodePaths {
                 pathElements.add(element);
             }
         }
-        String path = pathJoiner.join(pathElements);
+        var path = pathJoiner.join(pathElements);
         return path;
     }
 

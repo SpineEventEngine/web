@@ -74,21 +74,21 @@ class RequestNodePathTest {
     void testTenantAware() {
         var domain = InternetDomain.newBuilder()
                 .setValue("spine.io")
-                .vBuild();
+                .build();
         var domainTenant = TenantId.newBuilder()
                 .setDomain(domain)
-                .vBuild();
+                .build();
         var email = EmailAddress.newBuilder()
                 .setValue("john@doe.org")
-                .vBuild();
+                .build();
         var emailTenant = TenantId.newBuilder().setEmail(email)
-                .vBuild();
+                .build();
         var firstValueTenant = TenantId.newBuilder()
                 .setValue("first tenant")
-                .vBuild();
+                .build();
         var secondValueTenant = TenantId.newBuilder()
                 .setValue("second tenant")
-                .vBuild();
+                .build();
         var paths = Stream.of(domainTenant,
                               emailTenant,
                               firstValueTenant,

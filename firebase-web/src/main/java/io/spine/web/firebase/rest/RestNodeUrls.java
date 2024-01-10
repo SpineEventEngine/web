@@ -59,7 +59,7 @@ final class RestNodeUrls {
         var url = withinDatabase(path);
         var node = RestNodeUrl.newBuilder()
                 .setUrl(url)
-                .vBuild();
+                .build();
         return node;
     }
 

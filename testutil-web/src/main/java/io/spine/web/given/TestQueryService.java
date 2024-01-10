@@ -59,7 +59,7 @@ public final class TestQueryService extends QueryServiceGrpc.QueryServiceImplBas
         var queryResponse = QueryResponse.newBuilder()
                 .setResponse(ok())
                 .addAllMessage(response)
-                .vBuild();
+                .build();
         responseObserver.onNext(queryResponse);
         responseObserver.onCompleted();
     }

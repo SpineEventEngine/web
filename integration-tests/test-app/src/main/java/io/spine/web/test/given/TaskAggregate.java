@@ -49,7 +49,7 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
             taskCreated.setAssignee(command.getAssignee());
         }
 
-        return taskCreated.vBuild();
+        return taskCreated.build();
     }
 
     @Assign
@@ -58,7 +58,7 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
                 .setId(command.getId())
                 .setName(command.getName())
                 .setWhen(currentTime())
-                .vBuild();
+                .build();
     }
 
     @Assign
@@ -71,7 +71,7 @@ final class TaskAggregate extends Aggregate<TaskId, Task, Task.Builder> {
             taskReassigned.setFrom(state().getAssignee());
         }
 
-        return taskReassigned.vBuild();
+        return taskReassigned.build();
     }
 
     @Apply

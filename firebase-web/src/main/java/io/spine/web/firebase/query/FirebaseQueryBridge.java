@@ -45,7 +45,7 @@ import static com.google.common.base.Preconditions.checkState;
  * <p>More formally, for each encountered {@link Query}, the bridge performs a call to
  * the {@code QueryService} and stores the resulting entity states into the given database. The data
  * is stored as a list of strings. Each entry is
- * a {@linkplain io.spine.json.Json JSON representation} of an entity state. The path produced by
+ * a {@linkplain io.spine.type.Json JSON representation} of an entity state. The path produced by
  * the bridge as a result is the path to the database node containing all those records.
  * The absolute position of such a node is not specified, thus the result path is the only way
  * to read the data from the database.
@@ -78,7 +78,7 @@ public final class FirebaseQueryBridge implements QueryBridge<FirebaseQueryRespo
                 .newBuilder()
                 .setPath(record.path().getValue())
                 .setCount(queryResponse.getMessageCount())
-                .vBuild();
+                .build();
     }
 
     /**

@@ -27,27 +27,27 @@
 package io.spine.web.parser;
 
 import com.google.protobuf.Message;
-import io.spine.json.Json;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static io.spine.json.Json.fromJson;
+import static io.spine.type.Json.fromJson;
+import static java.lang.String.format;
 import static java.util.regex.Pattern.LITERAL;
 import static java.util.regex.Pattern.compile;
 
 /**
  * An implementation of {@link MessageParser} which parses messages from their JSON representations.
  *
- * <p>See {@link Json} and the
+ * <p>See {@link io.spine.type.Json} and the
  * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf documentation
  * </a> for the detailed description of the message format.
  *
  * @param <M>
  *         the type of messages to parse
  */
-final class JsonMessageParser<M extends Message> implements MessageParser<M>, Logging {
+final class JsonMessageParser<M extends Message> implements MessageParser<M>, WithLogging {
 
     private final Class<M> type;
 
@@ -59,12 +59,13 @@ final class JsonMessageParser<M extends Message> implements MessageParser<M>, Lo
     public Optional<M> parse(String raw) {
         var json = cleanUp(raw);
         try {
-            var message = fromJson(json, type);
+            var message = fromJson(type, json);
             return Optional.of(message);
         } catch (IllegalArgumentException e) {
-            _error().withCause(e)
-                    .log("Unable to parse message of type `%s` from JSON: `%s`.",
-                         type.getName(), json);
+            logger().atError()
+                    .withCause(e)
+                    .log(() -> format("Unable to parse message of type `%s` from JSON: `%s`.",
+                                      type.getName(), json));
             return Optional.empty();
         }
     }

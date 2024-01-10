@@ -39,7 +39,7 @@ final class UserInfoAggregate extends Aggregate<UserId, UserInfo, UserInfo.Build
         var event = UserInfoAdded.newBuilder()
                 .setId(command.getId())
                 .setFullName(command.getFullName())
-                .vBuild();
+                .build();
         return event;
     }
 

@@ -35,7 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import io.spine.client.Subscription;
 import io.spine.client.SubscriptionId;
 import io.spine.client.Topic;
-import io.spine.json.Json;
+import io.spine.type.Json;
 import io.spine.web.SubscriptionOrError;
 import io.spine.web.WebSubscription;
 import io.spine.web.firebase.FirebaseClient;
@@ -225,7 +225,7 @@ final class SubscriptionRepository {
         }
 
         private TimedSubscription loadSubscription(String json) {
-            var subscription = Json.fromJson(json, TimedSubscription.class);
+            var subscription = Json.fromJson(TimedSubscription.class, json);
             repository.healthLog.put(subscription);
             return subscription;
         }

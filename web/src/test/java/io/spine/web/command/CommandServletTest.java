@@ -29,11 +29,11 @@ package io.spine.web.command;
 import io.spine.base.Time;
 import io.spine.client.CommandFactory;
 import io.spine.core.Ack;
-import io.spine.json.Json;
 import io.spine.protobuf.AnyPacker;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.client.command.TestCommandMessage;
 import io.spine.testing.logging.mute.MuteLogging;
+import io.spine.type.Json;
 import io.spine.web.command.given.DetachedCommandServlet;
 import io.spine.web.given.MemoizingResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -75,10 +75,10 @@ class CommandServletTest {
         var response = new StringWriter();
         var createTask = TestCommandMessage.newBuilder()
                 .setId(newUuid())
-                .vBuild();
+                .build();
         var command = commandFactory.create(createTask);
         servlet.doPost(request(command), response(response));
-        var ack = Json.fromJson(response.toString(), Ack.class);
+        var ack = Json.fromJson(Ack.class, response.toString());
         assertThat(command.getId())
                 .isEqualTo(AnyPacker.unpack(ack.getMessageId()));
     }

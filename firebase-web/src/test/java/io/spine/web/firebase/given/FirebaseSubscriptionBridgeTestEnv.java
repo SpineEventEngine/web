@@ -86,14 +86,14 @@ public final class FirebaseSubscriptionBridgeTestEnv {
         return Subscription.newBuilder()
                 .setId(subscriptionId())
                 .setTopic(topic)
-                .vBuild();
+                .build();
     }
 
     public static Target newTarget() {
         return Target.newBuilder()
                 .setType(TypeUrl.of(Nothing.getDefaultInstance()).value())
                 .setIncludeAll(true)
-                .vBuild();
+                .build();
     }
 
     public static FirebaseSubscriptionBridge
@@ -108,13 +108,13 @@ public final class FirebaseSubscriptionBridgeTestEnv {
     public static TopicFactory topicFactory() {
         var userId = UserId.newBuilder()
                 .setValue("test-user")
-                .vBuild();
+                .build();
         return new TestActorRequestFactory(userId).topic();
     }
 
     private static SubscriptionId subscriptionId() {
         return SubscriptionId.newBuilder()
                 .setValue("test-subscription")
-                .vBuild();
+                .build();
     }
 }

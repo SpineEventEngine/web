@@ -28,11 +28,13 @@ package io.spine.web.parser;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.protobuf.Messages;
 
 import java.util.Base64;
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 /**
  * An implementation of {@link MessageParser} which parses messages from
@@ -43,7 +45,7 @@ import java.util.Optional;
  * @param <M>
  *         the type of messages to parse
  */
-final class Base64MessageParser<M extends Message> implements MessageParser<M>, Logging {
+final class Base64MessageParser<M extends Message> implements MessageParser<M>, WithLogging {
 
     private final Class<M> type;
 
@@ -60,9 +62,11 @@ final class Base64MessageParser<M extends Message> implements MessageParser<M>, 
             var message = (M) builder.mergeFrom(bytes).build();
             return Optional.of(message);
         } catch (InvalidProtocolBufferException | ClassCastException e) {
-            _error().withCause(e)
-                    .log("Unable to parse message of type `%s` from the Base64 string: `%s`.",
-                         type.getName(), raw);
+            logger().atError()
+                    .withCause(e)
+                    .log(() -> format(
+                            "Unable to parse message of type `%s` from the Base64 string: `%s`.",
+                            type.getName(), raw));
             return Optional.empty();
         }
     }

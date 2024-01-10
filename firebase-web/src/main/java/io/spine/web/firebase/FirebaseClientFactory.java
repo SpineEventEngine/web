@@ -28,7 +28,7 @@ package io.spine.web.firebase;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.util.BackOff;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.firebase.database.FirebaseDatabase;

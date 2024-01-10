@@ -39,7 +39,7 @@ import static com.google.api.client.http.ByteArrayContent.fromString;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.firebase.database.utilities.PushIdGenerator.generatePushChildName;
-import static io.spine.json.Json.fromJson;
+import static io.spine.type.Json.fromJson;
 
 /**
  * The Firebase database node value.
@@ -100,11 +100,11 @@ public final class NodeValue {
     /**
      * Parses this node value as a message of the given type.
      *
-     * @see io.spine.json.Json#fromJson(String, Class)
+     * @see io.spine.type.Json#fromJson(Class, String)
      */
     public <M extends Message> M as(Class<M> cls) {
         var jsonMessage = value.toString();
-        return fromJson(jsonMessage, cls);
+        return fromJson(cls, jsonMessage);
     }
 
     /**

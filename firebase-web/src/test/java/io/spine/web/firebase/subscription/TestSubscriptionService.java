@@ -43,7 +43,7 @@ public class TestSubscriptionService extends SubscriptionServiceGrpc.Subscriptio
         var subscription = Subscription.newBuilder()
                 .setId(SubscriptionId.newBuilder().setValue(newUuid()))
                 .setTopic(request)
-                .vBuild();
+                .build();
         observer.onNext(subscription);
         observer.onCompleted();
     }

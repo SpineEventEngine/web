@@ -63,6 +63,6 @@ public final class DatabaseUrls {
                 .newBuilder()
                 .setUrl(Urls.create(url))
                 .setNamespace(namespace)
-                .vBuild();
+                .build();
     }
 }

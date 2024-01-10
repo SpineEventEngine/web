@@ -45,7 +45,7 @@ class NodePathsTest extends UtilityClassTest<NodePaths> {
         var testPath = "test-path";
         var expected = NodePath.newBuilder()
                 .setValue(testPath)
-                .vBuild();
+                .build();
         assertEquals(expected, NodePaths.of(testPath));
     }
 }

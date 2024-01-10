@@ -30,7 +30,7 @@ import com.google.common.collect.Iterators;
 import com.google.gson.JsonElement;
 import com.google.protobuf.Message;
 import io.spine.client.QueryFactory;
-import io.spine.json.Json;
+import io.spine.type.Json;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -133,13 +133,13 @@ class FirebaseQueryBridgeTest {
     private static <T extends Message> T firstFieldOf(NodeValue nodeValue, Class<T> message) {
         var json = nodeValue.underlyingJson();
         var entries = json.entrySet();
-        JsonElement value = Iterators
+        var value = Iterators
                 .getOnlyElement(entries.iterator())
                 .getValue();
         var messageJson = StoredJson
                 .from(value.getAsString())
                 .asJsonObject()
                 .toString();
-        return Json.fromJson(messageJson, message);
+        return Json.fromJson(message, messageJson);
     }
 }

@@ -36,7 +36,7 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.json.Json.toCompactJson;
+import static io.spine.type.Json.toCompactJson;
 
 /**
  * A JSON representation of data stored in a node of a Firebase Realtime DB.

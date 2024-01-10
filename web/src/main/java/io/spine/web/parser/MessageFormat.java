@@ -26,9 +26,10 @@
 
 package io.spine.web.parser;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.common.net.MediaType;
 import com.google.protobuf.Message;
+import io.spine.logging.Logger;
+import io.spine.logging.LoggingFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -36,6 +37,7 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.lang.String.format;
 import static java.util.Optional.empty;
 
 /**
@@ -64,7 +66,8 @@ public enum MessageFormat {
         }
     };
 
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
+
     private static final String CONTENT_TYPE = "Content-Type";
 
     private final MediaType contentType;
@@ -96,15 +99,15 @@ public enum MessageFormat {
             var format = formatOf(type);
             if (format.isEmpty()) {
                 logger.atWarning()
-                      .log("Cannot determine message format for request `%s %s`.%n" +
+                      .log(() -> format("Cannot determine message format for request `%s %s`.%n" +
                                    "Content-Type: `%s`.",
                            request.getMethod(),
                            request.getServletPath(),
-                           contentTypeHeader);
+                           contentTypeHeader));
             }
             return format;
         } catch (IllegalArgumentException e) {
-            logger.atSevere()
+            logger.atError()
                   .withCause(e)
                   .log();
             return empty();

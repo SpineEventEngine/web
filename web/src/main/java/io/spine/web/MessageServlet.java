@@ -28,7 +28,6 @@ package io.spine.web;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Message;
-import io.spine.json.Json;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.web.parser.MessageFormat;
 
@@ -39,6 +38,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static io.spine.type.Json.toCompactJson;
 import static java.util.stream.Collectors.joining;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
@@ -103,7 +103,7 @@ public abstract class MessageServlet<I extends Message, O extends Message>
 
     private void writeResponse(HttpServletResponse servletResponse, O response)
             throws IOException {
-        var json = Json.toCompactJson(response);
+        var json = toCompactJson(response);
         servletResponse.getWriter()
                        .append(json);
         servletResponse.setContentType(JSON_UTF_8.toString());

@@ -41,7 +41,7 @@ final class ProjectAggregate extends Aggregate<ProjectId, Project, Project.Build
         return ProjectCreated
                 .newBuilder()
                 .setId(command.getId())
-                .vBuild();
+                .build();
     }
 
     @Apply

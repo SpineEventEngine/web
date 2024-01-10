@@ -28,7 +28,7 @@ package io.spine.web.given;
 
 import com.google.common.net.MediaType;
 import com.google.protobuf.Message;
-import io.spine.json.Json;
+import io.spine.type.Json;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.StringWriter;

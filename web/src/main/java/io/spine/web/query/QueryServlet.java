@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
  * {@code DELETE}, {@code OPTIONS}, and {@code TRACE} methods are not supported by default.
  *
  * <p>In order to perform a {@linkplain io.spine.client.Query query}, a client should send an HTTP
- * {@code POST} request to this servlet. The request body should be a {@linkplain io.spine.json.Json
+ * {@code POST} request to this servlet. The request body should be a {@linkplain io.spine.type.Json
  * JSON} representation of a {@link Query io.spine.client.Query}.
  *
  * <p>If the request is valid (i.e. the request body contains a valid {@link io.spine.client.Query

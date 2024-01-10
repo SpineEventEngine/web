@@ -26,7 +26,8 @@
 
 package io.spine.web.future;
 
-import com.google.common.flogger.FluentLogger;
+import io.spine.logging.Logger;
+import io.spine.logging.LoggingFactory;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.CompletionStage;
@@ -36,7 +37,7 @@ import java.util.concurrent.CompletionStage;
  */
 public final class Completion {
 
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final Logger<?> logger = LoggingFactory.forEnclosingClass();
 
     /**
      * Prevents the utility class instantiation.
@@ -45,7 +46,7 @@ public final class Completion {
     }
 
     /**
-     * Logs the exception of the given stage if any.
+     * Logs the exception thrown at a given stage if any.
      *
      * <p>Does nothing if the stage completes successfully.
      *
@@ -61,9 +62,9 @@ public final class Completion {
 
     private static void logException(@Nullable Throwable exception) {
         if (exception != null) {
-            logger.atSevere()
+            logger.atError()
                   .withCause(exception)
-                  .log("Failed to complete task.");
+                  .log(() -> "Failed to complete task.");
         }
     }
 }
