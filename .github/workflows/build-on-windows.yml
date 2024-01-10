@@ -18,6 +18,9 @@ jobs:
           distribution: zulu
           cache: gradle
 
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'

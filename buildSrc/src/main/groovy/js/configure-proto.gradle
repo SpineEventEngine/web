@@ -86,12 +86,14 @@ protobuf {
  * Configures the generation of additional features for the Proto messages via
  * Spine Proto JS plugin.
  */
-protoJs {
-    mainGenProtoDir = genProtoMain
-    testGenProtoDir = genProtoTest
+modelCompiler {
+    js {
+        mainGenProtoDir = genProtoMain
+        testGenProtoDir = genProtoTest
 
-    generateParsersTask().dependsOn compileProtoToJs
-    buildJs.dependsOn generateParsersTask()
+        generateParsersTask().dependsOn compileProtoToJs
+        buildJs.dependsOn generateParsersTask()
+    }
 }
 
 /**

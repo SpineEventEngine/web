@@ -94,7 +94,7 @@ fun NamedDomainObjectContainer<Configuration>.forceVersions() {
 }
 
 private fun ResolutionStrategy.forceProductionDependencies() {
-    @Suppress("DEPRECATION") // Force SLF4J version.
+    @Suppress("DEPRECATION") // Force versions of SLF4J and Kotlin libs.
     force(
         AnimalSniffer.lib,
         AutoCommon.lib,
@@ -104,10 +104,12 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         ErrorProne.annotations,
         ErrorProne.core,
         FindBugs.annotations,
+        Gson.lib,
         Guava.lib,
         Kotlin.reflect,
         Kotlin.stdLib,
         Kotlin.stdLibCommon,
+        Kotlin.stdLibJdk7,
         Kotlin.stdLibJdk8,
         Protobuf.GradlePlugin.lib,
         Protobuf.libs,
@@ -136,6 +138,7 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Asm.lib,
         AutoValue.annotations,
         CommonsCli.lib,
+        CommonsCodec.lib,
         CommonsLogging.lib,
         Gson.lib,
         Hamcrest.core,
@@ -202,6 +205,37 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
             OpenCensus.api,
             OpenCensus.contribHttpUtil,
 
+            // TODO: Get rid of this thing altogether.
+            /**
+             * org.checkerframework:checker-compat-qual:2.5.5
+             * +--- com.google.api.grpc:proto-google-cloud-firestore-v1:2.6.1
+             * |    \--- com.google.cloud:google-cloud-firestore:2.6.1
+             * |         \--- com.google.firebase:firebase-admin:8.1.0
+             * |              \--- testRuntimeClasspath
+             * +--- com.google.cloud:google-cloud-firestore:2.6.1 (*)
+             * +--- com.google.cloud:google-cloud-storage:1.118.0
+             * |    \--- com.google.firebase:firebase-admin:8.1.0 (*)
+             * \--- com.google.cloud:proto-google-cloud-firestore-bundle-v1:2.6.1
+             *      \--- com.google.cloud:google-cloud-firestore:2.6.1 (*)
+             *
+             * org.checkerframework:checker-compat-qual:2.5.3 -> 2.5.5
+             * +--- com.google.flogger:flogger:0.7.4
+             * |    +--- io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.184
+             * |    |    +--- testRuntimeClasspath
+             * |    |    +--- project :testutil-web
+             * |    |    |    \--- testRuntimeClasspath
+             * |    |    \--- io.spine.tools:spine-testutil-core:2.0.0-SNAPSHOT.175
+             * |    |         \--- io.spine.tools:spine-testutil-client:2.0.0-SNAPSHOT.175
+             * |    |              \--- testRuntimeClasspath
+             * |    \--- com.google.flogger:flogger-system-backend:0.7.4
+             * |         \--- io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.184 (*)
+             * \--- com.google.flogger:flogger-system-backend:0.7.4 (*)
+             */
+            "org.checkerframework:checker-compat-qual:2.5.5",
+
+            // TODO: extract into a dependency object.
+            "io.perfmark:perfmark-api:0.26.0",
+
             Gson.lib,
             GoogleApis.common,
             GoogleApis.commonProtos,
@@ -258,6 +292,7 @@ fun NamedDomainObjectContainer<Configuration>.forceTransitiveDependencies() = al
             // Transitive dependencies from `core-java` may have different (older) versions.
             Spine.base,
             Spine.baseTypes,
+            Spine.reflect,
             Spine.toolBase,
             Validation.runtime,
             Spine.Logging.lib,

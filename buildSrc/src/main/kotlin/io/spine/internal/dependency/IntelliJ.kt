@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2021-07-05:dmytro.dashenkov: https://github.com/SpineEventEngine/config/issues/214.
+@file:Suppress("ConstPropertyName")
 
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            eachDependency {
-                if (requested.group == "org.jacoco") {
-                    useVersion("0.8.7")
-                }
-            }
-        }
+package io.spine.internal.dependency
+
+/**
+ * The components of the IntelliJ Platform.
+ *
+ * Make sure to add the `intellijReleases` and `jetBrainsCacheRedirector`
+ * repositories to your project. See `kotlin/Repositories.kt` for details.
+ */
+@Suppress("unused")
+object IntelliJ {
+
+    /**
+     * The version of the IntelliJ platform.
+     *
+     * This is the version used by Kotlin compiler `1.9.21`.
+     * Advance this version with caution because it may break the setup of
+     * IntelliJ platform standalone execution.
+     */
+    const val version = "213.7172.53"
+
+    object Platform {
+        private const val group = "com.jetbrains.intellij.platform"
+        const val core = "$group:core:$version"
+        const val util = "$group:util:$version"
+    }
+
+    object JavaPsi {
+        private const val group = "com.jetbrains.intellij.java"
+        const val api = "$group:java-psi:$version"
+        const val impl = "$group:java-psi-impl:$version"
     }
 }

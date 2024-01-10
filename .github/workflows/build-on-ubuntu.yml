@@ -22,9 +22,6 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Pull config
-        run: git submodule update --init --recursive
-
       - name: Build project and run tests
         shell: bash
         run: ./gradlew build --stacktrace

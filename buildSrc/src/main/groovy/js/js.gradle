@@ -179,13 +179,15 @@ task npmLicenseReport {
 
 apply plugin: 'io.spine.mc-js'
 
-protoJs {
-    generatedMainDir = genProtoMain
-    generatedTestDir = genProtoTest
+modelCompiler {
+    js {
+        generatedMainDir = genProtoMain
+        generatedTestDir = genProtoTest
 
-    generateParsersTask().dependsOn compileProtoToJs
-    buildJs.dependsOn generateParsersTask()
-    testJs.dependsOn buildJs
+        generateParsersTask().dependsOn compileProtoToJs
+        buildJs.dependsOn generateParsersTask()
+        testJs.dependsOn buildJs
+    }
 }
 
 

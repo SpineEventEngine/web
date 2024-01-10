@@ -122,7 +122,7 @@ internal data class JarFlags(
      * Default value is `true`.
      */
     val javadocJar: Boolean = true,
-
+    
     /**
      * Tells whether [protoJar] artifact should be published.
      */

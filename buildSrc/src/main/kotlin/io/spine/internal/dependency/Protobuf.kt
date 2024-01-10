@@ -33,7 +33,7 @@ package io.spine.internal.dependency
 )
 object Protobuf {
     private const val group = "com.google.protobuf"
-    const val version       = "3.25.0"
+    const val version       = "3.25.1"
     /**
      * The Java library containing proto definitions of Google Protobuf.
      */
@@ -44,6 +44,13 @@ object Protobuf {
         "${group}:protobuf-kotlin:${version}"
     )
     const val compiler = "${group}:protoc:${version}"
+
+    // Defines the `protoc` compiler artifact
+    // for JavaScript rendering.
+    object JsRenderingProtoc {
+        private const val version = "3.20.1"
+        const val compiler = "${group}:protoc:$version"
+    }
 
     // https://github.com/google/protobuf-gradle-plugin/releases
     object GradlePlugin {
