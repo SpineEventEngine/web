@@ -1,0 +1,65 @@
+{
+  "name": "spine-web",
+  "version": "2.0.0-SNAPSHOT.74",
+  "license": "Apache-2.0",
+  "description": "A JS client for interacting with Spine applications.",
+  "homepage": "https://spine.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpineEventEngine/web",
+    "directory": "client-js"
+  },
+  "bugs": {
+    "url": "https://github.com/SpineEventEngine/web/issues",
+    "email": "developers@spine.io"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "npx webpack --config webpack-prod.config.js",
+    "build-dev": "npx webpack --config webpack-dev.config.js",
+    "transpile-before-publish": "npx babel main --out-dir build/npm-publication --source-maps",
+    "coverage:unix": "npx nyc --reporter=text-lcov npm run test >| build/coverage.lcov",
+    "coverage:win": "npx nyc --reporter=text-lcov npm run test > build/coverage.lcov",
+    "test": "npx mocha --require @babel/register --recursive --exit --full-trace ./test",
+    "license-report": "node ./license-report/generate-license-report-md.js"
+  },
+  "engines": {
+    "node": ">=12.19.0",
+    "npm": ">=6.14.7"
+  },
+  "peerDependencies": {
+    "rxjs": "6.5.x"
+  },
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "base64-js": "^1.5.1",
+    "google-protobuf": "^3.20.1",
+    "isomorphic-fetch": "^3.0.0",
+    "node-fetch": "^3.3.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/register": "^7.18.9",
+    "babel-loader": "^9.1.2",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
+    "firebase": "^9.23.0",
+    "jsdoc": "^4.0.0",
+    "license-checker": "^25.0.1",
+    "minimist": "^1.2.7",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "rxjs": "^7.8.0",
+    "sinon": "^15.0.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-merge": "^5.10.0"
+  },
+  "sideEffects": true,
+  "main": "index.js"
+}
