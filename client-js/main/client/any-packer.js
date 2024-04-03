@@ -28,7 +28,7 @@
 
 import {Message} from 'google-protobuf';
 import {isProtobufMessage, Type, TypedMessage} from './typed-message';
-import {Any} from '../proto/google/protobuf/any_pb';
+import {Any} from '../../generated/main/js/google/protobuf/any_pb';
 
 /**
  * An packer of string, number, boolean, and message values from Protobuf `Any`.

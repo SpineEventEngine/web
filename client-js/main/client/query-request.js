@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {OrderBy} from "../proto/spine/client/query_pb";
+import {OrderBy} from "../../generated/main/js/spine/client/query_pb";
 import {FilteringRequest} from "./filtering-request";
 
 /**

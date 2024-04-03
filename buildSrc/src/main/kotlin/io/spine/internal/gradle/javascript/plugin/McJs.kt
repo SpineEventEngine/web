@@ -48,9 +48,11 @@ fun JsPlugins.mcJs() {
 
     // TODO: this piece does not work. Try a different approach.
 //    project.withGroovyBuilder {
-//        "modelCompiler.js" {
-//            setProperty("generatedMainDir", genProtoMain)
-//            setProperty("generatedTestDir", genProtoTest)
+//        "modelCompiler" {
+//            "js" {
+//                setProperty("generatedMainDir", genProtoMain)
+//                setProperty("generatedTestDir", genProtoTest)
+//            }
 //        }
 //    }
 }

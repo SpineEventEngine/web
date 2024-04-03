@@ -28,8 +28,8 @@
 
 import {TypedMessage} from './typed-message';
 import {ClientError, ConnectionError, ServerError, SpineError} from './errors';
-import {Subscribe, KeepUp, Cancel} from "../proto/spine/web/subscriptions_pb";
-import {Duration} from "../proto/google/protobuf/duration_pb";
+import {Subscribe, KeepUp, Cancel} from "../../generated/main/js/spine/web/subscriptions_pb";
+import {Duration} from "../../generated/main/js/google/protobuf/duration_pb";
 
 /**
  * @typedef {Object} SubscriptionRouting

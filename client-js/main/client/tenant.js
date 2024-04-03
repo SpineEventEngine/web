@@ -24,9 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {TenantId} from "../proto/spine/core/tenant_id_pb";
-import {EmailAddress} from "../proto/spine/net/email_address_pb";
-import {InternetDomain} from "../proto/spine/net/internet_domain_pb";
+import {TenantId} from "../../generated/main/js/spine/core/tenant_id_pb";
+import {EmailAddress} from "../../generated/main/js/spine/net/email_address_pb";
+import {InternetDomain} from "../../generated/main/js/spine/net/internet_domain_pb";
 import {isProtobufMessage, Type} from "./typed-message";
 
 /**

@@ -26,7 +26,7 @@
 
 "use strict";
 
-import {Timestamp} from '../proto/google/protobuf/timestamp_pb';
+import {Timestamp} from '../../generated/main/js/google/protobuf/timestamp_pb';
 
 /**
  * @typedef {Object} DurationValue

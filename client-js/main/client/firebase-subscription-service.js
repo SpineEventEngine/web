@@ -28,7 +28,7 @@
 
 import {Duration} from './time-utils';
 import ObjectToProto from './object-to-proto';
-import {KeepUpOutcome} from '../proto/spine/web/subscriptions_pb';
+import {KeepUpOutcome} from '../../generated/main/js/spine/web/subscriptions_pb';
 
 /**
  * The default interval for sending subscription keep up requests.

@@ -50,10 +50,10 @@ fun JsPlugins.protobuf() {
     val protobufExt = project.extensions.getByType(ProtobufExtension::class.java)
     protobufExt.apply {
 
-        generatedFilesBaseDir = projectDir.path
+        generatedFilesBaseDir = projectDir.resolve("generated").path
 
         protoc {
-            artifact = Protobuf.compiler
+            artifact = Protobuf.JsRenderingProtoc.compiler
         }
 
         generateProtoTasks {
@@ -61,8 +61,7 @@ fun JsPlugins.protobuf() {
 
                 task.builtins {
 
-                    // Do not use java builtin output in this project.
-
+                    // Do not use `java` builtin in this project.
                     remove("java")
 
                     // For information on JavaScript code generation please see
@@ -70,9 +69,11 @@ fun JsPlugins.protobuf() {
 
                     id("js") {
                         option("import_style=commonjs")
-                        outputSubDir = genProtoDirName
+                        outputSubDir = "js"
                     }
                 }
+
+                println(" -- Setting the JS output dir to ${task.outputBaseDir}/js --")
 
                 val sourceSet = task.sourceSet.name
                 val testClassifier = if (sourceSet == "test") "_test" else ""

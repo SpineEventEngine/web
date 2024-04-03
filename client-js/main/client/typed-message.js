@@ -37,7 +37,7 @@ import {
   StringValue,
   UInt32Value,
   UInt64Value,
-} from '../proto/google/protobuf/wrappers_pb';
+} from '../../generated/main/js/google/protobuf/wrappers_pb';
 import {convertDateToTimestamp} from './time-utils';
 import KnownTypes from './known-types';
 

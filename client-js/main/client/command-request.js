@@ -24,8 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {CommandId} from "../proto/spine/core/command_pb";
-import {MessageId, Origin} from "../proto/spine/core/diagnostics_pb";
+import {CommandId} from "../../generated/main/js/spine/core/command_pb";
+import {MessageId, Origin} from "../../generated/main/js/spine/core/diagnostics_pb";
 import {Filters} from "./actor-request-factory";
 import {AnyPacker} from "./any-packer";
 import {ClientRequest} from "./client-request";

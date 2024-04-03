@@ -27,9 +27,9 @@
 "use strict";
 
 import {Observable, Subject, Subscription} from 'rxjs';
-import {Subscription as SubscriptionObject} from '../proto/spine/client/subscription_pb';
-import {NodePath} from '../proto/spine/web/firebase/client_pb';
-import {SubscriptionOrError} from "../proto/spine/web/subscriptions_pb"
+import {Subscription as SubscriptionObject} from '../../generated/main/js/spine/client/subscription_pb';
+import {NodePath} from '../../generated/main/js/spine/web/firebase/client_pb';
+import {SubscriptionOrError} from "../../generated/main/js/spine/web/subscriptions_pb"
 import {AnyPacker} from './any-packer';
 import {ActorRequestFactory} from './actor-request-factory';
 import {AbstractClientFactory} from './client-factory';

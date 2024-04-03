@@ -112,6 +112,7 @@ allprojects {
 
 subprojects {
 
+
     apply {
         plugin("java-library")
         plugin("kotlin")
@@ -123,6 +124,11 @@ subprojects {
         plugin("pmd-settings")
         plugin("dokka-for-java")
     }
+
+//    if(this.name == "client-js")  {
+//        println(" ---- Applying plugin `io.spine.mc-js` to `:client-js`...")
+//        apply(plugin = "io.spine.mc-js")
+//    }
 
     repositories {
         standardToSpineSdk()

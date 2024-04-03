@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Status} from "../proto/spine/core/response_pb";
+import {Status} from "../../generated/main/js/spine/core/response_pb";
 import {CommandRequest} from "./command-request";
 import {CommandHandlingError, CommandValidationError, SpineError} from "./errors";
 import ObjectToProto from "./object-to-proto";

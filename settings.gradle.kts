@@ -33,6 +33,7 @@ include(
     "firebase-web",
     "testutil-web",
     "client-js",
+    "client-ts",
     "js-tests",
     "test-app",
 )

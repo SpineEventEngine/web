@@ -26,6 +26,7 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
+import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.base.check
 import io.spine.internal.gradle.fs.LazyTempPath
@@ -45,19 +46,28 @@ dependencies {
     val spineCoreVersion = Spine.CoreJava.version
 
     protobuf(project(":web"))
+
     protobuf(project(":firebase-web"))
+
     protobuf(
         group = "io.spine",
         name = "spine-client",
         version = spineCoreVersion,
         classifier = "proto"
-    )
+    ) {
+        exclude(Protobuf.protoSrcLib)
+    }
+
     testProtobuf(
         group = "io.spine",
         name = "spine-client",
         version = spineCoreVersion,
         classifier = "proto"
     )
+}
+
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-kotlin")
 }
 
 sourceSets {

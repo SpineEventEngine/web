@@ -24,18 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.builtins
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
+//import com.google.protobuf.gradle.builtins
+//import com.google.protobuf.gradle.generateProtoTasks
+//import com.google.protobuf.gradle.id
+//import com.google.protobuf.gradle.protobuf
+//import com.google.protobuf.gradle.protoc
+import com.google.protobuf.gradle.*
 import io.spine.internal.dependency.Firebase
 import io.spine.internal.dependency.HttpClient
 import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Slf4J
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.excludeProtobufLite
+//import io.spine.internal.gradle.excludeProtobufLite
 
 plugins {
     id("io.spine.mc-java")
@@ -48,7 +50,7 @@ configurations.excludeProtobufLite()
 val spineBaseTypesVersion: String by extra
 
 dependencies {
-    api("io.spine:spine-base-types:$spineBaseTypesVersion")
+    api(Spine.baseTypes)
     api(project(":web"))
     api(Firebase.admin) {
         exclude(group = "com.google.guava", module = "guava")
@@ -65,28 +67,28 @@ dependencies {
     testImplementation(project(":testutil-web"))
 }
 
-val compileProtoToJs by tasks.registering {
-    description = "Compiles Protobuf sources into JavaScript."
-}
-
 CheckStyleConfig.applyTo(project)
 
-protobuf {
-    protoc {
-        artifact = Protobuf.compiler
-    }
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                id("js") {
-                    // For information on JavaScript code generation please see
-                    // https://github.com/google/protobuf/blob/master/js/README.md
-                    option("import_style=commonjs")
-                }
-            }
-            compileProtoToJs {
-                dependsOn(task)
-            }
-        }
-    }
-}
+//val compileProtoToJs by tasks.registering {
+//    description = "Compiles Protobuf sources into JavaScript."
+//}
+//
+//protobuf {
+//    protoc {
+//        artifact = Protobuf.compiler
+//    }
+//    generateProtoTasks {
+//        all().forEach { task ->
+//            task.builtins {
+//                id("js") {
+//                    // For information on JavaScript code generation please see
+//                    // https://github.com/google/protobuf/blob/master/js/README.md
+//                    option("import_style=commonjs")
+//                }
+//            }
+//            compileProtoToJs {
+//                dependsOn(task)
+//            }
+//        }
+//    }
+//}

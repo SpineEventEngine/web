@@ -26,7 +26,7 @@
 
 "use strict";
 
-import {FieldPath} from "../proto/spine/base/field_path_pb";
+import {FieldPath} from "../../generated/main/js/spine/base/field_path_pb";
 
 /**
  * A utility for working with `FieldPath` instances.

@@ -26,8 +26,8 @@
 
 "use strict";
 
-import {Error as SpineBaseError} from '../proto/spine/base/error_pb';
-import {ValidationError} from '../proto/spine/validate/validation_error_pb';
+import {Error as SpineBaseError} from '../../generated/main/js/spine/base/error_pb';
+import {ValidationError} from '../../generated/main/js/spine/validate/validation_error_pb';
 import {isProtobufMessage} from './typed-message';
 
 /**

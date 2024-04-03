@@ -24,18 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.builtins
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
+import com.google.protobuf.gradle.*
 import io.spine.internal.dependency.HttpClient
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.tools.gradle.project.artifact
 
 plugins {
     id("io.spine.mc-java")
@@ -63,11 +59,12 @@ CheckStyleConfig.applyTo(project)
 
 protobuf {
     protoc {
-        artifact = Protobuf.compiler
+        artifact =Protobuf.JsRenderingProtoc.compiler
     }
     generateProtoTasks {
         all().forEach { task ->
             task.builtins {
+                remove("kotlin")
                 id("js") {
                     // For information on JavaScript code generation please see
                     // https://github.com/google/protobuf/blob/master/js/README.md

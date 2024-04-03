@@ -48,7 +48,7 @@ object Protobuf {
     // Defines the `protoc` compiler artifact
     // for JavaScript rendering.
     object JsRenderingProtoc {
-        private const val version = "3.20.1"
+        private const val version = "3.13.0"
         const val compiler = "${group}:protoc:$version"
     }
 
