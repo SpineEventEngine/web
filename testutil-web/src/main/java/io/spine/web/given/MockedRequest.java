@@ -26,7 +26,7 @@
 
 package io.spine.web.given;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;

@@ -27,7 +27,7 @@
 package io.spine.web.future;
 
 import com.google.common.flogger.FluentLogger;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.CompletionStage;
 

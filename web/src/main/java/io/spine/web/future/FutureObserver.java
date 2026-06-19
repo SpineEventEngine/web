@@ -28,7 +28,7 @@ package io.spine.web.future;
 
 import io.grpc.stub.StreamObserver;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkNotNull;

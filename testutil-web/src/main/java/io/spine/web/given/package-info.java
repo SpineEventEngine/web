@@ -28,9 +28,9 @@
  * This package declares the routines designed to simplify testing of the web API exposed by Spine.
  */
 @CheckReturnValue
-@ParametersAreNonnullByDefault
+@NullMarked
 package io.spine.web.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import import org.jspecify.annotations.NullMarked;

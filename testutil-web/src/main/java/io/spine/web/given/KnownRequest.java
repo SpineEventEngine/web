@@ -28,8 +28,8 @@ package io.spine.web.given;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -139,7 +139,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     @Override
-    public @NonNull String getContentType() {
+    public @NotNull String getContentType() {
         return type.toString();
     }
 
@@ -153,7 +153,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     @Override
-    public @NonNull String getRequestURI() {
+    public @NotNull String getRequestURI() {
         return uri;
     }
 
