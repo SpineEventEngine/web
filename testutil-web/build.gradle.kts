@@ -1,3 +1,4 @@
+import io.spine.dependency.local.TestLib
 import io.spine.gradle.checkstyle.CheckStyleConfig
 
 /*
@@ -26,11 +27,9 @@ import io.spine.gradle.checkstyle.CheckStyleConfig
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val spineBaseVersion: String by extra
-
 dependencies {
     api(project(":web"))
-    api("io.spine.tools:spine-testlib:$spineBaseVersion")
+    api(TestLib.lib)
 }
 
 CheckStyleConfig.applyTo(project)

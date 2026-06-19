@@ -28,7 +28,7 @@ package io.spine.web;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Message;
-import io.spine.json.Json;
+import io.spine.type.Json;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.web.parser.MessageFormat;
 

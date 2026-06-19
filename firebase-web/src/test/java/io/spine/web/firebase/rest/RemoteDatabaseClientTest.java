@@ -52,7 +52,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.web.firebase.rest.HttpClientMockFactory.mockHttpClient;
 import static io.spine.web.firebase.rest.HttpClientMockFactory.noOpClient;

@@ -26,14 +26,16 @@
 
 package io.spine.web.future;
 
-import io.spine.logging.Logging;
 import io.spine.testing.UtilityClassTest;
-import io.spine.testing.logging.SimpleLoggingTest;
+import io.spine.testing.logging.LoggingTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 @DisplayName("Completion should")
 class CompletionTest extends UtilityClassTest<Completion> {
@@ -43,10 +45,20 @@ class CompletionTest extends UtilityClassTest<Completion> {
     }
 
     @Nested
-    class LogOutputTest extends SimpleLoggingTest {
+    class LogOutputTest extends LoggingTest {
 
         LogOutputTest() {
-            super(Completion.class, Logging.errorLevel());
+            super(Completion.class, Level.SEVERE);
+        }
+
+        @BeforeEach
+        void startIntercepting() {
+            interceptLogging();
+        }
+
+        @AfterEach
+        void stopIntercepting() {
+            restoreLogging();
         }
 
         @Test
@@ -69,7 +81,7 @@ class CompletionTest extends UtilityClassTest<Completion> {
             var assertLogRecord = assertLog().record();
 
             assertLogRecord.hasLevelThat()
-                           .isEqualTo(Logging.errorLevel());
+                           .isEqualTo(Level.SEVERE);
             assertLogRecord.hasThrowableThat()
                            .isInstanceOf(UnicornException.class);
         }

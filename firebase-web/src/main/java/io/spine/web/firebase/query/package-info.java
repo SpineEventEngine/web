@@ -34,4 +34,4 @@ package io.spine.web.firebase.query;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
-import import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullMarked;

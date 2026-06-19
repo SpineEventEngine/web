@@ -28,7 +28,7 @@ package io.spine.web.given;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import org.jspecify.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -139,7 +139,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     @Override
-    public @NotNull String getContentType() {
+    public @NonNull String getContentType() {
         return type.toString();
     }
 
@@ -153,7 +153,7 @@ public final class KnownRequest implements MockedRequest {
     }
 
     @Override
-    public @NotNull String getRequestURI() {
+    public @NonNull String getRequestURI() {
         return uri;
     }
 

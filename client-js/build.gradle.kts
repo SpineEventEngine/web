@@ -26,6 +26,7 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
+import io.spine.dependency.local.CoreJvm
 import io.spine.gradle.base.check
 import io.spine.gradle.fs.LazyTempPath
 import io.spine.gradle.javascript.javascript
@@ -41,20 +42,18 @@ import io.spine.gradle.javascript.task.webpack
 
 dependencies {
 
-    val spineCoreVersion: String by project.extra
-
     protobuf(project(":web"))
     protobuf(project(":firebase-web"))
     protobuf(
         group = "io.spine",
         name = "spine-client",
-        version = spineCoreVersion,
+        version = CoreJvm.version,
         classifier = "proto"
     )
     testProtobuf(
         group = "io.spine",
         name = "spine-client",
-        version = spineCoreVersion,
+        version = CoreJvm.version,
         classifier = "proto"
     )
 }

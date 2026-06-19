@@ -24,19 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.dependency.local.CoreJvm
 import io.spine.gradle.checkstyle.CheckStyleConfig
 
 plugins {
     id("org.gretty").version("3.0.6")
     id("com.github.psxpaul.execfork").version("0.1.13")
-    id("io.spine.mc-java")
+    id("io.spine.core-jvm")
 }
-
-val spineCoreVersion: String by extra
 
 dependencies {
     implementation(project(":firebase-web"))
-    implementation("io.spine:spine-server:$spineCoreVersion")
+    implementation(CoreJvm.server)
 }
 
 CheckStyleConfig.applyTo(project)

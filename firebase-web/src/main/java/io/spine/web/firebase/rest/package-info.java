@@ -35,4 +35,4 @@ package io.spine.web.firebase.rest;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
-import import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullMarked;

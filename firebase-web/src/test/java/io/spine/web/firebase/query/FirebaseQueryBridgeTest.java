@@ -30,7 +30,7 @@ import com.google.common.collect.Iterators;
 import com.google.gson.JsonElement;
 import com.google.protobuf.Message;
 import io.spine.client.QueryFactory;
-import io.spine.json.Json;
+import io.spine.type.Json;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.QueryService;
 import io.spine.testing.client.TestActorRequestFactory;
@@ -140,6 +140,6 @@ class FirebaseQueryBridgeTest {
                 .from(value.getAsString())
                 .asJsonObject()
                 .toString();
-        return Json.fromJson(messageJson, message);
+        return Json.fromJson(message, messageJson);
     }
 }

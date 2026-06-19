@@ -24,31 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.builtins
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
-import io.spine.dependency.Firebase
-import io.spine.dependency.HttpClient
-import io.spine.dependency.Jackson
-import io.spine.dependency.Protobuf
-import io.spine.dependency.Slf4J
+import io.spine.dependency.lib.Firebase
+import io.spine.dependency.lib.HttpClient
+import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.Protobuf
+import io.spine.dependency.lib.Slf4J
+import io.spine.dependency.local.BaseTypes
 import io.spine.gradle.checkstyle.CheckStyleConfig
-import io.spine.gradle.excludeProtobufLite
 
 plugins {
-    id("io.spine.mc-java")
+    id("io.spine.core-jvm")
 }
 
 group = "io.spine.gcloud"
 
 configurations.excludeProtobufLite()
 
-val spineBaseTypesVersion: String by extra
+// The Firebase Admin SDK pulls a large Google Cloud dependency tree with internally
+// conflicting versions (e.g., Firestore `3.38.0` vs `3.26.5`). Enforcing the Google Cloud
+// BOM that `firebase-admin:9.9.0` itself imports aligns the whole tree. Applied to every
+// resolvable configuration so that the Protobuf compilation classpaths are covered too.
+run {
+    val boms = listOf(
+        "com.google.cloud:libraries-bom:26.77.0",
+        // The Google Cloud BOM pins the Cloud libraries to versions that expect
+        // OpenTelemetry `1.51.0`, but does not manage all OpenTelemetry SDK artifacts.
+        "io.opentelemetry:opentelemetry-bom:1.51.0",
+    )
+    // Apply the BOMs only to the dependency-bucket configurations (not to tool-specific
+    // ones such as the Kotlin build-tools classpath, whose versions are managed elsewhere).
+    val targetConfigurations = setOf(
+        "api", "implementation", "compileOnly", "runtimeOnly",
+        "testImplementation", "testCompileOnly", "testRuntimeOnly",
+        "protobuf", "testProtobuf",
+    )
+    configurations.matching { it.name in targetConfigurations }.configureEach {
+        withDependencies {
+            boms.forEach { add(project.dependencies.enforcedPlatform(it)) }
+        }
+    }
+}
 
 dependencies {
-    api("io.spine:spine-base-types:$spineBaseTypesVersion")
+    api(BaseTypes.lib)
     api(project(":web"))
     api(Firebase.admin) {
         exclude(group = "com.google.guava", module = "guava")
@@ -75,15 +94,13 @@ protobuf {
     protoc {
         artifact = Protobuf.compiler
     }
+    // TODO: Restore Protobuf-to-JavaScript generation once the JS toolchain is
+    //  compatible with the new `config`. The `js` output is no longer a `protoc`
+    //  built-in (it requires the external `protoc-gen-js` plugin), and `spine-mc-js`
+    //  is not published against the current Spine artifacts. See `client-js` and the
+    //  commented-out JS modules in `settings.gradle.kts`.
     generateProtoTasks {
         all().forEach { task ->
-            task.builtins {
-                id("js") {
-                    // For information on JavaScript code generation please see
-                    // https://github.com/google/protobuf/blob/master/js/README.md
-                    option("import_style=commonjs")
-                }
-            }
             compileProtoToJs {
                 dependsOn(task)
             }

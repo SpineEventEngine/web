@@ -34,4 +34,4 @@ package io.spine.web.future;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
-import import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullMarked;

@@ -28,7 +28,7 @@ package io.spine.web.query;
 
 import com.google.protobuf.Message;
 import io.spine.client.QueryFactory;
-import io.spine.json.Json;
+import io.spine.type.Json;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.testing.logging.mute.MuteLogging;
 import io.spine.web.given.MemoizingResponse;
@@ -79,7 +79,7 @@ class QueryServletTest {
         var query = queryFactory.all(Task.class);
         HttpServletRequest request = request(query);
         servlet.doPost(request, response(response));
-        var actualData = Json.fromJson(response.toString(), Task.class);
+        var actualData = Json.fromJson(Task.class, response.toString());
         assertThat(actualData).isEqualTo(task);
     }
 

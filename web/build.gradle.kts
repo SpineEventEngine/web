@@ -24,32 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.builtins
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
-import io.spine.dependency.HttpClient
-import io.spine.dependency.JavaX
-import io.spine.dependency.Protobuf
+import io.spine.dependency.lib.HttpClient
+import io.spine.dependency.lib.JavaX
+import io.spine.dependency.lib.Protobuf
+import io.spine.dependency.local.CoreJvm
 import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.checkstyle.CheckStyleConfig
-import io.spine.gradle.excludeProtobufLite
 
 plugins {
-    id("io.spine.mc-java")
+    id("io.spine.core-jvm")
 }
 
 configurations.excludeProtobufLite()
 
 apply<IncrementGuard>()
 
-val spineBaseVersion: String by extra
-val spineCoreVersion: String by extra
-
 dependencies {
     api(JavaX.servletApi)
-    api("io.spine:spine-server:$spineCoreVersion")
+    api(CoreJvm.server)
     api(HttpClient.google)
 
     implementation(HttpClient.apache)
@@ -67,15 +60,13 @@ protobuf {
     protoc {
         artifact = Protobuf.compiler
     }
+    // TODO: Restore Protobuf-to-JavaScript generation once the JS toolchain is
+    //  compatible with the new `config`. The `js` output is no longer a `protoc`
+    //  built-in (it requires the external `protoc-gen-js` plugin), and `spine-mc-js`
+    //  is not published against the current Spine artifacts. See `client-js` and the
+    //  commented-out JS modules in `settings.gradle.kts`.
     generateProtoTasks {
         all().forEach { task ->
-            task.builtins {
-                id("js") {
-                    // For information on JavaScript code generation please see
-                    // https://github.com/google/protobuf/blob/master/js/README.md
-                    option("import_style=commonjs")
-                }
-            }
             compileProtoToJs {
                 dependsOn(task)
             }
