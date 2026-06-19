@@ -32,10 +32,19 @@ include(
     "web",
     "firebase-web",
     "testutil-web",
-    "client-js",
-    "js-tests",
-    "test-app",
+
+    // The modules below are temporarily excluded because their tooling is not yet
+    // compatible with the updated `config`:
+    //  * `client-js` and `js-tests` rely on `spine-mc-js`, whose dependency closure
+    //    (`spine-tool-base`, `spine-plugin-base`) is no longer published and is binary-
+    //    incompatible with the new `tool-base`. JavaScript generation also requires the
+    //    external `protoc-gen-js` plugin, as `protoc` no longer ships a `js` built-in.
+    //  * `test-app` uses `gretty` 3.0.6, which references `org.gradle.util.VersionNumber`,
+    //    a Gradle internal removed in Gradle 9.
+//    "client-js",
+//    "js-tests",
+//    "test-app",
 )
 
-project(":js-tests").projectDir = File("integration-tests/js-tests")
-project(":test-app").projectDir = File("integration-tests/test-app")
+//project(":js-tests").projectDir = File("integration-tests/js-tests")
+//project(":test-app").projectDir = File("integration-tests/test-app")
