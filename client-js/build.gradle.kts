@@ -26,18 +26,18 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.testProtobuf
-import io.spine.internal.gradle.base.check
-import io.spine.internal.gradle.fs.LazyTempPath
-import io.spine.internal.gradle.javascript.javascript
-import io.spine.internal.gradle.javascript.plugin.idea
-import io.spine.internal.gradle.javascript.plugin.mcJs
-import io.spine.internal.gradle.javascript.plugin.protobuf
-import io.spine.internal.gradle.javascript.task.assemble
-import io.spine.internal.gradle.javascript.task.check
-import io.spine.internal.gradle.javascript.task.clean
-import io.spine.internal.gradle.javascript.task.coverageJs
-import io.spine.internal.gradle.javascript.task.publish
-import io.spine.internal.gradle.javascript.task.webpack
+import io.spine.gradle.base.check
+import io.spine.gradle.fs.LazyTempPath
+import io.spine.gradle.javascript.javascript
+import io.spine.gradle.javascript.plugin.idea
+import io.spine.gradle.javascript.plugin.mcJs
+import io.spine.gradle.javascript.plugin.protobuf
+import io.spine.gradle.javascript.task.assemble
+import io.spine.gradle.javascript.task.check
+import io.spine.gradle.javascript.task.clean
+import io.spine.gradle.javascript.task.coverageJs
+import io.spine.gradle.javascript.task.publish
+import io.spine.gradle.javascript.task.webpack
 
 dependencies {
 

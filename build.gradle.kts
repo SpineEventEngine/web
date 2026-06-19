@@ -24,65 +24,65 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.CheckerFramework
-import io.spine.internal.dependency.CommonsCodec
-import io.spine.internal.dependency.CommonsCollections
-import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.GoogleApis
-import io.spine.internal.dependency.GoogleCloud
-import io.spine.internal.dependency.Grpc
-import io.spine.internal.dependency.Gson
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.HttpClient
-import io.spine.internal.dependency.HttpComponents
-import io.spine.internal.dependency.J2ObjC
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Jackson
-import io.spine.internal.dependency.JavaX
-import io.spine.internal.dependency.Jetty
-import io.spine.internal.dependency.Netty
-import io.spine.internal.dependency.OpenCensus
-import io.spine.internal.dependency.OsDetector
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.ThreeTen
-import io.spine.internal.gradle.javadoc.JavadocConfig
-import io.spine.internal.gradle.applyGitHubPackages
-import io.spine.internal.gradle.applyStandard
-import io.spine.internal.gradle.forceVersions
-import io.spine.internal.gradle.github.pages.updateGitHubPages
-import io.spine.internal.gradle.javac.configureErrorProne
-import io.spine.internal.gradle.javac.configureJavac
-import io.spine.internal.gradle.publish.PublishingRepos
-import io.spine.internal.gradle.report.coverage.JacocoConfig
-import io.spine.internal.gradle.report.license.LicenseReporter
-import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.publish.spinePublishing
-import io.spine.internal.gradle.testing.configureLogging
-import io.spine.internal.gradle.testing.registerTestTasks
+import io.spine.dependency.CheckerFramework
+import io.spine.dependency.CommonsCodec
+import io.spine.dependency.CommonsCollections
+import io.spine.dependency.ErrorProne
+import io.spine.dependency.Flogger
+import io.spine.dependency.GoogleApis
+import io.spine.dependency.GoogleCloud
+import io.spine.dependency.Grpc
+import io.spine.dependency.Gson
+import io.spine.dependency.Guava
+import io.spine.dependency.HttpClient
+import io.spine.dependency.HttpComponents
+import io.spine.dependency.J2ObjC
+import io.spine.dependency.JUnit
+import io.spine.dependency.Jackson
+import io.spine.dependency.JavaX
+import io.spine.dependency.Jetty
+import io.spine.dependency.Netty
+import io.spine.dependency.OpenCensus
+import io.spine.dependency.OsDetector
+import io.spine.dependency.Protobuf
+import io.spine.dependency.ThreeTen
+import io.spine.gradle.javadoc.JavadocConfig
+import io.spine.gradle.applyGitHubPackages
+import io.spine.gradle.applyStandard
+import io.spine.gradle.forceVersions
+import io.spine.gradle.github.pages.updateGitHubPages
+import io.spine.gradle.javac.configureErrorProne
+import io.spine.gradle.javac.configureJavac
+import io.spine.gradle.publish.PublishingRepos
+import io.spine.gradle.report.coverage.JacocoConfig
+import io.spine.gradle.report.license.LicenseReporter
+import io.spine.gradle.report.pom.PomGenerator
+import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.testing.configureLogging
+import io.spine.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
 
-    io.spine.internal.gradle.doApplyStandard(repositories)
-    io.spine.internal.gradle.doApplyGitHubPackages(repositories, "base", rootProject)
-    io.spine.internal.gradle.doForceVersions(configurations)
+    io.spine.gradle.doApplyStandard(repositories)
+    io.spine.gradle.doApplyGitHubPackages(repositories, "base", rootProject)
+    io.spine.gradle.doForceVersions(configurations)
 
     val spineBaseVersion: String by extra
 
     dependencies {
-        classpath(io.spine.internal.dependency.Guava.lib)
-        classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib)
-        classpath("io.spine.tools:spine-mc-java:$spineBaseVersion")
+        classpath(io.spine.dependency.lib.Guava.lib)
+        classpath(io.spine.dependency.build.ErrorProne.GradlePlugin.lib)
+        classpath(io.spine.dependency.local.CoreJvmCompiler.lib)
         classpath("io.spine.tools:spine-mc-js:$spineBaseVersion")
     }
 
     configurations.all {
         resolutionStrategy {
             force(
-                io.spine.internal.dependency.OsDetector.lib
+                io.spine.dependency.OsDetector.lib
             )
         }
     }
@@ -97,11 +97,11 @@ plugins {
     idea
     `project-report`
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
+    io.spine.dependency.Protobuf.GradlePlugin.apply {
         id(id)
     }
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
+    io.spine.dependency.ErrorProne.GradlePlugin.apply {
         id(id)
     }
 }

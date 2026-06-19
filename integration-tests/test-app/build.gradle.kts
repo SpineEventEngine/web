@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+import io.spine.gradle.checkstyle.CheckStyleConfig
 
 plugins {
     id("org.gretty").version("3.0.6")

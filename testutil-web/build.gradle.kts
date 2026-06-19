@@ -1,4 +1,4 @@
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+import io.spine.gradle.checkstyle.CheckStyleConfig
 
 /*
  * Copyright 2022, TeamDev. All rights reserved.

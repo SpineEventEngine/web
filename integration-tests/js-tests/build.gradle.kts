@@ -25,13 +25,13 @@
  */
 
 import com.google.protobuf.gradle.testProtobuf
-import io.spine.internal.gradle.javascript.javascript
-import io.spine.internal.gradle.javascript.plugin.idea
-import io.spine.internal.gradle.javascript.plugin.mcJs
-import io.spine.internal.gradle.javascript.plugin.protobuf
-import io.spine.internal.gradle.javascript.task.assemble
-import io.spine.internal.gradle.javascript.task.clean
-import io.spine.internal.gradle.javascript.task.integrationTest
+import io.spine.gradle.javascript.javascript
+import io.spine.gradle.javascript.plugin.idea
+import io.spine.gradle.javascript.plugin.mcJs
+import io.spine.gradle.javascript.plugin.protobuf
+import io.spine.gradle.javascript.task.assemble
+import io.spine.gradle.javascript.task.clean
+import io.spine.gradle.javascript.task.integrationTest
 
 dependencies {
     testProtobuf(project(":test-app")) {
